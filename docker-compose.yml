@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  install:
+    build: .
+    command: [sh, -c, 'yarn']
+    volumes:
+      - .:/app
+
+  start:
+    build: .
+    command: [sh, -c, 'yarn dev']
+    volumes:
+      - .:/app
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+
+  test:
+    build: .
+    command: [sh, -c, 'yarn test']
+    volumes:
+      - .:/app
+
+  build:
+    build: .
+    command: [sh, -c, 'yarn build && yarn export']
+    volumes:
+      - .:/app
+
+volumes:
+  ? node_modules
