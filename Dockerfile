@@ -19,7 +19,6 @@ WORKDIR /app
 
 ENV NODE_ENV production
 ENV PORT 3000
-echo $NODE_ENV
 
 RUN addgroup -g 1001 -S nodejs
 RUN adduser -S nextjs -u 1001
