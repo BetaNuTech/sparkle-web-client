@@ -2,8 +2,11 @@ version: "3.8"
 
 services:
   install:
-    build: .
-    command: [sh, -c, 'yarn']
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: deps
+    command: [sh, -c, 'yarn --frozen-lockfile']
     volumes:
       - .:/app
 
@@ -24,7 +27,10 @@ services:
       - .:/app
 
   build:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
     command: [sh, -c, 'yarn build && yarn export']
     volumes:
       - .:/app
