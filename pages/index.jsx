@@ -9,7 +9,6 @@ export default function Home() {
   React.useEffect(() => {
     PropertiesApi.getMe().then((data) => {
       setProperties(data);
-      console.log(data);
     });
   }, []);
 
@@ -18,6 +17,7 @@ export default function Home() {
   return (
     <div style={{ padding: '40px' }}>
       <p>{`User ID: ${user ? user.uid : 'no user signed in'}`}</p>
+
       <p>
         <Link href="/profile">
           <a>Go to authenticated route</a>
@@ -28,6 +28,14 @@ export default function Home() {
           <a>Login</a>
         </Link>
       </p>
+
+      <div>
+        Names:
+        {properties.map(doc => (
+        <p key={doc.id}>{doc.data().name}</p>
+      ))}
+      </div>
+
       <button type="button" onClick={() => signOut()}>
         Sign Out
       </button>
