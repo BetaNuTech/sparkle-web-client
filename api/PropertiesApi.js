@@ -2,8 +2,8 @@ import { firestore } from '../utils/connectFirebase';
 
 export const PropertiesApi = {
   async getMe() {
-    const { data } = await firestore.collection('users').get();
+    const { docs } = await firestore.collection('properties').get();
 
-    return data;
-  }
+    return docs;
+  },
 };

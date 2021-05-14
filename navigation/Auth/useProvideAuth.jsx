@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import cookie from 'js-cookie';
+import { useState, useEffect } from 'react';
 import Router from 'next/router';
 import { firebase } from '../../utils/connectFirebase';
 import { AuthApi } from '../../api/AuthApi';
@@ -21,22 +20,17 @@ export function useProvideAuth() {
 
   const handleUser = async (rawUser) => {
     if (rawUser) {
-      const user = await formatUser(rawUser);
-      const { token, ...userWithoutToken } = user;
+      const formattedUser = await formatUser(rawUser);
+      const { token, ...userWithoutToken } = formattedUser;
 
-      AuthApi.createUser(user.uid, userWithoutToken);
-      setUser(user);
-
-      cookie.set('firebase-auth', true, {
-        expires: 1
-      });
+      AuthApi.createUser(formattedUser.uid, userWithoutToken);
+      setUser(formattedUser);
 
       setLoadingStatus(false);
-      return user;
+      return formattedUser;
     }
 
     setUser(false);
-    cookie.remove('firebase-auth');
     setLoadingStatus(false);
 
     return false;
@@ -49,10 +43,10 @@ export function useProvideAuth() {
       .signInWithEmailAndPassword(email, password)
       .then((response) => {
         handleUser(response.user);
-        console.log(user);
         Router.push('/profile');
       })
       .catch((error) => {
+        // eslint-disable-next-line no-console
         console.log(error);
       });
   };
@@ -66,7 +60,7 @@ export function useProvideAuth() {
       .then(() => handleUser(false));
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     const unsubscribe = firebase.auth().onIdTokenChanged(handleUser);
 
     return () => unsubscribe();

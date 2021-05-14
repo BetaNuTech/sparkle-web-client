@@ -1,4 +1,4 @@
-import { firestore } from "../utils/connectFirebase";
+import { firestore } from '../utils/connectFirebase';
 
 export const AuthApi = {
   createUser(uid, data) {
