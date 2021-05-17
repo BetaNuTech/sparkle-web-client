@@ -1,0 +1,84 @@
+// Base
+$rem-base: 16px;
+$base-line-height: 1;
+
+// Application Colors
+$primary-color: #3071ef;
+$primary-dark-color: #032ca6;
+$primary-xdark-color: #0c2951;
+$secondary-color: #5299f1;
+$tertiary-color: #3c7ecb;
+$quaternary-color: #531b93;
+$alert-color: #ea2e49;
+$alert-secondary-color: #960f00;
+$alert-light-color: #ffe5e5;
+$orange-color: #fe7f00;
+$light-orange-color: #fb8463;
+$info-color: #94bdf2;
+$success-color: #477725;
+$warning-color: #ffd933;
+$white: #fff;
+$white-dark: #f8f8f8;
+$black: #010101;
+$gray: #f2f2f2;
+$gray-2: #f9f9f9;
+$gray-3: #bcbec0;
+$gray-4: #f1f1f1;
+$dark-color: #232323;
+$gray-lighter: #d9d9d9;
+$gray-light: #aaa;
+$gray-light-2: #bcbec0;
+$gray-med-dark: #666;
+$gray-med-dark-2: #6e6e6e;
+$gray-dark: #555;
+$gray-darker: #424242;
+
+/// Black color with opacity 0.12
+/// @type Color
+$black-12: rgba(0, 0, 0, 0.12);
+
+// Radius
+$global-radius: rem-calc(3);
+$global-rounded: 1000px;
+
+// Padding
+$global-padding: 1rem; // 16px
+$global-spacing: rem-calc(15); // 15px
+$global-md-padding: (1rem * 0.75); // 12px
+$global-sm-padding: (1rem / 2); // 8px
+$global-xsm-padding: rem-calc(3); // 3px
+$global-mlg-padding: (1rem * 1.5); // 24px
+$global-lg-padding: (1rem * 2); // 32px
+$global-llg-padding: (1rem * 2.625); // 42px
+$global-xlg-padding: (1rem * 3.25); // 52px
+$global-xxlg-padding: (1rem * 3.875); // 62px
+
+// Modal
+$modal-zindex: 1000;
+
+// Layout Magic Numbers
+$mobile-max-width: rem-calc(599);
+
+// Tablet Min Width
+$tablet-breakpoint: rem-calc(600);
+
+// Large Tablet Min Width
+$tablet-large-breakpoint: rem-calc(740);
+
+// Desktop Min Width
+$desktop-breakpoint: rem-calc(990);
+
+// Large Desktop Min Width
+$large-desktop-breakpoint: rem-calc(1180);
+
+// Responsive Variables
+$mobile-landscape-max-width: rem-calc(875);
+
+/// Layout Breakpoints
+/// @type Map<Number>
+$breakpoints: (
+  "tablet": $tablet-breakpoint,
+  "large-tablet": $tablet-large-breakpoint,
+  "desktop": $desktop-breakpoint,
+  "large-desktop": $large-desktop-breakpoint,
+);

@@ -1,0 +1,33 @@
+// Respond above.
+@mixin media-query($lower, $upper: 0) {
+  // If the breakpoint exists in the map.
+  @if map-has-key($breakpoints, $lower) {
+    // Get the breakpoint value.
+    $lower-value: map-get($breakpoints, $lower);
+
+    @if $upper != 0 {
+      @if map-has-key($breakpoints, $upper) {
+        // Get the breakpoint value.
+        $upper-value: map-get($breakpoints, $upper);
+
+        // Upper bound media query
+        @media (min-width: $lower-value) and (max-width: ($upper-value - 1)) {
+          @content;
+        }
+      } @else {
+        // Log upper query warning.
+        // 'Invalid breakpoint: #{$upper}.';
+      }
+    } @else {
+      // Non-upper bound media query
+      @media (min-width: $lower-value) {
+        @content;
+      }
+    }
+
+    // If the breakpoint doesn't exist in the map.
+  } @else {
+    // Log lower query warning.
+    // 'Invalid breakpoint: #{$lower}.';
+  }
+}
