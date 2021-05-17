@@ -7,9 +7,14 @@ export const SlideNav = ({ isNavOpen, handleClickOpenNav }) => {
   const { user, signOut } = useAuth();
 
   return (
-    <div className={isNavOpen ? clsx(styles.slideNav, styles['slideNav--open']) : styles.slideNav} >
-      <div className={styles['slideNav-wrapper']} >
-
+    <div
+      className={
+        isNavOpen
+          ? clsx(styles.slideNav, styles['slideNav--open'])
+          : styles.slideNav
+      }
+    >
+      <div className={styles['slideNav-wrapper']}>
         <div className={styles['slideNav-header']}>
           <div
             onClick={handleClickOpenNav}
@@ -54,23 +59,26 @@ export const SlideNav = ({ isNavOpen, handleClickOpenNav }) => {
               </Link>
             </div>
             <div className={styles['slideNav-links__link']}>
-              <div onClick={() => signOut()} role="button" tabIndex={0}>Sign Out</div>
+              <div onClick={() => signOut()} role="button" tabIndex={0}>
+                Sign Out
+              </div>
             </div>
           </div>
         </div>
 
         <div className={styles['slideNav-footer']}>
           <div className={styles['slideNav-footer__elem']}>
-            <img src="/icons/sparkle/bluestone-logo.svg" alt="Logo" className={styles['slideNav-footer__logo']} />
+            <img
+              src="/icons/sparkle/bluestone-logo.svg"
+              alt="Logo"
+              className={styles['slideNav-footer__logo']}
+            />
           </div>
           <div className={styles['slideNav-footer__elem']}>
             <span className={styles['slideNav-footer__version']}>V2.5.2</span>
           </div>
         </div>
-
       </div>
     </div>
   );
 };
-
-
