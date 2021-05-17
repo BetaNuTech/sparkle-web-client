@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^2.4.0",
+    "clsx": "^1.1.1",
     "firebase": "^8.6.0",
     "next": "10.2.0",
     "react": "17.0.2",

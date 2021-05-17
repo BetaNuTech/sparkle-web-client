@@ -57,7 +57,11 @@ export function useProvideAuth() {
     return firebase
       .auth()
       .signOut()
-      .then(() => handleUser(false));
+      .then(() => handleUser(false))
+      .catch((error) => {
+        // eslint-disable-next-line no-alert
+        alert(error);
+      });
   };
 
   useEffect(() => {

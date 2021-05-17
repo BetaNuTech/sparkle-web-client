@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="26px" viewBox="0 0 22 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="if_editor-redo-arrow-reload-glyph_763333" transform="translate(0.000000, -1.000000)" fill="#000000" fill-rule="nonzero">
+      <path d="M2.101419,12.5 C2.833009,7.134473 7.433675,3 13,3 C19.075133,3 24,7.924867 24,14 C24,19.957095 19.264651,24.808189 13.352783,24.99445 L13.352783,22.993213 C18.159829,22.807926 22,18.852423 22,14 C22,9.029437 17.970563,5 13,5 C8.540505,5 4.838555,8.24343 4.124438,12.5 L8.40340977,12.5 L3,19 L-2,12.5 L2.101419,12.5 Z" id="editor-redo-arrow-reload-glyph" transform="translate(11.000000, 13.997225) rotate(-270.000000) translate(-11.000000, -13.997225) "></path>
+    </g>
+  </g>
+</svg>
