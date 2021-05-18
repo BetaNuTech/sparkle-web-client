@@ -1,26 +1,11 @@
 .mainSide {
-  &--shortened {
-    margin-left: 250px;
-  }
+  margin-left: 250px;
 }
 
-.headerSide {
-  //display: none;
-  margin-top: 100px;
-  background-color: yellowgreen;
-}
-
-.navSide {
-  display: none;
-}
-
-@media (max-width: 600px) {
-  .headerSide {
-    display: block;
-    background-color: yellow;
-  }
-
-  .navSide {
-    display: block;
+@media (max-width: 989px) {
+  .mainSide {
+    &--shortened {
+      margin-left: 250px;
+    }
   }
 }
