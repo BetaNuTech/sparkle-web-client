@@ -1,11 +1,13 @@
+@import "../../../styles/index.scss";
+
 .mainSide {
-  margin-left: 250px;
+  &--shortened {
+    margin-left: 250px;
+  }
 }
 
-@media (max-width: 989px) {
+@include media-query(desktop) {
   .mainSide {
-    &--shortened {
-      margin-left: 250px;
-    }
+    margin-left: 250px;
   }
 }

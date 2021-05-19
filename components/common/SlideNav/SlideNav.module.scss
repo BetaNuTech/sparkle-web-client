@@ -1,6 +1,8 @@
+@import "../../../styles/index.scss";
+
 .slideNav {
   height: 100%;
-  width: 250px;
+  width: 0px;
   overflow-x: hidden;
   position: fixed;
   z-index: 1;
@@ -10,6 +12,10 @@
   background-image: url(../../../public/icons/sparkle/banner-background.svg);
   background-repeat: no-repeat;
   background-size: cover;
+
+  &--open {
+    width: 250px;
+  }
 
   &-wrapper {
     height: inherit;
@@ -23,7 +29,7 @@
     flex-direction: column;
 
     &__closeButton {
-      display: none;
+      display: flex;
       justify-content: flex-end;
 
       img {
@@ -70,15 +76,12 @@
   }
 }
 
-@media (max-width: 989px) {
+@include media-query(desktop) {
   .slideNav {
-    width: 0px;
-    &--open {
-      width: 250px;
-    }
+    width: 250px;
 
     &-header__closeButton {
-      display: flex;
+      display: none;
     }
   }
 }
