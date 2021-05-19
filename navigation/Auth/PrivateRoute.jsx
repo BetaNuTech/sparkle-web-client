@@ -10,7 +10,11 @@ export const PrivateRoute = ({ children }) => {
     if (!isAuthenticated && router.pathname !== '/jobs/login' && !loadingStatus) {
       router.push('/jobs/login');
     }
-  }, [router.pathname, loadingStatus]);
+  }, [loadingStatus]);
+
+  if (!isAuthenticated && router.pathname !== '/jobs/login') {
+    return <div>Loading</div>;
+  }
 
   return children;
 };
