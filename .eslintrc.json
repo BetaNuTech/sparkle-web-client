@@ -21,20 +21,11 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": [
-    "react",
-    "prettier"
-  ],
+  "plugins": ["react", "prettier"],
   "rules": {
     "eol-last": 1,
-    "semi": [
-      2,
-      "always"
-    ],
-    "quotes": [
-      2,
-      "single"
-    ],
+    "semi": [2, "always"],
+    "quotes": [2, "single"],
     "no-console": "error",
     "max-len": [
       2,
@@ -46,9 +37,7 @@
     "no-underscore-dangle": [
       2,
       {
-        "allow": [
-          "_id"
-        ]
+        "allow": ["_id"]
       }
     ],
     "import/prefer-default-export": "off",
@@ -65,20 +54,13 @@
     "jsx-a11y/anchor-is-valid": [
       "error",
       {
-        "components": [
-          "Link"
-        ],
-        "specialLink": [
-          "hrefLeft",
-          "hrefRight"
-        ],
-        "aspects": [
-          "invalidHref",
-          "preferButton"
-        ]
+        "components": ["Link"],
+        "specialLink": ["hrefLeft", "hrefRight"],
+        "aspects": ["invalidHref", "preferButton"]
       }
     ],
     "react/self-closing-comp": "off",
+    "react/button-has-type": "off",
     "jsx-a11y/label-has-associated-control": "off",
     "jsx-a11y/click-events-have-key-events": "off"
   }

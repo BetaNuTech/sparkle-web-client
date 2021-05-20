@@ -1,0 +1,14 @@
+.spk-ani-fade-in {
+  transition: opacity 400ms linear;
+  opacity: 1;
+}
+
+.spk-ani-fade-out {
+  animation: fade-in-out 1s linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes fade-in-out {
+  0%,100% { opacity: 0 }
+  50% { opacity: 1 }
+}

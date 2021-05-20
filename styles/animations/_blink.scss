@@ -1,0 +1,8 @@
+.spk-ani-blink {
+  animation: fadeinout 1.2s linear infinite;
+}
+
+@keyframes fadeinout {
+  0%,100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
