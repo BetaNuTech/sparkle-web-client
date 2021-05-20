@@ -1,0 +1,41 @@
+$loading-gray-light: $gray;
+$loading-gray-accent: lighten($loading-gray-light, 3);
+
+%ani-loading {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    position: absolute;
+    z-index: 0;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    background-image: linear-gradient(
+      110deg,
+      $loading-gray-light 73%,
+      $loading-gray-accent 75%,
+      $loading-gray-light 77%,
+      $loading-gray-light 78%,
+      $loading-gray-accent 84%,
+      $loading-gray-accent 88%,
+      $loading-gray-light 94%,
+      $loading-gray-light 100%
+    );
+    background-size: 200% 100%;
+    background-position: 0 center;
+    border-radius: inherit;
+    animation: 1.1s ease-in-out loader infinite;
+  }
+}
+
+@keyframes loader {
+  0% {
+    background-position-x: 0;
+  }
+  40%,
+  100% {
+    background-position-x: -200%;
+  }
+}

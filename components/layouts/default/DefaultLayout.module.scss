@@ -1,13 +1,26 @@
-@import "../../../styles/index.scss";
+@import '../../../styles/index.scss';
 
-.mainSide {
-  &--shortened {
-    margin-left: 250px;
-  }
+.wrapper {
+	display: flex;
+	width: calc(100vw + #{$sliderNavWidth});
+	transform: translateX(#{-1 * $sliderNavWidth});
+	overflow: hidden;
+	transition: 0.25s transform linear;
+
+	// Reveal slider nav on open
+	&--open {
+		transform: translateX(0);
+	}
+
+	// Always reveal slider nav
+	@include media-query(desktop) {
+		transform: translateX(0);
+	}
 }
 
-@include media-query(desktop) {
-  .mainSide {
-    margin-left: 250px;
-  }
+.mainSide {
+	width: 100vw;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }

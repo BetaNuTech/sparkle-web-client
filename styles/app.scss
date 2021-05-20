@@ -1,15 +1,17 @@
 /************
 * Settings
 *************/
-@import "tools/rem-calc";
-@import "settings/globals";
+@import 'tools/rem-calc';
+@import 'settings/globals';
+@import 'settings/layouts';
 
 /************
 * Tools
 *************/
-@import "tools/media-query";
+@import 'tools/media-query';
 
 /************
 * Base
 *************/
-@import "base/normalize";
+@import 'base/normalize';
+@import 'base/nextjs';

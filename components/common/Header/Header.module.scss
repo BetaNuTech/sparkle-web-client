@@ -1,54 +1,103 @@
-@import "../../../styles/index.scss";
+@import '../../../styles/index.scss';
 
 .header {
-  display: block;
-  background-image: url(../../../public/img/login-header.svg);
-  background-position: center;
-  background-size: cover;
+  background-image: url("data:image/svg+xml,%3Csvg width='75' height='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='nonzero' fill='none' style='transform: translate(-1px, -1px);'%3E%3Cpath fill='%232970A2' d='M32.91.85L20.17 2.81l8.74 2.38L44.57.85z'/%3E%3Cpath fill='%23005288' d='M12.99.85l7.18 1.96L32.91.85zM44.57.85L28.91 5.19l21.44 5.84L75 1l-.37-.15z'/%3E%3Cpath fill='%23003870' d='M50.35 11.03L75 18V1z'/%3E%3Cpath fill='%2308588E' d='M.14 5.88v3.79l5.49 1.97 23.28-6.45-8.74-2.38z'/%3E%3Cpath fill='%2300437A' d='M.14.85v5.03l20.03-3.07L12.99.85zM5.63 11.64L23.35 18h10.22l16.78-6.97-21.44-5.84z'/%3E%3Cpath fill='%23002D67' d='M33.57 18H75l-24.65-6.97z'/%3E%3Cpath fill='%23003F77' d='M.14 13.16l5.49-1.52L.14 9.67z'/%3E%3Cpath fill='%23003069' d='M.14 13.16V18h23.21L5.63 11.64z'/%3E%3C/g%3E%3C/svg%3E");
+  background-position: auto;
+  background-size: 103%;
+  background-repeat: no-repeat;
 
-  &--shortened {
-    margin-left: 250px;
-  }
+  display: grid;
+  grid-gap: 0 $global-padding;
+  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-areas:
+    'left center right'
+    'bottom bottom bottom'
+    'sub-bottom sub-bottom sub-bottom';
 
-  &-wrapper {
-    width: 100%;
-    height: 54px;
-    display: flex;
-    justify-content: space-between;
-    align-self: center;
-    color: white;
-  }
+  &__cancelButton {
+    background-color: transparent;
+    border-width: 0;
 
-  .left-col {
-    align-self: center;
+    > svg {
+      max-height: inherit;
+      height: rem-calc(36);
+      width: rem-calc(36);
+      transform: none;
 
-    &-elem {
-      padding: 10px;
-
-      img {
-        width: 20px;
-        height: 20px;
+      path {
+        fill: $alert-color;
+        stroke: transparent;
       }
     }
   }
 
-  .central-col {
-    align-self: center;
+  // Centeral content
+  &__main {
+    grid-area: center;
   }
 
-  .right-col {
+  // Left and/or right
+  // columns
+  &__aside {
     display: flex;
-    justify-content: space-evenly;
-    align-self: center;
+    color: $white;
+    white-space: nowrap;
 
-    &-elem {
-      padding: 10px;
+    &:first-child {
+      grid-area: left;
+      justify-content: flex-start;
+    }
 
-      img {
-        width: 20px;
-        height: 20px;
-        fill: white;
-      }
+    &:last-of-type {
+      grid-area: right;
+      justify-content: flex-end;
+    }
+  }
+
+  &__title {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: $global-padding 0;
+    font-weight: bold;
+    font-size: 1rem;
+    text-align: center;
+    color: $white;
+  }
+
+  // Title text alternative
+  &__titleLogo {
+    width: rem-calc(176);
+    height: rem-calc(34);
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  // Header buttons
+  &__button {
+    background: transparent;
+    border-width: 0;
+    display: inline-flex; // fix for links
+    align-items: center;
+    min-height: rem-calc(54);
+    padding: $global-padding;
+    line-height: rem-calc(22);
+    font-size: rem-calc(14);
+    color: $white;
+
+    &:focus {
+      outline-width: 0;
+    }
+
+    &:focus,
+    &:hover,
+    &:active {
+      color: $white;
+    }
+
+    > svg {
+      max-width: rem-calc(20);
+      max-height: rem-calc(20);
     }
   }
 }

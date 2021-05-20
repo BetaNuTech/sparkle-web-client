@@ -12,12 +12,22 @@ export const DefaultLayout = ({ children }) => {
   };
 
   return (
-    <>
-      <Header title='Properties' isNavOpen={isNavOpen} handleClickOpenNav={handleClickOpenNav} />
+    <div
+      className={
+        isNavOpen
+          ? clsx(styles.wrapper, styles['wrapper--open'])
+          : styles.wrapper
+      }
+    >
       <SlideNav isNavOpen={isNavOpen} handleClickOpenNav={handleClickOpenNav} />
-      <div className={isNavOpen ? clsx(styles.mainSide, styles['mainSide--shortened']) : styles.mainSide}>
+      <main className={styles.mainSide}>
+        <Header
+          title="Properties"
+          isNavOpen={isNavOpen}
+          handleClickOpenNav={handleClickOpenNav}
+        />
         {children}
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
