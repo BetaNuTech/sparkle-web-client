@@ -1,12 +1,20 @@
+import clsx from 'clsx';
 import Link from 'next/link';
 import { useAuth } from '../../../navigation/Auth/AuthProvider';
 import styles from './SlideNav.module.scss';
 
-export const SlideNav = ({ handleClickOpenNav }) => {
+export const SlideNav = ({ handleClickOpenNav, appMode }) => {
   const { user, signOut } = useAuth();
 
   return (
-    <nav className={styles.slideNav}>
+    <nav
+      className={
+        // appMode = isStaging || isOffline || '';
+        appMode
+          ? clsx(styles.slideNav, styles[`slideNav${appMode}`])
+          : styles.slideNav
+      }
+    >
       <div className={styles.slideNav__wrapper}>
         {/* Logo And Close Button */}
         <header className={styles['slideNav-header']}>

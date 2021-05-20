@@ -1,10 +1,16 @@
+import clsx from 'clsx';
 import styles from './Header.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import HamburgerIcon from '../../../public/icons/ios/hamburger.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
 
-export const Header = ({ title, handleClickOpenNav }) => (
-  <header className={styles.header}>
+export const Header = ({ title, handleClickOpenNav, appMode }) => (
+  <header
+    // appMode = isStaging || isOffline || '';
+    className={
+      appMode ? clsx(styles.header, styles[`header${appMode}`]) : styles.header
+    }
+  >
     {/* Navigation Elements */}
     <aside className={styles.header__aside}>
       <button
