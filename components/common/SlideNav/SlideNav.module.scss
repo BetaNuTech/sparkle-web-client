@@ -54,12 +54,14 @@
       overflow: hidden;
       margin-bottom: rem-calc(11.2);
 
+      // Navigation links
       a {
         white-space: nowrap;
         color: $white;
         text-decoration: none;
       }
 
+      // Sign Out button
       div {
         white-space: nowrap;
       }
