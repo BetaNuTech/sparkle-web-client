@@ -1,4 +1,11 @@
-@import './tools/rem-calc.scss';
-@import './settings/globals';
-@import './settings/layouts';
-@import './tools/media-query.scss';
+/************
+* Settings
+*************/
+@import 'tools/rem-calc';
+@import 'settings/globals';
+@import 'settings/layouts';
+
+/************
+* Tools
+*************/
+@import 'tools/media-query';

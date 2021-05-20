@@ -8,6 +8,7 @@ export const SlideNav = ({ handleClickOpenNav }) => {
   return (
     <nav className={styles.slideNav}>
       <div className={styles.slideNav__wrapper}>
+        {/* Logo And Close Button */}
         <header className={styles['slideNav-header']}>
           <div
             onClick={handleClickOpenNav}
@@ -22,6 +23,7 @@ export const SlideNav = ({ handleClickOpenNav }) => {
           </div>
         </header>
 
+        {/* Navigation links */}
         <div className={styles['slideNav-links']}>
           <div className={styles['slideNav-links-wrapper']}>
             <div className={styles['slideNav-links__link']}>
@@ -64,6 +66,7 @@ export const SlideNav = ({ handleClickOpenNav }) => {
           </div>
         </div>
 
+        {/* Logo And Additional Information */}
         <footer className={styles['slideNav-footer']}>
           <img
             src="/icons/sparkle/bluestone-logo.svg"
