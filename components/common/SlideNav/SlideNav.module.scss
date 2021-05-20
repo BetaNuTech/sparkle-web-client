@@ -93,8 +93,14 @@
 
 @include media-query(desktop) {
   .slideNav {
-    &-header__closeButton {
-      display: none;
+    &-header {
+      &__closeButton {
+        display: none;
+      }
+
+      &__logo {
+        margin-top: rem-calc(48);
+      }
     }
   }
 }
