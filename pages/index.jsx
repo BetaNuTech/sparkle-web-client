@@ -31,9 +31,9 @@ export default function Home() {
 
       <div>
         Names:
-        {properties.map(doc => (
-        <p key={doc.id}>{doc.data().name}</p>
-      ))}
+        {properties.map((doc) => (
+          <p key={doc.id}>{doc.data().name}</p>
+        ))}
       </div>
 
       <button type="button" onClick={() => signOut()}>
