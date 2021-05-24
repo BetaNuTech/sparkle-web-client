@@ -1,0 +1,57 @@
+@import "../../../styles/index.scss";
+
+.OfflineNotify {
+  height: 100%;
+  position: relative;
+  background: -webkit-linear-gradient(-45deg, #183850 0, #183850 25%, #192c46 50%, #22254c 75%, #22254c 100%);
+
+  &__wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    align-items: center;
+    justify-content: center;
+    -webkit-transform: translate(-50%, -50%);
+    -moz-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    -o-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+
+  &__title {
+    color: $white;
+    font-family: arial;
+    font-weight: bold;
+    font-size: rem-calc(50);
+    letter-spacing: rem-calc(5);
+    line-height: rem-calc(16);
+    text-shadow: 0 0 rem-calc(3) $white;
+  }
+
+  &__message {
+    color: $gray-4;
+    font-family: arial;
+    font-weight: 300;
+    font-size: rem-calc(16);
+  }
+
+  &__retryButton {
+    display: block;
+    margin: rem-calc(20) 0 0;
+    padding: rem-calc(15) rem-calc(30);
+    background: #22254c;
+    color: $white;
+    font-family: arial;
+    letter-spacing: rem-calc(5);
+    border-radius: rem-calc(6.4);
+    text-decoration: none;
+    box-shadow: 0 0 rem-calc(15) #22254c;
+  }
+}
+
+@include media-query(desktop) {
+  .OfflineNotify {
+    position: static;
+  }
+}

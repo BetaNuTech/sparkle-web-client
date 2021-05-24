@@ -8,7 +8,7 @@
 
   display: grid;
   grid-gap: 0 $global-padding;
-  grid-template-columns: 1fr 2fr 1fr;
+  grid-template-columns: 33% 1fr 33%;
   grid-template-areas:
     'left center right'
     'bottom bottom bottom'
@@ -70,6 +70,7 @@
     padding: $global-padding 0;
     font-weight: bold;
     font-size: 1rem;
+    line-height: rem-calc(22);
     text-align: center;
     color: $white;
   }
