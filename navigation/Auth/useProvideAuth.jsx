@@ -70,11 +70,11 @@ export function useProvideAuth() {
     return () => unsubscribe();
   }, []);
 
-  return ({
+  return {
     isAuthenticated: !!user,
     user,
     loadingStatus,
     signInWithEmail,
     signOut
-  });
+  };
 }

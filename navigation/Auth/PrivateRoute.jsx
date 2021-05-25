@@ -7,7 +7,11 @@ export const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loadingStatus } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated && router.pathname !== '/jobs/login' && !loadingStatus) {
+    if (
+      !isAuthenticated &&
+      router.pathname !== '/jobs/login' &&
+      !loadingStatus
+    ) {
       router.push('/jobs/login');
     }
   }, [loadingStatus]);

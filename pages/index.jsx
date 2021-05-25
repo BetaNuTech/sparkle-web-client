@@ -19,7 +19,7 @@ export default function Home() {
       <p>{`User ID: ${user ? user.uid : 'no user signed in'}`}</p>
 
       <p>
-        <Link href="/profile">
+        <Link href="/properties">
           <a>Go to authenticated route</a>
         </Link>
       </p>
