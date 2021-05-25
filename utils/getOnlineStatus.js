@@ -5,7 +5,7 @@ import React from 'react';
  * NavigatorOnLine web API
  * @return {boolean}
  */
-const getOnlineStatus = () =>
+export const getOnlineStatus = () =>
   typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
     ? navigator.onLine
     : true;
