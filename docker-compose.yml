@@ -22,7 +22,7 @@ services:
 
   test:
     build: .
-    command: [sh, -c, 'yarn test']
+    command: [sh, -c, 'yarn unit-test && yarn integration-test']
     volumes:
       - .:/app
 
