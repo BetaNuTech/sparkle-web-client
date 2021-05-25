@@ -3,6 +3,7 @@ import styles from './Header.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import HamburgerIcon from '../../../public/icons/ios/hamburger.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
+import { Dropdown } from '../../screens/properties/Dropdown';
 
 export const Header = ({ title, handleClickOpenNav, appMode }) => (
   <header
@@ -29,8 +30,14 @@ export const Header = ({ title, handleClickOpenNav, appMode }) => (
 
     {/* Secondary Actions */}
     <aside className={styles.header__aside}>
-      <button className={styles.header__button}>
+      <button
+        className={clsx(
+          styles.header__button,
+          styles['header__button--dropdown']
+        )}
+      >
         <AddIcon />
+        <Dropdown />
       </button>
       <button className={styles.header__button}>
         <FolderIcon />
