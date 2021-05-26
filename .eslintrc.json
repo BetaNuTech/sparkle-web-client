@@ -23,6 +23,7 @@
     "sourceType": "module"
   },
   "plugins": ["react", "prettier"],
+  "ignorePatterns": ["dist/", ".next/"],
   "rules": {
     "eol-last": 1,
     "semi": [2, "always"],

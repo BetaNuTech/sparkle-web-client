@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   install:
@@ -10,19 +10,39 @@ services:
     volumes:
       - .:/app
 
-  start:
-    build: .
-    command: [sh, -c, 'yarn dev']
+  lint:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: [sh, -c, 'yarn run lint']
     volumes:
       - .:/app
-    ports:
-      - '3000:3000'
-    environment:
-      - NODE_ENV=development
+
+  unit-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: [sh, -c, 'yarn run unit-test']
+    volumes:
+      - .:/app
+
+  integration-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: [sh, -c, 'yarn run integration-test']
+    volumes:
+      - .:/app
 
   test:
-    build: .
-    command: [sh, -c, 'yarn unit-test && yarn integration-test']
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    command: [sh, -c, 'yarn lint && yarn test']
     volumes:
       - .:/app
 
@@ -35,5 +55,18 @@ services:
     volumes:
       - .:/app
 
+  start:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runner
+    command: [sh, -c, 'yarn dev']
+    volumes:
+      - .:/app
+    ports:
+      - '3000:3000'
+    environment:
+      - NODE_ENV=development
+
 volumes:
-  ? node_modules
+  node_modules:

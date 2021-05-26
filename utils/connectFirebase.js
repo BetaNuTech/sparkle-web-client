@@ -1,6 +1,8 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
+/* eslint-enable */
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
