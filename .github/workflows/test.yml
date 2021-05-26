@@ -1,0 +1,41 @@
+name: Test
+
+on:
+  push:
+    branches-ignore:
+      - production
+      - staging
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit`
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: docker-compose run install
+
+      - name: Run Linting Checks
+        run: docker-compose run lint
+
+      - name: Run Unit tests
+        run: docker-compose run unit-test
+
+      - name: Run Integration tests
+        run: docker-compose run integration-test

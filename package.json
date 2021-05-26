@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "export": "next export -o dist",
+    "build": "npx next build",
+    "export": "npx next export -o dist",
     "start": "next start",
-    "test": "jest",
-    "unit-test": "jest --testMatch '**/?(*.)+(spec).js'",
-    "integration-test": "jest --testMatch '**/__tests__/**/?(*.)+(test).[jt]s?(x)'"
+    "test": "npx jest",
+    "lint": "npx eslint --ext js,jsx,ts,tsx .",
+    "unit-test": "npx jest --testMatch '**/?(*.)+(spec).js'",
+    "integration-test": "npx jest --testMatch '**/__tests__/**/?(*.)+(test).[jt]s?(x)'"
   },
   "dependencies": {
     "@hookform/resolvers": "^2.4.0",
