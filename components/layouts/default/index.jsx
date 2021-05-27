@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
+import styles from './DefaultLayout.module.scss';
 import { Header } from '../../common/Header';
 import { SlideNav } from '../../common/SlideNav';
-import styles from './DefaultLayout.module.scss';
 import { useNavigatorOnline } from '../../../utils/getOnlineStatus';
 
 export const DefaultLayout = ({ children }) => {
