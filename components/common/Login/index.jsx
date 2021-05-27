@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth } from '../../../../navigation/Auth/AuthProvider';
+import { useAuth } from '../../../navigation/Auth/AuthProvider';
 import styles from './LoginForm.module.scss';
 
 const validationSchema = yup.object().shape({

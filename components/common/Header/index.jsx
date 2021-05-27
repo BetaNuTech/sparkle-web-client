@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import styles from './Header.module.scss';
+import { Dropdown } from '../../shared/Dropdown';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import HamburgerIcon from '../../../public/icons/ios/hamburger.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
-import { Dropdown } from '../../screens/properties/Dropdown';
 
 export const Header = ({ title, handleClickOpenNav, appMode }) => (
   <header

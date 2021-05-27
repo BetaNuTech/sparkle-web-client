@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { shallow } from 'enzyme';
-import { Dropdown } from '../../../../../components/screens/properties/Dropdown/index';
+import { Dropdown } from '../../../../../components/shared/Dropdown';
 
 describe('Dropdown component', () => {
   describe('rendering', () => {

@@ -1,4 +1,4 @@
-@import '../../../../styles/index.scss';
+@import "../../../styles/index.scss";
 
 $spk-dropdown-carrot-size: rem-calc(5);
 
@@ -11,6 +11,7 @@ $spk-dropdown-carrot-size: rem-calc(5);
   height: 0;
   opacity: 0;
   list-style: none;
+  white-space: nowrap;
   padding: 0;
   margin: 0;
   z-index: 11;
@@ -21,7 +22,7 @@ $spk-dropdown-carrot-size: rem-calc(5);
 
   // Arrow-up
   &::after {
-    content: '';
+    content: "";
     display: block;
     position: absolute;
     width: 0;

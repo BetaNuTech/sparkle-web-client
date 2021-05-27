@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { getOnlineStatus } from './getOnlineStatus.js';
+import { getOnlineStatus } from '../../../utils/getOnlineStatus.js';
 
 describe('Spec | Utils | Get Online Status', () => {
   afterEach(() => sinon.restore());
