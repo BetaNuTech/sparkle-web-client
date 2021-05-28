@@ -7,8 +7,8 @@ export const Sidebar = () => (
 
     <ul className={styles.sidebar__list}>
       <Item name="Team one" />
-      <Item name="Team one" />
-      <Item name="Team one" />
+      <Item name="Team two" />
+      <Item name="Team three" />
     </ul>
   </nav>
 );
