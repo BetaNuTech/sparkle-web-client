@@ -1,0 +1,74 @@
+@import '../../../../../styles/index.scss';
+
+.teamItem {
+  padding: rem-calc(8) rem-calc(32) rem-calc(8) rem-calc(16);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border-bottom: rem-calc(1) solid $gray;
+  font-size: rem-calc(14);
+  line-height: rem-calc(22);
+  color: $black;
+
+  // Toggle button
+  &__toggle {
+    width: rem-calc(15);
+    height: rem-calc(15);
+    position: absolute;
+    top: 50%;
+    right: $global-sm-padding;
+    display: block;
+    transform: translateY(-50%);
+    cursor: pointer;
+
+    &:before {
+      width: rem-calc(15);
+      height: rem-calc(2);
+    }
+
+    &:after {
+      height: rem-calc(15);
+      width: rem-calc(2);
+    }
+
+    &:after,
+    &:before {
+      content: '';
+      display: block;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      box-shadow: inset 0 0 0 rem-calc(32) darken($gray, 18);
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  // Team name
+  &__name {
+    width: 100%;
+    margin-bottom: rem-calc(8);
+    text-align: center;
+    text-decoration: none;
+    color: $black;
+
+    > strong {
+      margin: rem-calc(3) 0;
+      font-weight: 500;
+    }
+  }
+
+  &__metadata {
+    margin-right: rem-calc(16);
+    padding: rem-calc(3) rem-calc(8);
+    background-color: $gray;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    border: rem-calc(1) solid $gray-lighter;
+    border-radius: rem-calc(3);
+    text-decoration: none;
+    font-weight: 100;
+    color: inherit;
+  }
+}
