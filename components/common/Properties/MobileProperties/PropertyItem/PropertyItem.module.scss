@@ -1,46 +1,39 @@
 @import '../../../../../styles/index.scss';
 
 .propertyItem {
-  padding: rem-calc(8) rem-calc(32) rem-calc(8) rem-calc(16);
   position: relative;
-  display: flex;
-  flex-direction: column;
-  font-size: rem-calc(14);
-  line-height: rem-calc(22);
-  color: $black;
+  overflow: hidden;
+
+  &--swipeOpen {
+    transform: translateX(rem-calc(-123));
+  }
+
+  // Main side without swipe menu
+  &__content {
+    padding: rem-calc(8) rem-calc(16) rem-calc(8) rem-calc(16);
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    border-bottom: rem-calc(1) solid $gray;
+    background-color: $white;
+    font-size: rem-calc(14);
+    line-height: rem-calc(22);
+    color: $black;
+    transition: transform 400ms ease-out;
+  }
 
   // Toggle button
   &__toggle {
-    width: rem-calc(40);
-    height: rem-calc(40);
     position: absolute;
     top: 50%;
-    right: $global-padding;
-    display: block;
+    right: 16px;
     transform: translateY(-50%);
-    border: rem-calc(1) solid darken($gray, 12);
-    border-radius: $global-rounded;
     cursor: pointer;
 
-    &:before {
-      width: rem-calc(20);
-      height: rem-calc(2);
-    }
-
-    &:after {
-      height: rem-calc(20);
-      width: rem-calc(2);
-    }
-
-    &:after,
-    &:before {
-      content: '';
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      display: block;
-      box-shadow: inset 0 0 0 rem-calc(32) darken($gray, 18);
-      transform: translate(-50%, -50%);
+    > svg {
+      width: rem-calc(8);
+      height: rem-calc(14);
     }
   }
 
@@ -124,7 +117,6 @@
     align-items: center;
     border: rem-calc(1) solid $gray-lighter;
     border-radius: rem-calc(3);
-    text-decoration: none;
     font-weight: 100;
     color: inherit;
   }

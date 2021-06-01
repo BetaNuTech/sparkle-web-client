@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import Link from 'next/link';
+import PropTypes from 'prop-types';
 import { useAuth } from '../../../navigation/Auth/AuthProvider';
 import styles from './SlideNav.module.scss';
 
@@ -86,4 +87,9 @@ export const SlideNav = ({ handleClickOpenNav, appMode }) => {
       </div>
     </nav>
   );
+};
+
+SlideNav.propTypes = {
+  handleClickOpenNav: PropTypes.func.isRequired,
+  appMode: PropTypes.string.isRequired
 };

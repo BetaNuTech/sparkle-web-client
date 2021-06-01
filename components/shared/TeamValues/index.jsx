@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
 import styles from './TeamValues.module.scss';
 
@@ -9,21 +8,17 @@ export const TeamValues = ({
   numOfFollowUpActionsForDeficientItems,
   isNarrowField
 }) => (
-  <Link href="/properties">
-    <a
-      className={
-        isNarrowField
-          ? clsx(styles.teamValues, styles['teamValues--narrow'])
-          : styles.teamValues
-      }
-    >
-      <ul>
-        <li>{numOfDeficientItems}</li>
-        <li>{numOfRequiredActionsForDeficientItems}</li>
-        <li>{numOfFollowUpActionsForDeficientItems}</li>
-      </ul>
-    </a>
-  </Link>
+  <ul
+    className={
+      isNarrowField
+        ? clsx(styles.teamValues, styles['teamValues--narrow'])
+        : styles.teamValues
+    }
+  >
+    <li>{numOfDeficientItems}</li>
+    <li>{numOfRequiredActionsForDeficientItems}</li>
+    <li>{numOfFollowUpActionsForDeficientItems}</li>
+  </ul>
 );
 
 TeamValues.propTypes = {

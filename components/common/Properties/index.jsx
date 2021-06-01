@@ -19,7 +19,7 @@ export const Properties = () => {
         </header>
 
         <div className={styles.properties__main}>
-          <ProfileList />
+          <ProfileList isAscendingSort={isAscendingSort} />
         </div>
 
         <aside>
