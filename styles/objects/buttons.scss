@@ -1,0 +1,17 @@
+%headerButton {
+  min-height: rem-calc(54);
+  padding: $global-padding;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border-width: 0;
+  background: transparent;
+  line-height: rem-calc(22);
+  font-size: rem-calc(14);
+  color: $white;
+
+  > svg {
+    max-width: rem-calc(20);
+    max-height: rem-calc(20);
+  }
+}

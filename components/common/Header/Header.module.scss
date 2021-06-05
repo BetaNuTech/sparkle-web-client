@@ -86,16 +86,7 @@
 
   // Header buttons
   &__button {
-    position: relative;
-    background: transparent;
-    border-width: 0;
-    display: inline-flex; // fix for links
-    align-items: center;
-    min-height: rem-calc(54);
-    padding: $global-padding;
-    line-height: rem-calc(22);
-    font-size: rem-calc(14);
-    color: $white;
+    @extend %headerButton;
 
     &:focus {
       outline-width: 0;
@@ -123,11 +114,6 @@
     &:hover,
     &:active {
       color: $white;
-    }
-
-    > svg {
-      max-width: rem-calc(20);
-      max-height: rem-calc(20);
     }
   }
 }

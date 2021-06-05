@@ -1,0 +1,17 @@
+@import '../../../styles/index.scss';
+
+.profileList {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: auto;
+  grid-gap: $global-padding;
+  overflow: auto;
+  list-style: none;
+}
+
+@include media-query('large-tablet') {
+  .profileList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "id": 2,
+    "backgroundImage": "https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2Fea35bb17a8b841e60c1d.jpeg?alt=media&token=2f85465d-3593-4c39-93ae-4165a2a1851e",
+    "name": "A1400 Chestnut",
+    "addr1": "1221 New Meister Lane",
+    "addr2": "Blugerville, TX 78660",
+    "city": "Zouisville",
+    "state": "KY",
+    "lastInspectionDate": 1595501032,
+    "lastInspectionScore": 92.72727272727272
+  },
+  {
+    "id": 3,
+    "backgroundImage": "https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2F3e1c1a56d1bd381af398.jpeg?alt=media&token=5d69f6db-f240-4db9-9e52-843c66ee1e05",
+    "name": "CEmerson",
+    "addr1": "1221 New Meister Lane",
+    "addr2": "Pflugerville, TX 78660",
+    "city": "Louisville",
+    "state": "AY",
+    "lastInspectionDate": 1595521032,
+    "lastInspectionScore": 92.72727272727272
+  },
+  {
+    "id": 1,
+    "backgroundImage": "https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2F3e1c1a56d1bd381af398.jpeg?alt=media&token=5d69f6db-f240-4db9-9e52-843c66ee1e05",
+    "name": "BWalnut Ridge",
+    "addr1": "1221 New Meister Lane",
+    "addr2": "Pflugerville, TX 78660",
+    "city": "Louisville",
+    "state": "CY",
+    "lastInspectionDate": 1595621032,
+    "lastInspectionScore": 92.72727272727272
+  },
+  {
+    "id": 4,
+    "backgroundImage": "https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2FdvSsHLv8cxAvIMKv9Gk0.jpeg?alt=media&token=f226942e-bc2e-476f-89dd-d2eee28cd2e4",
+    "name": "EEmerson",
+    "addr1": "1221 New Meister Lane",
+    "addr2": "Pflugerville, TX 78660",
+    "city": "Aruisville",
+    "state": "KY",
+    "lastInspectionDate": 1595521032,
+    "lastInspectionScore": 92.72727272727272
+  },
+  {
+    "id": 5,
+    "backgroundImage": "https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2FdvSsHLv8cxAvIMKv9Gk0.jpeg?alt=media&token=f226942e-bc2e-476f-89dd-d2eee28cd2e4",
+    "name": "DWalnut Ridge",
+    "addr1": "1221 New Meister Lane",
+    "addr2": "Pflugerville, TX 78660",
+    "city": "Louisville",
+    "state": "BY",
+    "lastInspectionDate": 1593521032,
+    "lastInspectionScore": 92.72727272727272
+  }
+]

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
 import { firebase } from '../../utils/connectFirebase';
-import { AuthApi } from '../../api/AuthApi';
+import { AuthApi } from '../../services/api/AuthApi';
 
 const formatUser = async (user) => {
   const token = await user.getIdToken();

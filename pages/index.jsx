@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { PropertiesApi } from '../api/PropertiesApi';
+import { PropertiesApi } from '../services/api/PropertiesApi';
 import { useAuth } from '../navigation/Auth/AuthProvider';
 
 export default function Home() {
