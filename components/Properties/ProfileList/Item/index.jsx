@@ -31,9 +31,13 @@ export const Item = ({ property }) => (
         <a className={styles.item__link}>
           Deficient Items
           <TeamValues
-            numOfDeficientItems={2}
-            numOfFollowUpActionsForDeficientItems={2}
-            numOfRequiredActionsForDeficientItems={4}
+            numOfDeficientItems={property.numOfDeficientItems}
+            numOfFollowUpActionsForDeficientItems={
+              property.numOfFollowUpActionsForDeficientItems
+            }
+            numOfRequiredActionsForDeficientItems={
+              property.numOfRequiredActionsForDeficientItems
+            }
             isNarrowField={false}
           />
         </a>

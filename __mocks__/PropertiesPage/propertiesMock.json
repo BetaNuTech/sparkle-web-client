@@ -7,6 +7,9 @@
     "addr2": "Blugerville, TX 78660",
     "city": "Zouisville",
     "state": "KY",
+    "numOfDeficientItems": 82,
+    "numOfFollowUpActionsForDeficientItems": 0,
+    "numOfRequiredActionsForDeficientItems": 82,
     "lastInspectionDate": 1595501032,
     "lastInspectionScore": 92.72727272727272
   },
@@ -18,6 +21,9 @@
     "addr2": "Pflugerville, TX 78660",
     "city": "Louisville",
     "state": "AY",
+    "numOfDeficientItems": 0,
+    "numOfFollowUpActionsForDeficientItems": 0,
+    "numOfRequiredActionsForDeficientItems": 10,
     "lastInspectionDate": 1595521032,
     "lastInspectionScore": 92.72727272727272
   },
@@ -29,6 +35,9 @@
     "addr2": "Pflugerville, TX 78660",
     "city": "Louisville",
     "state": "CY",
+    "numOfDeficientItems": 11,
+    "numOfFollowUpActionsForDeficientItems": 55,
+    "numOfRequiredActionsForDeficientItems": 2,
     "lastInspectionDate": 1595621032,
     "lastInspectionScore": 92.72727272727272
   },
@@ -40,6 +49,9 @@
     "addr2": "Pflugerville, TX 78660",
     "city": "Aruisville",
     "state": "KY",
+    "numOfDeficientItems": 5,
+    "numOfFollowUpActionsForDeficientItems": 24,
+    "numOfRequiredActionsForDeficientItems": 1,
     "lastInspectionDate": 1595521032,
     "lastInspectionScore": 92.72727272727272
   },
@@ -51,6 +63,9 @@
     "addr2": "Pflugerville, TX 78660",
     "city": "Louisville",
     "state": "BY",
+    "numOfDeficientItems": 1,
+    "numOfFollowUpActionsForDeficientItems": 22,
+    "numOfRequiredActionsForDeficientItems": 22,
     "lastInspectionDate": 1593521032,
     "lastInspectionScore": 92.72727272727272
   }

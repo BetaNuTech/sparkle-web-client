@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import propertyMock from '../../../../../../__mocks__/propertyMock.json';
+import propertyMock from '../../../../../../__mocks__/PropertiesPage/propertyMock.json';
 import { Item } from '../../../../../../components/Properties/ProfileList/Item';
 
 describe('PropertyItem component', () => {

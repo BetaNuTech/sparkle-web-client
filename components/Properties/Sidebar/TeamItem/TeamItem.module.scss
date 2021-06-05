@@ -1,6 +1,6 @@
 @import '../../../../styles/index.scss';
 
-.item {
+.teamItem {
   padding: 0 $global-mlg-padding $global-padding $global-padding;
   position: relative;
   display: block;
@@ -10,7 +10,7 @@
     border-bottom: rem-calc(1) solid $gray-lighter;
   }
 
-  &__teamName {
+  &__name {
     margin-bottom: rem-calc(8);
     display: block;
     overflow: hidden;

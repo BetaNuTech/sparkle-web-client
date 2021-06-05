@@ -1,7 +1,16 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import propertiesMock from '../../../../../__mocks__/propertiesMock.json';
+import teamsMock from '../../../../../__mocks__/PropertiesPage/teamsMock.json';
+import propertiesMock from '../../../../../__mocks__/PropertiesPage/propertiesMock.json';
 import { MobileProperties } from '../../../../../components/Properties/MobileProperties';
+
+const teamCalculatedValuesMock = [
+  {
+    totalNumOfDeficientItems: 1,
+    totalNumOfFollowUpActionsForDeficientItems: 2,
+    totalNumOfRequiredActionsForDeficientItems: 3
+  }
+];
 
 describe('MobileProperties component', () => {
   describe('rendering', () => {
@@ -9,7 +18,9 @@ describe('MobileProperties component', () => {
 
     beforeEach(() => {
       const props = {
-        properties: propertiesMock
+        properties: propertiesMock,
+        teams: teamsMock,
+        teamCalculatedValues: teamCalculatedValuesMock
       };
       wrapper = shallow(<MobileProperties {...props} />);
     });

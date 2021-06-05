@@ -1,8 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import teamMock from '../../../../../../__mocks__/PropertiesPage/teamMock.json';
-import propertiesMock from '../../../../../../__mocks__/PropertiesPage/propertiesMock.json';
-import { TeamItem } from '../../../../../../components/Properties/MobileProperties/TeamItem';
+import { TeamItem } from '../../../../../../components/Properties/Sidebar/TeamItem';
 
 const teamCalculatedValuesMock = {
   totalNumOfDeficientItems: 1,
@@ -16,7 +15,6 @@ describe('TeamItem component', () => {
 
     beforeEach(() => {
       const props = {
-        properties: propertiesMock,
         team: teamMock,
         teamCalculatedValues: teamCalculatedValuesMock
       };
@@ -25,6 +23,11 @@ describe('TeamItem component', () => {
 
     it('renders correctly', () => {
       expect(wrapper).toMatchSnapshot();
+    });
+
+    it('should render name', () => {
+      const name = wrapper.find('a').text();
+      expect(name).toBe('Team Two');
     });
   });
 });
