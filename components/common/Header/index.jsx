@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import styles from './Header.module.scss';
-import { Dropdown } from '../../shared/Dropdown';
+import { Dropdown } from '../Dropdown';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import HamburgerIcon from '../../../public/icons/ios/hamburger.svg';
-import FolderIcon from '../../../public/icons/ios/folder.svg';
+import { FolderSortButton } from '../../Properties/FolderSortButton';
 
 export const Header = ({ title, handleClickOpenNav, appMode }) => (
   <header
@@ -39,9 +39,8 @@ export const Header = ({ title, handleClickOpenNav, appMode }) => (
         <AddIcon />
         <Dropdown />
       </button>
-      <button className={styles.header__button}>
-        <FolderIcon />
-      </button>
+
+      <FolderSortButton />
     </aside>
   </header>
 );

@@ -1,0 +1,55 @@
+@import '../../styles/index.scss';
+
+.properties {
+  &__sortInfoLine {
+    padding: rem-calc(8) rem-calc(16);
+    display: flex;
+    justify-content: flex-start;
+    background-color: #94bdf2;
+    color: $white;
+    font-size: rem-calc(12);
+  }
+
+  &__wrapper {
+    display: none;
+  }
+
+  @include media-query('large-tablet') {
+    &__mobile {
+      display: none;
+    }
+
+    // Layout for desktop and tablet
+    &__wrapper {
+      height: 100%;
+      display: grid;
+      overflow: auto;
+      grid-template-columns: auto rem-calc(190);
+      grid-template-rows: min-content;
+      grid-template-areas:
+        'header header'
+        'main sidebar';
+      grid-gap: $global-padding;
+
+      > header {
+        grid-area: header;
+      }
+
+      > aside {
+        padding-right: $global-padding;
+        grid-area: sidebar;
+      }
+    }
+
+    &__main {
+      padding: 0 0 rem-calc(16) rem-calc(16);
+      grid-area: main;
+    }
+  }
+}
+
+@include media-query(desktop) {
+  .properties__sortInfoLine {
+    display: none;
+  }
+}
