@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Team One",
+    "properties": [1, 2, 3],
+    "propertyCount": 3
+  },
+  {
+    "id": 2,
+    "name": "Team Two",
+    "properties": [4, 5],
+    "propertyCount": 2
+  },
+  {
+    "id": 3,
+    "name": "Team Three",
+    "properties": [],
+    "propertyCount": 0
+  }
+]

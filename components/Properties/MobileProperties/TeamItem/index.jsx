@@ -8,7 +8,7 @@ import { SwipeReveal } from '../SwipeReveal';
 import useSwipeReveal from '../../../../hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 
-export const TeamItem = ({ name }) => {
+export const TeamItem = ({ team, teamCalculatedValues }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
   useSwipeReveal(ref, setIsSwipeOpen);
@@ -33,7 +33,7 @@ export const TeamItem = ({ name }) => {
         {/* Team Name */}
         <Link href="/lalala">
           <a className={styles.teamItem__name}>
-            <strong>{name}</strong>
+            <strong>{team.name}</strong>
           </a>
         </Link>
 
@@ -41,9 +41,13 @@ export const TeamItem = ({ name }) => {
         <div className={styles.teamItem__metadata}>
           Deficient Items
           <TeamValues
-            numOfDeficientItems={2}
-            numOfFollowUpActionsForDeficientItems={2}
-            numOfRequiredActionsForDeficientItems={4}
+            numOfDeficientItems={teamCalculatedValues.totalNumOfDeficientItems}
+            numOfFollowUpActionsForDeficientItems={
+              teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
+            }
+            numOfRequiredActionsForDeficientItems={
+              teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
+            }
             isNarrowField={false}
           />
         </div>
@@ -55,5 +59,14 @@ export const TeamItem = ({ name }) => {
 };
 
 TeamItem.propTypes = {
-  name: PropTypes.string.isRequired
+  team: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    properties: PropTypes.arrayOf(PropTypes.number).isRequired,
+    propertyCount: PropTypes.number.isRequired
+  }).isRequired,
+  teamCalculatedValues: PropTypes.shape({
+    totalNumOfDeficientItems: PropTypes.number.isRequired,
+    totalNumOfFollowUpActionsForDeficientItems: PropTypes.number.isRequired,
+    totalNumOfRequiredActionsForDeficientItems: PropTypes.number.isRequired
+  }).isRequired
 };

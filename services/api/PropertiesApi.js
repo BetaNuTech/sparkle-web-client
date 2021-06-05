@@ -1,5 +1,5 @@
 import { firestore } from '../../utils/connectFirebase';
-import propertiesMock from '../../__mocks__/propertiesMock.json';
+import propertiesMock from '../../__mocks__/PropertiesPage/propertiesMock.json';
 
 export const PropertiesApi = {
   async getMe() {

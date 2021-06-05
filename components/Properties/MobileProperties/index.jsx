@@ -3,12 +3,22 @@ import styles from './MobileProperties.module.scss';
 import { TeamItem } from './TeamItem';
 import { PropertyItem } from './PropertyItem';
 
-export const MobileProperties = ({ properties }) => (
+export const MobileProperties = ({
+  properties,
+  teams,
+  teamCalculatedValues
+}) => (
   <ul className={styles.mobileProperties}>
     <li className={styles.mobileProperties__item}>
       <header>teams</header>
-      <TeamItem name="Team one" />
-      <TeamItem name="Team two" />
+      {teamCalculatedValues.length !== 0 &&
+        teams.map((team) => (
+          <TeamItem
+            key={team.id}
+            team={team}
+            teamCalculatedValues={teamCalculatedValues[team.id - 1]}
+          />
+        ))}
     </li>
 
     <li className={styles.mobileProperties__item}>
@@ -32,6 +42,20 @@ MobileProperties.propTypes = {
       state: PropTypes.string.isRequired,
       lastInspectionDate: PropTypes.number.isRequired,
       lastInspectionScore: PropTypes.number.isRequired
+    }).isRequired
+  ).isRequired,
+  teams: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      properties: PropTypes.arrayOf(PropTypes.number).isRequired,
+      propertyCount: PropTypes.number.isRequired
+    }).isRequired
+  ).isRequired,
+  teamCalculatedValues: PropTypes.arrayOf(
+    PropTypes.shape({
+      totalNumOfDeficientItems: PropTypes.number.isRequired,
+      totalNumOfFollowUpActionsForDeficientItems: PropTypes.number.isRequired,
+      totalNumOfRequiredActionsForDeficientItems: PropTypes.number.isRequired
     }).isRequired
   ).isRequired
 };

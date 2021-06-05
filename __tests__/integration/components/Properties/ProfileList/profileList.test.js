@@ -1,6 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
-import propertiesMock from '../../../../../__mocks__/propertiesMock.json';
+import propertiesMock from '.../../../../../__mocks__/PropertiesPage/propertiesMock.json';
 import { ProfileList } from '../../../../../components/Properties/ProfileList';
 
 describe('ProfileList component', () => {
