@@ -1,0 +1,50 @@
+@import '../../styles/index.scss';
+
+.teamValues {
+  padding: 0;
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  list-style: none;
+  color: $black;
+
+  > li {
+    margin: 0 rem-calc(5) 0 rem-calc(5);
+    padding: rem-calc(2) rem-calc(5) 0;
+    border-radius: $global-radius;
+    background-color: $alert-secondary-color;
+    line-height: rem-calc(16);
+    font-size: $medium-font-size;
+    font-weight: 600;
+    color: $white;
+
+    &:first-child {
+      margin-left: 0;
+      background-color: $black;
+    }
+
+    &:last-child {
+      margin-right: 0;
+      background-color: $quaternary-color;
+    }
+  }
+
+  &--narrow {
+    text-decoration: underline;
+    text-decoration-color: $primary-dark-color;
+
+    &:hover {
+      text-decoration-color: $black;
+    }
+
+    > li {
+      &:first-child {
+        margin: 0;
+      }
+
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+}

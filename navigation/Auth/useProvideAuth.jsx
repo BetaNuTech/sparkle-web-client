@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
-import { firebase } from '../../utils/connectFirebase';
-import { AuthApi } from '../../services/api/AuthApi';
+import { firebase } from '../../common/utils/connectFirebase';
 
 const formatUser = async (user) => {
   const token = await user.getIdToken();
@@ -21,11 +20,7 @@ export function useProvideAuth() {
   const handleUser = async (rawUser) => {
     if (rawUser) {
       const formattedUser = await formatUser(rawUser);
-      const { token, ...userWithoutToken } = formattedUser;
-
-      AuthApi.createUser(formattedUser.uid, userWithoutToken);
       setUser(formattedUser);
-
       setLoadingStatus(false);
       return formattedUser;
     }
@@ -38,12 +33,13 @@ export function useProvideAuth() {
 
   const signInWithEmail = async ({ email, password }) => {
     setLoadingStatus(true);
+
     return firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((response) => {
         handleUser(response.user);
-        Router.push('/profile');
+        Router.push('/properties');
       })
       .catch((error) => {
         // eslint-disable-next-line no-console
@@ -66,7 +62,6 @@ export function useProvideAuth() {
 
   useEffect(() => {
     const unsubscribe = firebase.auth().onIdTokenChanged(handleUser);
-
     return () => unsubscribe();
   }, []);
 
