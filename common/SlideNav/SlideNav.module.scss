@@ -1,0 +1,117 @@
+@import '../../styles/index.scss';
+
+.slideNav {
+  height: 100vh;
+  width: $sliderNavWidth;
+  overflow: hidden;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='58' height='156'%3E%3Cg clip-path='url(%23a)'%3E%3CclipPath id='a'%3E%3Cpath d='M0 77.4h59.1v79.45H0z'/%3E%3C/clipPath%3E%3Cpath fill='%23306991' d='M60.67 113.79V71.94h.08v41.76l-.08.09zm-44.15 48.88l-2.17-.82 14.68-29.34 5.31 10.43-17.82 19.73zm0 0'/%3E%3Cpath fill='%23164872' d='M40.75 171.86l-24.23-9.19 17.82-19.73 13.21 25.95-6.8 2.97zm20 14.03h-.08v-72.1l.08-.09v72.19zm0 0'/%3E%3Cpath fill='%2310406B' d='M10.72 169.1l3.63-7.25 2.17.82-5.8 6.43zm-12.04 13.33V155.9v5.62-2.65 23.56zm0 0'/%3E%3Cpath fill='%23164872' d='M14.35 161.85l-14.79-5.61 16.45-49.31 13.02 25.58-14.68 29.34zm0 0'/%3E%3Cpath fill='%230C2F59' d='M-1.32 182.44v-23.57l.88-2.63 14.79 5.61-3.63 7.25-12.04 13.34zm.88-26.2l-.88-.34V72.87l17.33 34.06-16.45 49.31zm0 0'/%3E%3Cpath fill='%231B4E79' d='M-1.32 72.87v-.93.93zm61.9 41.01V71.94h.09v41.85l-.09.09zm-26.24 29.06l-5.31-10.43 14.14-28.26L51 124.5l-16.66 18.44zm0 0'/%3E%3Cpath fill='%23113964' d='M60.67 185.89h-.47l-.08-22.49-12.57 5.49-13.21-25.95L51 124.5l9.58 24.8v11.78-47.2l.09-.09v72.1zm-31.64-53.38l-13.02-25.58 11.53-34.56-28.86-.2v-.23h32l12.49 32.3-14.14 28.27zm0 0'/%3E%3Cpath fill='%230B264F' d='M16.01 106.93L-1.32 72.87v-.7l28.86.2-11.53 34.56zm0 0'/%3E%3Cpath fill='%230F3660' d='M51 124.5l-7.83-20.26 16.17-32.3h1.24v41.94L51 124.5zm0 0'/%3E%3Cpath fill='%230C2951' d='M60.58 149.3L51 124.5l9.58-10.62v35.42zm-17.41-45.05L30.68 71.93l28.66.01-16.17 32.31zm0 0'/%3E%3C/g%3E%3Cg clip-path='url(%23b)'%3E%3CclipPath id='b'%3E%3Cpath d='M0 0h59.1v77.45H0z'/%3E%3C/clipPath%3E%3Cpath fill='%23306991' d='M60.67 41.96l.08.09v40.71h-.08v-40.8zM16.52-5.69l17.82 19.23-5.31 10.17-14.68-28.6 2.17-.8zm0 0'/%3E%3Cpath fill='%23164872' d='M40.75-14.65l6.8 2.89-13.21 25.3L16.52-5.69l24.23-8.96zm20-13.68v70.38l-.08-.09v-70.29h.08zm0 0'/%3E%3Cpath fill='%2310406B' d='M10.72-11.96l5.8 6.27-2.17.8-3.63-7.07zm-12.04-13v22.98-2.59V.91v-25.87zm0 0'/%3E%3Cpath fill='%23164872' d='M14.35-4.89L-.44.58l16.45 48.07 13.02-24.94-14.68-28.6zm0 0'/%3E%3Cpath fill='%230C2F59' d='M-1.32-24.96v22.98L-.44.58l14.79-5.47-3.63-7.07-12.04-13zM-.44.58l-.88.33v80.94l17.33-33.2L-.44.58zm0 0'/%3E%3Cpath fill='%231B4E79' d='M-1.32 81.85v.91-.91zm61.9-39.98l.09.09v40.8h-.09V41.87zM34.34 13.54L51 31.52l-7.83 19.74-14.14-27.55 5.31-10.17zm0 0'/%3E%3Cpath fill='%23113964' d='M60.67-28.33h-.47L60.12-6.4l-12.57-5.36-13.21 25.3L51 31.52l9.58-24.18V-4.14v46.01l.09.09v-70.29zM29.03 23.71L16.01 48.65l11.53 33.68-28.86.2v.23h32l12.49-31.5-14.14-27.55zm0 0'/%3E%3Cpath fill='%230B264F' d='M16.01 48.65l-17.33 33.2v.68l28.86-.2-11.53-33.68zm0 0'/%3E%3Cpath fill='%230F3660' d='M51 31.52l-7.83 19.74 16.17 31.5h1.24V41.87L51 31.52zm0 0'/%3E%3Cpath fill='%230C2951' d='M60.58 7.34L51 31.52l9.58 10.35V7.34zM43.17 51.26l-12.49 31.5h28.66l-16.17-31.5zm0 0'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 103% 100%; // fixes gap on right
+  background-position: rem-calc(-4);
+
+  // Change the background on a staging version
+  &--isStaging {
+    background-image: url('../../public/img/background_assets/off-canvas-background\ \(staging\).svg');
+  }
+
+  // Change the background on a offline version
+  &--isOffline {
+    background-image: url("data:image/svg+xml,%3Csvg width='63' height='164' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='nonzero' fill='none'%3E%3Cpath fill='%233E3E3E' d='M24.765 164l11.633-12.576-5.319-10.2-11.592 22.777z'/%3E%3Cpath fill='%232E2E2E' d='M42.96 164l-6.562-12.576-11.633 12.577zM1.72 164l8.08-23.683 8.238-24.106 13.041 25.013-11.592 22.777z'/%3E%3Cpath fill='%23232323' d='M.68 164V82.914l17.358 33.298-16.312 47.79z'/%3E%3Cpath fill='%232E2E2E' d='M36.398 151.424l16.687-18.033-7.843-19.798-14.163 27.631z'/%3E%3Cpath d='M42.96 164l-6.562-12.576 16.687-18.033 9.595 24.252V164H42.96zm-11.881-22.776l-13.041-25.013 11.682-34.21h3.012l12.51 31.592-14.163 27.631z' fill='%23232323'/%3E%3Cpath fill='%23181818' d='M18.038 116.211L.68 82.913v-.912h29.04z'/%3E%3Cpath fill='%23232323' d='M53.085 133.391l-7.843-19.798 16.196-31.592h1.242v41.01z'/%3E%3Cpath d='M62.68 157.643l-9.595-24.252 9.595-10.38v34.632zM32.732 82h28.706l-16.196 31.592-12.51-31.592z' fill='%23181818'/%3E%3Cg%3E%3Cpath fill='%233E3E3E' d='M24.765 0l11.633 12.577-5.319 10.2L19.487 0z'/%3E%3Cpath fill='%232E2E2E' d='M42.96 0l-6.562 12.577L24.765 0zM1.72 0L9.8 23.685l8.238 24.106 13.041-25.013L19.487 0z'/%3E%3Cpath fill='%23232323' d='M.68 0v81.088L18.038 47.79 1.726 0z'/%3E%3Cpath fill='%232E2E2E' d='M36.398 12.577L53.085 30.61l-7.843 19.798-14.163-27.631z'/%3E%3Cpath d='M42.96 0l-6.562 12.577L53.085 30.61 62.68 6.359V0H42.96zM31.079 22.778L18.038 47.79 29.72 82h3.012l12.51-31.592-14.163-27.631z' fill='%23232323'/%3E%3Cpath fill='%23181818' d='M18.038 47.79L.68 81.088V82h29.04z'/%3E%3Cpath fill='%23232323' d='M53.085 30.61l-7.843 19.798L61.438 82h1.242V40.99z'/%3E%3Cpath d='M62.68 6.359l-9.595 24.25L62.68 40.99V6.36zM32.732 82h28.706L45.242 50.408 32.732 82z' fill='%23181818'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  &__wrapper {
+    height: inherit;
+    width: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &-header {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &__closeButton {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: rem-calc(16);
+      margin-right: rem-calc(8);
+      cursor: pointer;
+
+      img {
+        max-width: rem-calc(20);
+        max-height: rem-clc(20);
+      }
+    }
+
+    &__logo {
+      margin: rem-calc(12) 0 rem-calc(32) rem-calc(16);
+    }
+  }
+
+  &-links {
+    margin-left: rem-calc(16);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+    line-height: rem-calc(28);
+    font-size: rem-calc(18);
+    font-weight: bold;
+    color: $white;
+    word-break: break-all;
+
+    &__link {
+      overflow: hidden;
+      margin-bottom: rem-calc(11.2);
+
+      // Navigation links
+      a {
+        white-space: nowrap;
+        color: $white;
+        text-decoration: none;
+      }
+
+      // Sign Out button
+      div {
+        white-space: nowrap;
+      }
+    }
+  }
+
+  &-footer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    overflow: hidden;
+
+    &__logo {
+      height: rem-calc(30);
+      width: rem-calc(155);
+      margin: rem-calc(32) 0 rem-calc(11.2) rem-calc(50);
+    }
+
+    &__version {
+      align-self: center;
+      margin-bottom: rem-calc(8);
+      line-height: rem-calc(19);
+      font-size: rem-calc(12);
+      color: $gray-light;
+    }
+  }
+}
+
+@include media-query(desktop) {
+  .slideNav {
+    &-header {
+      &__closeButton {
+        display: none;
+      }
+
+      &__logo {
+        margin-top: rem-calc(48);
+      }
+    }
+  }
+}

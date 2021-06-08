@@ -1,0 +1,23 @@
+@import '../../../styles/index.scss';
+
+.sidebar {
+  border: rem-calc(1) solid $gray-lighter;
+  background-color: $gray;
+
+  &__heading {
+    margin: 0;
+    padding: $global-lg-padding $global-padding;
+    line-height: rem-calc(19);
+    font-size: $medium-font-size;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    color: $gray-dark;
+  }
+
+  &__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}

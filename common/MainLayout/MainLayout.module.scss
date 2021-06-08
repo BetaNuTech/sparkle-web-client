@@ -1,0 +1,30 @@
+@import '../../styles/index.scss';
+
+.wrapper {
+	display: flex;
+	width: calc(100vw + #{$sliderNavWidth});
+	transform: translateX(#{-1 * $sliderNavWidth});
+	overflow: hidden;
+	transition: 0.25s transform linear;
+
+	// Reveal slider nav on open
+	&--open {
+		transform: translateX(0);
+	}
+
+	// Always reveal slider nav
+	@include media-query(desktop) {
+		transform: translateX(0);
+	}
+}
+
+.mainSide {
+	width: 100vw;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+
+	@include media-query(desktop) {
+		width: calc(100vw - #{$sliderNavWidth});
+	}
+}

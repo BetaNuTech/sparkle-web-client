@@ -1,11 +1,11 @@
 import React from 'react';
-import { DefaultLayout } from '../../components/layouts/default';
-import { Properties } from '../../components/Properties';
+import { MainLayout } from '../../common/MainLayout';
+import { Properties } from '../../features/Properties';
 
 export default function PropertiesPage() {
   return (
-    <DefaultLayout>
+    <MainLayout>
       <Properties />
-    </DefaultLayout>
+    </MainLayout>
   );
 }
