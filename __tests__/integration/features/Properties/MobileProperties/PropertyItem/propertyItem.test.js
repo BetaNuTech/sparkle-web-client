@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallow } from 'enzyme';
 import propertyMock from '../../../../../../__mocks__/PropertiesPage/propertyMock.json';
 import { PropertyItem } from '../../../../../../features/Properties/MobileProperties/PropertyItem';

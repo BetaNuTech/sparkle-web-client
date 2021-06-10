@@ -1,12 +1,12 @@
 import { shallow } from 'enzyme';
-import { SwipeReveal } from '../../../../../../features/Properties/MobileProperties/SwipeReveal';
+import DeleteConfirmModal from './index';
 
-describe('SwipeRevealcomponent', () => {
+describe('DeleteConfirmModal component', () => {
   describe('rendering', () => {
     let wrapper;
 
     beforeEach(() => {
-      wrapper = shallow(<SwipeReveal />);
+      wrapper = shallow(<DeleteConfirmModal />);
     });
 
     it('renders correctly', () => {

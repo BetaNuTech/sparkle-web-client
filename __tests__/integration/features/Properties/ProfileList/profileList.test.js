@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallow } from 'enzyme';
 import propertiesMock from '.../../../../../__mocks__/PropertiesPage/propertiesMock.json';
 import { ProfileList } from '../../../../../features/Properties/ProfileList';

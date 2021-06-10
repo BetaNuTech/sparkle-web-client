@@ -14,8 +14,8 @@ export const PropertyItem = ({ property }) => {
   useSwipeReveal(ref, setIsSwipeOpen);
 
   const onDeleteProperty = () => {
-    //On click of delete property action
-    //This is handled in common DeleteConfirmModal component
+    // On click of delete property action
+    // This is handled in common DeleteConfirmModal component
     const event = new Event('propertyDeleteConfirm');
     document.dispatchEvent(event);
   };

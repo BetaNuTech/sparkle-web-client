@@ -1,6 +1,6 @@
 module.exports = {
   collectCoverageFrom: [
-    '**/*.{js,jsx}',
+    '**/*.{js,jsx,ts,tsx}',
     '!**/node_modules/**',
     '!**/tests/**',
     '!**/coverage/**',
@@ -28,6 +28,7 @@ module.exports = {
     '/coverage/'
   ],
   transform: {
-    '^.+\\.jsx?$': 'babel-jest'
-  }
+    '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.(ts|tsx)$': 'babel-jest',
+  },
 };
