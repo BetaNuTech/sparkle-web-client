@@ -5,6 +5,7 @@ import { store } from '../app/store';
 import { ProvideAuth } from '../navigation/Auth/AuthProvider';
 import { PrivateRoute } from '../navigation/Auth/PrivateRoute';
 import { NextHeader } from '../common/NextHeader';
+import sendErrorReport from '../services/api/errorReports';
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -17,6 +18,17 @@ function MyApp({ Component, pageProps }) {
       </ProvideAuth>
     </Provider>
   );
+}
+
+// Global unhandled error reporting
+if (typeof window !== 'undefined') {
+  window.onunhandledrejection = (err) => {
+    try {
+      sendErrorReport(Error(`Unhandled Error: ${err}`));
+    } catch (e) {
+      // ignore further errors
+    }
+  };
 }
 
 export default MyApp;

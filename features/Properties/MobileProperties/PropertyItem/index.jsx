@@ -13,6 +13,13 @@ export const PropertyItem = ({ property }) => {
   const ref = useRef(null);
   useSwipeReveal(ref, setIsSwipeOpen);
 
+  const onDeleteProperty = () => {
+    //On click of delete property action
+    //This is handled in common DeleteConfirmModal component
+    const event = new Event('propertyDeleteConfirm');
+    document.dispatchEvent(event);
+  };
+
   return (
     <div ref={ref} className={styles.propertyItem}>
       {/* Main Content */}
@@ -84,7 +91,7 @@ export const PropertyItem = ({ property }) => {
         </div>
       </div>
 
-      <SwipeReveal />
+      <SwipeReveal onDelete={onDeleteProperty} />
     </div>
   );
 };
