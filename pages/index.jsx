@@ -1,12 +1,12 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { PropertiesApi } from '../services/firestore/PropertiesApi';
 import { useAuth } from '../navigation/Auth/AuthProvider';
 
 export default function Home() {
-  const [properties, setProperties] = React.useState([]);
+  const [properties, setProperties] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     PropertiesApi.getMe().then((data) => {
       setProperties(data);
     });

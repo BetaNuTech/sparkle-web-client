@@ -1,4 +1,3 @@
-import React from 'react';
 import Link from 'next/link';
 import { shallow } from 'enzyme';
 import { Dropdown } from '../../../../../common/Dropdown';

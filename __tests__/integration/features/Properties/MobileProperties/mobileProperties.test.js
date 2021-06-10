@@ -1,4 +1,3 @@
-import React from 'react';
 import { shallow } from 'enzyme';
 import teamsMock from '../../../../../__mocks__/PropertiesPage/teamsMock.json';
 import propertiesMock from '../../../../../__mocks__/PropertiesPage/propertiesMock.json';
