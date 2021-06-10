@@ -61,7 +61,6 @@
     "react/react-in-jsx-scope": "off",
     "react/jsx-props-no-spreading": "off",
     "react/prop-types": "off",
-    "react/jsx-filename-extension": [1, { "allow": "as-needed" }],
     "jsx-a11y/anchor-is-valid": [
       "error",
       {
