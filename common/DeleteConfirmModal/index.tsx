@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
 import clsx from 'clsx';
 import styles from './DeleteConfirmModal.module.scss';
 import WarningIcon from '../Icons/warning';
@@ -15,28 +15,40 @@ type Model = {
 const DeleteConfirmModal: FunctionComponent<Model> = ({ title, message }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  /* eslint-disable @typescript-eslint/no-empty-function */
-  document.removeEventListener('propertyDeleteConfirm', () => {});
-  /* eslint-enable */
-  document.addEventListener(
-    'propertyDeleteConfirm',
-    () => {
-      setIsModalVisible(true);
-    },
-    false
-  );
+  const listenerCallback = () => {
+    setIsModalVisible(true);
+  };
+
+  const onCancelClick = () => {
+    /**
+     * Hide modal
+     *
+     * This will be called on either cancel, back-drop click or click of delete confirmation
+     */
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {
+    /** We we are use effect because listener were getting attached multiple times */
+    document.removeEventListener('deleteConfirm', listenerCallback);
+    document.addEventListener('deleteConfirm', listenerCallback, false);
+    return () => {
+      /** For any cleanup on unmounting component */
+    };
+  }, []);
 
   const onDeleteClick = () => {
-    setIsModalVisible(false);
+    /** Hide modal */
+    onCancelClick();
     setTimeout(() => {
-      console.warn('On delete called'); // eslint-disable-line no-console
+      /** TODO: Call a callback function which needs to be called once delete is confirmed */
     }, 50);
   };
 
   return (
     <div
       className={clsx(isModalVisible ? styles.modalV2Overlay : '')}
-      onClick={() => setIsModalVisible(false)}
+      onClick={onCancelClick}
     >
       <div
         className={clsx(
@@ -45,6 +57,7 @@ const DeleteConfirmModal: FunctionComponent<Model> = ({ title, message }) => {
           styles['-prompt'],
           styles['ember-view']
         )}
+        style={{ top: window.scrollY + 50 }}
       >
         <header className={styles.modal__header}>
           <WarningIcon width="50" height="50" fill="#fed933" />
@@ -60,7 +73,7 @@ const DeleteConfirmModal: FunctionComponent<Model> = ({ title, message }) => {
             <button
               className={clsx(styles.button, styles.gray)}
               data-modal="close"
-              onClick={() => setIsModalVisible(false)}
+              onClick={onCancelClick}
             >
               CANCEL
             </button>

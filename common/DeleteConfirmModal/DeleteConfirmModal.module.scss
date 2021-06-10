@@ -11,7 +11,7 @@
   overflow: visible;
 
   // Center horizontally/vertically
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -50,9 +50,9 @@
   // Header
   &__header {
     flex: 0 1 auto;
-    border-bottom: 1px solid $gray-lighter;
     margin-left: $global-lg-padding;
     margin-right: $global-lg-padding;
+    border-bottom: 1px solid $gray-lighter;
 
     &.-noBorder {
       border-width: 0;
@@ -185,7 +185,7 @@
         border-radius: rem-calc(3);
         color: #363636;
 
-        &.alert{
+        &.alert {
           background-color: $alert-color;
           color: $white;
         }
@@ -199,7 +199,7 @@
   }
 }
 
-.modalV2Overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -242,7 +242,6 @@
     margin: 0 $global-padding;
     align-items: center;
     border-bottom-width: 0;
-    margin-top: $global-padding;
   }
 
   .modal__heading {
