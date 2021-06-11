@@ -1,23 +1,28 @@
 import clsx from 'clsx';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import styles from './MainLayout.module.scss';
 import { SlideNav } from '../SlideNav';
 import { useNavigatorOnline } from '../utils/getOnlineStatus';
 
+const isStaging = process.env.NEXT_PUBLIC_STAGING === 'true';
+
 export const MainLayout = ({ children }) => {
-  // TODO share start
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isOnline = useNavigatorOnline();
 
-  const handleClickOpenNav = () => {
-    setIsNavOpen(!isNavOpen);
-  };
+  // Open & close slide navigation
+  const toggleNavOpen = () => setIsNavOpen(!isNavOpen);
 
-  const appMode = (() => {
-    if (!isOnline) return '--isOffline';
-    if (process.env.NEXT_PUBLIC_STAGING === 'true') return '--isStaging';
-    return '';
-  })();
+  // Expose main layout
+  // values to children
+  const childrenWithProps = React.Children.map(children, (child) =>
+    React.cloneElement(child, {
+      isNavOpen,
+      toggleNavOpen,
+      isOnline,
+      isStaging
+    })
+  );
 
   return (
     <div
@@ -29,10 +34,11 @@ export const MainLayout = ({ children }) => {
     >
       <SlideNav
         isNavOpen={isNavOpen}
-        handleClickOpenNav={handleClickOpenNav}
-        appMode={appMode}
+        isOnline={isOnline}
+        isStaging={isStaging}
+        toggleNavOpen={toggleNavOpen}
       />
-      <main className={styles.mainSide}>{children}</main>
+      <main className={styles.mainSide}>{childrenWithProps}</main>
     </div>
   );
 };

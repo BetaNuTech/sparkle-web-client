@@ -1,13 +1,16 @@
+import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { calculateTeamValues } from '../../common/utils/calculateTeamValues';
 import {
+  sorts,
   activePropertiesSortFilter,
   sortProperties
 } from '../../common/utils/propertiesSorting';
 import {
   fetchDataOfProperties,
-  setDataOfProperties
+  setDataOfProperties,
+  setActiveSortOfProperties
 } from '../../app/ducks/properties/actionCreators';
 import {
   selectActiveSortOfProperties,
@@ -22,14 +25,20 @@ import { ProfileList } from './ProfileList';
 import { MobileHeader } from './MobileHeader';
 import { MobileProperties } from './MobileProperties';
 
-export const Properties = () => {
+export const Properties = ({
+  isOnline,
+  isStaging,
+  isNavOpen,
+  toggleNavOpen
+}) => {
   const dispatch = useDispatch();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
   const activeSort = useSelector(selectActiveSortOfProperties);
+  const activeSortDir = { ...activeSort };
   const properties = useSelector(selectItemsOfProperties);
   const teams = useSelector(selectItemsOfTeams);
 
-  // We fetch data only if store with properties is empty.
+  // Fetch data only if store with properties is empty.
   // When we switch the page with full store, it doesn't fetch.
   useEffect(() => {
     dispatch(fetchDataOfTeams());
@@ -39,12 +48,12 @@ export const Properties = () => {
     }
   }, []);
 
-  // We recalculate properties when properties or teams changes.
+  // Recalculate properties when properties or teams changes.
   useEffect(() => {
     setTeamCalculatedValues(calculateTeamValues(teams, properties));
   }, [properties, teams]);
 
-  // We sort  properties when activeSort changes.
+  // Sort properties active sort and direction
   useEffect(() => {
     dispatch(
       setDataOfProperties(
@@ -55,13 +64,49 @@ export const Properties = () => {
     );
   }, [activeSort]);
 
+  // Loop through property
+  // sorting options
+  const nextPropertiesSort = () => {
+    const activeFilter =
+      sorts[sorts.indexOf(activeSort.sortBy) + 1] || sorts[0]; // Get next or first
+
+    // Update Property Filter
+    dispatch(
+      setActiveSortOfProperties({
+        ...activeSort,
+        sortBy: activeFilter
+      })
+    );
+  };
+
+  // Set sort attribute & direction
+  const onSortChange = (key) => (event) => {
+    const {
+      target: { value }
+    } = event;
+
+    if (key === 'orderBy') {
+      // Update orderBy filter
+      if (activeSortDir[key] === 'asc') activeSortDir[key] = 'desc';
+      else if (activeSortDir[key] === 'desc') activeSortDir[key] = 'asc';
+    } else {
+      // Update sortBy filter
+      activeSortDir[key] = value;
+    }
+
+    // Update Property Filter
+    dispatch(setActiveSortOfProperties(activeSortDir));
+  };
+
   return (
     <>
       <MobileHeader
         title="Properties"
-        // isNavOpen={isNavOpen}
-        // handleClickOpenNav={handleClickOpenNav}
-        // appMode={appMode}
+        isNavOpen={isNavOpen}
+        toggleNavOpen={toggleNavOpen}
+        nextPropertiesSort={nextPropertiesSort}
+        isOnline={isOnline}
+        isStaging={isStaging}
       />
 
       <div className={styles.properties__sortInfoLine}>
@@ -69,9 +114,7 @@ export const Properties = () => {
       </div>
 
       <div className={styles.properties__wrapper}>
-        <header>
-          <Header activeSort={activeSort} properties={properties} />
-        </header>
+        <Header activeSort={activeSort} onSortChange={onSortChange} />
 
         <div className={styles.properties__main}>
           <ProfileList activeSort={activeSort} properties={properties} />
@@ -91,4 +134,18 @@ export const Properties = () => {
       </div>
     </>
   );
+};
+
+Properties.propTypes = {
+  isOnline: PropTypes.bool,
+  isStaging: PropTypes.bool,
+  isNavOpen: PropTypes.bool,
+  toggleNavOpen: PropTypes.func
+};
+
+Properties.defaultProps = {
+  isOnline: false,
+  isStaging: false,
+  isNavOpen: false,
+  toggleNavOpen: () => {}
 };
