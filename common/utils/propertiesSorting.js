@@ -1,5 +1,5 @@
-// Selectable inspection filters
-export const filters = [
+// Selectable inspection sorts
+export const sorts = [
   'name',
   'city',
   'state',
@@ -7,30 +7,46 @@ export const filters = [
   'lastInspectionScore'
 ];
 
+// User friendly names
+const sortNames = {
+  lastInspectionDate: 'Last Entry Date',
+  lastInspectionScore: 'Last Entry Score'
+};
+
 // Custom sort for filter + direction
-export const sortProperties = (key, orderBy) => (a, b) => {
-  if (orderBy === 'asc') {
-    if (a[key] > b[key]) return 1;
-    if (b[key] > a[key]) return -1;
+export const sortProperties = (key, sortDir) => (a, b) => {
+  const aValue = a[key];
+  const bValue = b[key];
+  const isString = typeof aValue === 'string';
+
+  if (sortDir === 'asc' && isString) {
+    return aValue.localeCompare(bValue);
+  }
+
+  if (sortDir === 'asc') {
+    if (aValue > bValue) return 1;
+    if (bValue > aValue) return -1;
     return 0;
   }
 
-  if (a[key] > b[key]) return -1;
-  if (b[key] > a[key]) return 1;
+  // Descending logic
+
+  if (isString) {
+    return bValue.localeCompare(aValue);
+  }
+
+  if (aValue > bValue) return -1;
+  if (bValue > aValue) return 1;
   return 0;
 };
 
 // User facing name of filter
-export function activePropertiesSortFilter(activeFilter) {
-  if (activeFilter === 'lastInspectionDate') {
-    return 'Last Entry Date';
-  }
-  if (activeFilter === 'lastInspectionScore') {
-    return 'Last Entry Score';
-  }
-  // Decamelize & titlize
-  return activeFilter
-    .split(' ')
-    .map((s) => `${s.slice(0, 1).toUpperCase()}${s.slice(1).toLowerCase()}`)
-    .join(' ');
+export function activePropertiesSortFilter(activeSort) {
+  return (
+    sortNames[activeSort] ||
+    activeSort
+      .split(' ')
+      .map((s) => `${s.slice(0, 1).toUpperCase()}${s.slice(1).toLowerCase()}`)
+      .join(' ')
+  );
 }
