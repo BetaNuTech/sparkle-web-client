@@ -4,7 +4,7 @@ import styles from './Header.module.scss';
 import { Dropdown } from '../../../common/Dropdown';
 import AddIcon from '../../../public/icons/ios/add.svg';
 
-export const Header = ({ activeSort, onSortChange }) => (
+export const Header = ({ sortBy, sortDir, onSortChange }) => (
   <header className={styles.header}>
     {/* Title And Create Button */}
     <h1 className={styles.header__title}>Properties</h1>
@@ -27,13 +27,16 @@ export const Header = ({ activeSort, onSortChange }) => (
 
       {/* Sort By, Selector */}
       <div className={styles['header-item']}>
-        <label htmlFor="sort" className={styles['header-item__label']}>
+        <label
+          htmlFor="properties-sort-by"
+          className={styles['header-item__label']}
+        >
           Sort by:
         </label>
 
         <select
-          id="sort"
-          value={activeSort.sortBy}
+          id="properties-sort-by"
+          value={sortBy}
           onChange={onSortChange('sortBy')}
           className={styles['header-item__menu']}
         >
@@ -49,10 +52,10 @@ export const Header = ({ activeSort, onSortChange }) => (
       <div className={styles['header-item']}>
         <button
           aria-label="Change the sort direction"
-          onClick={onSortChange('orderBy')}
+          onClick={onSortChange('sortDir')}
           className={clsx(
             styles['header-item__sortDirButton'],
-            styles[`-${activeSort.orderBy}`]
+            styles[`-${sortDir}`]
           )}
         />
       </div>
@@ -61,8 +64,6 @@ export const Header = ({ activeSort, onSortChange }) => (
 );
 
 Header.propTypes = {
-  activeSort: PropTypes.shape({
-    sortBy: PropTypes.string.isRequired,
-    orderBy: PropTypes.string.isRequired
-  }).isRequired
+  sortBy: PropTypes.string.isRequired,
+  sortDir: PropTypes.string.isRequired
 };

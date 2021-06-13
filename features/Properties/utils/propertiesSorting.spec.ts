@@ -7,6 +7,7 @@ import {
 
 type Property = {
   name?: string;
+  city?: string;
   lastInspectionDate?: number;
 };
 
@@ -33,6 +34,20 @@ describe('Spec | Common | Utils | Properties Sorting', () => {
     const properties = [{ name: 'Zzz' }, { name: 'aAa' }, { name: 'BbB' }];
     const result = properties.sort(sortProperties('name', 'desc'));
     const actual = toCompare(result);
+    expect(actual).toEqual(expected);
+  });
+
+  test('it sorts property cities in ascending order', () => {
+    const expected = 'acapuco | bermuda | cape cod | washington dc | zanzibar';
+    const properties = [
+      { city: 'Bermuda' },
+      { city: 'Acapuco' },
+      { city: 'Zanzibar' },
+      { city: 'Cape Cod' },
+      { city: 'Washington DC' }
+    ];
+    const result = properties.sort(sortProperties('city', 'asc'));
+    const actual = toCompare(result, 'city');
     expect(actual).toEqual(expected);
   });
 

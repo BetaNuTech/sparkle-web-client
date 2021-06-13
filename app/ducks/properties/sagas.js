@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { PropertiesApi } from '../../../services/firestore/PropertiesApi';
+import { PropertiesApi } from '../../../common/services/firestore/PropertiesApi';
 import {
   setDataOfProperties,
   setLoadingStatusOfProperties

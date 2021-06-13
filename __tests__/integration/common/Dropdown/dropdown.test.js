@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { shallow } from 'enzyme';
-import { Dropdown } from '../../../../../common/Dropdown';
+import { Dropdown } from '../../../../common/Dropdown';
 
 describe('Dropdown component', () => {
   describe('rendering', () => {

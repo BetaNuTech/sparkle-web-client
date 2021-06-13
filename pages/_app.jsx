@@ -4,7 +4,7 @@ import { store } from '../app/store';
 import { ProvideAuth } from '../navigation/Auth/AuthProvider';
 import { PrivateRoute } from '../navigation/Auth/PrivateRoute';
 import { NextHeader } from '../common/NextHeader';
-import sendErrorReport from '../services/api/errorReports';
+import sendErrorReport from '../common/services/api/errorReports';
 
 function MyApp({ Component, pageProps }) {
   return (

@@ -1,5 +1,5 @@
 import { call, put, takeLatest } from 'redux-saga/effects';
-import { TeamsApi } from '../../../services/firestore/TeamsApi';
+import { TeamsApi } from '../../../common/services/firestore/TeamsApi';
 import { setDataOfTeams, setLoadingStatusOfTeams } from './actionCreators';
 
 export function* fetchDataOfTeamsRequest() {

@@ -1,23 +1,16 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { calculateTeamValues } from '../../common/utils/calculateTeamValues';
 import {
   sorts,
   activePropertiesSortFilter,
   sortProperties
-} from '../../common/utils/propertiesSorting';
-import {
-  fetchDataOfProperties,
-  setDataOfProperties,
-  setActiveSortOfProperties
-} from '../../app/ducks/properties/actionCreators';
-import {
-  selectActiveSortOfProperties,
-  selectItemsOfProperties
-} from '../../app/ducks/properties/selectors';
+} from './utils/propertiesSorting';
+import { fetchDataOfProperties } from '../../app/ducks/properties/actionCreators';
+import { selectItemsOfProperties } from '../../app/ducks/properties/selectors';
 import { fetchDataOfTeams } from '../../app/ducks/teams/actionCreators';
 import { selectItemsOfTeams } from '../../app/ducks/teams/selectors';
+import { useSortBy, useSortDir } from './hooks/sorting';
 import styles from './Properties.module.scss';
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -25,17 +18,26 @@ import { ProfileList } from './ProfileList';
 import { MobileHeader } from './MobileHeader';
 import { MobileProperties } from './MobileProperties';
 
-export const Properties = ({
+type PropertiesModel = {
+  isOnline?: boolean;
+  isStaging?: boolean;
+  isNavOpen?: boolean;
+  toggleNavOpen?(): void;
+};
+
+const Properties: FunctionComponent<PropertiesModel> = ({
   isOnline,
   isStaging,
-  isNavOpen,
   toggleNavOpen
 }) => {
   const dispatch = useDispatch();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
-  const activeSort = useSelector(selectActiveSortOfProperties);
-  const activeSortDir = { ...activeSort };
+  const [sortBy, setSortBy] = useSortBy();
+  const [sortDir, setSortDir] = useSortDir();
   const properties = useSelector(selectItemsOfProperties);
+  const applyPropertiesSort = () =>
+    [...properties].sort(sortProperties(sortBy, sortDir));
+  const [sortedProperties, setSortedProperties] = useState([]);
   const teams = useSelector(selectItemsOfTeams);
 
   // Fetch data only if store with properties is empty.
@@ -51,73 +53,54 @@ export const Properties = ({
   // Recalculate properties when properties or teams changes.
   useEffect(() => {
     setTeamCalculatedValues(calculateTeamValues(teams, properties));
-  }, [properties, teams]);
-
-  // Sort properties active sort and direction
-  useEffect(() => {
-    dispatch(
-      setDataOfProperties(
-        [...properties].sort(
-          sortProperties(activeSort.sortBy, activeSort.orderBy)
-        )
-      )
-    );
-  }, [activeSort]);
+    setSortedProperties(applyPropertiesSort());
+  }, [properties, teams, sortBy, sortDir]);
 
   // Loop through property
   // sorting options
   const nextPropertiesSort = () => {
-    const activeFilter =
-      sorts[sorts.indexOf(activeSort.sortBy) + 1] || sorts[0]; // Get next or first
+    const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
 
-    // Update Property Filter
-    dispatch(
-      setActiveSortOfProperties({
-        ...activeSort,
-        sortBy: activeFilter
-      })
-    );
+    // Update Property sort
+    setSortBy(activeSortValue);
   };
 
   // Set sort attribute & direction
-  const onSortChange = (key) => (event) => {
+  const onSortChange = (key: string) => (evt: { target: HTMLInputElement }) => {
     const {
       target: { value }
-    } = event;
+    } = evt;
 
-    if (key === 'orderBy') {
-      // Update orderBy filter
-      if (activeSortDir[key] === 'asc') activeSortDir[key] = 'desc';
-      else if (activeSortDir[key] === 'desc') activeSortDir[key] = 'asc';
+    // Update sort direction
+    if (key === 'sortDir') {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     } else {
-      // Update sortBy filter
-      activeSortDir[key] = value;
+      setSortBy(value); // Update sort by
     }
-
-    // Update Property Filter
-    dispatch(setActiveSortOfProperties(activeSortDir));
   };
 
   return (
     <>
       <MobileHeader
         title="Properties"
-        isNavOpen={isNavOpen}
         toggleNavOpen={toggleNavOpen}
         nextPropertiesSort={nextPropertiesSort}
         isOnline={isOnline}
         isStaging={isStaging}
       />
 
-      <div className={styles.properties__sortInfoLine}>
-        {`Sorted by ${activePropertiesSortFilter(activeSort.sortBy)}`}
+      <div
+        className={styles.properties__sortInfoLine}
+        data-testid="properties-active-sort-by"
+      >
+        {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
       </div>
 
       <div className={styles.properties__wrapper}>
-        <Header activeSort={activeSort} onSortChange={onSortChange} />
+        <Header sortBy={sortBy} sortDir={sortDir} onSortChange={onSortChange} />
 
         <div className={styles.properties__main}>
-          <ProfileList activeSort={activeSort} properties={properties} />
+          <ProfileList properties={sortedProperties} />
         </div>
 
         <aside>
@@ -127,7 +110,7 @@ export const Properties = ({
 
       <div className={styles.properties__mobile}>
         <MobileProperties
-          properties={properties}
+          properties={sortedProperties}
           teams={teams}
           teamCalculatedValues={teamCalculatedValues}
         />
@@ -136,16 +119,11 @@ export const Properties = ({
   );
 };
 
-Properties.propTypes = {
-  isOnline: PropTypes.bool,
-  isStaging: PropTypes.bool,
-  isNavOpen: PropTypes.bool,
-  toggleNavOpen: PropTypes.func
-};
-
 Properties.defaultProps = {
   isOnline: false,
   isStaging: false,
   isNavOpen: false,
-  toggleNavOpen: () => {}
+  toggleNavOpen: () => {} // eslint-disable-line
 };
+
+export default Properties;

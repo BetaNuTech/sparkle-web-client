@@ -39,5 +39,13 @@ TeamItem.propTypes = {
     totalNumOfDeficientItems: PropTypes.number.isRequired,
     totalNumOfFollowUpActionsForDeficientItems: PropTypes.number.isRequired,
     totalNumOfRequiredActionsForDeficientItems: PropTypes.number.isRequired
-  }).isRequired
+  })
+};
+
+TeamItem.defaultProps = {
+  teamCalculatedValues: {
+    totalNumOfDeficientItems: 0,
+    totalNumOfFollowUpActionsForDeficientItems: 0,
+    totalNumOfRequiredActionsForDeficientItems: 0
+  }
 };

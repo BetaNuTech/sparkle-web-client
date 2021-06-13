@@ -1,8 +1,3 @@
-export const setActiveSortOfProperties = ({ sortBy, orderBy }) => ({
-  type: 'SET_ACTIVE_SORT_OF_PROPERTIES',
-  payload: { sortBy, orderBy }
-});
-
 export const fetchDataOfProperties = () => ({
   type: 'FETCH_DATA_OF_PROPERTIES'
 });

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PropertiesApi } from '../services/firestore/PropertiesApi';
+import { PropertiesApi } from '../common/services/firestore/PropertiesApi';
 import { useAuth } from '../navigation/Auth/AuthProvider';
 
 export default function Home() {

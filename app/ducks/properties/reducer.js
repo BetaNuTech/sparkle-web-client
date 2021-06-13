@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-const initialPropertiesState = {
+export const initialPropertiesState = {
   activeSort: {
     sortBy: 'name',
     orderBy: 'asc'
@@ -11,9 +11,6 @@ const initialPropertiesState = {
 
 export const propertiesReducer = produce((draft, action) => {
   switch (action.type) {
-    case 'SET_ACTIVE_SORT_OF_PROPERTIES':
-      draft.activeSort = action.payload;
-      break;
     case 'FETCH_DATA_OF_PROPERTIES':
       draft.items = [];
       draft.loadingStatusOfProperties = 'LOADING';

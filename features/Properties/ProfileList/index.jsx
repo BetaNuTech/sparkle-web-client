@@ -3,7 +3,7 @@ import styles from './ProfileList.module.scss';
 import { Item } from './Item';
 
 export const ProfileList = ({ properties }) => (
-  <ul className={styles.profileList}>
+  <ul className={styles.profileList} data-testid="properties-list">
     {properties.map((property) => (
       <Item key={property.id} property={property} />
     ))}
