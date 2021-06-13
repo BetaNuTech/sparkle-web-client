@@ -87,7 +87,8 @@
         "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
-        "react/jsx-filename-extension": [2, { "extensions": [".ts", ".tsx"] }]
+        "react/jsx-filename-extension": [2, { "extensions": [".ts", ".tsx"] }],
+        "@typescript-eslint/no-explicit-any": "off"
       }
     }
   ]

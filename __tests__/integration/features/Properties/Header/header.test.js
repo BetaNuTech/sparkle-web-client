@@ -13,10 +13,8 @@ describe('Header component', () => {
     beforeEach(() => {
       const props = {
         dispatch: jest.fn(),
-        activeSort: {
-          sortBy: 'name',
-          orderBy: 'asc'
-        }
+        sortBy: 'name',
+        sortDir: 'asc'
       };
       wrapper = shallow(
         <Provider store={store}>

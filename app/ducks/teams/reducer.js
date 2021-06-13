@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-const initialTeamsState = {
+export const initialTeamsState = {
   items: [],
   loadingStatusOfTeams: 'NEVER'
 };

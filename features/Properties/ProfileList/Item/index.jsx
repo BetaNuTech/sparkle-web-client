@@ -5,7 +5,11 @@ import styles from './Item.module.scss';
 import { TeamValues } from '../../../../common/TeamValues';
 
 export const Item = ({ property }) => (
-  <li className={styles.item}>
+  <li
+    className={styles.item}
+    data-testid="property-item"
+    data-property={property.id}
+  >
     <Link href="/properties">
       <a className={styles.item__wrapper}>
         {/* Profile Picture */}
@@ -17,10 +21,16 @@ export const Item = ({ property }) => (
         {/* Profile Description */}
         <div className={styles.item__main}>
           <header>
-            <h6 className={styles.item__heading}>{property.name}</h6>
-            <p className={styles.item__subHeading}>{property.city}</p>
+            <h6 className={styles.item__heading} data-testid="property-name">
+              {property.name}
+            </h6>
+            <p className={styles.item__subHeading} data-testid="property-city">
+              {property.city}
+            </p>
           </header>
-          <p className={styles.item__description}>{property.state}</p>
+          <p className={styles.item__description} data-testid="property-state">
+            {property.state}
+          </p>
         </div>
       </a>
     </Link>
