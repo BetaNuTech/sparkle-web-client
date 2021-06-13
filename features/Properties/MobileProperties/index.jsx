@@ -8,7 +8,7 @@ export const MobileProperties = ({
   teams,
   teamCalculatedValues
 }) => (
-  <ul className={styles.mobileProperties}>
+  <ul className={styles.mobileProperties} data-testid="mobile-properties-list">
     <li className={styles.mobileProperties__item}>
       <header>teams</header>
       {teamCalculatedValues.length !== 0 &&

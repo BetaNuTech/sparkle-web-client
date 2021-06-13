@@ -3,7 +3,7 @@ import styles from './Sidebar.module.scss';
 import { TeamItem } from './TeamItem';
 
 export const Sidebar = ({ teams, teamCalculatedValues }) => (
-  <nav className={styles.sidebar}>
+  <nav className={styles.sidebar} data-testid="properties-teams-sidebar">
     <h4 className={styles.sidebar__heading}>Teams</h4>
 
     <ul className={styles.sidebar__list}>

@@ -5,7 +5,7 @@ import { Dropdown } from '../../../common/Dropdown';
 import AddIcon from '../../../public/icons/ios/add.svg';
 
 export const Header = ({ sortBy, sortDir, onSortChange }) => (
-  <header className={styles.header}>
+  <header className={styles.header} data-testid="properties-header">
     {/* Title And Create Button */}
     <h1 className={styles.header__title}>Properties</h1>
 

@@ -1,5 +1,6 @@
 import { FunctionComponent, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useMediaQuery } from 'react-responsive';
 import { calculateTeamValues } from '../../common/utils/calculateTeamValues';
 import {
   sorts,
@@ -17,6 +18,7 @@ import { Sidebar } from './Sidebar';
 import { ProfileList } from './ProfileList';
 import { MobileHeader } from './MobileHeader';
 import { MobileProperties } from './MobileProperties';
+import breakpoints from '../../config/breakpoints';
 
 type PropertiesModel = {
   isOnline?: boolean;
@@ -40,6 +42,14 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const [sortedProperties, setSortedProperties] = useState([]);
   const teams = useSelector(selectItemsOfTeams);
 
+  // Responsive queries
+  const isMobileorTablet = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
+  const isDesktop = useMediaQuery({
+    minWidth: breakpoints.desktop.minWidth
+  });
+
   // Fetch data only if store with properties is empty.
   // When we switch the page with full store, it doesn't fetch.
   useEffect(() => {
@@ -54,7 +64,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   useEffect(() => {
     setTeamCalculatedValues(calculateTeamValues(teams, properties));
     setSortedProperties(applyPropertiesSort());
-  }, [properties, teams, sortBy, sortDir]);
+  }, [properties, teams, sortBy, sortDir, isMobileorTablet]);
 
   // Loop through property
   // sorting options
@@ -81,40 +91,54 @@ const Properties: FunctionComponent<PropertiesModel> = ({
 
   return (
     <>
-      <MobileHeader
-        title="Properties"
-        toggleNavOpen={toggleNavOpen}
-        nextPropertiesSort={nextPropertiesSort}
-        isOnline={isOnline}
-        isStaging={isStaging}
-      />
+      {isMobileorTablet && (
+        <>
+          <MobileHeader
+            title="Properties"
+            toggleNavOpen={toggleNavOpen}
+            nextPropertiesSort={nextPropertiesSort}
+            isOnline={isOnline}
+            isStaging={isStaging}
+          />
 
-      <div
-        className={styles.properties__sortInfoLine}
-        data-testid="properties-active-sort-by"
-      >
-        {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
-      </div>
+          <div
+            className={styles.properties__sortInfoLine}
+            data-testid="properties-active-sort-by"
+          >
+            {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
+          </div>
 
-      <div className={styles.properties__wrapper}>
-        <Header sortBy={sortBy} sortDir={sortDir} onSortChange={onSortChange} />
+          <div className={styles.properties__mobile}>
+            <MobileProperties
+              properties={sortedProperties}
+              teams={teams}
+              teamCalculatedValues={teamCalculatedValues}
+            />
+          </div>
+        </>
+      )}
 
-        <div className={styles.properties__main}>
-          <ProfileList properties={sortedProperties} />
+      {/* Desktop Header & Content */}
+      {isDesktop && (
+        <div className={styles.properties__container}>
+          <Header
+            sortBy={sortBy}
+            sortDir={sortDir}
+            onSortChange={onSortChange}
+          />
+
+          <div className={styles.properties__main}>
+            <ProfileList properties={sortedProperties} />
+          </div>
+
+          <aside>
+            <Sidebar
+              teams={teams}
+              teamCalculatedValues={teamCalculatedValues}
+            />
+          </aside>
         </div>
-
-        <aside>
-          <Sidebar teams={teams} teamCalculatedValues={teamCalculatedValues} />
-        </aside>
-      </div>
-
-      <div className={styles.properties__mobile}>
-        <MobileProperties
-          properties={sortedProperties}
-          teams={teams}
-          teamCalculatedValues={teamCalculatedValues}
-        />
-      </div>
+      )}
     </>
   );
 };
