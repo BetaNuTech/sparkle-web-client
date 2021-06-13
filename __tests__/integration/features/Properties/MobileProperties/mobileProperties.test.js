@@ -8,6 +8,16 @@ const teamCalculatedValuesMock = [
     totalNumOfDeficientItems: 1,
     totalNumOfFollowUpActionsForDeficientItems: 2,
     totalNumOfRequiredActionsForDeficientItems: 3
+  },
+  {
+    totalNumOfDeficientItems: 2,
+    totalNumOfFollowUpActionsForDeficientItems: 2,
+    totalNumOfRequiredActionsForDeficientItems: 3
+  },
+  {
+    totalNumOfDeficientItems: 3,
+    totalNumOfFollowUpActionsForDeficientItems: 2,
+    totalNumOfRequiredActionsForDeficientItems: 3
   }
 ];
 

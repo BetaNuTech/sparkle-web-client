@@ -18,7 +18,10 @@ export const MobileHeader = ({
   const containerTheme = offlineTheme || stagingTheme;
 
   return (
-    <header className={clsx(styles.header, containerTheme)}>
+    <header
+      className={clsx(styles.header, containerTheme)}
+      data-testid="mobile-properties-header"
+    >
       {/* Navigation Elements */}
       <aside className={styles.header__aside}>
         <button
