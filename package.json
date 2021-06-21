@@ -12,6 +12,12 @@
     "unit-test": "npx jest --testMatch '**/?(*.)+(spec).[jt]s?(x)'",
     "integration-test": "npx jest --testMatch '**/__tests__/**/?(*.)+(test).[jt]s?(x)'"
   },
+  "browserslist": [
+    ">0.3%",
+    "not ie 11",
+    "not dead",
+    "not op_mini all"
+  ],
   "dependencies": {
     "@hookform/resolvers": "^2.4.0",
     "assert": "^2.0.0",
