@@ -15,9 +15,13 @@ export const TeamValues = ({
         : styles.teamValues
     }
   >
-    <li>{numOfDeficientItems}</li>
-    <li>{numOfRequiredActionsForDeficientItems}</li>
-    <li>{numOfFollowUpActionsForDeficientItems}</li>
+    <li data-testid="num-of-deficient-items">{numOfDeficientItems}</li>
+    <li data-testid="num-of-required-actions">
+      {numOfRequiredActionsForDeficientItems}
+    </li>
+    <li data-testid="num-of-follow-up-actions">
+      {numOfFollowUpActionsForDeficientItems}
+    </li>
   </ul>
 );
 

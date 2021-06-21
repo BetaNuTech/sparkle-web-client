@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
-import { firebase } from '../../common/utils/connectFirebase';
+import { firebase, firestore } from '../../common/utils/connectFirebase';
 
 const formatUser = async (user) => {
   const token = await user.getIdToken();
+  const fullUser = await (
+    await firestore.collection('users').doc(user.uid).get()
+  ).data();
 
   return {
     uid: user.uid,
-    email: user.email,
     name: user.displayName,
-    token
+    token,
+    ...fullUser
   };
 };
 

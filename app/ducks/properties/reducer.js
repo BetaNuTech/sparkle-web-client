@@ -1,10 +1,6 @@
 import produce from 'immer';
 
 export const initialPropertiesState = {
-  activeSort: {
-    sortBy: 'name',
-    orderBy: 'asc'
-  },
   items: [],
   loadingStatusOfProperties: 'NEVER'
 };

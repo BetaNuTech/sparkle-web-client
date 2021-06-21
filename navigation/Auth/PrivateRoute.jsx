@@ -14,7 +14,7 @@ export const PrivateRoute = ({ children }) => {
     ) {
       router.push('/jobs/login');
     }
-  }, [loadingStatus]);
+  }, [isAuthenticated, router.pathname, loadingStatus]); // eslint-disable-line
 
   if (!isAuthenticated && router.pathname !== '/jobs/login') {
     return <div>Loading</div>;

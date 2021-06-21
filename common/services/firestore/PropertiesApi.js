@@ -1,5 +1,4 @@
 import { firestore } from '../../utils/connectFirebase';
-import propertiesMock from '../../../__mocks__/PropertiesPage/propertiesMock.json';
 
 export const PropertiesApi = {
   async getMe() {
@@ -9,8 +8,18 @@ export const PropertiesApi = {
   },
 
   async fetchDataOfProperties() {
-    const data = propertiesMock;
-
-    return data;
+    const objectsArray = [];
+    /**
+     * Get all the collection from firestore
+     */
+    const { docs } = await firestore.collection('properties').get();
+    docs.forEach((doc) => {
+      /**
+       * Push each doc in the array with the id.
+       * We will need id for other future references
+       */
+      objectsArray.push({ id: doc.id, ...doc.data() });
+    });
+    return objectsArray;
   }
 };

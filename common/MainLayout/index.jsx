@@ -15,13 +15,15 @@ export const MainLayout = ({ children }) => {
 
   // Expose main layout
   // values to children
-  const childrenWithProps = React.Children.map(children, (child) =>
-    React.cloneElement(child, {
-      isNavOpen,
-      toggleNavOpen,
-      isOnline,
-      isStaging
-    })
+  const childrenWithProps = React.Children.map(
+    children.filter(Boolean), // Remove null children
+    (child) =>
+      React.cloneElement(child, {
+        isNavOpen,
+        toggleNavOpen,
+        isOnline,
+        isStaging
+      })
   );
 
   return (

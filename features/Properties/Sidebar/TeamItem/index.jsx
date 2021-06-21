@@ -5,7 +5,7 @@ import { TeamValues } from '../../../../common/TeamValues';
 import ActionsIcon from '../../../../public/icons/ios/actions.svg';
 
 export const TeamItem = ({ team, teamCalculatedValues }) => (
-  <li className={styles.teamItem}>
+  <li className={styles.teamItem} data-testid="team-item" data-team={team.id}>
     {/* Team Name */}
     <Link href="/teams">
       <a className={styles.teamItem__name}>{team.name}</a>
@@ -31,9 +31,7 @@ export const TeamItem = ({ team, teamCalculatedValues }) => (
 
 TeamItem.propTypes = {
   team: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    properties: PropTypes.arrayOf(PropTypes.number).isRequired,
-    propertyCount: PropTypes.number.isRequired
+    name: PropTypes.string.isRequired
   }).isRequired,
   teamCalculatedValues: PropTypes.shape({
     totalNumOfDeficientItems: PropTypes.number.isRequired,
