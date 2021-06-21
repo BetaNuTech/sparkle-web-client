@@ -1,3 +1,5 @@
+@use "sass:math";
+
 // Base
 $rem-base: 16px;
 $base-line-height: 1;
@@ -45,7 +47,7 @@ $global-rounded: 1000px;
 $global-padding: 1rem; // 16px
 $global-spacing: rem-calc(15); // 15px
 $global-md-padding: (1rem * 0.75); // 12px
-$global-sm-padding: (1rem / 2); // 8px
+$global-sm-padding: math.div(1rem, 2); // 8px
 $global-xsm-padding: rem-calc(3); // 3px
 $global-mlg-padding: (1rem * 1.5); // 24px
 $global-lg-padding: (1rem * 2); // 32px
