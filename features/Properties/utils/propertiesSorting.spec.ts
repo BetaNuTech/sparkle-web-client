@@ -18,7 +18,7 @@ const toCompare = (arr: Array<Property>, attr = 'name'): string =>
     .join(' | ')
     .toLowerCase();
 
-describe('Spec | Common | Utils | Properties Sorting', () => {
+describe('Spec | Properties | Utils | Properties Sorting', () => {
   afterEach(() => sinon.restore());
 
   test('it sorts property names in ascending order', () => {

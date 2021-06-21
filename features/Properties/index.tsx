@@ -1,7 +1,7 @@
 import { FunctionComponent, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
-import { calculateTeamValues } from '../../common/utils/calculateTeamValues';
+import calculateTeamValues from './utils/calculateTeamValues';
 import {
   sorts,
   activePropertiesSortFilter,
@@ -9,25 +9,27 @@ import {
 } from './utils/propertiesSorting';
 import { fetchDataOfProperties } from '../../app/ducks/properties/actionCreators';
 import { selectItemsOfProperties } from '../../app/ducks/properties/selectors';
-import { fetchDataOfTeams } from '../../app/ducks/teams/actionCreators';
-import { selectItemsOfTeams } from '../../app/ducks/teams/selectors';
 import { useSortBy, useSortDir } from './hooks/sorting';
-import styles from './Properties.module.scss';
-import { Header } from './Header';
-import { Sidebar } from './Sidebar';
+import useTeams from './hooks/useTeams';
+import styles from './styles.module.scss';
+import Header from './Header';
+import Sidebar from './Sidebar';
 import { ProfileList } from './ProfileList';
 import { MobileHeader } from './MobileHeader';
-import { MobileProperties } from './MobileProperties';
+import MobileLayout from './MobileLayout';
+import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 
-type PropertiesModel = {
+interface PropertiesModel {
+  user: userModel;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
-};
+}
 
 const Properties: FunctionComponent<PropertiesModel> = ({
+  user,
   isOnline,
   isStaging,
   toggleNavOpen
@@ -37,10 +39,25 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const [sortBy, setSortBy] = useSortBy();
   const [sortDir, setSortDir] = useSortDir();
   const properties = useSelector(selectItemsOfProperties);
-  const applyPropertiesSort = () =>
-    [...properties].sort(sortProperties(sortBy, sortDir));
   const [sortedProperties, setSortedProperties] = useState([]);
-  const teams = useSelector(selectItemsOfTeams);
+  const { status: teamsStatus, data: teams } = useTeams(user);
+  const teamsMemo = JSON.stringify(teams);
+  // Collect all property meta data attributes
+  const propertiesMetaMemo = JSON.stringify(
+    properties.map(
+      ({
+        id,
+        numOfDeficientItems,
+        numOfFollowUpActionsForDeficientItems,
+        numOfRequiredActionsForDeficientItems
+      }) => ({
+        id,
+        numOfDeficientItems,
+        numOfFollowUpActionsForDeficientItems,
+        numOfRequiredActionsForDeficientItems
+      })
+    )
+  );
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -50,21 +67,46 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  // TODO remove:
   // Fetch data only if store with properties is empty.
   // When we switch the page with full store, it doesn't fetch.
   useEffect(() => {
-    dispatch(fetchDataOfTeams());
-
-    if (properties.length === 0) {
-      dispatch(fetchDataOfProperties());
+    function fetchProperties() {
+      if (properties.length === 0) {
+        dispatch(fetchDataOfProperties());
+      }
     }
-  }, []);
 
-  // Recalculate properties when properties or teams changes.
+    return fetchProperties();
+  }, [properties.length]); // eslint-disable-line
+
+  // Update team calculated values
   useEffect(() => {
-    setTeamCalculatedValues(calculateTeamValues(teams, properties));
-    setSortedProperties(applyPropertiesSort());
-  }, [properties, teams, sortBy, sortDir, isMobileorTablet]);
+    function recalcTeamComputedValues() {
+      if (teamsStatus === 'success') {
+        setTeamCalculatedValues(
+          calculateTeamValues(
+            JSON.parse(teamsMemo),
+            JSON.parse(propertiesMetaMemo)
+          )
+        );
+      }
+    }
+
+    recalcTeamComputedValues();
+  }, [teamsStatus, teamsMemo, propertiesMetaMemo]);
+
+  // Apply properties sort order
+  useEffect(() => {
+    const applyPropertiesSort = () =>
+      [...properties].sort(sortProperties(sortBy, sortDir));
+
+    function resortProperties() {
+      setSortedProperties(applyPropertiesSort());
+    }
+
+    resortProperties();
+  }, [properties, sortBy, sortDir]);
 
   // Loop through property
   // sorting options
@@ -109,7 +151,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           </div>
 
           <div className={styles.properties__mobile}>
-            <MobileProperties
+            <MobileLayout
               properties={sortedProperties}
               teams={teams}
               teamCalculatedValues={teamCalculatedValues}

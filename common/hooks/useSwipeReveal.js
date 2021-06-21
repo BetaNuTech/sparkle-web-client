@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 const useSwipeReveal = (ref, setIsSwipeOpen) => {
+  const { current } = ref;
   // Keep Track Of Our Current Location
   const [clientXStart, setClientXStart] = useState(0);
 
@@ -22,15 +23,15 @@ const useSwipeReveal = (ref, setIsSwipeOpen) => {
   }
 
   useEffect(() => {
-    if (ref.current) {
-      ref.current.addEventListener('touchstart', handleTouchStart);
-      ref.current.addEventListener('touchend', handleTouchEnd);
+    if (current) {
+      current.addEventListener('touchstart', handleTouchStart);
+      current.addEventListener('touchend', handleTouchEnd);
     }
 
     return () => {
-      if (ref.current) {
-        ref.current.removeEventListener('touchstart', handleTouchStart);
-        ref.current.removeEventListener('touchend', handleTouchEnd);
+      if (current) {
+        current.removeEventListener('touchstart', handleTouchStart);
+        current.removeEventListener('touchend', handleTouchEnd);
       }
     };
   });
