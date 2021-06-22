@@ -37,37 +37,36 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             : styles.teamItem__content
         }
       >
-        {/* Toggle Button */}
+
         <Link href="/">
-          <a className={styles.teamItem__toggle}>
-            <ChevronIcon />
+          <a className={styles.teamItem__link}>
+            {/* Toggle Button */}
+            <span className={styles.teamItem__toggle}>
+              <ChevronIcon />
+            </span>
+            {/* Team Name */}
+            <div className={styles.teamItem__name}>
+              <strong>{team.name}</strong>
+            </div>
+            {/* Metadata */}
+            <div
+              className={styles.teamItem__metadata}
+              data-testid="team-property-meta"
+            >
+              Deficient Items
+              <TeamValues
+                numOfDeficientItems={teamCalculatedValues.totalNumOfDeficientItems}
+                numOfFollowUpActionsForDeficientItems={
+                  teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
+                }
+                numOfRequiredActionsForDeficientItems={
+                  teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
+                }
+                isNarrowField={false}
+              />
+            </div>
           </a>
         </Link>
-
-        {/* Team Name */}
-        <Link href="/">
-          <a className={styles.teamItem__name}>
-            <strong>{team.name}</strong>
-          </a>
-        </Link>
-
-        {/* Metadata */}
-        <div
-          className={styles.teamItem__metadata}
-          data-testid="team-property-meta"
-        >
-          Deficient Items
-          <TeamValues
-            numOfDeficientItems={teamCalculatedValues.totalNumOfDeficientItems}
-            numOfFollowUpActionsForDeficientItems={
-              teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
-            }
-            numOfRequiredActionsForDeficientItems={
-              teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
-            }
-            isNarrowField={false}
-          />
-        </div>
       </div>
 
       {/* TODO Add Delete */}

@@ -23,6 +23,11 @@
     transition: transform 400ms ease-out;
   }
 
+  &__link {
+    text-decoration: none;
+    color: inherit;
+  }
+
   // Toggle button
   &__toggle {
     position: absolute;
