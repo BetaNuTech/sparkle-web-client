@@ -41,62 +41,62 @@ export const PropertyItem = ({ property }) => {
             : styles.propertyItem__content
         }
       >
-        {/* Toggle Button */}
-        <a className={styles.propertyItem__toggle}>
-          <ChevronIcon />
-        </a>
-
-        <Link href="/property">
-          <a className={styles.propertyItem__wrapper}>
-            {/* Profile Picture */}
-            <aside
-              className={styles.propertyItem__image}
-              style={
-                property.photoURL && {
-                  backgroundImage: `url(${property.photoURL})`
+        <Link href={`/properties/${property.id}`}>
+          <a className={styles.propertyItem__link}>
+            {/* Toggle Button */}
+            <span className={styles.propertyItem__toggle}>
+              <ChevronIcon />
+            </span>
+            <div className={styles.propertyItem__wrapper}>
+              {/* Profile Picture */}
+              <aside
+                className={styles.propertyItem__image}
+                style={
+                  property.photoURL && {
+                    backgroundImage: `url(${property.photoURL})`
+                  }
                 }
-              }
-            />
+              />
 
-            {/* Profile Description */}
-            <div className={styles.propertyItem__description}>
-              <h6 className={styles.propertyItem__name}>{property.name}</h6>
-              <p className={styles.propertyItem__addr1}>{property.addr1}</p>
-              <p className={styles.propertyItem__mailingAddr2}>
-                {property.addr2}
-              </p>
-              {property.lastInspectionEntries ? (
-                <p className={styles.propertyItem__lastInspectionEntries}>
-                  {new Date(1000 * property.lastInspectionEntries)}
+              {/* Profile Description */}
+              <div className={styles.propertyItem__description}>
+                <h6 className={styles.propertyItem__name}>{property.name}</h6>
+                <p className={styles.propertyItem__addr1}>{property.addr1}</p>
+                <p className={styles.propertyItem__mailingAddr2}>
+                  {property.addr2}
                 </p>
-              ) : (
-                <p
-                  className={clsx(
-                    styles.propertyItem__lastInspectionEntries,
-                    styles['propertyItem__lastInspectionEntries--empty']
-                  )}
-                >
-                  No Inspections
-                </p>
-              )}
+                {property.lastInspectionEntries ? (
+                  <p className={styles.propertyItem__lastInspectionEntries}>
+                    {new Date(1000 * property.lastInspectionEntries)}
+                  </p>
+                ) : (
+                  <p
+                    className={clsx(
+                      styles.propertyItem__lastInspectionEntries,
+                      styles['propertyItem__lastInspectionEntries--empty']
+                    )}
+                  >
+                    No Inspections
+                  </p>
+                )}
+              </div>
+            </div>
+            {/* Metadata */}
+            <div className={styles.propertyItem__metadata}>
+              Deficient Items
+              <TeamValues
+                numOfDeficientItems={property.numOfDeficientItems}
+                numOfFollowUpActionsForDeficientItems={
+                  property.numOfFollowUpActionsForDeficientItems
+                }
+                numOfRequiredActionsForDeficientItems={
+                  property.numOfRequiredActionsForDeficientItems
+                }
+                isNarrowField={false}
+              />
             </div>
           </a>
         </Link>
-
-        {/* Metadata */}
-        <div className={styles.propertyItem__metadata}>
-          Deficient Items
-          <TeamValues
-            numOfDeficientItems={property.numOfDeficientItems}
-            numOfFollowUpActionsForDeficientItems={
-              property.numOfFollowUpActionsForDeficientItems
-            }
-            numOfRequiredActionsForDeficientItems={
-              property.numOfRequiredActionsForDeficientItems
-            }
-            isNarrowField={false}
-          />
-        </div>
       </div>
 
       <SwipeReveal onDelete={onDeleteProperty} />
