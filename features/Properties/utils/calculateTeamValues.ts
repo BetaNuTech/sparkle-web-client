@@ -1,13 +1,13 @@
 interface calculateTeamValuesReference {
   id: string;
-  properties: any;
+  properties?: any;
 }
 
 interface calculateTeamValuesPropertyMeta {
   id: string;
-  numOfDeficientItems: number;
-  numOfFollowUpActionsForDeficientItems: number;
-  numOfRequiredActionsForDeficientItems: number;
+  numOfDeficientItems?: number;
+  numOfFollowUpActionsForDeficientItems?: number;
+  numOfRequiredActionsForDeficientItems?: number;
 }
 
 // Collect each team's
@@ -24,17 +24,17 @@ const calculateTeamValues = (
 
     // Calculate values for each properties and ruturn the array of objects.
     const totalNumOfDeficientItems = teamsProperties.reduce(
-      (total, curr) => total + curr.numOfDeficientItems,
+      (total, curr) => total + curr.numOfDeficientItems || 0,
       0
     );
 
     const totalNumOfFollowUpActionsForDeficientItems = teamsProperties.reduce(
-      (total, curr) => total + curr.numOfFollowUpActionsForDeficientItems,
+      (total, curr) => total + curr.numOfFollowUpActionsForDeficientItems || 0,
       0
     );
 
     const totalNumOfRequiredActionsForDeficientItems = teamsProperties.reduce(
-      (total, curr) => total + curr.numOfRequiredActionsForDeficientItems,
+      (total, curr) => total + curr.numOfRequiredActionsForDeficientItems || 0,
       0
     );
 

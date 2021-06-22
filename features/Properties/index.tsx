@@ -32,31 +32,12 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   isStaging,
   toggleNavOpen
 }) => {
-  // const dispatch = useDispatch();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
   const [sortBy, setSortBy] = useSortBy();
   const [sortDir, setSortDir] = useSortDir();
-  // const properties = useSelector(selectItemsOfProperties);
-  const { data: properties } = useProperties(user);
-  const { status: teamsStatus, data: teams } = useTeams(user);
+  const { data: properties, memo: propertiesMemo } = useProperties(user);
+  const { status: teamsStatus, data: teams, memo: teamsMemo } = useTeams(user);
   const [sortedProperties, setSortedProperties] = useState([]);
-  const teamsMemo = JSON.stringify(teams);
-  // Collect all property meta data attributes
-  const propertiesMetaMemo = JSON.stringify(
-    properties.map(
-      ({
-        id,
-        numOfDeficientItems,
-        numOfFollowUpActionsForDeficientItems,
-        numOfRequiredActionsForDeficientItems
-      }) => ({
-        id,
-        numOfDeficientItems,
-        numOfFollowUpActionsForDeficientItems,
-        numOfRequiredActionsForDeficientItems
-      })
-    )
-  );
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -66,33 +47,28 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  // Apply properties sort order
+  const applyPropertiesSort = () =>
+    [...properties].sort(sortProperties(sortBy, sortDir));
+
   // Update team calculated values
   useEffect(() => {
     function recalcTeamComputedValues() {
       if (teamsStatus === 'success') {
-        setTeamCalculatedValues(
-          calculateTeamValues(
-            JSON.parse(teamsMemo),
-            JSON.parse(propertiesMetaMemo)
-          )
-        );
+        setTeamCalculatedValues(calculateTeamValues(teams, properties));
       }
     }
 
     recalcTeamComputedValues();
-  }, [teamsStatus, teamsMemo, propertiesMetaMemo]);
+  }, [teamsStatus, teamsMemo, propertiesMemo]); // eslint-disable-line
 
-  // Apply properties sort order
   useEffect(() => {
-    const applyPropertiesSort = () =>
-      [...properties].sort(sortProperties(sortBy, sortDir));
-
     function resortProperties() {
       setSortedProperties(applyPropertiesSort());
     }
 
     resortProperties();
-  }, [properties, sortBy, sortDir]);
+  }, [propertiesMemo, sortBy, sortDir]); // eslint-disable-line
 
   // Loop through property
   // sorting options

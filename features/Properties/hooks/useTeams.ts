@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import userModel from '../../../common/models/user';
 import { getLevelName } from '../../../common/utils/userPermissions';
 import teamsApi, {
@@ -5,6 +6,7 @@ import teamsApi, {
 } from '../../../common/services/firestore/teams';
 
 interface useTeamsResult extends teamsCollectionResult {
+  memo: string;
   handlers: any;
 }
 
@@ -13,19 +15,35 @@ const handlers = {};
 
 // Hooks for all user's teams based on roll
 export default function useTeams(user: userModel): useTeamsResult {
+  const [memo, setMemo] = useState('[]');
   const permissionLevel = getLevelName(user);
+
+  // No access payload
+  const payload = {
+    status: 'loading',
+    error: null,
+    data: [],
+    handlers,
+    memo
+  };
 
   // Load all teams for admin & corporate
   if (['admin', 'corporate'].includes(permissionLevel)) {
     const result = teamsApi.findAll();
-    return { ...result, handlers };
+    Object.assign(payload, result, { handlers });
   }
 
-  // No access
-  return {
-    status: 'loading',
-    error: null,
-    data: [],
-    handlers
-  };
+  // Notify of updates
+  // by updating memo
+  /* eslint-disable */
+  useEffect(() => {
+    /* eslint-enable */
+    const updated = JSON.stringify(payload.data);
+
+    if (memo !== updated) {
+      setMemo(updated);
+    }
+  });
+
+  return payload;
 }
