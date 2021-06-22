@@ -1,13 +1,13 @@
 import sinon from 'sinon';
-import { Provider } from 'react-redux';
 import { render as rtlRender, act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import configureMockStore from 'redux-mock-store';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { initialPropertiesState } from '../../../../app/ducks/properties/reducer';
-import mockTeams from '../../../../__mocks__/PropertiesPage/teamsMock.json';
-import mockPropertes from '../../../../__mocks__/PropertiesPage/propertiesMock.json';
+import mockTeams from '../../../../__mocks__/teams';
+import mockPropertes from '../../../../__mocks__/properties';
 import { admin as user } from '../../../../__mocks__/users';
+import propertiesApi, {
+  propertiesCollectionResult
+} from '../../../../common/services/firestore/properties';
 import teamsApi, {
   teamsCollectionResult
 } from '../../../../common/services/firestore/teams';
@@ -17,16 +17,15 @@ import { shuffle } from '../../../helpers/array';
 
 const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
 
-// Setup redux store
-const mockStore = configureMockStore([]);
-
 function render(ui: any, options: any = {}) {
   sinon.restore();
-  const propertiesStore = deepClone(initialPropertiesState);
-  propertiesStore.items = options.properties || mockPropertes;
-  const store = mockStore({
-    properties: propertiesStore
-  });
+  // Stub all properties requests
+  const propertiesPayload: propertiesCollectionResult = {
+    status: options.propertiesStatus || 'success',
+    error: options.propertiesError || null,
+    data: options.properties || mockPropertes
+  };
+  sinon.stub(propertiesApi, 'findAll').returns(propertiesPayload);
 
   // Stub all teams requests
   const teamsPayload: teamsCollectionResult = {
@@ -40,7 +39,7 @@ function render(ui: any, options: any = {}) {
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
     <ResponsiveContext.Provider value={{ width: contextWidth }}>
-      <Provider store={store}>{ui}</Provider>
+      {ui}
     </ResponsiveContext.Provider>,
     options
   );

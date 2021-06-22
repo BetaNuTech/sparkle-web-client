@@ -1,4 +1,4 @@
-import styles from './SwipeReveal.module.scss';
+import styles from './styles.module.scss';
 
 export const SwipeReveal = ({ onDelete }) => (
   <div className={styles.swipeReveal}>

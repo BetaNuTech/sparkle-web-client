@@ -1,5 +1,5 @@
 import { shallow } from 'enzyme';
-import propertiesMock from '.../../../../../__mocks__/PropertiesPage/propertiesMock.json';
+import propertiesMock from '.../../../../../__mocks__/properties';
 import { ProfileList } from '../../../../../features/Properties/ProfileList';
 
 describe('ProfileList component', () => {

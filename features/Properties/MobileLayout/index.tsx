@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react';
 import styles from './styles.module.scss';
-import { TeamItem } from './TeamItem';
+import TeamItem from './TeamItem';
 import { PropertyItem } from './PropertyItem';
 import propertyMetaData from '../../../common/models/propertyMetaData';
 

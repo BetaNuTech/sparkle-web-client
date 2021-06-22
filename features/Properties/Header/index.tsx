@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import styles from './Header.module.scss';
 import { Dropdown } from '../../../common/Dropdown';
+import AddIcon from '../../../public/icons/ios/add.svg';
 
 interface PropertiesHeaderModel {
   sortBy: string;
@@ -28,20 +29,7 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
         >
           Create
           <span className="iconAddButton">
-            {/* NOTE: Bug inlining this SVG */}
-            <svg
-              width="29"
-              height="29"
-              viewBox="0 0 29 29"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M13.5 13.5H1v2h12.5V28h2V15.5H28v-2H15.5V1h-2z"
-                stroke="#fff"
-                fill="#fff"
-                fillRule="evenodd"
-              />
-            </svg>
+            <AddIcon />
           </span>
           <Dropdown />
         </button>

@@ -1,7 +1,7 @@
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
 import mockTeams from '../../../../../__mocks__/PropertiesPage/teamsMock.json';
-import mockPropertes from '../../../../../__mocks__/PropertiesPage/propertiesMock.json';
+import mockPropertes from '../../../../../__mocks__/properties';
 import PropertiesMobileLayout from '../../../../../features/Properties/MobileLayout';
 import breakpoints from '../../../../../config/breakpoints';
 import { shuffle } from '../../../../helpers/array';
@@ -13,7 +13,7 @@ const defaultPropertyMeta = mockTeams.map(({ id }, i) => ({
   totalNumOfRequiredActionsForDeficientItems: 3 + i
 }));
 
-function render(ui: void, options = {}) {
+function render(ui: any, options = {}) {
   return rtlRender(
     <ResponsiveContext.Provider value={{ width: breakpoints.mobile.maxWidth }}>
       {ui}
