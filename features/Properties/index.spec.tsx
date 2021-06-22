@@ -7,7 +7,7 @@ import teamsApi, {
   teamsCollectionResult
 } from '../../common/services/firestore/teams';
 import { admin } from '../../__mocks__/users';
-import mockTeams from '../../__mocks__/PropertiesPage/teamsMock.json';
+import mockTeams from '../../__mocks__/teams';
 import mockPropertes from '../../__mocks__/properties';
 import Properties from './index';
 

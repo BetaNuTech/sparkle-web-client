@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import teamsMock from '../../../__mocks__/PropertiesPage/teamsMock.json';
+import teamsMock from '../../../__mocks__/teams';
 import Sidebar from './index';
 
 const teamCalculatedValuesMock = [

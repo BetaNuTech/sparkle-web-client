@@ -1,0 +1,102 @@
+.-full-width {
+  width: 100% !important;
+}
+
+.-half-width {
+  width: 50% !important;
+}
+
+.-full-height {
+  height: 100% !important;
+}
+
+.-full-hight-less-nav {
+  height: calc(100% - 54px) !important;
+}
+
+.-golden-width {
+  width: 61.80339887% !important;
+}
+
+.-f-left {
+  float: left !important;
+}
+
+.-f-right {
+  float: right !important;
+}
+
+.-d-inline-block {
+  display: inline-block !important;
+}
+
+.-d-block {
+  display: block !important;
+}
+
+.-d-flex {
+  display: flex !important;
+}
+
+.-d-none {
+  display: none !important;
+}
+
+.-l-cover {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.-l-vertical-center {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.-l-vertical-center--inline:before {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  height: 100%;
+}
+
+.-l-abs-center {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  right: 0;
+}
+
+.-l-abs-center-all {
+  @extend .-l-abs-center;
+  left: 50%;
+  transform: translateY(-50%) translateX(-50%);
+}
+
+.-l-abs-right {
+  position: absolute !important;
+  left: auto !important;
+  right: 0 !important;
+}
+
+.-va-middle {
+  vertical-align: middle !important;
+}
+
+.-va-baseline {
+  vertical-align: baseline !important;
+}
+
+.-va-top {
+  vertical-align: top !important;
+}
+
+.-va-text-bottom {
+  vertical-align: text-bottom !important;
+}

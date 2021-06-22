@@ -7,11 +7,36 @@
 @import 'settings/layouts';
 
 /************
-* Objects
-*************/
-@import 'objects/buttons';
-
-/************
 * Tools
 *************/
 @import 'tools/media-query';
+
+/************
+* Objects
+*************/
+@import 'objects/labels';
+@import 'objects/buttons';
+@import 'objects/list';
+@import 'objects/upload-form';
+@import 'objects/upload-primary';
+
+/************
+* Trumps
+*************/
+@import 'trumps/_backgrounds';
+@import 'trumps/_borders';
+@import 'trumps/_colors';
+@import 'trumps/_cursors';
+@import 'trumps/_display';
+@import 'trumps/_flex';
+@import 'trumps/_layouts';
+@import 'trumps/_margins';
+@import 'trumps/_opacities';
+@import 'trumps/_outlines';
+@import 'trumps/_overflows';
+@import 'trumps/_paddings';
+@import 'trumps/_positions';
+@import 'trumps/_svg';
+@import 'trumps/_text';
+@import 'trumps/_transforms';
+@import 'trumps/_transitions';

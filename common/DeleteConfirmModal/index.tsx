@@ -1,7 +1,7 @@
 import { FunctionComponent, useState, useEffect } from 'react';
 import clsx from 'clsx';
-import styles from './DeleteConfirmModal.module.scss';
-import WarningIcon from '../Icons/warning';
+import styles from './styles.module.scss';
+import WarningIcon from '../../public/icons/sparkle/warning.svg';
 
 type Model = {
   /** Alert title next to the icon */
@@ -60,7 +60,9 @@ const DeleteConfirmModal: FunctionComponent<Model> = ({ title, message }) => {
         style={{ top: window.scrollY + 50 }}
       >
         <header className={styles.modal__header}>
-          <WarningIcon width="50" height="50" fill="#fed933" />
+          <span className={clsx(styles.modal__header__icon, '-fill-warning')}>
+            <WarningIcon />
+          </span>
           <h5 className={styles.modal__heading}>{title}</h5>
         </header>
 

@@ -1,0 +1,31 @@
+.-stroke-none {
+  &,
+  path,
+  line {
+    stroke-width: 0 !important;
+  }
+}
+
+.-stroke-white {
+  &,
+  path,
+  line {
+    stroke: $white !important;
+  }
+}
+
+.-fill-primary {
+  &,
+  path,
+  line {
+    fill: $primary-color !important;
+  }
+}
+
+.-fill-warning {
+  &,
+  path,
+  line {
+    fill: $warning-color !important;
+  }
+}

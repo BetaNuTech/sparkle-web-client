@@ -21,7 +21,8 @@ export const fullProperty: propertyModel = {
   logoName: 'Jpg',
   logoURL: '/url.jpg',
   photoName: 'Jpg',
-  photoURL: '/url.jpg',
+  // eslint-disable-next-line max-len
+  photoURL: 'https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2Fea35bb17a8b841e60c1d.jpeg?alt=media&token=2f85465d-3593-4c39-93ae-4165a2a1851e',
   year_built: 1984, // eslint-disable-line camelcase
   slackChannel: 'one',
   zip: '85555',
