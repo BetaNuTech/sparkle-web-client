@@ -1,14 +1,23 @@
 import clsx from 'clsx';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
-import { useState, useRef } from 'react';
-import styles from './TeamItem.module.scss';
-import { TeamValues } from '../../../../common/TeamValues';
+import { useState, useRef, FunctionComponent } from 'react';
+import styles from './styles.module.scss';
+import teamModel from '../../../../common/models/team';
 import { SwipeReveal } from '../SwipeReveal';
+import { TeamValues } from '../../../../common/TeamValues';
+import propertyMetaData from '../../../../common/models/propertyMetaData';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 
-export const TeamItem = ({ team, teamCalculatedValues }) => {
+interface MobileLayoutTeamItemModel {
+  team: teamModel;
+  teamCalculatedValues: propertyMetaData;
+}
+
+const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
+  team,
+  teamCalculatedValues
+}) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
   useSwipeReveal(ref, setIsSwipeOpen);
@@ -29,14 +38,14 @@ export const TeamItem = ({ team, teamCalculatedValues }) => {
         }
       >
         {/* Toggle Button */}
-        <Link href="/lalala">
+        <Link href="/">
           <a className={styles.teamItem__toggle}>
             <ChevronIcon />
           </a>
         </Link>
 
         {/* Team Name */}
-        <Link href="/lalala">
+        <Link href="/">
           <a className={styles.teamItem__name}>
             <strong>{team.name}</strong>
           </a>
@@ -61,20 +70,10 @@ export const TeamItem = ({ team, teamCalculatedValues }) => {
         </div>
       </div>
 
-      <SwipeReveal />
+      {/* TODO Add Delete */}
+      <SwipeReveal onDelete={() => ({})} />
     </div>
   );
-};
-
-TeamItem.propTypes = {
-  team: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  teamCalculatedValues: PropTypes.shape({
-    totalNumOfDeficientItems: PropTypes.number.isRequired,
-    totalNumOfFollowUpActionsForDeficientItems: PropTypes.number.isRequired,
-    totalNumOfRequiredActionsForDeficientItems: PropTypes.number.isRequired
-  })
 };
 
 TeamItem.defaultProps = {
@@ -84,3 +83,5 @@ TeamItem.defaultProps = {
     totalNumOfRequiredActionsForDeficientItems: 0
   }
 };
+
+export default TeamItem;

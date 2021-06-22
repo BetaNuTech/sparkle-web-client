@@ -1,0 +1,19 @@
+{
+  "uid": "0xzhymF5mTMkZ4Ol6UsGjCDck4G3",
+  "admin": false,
+  "corporate": false,
+  "email": "matt+property@jwc.works",
+  "firstName": "Property",
+  "isDeleted": false,
+  "isDisabled": false,
+  "lastName": "User",
+  "properties": {
+    "dvSsHLv8cxAvIMKv9Gk0": true
+  },
+  "pushOptOut": false,
+  "teams": {
+    "g7GLwX2d6EHrHc7nFm6C": {
+      "ea35bb17a8b841e60c1d": true
+    }
+  }
+}

@@ -1,5 +1,4 @@
 import { FunctionComponent, useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import calculateTeamValues from './utils/calculateTeamValues';
 import {
@@ -7,10 +6,9 @@ import {
   activePropertiesSortFilter,
   sortProperties
 } from './utils/propertiesSorting';
-import { fetchDataOfProperties } from '../../app/ducks/properties/actionCreators';
-import { selectItemsOfProperties } from '../../app/ducks/properties/selectors';
 import { useSortBy, useSortDir } from './hooks/sorting';
 import useTeams from './hooks/useTeams';
+import useProperties from './hooks/useProperties';
 import styles from './styles.module.scss';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -34,13 +32,14 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   isStaging,
   toggleNavOpen
 }) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
   const [sortBy, setSortBy] = useSortBy();
   const [sortDir, setSortDir] = useSortDir();
-  const properties = useSelector(selectItemsOfProperties);
-  const [sortedProperties, setSortedProperties] = useState([]);
+  // const properties = useSelector(selectItemsOfProperties);
+  const { data: properties } = useProperties(user);
   const { status: teamsStatus, data: teams } = useTeams(user);
+  const [sortedProperties, setSortedProperties] = useState([]);
   const teamsMemo = JSON.stringify(teams);
   // Collect all property meta data attributes
   const propertiesMetaMemo = JSON.stringify(
@@ -66,19 +65,6 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-
-  // TODO remove:
-  // Fetch data only if store with properties is empty.
-  // When we switch the page with full store, it doesn't fetch.
-  useEffect(() => {
-    function fetchProperties() {
-      if (properties.length === 0) {
-        dispatch(fetchDataOfProperties());
-      }
-    }
-
-    return fetchProperties();
-  }, [properties.length]); // eslint-disable-line
 
   // Update team calculated values
   useEffect(() => {

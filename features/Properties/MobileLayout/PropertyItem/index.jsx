@@ -106,13 +106,13 @@ export const PropertyItem = ({ property }) => {
 
 PropertyItem.propTypes = {
   property: PropTypes.shape({
-    photoURL: PropTypes.string.isRequired,
+    photoURL: PropTypes.string,
     name: PropTypes.string.isRequired,
-    addr1: PropTypes.string.isRequired,
-    addr2: PropTypes.string.isRequired,
-    city: PropTypes.string.isRequired,
-    state: PropTypes.string.isRequired,
-    lastInspectionDate: PropTypes.number.isRequired,
-    lastInspectionScore: PropTypes.number.isRequired
+    addr1: PropTypes.string,
+    addr2: PropTypes.string,
+    city: PropTypes.string,
+    state: PropTypes.string,
+    lastInspectionDate: PropTypes.number,
+    lastInspectionScore: PropTypes.number
   }).isRequired
 };

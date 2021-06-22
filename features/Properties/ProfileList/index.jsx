@@ -13,7 +13,7 @@ export const ProfileList = ({ properties }) => (
 ProfileList.propTypes = {
   properties: PropTypes.arrayOf(
     PropTypes.shape({
-      backgroundImage: PropTypes.string.isRequired,
+      photoURL: PropTypes.string,
       name: PropTypes.string.isRequired,
       addr1: PropTypes.string.isRequired,
       addr2: PropTypes.string.isRequired,

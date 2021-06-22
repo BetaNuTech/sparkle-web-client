@@ -15,7 +15,11 @@ export const Item = ({ property }) => (
         {/* Profile Picture */}
         <aside
           className={styles.item__image}
-          style={{ backgroundImage: `url(${property.backgroundImage})` }}
+          style={
+            property.photoURL && {
+              backgroundImage: `url(${property.photoURL})`
+            }
+          }
         />
 
         {/* Profile Description */}
@@ -62,7 +66,7 @@ export const Item = ({ property }) => (
 
 Item.propTypes = {
   property: PropTypes.shape({
-    backgroundImage: PropTypes.string.isRequired,
+    photoURL: PropTypes.string,
     name: PropTypes.string.isRequired,
     addr1: PropTypes.string.isRequired,
     addr2: PropTypes.string.isRequired,

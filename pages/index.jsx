@@ -1,17 +1,7 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PropertiesApi } from '../common/services/firestore/PropertiesApi';
 import { useAuth } from '../navigation/Auth/AuthProvider';
 
 export default function Home() {
-  const [properties, setProperties] = useState([]);
-
-  useEffect(() => {
-    PropertiesApi.getMe().then((data) => {
-      setProperties(data);
-    });
-  }, []);
-
   const { user, signOut } = useAuth();
 
   return (
@@ -28,13 +18,6 @@ export default function Home() {
           <a>Login</a>
         </Link>
       </p>
-
-      <div>
-        Names:
-        {properties.map((doc) => (
-          <p key={doc.id}>{doc.data().name}</p>
-        ))}
-      </div>
 
       <button type="button" onClick={() => signOut()}>
         Sign Out
