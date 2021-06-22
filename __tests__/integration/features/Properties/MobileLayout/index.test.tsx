@@ -1,6 +1,6 @@
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import mockTeams from '../../../../../__mocks__/PropertiesPage/teamsMock.json';
+import mockTeams from '../../../../../__mocks__/teams';
 import mockPropertes from '../../../../../__mocks__/properties';
 import PropertiesMobileLayout from '../../../../../features/Properties/MobileLayout';
 import breakpoints from '../../../../../config/breakpoints';

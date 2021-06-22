@@ -1,0 +1,25 @@
+@import '../../styles/index.scss';
+
+.propertyProfile {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  background-color: $gray-2;
+  height: 100%;
+
+  .propertyProfile__main {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: stretch;
+    height: auto;
+    justify-content: flex-start;
+    backface-visibility: hidden;
+    flex: 1 1 auto;
+    order: 0;
+    overflow-y: auto;
+  }
+
+  @include media-query(tablet) {
+    display: block;
+  }
+}

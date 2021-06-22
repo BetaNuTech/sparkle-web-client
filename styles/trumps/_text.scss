@@ -1,0 +1,60 @@
+.-ta-center {
+  text-align: center !important;
+}
+
+.-ta-right {
+  text-align: right !important;
+}
+
+.-ta-left {
+  text-align: left !important;
+}
+
+.-fz-large {
+  font-size: $large-font-size !important;
+}
+
+.-fz-medium-large {
+  font-size: $medium-large-font-size !important;
+}
+
+.-fz-medium {
+  font-size: $medium-font-size !important;
+}
+
+.-fz-med-small {
+  font-size: $medium-small-font-size !important;
+}
+
+.-fz-small {
+  font-size: $small-font-size !important;
+}
+
+.-fw-bold {
+  font-weight: bold !important;
+}
+
+.-fs-italic {
+  font-style: italic !important;
+}
+
+.-fw-thin {
+  font-family: $helvetica-font-family !important;
+  font-weight: 100;
+}
+
+.-td-underline {
+  text-decoration: underline !important;
+}
+
+.-tt-uppercase {
+  text-transform: uppercase !important;
+}
+
+.-ws-nowrap {
+  white-space: nowrap !important;
+}
+
+.-ws-normal {
+  white-space: normal !important;
+}

@@ -1,0 +1,53 @@
+.spk-upload-form {
+  position: relative;
+  transition: all 400ms ease-in;
+  overflow: hidden;
+  cursor: pointer;
+  background-color: $white;
+  text-align: center;
+
+  // Prevent the text contents from being selectable.
+  user-select: none;
+
+  // Shadow when user drags file over form
+  &.is-dragging {
+    box-shadow: 0 rem-calc(2) rem-calc(12) rgba(0, 0, 0, 0.3);
+  }
+
+  > input[type='file'] {
+    position: absolute;
+    top: -200%;
+    display: none;
+  }
+}
+
+.spk-upload-form__image {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-height: rem-calc(100);
+  border-radius: $global-radius;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.spk-upload-form__cancel {
+  @extend .spk-non-button;
+  display: block;
+  position: absolute;
+  width: rem-calc(40);
+  height: rem-calc(40);
+  line-height: 3.2rem;
+  cursor: pointer;
+
+  &:before {
+    content: '×';
+    display: inline-block;
+    font-size: rem-calc(30);
+    line-height: rem-calc(22);
+    color: $gray-light;
+  }
+}

@@ -1,0 +1,45 @@
+%skp-mini-label {
+  display: inline-block;
+  padding: 0 rem-calc(4);
+  line-height: 1.4;
+  margin-right: rem-calc(1);
+  font-weight: bold;
+  border-radius: $global-radius;
+  background-color: $gray-darker;
+  color: $white;
+}
+
+%spk-mini-label-typography {
+  font-weight: 300;
+  font-size: $medium-font-size;
+  white-space: nowrap;
+}
+
+//
+// Label
+//
+
+.spk-label {
+  color: $primary-dark-color;
+  font-weight: bold;
+  margin-bottom: $global-xsm-padding;
+}
+
+.spk-label--panel {
+  color: $primary-dark-color;
+  border-radius: $global-radius;
+  background-color: $gray;
+  padding: rem-calc(5) rem-calc(8);
+}
+
+.spk-label--counter {
+  width: rem-calc(52);
+  height: rem-calc(32);
+  line-height: rem-calc(32);
+  margin-bottom: 0;
+  color: $white;
+  text-align: center;
+  font-size: $medium-large-font-size;
+  background-color: $primary-color;
+  border-radius: $global-rounded;
+}

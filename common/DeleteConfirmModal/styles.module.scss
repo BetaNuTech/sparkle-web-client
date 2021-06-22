@@ -58,7 +58,9 @@
       border-width: 0;
     }
 
-    &__icon {
+    &__icon,
+    &__icon > svg {
+      display: block;
       height: rem-calc(43);
       max-width: rem-calc(43);
       margin-right: $global-padding;
