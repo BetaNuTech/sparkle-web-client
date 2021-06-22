@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import userModel from '../../../common/models/user';
 import { getLevelName } from '../../../common/utils/userPermissions';
 import propertiesApi, {
@@ -5,6 +6,7 @@ import propertiesApi, {
 } from '../../../common/services/firestore/properties';
 
 interface usePropertiesResult extends propertiesCollectionResult {
+  memo: string;
   handlers: any;
 }
 
@@ -13,19 +15,35 @@ const handlers = {};
 
 // Hooks for all user's properties based on roll
 export default function useProperties(user: userModel): usePropertiesResult {
+  const [memo, setMemo] = useState('[]');
   const permissionLevel = getLevelName(user);
+
+  // No access payload
+  const payload = {
+    status: 'loading',
+    error: null,
+    data: [],
+    handlers,
+    memo
+  };
 
   // Load all properties for admin & corporate
   if (['admin', 'corporate'].includes(permissionLevel)) {
     const result = propertiesApi.findAll();
-    return { ...result, handlers };
+    Object.assign(payload, result, { handlers });
   }
 
-  // No access
-  return {
-    status: 'loading',
-    error: null,
-    data: [],
-    handlers
-  };
+  // Notify of updates
+  // by updating memo
+  /* eslint-disable */
+  useEffect(() => {
+    /* eslint-enable */
+    const updated = JSON.stringify(payload.data);
+
+    if (memo !== updated) {
+      setMemo(updated);
+    }
+  });
+
+  return payload;
 }
