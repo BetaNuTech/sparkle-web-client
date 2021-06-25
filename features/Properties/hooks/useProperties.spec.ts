@@ -99,7 +99,8 @@ describe('Unit | Features | Properties | Hooks | Use Properties', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('should send error report if more than 10 records propreties accessed by property user', () => {
+  // eslint-disable-next-line
+  test('should send error report if more than 10 records propreties accessed by property user and still request properties', () => {
     const expected = true;
     const propertyUser = JSON.parse(JSON.stringify(propertyMember)); // deep clone
     propertyUser.properties = {

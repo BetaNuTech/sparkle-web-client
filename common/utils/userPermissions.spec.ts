@@ -3,6 +3,7 @@ import {
   admin,
   corporate,
   teamLead,
+  teamMember,
   propertyMember,
   noAccess
 } from '../../__mocks__/users';
@@ -17,9 +18,21 @@ describe('Spec | Common | Utils | User Permissions', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it returns all a users team associations', () => {
+    const expected = Object.keys(teamMember.teams);
+    const actual = util.getTeams(teamMember.teams);
+    expect(actual).toEqual(expected);
+  });
+
   test('it returns all a users team lead properties', () => {
     const expected = Object.keys(Object.values(teamLead.teams)[0]);
     const actual = util.getLeadershipProperties(teamLead.teams);
+    expect(actual).toEqual(expected);
+  });
+
+  test('it returns teams for a team lead user', () => {
+    const expected = [Object.keys(teamLead.teams)[0]];
+    const actual = util.getLeadershipTeams(teamLead.teams);
     expect(actual).toEqual(expected);
   });
 

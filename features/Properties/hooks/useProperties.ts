@@ -45,17 +45,15 @@ export default function useProperties(
 
     if (propertyIds.length > 10) {
       propertyIds.splice(10);
-      // Check if we have ids more than 10 then we should log it in browser
-      // eslint-disable-next-line no-console
-      console.warn('Could not load all the properties');
-      // Also send error report
-      /* eslint-disable */
-      errorReports.send(
-        /* eslint-enable */
-        new Error(
-          `${PREFIX} User with ${permissionLevel} cannot load all the properties`
-        )
+
+      // Log issue and send error report
+      // of user's missing properties
+      const wrappedErr = Error(
+        `${PREFIX} User with ${permissionLevel} cannot load all the properties`
       );
+      // eslint-disable-next-line no-console
+      console.warn(wrappedErr);
+      errorReports.send(wrappedErr); // eslint-disable-line
     }
 
     const result = propertiesApi.queryRecords(firestore, propertyIds);

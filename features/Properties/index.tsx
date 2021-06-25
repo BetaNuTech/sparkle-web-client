@@ -45,7 +45,11 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     firestore,
     user
   );
-  const { status: teamsStatus, data: teams, memo: teamsMemo } = useTeams(user);
+  const {
+    status: teamsStatus,
+    data: teams,
+    memo: teamsMemo
+  } = useTeams(firestore, user);
   const [sortedProperties, setSortedProperties] = useState([]);
 
   // User notifications setup

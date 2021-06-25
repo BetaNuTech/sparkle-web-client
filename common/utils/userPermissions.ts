@@ -16,7 +16,21 @@ export const getLeadershipProperties = (userTeams: any = {}): Array<string> => {
   );
 };
 
-// Create array of all a users property memberships
+// Get all teams of users where user's teams
+// has properties linked to it
+export const getLeadershipTeams = (userTeams: any = {}): Array<string> => {
+  if (typeof userTeams !== 'object' || Array.isArray(userTeams)) {
+    throw TypeError(`expected users teams to be an object. Got : ${userTeams}`);
+  }
+
+  return Object.keys(userTeams).filter(
+    (team) =>
+      typeof userTeams[team] === 'object' &&
+      Object.keys(userTeams[team]).length > 0
+  );
+};
+
+// Create array of all a users property memberships id's
 export const getProperties = (userProperties: any = {}): Array<string> => {
   if (typeof userProperties !== 'object' || Array.isArray(userProperties)) {
     throw TypeError(
@@ -25,6 +39,17 @@ export const getProperties = (userProperties: any = {}): Array<string> => {
   }
 
   return Object.keys(userProperties || {});
+};
+
+// Create array of all a users team leaderships/memberships id's
+export const getTeams = (userTeams: any = {}): Array<string> => {
+  if (typeof userTeams !== 'object' || Array.isArray(userTeams)) {
+    throw TypeError(
+      `expected users properties to be an object. Got : ${userTeams}`
+    );
+  }
+
+  return Object.keys(userTeams || {});
 };
 
 // Discovers the permission level of a user
