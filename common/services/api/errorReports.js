@@ -4,8 +4,9 @@ import getConfig from 'next/config';
 import { firebase } from '../../utils/connectFirebase';
 
 const PREFIX = 'services: api: errorReports:';
-const { publicRuntimeConfig } = getConfig();
-const APP_VERSION = publicRuntimeConfig.appVersion;
+const firebaseConfig = getConfig() || {};
+const publicRuntimeConfig = firebaseConfig.publicRuntimeConfig || {};
+const APP_VERSION = publicRuntimeConfig.appVersion || 'v0.0.0';
 
 /**
  * POST an Error Report request
@@ -44,7 +45,7 @@ const postRequest = (authToken, err) => {
  * @param  {Error} err
  * @return {Promise}
  */
-export default async function sendErrorReport(err) {
+export const send = async function sendErrorReport(err) {
   assert(err instanceof Error, 'has error instance');
   const auth = firebase.auth();
 
@@ -62,4 +63,6 @@ export default async function sendErrorReport(err) {
   }
 
   return postRequest(authToken, err).catch(() => {}); // ignore api errors
-}
+};
+
+export default { send };

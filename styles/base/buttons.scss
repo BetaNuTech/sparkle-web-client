@@ -159,6 +159,9 @@
   &.dark {
     @include button-style($dark-color, auto);
   }
+  &.gray {
+    @include button-style($gray, auto);
+  }
 
   @if $button-style != hollow {
     &.hollow {

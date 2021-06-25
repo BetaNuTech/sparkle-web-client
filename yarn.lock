@@ -1166,6 +1166,12 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-toast-notifications@^2.4.1":
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/@types/react-toast-notifications/-/react-toast-notifications-2.4.1.tgz#6f68fa864215e2abe1b8a8b5c89b18b34935bb8d"
+  dependencies:
+    react-toast-notifications "*"
+
 "@types/react@*", "@types/react@>=16.9.0", "@types/react@^17.0.11":
   version "17.0.11"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.11.tgz#67fcd0ddbf5a0b083a0f94e926c7d63f3b836451"
@@ -5215,7 +5221,7 @@ react-test-renderer@^16.0.0-0:
     react-is "^16.8.6"
     scheduler "^0.19.1"
 
-react-toast-notifications@^2.4.4:
+react-toast-notifications@*, react-toast-notifications@^2.4.4:
   version "2.4.4"
   resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.4.4.tgz#a4b46195b437f312d72f552073957e3a1916f1ab"
   dependencies:

@@ -1,5 +1,6 @@
-import '../styles/app.scss';
 import { FirebaseAppProvider } from 'reactfire';
+import { ToastProvider } from 'react-toast-notifications';
+import '../styles/app.scss';
 import { ProvideAuth } from '../navigation/Auth/AuthProvider';
 import { PrivateRoute } from '../navigation/Auth/PrivateRoute';
 import { NextHeader } from '../common/NextHeader';
@@ -9,12 +10,14 @@ import firebaseConfig from '../config/firebase';
 function MyApp({ Component, pageProps }) {
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <ProvideAuth>
-        <PrivateRoute>
-          <NextHeader />
-          <Component {...pageProps} />
-        </PrivateRoute>
-      </ProvideAuth>
+      <ToastProvider>
+        <ProvideAuth>
+          <PrivateRoute>
+            <NextHeader />
+            <Component {...pageProps} />
+          </PrivateRoute>
+        </ProvideAuth>
+      </ToastProvider>
     </FirebaseAppProvider>
   );
 }

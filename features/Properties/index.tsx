@@ -1,5 +1,6 @@
 import { FunctionComponent, useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import { useFirestore } from 'reactfire';
 import calculateTeamValues from './utils/calculateTeamValues';
 import {
   sorts,
@@ -9,14 +10,18 @@ import {
 import { useSortBy, useSortDir } from './hooks/sorting';
 import useTeams from './hooks/useTeams';
 import useProperties from './hooks/useProperties';
+import useDeleteProperty from './hooks/useDeleteProperty';
+import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
+import userModel from '../../common/models/user';
+import propertyModel from '../../common/models/property';
+import notifications from '../../common/services/notifications'; // eslint-disable-line
+import breakpoints from '../../config/breakpoints';
 import styles from './styles.module.scss';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { ProfileList } from './ProfileList';
 import { MobileHeader } from './MobileHeader';
 import MobileLayout from './MobileLayout';
-import userModel from '../../common/models/user';
-import breakpoints from '../../config/breakpoints';
 
 interface PropertiesModel {
   user: userModel;
@@ -32,12 +37,34 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   isStaging,
   toggleNavOpen
 }) => {
+  const firestore = useFirestore();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
   const [sortBy, setSortBy] = useSortBy();
   const [sortDir, setSortDir] = useSortDir();
   const { data: properties, memo: propertiesMemo } = useProperties(user);
   const { status: teamsStatus, data: teams, memo: teamsMemo } = useTeams(user);
   const [sortedProperties, setSortedProperties] = useState([]);
+
+  // User notifications setup
+  /* eslint-disable */
+  const sendNotification = notifications.createPublisher(useNotifications());
+  /* eslint-enable */
+
+  // Queue and Delete Property
+  const [isDeletePropertyPromptVisible, setDeletePropertyPromptVisible] =
+    useState(false);
+  const { queuePropertyForDelete, confirmPropertyDelete } = useDeleteProperty(
+    firestore,
+    sendNotification
+  );
+  const openPropertyDeletePrompt = (property: propertyModel) => {
+    queuePropertyForDelete(property);
+    setDeletePropertyPromptVisible(true);
+  };
+  const closeDeletePropertyPrompt = () => {
+    setDeletePropertyPromptVisible(false);
+    queuePropertyForDelete(null);
+  };
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -112,13 +139,15 @@ const Properties: FunctionComponent<PropertiesModel> = ({
             {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
           </div>
 
-          <div className={styles.properties__mobile}>
-            <MobileLayout
-              properties={sortedProperties}
-              teams={teams}
-              teamCalculatedValues={teamCalculatedValues}
-            />
-          </div>
+          <MobileLayout
+            properties={sortedProperties}
+            teams={teams}
+            teamCalculatedValues={teamCalculatedValues}
+            isDeletePropertyPromptVisible={isDeletePropertyPromptVisible}
+            confirmPropertyDelete={confirmPropertyDelete}
+            openPropertyDeletePrompt={openPropertyDeletePrompt}
+            closeDeletePropertyPrompt={closeDeletePropertyPrompt}
+          />
         </>
       )}
 

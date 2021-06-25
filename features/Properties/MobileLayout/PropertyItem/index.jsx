@@ -8,25 +8,10 @@ import { SwipeReveal } from '../SwipeReveal';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 
-export const PropertyItem = ({ property }) => {
+export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
   useSwipeReveal(ref, setIsSwipeOpen);
-
-  const onDeleteProperty = () => {
-    /**
-     * On click of delete property action
-     * This is handled in common DeleteConfirmModal component
-     */
-    const event = new CustomEvent('deleteConfirm', {
-      type: 'property',
-      detail: {
-        elRef: ref,
-        property
-      }
-    });
-    document.dispatchEvent(event);
-  };
 
   return (
     <div ref={ref} className={styles.propertyItem} data-testid="property-item">
@@ -99,9 +84,13 @@ export const PropertyItem = ({ property }) => {
         </Link>
       </div>
 
-      <SwipeReveal onDelete={onDeleteProperty} />
+      <SwipeReveal onDelete={() => onQueuePropertyDelete(property)} />
     </div>
   );
+};
+
+PropertyItem.defaultProps = {
+  onQueuePropertyDelete: () => {} // TODO require property
 };
 
 PropertyItem.propTypes = {
@@ -114,5 +103,6 @@ PropertyItem.propTypes = {
     state: PropTypes.string,
     lastInspectionDate: PropTypes.number,
     lastInspectionScore: PropTypes.number
-  }).isRequired
+  }).isRequired,
+  onQueuePropertyDelete: PropTypes.func
 };
