@@ -79,8 +79,8 @@ $mobile-landscape-max-width: rem-calc(875);
 /// Layout Breakpoints
 /// @type Map<Number>
 $breakpoints: (
-  "tablet": $tablet-breakpoint,
-  "large-tablet": $tablet-large-breakpoint,
-  "desktop": $desktop-breakpoint,
-  "large-desktop": $large-desktop-breakpoint,
+  'tablet': $tablet-breakpoint,
+  'large-tablet': $tablet-large-breakpoint,
+  'desktop': $desktop-breakpoint,
+  'large-desktop': $large-desktop-breakpoint
 );

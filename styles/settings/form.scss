@@ -1,0 +1,50 @@
+// Basic form variables
+$form-fontsize: 0.9rem;
+$form-padding: 0.3rem;
+
+$input-color: #000 !default;
+$input-color-hover: $input-color !default;
+$input-color-focus: $input-color !default;
+$input-background: #fff !default;
+$input-background-hover: $input-background !default;
+$input-background-focus: $input-background !default;
+$input-background-disabled: smartscale($input-background) !default;
+$input-border: 1px solid #ccc !default;
+$input-border-hover: 1px solid #bbb !default;
+$input-border-focus: 1px solid #999 !default;
+$input-cursor-disabled: not-allowed !default;
+
+// Select menus
+$select-color: #000 !default;
+$select-background: #fafafa !default;
+$select-background-hover: smartscale($select-background, 4%) !default;
+$select-arrow: true !default;
+$select-arrow-color: $select-color !default;
+
+// Labels
+$form-label-fontsize: 0.9rem !default;
+$form-label-margin: 0.5rem !default;
+$form-label-color: #333 !default;
+
+// Inline labels
+$inlinelabel-color: #333 !default;
+$inlinelabel-background: #eee !default;
+$inlinelabel-border: $input-border !default;
+
+// Range slider
+$slider-background: #ddd !default;
+$slider-height: 1rem !default;
+$slider-radius: 0px !default;
+$slider-thumb-height: 1.5rem !default;
+$slider-thumb-color: $primary-color !default;
+$slider-thumb-radius: 0px !default;
+
+// Progress and meter
+$meter-height: 1.5rem !default;
+$meter-background: #ccc !default;
+$meter-fill: $primary-color !default;
+$meter-fill-high: $success-color !default;
+$meter-fill-medium: #e7cf00 !default;
+$meter-fill-low: $alert-color !default;
+$meter-radius: 0 !default;
+///
