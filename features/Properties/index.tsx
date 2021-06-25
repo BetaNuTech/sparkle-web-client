@@ -41,7 +41,10 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
   const [sortBy, setSortBy] = useSortBy();
   const [sortDir, setSortDir] = useSortDir();
-  const { data: properties, memo: propertiesMemo } = useProperties(user);
+  const { data: properties, memo: propertiesMemo } = useProperties(
+    firestore,
+    user
+  );
   const { status: teamsStatus, data: teams, memo: teamsMemo } = useTeams(user);
   const [sortedProperties, setSortedProperties] = useState([]);
 
