@@ -4,7 +4,7 @@ import '../styles/app.scss';
 import { ProvideAuth } from '../navigation/Auth/AuthProvider';
 import { PrivateRoute } from '../navigation/Auth/PrivateRoute';
 import { NextHeader } from '../common/NextHeader';
-import sendErrorReport from '../common/services/api/errorReports';
+import { sendErrorReport } from '../common/services/api/errorReports';
 import firebaseConfig from '../config/firebase';
 
 function MyApp({ Component, pageProps }) {
