@@ -1,5 +1,47 @@
 /************
+* Settings
+*************/
+@import 'tools/rem-calc';
+@import 'settings/globals';
+@import 'settings/buttons';
+@import 'settings/form';
+@import 'settings/layouts';
+@import 'settings/typography';
+
+/************
+* Tools
+*************/
+@import 'tools/media-query';
+
+/************
 * Base
 *************/
 @import 'base/normalize';
 @import 'base/nextjs';
+@import 'base/all';
+@import 'base/buttons';
+@import 'base/forms';
+@import 'base/headings';
+@import 'base/images';
+@import 'base/lists';
+
+/************
+* Trumps
+*************/
+@import 'trumps/backgrounds';
+@import 'trumps/borders';
+@import 'trumps/colors';
+@import 'trumps/cursors';
+@import 'trumps/display';
+@import 'trumps/flex';
+@import 'trumps/layouts';
+@import 'trumps/margins';
+@import 'trumps/opacities';
+@import 'trumps/outlines';
+@import 'trumps/overflows';
+@import 'trumps/paddings';
+@import 'trumps/positions';
+@import 'trumps/svg';
+@import 'trumps/text';
+@import 'trumps/transforms';
+@import 'trumps/transitions';

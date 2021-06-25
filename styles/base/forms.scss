@@ -1,0 +1,161 @@
+input[type='text'],
+input[type='password'],
+input[type='date'],
+input[type='datetime'],
+input[type='datetime-local'],
+input[type='month'],
+input[type='week'],
+input[type='email'],
+input[type='number'],
+input[type='search'],
+input[type='tel'],
+input[type='time'],
+input[type='url'],
+input[type='color'],
+textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: block;
+  width: 100%;
+  height: 1.86rem;
+  padding: $form-padding;
+  margin: 0 0 $global-padding 0;
+  border: $input-border;
+  border-radius: 0;
+  background: $input-background;
+  color: $input-color;
+  font-size: $form-fontsize;
+  -webkit-font-smoothing: antialiased;
+  vertical-align: middle;
+
+  &:hover {
+    border: $input-border-hover;
+    background: $input-background-hover;
+    color: $input-color-hover;
+  }
+  &:focus {
+    outline: 0;
+    border: $input-border-focus;
+    background: $input-background-focus;
+    color: $input-color-focus;
+  }
+
+  label > & {
+    margin-top: $form-label-margin;
+  }
+}
+
+// Override the content-box declaration set by Normalize
+input[type='search'] {
+  box-sizing: border-box;
+}
+
+// Disabled state
+input,
+textarea {
+  &.disabled,
+  &[disabled],
+  &[readonly],
+  fieldset[disabled] & {
+    cursor: $input-cursor-disabled;
+
+    &,
+    &:hover {
+      background-color: $input-background-disabled;
+    }
+  }
+}
+
+// Labels
+// - - - - - - - - - - - - - - - - - - - - - - - - -
+label {
+  display: block;
+  font-size: $form-label-fontsize;
+  margin-bottom: $form-label-margin;
+  color: $form-label-color;
+
+  > input,
+  > textarea {
+    margin-top: $form-label-margin;
+  }
+}
+
+// Checkbox/radio buttons
+// - - - - - - - - - - - - - - - - - - - - - - - - -
+input[type='checkbox'],
+input[type='radio'] {
+  width: 1rem;
+  height: 1rem;
+
+  // Input inside of a label
+  label > & {
+    margin-right: $form-padding * 0.5;
+  }
+
+  // Input next to a label
+  & + label {
+    display: inline-block;
+    margin-left: $form-padding;
+    margin-right: $form-padding * 2;
+    margin-bottom: 0;
+    vertical-align: baseline;
+  }
+}
+
+// Text areas
+// - - - - - - - - - - - - - - - - - - - - - - - - -
+textarea {
+  height: auto;
+  width: 100%;
+  min-height: 50px;
+}
+
+// Select menus
+// - - - - - - - - - - - - - - - - - - - - - - - - -
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: block;
+  width: 100%;
+  height: 1.86rem;
+  padding: $form-padding;
+  margin: 0 0 $global-padding 0;
+  font-size: $form-fontsize;
+  color: $select-color;
+  border-radius: 0;
+  border: $input-border;
+
+  background: #fafafa
+    url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20version%3D%221.1%22%20width%3D%2232%22%20height%3D%2224%22%20viewBox%3D%220%200%2032%2024%22%3E%3Cpolygon%20points%3D%220%2C0%2032%2C0%2016%2C24%22%20style%3D%22fill%3A%20black%22%3E%3C/polygon%3E%3C/svg%3E')
+    right 10px center no-repeat;
+  background-size: 8px 8px;
+  padding-right: rem-calc(18px) + $form-padding;
+
+  &:hover {
+    background-color: $select-background-hover;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  // Remove the dropdown arrow added in IE10/11
+  &::-ms-expand {
+    display: none;
+  }
+}
+
+// Number inputs
+// - - - - - - - - - - - - - - - - - - - - - - - - -
+input[type='number'] {
+  &::-webkit-inner-spin-button {
+  }
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    background: $primary-color;
+  }
+}
+
+[contenteditable] {
+  outline-color: $info-color;
+}

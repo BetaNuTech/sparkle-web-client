@@ -19,7 +19,7 @@
 }
 
 .mainSide {
-	width: 100vw;
+	width: calc(100% - #{$sliderNavWidth + rem-calc(15)}); // fix extra width
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;

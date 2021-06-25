@@ -1,0 +1,69 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $header-font-family;
+  font-weight: $header-font-weight;
+  font-style: $header-font-style;
+  color: $header-font-color;
+  text-rendering: $header-text-rendering;
+  margin-top: $header-top-margin;
+  margin-bottom: $header-bottom-margin;
+  line-height: $header-line-height;
+
+  small {
+    font-size: $small-font-size;
+    color: $small-font-color;
+    line-height: 0;
+  }
+}
+
+h1 {
+  font-size: $h1-font-size - $h1-font-reduction;
+}
+h2 {
+  font-size: $h2-font-size - $h2-font-reduction;
+}
+h3 {
+  font-size: $h3-font-size - $h3-font-reduction;
+}
+h4 {
+  font-size: $h4-font-size - $h4-font-reduction;
+}
+h5 {
+  font-size: $h5-font-size - $h5-font-reduction;
+}
+h6 {
+  font-size: $h6-font-size - $h6-font-reduction;
+}
+
+@include media-query(tablet) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: $header-line-height;
+  }
+  h1 {
+    font-size: $h1-font-size;
+  }
+  h2 {
+    font-size: $h2-font-size;
+  }
+  h3 {
+    font-size: $h3-font-size;
+  }
+  h4 {
+    font-size: $h4-font-size;
+  }
+  h5 {
+    font-size: $h5-font-size;
+  }
+  h6 {
+    font-size: $h6-font-size;
+  }
+}
