@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import React, { useState } from 'react';
-import styles from './MainLayout.module.scss';
+import styles from './styles.module.scss';
 import { SlideNav } from '../SlideNav';
 import { useNavigatorOnline } from '../utils/getOnlineStatus';
 

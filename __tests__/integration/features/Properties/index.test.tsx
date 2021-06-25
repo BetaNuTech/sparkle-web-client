@@ -1,7 +1,10 @@
 import sinon from 'sinon';
+import { FirebaseAppProvider } from 'reactfire';
 import { render as rtlRender, act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ToastProvider } from 'react-toast-notifications';
 import { Context as ResponsiveContext } from 'react-responsive';
+import firebaseConfig from '../../../../config/firebase';
 import mockTeams from '../../../../__mocks__/teams';
 import mockPropertes from '../../../../__mocks__/properties';
 import { admin as user } from '../../../../__mocks__/users';
@@ -38,9 +41,13 @@ function render(ui: any, options: any = {}) {
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
-    <ResponsiveContext.Provider value={{ width: contextWidth }}>
-      {ui}
-    </ResponsiveContext.Provider>,
+    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+      <ToastProvider>
+        <ResponsiveContext.Provider value={{ width: contextWidth }}>
+          {ui}
+        </ResponsiveContext.Provider>
+      </ToastProvider>
+    </FirebaseAppProvider>,
     options
   );
 }

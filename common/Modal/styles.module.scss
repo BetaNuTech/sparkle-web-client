@@ -1,0 +1,380 @@
+@import '../../styles/index.scss';
+
+.modal {
+  margin: auto;
+  width: 53%;
+  max-height: 66.66%;
+  padding-top: $global-mlg-padding;
+  background-color: $white;
+  border-radius: $global-radius;
+  overflow: visible;
+
+  // Center horizontally/vertically
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: $sliderNavWidth;
+  right: 0;
+  z-index: 1001;
+}
+
+//
+// Alternative Layouts
+//
+.modal--vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.modal--extended {
+  width: rem-calc(850);
+  max-width: 95%;
+  max-height: 90%;
+}
+
+.modal--viewport {
+  width: 100%;
+  height: 100%;
+  max-width: unset;
+  max-height: unset;
+}
+
+//
+// Primary Elements
+//
+
+.modal__header {
+  display: flex;
+  flex: 0 1 auto;
+  border-bottom: 1px solid $gray-lighter;
+  margin-left: $global-lg-padding;
+  margin-right: $global-lg-padding;
+
+  &.-noBorder {
+    border-width: 0;
+  }
+
+  &__icon,
+  &__icon > svg {
+    display: block;
+    height: rem-calc(43);
+    max-width: rem-calc(43);
+    margin-right: $global-padding;
+  }
+}
+
+// Headings
+.modal__heading {
+  font-weight: 400;
+  font-size: rem-calc(30);
+  line-height: 1.25;
+  color: $black;
+}
+.modal__subHeading {
+  margin-bottom: $global-mlg-padding;
+  font-size: 1rem;
+  line-height: 1.25;
+  color: $gray-med-dark-2;
+}
+.modal__formLabel {
+  margin: $global-padding 0 $global-sm-padding;
+  font-size: $medium-font-size;
+  font-weight: bold;
+  color: $gray-med-dark;
+}
+
+.modal__description {
+  margin-bottom: 0;
+  color: $gray-light;
+  font-size: $medium-font-size;
+}
+
+// Form Fields
+.modal__search {
+  flex: 0 1 auto;
+  background-color: $gray-lighter;
+  padding: $global-sm-padding $global-padding;
+  position: relative;
+}
+
+.modal__fullField {
+  padding: $global-padding;
+  margin-bottom: 0;
+  resize: vertical; // Prevent horiontal resizing
+
+  &.-isRequired {
+    background-color: $alert-light-color;
+  }
+}
+
+// Buttons
+.modal__closeButton {
+  position: absolute;
+  color: #aaa;
+  top: -1.8 * $global-padding;
+  right: -2.1 * $global-padding;
+  font-size: 2.5em;
+  line-height: 0.5;
+  background-color: transparent;
+  border-width: 0;
+  cursor: pointer;
+
+  &:focus {
+    border-width: 0;
+    outline: none;
+  }
+
+  &.-topLeft {
+    top: $global-sm-padding;
+    left: $global-sm-padding;
+    right: auto;
+  }
+}
+
+.modal__main__footerClose {
+  padding-left: 0;
+  color: $gray-med-dark;
+  font-weight: bold;
+  font-size: 1rem;
+  background-color: transparent;
+  border-width: 0;
+  outline-width: 0;
+}
+
+.modal__main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  overflow: auto;
+
+  &.-twoColumn {
+    flex-direction: row;
+  }
+
+  &.-trelloList {
+    height: calc(100% - 91px);
+  }
+  &.-signature {
+    height: calc(100% - 45px);
+  }
+}
+
+.modal__main__content {
+  flex: 1 1 auto;
+  padding: $global-padding $global-lg-padding $global-lg-padding;
+  overflow: auto;
+}
+
+.modal__main__sidebar {
+  flex: 0 1 33.3333%;
+  padding: $global-padding 0 $global-lg-padding $global-lg-padding;
+}
+
+.modal__main__footer {
+  display: flex;
+  height: rem-calc(92);
+  align-items: center;
+  justify-content: space-between;
+  padding: $global-sm-padding $global-lg-padding;
+}
+
+.modal__mainFooterbutton {
+  margin-bottom: 0;
+
+  &:last-child {
+    margin-right: 0;
+    margin-left: auto;
+  }
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: $sliderNavWidth;
+  z-index: 1000;
+  background-color: rgba(51, 51, 51, 0.7);
+  cursor: pointer;
+}
+
+//
+// Prompt Modal UI
+//
+
+.modalPrompt {
+  @extend .modal;
+  opacity: 0;
+  padding-top: $global-padding;
+
+  // Fix width
+  width: rem-calc(500);
+  max-width: 53%;
+
+  // Cenver vertically/horizontally
+  top: 10%;
+  right: 0;
+  bottom: auto;
+  left: $sliderNavWidth;
+  margin: auto;
+
+  // Activate styles
+  animation-name: flipInY;
+  animation-duration: 400ms;
+  animation-delay: 300ms;
+  animation-fill-mode: forwards;
+  transform: translateY(-50%);
+}
+
+.modalPrompt__header {
+  @extend .modal__header;
+  display: flex;
+  margin: 0 $global-padding;
+  align-items: center;
+  border-bottom-width: 0;
+}
+
+.modalPrompt__heading {
+  @extend .modal__heading;
+  font-size: rem-calc(18);
+  margin-bottom: 0;
+}
+
+.modalPrompt__main__content {
+  @extend .modal__main__content;
+  padding: $global-padding;
+}
+
+.modalPrompt__main__footer {
+  @extend .modal__main__footer;
+  height: auto;
+  padding: $global-padding 0 $global-padding;
+  margin: 0 $global-padding;
+  border-top: 1px solid $gray;
+}
+
+//
+// Modal Gallary UI
+//
+
+.modalGallery {
+  width: 100%;
+  height: 100%;
+  max-width: unset;
+  max-height: unset;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: $global-sm-padding;
+  background-color: $black;
+}
+
+.modalGallery__header {
+  @extend .modal__header;
+  border-bottom-width: 0;
+}
+
+.modalGallery__heading {
+  @extend .modal__heading;
+  margin: rem-calc(6) 0 0;
+  font-size: $medium-font-size;
+  font-weight: bold;
+  color: $white;
+  text-align: center;
+}
+
+.modalGallery__slider {
+  display: flex;
+  position: relative;
+  flex-wrap: nowrap;
+  flex-grow: 1;
+  max-height: calc(100% - 50px);
+  transform: translateX(0);
+
+  list-style: none;
+  margin: 0;
+  overflow: visible;
+
+  &:not(.is-dragging) {
+    transition: transform 300ms ease-out;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    min-width: 100%;
+    align-self: center;
+    margin-right: $global-lg-padding;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.modalGallery__galleryImage {
+  margin: 0 auto;
+}
+
+.modalGallery__galleryButton {
+  @extend .-unstyledButton;
+  display: flex;
+  position: absolute;
+  top: 50%;
+  margin-top: -10px;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.-previous {
+    padding-left: $global-sm-padding;
+  }
+
+  &.-next {
+    padding-right: $global-sm-padding;
+    left: auto;
+    right: 0;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+  }
+}
+
+.modalGallery__galleryCaption {
+  color: $white;
+  padding: 0 0 0 $global-sm-padding;
+}
+
+@keyframes flipInY {
+  from {
+    transform: perspective(400px) rotate3d(0, 1, 0, 90deg);
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -20deg);
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    transform: perspective(400px) rotate3d(0, 1, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    transform: perspective(400px) rotate3d(0, 1, 0, -5deg);
+  }
+
+  to {
+    transform: perspective(400px);
+    opacity: 1;
+  }
+}

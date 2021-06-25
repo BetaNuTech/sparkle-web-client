@@ -2,7 +2,7 @@
 
 .wrapper {
 	display: flex;
-	width: calc(100vw + #{$sliderNavWidth});
+	width: calc(100% + #{$sliderNavWidth});
 	transform: translateX(#{-1 * $sliderNavWidth});
 	overflow: hidden;
 	transition: 0.25s transform linear;
@@ -19,7 +19,7 @@
 }
 
 .mainSide {
-	width: calc(100% - #{$sliderNavWidth + rem-calc(15)}); // fix extra width
+	width: calc(100% - #{$sliderNavWidth}); // fix offseting issues w/ wrapper
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
