@@ -1,0 +1,51 @@
+.stickyBoundingBox__reveal {
+  display: block;
+  margin-bottom: 0;
+
+  // NOTE required for sticky header's
+  //      `postion: sticky` to work
+  overflow: visible !important;
+
+  // NOTE fail-safe to allow lazyload
+  //      content to render, height
+  //      should be set separately by
+  //      the component's styles
+  min-height: 1px;
+
+  //
+  // Individual Use Cases
+  //
+
+  &.-templateItem {
+    min-height: rem-calc(57);
+  }
+
+  &.-inspectionItem {
+    // min-height: rem-calc(112);
+  }
+
+  &.-teamItem,
+  &.-deficientItem {
+    min-height: rem-calc(81);
+  }
+
+  &.-propertyItem {
+    min-height: rem-calc(134);
+  }
+
+  &.-yardiResident {
+    min-height: rem-calc(197);
+  }
+
+  &.-yardiCollection {
+    min-height: rem-calc(458);
+  }
+
+  &.-yardiWorkOrder {
+    min-height: rem-calc(250);
+  }
+
+  &.-propertyTemplate {
+    min-height: rem-calc(39);
+  }
+}

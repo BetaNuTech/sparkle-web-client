@@ -1,0 +1,29 @@
+.stickyBoundingBox {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  position: relative;
+  overflow: auto;
+
+  &.-shrink {
+    flex: 1 1 0%;
+  }
+
+  &__list {
+    @extend .spk-profile-list;
+  }
+
+  &__listItem {
+    display: block;
+    margin-bottom: 0;
+  }
+
+  &__editableRow {
+    display: flex;
+    padding: rem-calc(5) $global-padding rem-calc(3);
+    margin-right: rem-calc(2);
+    width: 100%;
+  }
+}

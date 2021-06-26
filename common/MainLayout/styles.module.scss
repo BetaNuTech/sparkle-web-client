@@ -19,7 +19,7 @@
 }
 
 .mainSide {
-	width: calc(100% - #{$sliderNavWidth}); // fix offseting issues w/ wrapper
+	width: calc(100% - #{$sliderNavWidth}); // fix extra width
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
