@@ -1,13 +1,18 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import clsx from 'clsx';
 import styles from './styles.module.scss';
 import { sorts } from '../Properties/utils/propertiesSorting';
 import { useSortBy } from '../Properties/hooks/sorting';
 import { MobileHeader } from '../Properties/MobileHeader';
-import {fullProperty} from '../../__mocks__/properties';
-import Header from './Header';
+import { fullProperty } from '../../__mocks__/properties';
+import inspectionsMock from '../../__mocks__/inspections';
+import templateCategoriesMock from '../../__mocks__/templateCategories';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
+import SortIcon from '../../public/icons/sparkle/sort.svg';
+import Header from './Header';
+import Inspection from './Inspection';
 
 interface PropertiesModel {
   user: userModel;
@@ -23,7 +28,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   toggleNavOpen
 }) => {
   const [sortBy, setSortBy] = useSortBy();
-  const propertyProfile = {...fullProperty};
+  const propertyProfile = { ...fullProperty };
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -32,7 +37,6 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-
 
   // Recalculate properties when properties or teams changes.
 
@@ -58,6 +62,29 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           />
           <div className={styles.propertyProfile}>
             <Header property={propertyProfile} isMobile />
+            <div
+              className={clsx(
+                styles.propertyProfile__main,
+                styles.stickyBoundingBox
+              )}
+            >
+              <Inspection
+                inspections={inspectionsMock}
+                templateCategories={templateCategoriesMock}
+              />
+            </div>
+            <footer className={styles['spk-footer']}>
+              <button
+                className={clsx(
+                  styles['spk-non-button'],
+                  styles['-pl-sm'],
+                  styles['-pr-sm'],
+                  styles['-outline-width-none']
+                )}
+              >
+                <SortIcon />
+              </button>
+            </footer>
           </div>
         </>
       )}

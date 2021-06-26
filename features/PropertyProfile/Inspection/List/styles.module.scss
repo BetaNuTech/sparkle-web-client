@@ -1,0 +1,100 @@
+@import '../../../../styles/index.scss';
+
+.spk-property-inspections,
+.propertyProfile__inspectionsList {
+  @extend .spk-profile-list;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: $medium-small-font-size;
+
+  &__content {
+    transition: transform 400ms ease-out;
+  }
+
+  &__swipeOpen {
+    transform: translateX(rem-calc(-123));
+  }
+
+  &__swipe {
+    @extend %swipeReveal;
+  }
+
+  &__swipe_revealed &__swipe__hidden{
+    @extend %swipeReveal__hidden--reveal;
+  }
+
+  &__swipe__visible {
+    @extend .spk-profile-list__item;
+    @extend %swipeReveal__visible;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: $global-padding;
+    padding-right: $global-padding;
+    margin-bottom: 0;
+    background-color: $white;
+    overflow: visible;
+  }
+
+  &__swipe__hidden {
+    @extend %swipeReveal__hidden;
+
+    & .spk-flexy-button {
+      align-items: center;
+    }
+  }
+
+  &__overview {
+    display: block;
+    padding-left: 0;
+    flex-grow: auto;
+
+    &.-restrict-width {
+      max-width: 60%;
+    }
+
+    &__row {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+  }
+
+  &__visualizations {
+    display: flex;
+    flex: 0 1 auto;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    padding-left: 0;
+    font-size: $large-font-size;
+  }
+
+  &__score {
+    position: relative;
+    width: rem-calc(85);
+    z-index: 10;
+  }
+
+  &__completionChart {
+    position: relative;
+    width: rem-calc(55);
+    z-index: 10;
+  }
+
+  &__iosProgress {
+    position: relative;
+    width: rem-calc(96);
+    z-index: 10;
+  }
+
+  &__smallCopy {
+    display: block;
+    font-size: $medium-small-font-size;
+    white-space: nowrap;
+    margin-top: rem-calc(1);
+    margin-right: $global-sm-padding;
+  }
+}

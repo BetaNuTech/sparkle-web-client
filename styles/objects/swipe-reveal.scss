@@ -1,0 +1,33 @@
+%swipeReveal {
+  display: block;
+  overflow: hidden;
+  position: relative;
+}
+
+// Prevent hidden element from appearing onload
+%swipeReveal__hidden--reveal {
+  visibility: visible;
+}
+
+%swipeReveal__visible {
+  max-width: 100%;
+  position: relative;
+  z-index: 2;
+  transition: transform 400ms ease-out;
+}
+
+%swipeReveal__hidden {
+  display: flex;
+  flex-shrink: 1;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  visibility: hidden;
+  transition: all ease-in-out 0.3s;
+
+  > button {
+    align-items: center;
+  }
+}

@@ -14,6 +14,11 @@
 @import 'tools/media-query';
 
 /************
+* Base
+*************/
+@import 'base/buttons';
+
+/************
 * Objects
 *************/
 @import 'objects/labels';
@@ -21,3 +26,7 @@
 @import 'objects/list';
 @import 'objects/upload-form';
 @import 'objects/upload-primary';
+@import 'objects/spk-footer';
+@import 'objects/sticky-bounding-box';
+@import 'objects/sticky-bounding-box-reveal';
+@import 'objects/swipe-reveal';
