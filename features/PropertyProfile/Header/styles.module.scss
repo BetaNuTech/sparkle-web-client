@@ -11,8 +11,7 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
     align-items: center;
     min-height: rem-calc(100);
 
-    &::before,
-    &::after {
+    &::before {
       content: '';
       display: block;
       position: absolute;
@@ -20,16 +19,8 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
       bottom: 0;
       left: 0;
       right: 0;
-    }
-
-    &::before {
-      background: url(/icons/sparkle/banner-background.svg);
+      background: url(/icons/sparkle/banner-background-grey.svg);
       background-size: cover;
-      z-index: 0;
-    }
-
-    &::after {
-      background-color: rgba(93, 93, 93, 0.85);
       z-index: 0;
     }
 

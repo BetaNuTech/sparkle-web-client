@@ -13,6 +13,7 @@ import breakpoints from '../../config/breakpoints';
 import SortIcon from '../../public/icons/sparkle/sort.svg';
 import Header from './Header';
 import Inspection from './Inspection';
+import Overview from './Overview';
 
 interface PropertiesModel {
   user: userModel;
@@ -48,6 +49,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     // Update Property sort
     setSortBy(activeSortValue);
   };
+  // TODO: Add logic to check code and yardiAuthorizer
+  const isYardiConfigured = propertyProfile.code && true;
 
   return (
     <>
@@ -61,7 +64,11 @@ const Properties: FunctionComponent<PropertiesModel> = ({
             isStaging={isStaging}
           />
           <div className={styles.propertyProfile}>
-            <Header property={propertyProfile} isMobile />
+            <Header
+              property={propertyProfile}
+              isYardiConfigured={isYardiConfigured}
+              isMobile
+            />
             <div
               className={clsx(
                 styles.propertyProfile__main,
@@ -92,7 +99,15 @@ const Properties: FunctionComponent<PropertiesModel> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div className={styles.propertyProfile}>
-          <Header property={propertyProfile} />
+          <Header
+            property={propertyProfile}
+            isYardiConfigured={isYardiConfigured}
+          />
+          <Overview
+            property={propertyProfile}
+            inspections={inspectionsMock}
+            isYardiConfigured={isYardiConfigured}
+          />
         </div>
       )}
     </>
