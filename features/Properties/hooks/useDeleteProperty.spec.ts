@@ -65,7 +65,7 @@ describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('it sends error notification on unsuccessful delete', async () => {
+  test('it sends error report on unsuccessful delete', async () => {
     const expected = 'error';
     const [target] = properties;
     const sendNotification = sinon.spy();

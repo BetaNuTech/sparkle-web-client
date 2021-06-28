@@ -6,10 +6,12 @@ import teamModel from '../../../common/models/team';
 import TeamItem from './TeamItem';
 import { PropertyItem } from './PropertyItem';
 import DeletePropertyPrompt from './DeletePropertyPrompt';
+import DeleteTeamPrompt from './DeleteTeamPrompt';
 
 interface PropertiesMobileLayoutTeamWrapperModel {
   team: teamModel;
   teamCalculatedValues: Array<propertyMetaData>;
+  openDeletePrompt: (team: teamModel) => void;
 }
 
 interface PropertiesMobileLayoutModel {
@@ -20,17 +22,27 @@ interface PropertiesMobileLayoutModel {
   openPropertyDeletePrompt: (property: propertyModel) => void;
   closeDeletePropertyPrompt: () => void;
   confirmPropertyDelete: () => Promise<any>;
+  isDeleteTeamPromptVisible: boolean;
+  openTeamDeletePrompt: (team: teamModel) => void;
+  closeDeleteTeamPrompt: () => void;
+  confirmTeamDelete: () => Promise<any>;
 }
 
 // Wrapper around team items
 // to look associated property meta data
 const MobileLayoutTeamItemWrapper: FunctionComponent<PropertiesMobileLayoutTeamWrapperModel> =
-  ({ team, teamCalculatedValues }) => {
+  ({ team, teamCalculatedValues, openDeletePrompt }) => {
     const [propertiesMetaData] = teamCalculatedValues.filter(
       ({ team: teamId }) => teamId === team.id
     );
 
-    return <TeamItem team={team} teamCalculatedValues={propertiesMetaData} />;
+    return (
+      <TeamItem
+        team={team}
+        teamCalculatedValues={propertiesMetaData}
+        onQueueTeamDelete={openDeletePrompt}
+      />
+    );
   };
 
 // Mobile layout
@@ -41,7 +53,11 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
   isDeletePropertyPromptVisible,
   openPropertyDeletePrompt,
   closeDeletePropertyPrompt,
-  confirmPropertyDelete
+  confirmPropertyDelete,
+  isDeleteTeamPromptVisible,
+  openTeamDeletePrompt,
+  closeDeleteTeamPrompt,
+  confirmTeamDelete
 }) => (
   <>
     <ul
@@ -56,6 +72,7 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
               key={team.id}
               team={team}
               teamCalculatedValues={teamCalculatedValues}
+              openDeletePrompt={openTeamDeletePrompt}
             />
           ))}
         </li>
@@ -80,6 +97,12 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
       isVisible={isDeletePropertyPromptVisible}
       onClose={closeDeletePropertyPrompt}
       onConfirm={confirmPropertyDelete}
+    />
+
+    <DeleteTeamPrompt
+      isVisible={isDeleteTeamPromptVisible}
+      onClose={closeDeleteTeamPrompt}
+      onConfirm={confirmTeamDelete}
     />
   </>
 );
