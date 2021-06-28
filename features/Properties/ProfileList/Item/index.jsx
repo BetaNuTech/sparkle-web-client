@@ -10,7 +10,7 @@ export const Item = ({ property }) => (
     data-testid="property-item"
     data-property={property.id}
   >
-    <Link href="/properties">
+    <Link href={`/properties/${property.id}`}>
       <a className={styles.item__wrapper}>
         {/* Profile Picture */}
         <aside

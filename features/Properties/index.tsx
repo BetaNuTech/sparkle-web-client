@@ -11,9 +11,11 @@ import { useSortBy, useSortDir } from './hooks/sorting';
 import useTeams from './hooks/useTeams';
 import useProperties from './hooks/useProperties';
 import useDeleteProperty from './hooks/useDeleteProperty';
+import useDeleteTeam from './hooks/useDeleteTeam';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
 import propertyModel from '../../common/models/property';
+import teamModel from '../../common/models/team';
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import breakpoints from '../../config/breakpoints';
 import styles from './styles.module.scss';
@@ -71,6 +73,22 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const closeDeletePropertyPrompt = () => {
     setDeletePropertyPromptVisible(false);
     queuePropertyForDelete(null);
+  };
+
+  // Queue and Delete Team
+  const [isDeleteTeamPromptVisible, setDeleteTeamPromptVisible] =
+    useState(false);
+  const { queueTeamForDelete, confirmTeamDelete } = useDeleteTeam(
+    firestore,
+    sendNotification
+  );
+  const openTeamDeletePrompt = (team: teamModel) => {
+    queueTeamForDelete(team);
+    setDeleteTeamPromptVisible(true);
+  };
+  const closeDeleteTeamPrompt = () => {
+    setDeleteTeamPromptVisible(false);
+    queueTeamForDelete(null);
   };
 
   // Responsive queries
@@ -154,6 +172,10 @@ const Properties: FunctionComponent<PropertiesModel> = ({
             confirmPropertyDelete={confirmPropertyDelete}
             openPropertyDeletePrompt={openPropertyDeletePrompt}
             closeDeletePropertyPrompt={closeDeletePropertyPrompt}
+            isDeleteTeamPromptVisible={isDeleteTeamPromptVisible}
+            confirmTeamDelete={confirmTeamDelete}
+            openTeamDeletePrompt={openTeamDeletePrompt}
+            closeDeleteTeamPrompt={closeDeleteTeamPrompt}
           />
         </>
       )}

@@ -12,11 +12,13 @@ import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 interface MobileLayoutTeamItemModel {
   team: teamModel;
   teamCalculatedValues: propertyMetaData;
+  onQueueTeamDelete: (team: teamModel) => void;
 }
 
 const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   team,
-  teamCalculatedValues
+  teamCalculatedValues,
+  onQueueTeamDelete
 }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
@@ -37,7 +39,6 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             : styles.teamItem__content
         }
       >
-
         <Link href="/">
           <a className={styles.teamItem__link}>
             {/* Toggle Button */}
@@ -55,7 +56,9 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             >
               Deficient Items
               <TeamValues
-                numOfDeficientItems={teamCalculatedValues.totalNumOfDeficientItems}
+                numOfDeficientItems={
+                  teamCalculatedValues.totalNumOfDeficientItems
+                }
                 numOfFollowUpActionsForDeficientItems={
                   teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
                 }
@@ -69,8 +72,7 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         </Link>
       </div>
 
-      {/* TODO Add Delete */}
-      <SwipeReveal onDelete={() => ({})} />
+      <SwipeReveal onDelete={() => onQueueTeamDelete(team)} />
     </div>
   );
 };
