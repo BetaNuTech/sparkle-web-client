@@ -46,7 +46,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
             <span
               className={clsx(
                 styles.propertyProfile__header__label,
-                styles['-bgc-black']
+                '-bgc-black'
               )}
             >
               {property.numOfDeficientItems}
@@ -57,7 +57,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
             <span
               className={clsx(
                 styles.propertyProfile__header__label,
-                styles['-bgc-alert-secondary']
+                '-bgc-alert-secondary'
               )}
             >
               {property.numOfRequiredActionsForDeficientItems}
@@ -70,7 +70,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
             <span
               className={clsx(
                 styles.propertyProfile__header__label,
-                styles['-bgc-quaternary']
+                '-bgc-quaternary'
               )}
             >
               {property.numOfFollowUpActionsForDeficientItems}
