@@ -6,6 +6,7 @@ import templateCategories from '../../../../../../__mocks__/templateCategories';
 import ListItem from '../../../../../../features/PropertyProfile/Inspection/ListItem';
 import breakpoints from '../../../../../../config/breakpoints';
 import formats from '../../../../../../config/formats';
+import deepClone from '../../../../../helpers/deepClone';
 
 function render(ui: any, options = {}) {
   return rtlRender(
@@ -17,7 +18,7 @@ function render(ui: any, options = {}) {
 }
 
 describe('Integration | Features | Properties | Profile | Inspection | List Item', () => {
-  it('renders property profile inspection list item', () => {
+  it('renders', () => {
     const expected = 1;
     render(
       <ListItem
@@ -32,9 +33,9 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with Unknown inspector name', () => {
+  it('defaults to Unknown inspector name', () => {
     const expected = 'Unknown';
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.inspectorName = '';
 
     render(
@@ -51,9 +52,9 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with initial caps inspector name ', () => {
+  it('Adds initial caps to inspector name ', () => {
     const expected = 'Matt Jensen';
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.inspectorName = 'matt jensen';
 
     render(
@@ -70,9 +71,9 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with Unknown template name ', () => {
+  it('defaults to Unknown template name ', () => {
     const expected = 'Unknown';
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.templateName = '';
 
     render(
@@ -89,9 +90,9 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with Uncategorized template category name ', () => {
+  it('defaults to Uncategorized template category name ', () => {
     const expected = 'Uncategorized';
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.templateCategory = '';
 
     render(
@@ -108,10 +109,10 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with current date time if creation date not valid', () => {
+  it('defaults to current date time if creation date not valid', () => {
     const expected = moment().format(formats.userDateDisplayFormat);
     const expectedLength = expected.length;
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.creationDate = 0;
 
     render(
@@ -129,10 +130,10 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual.length).toEqual(expectedLength);
   });
 
-  it('renders property profile inspection list item with current date time if update date not valid', () => {
+  it('defaults to current date time if update date not valid', () => {
     const expected = moment().format(formats.userDateDisplayFormat);
     const expectedLength = expected.length;
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.updatedAt = 0;
 
     render(
@@ -150,9 +151,9 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual.length).toEqual(expectedLength);
   });
 
-  it('renders property profile inspection list item with red color if deficiencies exists', () => {
+  it('score is colored red if inspection has existing deficiencies', () => {
     const expected = '-c-red';
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.deficienciesExist = true;
 
     render(
@@ -169,9 +170,9 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with blue color if deficiencies exists', () => {
+  it('score is colored blue if isnpection does not have deficiencies', () => {
     const expected = '-c-blue';
-    const inspectionItem = { ...fullInspection };
+    const inspectionItem = deepClone(fullInspection);
     inspectionItem.deficienciesExist = false;
 
     render(
@@ -188,8 +189,8 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with score if inspection is completed', () => {
-    const inspectionItem = { ...fullInspection };
+  it('score appears instead of progress if inspection is completed', () => {
+    const inspectionItem = deepClone(fullInspection);
     const expected = `${Number(inspectionItem.score.toFixed(1))}%`;
     inspectionItem.inspectionCompleted = true;
 
@@ -207,8 +208,8 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('renders property profile inspection list item with score percentage if inspection is not completed', () => {
-    const inspectionItem = { ...fullInspection };
+  it('completion percentage appears if inspection is not completed', () => {
+    const inspectionItem = deepClone(fullInspection);
     const expected = `${Number(
       (
         (inspectionItem.itemsCompleted / inspectionItem.totalItems) *

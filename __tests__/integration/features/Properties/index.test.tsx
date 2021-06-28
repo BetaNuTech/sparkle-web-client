@@ -17,8 +17,7 @@ import teamsApi, {
 import Properties from '../../../../features/Properties';
 import breakpoints from '../../../../config/breakpoints';
 import { shuffle } from '../../../helpers/array';
-
-const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
+import deepClone from '../../../helpers/deepClone';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();

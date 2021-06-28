@@ -16,7 +16,10 @@ const InspectionList: FunctionComponent<Props> = ({
 }) => {
   if (inspections) {
     return (
-      <ul className={styles.propertyProfile__inspectionsList}>
+      <ul
+        className={styles.propertyProfile__inspectionsList}
+        data-testid="property-profile-mobile-inspections"
+      >
         {inspections.map((lineItem) => (
           <ListItem
             key={lineItem.id}

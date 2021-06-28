@@ -75,15 +75,16 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   styles.propertyProfile__inspectionsList__swipeOpen
               )}
             >
-              <span className={styles['spk-profile-list__item-link']}></span>
               <div
                 className={clsx(
-                  styles.propertyProfile__inspections__overview,
+                  styles.propertyProfile__inspectionsList__overview,
                   styles['-restrict-width']
                 )}
               >
                 <div
-                  className={styles.propertyProfile__inspections__overview__row}
+                  className={
+                    styles.propertyProfile__inspectionsList__overview__row
+                  }
                 >
                   <strong className="-c-black">Creator:</strong>{' '}
                   <span
@@ -94,7 +95,9 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
                 <div
-                  className={styles.propertyProfile__inspections__overview__row}
+                  className={
+                    styles.propertyProfile__inspectionsList__overview__row
+                  }
                 >
                   <strong className="-c-black">Date:</strong>{' '}
                   <span
@@ -105,7 +108,9 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
                 <div
-                  className={styles.propertyProfile__inspections__overview__row}
+                  className={
+                    styles.propertyProfile__inspectionsList__overview__row
+                  }
                 >
                   <strong className="-c-black">Updated:</strong>{' '}
                   <span
@@ -116,7 +121,9 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
                 <div
-                  className={styles.propertyProfile__inspections__overview__row}
+                  className={
+                    styles.propertyProfile__inspectionsList__overview__row
+                  }
                 >
                   <strong className="-c-black">Template:</strong>{' '}
                   <span
@@ -127,7 +134,9 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
                 <div
-                  className={styles.propertyProfile__inspections__overview__row}
+                  className={
+                    styles.propertyProfile__inspectionsList__overview__row
+                  }
                 >
                   <strong className="-c-black">Category:</strong>{' '}
                   <span
@@ -139,12 +148,16 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                 </div>
               </div>
               <aside
-                className={styles.propertyProfile__inspections__visualizations}
+                className={
+                  styles.propertyProfile__inspectionsList__visualizations
+                }
               >
                 {' '}
-                <div className={styles.ropertyProfile__inspections__score}>
+                <div className={styles.propertyProfile__inspectionsList__score}>
                   <span
-                    className={styles.propertyProfile__inspections__smallCopy}
+                    className={
+                      styles.propertyProfile__inspectionsList__smallCopy
+                    }
                   >
                     {`${scoreLabel}: `}
                     <span
@@ -158,18 +171,29 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
               </aside>
+              <span
+                className={
+                  styles.propertyProfile__inspectionsList__swipe__visible__link
+                }
+              ></span>
             </div>
             <div
               className={styles.propertyProfile__inspectionsList__swipe__hidden}
             >
               <button
-                className={clsx(styles['spk-flexy-button'], styles.alert)}
+                className={clsx(
+                  styles.propertyProfile__inspectionsList__revealButton,
+                  '-bgc-alert'
+                )}
                 disabled
               >
                 Delete
               </button>
               <button
-                className={clsx(styles['spk-flexy-button'], '-bgc-orange')}
+                className={clsx(
+                  styles.propertyProfile__inspectionsList__revealButton,
+                  '-bgc-orange'
+                )}
                 disabled
               >
                 Move

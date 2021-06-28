@@ -1,0 +1,150 @@
+.spk-icon,
+.spk-icon--small,
+.spk-icon--large {
+  &, > svg {
+    vertical-align: middle;
+  }
+}
+.spk-icon {
+  &, > svg {
+    max-width: rem-calc(20);
+    max-height: rem-calc(20);
+  }
+}
+
+.spk-icon--small {
+  &, > svg {
+    max-width: rem-calc(15);
+    max-height: rem-calc(15);
+  }
+}
+
+.spk-icon--large {
+  &, > svg {
+    max-width: rem-calc(30);
+    max-height: rem-calc(30);
+  }
+}
+
+//
+//  Icon Add Button
+//
+
+.iconAddButton {
+  display: inline-flex;
+  vertical-align: middle;
+  width: $global-padding;
+  height: $global-padding;
+  border-radius: 100%;
+  background-color: $white;
+  align-items: center;
+  justify-content: center;
+  margin-top: rem-calc(-1);
+
+  &:last-child {
+    margin-left: rem-calc(4);
+  }
+
+  > svg {
+    max-width: 50%;
+    max-height: 50%;
+    stroke-width: 0;
+
+    .primary & path {
+      fill: $primary-color;
+    }
+  }
+}
+
+//
+// Input Icon
+//
+
+.spk-input-icon,
+svg.spk-input-icon {
+  width: rem-calc(36);
+  height: rem-calc(36);
+  cursor: pointer;
+
+  svg {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  &, svg {
+    path, line, circle {
+      fill: darken($gray, 10);
+      stroke: darken($gray, 10);
+    }
+  }
+
+  &.is-selected, .is-selected {
+    path, line, circle {
+      fill: $black;
+      stroke: $black;
+    }
+  }
+
+  &.is-sufficient, .is-sufficient {
+    path, line, circle {
+      fill: $primary-dark-color;
+      stroke: $primary-dark-color;
+    }
+  }
+
+  &.is-deficient, .is-deficient {
+    path, line, circle {
+      fill: $alert-color;
+      stroke: $alert-color;
+    }
+  }
+}
+
+//
+// Link Icon
+//
+
+.spk-link-icon,
+.spk-link-icon--small,
+.spk-link-icon--white,
+.spk-link-icon--small--white,
+.spk-link-icon--alert {
+  @extend .spk-icon;
+  cursor: pointer;
+}
+
+.spk-link-icon--small,
+.spk-link-icon--small--white,
+.spk-link-icon--small--gray-lighter {
+  @extend .spk-icon--small;
+}
+
+.spk-link-icon,
+.spk-link-icon--small {
+  path, line {
+    fill: $primary-color;
+    stroke: $primary-color;
+  }
+}
+
+.spk-link-icon--white,
+.spk-link-icon--small--white {
+  path, line {
+    fill: $white;
+    stroke: $white;
+  }
+}
+
+.spk-link-icon--alert {
+  path, line {
+    fill: $alert-color;
+    stroke: $alert-color;
+  }
+}
+
+.spk-link-icon--small--gray-lighter {
+  path, line {
+    fill: $gray-lighter;
+    stroke: $gray-lighter;
+  }
+}

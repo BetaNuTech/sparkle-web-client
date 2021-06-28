@@ -1,0 +1,80 @@
+@import '../../../styles/index.scss';
+
+.propertyProfile__overview {
+  padding: $global-llg-padding $global-padding;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $global-mlg-padding;
+
+    > .button {
+      margin: 0;
+    }
+  }
+
+  &__heading {
+    font-size: rem-calc(36);
+    font-weight: bold;
+    color: $black;
+    margin: 0;
+  }
+
+  &__logo {
+    display: block;
+    max-height: rem-calc(90);
+  }
+
+  &__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    > * {
+      flex: 0 1 auto;
+      margin-bottom: $global-mlg-padding;
+    }
+
+    > *:not(:last-child) {
+      margin-right: $global-llg-padding;
+    }
+  }
+
+  &__links {
+    @extend %propertyProfileLinks;
+
+    > li {
+      flex: 0 1 auto;
+
+      > a {
+        display: inline-block;
+        padding: 0 $global-mlg-padding;
+        border-radius: $global-radius;
+      }
+
+      &:last-child {
+        margin-left: $global-padding;
+      }
+    }
+  }
+
+  &__control {
+    display: flex;
+    flex: nowrap;
+    height: rem-calc(34);
+    white-space: nowrap;
+    align-items: center;
+    color: $gray-med-dark-2;
+
+    > select {
+      margin-bottom: 0;
+      margin-left: $global-sm-padding;
+    }
+  }
+
+  @include media-query(desktop) {
+    padding-left: $global-llg-padding;
+    padding-right: $global-llg-padding;
+  }
+}

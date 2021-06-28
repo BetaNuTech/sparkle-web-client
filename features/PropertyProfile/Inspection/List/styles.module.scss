@@ -1,6 +1,5 @@
 @import '../../../../styles/index.scss';
 
-.spk-property-inspections,
 .propertyProfile__inspectionsList {
   @extend .spk-profile-list;
   margin: 0;
@@ -20,7 +19,7 @@
     @extend %swipeReveal;
   }
 
-  &__swipe_revealed &__swipe__hidden{
+  &__swipe_revealed &__swipe__hidden {
     @extend %swipeReveal__hidden--reveal;
   }
 
@@ -31,18 +30,23 @@
     justify-content: space-between;
     align-items: center;
     padding-left: $global-padding;
-    padding-right: $global-padding;
+    padding-right: $global-padding + $global-sm-padding;
     margin-bottom: 0;
     background-color: $white;
     overflow: visible;
   }
 
+  &__swipe__visible__link {
+    @extend .spk-profile-list__item-link;
+  }
+
   &__swipe__hidden {
     @extend %swipeReveal__hidden;
+  }
 
-    & .spk-flexy-button {
-      align-items: center;
-    }
+  &__revealButton {
+    @extend .spk-flexy-button;
+    align-items: center;
   }
 
   &__overview {
@@ -94,6 +98,7 @@
     display: block;
     font-size: $medium-small-font-size;
     white-space: nowrap;
+    color: $black;
     margin-top: rem-calc(1);
     margin-right: $global-sm-padding;
   }

@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
+import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import styles from './styles.module.scss';
@@ -7,29 +8,38 @@ import styles from './styles.module.scss';
 interface Props {
   property: propertyModel;
   isMobile?: boolean;
+  isYardiConfigured: boolean;
 }
 
-const getMobileExtra: FunctionComponent<Props> = ({ property, isMobile }) => {
+const getMobileExtra: FunctionComponent<Props> = ({
+  property,
+  isMobile,
+  isYardiConfigured
+}) => {
   if (isMobile) {
     return (
       <>
-        {
-          // TODO: Add logic to check code and yardiAuthorizer
-          property.code ? (
-            <ul className={clsx(styles.propertyProfile__header__ctaItems)} data-testid="property-profile-yardi-button">
-              <li>
-                <a href="/">
+        {isYardiConfigured ? (
+          <ul
+            className={clsx(styles.propertyProfile__header__ctaItems)}
+            data-testid="property-profile-yardi-button"
+          >
+            <li>
+              <Link href="/properties">
+                <a>
                   Residents <ChevronIcon />
                 </a>
-              </li>
-              <li>
-                <a href="/">
+              </Link>
+            </li>
+            <li>
+              <Link href="/properties">
+                <a>
                   Open WOs <ChevronIcon />
                 </a>
-              </li>
-            </ul>
-          ) : null
-        }
+              </Link>
+            </li>
+          </ul>
+        ) : null}
 
         <ol className={clsx(styles.propertyProfile__header__deficientItems)}>
           <li data-testid="property-profile-deficient-item">
@@ -82,12 +92,20 @@ const getMobileExtra: FunctionComponent<Props> = ({ property, isMobile }) => {
   return null;
 };
 
-const Header: FunctionComponent<Props> = ({ property, isMobile }) => {
+const Header: FunctionComponent<Props> = ({
+  property,
+  isMobile,
+  isYardiConfigured
+}) => {
   if (property) {
     return (
       <header
         className={clsx(styles.propertyProfile__header)}
-        data-testid="property-profile-header"
+        data-testid={
+          isMobile
+            ? 'property-profile-header-mobile'
+            : 'property-profile-header'
+        }
       >
         <div className={clsx(styles.propertyProfile__header__banner)}>
           <div
@@ -117,7 +135,7 @@ const Header: FunctionComponent<Props> = ({ property, isMobile }) => {
             }
           </div>
         </div>
-        {getMobileExtra({ property, isMobile })}
+        {getMobileExtra({ property, isMobile, isYardiConfigured })}
       </header>
     );
   }
