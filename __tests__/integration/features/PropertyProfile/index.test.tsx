@@ -1,7 +1,5 @@
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { fullProperty } from '../../../../__mocks__/properties';
-import inspectionsMock from '../../../../__mocks__/inspections';
 import { admin as user } from '../../../../__mocks__/users';
 import PropertyProfile from '../../../../features/PropertyProfile';
 import breakpoints from '../../../../config/breakpoints';
@@ -27,7 +25,9 @@ describe('Integration | Features | Properties | Profile', () => {
     );
 
     const mobileHeader = screen.queryByTestId('property-profile-header-mobile');
-    const mobileInspections = screen.queryByTestId('property-profile-mobile-inspections');
+    const mobileInspections = screen.queryByTestId(
+      'property-profile-mobile-inspections'
+    );
     const mobileFooter = screen.queryByTestId('property-profile-mobile-footer');
 
     expect(desktopHeader).toBeNull();
@@ -48,7 +48,9 @@ describe('Integration | Features | Properties | Profile', () => {
     );
 
     const mobileHeader = screen.queryByTestId('property-profile-header-mobile');
-    const mobileInspections = screen.queryByTestId('property-profile-mobile-inspections');
+    const mobileInspections = screen.queryByTestId(
+      'property-profile-mobile-inspections'
+    );
     const mobileFooter = screen.queryByTestId('property-profile-mobile-footer');
 
     expect(desktopHeader).toBeTruthy();

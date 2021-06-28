@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'react';
-import clsx from 'clsx';
 import inspectionModel from '../../../../common/models/inspection';
 import templateCategoryModel from '../../../../common/models/templateCategory';
 import ListItem from '../ListItem';
