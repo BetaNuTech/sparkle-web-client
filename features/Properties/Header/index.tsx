@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import styles from './Header.module.scss';
-import { Dropdown } from '../../../common/Dropdown';
+import Dropdown from '../DropdownAdd';
 import AddIcon from '../../../public/icons/ios/add.svg';
 
 interface PropertiesHeaderModel {
