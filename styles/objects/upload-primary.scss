@@ -1,93 +1,24 @@
 @use "sass:math";
 
-$spk-upload-primary-height: rem-calc(150);
-$spk-upload-primary-aspect-ratio: math.div(4, 3); // 4:3 aspect ratio
+$upload-primary-height: rem-calc(150);
+$upload-primary-aspect-ratio: math.div(4, 3); // 4:3 aspect ratio
 
 // NOTE: Class of child <label> element,
 // not the parent component element itself
-.upsertProperty__uploadPrimary,
-.upsertProperty__uploadPrimary--present {
-  @extend .spk-upload-form;
-  height: $spk-upload-primary-height;
-  max-width: $spk-upload-primary-height * $spk-upload-primary-aspect-ratio;
+// previous .upsertProperty__uploadPrimary, .upsertProperty__uploadPrimary--present
+%upsertProperty__uploadPrimary {
+  @extend %upload-form;
+  height: $upload-primary-height;
+  max-width: $upload-primary-height * $upload-primary-aspect-ratio;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: $global-sm-padding;
-}
-
-.upsertProperty__uploadPrimary{
-  &--present {
-    height: auto;
-    min-height: rem-calc(90);
-    max-height: $spk-upload-primary-height;
-  }
-
-  &__label {
-    @extend .spk-label;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%);
-    color: $gray-darker;
-    font-weight: bold;
-    z-index: 1;
-  }
-
-  &__thumbnail {
-    align-self: center;
-    cursor: pointer;
-
-    // Enforce banner aspect ratio
-    max-width: $mobile-max-width;
-
-    // Center images that extend beyond edges
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-
-    > img {
-      max-height: math.div($mobile-max-width, $spk-upload-primary-aspect-ratio);
-    }
-  }
-
-  &__cancle {
-    @extend .spk-upload-form__cancel;
-    top: 0;
-    right: 0;
-  }
-
-  &__backButton {
-    @extend %baseButton--white;
-
-    position: absolute;
-    top: $global-md-padding;
-    left: $global-md-padding;
-    z-index: 1;
-
-    > svg {
-      @extend %baseButton__chevron;
-      margin-right: rem-calc(4);
-    }
-  }
-
-  // Final presented banner
-  &__present {
-    max-height: $spk-upload-primary-height;
-    align-self: center;
-  }
-
-  // Add bottom controls
-  .upsertProperty__controlBar {
-    max-width: rem-calc(287);
-    left: auto;
-    right: 0;
-    background: rgba($gray, 0.75);
-    border-bottom-width: 0;
-  }
+  height: auto;
+  min-height: rem-calc(90);
+  max-height: $upload-primary-height;
 
   @include media-query(tablet) {
     height: 0;
@@ -104,18 +35,87 @@ $spk-upload-primary-aspect-ratio: math.div(4, 3); // 4:3 aspect ratio
       display: block;
       padding-top: 66.5%;
     }
+  }
+}
 
-    &__thumbnail {
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      position: absolute;
-      max-width: initial;
+// previous .upsertProperty__uploadPrimary__label
+%upsertProperty__uploadPrimary--label {
+  @extend %label;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%);
+  color: $gray-darker;
+  font-weight: bold;
+  z-index: 1;
+}
 
-      > img {
-        max-height: 100%;
-      }
+// previous .upsertProperty__uploadPrimary__thumbnail
+%upsertProperty__uploadPrimary--thumbnail {
+  align-self: center;
+  cursor: pointer;
+
+  // Enforce banner aspect ratio
+  max-width: $mobile-max-width;
+
+  // Center images that extend beyond edges
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  > img {
+    max-height: math.div($mobile-max-width, $upload-primary-aspect-ratio);
+  }
+
+  @include media-query(tablet) {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    max-width: initial;
+
+    > img {
+      max-height: 100%;
     }
   }
+}
+
+// previous .upsertProperty__uploadPrimary__cancle
+%upsertProperty__uploadPrimary--cancel {
+  @extend %upload-form--cancel;
+  top: 0;
+  right: 0;
+}
+
+// previous .upsertProperty__uploadPrimary__backButton
+%upsertProperty__uploadPrimary--backButton {
+  @extend %baseButton--white;
+
+  position: absolute;
+  top: $global-md-padding;
+  left: $global-md-padding;
+  z-index: 1;
+
+  > svg {
+    @extend %baseButton__chevron;
+    margin-right: rem-calc(4);
+  }
+}
+
+// previous .upsertProperty__uploadPrimary__present
+%upsertProperty__uploadPrimary--present {
+  max-height: $upload-primary-height;
+  align-self: center;
+}
+
+// previous .upsertProperty__uploadPrimary .upsertProperty__controlBar
+%upsertProperty__uploadPrimary--controlBar {
+  // Add bottom controls
+  max-width: rem-calc(287);
+  left: auto;
+  right: 0;
+  background: rgba($gray, 0.75);
+  border-bottom-width: 0;
 }

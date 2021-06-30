@@ -1,4 +1,5 @@
-.stickyBoundingBox {
+// previous .stickyBoundingBox
+%stickyBoundingBox {
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -7,23 +8,24 @@
   position: relative;
   overflow: auto;
 
-  &.-shrink {
-    flex: 1 1 0%;
-  }
+}
+// Removed previous .stickyBoundingBox__list which was same as .stickyBoundingBox
 
-  &__list {
-    @extend .spk-profile-list;
-  }
+// previous .stickyBoundingBox.-shrink
+%stickyBoundingBox--shrink {
+  flex: 1 1 0%;
+}
 
-  &__listItem {
-    display: block;
-    margin-bottom: 0;
-  }
+// previous .stickyBoundingBox__listItem
+%stickyBoundingBox--listItem {
+  display: block;
+  margin-bottom: 0;
+}
 
-  &__editableRow {
-    display: flex;
-    padding: rem-calc(5) $global-padding rem-calc(3);
-    margin-right: rem-calc(2);
-    width: 100%;
-  }
+// previous .stickyBoundingBox__editableRow
+%stickyBoundingBox--editableRow {
+  display: flex;
+  padding: rem-calc(5) $global-padding rem-calc(3);
+  margin-right: rem-calc(2);
+  width: 100%;
 }

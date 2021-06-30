@@ -1,3 +1,4 @@
+// previous .spk-swipe-reveal
 %swipeReveal {
   display: block;
   overflow: hidden;
@@ -5,10 +6,12 @@
 }
 
 // Prevent hidden element from appearing onload
+// previous .spk-swipe-reveal.has-revealed, .spk-swipe-reveal__hidden
 %swipeReveal__hidden--reveal {
   visibility: visible;
 }
 
+// previous .spk-swipe-reveal__visible
 %swipeReveal__visible {
   max-width: 100%;
   position: relative;
@@ -16,6 +19,7 @@
   transition: transform 400ms ease-out;
 }
 
+// previous .spk-swipe-reveal__hidden
 %swipeReveal__hidden {
   display: flex;
   flex-shrink: 1;

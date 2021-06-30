@@ -41,6 +41,10 @@
     }
   }
 
+  &__iconButton {
+    @extend %iconAddButton;
+  }
+
   &__links {
     @extend %propertyProfileLinks;
 
@@ -56,6 +60,24 @@
       &:last-child {
         margin-left: $global-padding;
       }
+    }
+  }
+
+  &__deficient {
+    &__link {
+      @extend %deficient-items-link;
+      @extend %deficient-items-link--inline;
+    }
+    &__metadata {
+      @extend %deficient-items-link--metadata;
+      @extend %deficient-items-link--metadata--inline;
+    }
+    &__label {
+      @extend %deficient-items-link--label--li;
+      @extend %deficient-items-link--label;
+    }
+    &__labelSub {
+      @extend %deficient-items-link--labelSub;
     }
   }
 

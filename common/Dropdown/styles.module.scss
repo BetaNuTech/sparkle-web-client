@@ -1,6 +1,6 @@
 @import '../../styles/index.scss';
 
-$spk-dropdown-carrot-size: rem-calc(5);
+$dropdown-carrot-size: rem-calc(5);
 
 .dropdown {
   position: absolute;
@@ -28,11 +28,11 @@ $spk-dropdown-carrot-size: rem-calc(5);
     width: 0;
     height: 0;
     margin: 0 auto;
-    top: -1 * $spk-dropdown-carrot-size;
-    left: calc(50% - #{$spk-dropdown-carrot-size});
-    border-left: $spk-dropdown-carrot-size solid transparent;
-    border-right: $spk-dropdown-carrot-size solid transparent;
-    border-bottom: $spk-dropdown-carrot-size solid $white;
+    top: -1 * $dropdown-carrot-size;
+    left: calc(50% - #{$dropdown-carrot-size});
+    border-left: $dropdown-carrot-size solid transparent;
+    border-right: $dropdown-carrot-size solid transparent;
+    border-bottom: $dropdown-carrot-size solid $white;
   }
 
   &__item {

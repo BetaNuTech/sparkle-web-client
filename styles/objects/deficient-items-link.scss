@@ -1,0 +1,114 @@
+// previous .spk-deficient-items-link
+%deficient-items-link {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  width: 100%;
+  color: $black;
+  font-size: $medium-font-size;
+  font-weight: 100;
+  text-decoration: none;
+
+  &:not(.-no-container) {
+    padding: $global-xsm-padding $global-sm-padding;
+    border-radius: $global-radius;
+    background-color: $gray;
+    border: 1px solid darken($gray, 10);
+  }
+
+  &:hover {
+    color: $black;
+  }
+}
+
+// previous .spk-deficient-items-link.-inline
+%deficient-items-link--inline {
+  display: inline-flex;
+  width: auto;
+}
+
+// previous .spk-deficient-items-link__metadata > li, .spk-deficient-items-link__label
+%deficient-items-link--label--li {
+  // height: rem-calc(18);
+  line-height: rem-calc(16);
+  padding: rem-calc(2) rem-calc(5) 0;
+  
+  color: $white;
+  font-size: $medium-font-size;
+  font-weight: 600;
+  background-color: $black;
+  border-radius: $global-radius;
+}
+
+// previous .spk-deficient-items-link__label
+%deficient-items-link--label {
+  display: inline-block;
+  margin-right: rem-calc(2);
+  @include media-query(tablet) {
+    padding: rem-calc(8) rem-calc(9);
+    margin-right: rem-calc(4);
+    font-size: $medium-font-size;
+    font-weight: normal;
+  }
+}
+
+// previous .spk-deficient-items-link__labelSub
+%deficient-items-link--labelSub {
+  display: block;
+  color: $gray-med-dark-2;
+  font-size: $medium-small-font-size;
+}
+
+// previous .spk-deficient-items-link__metadata
+%deficient-items-link--metadata {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  list-style: none;
+  
+  > li {
+    display: flex;
+    align-items: center;
+    margin: 0 rem-calc(5);
+    
+    &:first-child {
+      margin-left: 0;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  
+  @include media-query(tablet) {
+    padding: rem-calc(8) rem-calc(9);
+    margin-right: rem-calc(4);
+    font-size: $medium-font-size;
+    font-weight: normal;
+  }
+}
+
+// previous .spk-deficient-items-link.-inline .spk-deficient-items-link__metadata > li
+%deficient-items-link--metadata--inline {
+  > li {
+    color: $black;
+    font-weight: normal;
+    background-color: transparent;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+}
+
+// previous .spk-deficient-items-link__metadata.-small > li
+%deficient-items-link--metadata--small {
+  // Shrink column gap
+  > li {
+    margin-left: rem-calc(2);
+    margin-right: rem-calc(3);
+  }
+}

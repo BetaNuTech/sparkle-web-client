@@ -319,7 +319,7 @@
 }
 
 .modalGallery__galleryButton {
-  @extend .-unstyledButton;
+  @extend %unstyledButton;
   display: flex;
   position: absolute;
   top: 50%;

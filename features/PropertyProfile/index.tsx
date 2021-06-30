@@ -69,24 +69,19 @@ const Properties: FunctionComponent<PropertiesModel> = ({
               isYardiConfigured={isYardiConfigured}
               isMobile
             />
-            <div
-              className={clsx(
-                styles.propertyProfile__main,
-                styles.stickyBoundingBox
-              )}
-            >
+            <div className={clsx(styles.propertyProfile__main)}>
               <Inspection
                 inspections={inspectionsMock}
                 templateCategories={templateCategoriesMock}
               />
             </div>
-            <footer className={styles['spk-footer']}>
+            <footer className={styles.propertyProfile__footer}>
               <button
                 className={clsx(
-                  styles['spk-non-button'],
-                  styles['-pl-sm'],
-                  styles['-pr-sm'],
-                  styles['-outline-width-none']
+                  styles.propertyProfile__filter__icon,
+                  '-pl-sm',
+                  '-pr-sm',
+                  '-outline-width-none'
                 )}
               >
                 <SortIcon />

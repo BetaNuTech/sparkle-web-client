@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import styles from './MobileHeader.module.scss';
-import { Dropdown } from '../../../common/Dropdown';
+import Dropdown from '../DropdownAdd';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import HamburgerIcon from '../../../public/icons/ios/hamburger.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';

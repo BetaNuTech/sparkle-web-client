@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import inspectionModel from '../../../common/models/inspection';
 import templateCategoryModel from '../../../common/models/templateCategory';
-
 import List from './List';
 
 interface Props {

@@ -4,7 +4,7 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
 
 .propertyProfile__header {
   &__banner {
-    @extend .upsertProperty__uploadPrimary__present;
+    @extend %upsertProperty__uploadPrimary--present;
     position: relative;
     display: flex;
     justify-content: center;
@@ -106,7 +106,7 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
   }
 
   &__label {
-    @extend %skp-mini-label;
+    @extend %mini-label;
   }
 
   @include media-query(tablet) {

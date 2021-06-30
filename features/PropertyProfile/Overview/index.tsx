@@ -38,13 +38,13 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
 }) => (
   <ul
     className={clsx(
-      styles['spk-deficient-items-link__metadata'],
+      styles.propertyProfile__overview__deficient__metadata,
       '-m-none',
       '-p-none'
     )}
   >
     <li data-testid="property-profile-deficient-item">
-      <span className={clsx(styles['spk-deficient-items-link__label'])}>
+      <span className={clsx(styles.propertyProfile__overview__deficient__label)}>
         {property.numOfDeficientItems}
       </span>
       {`Deficient Item${property.numOfDeficientItems > 1 ? 's' : ''}`}
@@ -52,7 +52,7 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
     <li data-testid="property-profile-deficient-item-actions">
       <span
         className={clsx(
-          styles['spk-deficient-items-link__label'],
+          styles.propertyProfile__overview__deficient__label,
           '-bgc-alert-secondary'
         )}
       >
@@ -63,7 +63,9 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
           property.numOfRequiredActionsForDeficientItems > 1 ? 's' : ''
         } Required`}
         {property.numOfOverdueDeficientItems ? (
-          <small className={styles['spk-deficient-items-link__labelSub']}>
+          <small
+            className={styles.propertyProfile__overview__deficient__labelSub}
+          >
             {property.numOfOverdueDeficientItems} Overdue
           </small>
         ) : null}
@@ -72,7 +74,7 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
     <li data-testid="property-profile-deficient-item-followups">
       <span
         className={clsx(
-          styles['spk-deficient-items-link__label'],
+          styles.propertyProfile__overview__deficient__label,
           '-bgc-quaternary'
         )}
       >
@@ -136,7 +138,7 @@ const Overview: FunctionComponent<Props> = ({
         <Link href="/properties">
           <a className={clsx('button', styles.button, styles.primary)}>
             Add Inspection{' '}
-            <span className={styles.iconAddButton}>
+            <span className={styles.propertyProfile__overview__iconButton}>
               <AddIcon />
             </span>
           </a>
@@ -147,8 +149,7 @@ const Overview: FunctionComponent<Props> = ({
         <Link href="/properties">
           <a
             className={clsx(
-              styles['spk-deficient-items-link'],
-              styles['-inline'],
+              styles.propertyProfile__overview__deficient__link,
               styles['-no-container']
             )}
           >

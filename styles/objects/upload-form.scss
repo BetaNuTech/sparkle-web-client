@@ -1,4 +1,5 @@
-.spk-upload-form {
+// previous .spk-upload-form 
+%upload-form {
   position: relative;
   transition: all 400ms ease-in;
   overflow: hidden;
@@ -21,7 +22,8 @@
   }
 }
 
-.spk-upload-form__image {
+// previous .spk-upload-form__image
+%upload-form--image {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,8 +36,9 @@
   }
 }
 
-.spk-upload-form__cancel {
-  @extend .spk-non-button;
+// previous .spk-upload-form__cancel
+%upload-form--cancel {
+  @extend %unstyledButton;
   display: block;
   position: absolute;
   width: rem-calc(40);
