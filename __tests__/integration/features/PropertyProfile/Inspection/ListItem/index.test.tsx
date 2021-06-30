@@ -110,7 +110,7 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
   });
 
   it('defaults to current date time if creation date not valid', () => {
-    const expected = moment().format(formats.userDateDisplayFormat);
+    const expected = moment().format(formats.userDateTimeDisplay);
     const expectedLength = expected.length;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.creationDate = 0;
@@ -131,7 +131,7 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
   });
 
   it('defaults to current date time if update date not valid', () => {
-    const expected = moment().format(formats.userDateDisplayFormat);
+    const expected = moment().format(formats.userDateTimeDisplay);
     const expectedLength = expected.length;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.updatedAt = 0;

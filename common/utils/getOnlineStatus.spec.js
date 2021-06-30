@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { getOnlineStatus } from './getOnlineStatus.js';
 
-describe('Spec | Common | Utils | Get Online Status', () => {
+describe('Unit | Common | Utils | Get Online Status', () => {
   afterEach(() => sinon.restore());
 
   test('it defaults to online when online status lookup is unsupported', () => {

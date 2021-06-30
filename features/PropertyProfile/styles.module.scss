@@ -29,6 +29,11 @@
     @extend %unstyledButton;
   }
 
+  &__createInspectionLink {
+    padding: $global-sm-padding $global-padding;
+    margin: 0;
+  }
+
   @include media-query(tablet) {
     display: block;
   }

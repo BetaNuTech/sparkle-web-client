@@ -1,3 +1,5 @@
 export default {
-  userDateDisplayFormat: 'MM/DD/YY, h:mm A'
+  userDateTimeDisplay: 'MM/DD/YY, h:mm A',
+  userDateDisplay: 'MM/DD/YY',
+  userTimeDisplay: 'h:mm A'
 };

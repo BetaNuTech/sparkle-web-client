@@ -22,7 +22,7 @@ const postRequest = (authToken: string, err: Error): Promise<any> =>
 
 // Send error report using
 // active users' auth token
-export const send = async function sendErrorReport(err: Error): Promise<any> {
+export const send = async (err: Error): Promise<any> => {
   let authToken = '';
 
   try {
@@ -31,7 +31,7 @@ export const send = async function sendErrorReport(err: Error): Promise<any> {
     /* eslint-disable no-console */
     console.error(
       Error(
-        `${PREFIX} sendErrorReport: auth token requested before user session started: ${tokenErr}`
+        `${PREFIX} send: auth token requested before user session started: ${tokenErr}`
       )
     ); /* eslint-enable */
     return Promise.resolve(); // avoid rejection

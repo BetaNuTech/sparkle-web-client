@@ -9,7 +9,7 @@ import {
 } from '../../__mocks__/users';
 import * as util from './userPermissions';
 
-describe('Spec | Common | Utils | User Permissions', () => {
+describe('Unit | Common | Utils | User Permissions', () => {
   afterEach(() => sinon.restore());
 
   test('it returns all a users properties', () => {
@@ -65,5 +65,31 @@ describe('Spec | Common | Utils | User Permissions', () => {
       const actual = util.getLevelName(user);
       expect(actual).toEqual(expected);
     }
+  });
+
+  test('it should only allow admins to delete inspections', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canDeleteInspection(admin),
+      util.canDeleteInspection(corporate),
+      util.canDeleteInspection(teamLead),
+      util.canDeleteInspection(propertyMember),
+      util.canDeleteInspection(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins to re-assign inspections', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canReassignInspectionProperty(admin),
+      util.canReassignInspectionProperty(corporate),
+      util.canReassignInspectionProperty(teamLead),
+      util.canReassignInspectionProperty(propertyMember),
+      util.canReassignInspectionProperty(noAccess)
+    ];
+    expect(actual).toEqual(expected);
   });
 });
