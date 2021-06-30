@@ -1,11 +1,12 @@
 @import '../../../../styles/index.scss';
 
 .propertyProfile__inspectionsList {
-  @extend .spk-profile-list;
+  @extend %profile-list;
   margin: 0;
   font-family: Arial, Helvetica, sans-serif;
   font-weight: bold;
   font-size: $medium-small-font-size;
+  overflow: auto;
 
   &__content {
     transition: transform 400ms ease-out;
@@ -24,7 +25,7 @@
   }
 
   &__swipe__visible {
-    @extend .spk-profile-list__item;
+    @extend %profile-list--item;
     @extend %swipeReveal__visible;
     display: flex;
     justify-content: space-between;
@@ -37,7 +38,8 @@
   }
 
   &__swipe__visible__link {
-    @extend .spk-profile-list__item-link;
+    @extend %profile-list--item--link;
+    @extend %profile-list--item--link-default;
   }
 
   &__swipe__hidden {
@@ -45,7 +47,7 @@
   }
 
   &__revealButton {
-    @extend .spk-flexy-button;
+    @extend %flexButton;
     align-items: center;
   }
 
@@ -101,5 +103,9 @@
     color: $black;
     margin-top: rem-calc(1);
     margin-right: $global-sm-padding;
+  }
+
+  &__listItem {
+    @extend %stickyBoundingBoxReveal;
   }
 }

@@ -1,4 +1,5 @@
-%skp-mini-label {
+// previous %skp-mini-label
+%mini-label {
   display: inline-block;
   padding: 0 rem-calc(4);
   line-height: 1.4;
@@ -9,7 +10,8 @@
   color: $white;
 }
 
-%spk-mini-label-typography {
+// previous %spk-mini-label-typography
+%mini-label-typography {
   font-weight: 300;
   font-size: $medium-font-size;
   white-space: nowrap;
@@ -19,20 +21,23 @@
 // Label
 //
 
-.spk-label {
+// previous .spk-label
+%label {
   color: $primary-dark-color;
   font-weight: bold;
   margin-bottom: $global-xsm-padding;
 }
 
-.spk-label--panel {
+// previous .spk-label--panel
+%label--panel {
   color: $primary-dark-color;
   border-radius: $global-radius;
   background-color: $gray;
   padding: rem-calc(5) rem-calc(8);
 }
 
-.spk-label--counter {
+// previous .spk-label--counter
+%label--counter {
   width: rem-calc(52);
   height: rem-calc(32);
   line-height: rem-calc(32);

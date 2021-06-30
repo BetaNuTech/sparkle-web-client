@@ -79,9 +79,7 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
       )}
 
       <li className={styles.mobileProperties__item}>
-        <header>
-          properties{isDeletePropertyPromptVisible ? 'is' : 'not'}
-        </header>
+        <header>properties</header>
 
         {properties.map((property) => (
           <PropertyItem

@@ -1,4 +1,5 @@
-.stickyBoundingBox__reveal {
+// previous .stickyBoundingBox__reveal
+%stickyBoundingBoxReveal {
   display: block;
   margin-bottom: 0;
 
@@ -15,37 +16,45 @@
   //
   // Individual Use Cases
   //
+}
 
-  &.-templateItem {
-    min-height: rem-calc(57);
-  }
+// previous .stickyBoundingBox__reveal.-templateItem
+%stickyBoundingBoxReveal--templateItem {
+  min-height: rem-calc(57);
+}
 
-  &.-inspectionItem {
-    // min-height: rem-calc(112);
-  }
+// previous .stickyBoundingBox__reveal.-inspectionItem
+%stickyBoundingBoxReveal--inspectionItem {
+  // min-height: rem-calc(112);
+}
 
-  &.-teamItem,
-  &.-deficientItem {
-    min-height: rem-calc(81);
-  }
+// previous .stickyBoundingBox__reveal.-teamItem, .stickyBoundingBox__reveal.-deficientItem
+%stickyBoundingBoxReveal--teamItem,
+%stickyBoundingBoxReveal--deficientItem {
+  min-height: rem-calc(81);
+}
 
-  &.-propertyItem {
-    min-height: rem-calc(134);
-  }
+// previous .stickyBoundingBox__reveal.-propertyItem
+%stickyBoundingBoxReveal--propertyItem {
+  min-height: rem-calc(134);
+}
 
-  &.-yardiResident {
-    min-height: rem-calc(197);
-  }
+// previous .stickyBoundingBox__reveal.-yardiResident
+%stickyBoundingBoxReveal--yardiResident {
+  min-height: rem-calc(197);
+}
 
-  &.-yardiCollection {
-    min-height: rem-calc(458);
-  }
+// previous .stickyBoundingBox__reveal.-yardiCollection
+%stickyBoundingBoxReveal--yardiCollection {
+  min-height: rem-calc(458);
+}
 
-  &.-yardiWorkOrder {
-    min-height: rem-calc(250);
-  }
+// previous .stickyBoundingBox__reveal.-yardiWorkOrder
+%stickyBoundingBoxReveal--yardiWorkOrder {
+  min-height: rem-calc(250);
+}
 
-  &.-propertyTemplate {
-    min-height: rem-calc(39);
-  }
+// previous .stickyBoundingBox__reveal.-propertyTemplate
+%stickyBoundingBoxReveal--propertyTemplate {
+  min-height: rem-calc(39);
 }

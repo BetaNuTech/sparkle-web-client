@@ -2,6 +2,7 @@
 
 .wrapper {
 	display: flex;
+	height: 100%;
 	width: calc(100% + #{$sliderNavWidth});
 	transform: translateX(#{-1 * $sliderNavWidth});
 	overflow: hidden;
@@ -20,7 +21,16 @@
 
 .mainSide {
 	width: calc(100% - #{$sliderNavWidth}); // fix extra width
-	overflow: hidden;
+	height: 100%;
+
+	// Make app's primary scrolling container
+	// NOTE: fallback behavior for desktop
+	//       mobile will likely define child
+	//       scollable container to keep top/header
+	//       element in view to scroll
+	overflow: auto;
+	overflow-x: hidden; // sanity check
+
 	display: flex;
 	flex-direction: column;
 

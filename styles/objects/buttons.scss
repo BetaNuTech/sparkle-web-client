@@ -106,7 +106,8 @@
 //
 // Close Button
 //
-.spk-close-button {
+// previous .spk-close-butto
+%closeButton {
   position: absolute;
   color: $gray-light;
   top: 1rem;
@@ -121,15 +122,12 @@
   }
 }
 
-.modal > .spk-close-button {
-  z-index: 1001;
-}
-
 //
 // Flexy Button
 //
 
-.spk-flexy-button {
+// previous .spk-flexy-button
+%flexButton {
   display: flex;
   text-align: center;
   align-self: stretch;
@@ -144,50 +142,65 @@
     color: $white;
   }
 
-  &.alert {
-    background-color: $alert-color;
-  }
+}
 
-  &.info {
-    background-color: $info-color;
-  }
+// previous .spk-flexy-button.alert
+%flexButton--alert {
+  background-color: $alert-color;
+}
+
+// previous .spk-flexy-button.info
+%flexButton--info {
+  background-color: $info-color;
 }
 
 //
 // Hollow Button
 //
-
-.hollowButton {
+// previous .hollowButton
+%hollowButton {
   @include button(
-    medium, // size
-    true, // expand
-    transparent, // background
-    transparent, // background-hover
-    $primary-color, // color
-    solid, // style
+    medium,
+    // size
+    true,
+    // expand
+    transparent,
+    // background
+    transparent,
+    // background-hover
+    $primary-color,
+    // color
+    solid,
+    // style
     $global-radius // radius
   );
 
   border: rem-calc(1) $primary-color solid;
 
-  &.-grayDark {
-    color: $gray-dark;
-    border-color: $gray-dark;
-  }
+}
+// previous .hollowButton.-grayDark
+%hollowButton--grayDark {
+  @extend %hollowButton;
 
-  &.-thick {
-    padding-top: rem-calc(12);
-    padding-bottom: rem-calc(12);
-    border-width: rem-calc(2);
-    font-weight: bold;
-  }
+  color: $gray-dark;
+  border-color: $gray-dark;
+}
+
+// previous .hollowButton.-thick
+%hollowButton--thick {
+  @extend %hollowButton;
+  
+  padding-top: rem-calc(12);
+  padding-bottom: rem-calc(12);
+  border-width: rem-calc(2);
+  font-weight: bold;
 }
 
 //
 // Non Button
 //
-.spk-non-button,
-.-unstyledButton {
+// previous .spk-non-button, .-unstyledButton
+%unstyledButton {
   padding: 0;
   background: transparent;
   border-width: 0;
@@ -197,19 +210,27 @@
 // Pill Button
 //
 
-.spk-pill-button {
+// previous .spk-pill-button
+%pillButton {
   @include button(
-    tiny, // size
-    true, // expand
-    $info-color, // background
-    $info-color, // background-hover
-    $white, // color
-    solid, // style
+    tiny,
+    // size
+    true,
+    // expand
+    $info-color,
+    // background
+    $info-color,
+    // background-hover
+    $white,
+    // color
+    solid,
+    // style
     $global-radius // radius
   );
 
   margin: 0;
-  padding: ($global-xsm-padding * 1.8) $global-padding ($global-xsm-padding * 1.2);
+  padding: ($global-xsm-padding * 1.8) $global-padding
+    ($global-xsm-padding * 1.2);
   font-size: $medium-font-size;
   text-align: center;
   text-transform: uppercase;
@@ -220,7 +241,9 @@
 // Gray Button
 //
 
-.button.gray {
+// previous .button.gray
+%grayButton {
+  @extend .button;
   background-color: $gray;
   color: $body-font-color;
 

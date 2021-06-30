@@ -50,10 +50,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   return (
     <li
       ref={ref}
-      className={clsx(
-        styles.stickyBoundingBox__reveal,
-        styles['-inspectionItem']
-      )}
+      className={clsx(styles.propertyProfile__inspectionsList__listItem)}
       data-testid="property-profile-inspection-list-item"
     >
       <Link href="/properties">
