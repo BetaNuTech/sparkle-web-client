@@ -19,6 +19,14 @@
 @import 'base/buttons';
 
 /************
+* Animations
+*************/
+@import 'animations/blink';
+@import 'animations/fade';
+@import 'animations/loading';
+
+
+/************
 * Objects
 *************/
 @import 'objects/labels';

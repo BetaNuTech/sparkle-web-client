@@ -24,8 +24,8 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   useSwipeReveal(ref, setIsSwipeOpen);
 
   // Data parsing
-  const creationDate = utilDate.getFormattedDate(inspection.creationDate);
-  const updatedAt = utilDate.getFormattedDate(inspection.updatedAt);
+  const creationDate = utilDate.toUserDateTimeDisplay(inspection.creationDate);
+  const updatedAt = utilDate.toUserDateTimeDisplay(inspection.updatedAt);
   const creatorName = inspection.inspectorName
     ? utilString.titleize(inspection.inspectorName)
     : 'Unknown';

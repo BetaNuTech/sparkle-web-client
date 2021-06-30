@@ -78,3 +78,10 @@ export const getLevelName = (user: userModel): string => {
 
   return 'noAccess';
 };
+
+// Checks that the user can delete inspection entry or not
+export const canDeleteInspection = (user: userModel): boolean => user.admin;
+
+// Checks that the user can re-assign inspection entry against a property
+export const canReassignInspectionProperty = (user: userModel): boolean =>
+  user.admin;

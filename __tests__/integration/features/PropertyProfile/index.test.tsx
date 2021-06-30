@@ -23,6 +23,7 @@ describe('Integration | Features | Properties | Profile', () => {
     const propertyProfileOverview = screen.queryByTestId(
       'property-profile-overview'
     );
+    const propertyProfileGridHeader = screen.queryByTestId('grid-header');
 
     const mobileHeader = screen.queryByTestId('property-profile-header-mobile');
     const mobileInspections = screen.queryByTestId(
@@ -32,6 +33,7 @@ describe('Integration | Features | Properties | Profile', () => {
 
     expect(desktopHeader).toBeNull();
     expect(propertyProfileOverview).toBeNull();
+    expect(propertyProfileGridHeader).toBeNull();
 
     expect(mobileHeader).toBeTruthy();
     expect(mobileInspections).toBeTruthy();
@@ -46,6 +48,7 @@ describe('Integration | Features | Properties | Profile', () => {
     const propertyProfileOverview = screen.queryByTestId(
       'property-profile-overview'
     );
+    const propertyProfileGridHeader = screen.queryByTestId('grid-header');
 
     const mobileHeader = screen.queryByTestId('property-profile-header-mobile');
     const mobileInspections = screen.queryByTestId(
@@ -55,6 +58,7 @@ describe('Integration | Features | Properties | Profile', () => {
 
     expect(desktopHeader).toBeTruthy();
     expect(propertyProfileOverview).toBeTruthy();
+    expect(propertyProfileGridHeader).toBeTruthy();
 
     // Should be null as it is desktop
     expect(mobileHeader).toBeNull();

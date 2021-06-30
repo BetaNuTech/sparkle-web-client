@@ -1,6 +1,7 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import clsx from 'clsx';
+import Link from 'next/link';
 import styles from './styles.module.scss';
 import { sorts } from '../Properties/utils/propertiesSorting';
 import { useSortBy } from '../Properties/hooks/sorting';
@@ -14,6 +15,8 @@ import SortIcon from '../../public/icons/sparkle/sort.svg';
 import Header from './Header';
 import Inspection from './Inspection';
 import Overview from './Overview';
+import Grid from './Grid';
+import DeleteInspectionPropmpt from './DeleteInspectionPrompt';
 
 interface PropertiesModel {
   user: userModel;
@@ -24,6 +27,7 @@ interface PropertiesModel {
 }
 
 const Properties: FunctionComponent<PropertiesModel> = ({
+  user,
   isOnline,
   isStaging,
   toggleNavOpen
@@ -38,6 +42,17 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
+  // Queue and Delete Property
+  const [isDeleteInspectionPromptVisible, setDeleteInspectionPromptVisible] =
+    useState(false);
+
+  const openInspectionDeletePrompt = () => {
+    setDeleteInspectionPromptVisible(true);
+  };
+  const closeDeleteInspctionPrompt = () => {
+    setDeleteInspectionPromptVisible(false);
+  };
 
   // Recalculate properties when properties or teams changes.
 
@@ -103,8 +118,29 @@ const Properties: FunctionComponent<PropertiesModel> = ({
             inspections={inspectionsMock}
             isYardiConfigured={isYardiConfigured}
           />
+          {Array.isArray(inspectionsMock) && inspectionsMock.length > 0 ? (
+            <Grid
+              user={user}
+              inspections={inspectionsMock}
+              templateCategories={templateCategoriesMock}
+              openInspectionDeletePrompt={openInspectionDeletePrompt}
+            />
+          ) : (
+            <p
+              className={styles.propertyProfile__createInspectionLink}
+              data-testid="create-inspection-link"
+            >
+              <Link href="/properties/dvSsHLv8cxAvIMKv9Gk0/create-inspection">
+                <a className="-td-underline">Create first inspection</a>
+              </Link>
+            </p>
+          )}
         </div>
       )}
+      <DeleteInspectionPropmpt
+        isVisible={isDeleteInspectionPromptVisible}
+        onClose={closeDeleteInspctionPrompt}
+      />
     </>
   );
 };
