@@ -13,14 +13,14 @@
   }
 
   &__swipeOpen {
-    transform: translateX(rem-calc(-123));
+    transform: translateX(rem-calc(-130));
   }
 
   &__swipe {
     @extend %swipeReveal;
   }
 
-  &__swipe_revealed &__swipe__hidden {
+  &__swipe__revealed &__swipe__hidden {
     @extend %swipeReveal__hidden--reveal;
   }
 

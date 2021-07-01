@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import { useState, useRef, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
+import parentStyles from '../styles.module.scss';
 import teamModel from '../../../../common/models/team';
-import { SwipeReveal } from '../SwipeReveal';
 import { TeamValues } from '../../../../common/TeamValues';
 import propertyMetaData from '../../../../common/models/propertyMetaData';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
@@ -27,7 +27,7 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   return (
     <div
       ref={ref}
-      className={styles.teamItem}
+      className={parentStyles.itemResult}
       data-testid="team-item"
       data-team={team.id}
     >
@@ -35,14 +35,17 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
       <div
         className={
           isSwipeOpen
-            ? clsx(styles.teamItem__content, styles['teamItem--swipeOpen'])
-            : styles.teamItem__content
+            ? clsx(
+                parentStyles.itemResult__content,
+                parentStyles['itemResult--swipeOpen']
+              )
+            : parentStyles.itemResult__content
         }
       >
         <Link href="/">
-          <a className={styles.teamItem__link}>
+          <a className={parentStyles.itemResult__link}>
             {/* Toggle Button */}
-            <span className={styles.teamItem__toggle}>
+            <span className={parentStyles.itemResult__toggle}>
               <ChevronIcon />
             </span>
             {/* Team Name */}
@@ -51,7 +54,7 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             </div>
             {/* Metadata */}
             <div
-              className={styles.teamItem__metadata}
+              className={parentStyles.itemResult__metadata}
               data-testid="team-property-meta"
             >
               Deficient Items
@@ -72,7 +75,21 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         </Link>
       </div>
 
-      <SwipeReveal onDelete={() => onQueueTeamDelete(team)} />
+      {/* Swipe Reveal Actions */}
+      <div
+        className={clsx(
+          parentStyles.swipeReveal,
+          isSwipeOpen && parentStyles.swipeReveal__reveal
+        )}
+      >
+        <button className={parentStyles.swipeReveal__editButton}>Edit</button>
+        <button
+          className={parentStyles.swipeReveal__deleteButton}
+          onClick={() => onQueueTeamDelete(team)}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };

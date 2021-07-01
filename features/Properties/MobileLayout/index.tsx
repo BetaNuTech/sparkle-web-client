@@ -66,7 +66,7 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
     >
       {teams.length > 0 && (
         <li className={styles.mobileProperties__item}>
-          <header>teams</header>
+          <header className={styles.mobileProperties__itemHeader}>teams</header>
           {teams.map((team) => (
             <MobileLayoutTeamItemWrapper
               key={team.id}
@@ -79,7 +79,9 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
       )}
 
       <li className={styles.mobileProperties__item}>
-        <header>properties</header>
+        <header className={styles.mobileProperties__itemHeader}>
+          properties
+        </header>
 
         {properties.map((property) => (
           <PropertyItem

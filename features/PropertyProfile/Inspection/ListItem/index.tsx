@@ -58,20 +58,19 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           <div
             className={clsx(
               styles.propertyProfile__inspectionsList__swipe,
-              styles['no-touch'],
               isSwipeOpen &&
-                styles.propertyProfile__inspectionsList__swipe_revealed
+                styles.propertyProfile__inspectionsList__swipe__revealed
             )}
           >
             <div
               className={clsx(
                 styles.propertyProfile__inspectionsList__swipe__visible,
-                styles['-p-relative'],
                 styles.propertyProfile__inspectionsList__content,
                 isSwipeOpen &&
                   styles.propertyProfile__inspectionsList__swipeOpen
               )}
             >
+              {/* Inspection Details */}
               <div
                 className={clsx(
                   styles.propertyProfile__inspectionsList__overview,
@@ -144,6 +143,8 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
               </div>
+
+              {/* Inspection Score */}
               <aside
                 className={
                   styles.propertyProfile__inspectionsList__visualizations
@@ -168,12 +169,16 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   </span>
                 </div>
               </aside>
+
+              {/* Link Icon */}
               <span
                 className={
                   styles.propertyProfile__inspectionsList__swipe__visible__link
                 }
               ></span>
             </div>
+
+            {/* Swipe Revealed Buttons */}
             <div
               className={styles.propertyProfile__inspectionsList__swipe__hidden}
             >
