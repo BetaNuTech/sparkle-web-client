@@ -36,7 +36,7 @@ $dropdown-carrot-size: rem-calc(5);
   }
 
   &__item {
-    a {
+    a, button {
       display: block;
       padding: ($global-padding * 0.75) $global-padding;
       background-color: transparent;
@@ -50,7 +50,8 @@ $dropdown-carrot-size: rem-calc(5);
       color: $gray-dark;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.07);
+        background-color: $primary-color;
+        color: $white;
       }
     }
   }
