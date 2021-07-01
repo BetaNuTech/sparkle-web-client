@@ -1,0 +1,65 @@
+@import '../../../../styles/index.scss';
+
+.propertyItem {
+  // Picture and description
+  &__wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    flex: 1 0 100%;
+    text-decoration: none;
+    color: $black;
+  }
+
+  &__image {
+    width: rem-calc(104);
+    height: rem-calc(78);
+    margin-bottom: rem-calc(10);
+    flex: 0 1 auto;
+    border-radius: rem-calc(4);
+    background: url('../../../../public/img/apartments_icon/apartments_icon@3x.png');
+    background-color: $gray-lighter;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  &__description {
+    margin-bottom: rem-calc(8);
+    padding-left: rem-calc(8);
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+  }
+
+  &__name {
+    margin: rem-calc(3) 0;
+    padding: 0;
+    line-height: rem-calc(22);
+    font-size: rem-calc(16);
+    font-weight: 700;
+    color: $black;
+  }
+
+  &__addr1 {
+    margin: 0 0 rem-calc(3) 0;
+    line-height: rem-calc(22);
+    font-size: rem-calc(14);
+    font-weight: 100;
+    color: $gray-dark;
+  }
+
+  &__mailingAddr2,
+  &__lastInspectionEntries {
+    margin: 0;
+    line-height: rem-calc(12);
+    font-size: rem-calc(7);
+    color: $gray-dark;
+    font-family: $helvetica-font-family;
+  }
+
+  // Field lastInspectionEntries is undefined
+  &__lastInspectionEntries--empty {
+    line-height: rem-calc(19);
+    font-size: rem-calc(12);
+  }
+}

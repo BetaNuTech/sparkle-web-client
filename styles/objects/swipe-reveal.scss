@@ -5,11 +5,6 @@
   position: relative;
 }
 
-// Prevent hidden element from appearing onload
-// previous .spk-swipe-reveal.has-revealed, .spk-swipe-reveal__hidden
-%swipeReveal__hidden--reveal {
-  visibility: visible;
-}
 
 // previous .spk-swipe-reveal__visible
 %swipeReveal__visible {
@@ -34,4 +29,10 @@
   > button {
     align-items: center;
   }
+}
+
+// Prevent hidden element from appearing onload
+// previous .spk-swipe-reveal.has-revealed, .spk-swipe-reveal__hidden
+%swipeReveal__hidden--reveal {
+  visibility: visible;
 }

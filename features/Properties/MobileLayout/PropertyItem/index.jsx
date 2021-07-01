@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useState, useRef } from 'react';
-import styles from './PropertyItem.module.scss';
+import styles from './styles.module.scss';
+import parentStyles from '../styles.module.scss';
 import { TeamValues } from '../../../../common/TeamValues';
-import { SwipeReveal } from '../SwipeReveal';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 
@@ -14,22 +14,26 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
   useSwipeReveal(ref, setIsSwipeOpen);
 
   return (
-    <div ref={ref} className={styles.propertyItem} data-testid="property-item">
+    <div
+      ref={ref}
+      className={parentStyles.itemResult}
+      data-testid="property-item"
+    >
       {/* Main Content */}
       <div
         className={
           isSwipeOpen
             ? clsx(
-                styles.propertyItem__content,
-                styles['propertyItem--swipeOpen']
+                parentStyles.itemResult__content,
+                parentStyles['itemResult--swipeOpen']
               )
-            : styles.propertyItem__content
+            : parentStyles.itemResult__content
         }
       >
         <Link href={`/properties/${property.id}`}>
-          <a className={styles.propertyItem__link}>
+          <a className={parentStyles.itemResult__link}>
             {/* Toggle Button */}
-            <span className={styles.propertyItem__toggle}>
+            <span className={parentStyles.itemResult__toggle}>
               <ChevronIcon />
             </span>
             <div className={styles.propertyItem__wrapper}>
@@ -67,7 +71,7 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
               </div>
             </div>
             {/* Metadata */}
-            <div className={styles.propertyItem__metadata}>
+            <div className={parentStyles.itemResult__metadata}>
               Deficient Items
               <TeamValues
                 numOfDeficientItems={property.numOfDeficientItems}
@@ -84,7 +88,21 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
         </Link>
       </div>
 
-      <SwipeReveal onDelete={() => onQueuePropertyDelete(property)} />
+      {/* Swipe Reveal Actions */}
+      <div
+        className={clsx(
+          parentStyles.swipeReveal,
+          isSwipeOpen && parentStyles.swipeReveal__reveal
+        )}
+      >
+        <button className={parentStyles.swipeReveal__editButton}>Edit</button>
+        <button
+          className={parentStyles.swipeReveal__deleteButton}
+          onClick={() => onQueuePropertyDelete(property)}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 };

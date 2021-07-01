@@ -22,13 +22,13 @@ Here's an example of testing a `isEven` util:
 const tests = [
   { input: 1, expected: false },
   { input: 2, expected: true },
-  { input: 3, expected: false}
+  { input: 3, expected: false},
   { input: 4, expected: true }
 ];
 
 for (let i = 0; i < tests.length; i++) {
   const const { input, expected } = tests[i];
-  expect(isEven(input)).toEqua(expected);
+  expect(isEven(input)).toEqual(expected);
 }
 ```
 
