@@ -16,12 +16,15 @@
     padding: rem-calc(8) rem-calc(16) rem-calc(6.4);
     background-color: $primary-color;
     text-align: center;
-    line-height: 16px;
+    line-height: rem-calc(17);
     text-transform: uppercase;
 
     font-weight: bold;
     font-size: rem-calc(14);
     color: $white;
+    position: sticky;
+    top: 0;
+    z-index: 12;
   }
 }
 
