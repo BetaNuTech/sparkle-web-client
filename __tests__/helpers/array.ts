@@ -2,7 +2,7 @@
  * Randomize array items
  * NOTE: modifies given array
  */
-export function shuffle(array: Array<void>): Array<void> {
+export function shuffle(array: Array<any>): Array<any> {
   let currentIndex: number = array.length;
   let randomIndex: number;
 

@@ -126,7 +126,18 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   // sorting options
   const nextPropertiesSort = () => {
     const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
+    const descOrderKeys = ['lastInspectionDate', 'lastInspectionScore'];
+    const isDescOrderValue = descOrderKeys.includes(activeSortValue);
 
+    // Check if sort direction is asc then
+    // change to desc if it is either lastInspectionDate or lastInspectionScore
+    if (isDescOrderValue && sortDir === 'asc') {
+      setSortDir('desc');
+    } else if (!isDescOrderValue && sortDir === 'desc') {
+      // If sort desc and it is other than values
+      // in `descOrderKeys` then change to asc
+      setSortDir('asc');
+    }
     // Update Property sort
     setSortBy(activeSortValue);
   };

@@ -160,4 +160,68 @@ describe('Integration | Features | Properties', () => {
       .join(' | ');
     expect(actual).toEqual(expected);
   });
+
+  it('automatically sorts by descending last inspection date for mobile users', async () => {
+    const times = [1625244317, 1625244316, 1625244315, 1625244314, 1625244313];
+    const expected = times.map((c) => `${c}`).join(' | ');
+    const properties = deepClone(mockPropertes);
+    shuffle(times).forEach((time, i) => {
+      if (properties[i]) {
+        properties[i].lastInspectionDate = time;
+      }
+    });
+
+    await act(async () => {
+      render(<Properties user={user} />, {
+        properties: shuffle(properties), // randomized properties
+        contextWidth: breakpoints.tablet.maxWidth // set to mobile UI
+      });
+
+      // Click to score ftiler
+      const sortbutton = screen.queryByTestId('mobile-properties-sort-by');
+      await userEvent.click(sortbutton);
+      await userEvent.click(sortbutton);
+      await userEvent.click(sortbutton);
+    });
+
+    const propertyItems: Array<HTMLElement> = screen.queryAllByTestId(
+      'property-last-inspection-date'
+    );
+    const actual = propertyItems
+      .map((item) => item.textContent.trim().toLowerCase())
+      .join(' | ');
+    expect(actual).toEqual(expected);
+  });
+
+  it('automatically sorts by descending last inspection score for mobile users', async () => {
+    const scores = [100, 80, 40, 20, 1];
+    const expected = scores.map((c) => `${c}`).join(' | ');
+    const properties = deepClone(mockPropertes);
+    shuffle(scores).forEach((score, i) => {
+      if (properties[i]) {
+        properties[i].lastInspectionScore = score;
+      }
+    });
+
+    await act(async () => {
+      render(<Properties user={user} />, {
+        properties: shuffle(properties), // randomized properties
+        contextWidth: breakpoints.tablet.maxWidth // set to mobile UI
+      });
+
+      // Click to score ftiler
+      const sortbutton = screen.queryByTestId('mobile-properties-sort-by');
+      await userEvent.click(sortbutton);
+      await userEvent.click(sortbutton);
+      await userEvent.click(sortbutton);
+      await userEvent.click(sortbutton);
+    });
+
+    const propertyItems: Array<HTMLElement> =
+      screen.queryAllByTestId('property-score');
+    const actual = propertyItems
+      .map((item) => item.textContent.trim().toLowerCase())
+      .join(' | ');
+    expect(actual).toEqual(expected);
+  });
 });

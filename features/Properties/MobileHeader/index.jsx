@@ -40,6 +40,7 @@ export const MobileHeader = ({
 
       {/* Secondary Actions */}
       <aside className={styles.header__aside}>
+        {/* User Actions */}
         <button
           className={clsx(
             styles.header__button,
@@ -49,10 +50,14 @@ export const MobileHeader = ({
           <AddIcon />
           <Dropdown />
         </button>
-        {/* TODO: set sort dir desc on `lastInspectionDate` &
-        `lastInspectionScore` */}
-        <button className={styles.header__button}>
-          <FolderIcon onClick={nextPropertiesSort} />
+
+        {/* Sort by button */}
+        <button
+          className={styles.header__button}
+          onClick={nextPropertiesSort}
+          data-testid="mobile-properties-sort-by"
+        >
+          <FolderIcon />
         </button>
       </aside>
     </header>
