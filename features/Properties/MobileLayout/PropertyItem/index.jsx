@@ -84,6 +84,17 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
                 isNarrowField={false}
               />
             </div>
+
+            {/* For Testing */}
+            <span className="-d-none" data-testid="property-score">
+              {property.lastInspectionScore}
+            </span>
+            <span
+              className="-d-none"
+              data-testid="property-last-inspection-date"
+            >
+              {property.lastInspectionDate}
+            </span>
           </a>
         </Link>
       </div>
