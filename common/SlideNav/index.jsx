@@ -1,8 +1,13 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
+import { useMediaQuery } from 'react-responsive';
+import breakpoints from '../../config/breakpoints';
 import { useAuth } from '../../navigation/Auth/AuthProvider';
 import styles from './SlideNav.module.scss';
+import Logo from '../../public/icons/sparkle/logo.svg';
+import BusinessLogo from '../../public/icons/sparkle/bluestone-logo.svg';
+import CancelIcon from '../../public/icons/sparkle/cancel-simple.svg';
 
 export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
   const { user, signOut } = useAuth();
@@ -11,20 +16,35 @@ export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
     isOnline && isStaging ? styles['slideNav--isStaging'] : '';
   const containerTheme = offlineTheme || stagingTheme;
 
+  // Responsive queries
+  const isMobileorTablet = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
+  const isDesktop = useMediaQuery({
+    minWidth: breakpoints.desktop.minWidth
+  });
+
   return (
     <nav className={clsx(styles.slideNav, containerTheme)}>
       <div className={styles.slideNav__wrapper}>
         {/* Logo And Close Button */}
-        <header className={styles.slideNav__header}>
-          <button
-            onClick={toggleNavOpen}
-            tabIndex={0}
-            className={styles.slideNav__header__closeButton}
-          >
-            <img src="/icons/sparkle/cancel-simple.svg" alt="Close" />
-          </button>
+        <header
+          className={clsx(
+            styles.slideNav__header,
+            isDesktop && styles.slideNav__desktop
+          )}
+        >
+          {isMobileorTablet ? (
+            <button
+              onClick={toggleNavOpen}
+              tabIndex={0}
+              className={styles.slideNav__header__closeButton}
+            >
+              <CancelIcon />
+            </button>
+          ) : null}
           <div className={styles.slideNav__header__logo}>
-            <img src="/icons/sparkle/logo.svg" alt="Logo" />
+            <Logo />
           </div>
         </header>
 
@@ -74,11 +94,9 @@ export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
 
         {/* Logo And Additional Information */}
         <footer className={styles.slideNav__footer}>
-          <img
-            src="/icons/sparkle/bluestone-logo.svg"
-            alt="Logo"
-            className={styles.slideNav__footer__logo}
-          />
+          <div className={styles.slideNav__footer__logo}>
+            <BusinessLogo />
+          </div>
           <div className={styles.slideNav__footer__version}>V2.5.2</div>
         </footer>
       </div>

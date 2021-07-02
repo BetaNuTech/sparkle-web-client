@@ -10,8 +10,13 @@
     color: $black;
 
     > strong {
+      display: block;
+      margin-top: $global-xsm-padding;
+      margin-bottom: $global-xsm-padding;
       margin: rem-calc(3) 0;
       font-weight: 500;
+      color: $black;
+      font-size: $medium-font-size;
     }
   }
 }

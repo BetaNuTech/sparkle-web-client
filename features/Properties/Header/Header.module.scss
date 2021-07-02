@@ -99,6 +99,7 @@
       &__menu {
         width: auto;
         height: rem-calc(30);
+        margin-bottom: 0;
         display: inline-block;
         line-height: 1.5;
         font-size: $medium-font-size;
@@ -143,7 +144,7 @@
 
         &::before {
           content: '\25BF';
-          transform: rotate(180deg) translateY(rem-calc(-5));
+          transform: rotate(180deg) translateY(rem-calc(-3));
         }
 
         &::after {
