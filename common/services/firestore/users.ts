@@ -1,4 +1,5 @@
-import { useFirestore, useFirestoreDocData } from 'reactfire';
+import firebase from 'firebase/app';
+import { useFirestoreDocData } from 'reactfire';
 import userModel from '../../models/user';
 
 // Result of user document query
@@ -10,8 +11,11 @@ export interface userDocumentResult {
 
 export default {
   // Create query for single user record
-  findRecord(userId: string): userDocumentResult {
-    const userRef = useFirestore().collection('users').doc(userId);
+  findRecord(
+    firestore: firebase.firestore.Firestore,
+    userId: string
+  ): userDocumentResult {
+    const userRef = firestore.collection('users').doc(userId);
     const {
       status,
       error,

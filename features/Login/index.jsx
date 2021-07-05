@@ -1,8 +1,10 @@
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useAuth } from '../../navigation/Auth/AuthProvider';
-import styles from './LoginForm.module.scss';
+import { useAuth } from '../../common/Auth/Provider';
+import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
+import notifications from '../../common/services/notifications'; // eslint-disable-line
+import styles from './styles.module.scss';
 
 const validationSchema = yup.object().shape({
   email: yup
@@ -13,14 +15,22 @@ const validationSchema = yup.object().shape({
 });
 
 export const LoginForm = () => {
-  const auth = useAuth();
+  const { signInWithEmail } = useAuth();
+
+  // User notifications setup
+  // eslint-disable-next-line
+  const sendNotification = notifications.createPublisher(useNotifications());
 
   const { register, handleSubmit } = useForm({
     resolver: yupResolver(validationSchema)
   });
 
   const onSubmit = (data) => {
-    auth.signInWithEmail(data);
+    signInWithEmail(data.email, data.password).catch((error) => {
+      sendNotification(error.message, {
+        appearance: 'error'
+      });
+    });
   };
 
   return (
