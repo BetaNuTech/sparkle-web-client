@@ -28,13 +28,25 @@ export const Item = ({ property }) => (
             <h6 className={styles.item__heading} data-testid="property-name">
               {property.name}
             </h6>
-            <p className={styles.item__subHeading} data-testid="property-city">
-              {property.city}
-            </p>
+            {/** Do not show city if not present */}
+            {property.city && (
+              <p
+                className={styles.item__subHeading}
+                data-testid="property-city"
+              >
+                {property.city}
+              </p>
+            )}
           </header>
-          <p className={styles.item__description} data-testid="property-state">
-            {property.state}
-          </p>
+          {/** Do not show state if not present */}
+          {property.state && (
+            <p
+              className={styles.item__description}
+              data-testid="property-state"
+            >
+              {property.state}
+            </p>
+          )}
         </div>
       </a>
     </Link>

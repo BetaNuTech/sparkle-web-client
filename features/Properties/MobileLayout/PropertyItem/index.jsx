@@ -50,10 +50,24 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
               {/* Profile Description */}
               <div className={styles.propertyItem__description}>
                 <h6 className={styles.propertyItem__name}>{property.name}</h6>
-                <p className={styles.propertyItem__addr1}>{property.addr1}</p>
-                <p className={styles.propertyItem__mailingAddr2}>
-                  {property.addr2}
-                </p>
+                {/* Do not show addr1 if not present */}
+                {property.addr1 && (
+                  <p
+                    className={styles.propertyItem__addr1}
+                    data-testid="property-addr1"
+                  >
+                    {property.addr1}
+                  </p>
+                )}
+                {/* Do not show addr2 if not present */}
+                {property.addr2 && (
+                  <p
+                    className={styles.propertyItem__mailingAddr2}
+                    data-testid="property-addr2"
+                  >
+                    {property.addr2}
+                  </p>
+                )}
                 {property.lastInspectionEntries ? (
                   <p className={styles.propertyItem__lastInspectionEntries}>
                     {new Date(1000 * property.lastInspectionEntries)}
