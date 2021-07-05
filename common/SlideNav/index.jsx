@@ -3,14 +3,14 @@ import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
-import { useAuth } from '../../navigation/Auth/AuthProvider';
+import { useAuth } from '../Auth/Provider';
 import styles from './SlideNav.module.scss';
 import Logo from '../../public/icons/sparkle/logo.svg';
 import BusinessLogo from '../../public/icons/sparkle/bluestone-logo.svg';
 import CancelIcon from '../../public/icons/sparkle/cancel-simple.svg';
 
 export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
-  const { user, signOut } = useAuth();
+  const { userId, signOut } = useAuth();
   const offlineTheme = isOnline === false ? styles['slideNav--isOffline'] : '';
   const stagingTheme =
     isOnline && isStaging ? styles['slideNav--isStaging'] : '';
@@ -69,11 +69,13 @@ export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
           </div>
 
           <div>
-            <div className={styles.slideNav__links__link}>
-              <Link href={user ? `/admin/users/${user.uid}` : '/admin/users/'}>
-                <a>Profile</a>
-              </Link>
-            </div>
+            {userId && (
+              <div className={styles.slideNav__links__link}>
+                <Link href={`/admin/users/${userId}`}>
+                  <a>Profile</a>
+                </Link>
+              </div>
+            )}
             <div className={styles.slideNav__links__link}>
               <Link href="/settings">
                 <a>Settings</a>
@@ -81,8 +83,8 @@ export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
             </div>
             <div className={styles.slideNav__links__link}>
               <div
-                className={styles.slideNav__links__signOut}
-                onClick={() => signOut()}
+                className={clsx(styles.slideNav__links__signOut, '-cu-pointer')}
+                onClick={signOut}
                 role="button"
                 tabIndex={0}
               >

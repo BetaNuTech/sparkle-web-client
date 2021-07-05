@@ -1,4 +1,4 @@
-import { LoginForm } from '../../common/Login';
+import { LoginForm } from '../../features/Login';
 
 export default function Login() {
   return <LoginForm />;
