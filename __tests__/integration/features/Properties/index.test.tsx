@@ -224,4 +224,30 @@ describe('Integration | Features | Properties', () => {
       .join(' | ');
     expect(actual).toEqual(expected);
   });
+
+  it('do not show city if not set on property', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].city = '';
+    render(<Properties user={user} />, {
+      contextWidth: breakpoints.desktop.minWidth,
+      properties
+    });
+    const propertyList = screen.queryAllByTestId('property-item');
+    const city = propertyList[0].querySelector('[data-testid=property-city]');
+
+    expect(city).toBeNull();
+  });
+
+  it('do not show state if not set on property', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].state = '';
+    render(<Properties user={user} />, {
+      contextWidth: breakpoints.desktop.minWidth,
+      properties
+    });
+    const propertyList = screen.queryAllByTestId('property-item');
+    const state = propertyList[0].querySelector('[data-testid=property-state]');
+
+    expect(state).toBeNull();
+  });
 });

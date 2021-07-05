@@ -5,6 +5,7 @@ import mockPropertes from '../../../../../__mocks__/properties';
 import PropertiesMobileLayout from '../../../../../features/Properties/MobileLayout';
 import breakpoints from '../../../../../config/breakpoints';
 import { shuffle } from '../../../../helpers/array';
+import deepClone from '../../../../helpers/deepClone';
 
 const defaultPropertyMeta = mockTeams.map(({ id }, i) => ({
   team: id,
@@ -34,6 +35,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('team-item');
     const actual = items.length;
+
     expect(actual).toEqual(expected);
   });
 
@@ -48,6 +50,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('property-item');
     const actual = items.length;
+
     expect(actual).toEqual(expected);
   });
 
@@ -76,8 +79,46 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const numberOfFollowUps = teamRow.querySelector(
       '[data-testid=num-of-follow-up-actions]'
     ).textContent;
-
     const actual = `${numberOfDeficientItems} | ${numberOfRequired} | ${numberOfFollowUps}`;
+
     expect(actual).toEqual(expected);
+  });
+
+  it('do not show address line 1 if not set on property', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].addr1 = '';
+    const { container } = render(
+      <PropertiesMobileLayout
+        properties={properties}
+        teams={mockTeams}
+        teamCalculatedValues={defaultPropertyMeta}
+        isDeletePropertyPromptVisible={false}
+      />
+    );
+    const propertyList = container.querySelectorAll(
+      '[data-testid=property-item]'
+    );
+    const addr1 = propertyList[0].querySelector('[data-testid=property-addr1]');
+
+    expect(addr1).toBeNull();
+  });
+
+  it('do not show address line 2 if not set on property', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].addr2 = '';
+    const { container } = render(
+      <PropertiesMobileLayout
+        properties={properties}
+        teams={mockTeams}
+        teamCalculatedValues={defaultPropertyMeta}
+        isDeletePropertyPromptVisible={false}
+      />
+    );
+    const propertyList = container.querySelectorAll(
+      '[data-testid=property-item]'
+    );
+    const addr2 = propertyList[0].querySelector('[data-testid=property-addr2]');
+
+    expect(addr2).toBeNull();
   });
 });
