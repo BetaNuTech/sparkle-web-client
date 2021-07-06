@@ -7,6 +7,15 @@
   flex-wrap: nowrap;
   align-items: stretch;
 
+  &__sortInfoLine {
+    padding: rem-calc(8) rem-calc(16);
+    display: flex;
+    justify-content: flex-start;
+    background-color: #94bdf2;
+    color: $white;
+    font-size: rem-calc(12);
+  }
+
   &__item {
     display: flex;
     flex-direction: column;

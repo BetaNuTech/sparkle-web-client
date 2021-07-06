@@ -22,7 +22,6 @@ import styles from './styles.module.scss';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { ProfileList } from './ProfileList';
-import { MobileHeader } from './MobileHeader';
 import MobileLayout from './MobileLayout';
 
 interface PropertiesModel {
@@ -159,36 +158,25 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   return (
     <>
       {isMobileorTablet && (
-        <>
-          <MobileHeader
-            title="Properties"
-            toggleNavOpen={toggleNavOpen}
-            nextPropertiesSort={nextPropertiesSort}
-            isOnline={isOnline}
-            isStaging={isStaging}
-          />
-
-          <div
-            className={styles.properties__sortInfoLine}
-            data-testid="properties-active-sort-by"
-          >
-            {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
-          </div>
-
-          <MobileLayout
-            properties={sortedProperties}
-            teams={teams}
-            teamCalculatedValues={teamCalculatedValues}
-            isDeletePropertyPromptVisible={isDeletePropertyPromptVisible}
-            confirmPropertyDelete={confirmPropertyDelete}
-            openPropertyDeletePrompt={openPropertyDeletePrompt}
-            closeDeletePropertyPrompt={closeDeletePropertyPrompt}
-            isDeleteTeamPromptVisible={isDeleteTeamPromptVisible}
-            confirmTeamDelete={confirmTeamDelete}
-            openTeamDeletePrompt={openTeamDeletePrompt}
-            closeDeleteTeamPrompt={closeDeleteTeamPrompt}
-          />
-        </>
+        <MobileLayout
+          properties={sortedProperties}
+          teams={teams}
+          teamCalculatedValues={teamCalculatedValues}
+          isDeletePropertyPromptVisible={isDeletePropertyPromptVisible}
+          confirmPropertyDelete={confirmPropertyDelete}
+          openPropertyDeletePrompt={openPropertyDeletePrompt}
+          closeDeletePropertyPrompt={closeDeletePropertyPrompt}
+          isDeleteTeamPromptVisible={isDeleteTeamPromptVisible}
+          confirmTeamDelete={confirmTeamDelete}
+          openTeamDeletePrompt={openTeamDeletePrompt}
+          closeDeleteTeamPrompt={closeDeleteTeamPrompt}
+          isOnline={isOnline}
+          isStaging={isStaging}
+          toggleNavOpen={toggleNavOpen}
+          nextPropertiesSort={nextPropertiesSort}
+          sortBy={sortBy}
+          activePropertiesSortFilter={activePropertiesSortFilter}
+        />
       )}
 
       {/* Desktop Header & Content */}
