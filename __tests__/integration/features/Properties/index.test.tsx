@@ -136,7 +136,7 @@ describe('Integration | Features | Properties', () => {
 
   it('sorts properties by city', async () => {
     const cities = ['Acapuco', 'Bermuda', 'Cape Cod', 'Washington', 'Zanzibar'];
-    const expected = cities.map((c) => c.toLowerCase()).join(' | ');
+    const expected = cities.map((c) => `${c.toLowerCase()},`).join(' | ');
     const properties = deepClone(mockPropertes);
     cities.forEach((city, i) => {
       if (properties[i]) {

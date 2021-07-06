@@ -9,7 +9,7 @@ import AddIcon from '../../../public/icons/ios/add.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
 import Dropdown from '../DropdownAdd';
 import TeamItem from './TeamItem';
-import { PropertyItem } from './PropertyItem';
+import PropertyItem from './PropertyItem';
 import DeletePropertyPrompt from './DeletePropertyPrompt';
 import DeleteTeamPrompt from './DeleteTeamPrompt';
 import styles from './styles.module.scss';

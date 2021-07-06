@@ -34,32 +34,27 @@
   &__name {
     margin: rem-calc(3) 0;
     padding: 0;
-    line-height: rem-calc(22);
+    line-height: rem-calc(21);
     font-size: rem-calc(16);
     font-weight: 700;
     color: $black;
   }
 
   &__addr1 {
-    margin: 0 0 rem-calc(3) 0;
+    margin: 0 0 rem-calc(2) 0;
     line-height: rem-calc(22);
     font-size: rem-calc(14);
     font-weight: 100;
     color: $gray-dark;
+    font-family: $helvetica-font-family;
   }
 
   &__mailingAddr2,
   &__lastInspectionEntries {
     margin: 0;
-    line-height: rem-calc(12);
-    font-size: rem-calc(7);
+    line-height: rem-calc(13);
+    font-size: rem-calc(9);
     color: $gray-dark;
     font-family: $helvetica-font-family;
-  }
-
-  // Field lastInspectionEntries is undefined
-  &__lastInspectionEntries--empty {
-    line-height: rem-calc(19);
-    font-size: rem-calc(12);
   }
 }
