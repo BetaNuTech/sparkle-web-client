@@ -19,6 +19,7 @@ ProfileList.propTypes = {
       addr2: PropTypes.string.isRequired,
       city: PropTypes.string.isRequired,
       state: PropTypes.string.isRequired,
+      zip: PropTypes.string,
       lastInspectionDate: PropTypes.number.isRequired,
       lastInspectionScore: PropTypes.number.isRequired
     }).isRequired

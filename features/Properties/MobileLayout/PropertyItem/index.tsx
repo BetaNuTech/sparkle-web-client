@@ -1,18 +1,28 @@
 import clsx from 'clsx';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
-import { useState, useRef } from 'react';
-import styles from './styles.module.scss';
-import parentStyles from '../styles.module.scss';
+import { useState, useRef, FunctionComponent } from 'react';
+import propertyModel from '../../../../common/models/property';
 import { TeamValues } from '../../../../common/TeamValues';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
+import getLastInspectionEntry from '../../utils/getLastInspectionEntry';
+import parentStyles from '../styles.module.scss';
+import styles from './styles.module.scss';
 
-export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
+interface MobileLayoutPropertyItemProps {
+  property: propertyModel;
+  onQueuePropertyDelete: (property: propertyModel) => void;
+}
+
+const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
+  property,
+  onQueuePropertyDelete
+}) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
   useSwipeReveal(ref, setIsSwipeOpen);
 
+  const lastInspectionEntry = getLastInspectionEntry(property);
   return (
     <div
       ref={ref}
@@ -52,34 +62,34 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
                 <h6 className={styles.propertyItem__name}>{property.name}</h6>
                 {/* Do not show addr1 if not present */}
                 {property.addr1 && (
-                  <p
+                  <div
                     className={styles.propertyItem__addr1}
                     data-testid="property-addr1"
                   >
                     {property.addr1}
-                  </p>
+                  </div>
                 )}
-                {/* Do not show addr2 if not present */}
-                {property.addr2 && (
-                  <p
-                    className={styles.propertyItem__mailingAddr2}
-                    data-testid="property-addr2"
-                  >
-                    {property.addr2}
-                  </p>
-                )}
-                {property.lastInspectionEntries ? (
-                  <p className={styles.propertyItem__lastInspectionEntries}>
-                    {new Date(1000 * property.lastInspectionEntries)}
-                  </p>
-                ) : (
-                  <p
-                    className={clsx(
-                      styles.propertyItem__lastInspectionEntries,
-                      styles['propertyItem__lastInspectionEntries--empty']
+                {(property.city || property.state) && (
+                  <div className={styles.propertyItem__mailingAddr2}>
+                    {/** Do not show city if not present */}
+                    {property.city && (
+                      <span data-testid="property-city">{`${property.city}, `}</span>
                     )}
+                    {/** Do not show state if not present */}
+                    {property.state && (
+                      <span data-testid="property-state">{`${property.state} `}</span>
+                    )}
+                    {property.zip && (
+                      <span data-testid="property-zip">{property.zip}</span>
+                    )}
+                  </div>
+                )}
+                {lastInspectionEntry && (
+                  <p
+                    className={styles.propertyItem__lastInspectionEntries}
+                    data-testid="property-last-inspection-entry"
                   >
-                    No Inspections
+                    {lastInspectionEntry}
                   </p>
                 )}
               </div>
@@ -132,20 +142,4 @@ export const PropertyItem = ({ property, onQueuePropertyDelete }) => {
   );
 };
 
-PropertyItem.defaultProps = {
-  onQueuePropertyDelete: () => {} // TODO require property
-};
-
-PropertyItem.propTypes = {
-  property: PropTypes.shape({
-    photoURL: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    addr1: PropTypes.string,
-    addr2: PropTypes.string,
-    city: PropTypes.string,
-    state: PropTypes.string,
-    lastInspectionDate: PropTypes.number,
-    lastInspectionScore: PropTypes.number
-  }).isRequired,
-  onQueuePropertyDelete: PropTypes.func
-};
+export default PropertyItem;

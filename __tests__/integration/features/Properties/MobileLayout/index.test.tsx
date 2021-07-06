@@ -89,7 +89,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('do not show address line 1 if not set on property', () => {
+  it('does not show address line 1 if not set on property', () => {
     const properties = deepClone(mockPropertes);
     properties[0].addr1 = '';
     const { container } = render(
@@ -104,14 +104,15 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const propertyList = container.querySelectorAll(
       '[data-testid=property-item]'
     );
-    const addr1 = propertyList[0].querySelector('[data-testid=property-addr1]');
-
-    expect(addr1).toBeNull();
+    const actual = propertyList[0].querySelector(
+      '[data-testid=property-addr1]'
+    );
+    expect(actual).toBeNull();
   });
 
-  it('do not show address line 2 if not set on property', () => {
+  it('does not show city if not set on property', () => {
     const properties = deepClone(mockPropertes);
-    properties[0].addr2 = '';
+    properties[0].city = '';
     const { container } = render(
       <PropertiesMobileLayout
         properties={properties}
@@ -124,15 +125,74 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const propertyList = container.querySelectorAll(
       '[data-testid=property-item]'
     );
-    const addr2 = propertyList[0].querySelector('[data-testid=property-addr2]');
+    const actual = propertyList[0].querySelector('[data-testid=property-city]');
+    expect(actual).toBeNull();
+  });
 
-    expect(addr2).toBeNull();
+  it('does not show state if not set on property', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].state = '';
+    const { container } = render(
+      <PropertiesMobileLayout
+        properties={properties}
+        teams={mockTeams}
+        teamCalculatedValues={defaultPropertyMeta}
+        isDeletePropertyPromptVisible={false}
+        activePropertiesSortFilter={() => ''}
+      />
+    );
+    const propertyList = container.querySelectorAll(
+      '[data-testid=property-item]'
+    );
+    const actual = propertyList[0].querySelector(
+      '[data-testid=property-state]'
+    );
+    expect(actual).toBeNull();
+  });
+
+  it('does not show zip if not set on property', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].zip = '';
+    const { container } = render(
+      <PropertiesMobileLayout
+        properties={properties}
+        teams={mockTeams}
+        teamCalculatedValues={defaultPropertyMeta}
+        isDeletePropertyPromptVisible={false}
+        activePropertiesSortFilter={() => ''}
+      />
+    );
+    const propertyList = container.querySelectorAll(
+      '[data-testid=property-item]'
+    );
+    const actual = propertyList[0].querySelector('[data-testid=property-zip]');
+    expect(actual).toBeNull();
+  });
+
+  it('does not show last inspection entry if property has no inspections', () => {
+    const properties = deepClone(mockPropertes);
+    properties[0].numOfInspections = 0;
+    const { container } = render(
+      <PropertiesMobileLayout
+        properties={properties}
+        teams={mockTeams}
+        teamCalculatedValues={defaultPropertyMeta}
+        isDeletePropertyPromptVisible={false}
+        activePropertiesSortFilter={() => ''}
+      />
+    );
+    const propertyList = container.querySelectorAll(
+      '[data-testid=property-item]'
+    );
+    const actual = propertyList[0].querySelector(
+      '[data-testid=property-last-inspection-entry]'
+    );
+    expect(actual).toBeNull();
   });
 
   it('sort function should be called from mobile header', () => {
     const onClickSpy = sinon.spy();
-
-    const { container } = render(
+    render(
       <PropertiesMobileLayout
         properties={mockPropertes}
         teams={mockTeams}
@@ -142,13 +202,8 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         nextPropertiesSort={onClickSpy}
       />
     );
-    const button = container.querySelector(
-      '[data-testid=mobile-properties-sort-by]'
-    );
-
-    expect(button).toBeTruthy();
-
-    userEvent.click(button);
+    const button = screen.queryByTestId('mobile-properties-sort-by');
+    if (button) userEvent.click(button);
 
     const actual = onClickSpy.called;
     expect(actual).toEqual(true);
