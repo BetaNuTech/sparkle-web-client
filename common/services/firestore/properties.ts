@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { useFirestoreCollectionData } from 'reactfire';
+import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import propertyModel from '../../models/property';
 
 const PREFIX = 'common: services: firestore: properties:';
@@ -10,6 +10,13 @@ export interface propertiesCollectionResult {
   status: string;
   error?: Error;
   data: Array<propertyModel>;
+}
+
+// Result of properties document
+export interface propertyResult {
+  status: string;
+  error?: Error;
+  data: propertyModel;
 }
 
 export default {
@@ -46,7 +53,7 @@ export default {
     // do not call firestore query
     if (ids.length > 0) {
       const query = firestore
-        .collection('properties')
+        .collection(COLLECTION_NAME)
         .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
 
       const {
@@ -63,6 +70,35 @@ export default {
       // Cast firestore data into property records
       data = queryData.map((itemData: any) => itemData as propertyModel);
     }
+
+    // Result
+    return { status, error, data };
+  },
+
+  // Lookup property by it's id
+  findRecord(
+    firestore: firebase.firestore.Firestore,
+    id: string
+  ): propertyResult {
+    let status = 'success';
+    let error = null;
+    let data = {} as propertyModel;
+
+    const docRef = firestore.collection(COLLECTION_NAME).doc(id);
+
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData
+    } = useFirestoreDocData(docRef, {
+      idField: 'id'
+    });
+
+    status = queryStatus;
+    error = queryError;
+
+    // Cast firestore data into property records
+    data = queryData as propertyModel;
 
     // Result
     return { status, error, data };

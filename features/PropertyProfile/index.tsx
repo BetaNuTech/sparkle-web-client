@@ -1,14 +1,15 @@
 import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import { useFirestore } from 'reactfire';
 import clsx from 'clsx';
 import Link from 'next/link';
 import styles from './styles.module.scss';
 import { sorts } from '../Properties/utils/propertiesSorting';
 import { useSortBy } from '../Properties/hooks/sorting';
 import { MobileHeader } from '../Properties/MobileHeader';
-import { fullProperty } from '../../__mocks__/properties';
-import inspectionsMock from '../../__mocks__/inspections';
-import templateCategoriesMock from '../../__mocks__/templateCategories';
+import useProperty from '../../common/hooks/useProperty';
+import usePropertyInspections from './hooks/usePropertyInspections';
+import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 import SortIcon from '../../public/icons/sparkle/sort.svg';
@@ -20,20 +21,31 @@ import DeleteInspectionPropmpt from './DeleteInspectionPrompt';
 
 interface PropertiesModel {
   user: userModel;
+  id: string;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
 }
 
-const Properties: FunctionComponent<PropertiesModel> = ({
+const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   user,
+  id,
   isOnline,
   isStaging,
   toggleNavOpen
 }) => {
+  const firestore = useFirestore();
   const [sortBy, setSortBy] = useSortBy();
-  const propertyProfile = { ...fullProperty };
+
+  // Fetch the data of property profile
+  const { data: property } = useProperty(firestore, id);
+
+  // Fetch all data in template categories
+  const { data: templateCategories } = useTemplateCategories(firestore);
+
+  // Query property inspection records
+  const { data: inspections } = usePropertyInspections(firestore, id);
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -54,18 +66,22 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     setDeleteInspectionPromptVisible(false);
   };
 
-  // Recalculate properties when properties or teams changes.
+  // Loop through inspections
 
-  // Loop through property
   // sorting options
-  const nextPropertiesSort = () => {
+  const nextInspectionsSort = () => {
     const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
 
-    // Update Property sort
+    // Update sorting
     setSortBy(activeSortValue);
   };
   // TODO: Add logic to check code and yardiAuthorizer
-  const isYardiConfigured = propertyProfile.code && true;
+  const isYardiConfigured = property && property.code && true;
+
+  // Loading State
+  if (!property) {
+    return <p>Loading property</p>;
+  }
 
   return (
     <>
@@ -74,20 +90,20 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           <MobileHeader
             title=""
             toggleNavOpen={toggleNavOpen}
-            nextPropertiesSort={nextPropertiesSort}
+            nextPropertiesSort={nextInspectionsSort}
             isOnline={isOnline}
             isStaging={isStaging}
           />
           <div className={styles.propertyProfile}>
             <Header
-              property={propertyProfile}
+              property={property}
               isYardiConfigured={isYardiConfigured}
               isMobile
             />
             <div className={clsx(styles.propertyProfile__main)}>
               <Inspection
-                inspections={inspectionsMock}
-                templateCategories={templateCategoriesMock}
+                inspections={inspections}
+                templateCategories={templateCategories}
               />
             </div>
             <footer className={styles.propertyProfile__footer}>
@@ -109,20 +125,17 @@ const Properties: FunctionComponent<PropertiesModel> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div className={styles.propertyProfile}>
-          <Header
-            property={propertyProfile}
-            isYardiConfigured={isYardiConfigured}
-          />
+          <Header property={property} isYardiConfigured={isYardiConfigured} />
           <Overview
-            property={propertyProfile}
-            inspections={inspectionsMock}
+            property={property}
+            inspections={inspections}
             isYardiConfigured={isYardiConfigured}
           />
-          {Array.isArray(inspectionsMock) && inspectionsMock.length > 0 ? (
+          {Array.isArray(inspections) && inspections.length > 0 ? (
             <Grid
               user={user}
-              inspections={inspectionsMock}
-              templateCategories={templateCategoriesMock}
+              inspections={inspections}
+              templateCategories={templateCategories}
               openInspectionDeletePrompt={openInspectionDeletePrompt}
             />
           ) : (
@@ -145,11 +158,11 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   );
 };
 
-Properties.defaultProps = {
+PropertyProfile.defaultProps = {
   isOnline: false,
   isStaging: false,
   isNavOpen: false,
   toggleNavOpen: () => {} // eslint-disable-line
 };
 
-export default Properties;
+export default PropertyProfile;
