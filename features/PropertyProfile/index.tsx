@@ -6,13 +6,15 @@ import Link from 'next/link';
 import styles from './styles.module.scss';
 import { sorts } from '../Properties/utils/propertiesSorting';
 import { useSortBy } from '../Properties/hooks/sorting';
-import { MobileHeader } from '../Properties/MobileHeader';
+import MobileHeader from '../../common/MobileHeader';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyInspections from './hooks/usePropertyInspections';
 import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 import SortIcon from '../../public/icons/sparkle/sort.svg';
+import AddIcon from '../../public/icons/ios/add.svg';
+import FolderIcon from '../../public/icons/ios/folder.svg';
 import Header from './Header';
 import Inspection from './Inspection';
 import Overview from './Overview';
@@ -83,6 +85,22 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
     return <p>Loading property</p>;
   }
 
+  // Mobile Header actions buttons
+  const mobileHeaderActions = (headStyle) => (
+    <>
+      <button className={clsx(headStyle.header__button)}>
+        <AddIcon />
+      </button>
+
+      <button
+        className={headStyle.header__button}
+        data-testid="mobile-property-profile-sort-by"
+      >
+        <FolderIcon />
+      </button>
+    </>
+  );
+
   return (
     <>
       {isMobileorTablet && (
@@ -90,9 +108,9 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
           <MobileHeader
             title=""
             toggleNavOpen={toggleNavOpen}
-            nextPropertiesSort={nextInspectionsSort}
             isOnline={isOnline}
             isStaging={isStaging}
+            actions={mobileHeaderActions}
           />
           <div className={styles.propertyProfile}>
             <Header

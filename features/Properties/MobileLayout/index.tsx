@@ -1,12 +1,18 @@
 import { FunctionComponent } from 'react';
-import styles from './styles.module.scss';
+import clsx from 'clsx';
+
 import propertyMetaData from '../../../common/models/propertyMetaData';
 import propertyModel from '../../../common/models/property';
 import teamModel from '../../../common/models/team';
+import MobileHeader from '../../../common/MobileHeader';
+import AddIcon from '../../../public/icons/ios/add.svg';
+import FolderIcon from '../../../public/icons/ios/folder.svg';
+import Dropdown from '../DropdownAdd';
 import TeamItem from './TeamItem';
 import { PropertyItem } from './PropertyItem';
 import DeletePropertyPrompt from './DeletePropertyPrompt';
 import DeleteTeamPrompt from './DeleteTeamPrompt';
+import styles from './styles.module.scss';
 
 interface PropertiesMobileLayoutTeamWrapperModel {
   team: teamModel;
@@ -26,6 +32,12 @@ interface PropertiesMobileLayoutModel {
   openTeamDeletePrompt: (team: teamModel) => void;
   closeDeleteTeamPrompt: () => void;
   confirmTeamDelete: () => Promise<any>;
+  isOnline?: boolean;
+  isStaging?: boolean;
+  toggleNavOpen?(): void;
+  nextPropertiesSort?(): void;
+  sortBy?: string;
+  activePropertiesSortFilter?(string): string;
 }
 
 // Wrapper around team items
@@ -57,54 +69,101 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
   isDeleteTeamPromptVisible,
   openTeamDeletePrompt,
   closeDeleteTeamPrompt,
-  confirmTeamDelete
-}) => (
-  <>
-    <ul
-      className={styles.mobileProperties}
-      data-testid="mobile-properties-list"
-    >
-      {teams.length > 0 && (
+  confirmTeamDelete,
+  isOnline,
+  isStaging,
+  toggleNavOpen,
+  nextPropertiesSort,
+  sortBy,
+  activePropertiesSortFilter
+}) => {
+  // Mobile Header actions buttons
+  const mobileHeaderActions = (headStyle) => (
+    <>
+      <button
+        className={clsx(
+          headStyle.header__button,
+          headStyle['header__button--dropdown']
+        )}
+      >
+        <AddIcon />
+        <Dropdown />
+      </button>
+
+      <button
+        className={headStyle.header__button}
+        onClick={nextPropertiesSort}
+        data-testid="mobile-properties-sort-by"
+      >
+        <FolderIcon />
+      </button>
+    </>
+  );
+
+  return (
+    <>
+      <MobileHeader
+        title="Properties"
+        toggleNavOpen={toggleNavOpen}
+        isOnline={isOnline}
+        isStaging={isStaging}
+        actions={mobileHeaderActions}
+      />
+
+      <div
+        className={styles.mobileProperties__sortInfoLine}
+        data-testid="properties-active-sort-by"
+      >
+        {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
+      </div>
+      <ul
+        className={styles.mobileProperties}
+        data-testid="mobile-properties-list"
+      >
+        {teams.length > 0 && (
+          <li className={styles.mobileProperties__item}>
+            <header className={styles.mobileProperties__itemHeader}>
+              teams
+            </header>
+            {teams.map((team) => (
+              <MobileLayoutTeamItemWrapper
+                key={team.id}
+                team={team}
+                teamCalculatedValues={teamCalculatedValues}
+                openDeletePrompt={openTeamDeletePrompt}
+              />
+            ))}
+          </li>
+        )}
+
         <li className={styles.mobileProperties__item}>
-          <header className={styles.mobileProperties__itemHeader}>teams</header>
-          {teams.map((team) => (
-            <MobileLayoutTeamItemWrapper
-              key={team.id}
-              team={team}
-              teamCalculatedValues={teamCalculatedValues}
-              openDeletePrompt={openTeamDeletePrompt}
+          <header className={styles.mobileProperties__itemHeader}>
+            properties
+          </header>
+
+          {properties.map((property) => (
+            <PropertyItem
+              key={property.id}
+              property={property}
+              onQueuePropertyDelete={openPropertyDeletePrompt}
             />
           ))}
         </li>
-      )}
+      </ul>
 
-      <li className={styles.mobileProperties__item}>
-        <header className={styles.mobileProperties__itemHeader}>
-          properties
-        </header>
+      <DeletePropertyPrompt
+        isVisible={isDeletePropertyPromptVisible}
+        onClose={closeDeletePropertyPrompt}
+        onConfirm={confirmPropertyDelete}
+      />
 
-        {properties.map((property) => (
-          <PropertyItem
-            key={property.id}
-            property={property}
-            onQueuePropertyDelete={openPropertyDeletePrompt}
-          />
-        ))}
-      </li>
-    </ul>
-
-    <DeletePropertyPrompt
-      isVisible={isDeletePropertyPromptVisible}
-      onClose={closeDeletePropertyPrompt}
-      onConfirm={confirmPropertyDelete}
-    />
-
-    <DeleteTeamPrompt
-      isVisible={isDeleteTeamPromptVisible}
-      onClose={closeDeleteTeamPrompt}
-      onConfirm={confirmTeamDelete}
-    />
-  </>
-);
+      <DeleteTeamPrompt
+        isVisible={isDeleteTeamPromptVisible}
+        onClose={closeDeleteTeamPrompt}
+        onConfirm={confirmTeamDelete}
+      />
+    </>
+  );
+};
 
 export default MobileLayout;

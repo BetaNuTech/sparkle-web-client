@@ -1,4 +1,6 @@
+import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import mockTeams from '../../../../../__mocks__/teams';
 import mockPropertes from '../../../../../__mocks__/properties';
@@ -31,6 +33,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
+        activePropertiesSortFilter={() => ''}
       />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('team-item');
@@ -46,6 +49,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
+        activePropertiesSortFilter={() => ''}
       />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('property-item');
@@ -65,6 +69,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
+        activePropertiesSortFilter={() => ''}
       />
     );
 
@@ -93,6 +98,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
+        activePropertiesSortFilter={() => ''}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -112,6 +118,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
+        activePropertiesSortFilter={() => ''}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -120,5 +127,30 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const addr2 = propertyList[0].querySelector('[data-testid=property-addr2]');
 
     expect(addr2).toBeNull();
+  });
+
+  it('sort function should be called from mobile header', () => {
+    const onClickSpy = sinon.spy();
+
+    const { container } = render(
+      <PropertiesMobileLayout
+        properties={mockPropertes}
+        teams={mockTeams}
+        teamCalculatedValues={defaultPropertyMeta}
+        isDeletePropertyPromptVisible={false}
+        activePropertiesSortFilter={() => ''}
+        nextPropertiesSort={onClickSpy}
+      />
+    );
+    const button = container.querySelector(
+      '[data-testid=mobile-properties-sort-by]'
+    );
+
+    expect(button).toBeTruthy();
+
+    userEvent.click(button);
+
+    const actual = onClickSpy.called;
+    expect(actual).toEqual(true);
   });
 });
