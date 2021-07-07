@@ -80,6 +80,32 @@ describe('Unit | Common | Utils | User Permissions', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it should only allow admins to create new team record', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canCreateTeam(admin),
+      util.canCreateTeam(corporate),
+      util.canCreateTeam(teamLead),
+      util.canCreateTeam(propertyMember),
+      util.canCreateTeam(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins to create new property record', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canCreateProperty(admin),
+      util.canCreateProperty(corporate),
+      util.canCreateProperty(teamLead),
+      util.canCreateProperty(propertyMember),
+      util.canCreateProperty(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
   test('it should only allow admins to re-assign inspections', () => {
     const expected = [true, false, false, false, false];
 

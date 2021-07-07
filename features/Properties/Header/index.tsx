@@ -1,39 +1,48 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import styles from './Header.module.scss';
-import Dropdown from '../DropdownAdd';
 import AddIcon from '../../../public/icons/ios/add.svg';
+import Dropdown from '../DropdownAdd';
 
 interface PropertiesHeaderModel {
   sortBy: string;
   sortDir: string;
   onSortChange: any;
+  canAddTeam: boolean;
+  canAddProperty: boolean;
 }
 
 const Header: FunctionComponent<PropertiesHeaderModel> = ({
   sortBy,
   sortDir,
-  onSortChange
+  onSortChange,
+  canAddTeam,
+  canAddProperty
 }) => (
   <header className={styles.header} data-testid="properties-header">
     {/* Title And Create Button */}
     <h1 className={styles.header__title}>Properties</h1>
 
     <aside className={styles.header__controls}>
-      <div className={styles['header-item']}>
-        <button
-          className={clsx(
-            styles['header-item__createButton'],
-            styles['header-item__createButton--dropdown']
-          )}
+      {(canAddTeam || canAddProperty) && (
+        <div
+          className={styles['header-item']}
+          data-testid="property-list-create"
         >
-          Create
-          <span className="iconAddButton">
-            <AddIcon />
-          </span>
-          <Dropdown />
-        </button>
-      </div>
+          <button
+            className={clsx(
+              styles['header-item__createButton'],
+              styles['header-item__createButton--dropdown']
+            )}
+          >
+            Create
+            <span className="iconAddButton">
+              <AddIcon />
+            </span>
+            <Dropdown canAddTeam={canAddTeam} canAddProperty={canAddProperty} />
+          </button>
+        </div>
+      )}
 
       {/* Sort By, Selector */}
       <div className={styles['header-item']}>
@@ -72,5 +81,10 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
     </aside>
   </header>
 );
+
+Header.defaultProps = {
+  sortBy: 'name',
+  sortDir: 'asc'
+};
 
 export default Header;

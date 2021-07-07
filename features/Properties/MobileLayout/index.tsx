@@ -34,6 +34,8 @@ interface PropertiesMobileLayoutModel {
   confirmTeamDelete: () => Promise<any>;
   isOnline?: boolean;
   isStaging?: boolean;
+  canAddTeam: boolean;
+  canAddProperty: boolean;
   toggleNavOpen?(): void;
   nextPropertiesSort?(): void;
   sortBy?: string;
@@ -72,6 +74,8 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
   confirmTeamDelete,
   isOnline,
   isStaging,
+  canAddTeam,
+  canAddProperty,
   toggleNavOpen,
   nextPropertiesSort,
   sortBy,
@@ -80,15 +84,18 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button
-        className={clsx(
-          headStyle.header__button,
-          headStyle['header__button--dropdown']
-        )}
-      >
-        <AddIcon />
-        <Dropdown />
-      </button>
+      {(canAddTeam || canAddProperty) && (
+        <button
+          className={clsx(
+            headStyle.header__button,
+            headStyle['header__button--dropdown']
+          )}
+          data-testid="property-list-create"
+        >
+          <AddIcon />
+          <Dropdown canAddTeam={canAddTeam} canAddProperty={canAddProperty} />
+        </button>
+      )}
 
       <button
         className={headStyle.header__button}

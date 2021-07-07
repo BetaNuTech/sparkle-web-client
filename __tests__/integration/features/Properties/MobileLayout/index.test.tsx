@@ -208,4 +208,38 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const actual = onClickSpy.called;
     expect(actual).toEqual(true);
   });
+
+  it('should only show create button when mobile user has permission to create a team or a property', () => {
+    const expected = true;
+    const props = {
+      canAddTeam: false,
+      canAddProperty: true,
+      properties: mockPropertes,
+      teams: mockTeams,
+      teamCalculatedValues: defaultPropertyMeta,
+      isDeletePropertyPromptVisible: false,
+      activePropertiesSortFilter: () => ''
+    };
+    render(<PropertiesMobileLayout {...props} />);
+
+    const actual = Boolean(screen.queryByTestId('property-list-create'));
+    expect(actual).toEqual(expected);
+  });
+
+  it('should not show create button when mobile user has no permission to create a team and property', () => {
+    const expected = false;
+    const props = {
+      canAddTeam: false,
+      canAddProperty: false,
+      properties: mockPropertes,
+      teams: mockTeams,
+      teamCalculatedValues: defaultPropertyMeta,
+      isDeletePropertyPromptVisible: false,
+      activePropertiesSortFilter: () => ''
+    };
+    render(<PropertiesMobileLayout {...props} />);
+
+    const actual = Boolean(screen.queryByTestId('property-list-create'));
+    expect(actual).toEqual(expected);
+  });
 });

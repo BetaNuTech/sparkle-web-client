@@ -82,6 +82,12 @@ export const getLevelName = (user: userModel): string => {
 // Checks that the user can delete inspection entry or not
 export const canDeleteInspection = (user: userModel): boolean => user.admin;
 
+// Checks that the user can create team record
+export const canCreateTeam = (user: userModel): boolean => user.admin;
+
+// Checks that the user can create property record
+export const canCreateProperty = (user: userModel): boolean => user.admin;
+
 // Checks that the user can re-assign inspection entry against a property
 export const canReassignInspectionProperty = (user: userModel): boolean =>
   user.admin;
