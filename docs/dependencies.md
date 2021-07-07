@@ -45,7 +45,6 @@ All 3rd party code used by this application.
 - [Jest](https://facebook.github.io/jest/) test runner and utilities.
 - [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) test utilities.
 - [Sinon: Test Spys and Stubs](https://sinonjs.org/) for testing and mocking functions.
-- NOTE: Enzyme is still in the project, however it will be removed. **Do not use it.** Use `@testing-library/react` instead.
 
 ## Images & SVG's
 

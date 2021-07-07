@@ -12,6 +12,10 @@ import useTeams from './hooks/useTeams';
 import useProperties from './hooks/useProperties';
 import useDeleteProperty from './hooks/useDeleteProperty';
 import useDeleteTeam from './hooks/useDeleteTeam';
+import {
+  canCreateTeam,
+  canCreateProperty
+} from '../../common/utils/userPermissions';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
 import propertyModel from '../../common/models/property';
@@ -52,6 +56,10 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     memo: teamsMemo
   } = useTeams(firestore, user);
   const [sortedProperties, setSortedProperties] = useState([]);
+
+  // Lookup user permissions
+  const hasCreateTeamPermission = canCreateTeam(user);
+  const hasCreatePropertyPermission = canCreateProperty(user);
 
   // User notifications setup
   /* eslint-disable */
@@ -172,6 +180,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           closeDeleteTeamPrompt={closeDeleteTeamPrompt}
           isOnline={isOnline}
           isStaging={isStaging}
+          canAddTeam={hasCreateTeamPermission}
+          canAddProperty={hasCreatePropertyPermission}
           toggleNavOpen={toggleNavOpen}
           nextPropertiesSort={nextPropertiesSort}
           sortBy={sortBy}
@@ -186,6 +196,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
             sortBy={sortBy}
             sortDir={sortDir}
             onSortChange={onSortChange}
+            canAddTeam={hasCreateTeamPermission}
+            canAddProperty={hasCreatePropertyPermission}
           />
 
           <div className={styles.properties__main}>

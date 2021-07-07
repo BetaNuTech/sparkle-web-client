@@ -1,10 +1,26 @@
 import { FunctionComponent } from 'react';
 import Dropdown, { DropdownLink } from '../../../common/Dropdown';
 
-const DropdownAdd: FunctionComponent = () => (
+interface Props {
+  canAddTeam: boolean;
+  canAddProperty: boolean;
+}
+
+const DropdownAdd: FunctionComponent<Props> = ({
+  canAddTeam,
+  canAddProperty
+}) => (
   <Dropdown>
-    <DropdownLink href="/teams/create/">Add Team</DropdownLink>
-    <DropdownLink href="/properties/update/">Add Property</DropdownLink>
+    {canAddTeam && (
+      <DropdownLink href="/teams/create/" testid="dropdown-add-team">
+        Add Team
+      </DropdownLink>
+    )}
+    {canAddProperty && (
+      <DropdownLink href="/properties/update/" testid="dropdown-add-property">
+        Add Property
+      </DropdownLink>
+    )}
   </Dropdown>
 );
 

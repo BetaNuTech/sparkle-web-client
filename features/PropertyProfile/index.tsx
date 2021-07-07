@@ -4,8 +4,6 @@ import { useFirestore } from 'reactfire';
 import clsx from 'clsx';
 import Link from 'next/link';
 import styles from './styles.module.scss';
-import { sorts } from '../Properties/utils/propertiesSorting';
-import { useSortBy } from '../Properties/hooks/sorting';
 import MobileHeader from '../../common/MobileHeader';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyInspections from './hooks/usePropertyInspections';
@@ -38,7 +36,8 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   toggleNavOpen
 }) => {
   const firestore = useFirestore();
-  const [sortBy, setSortBy] = useSortBy();
+  // TODO:
+  // const [sortBy, setSortBy] = useSortBy();
 
   // Fetch the data of property profile
   const { data: property } = useProperty(firestore, id);
@@ -70,13 +69,14 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
 
   // Loop through inspections
 
-  // sorting options
-  const nextInspectionsSort = () => {
-    const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
+  // TODO: sorting options
+  // const nextInspectionsSort = () => {
+  //   const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
 
-    // Update sorting
-    setSortBy(activeSortValue);
-  };
+  //   // Update sorting
+  //   setSortBy(activeSortValue);
+  // };
+
   // TODO: Add logic to check code and yardiAuthorizer
   const isYardiConfigured = property && property.code && true;
 
