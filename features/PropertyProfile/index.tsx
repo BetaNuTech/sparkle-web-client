@@ -1,6 +1,7 @@
 import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useFirestore } from 'reactfire';
+import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Link from 'next/link';
 import styles from './styles.module.scss';
@@ -36,6 +37,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   toggleNavOpen
 }) => {
   const firestore = useFirestore();
+  const router = useRouter();
   // TODO:
   // const [sortBy, setSortBy] = useSortBy();
 
@@ -85,10 +87,14 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
     return <p>Loading property</p>;
   }
 
+  const onCreateInspection = () => {
+    router.push(`/properties/${id}/create-inspection`);
+  };
+
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={clsx(headStyle.header__button)}>
+      <button className={headStyle.header__button} onClick={onCreateInspection}>
         <AddIcon />
       </button>
 

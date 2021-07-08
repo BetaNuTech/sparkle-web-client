@@ -10,6 +10,7 @@ interface Props {
   isStaging?: boolean;
   isOnline?: boolean;
   actions?(any): React.ReactNode | React.ReactNodeArray;
+  className?: any;
 }
 
 const MobileHeader: FunctionComponent<Props> = ({
@@ -17,7 +18,8 @@ const MobileHeader: FunctionComponent<Props> = ({
   toggleNavOpen,
   isStaging,
   isOnline,
-  actions
+  actions,
+  className
 }) => {
   const offlineTheme = isOnline === false ? styles['header--isOffline'] : '';
   const stagingTheme = isOnline && isStaging ? styles['header--isStaging'] : '';
@@ -25,7 +27,7 @@ const MobileHeader: FunctionComponent<Props> = ({
 
   return (
     <header
-      className={clsx(styles.header, containerTheme)}
+      className={clsx(styles.header, containerTheme, className && className)}
       data-testid="mobile-properties-header"
     >
       {/* Navigation Elements */}

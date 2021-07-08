@@ -41,6 +41,23 @@ export const getProperties = (userProperties: any = {}): Array<string> => {
   return Object.keys(userProperties || {});
 };
 
+// All users access to properties
+// including explicit property access
+// via `properties` as well as implied
+// property access via `teams`
+export const getPropertyLevelAccess = (
+  userProperties: any = {},
+  userTeams: any = {}
+): Array<string> =>
+  []
+    .concat(
+      Object.keys(userProperties || {}),
+      ...Object.keys(userTeams || {})
+        .filter((teamId) => typeof userTeams[teamId] === 'object')
+        .map((teamId) => Object.keys(userTeams[teamId]))
+    )
+    .filter((propId, i, all) => all.indexOf(propId) === i); // unique only
+
 // Create array of all a users team leaderships/memberships id's
 export const getTeams = (userTeams: any = {}): Array<string> => {
   if (typeof userTeams !== 'object' || Array.isArray(userTeams)) {
@@ -91,3 +108,14 @@ export const canCreateProperty = (user: userModel): boolean => user.admin;
 // Checks that the user can re-assign inspection entry against a property
 export const canReassignInspectionProperty = (user: userModel): boolean =>
   user.admin;
+
+// Checks if user has access to a property
+const hasPropertyAccess = (user: userModel, propertyId: string): boolean =>
+  getPropertyLevelAccess(user.properties, user.teams).includes(propertyId);
+
+// Checks user has permission to CREATE property inspections
+export const canCreateInspection = (
+  user: userModel,
+  propertyId: string
+): boolean =>
+  user.admin || user.corporate || hasPropertyAccess(user, propertyId);
