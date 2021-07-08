@@ -44,7 +44,9 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
     )}
   >
     <li data-testid="property-profile-deficient-item">
-      <span className={clsx(styles.propertyProfile__overview__deficient__label)}>
+      <span
+        className={clsx(styles.propertyProfile__overview__deficient__label)}
+      >
         {property.numOfDeficientItems}
       </span>
       {`Deficient Item${property.numOfDeficientItems > 1 ? 's' : ''}`}
@@ -135,7 +137,7 @@ const Overview: FunctionComponent<Props> = ({
             {property.name}
           </h1>
         )}
-        <Link href="/properties">
+        <Link href={`/properties/${property.id}/create-inspection`}>
           <a className={clsx('button', styles.button, styles.primary)}>
             Add Inspection{' '}
             <span className={styles.propertyProfile__overview__iconButton}>
