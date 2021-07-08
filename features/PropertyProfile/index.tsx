@@ -8,6 +8,7 @@ import styles from './styles.module.scss';
 import MobileHeader from '../../common/MobileHeader';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyInspections from './hooks/usePropertyInspections';
+import useYardiIntegration from './hooks/useYardiIntegration';
 import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
@@ -50,6 +51,9 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   // Query property inspection records
   const { data: inspections } = usePropertyInspections(firestore, id);
 
+  // Query property inspection records
+  const { data: yardiAuthorizer } = useYardiIntegration(firestore);
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -79,8 +83,8 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   //   setSortBy(activeSortValue);
   // };
 
-  // TODO: Add logic to check code and yardiAuthorizer
-  const isYardiConfigured = property && property.code && true;
+  const isYardiConfigured =
+    property && property.code && Object.keys(yardiAuthorizer).length > 0;
 
   // Loading State
   if (!property) {
