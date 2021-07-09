@@ -34,6 +34,10 @@
     margin: 0;
   }
 
+  &__noInspectionMessage {
+    @extend %profile-list--item;
+  }
+
   @include media-query(tablet) {
     display: block;
   }
