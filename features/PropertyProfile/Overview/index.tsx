@@ -10,6 +10,7 @@ interface Props {
   property: propertyModel;
   inspections: Array<inspectionModel>;
   isYardiConfigured: boolean;
+  setInspectionFilter?(string): void;
 }
 
 const YardiButtons: FunctionComponent<{
@@ -89,27 +90,37 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
   </ul>
 );
 
-const FilterView: FunctionComponent<{ inspections: Array<inspectionModel> }> =
-  ({ inspections }) =>
-    inspections.length > 0 ? (
-      <label
-        htmlFor="inspection-completed-filter"
-        className={styles.propertyProfile__overview__control}
+const FilterView: FunctionComponent<{
+  inspections: Array<inspectionModel>;
+  setInspectionFilter(string): void;
+}> = ({ inspections, setInspectionFilter }) =>
+  inspections.length > 0 ? (
+    <label
+      htmlFor="inspection-filter"
+      className={styles.propertyProfile__overview__control}
+    >
+      Filter by:
+      <select
+        id="inspection-filter"
+        name="inspection-filter"
+        onChange={(ev) =>
+          setInspectionFilter(ev.target.value)
+        }
+        data-testid="inspections-filter"
       >
-        Filter by:
-        <select id="inspection-completed-filter" name="inspection-completed">
-          <option value="">None</option>
-          <option value="completed">Completed</option>
-          <option value="incomplete">Incomplete</option>
-          <option value="deficienciesExist">Deficiencies Exist</option>
-        </select>
-      </label>
-    ) : null;
+        <option value="">None</option>
+        <option value="completed">Completed</option>
+        <option value="incomplete">Incomplete</option>
+        <option value="deficienciesExist">Deficiencies Exist</option>
+      </select>
+    </label>
+  ) : null;
 
 const Overview: FunctionComponent<Props> = ({
   property,
   inspections,
-  isYardiConfigured
+  isYardiConfigured,
+  setInspectionFilter
 }) => {
   // Set logoUrl to logoURL property
   let logoUrl = property.logoURL ? property.logoURL : '';
@@ -158,7 +169,10 @@ const Overview: FunctionComponent<Props> = ({
             <DeficiencienItemsLink property={property} />
           </a>
         </Link>
-        <FilterView inspections={inspections} />
+        <FilterView
+          inspections={inspections}
+          setInspectionFilter={setInspectionFilter}
+        />
       </footer>
     </div>
   );

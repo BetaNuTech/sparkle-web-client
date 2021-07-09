@@ -9,12 +9,18 @@ import MobileHeader from '../../common/MobileHeader';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyInspections from './hooks/usePropertyInspections';
 import useYardiIntegration from './hooks/useYardiIntegration';
+import useInspectionFilter from './hooks/useInspectionFilter';
 import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 import SortIcon from '../../public/icons/sparkle/sort.svg';
 import AddIcon from '../../public/icons/ios/add.svg';
 import FolderIcon from '../../public/icons/ios/folder.svg';
+import {
+  activeInspectionFilterName,
+  getInspectionNoRecordText,
+  nextInspectionsFilter
+} from './utils/inspectionFiltering';
 import Header from './Header';
 import Inspection from './Inspection';
 import Overview from './Overview';
@@ -41,6 +47,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   const router = useRouter();
   // TODO:
   // const [sortBy, setSortBy] = useSortBy();
+  const [inspectionFilter, setInspectionFilter] = useState('');
 
   // Fetch the data of property profile
   const { data: property } = useProperty(firestore, id);
@@ -53,6 +60,12 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
 
   // Query property inspection records
   const { data: yardiAuthorizer } = useYardiIntegration(firestore);
+
+  // Inspection filtration on based of applied filter
+  const { filteredInspections } = useInspectionFilter(
+    inspectionFilter,
+    inspections
+  );
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -83,6 +96,14 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   //   setSortBy(activeSortValue);
   // };
 
+  // Activate next inspection fitler in series
+  const onToggleNextInspectionFilter = () => {
+    const activeSortValue = nextInspectionsFilter(inspectionFilter);
+
+    // Update filter
+    setInspectionFilter(activeSortValue);
+  };
+
   const isYardiConfigured =
     property && property.code && Object.keys(yardiAuthorizer).length > 0;
 
@@ -90,6 +111,12 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   if (!property) {
     return <p>Loading property</p>;
   }
+
+  // Display text for when filtered inspection does not have any records
+  const noFilteredInspectionText =
+    inspectionFilter && filteredInspections.length === 0
+      ? getInspectionNoRecordText(inspectionFilter)
+      : '';
 
   const onCreateInspection = () => {
     router.push(`/properties/${id}/create-inspection`);
@@ -129,10 +156,25 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
               isMobile
             />
             <div className={clsx(styles.propertyProfile__main)}>
-              <Inspection
-                inspections={inspections}
-                templateCategories={templateCategories}
-              />
+              {noFilteredInspectionText ? (
+                <h4
+                  className={clsx(
+                    styles.propertyProfile__noInspectionMessage,
+                    '-c-gray-light'
+                  )}
+                >
+                  {noFilteredInspectionText}
+                </h4>
+              ) : (
+                <Inspection
+                  inspections={
+                    filteredInspections.length > 0 || inspectionFilter
+                      ? filteredInspections
+                      : inspections
+                  }
+                  templateCategories={templateCategories}
+                />
+              )}
             </div>
             <footer className={styles.propertyProfile__footer}>
               <button
@@ -142,9 +184,16 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
                   '-pr-sm',
                   '-outline-width-none'
                 )}
+                data-testid="inspections-filter"
+                onClick={onToggleNextInspectionFilter}
               >
                 <SortIcon />
               </button>
+              {inspectionFilter && (
+                <span className="-fz-medium">
+                  {activeInspectionFilterName(inspectionFilter)}
+                </span>
+              )}
             </footer>
           </div>
         </>
@@ -158,24 +207,41 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
             property={property}
             inspections={inspections}
             isYardiConfigured={isYardiConfigured}
+            setInspectionFilter={setInspectionFilter}
           />
-          {Array.isArray(inspections) && inspections.length > 0 ? (
-            <Grid
-              user={user}
-              inspections={inspections}
-              templateCategories={templateCategories}
-              openInspectionDeletePrompt={openInspectionDeletePrompt}
-            />
-          ) : (
-            <p
-              className={styles.propertyProfile__createInspectionLink}
-              data-testid="create-inspection-link"
-            >
-              <Link href="/properties/dvSsHLv8cxAvIMKv9Gk0/create-inspection">
-                <a className="-td-underline">Create first inspection</a>
-              </Link>
-            </p>
-          )}
+          {
+            // eslint-disable-next-line no-nested-ternary
+            noFilteredInspectionText ? (
+              <h4
+                className={clsx(
+                  styles.propertyProfile__noInspectionMessage,
+                  '-c-gray-light'
+                )}
+              >
+                {noFilteredInspectionText}
+              </h4>
+            ) : Array.isArray(inspections) && inspections.length > 0 ? (
+              <Grid
+                user={user}
+                inspections={
+                  filteredInspections.length > 0 || inspectionFilter
+                    ? filteredInspections
+                    : inspections
+                }
+                templateCategories={templateCategories}
+                openInspectionDeletePrompt={openInspectionDeletePrompt}
+              />
+            ) : (
+              <p
+                className={styles.propertyProfile__createInspectionLink}
+                data-testid="create-inspection-link"
+              >
+                <Link href="/properties/dvSsHLv8cxAvIMKv9Gk0/create-inspection">
+                  <a className="-td-underline">Create first inspection</a>
+                </Link>
+              </p>
+            )
+          }
         </div>
       )}
       <DeleteInspectionPropmpt
