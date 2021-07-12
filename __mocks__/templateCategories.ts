@@ -1,7 +1,7 @@
 import templateCateogryModel from '../common/models/templateCategory';
 
 export const categoryA: templateCateogryModel = {
-  id: 'rDJx8PqjTKUMr2a4hPHd',
+  id: 'category-1',
   name: 'Inspection Testers'
 };
 

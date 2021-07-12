@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useTemplates from './usePropertyTemplates';
+import usePropertyTemplates from './usePropertyTemplates';
 import templatesApi from '../../../common/services/firestore/templates';
 
 const emptyCollectionResult = {
@@ -17,7 +17,7 @@ describe('Unit | Features | Create Inspection | Hooks | Use Property Templates',
     const queryByProperty = sinon
       .stub(templatesApi, 'queryByProperty')
       .returns(emptyCollectionResult);
-    renderHook(() => useTemplates({}, expected));
+    renderHook(() => usePropertyTemplates({}, expected));
 
     const result = queryByProperty.firstCall || { args: [] };
     const actual = result.args[1];

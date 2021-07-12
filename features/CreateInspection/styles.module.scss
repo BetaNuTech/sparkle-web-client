@@ -1,8 +1,41 @@
 @import '../../styles/index.scss';
 
 .createInspection {
-
-  &__header{
+  &__header {
     display: grid;
+    grid-template-columns: 1fr 2fr 1fr !important;
+  }
+
+  &__box {
+    @extend %stickyBoundingBox;
+
+    &__list {
+      @extend %profile-list;
+
+      &Item {
+        @extend %stickyBoundingBox--listItem;
+      }
+    }
+
+    &__header {
+      @extend %stickyBoundingBox--header;
+      background-color: $gray-dark;
+    }
+  }
+
+  &__category {
+    @extend %profile-list;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    font-weight: bold;
+    font-size: $medium-small-font-size;
+
+    &__item {
+      @extend %profile-list--item;
+      flex-direction: column;
+      cursor: pointer;
+    }
   }
 }
