@@ -1,5 +1,10 @@
 import sinon from 'sinon';
-import { render as rtlRender, screen, fireEvent } from '@testing-library/react';
+import {
+  render as rtlRender,
+  act,
+  screen,
+  fireEvent
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
@@ -7,10 +12,7 @@ import { ToastProvider } from 'react-toast-notifications';
 import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import mockTemplateCategories from '../../../../__mocks__/templateCategories';
-import mockInspections, {
-  fullInspection,
-  inspectionA
-} from '../../../../__mocks__/inspections';
+import mockInspections from '../../../../__mocks__/inspections';
 import PropertyProfile from '../../../../features/PropertyProfile';
 import propertiesApi, {
   propertyResult
@@ -23,6 +25,8 @@ import inspectionsApi, {
 } from '../../../../common/services/firestore/inspections';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
+import { shuffle } from '../../../helpers/array';
+import deepClone from '../../../helpers/deepClone';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
@@ -228,5 +232,100 @@ describe('Integration | Features | Properties | Profile', () => {
     );
 
     expect(listItems.length).toEqual(expected);
+  });
+
+  it('automatically sorts by descending inspection creation date for desktop users', async () => {
+    const times = [1625244317, 1625244316, 1625244315];
+    const expected = times.map((c) => `${c}`).join(' | ');
+    const inspections = deepClone(mockInspections);
+    shuffle(times).forEach((time, i) => {
+      if (inspections[i]) {
+        inspections[i].creationDate = time;
+      }
+    });
+
+    render(<PropertyProfile user={user} id="property-1" />, {
+      inspections: shuffle(inspections), // randomized inspections
+      contextWidth: breakpoints.desktop.minWidth // set to desktop UI
+    });
+
+    const inspectionCreationDate: Array<HTMLElement> = screen.queryAllByTestId(
+      'inspection-grid-list-item-creation-date'
+    );
+    const actual = inspectionCreationDate
+      .map((item) => item.getAttribute('data-time'))
+      .join(' | ');
+    expect(actual).toEqual(expected);
+  });
+
+  it('sorts inspections by inspector name', async () => {
+    const inspectors = ['matt jensen', 'john wick', 'aaron thompson'];
+    const expected = inspectors.map((c) => `${c.toLowerCase()}`).join(' | ');
+    const inspections = deepClone(mockInspections);
+    inspectors.forEach((inspector, i) => {
+      if (inspections[i]) {
+        inspections[i].inspectorName = inspector;
+      }
+    });
+
+    await act(async () => {
+      const { container } = render(
+        <PropertyProfile user={user} id="property-1" />,
+        {
+          inspections: shuffle(inspections) // randomized inspections
+        }
+      );
+
+      const sortInspector = container.querySelector(
+        '[data-testid=grid-head-inspector-name]'
+      );
+      await userEvent.click(sortInspector);
+    });
+
+    const propertyItems: Array<HTMLElement> = screen.queryAllByTestId(
+      'inspection-grid-list-item-creator'
+    );
+    const actual = propertyItems
+      .map((item) => item.textContent.trim().toLowerCase())
+      .join(' | ');
+    expect(actual).toEqual(expected);
+  });
+
+  it('automatically sorts by descending inspection creation date for mobile users', async () => {
+    const times = [1625244317, 1625244316, 1625244315];
+    const expected = times.map((c) => `${c}`).join(' | ');
+    const inspections = deepClone(mockInspections);
+    shuffle(times).forEach((time, i) => {
+      if (inspections[i]) {
+        inspections[i].creationDate = time;
+      }
+    });
+
+    await act(async () => {
+      const { container } = render(
+        <PropertyProfile user={user} id="property-1" />,
+        {
+          inspections: shuffle(inspections), // randomized inspections
+          contextWidth: breakpoints.tablet.maxWidth // set to mobile UI
+        }
+      );
+
+      const sortHeaderButton = container.querySelector(
+        '[data-testid=mobile-property-profile-sort-by]'
+      );
+      await userEvent.click(sortHeaderButton);
+      await userEvent.click(sortHeaderButton);
+      await userEvent.click(sortHeaderButton);
+      await userEvent.click(sortHeaderButton);
+      await userEvent.click(sortHeaderButton);
+    });
+
+    const propertyItems: Array<HTMLElement> = screen.queryAllByTestId(
+      'property-profile-inspection-list-item-creation-date'
+    );
+    const actual = propertyItems
+      .map((item) => item.getAttribute('data-time'))
+      .join(' | ');
+    expect(actual).toEqual(expected);
   });
 });

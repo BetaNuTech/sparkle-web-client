@@ -9,12 +9,16 @@ interface Props {
   property: propertyModel;
   isMobile?: boolean;
   isYardiConfigured: boolean;
+  activeInspectionSortFilter?(string): string;
+  sortBy?: string;
 }
 
 const getMobileExtra: FunctionComponent<Props> = ({
   property,
   isMobile,
-  isYardiConfigured
+  isYardiConfigured,
+  activeInspectionSortFilter,
+  sortBy
 }) => {
   if (isMobile) {
     return (
@@ -84,7 +88,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
           className={clsx(styles.propertyProfile__header__subMenu)}
           data-testid="property-profile-mobile-footer"
         >
-          Sorted by Creation Date
+          Sorted by {`${activeInspectionSortFilter(sortBy)}`}
         </footer>
       </>
     );
@@ -95,7 +99,9 @@ const getMobileExtra: FunctionComponent<Props> = ({
 const Header: FunctionComponent<Props> = ({
   property,
   isMobile,
-  isYardiConfigured
+  isYardiConfigured,
+  activeInspectionSortFilter,
+  sortBy
 }) => {
   if (property) {
     return (
@@ -135,7 +141,13 @@ const Header: FunctionComponent<Props> = ({
             }
           </div>
         </div>
-        {getMobileExtra({ property, isMobile, isYardiConfigured })}
+        {getMobileExtra({
+          property,
+          isMobile,
+          isYardiConfigured,
+          activeInspectionSortFilter,
+          sortBy
+        })}
       </header>
     );
   }

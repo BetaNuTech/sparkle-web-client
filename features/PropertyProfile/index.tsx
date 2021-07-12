@@ -8,8 +8,10 @@ import styles from './styles.module.scss';
 import MobileHeader from '../../common/MobileHeader';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyInspections from './hooks/usePropertyInspections';
+import useInspectionSorting from './hooks/useInspectionSorting';
 import useYardiIntegration from './hooks/useYardiIntegration';
 import useInspectionFilter from './hooks/useInspectionFilter';
+import { activeInspectionSortFilter } from './utils/inspectionSorting';
 import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
@@ -45,8 +47,6 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
 }) => {
   const firestore = useFirestore();
   const router = useRouter();
-  // TODO:
-  // const [sortBy, setSortBy] = useSortBy();
   const [inspectionFilter, setInspectionFilter] = useState('');
 
   // Fetch the data of property profile
@@ -67,6 +67,14 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
     inspections
   );
 
+  const {
+    sortedInspections,
+    sortBy,
+    sortDir,
+    onMobileSortChange,
+    onSortChange
+  } = useInspectionSorting(inspectionFilter, filteredInspections, inspections);
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -85,16 +93,6 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   const closeDeleteInspctionPrompt = () => {
     setDeleteInspectionPromptVisible(false);
   };
-
-  // Loop through inspections
-
-  // TODO: sorting options
-  // const nextInspectionsSort = () => {
-  //   const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
-
-  //   // Update sorting
-  //   setSortBy(activeSortValue);
-  // };
 
   // Activate next inspection fitler in series
   const onToggleNextInspectionFilter = () => {
@@ -132,6 +130,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
       <button
         className={headStyle.header__button}
         data-testid="mobile-property-profile-sort-by"
+        onClick={onMobileSortChange}
       >
         <FolderIcon />
       </button>
@@ -154,6 +153,8 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
               property={property}
               isYardiConfigured={isYardiConfigured}
               isMobile
+              sortBy={sortBy}
+              activeInspectionSortFilter={activeInspectionSortFilter}
             />
             <div className={clsx(styles.propertyProfile__main)}>
               {noFilteredInspectionText ? (
@@ -167,11 +168,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
                 </h4>
               ) : (
                 <Inspection
-                  inspections={
-                    filteredInspections.length > 0 || inspectionFilter
-                      ? filteredInspections
-                      : inspections
-                  }
+                  inspections={sortedInspections}
                   templateCategories={templateCategories}
                 />
               )}
@@ -223,13 +220,12 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
             ) : Array.isArray(inspections) && inspections.length > 0 ? (
               <Grid
                 user={user}
-                inspections={
-                  filteredInspections.length > 0 || inspectionFilter
-                    ? filteredInspections
-                    : inspections
-                }
+                inspections={sortedInspections}
                 templateCategories={templateCategories}
                 openInspectionDeletePrompt={openInspectionDeletePrompt}
+                onSortChange={onSortChange}
+                sortBy={sortBy}
+                sortDir={sortDir}
               />
             ) : (
               <p

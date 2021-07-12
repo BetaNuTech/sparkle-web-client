@@ -87,6 +87,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
         <a
           className={styles.propertyProfile__gridRow__column}
           data-testid="inspection-grid-list-item-creation-date"
+          data-time={inspection.creationDate}
         >
           {inspection.creationDate ? (
             <>

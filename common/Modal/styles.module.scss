@@ -16,6 +16,10 @@
   left: $sliderNavWidth;
   right: 0;
   z-index: 1001;
+
+  @include media-query(desktop) {
+    left: 0;
+  }
 }
 
 //
@@ -216,7 +220,6 @@
   top: 10%;
   right: 0;
   bottom: auto;
-  left: $sliderNavWidth;
   margin: auto;
 
   // Activate styles
