@@ -11,18 +11,29 @@ interface Props {
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: () => void;
+  onSortChange?(sortKey: string): void;
+  sortBy?: string;
+  sortDir?: string;
 }
 
 const Grid: FunctionComponent<Props> = ({
   user,
   inspections,
   templateCategories,
-  openInspectionDeletePrompt
+  openInspectionDeletePrompt,
+  onSortChange,
+  sortBy,
+  sortDir
 }) => {
   if (inspections) {
     return (
       <>
-        <GridHeader user={user} />
+        <GridHeader
+          user={user}
+          onSortChange={onSortChange}
+          sortBy={sortBy}
+          sortDir={sortDir}
+        />
         <List
           user={user}
           inspections={inspections}

@@ -34,7 +34,7 @@ export const inspectionA: inspectionModel = {
 
 export const inspectionB: inspectionModel = {
   id: 'inspection-3',
-  creationDate: 1620952610,
+  creationDate: 1620876714,
   deficienciesExist: false,
   inspectionCompleted: false,
   inspectorName: 'matt jensen',

@@ -16,7 +16,13 @@ function render(ui: any, options = {}) {
 describe('Integration | Features | Properties | Profile | Header', () => {
   it('renders', () => {
     const expected = 1;
-    render(<Header property={fullProperty} isYardiConfigured={false} />);
+    render(
+      <Header
+        property={fullProperty}
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-header'
     );
@@ -34,7 +40,12 @@ describe('Integration | Features | Properties | Profile | Header', () => {
   it('shows mobile UI to mobile users', () => {
     const expected = 1;
     render(
-      <Header property={fullProperty} isMobile isYardiConfigured={false} />
+      <Header
+        property={fullProperty}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-header-mobile'
@@ -55,7 +66,14 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const property = { ...fullProperty };
     property.photoURL = null;
 
-    render(<Header property={property} isMobile isYardiConfigured={false} />);
+    render(
+      <Header
+        property={property}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-name'
     );
@@ -68,7 +86,14 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const property = { ...fullProperty };
     property.code = 'code';
 
-    render(<Header property={property} isMobile isYardiConfigured />);
+    render(
+      <Header
+        property={property}
+        isMobile
+        isYardiConfigured
+        activeInspectionSortFilter={() => ''}
+      />
+    );
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-yardi-button'
     );
@@ -81,7 +106,14 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const property = { ...fullProperty };
     property.code = '';
 
-    render(<Header property={property} isMobile isYardiConfigured={false} />);
+    render(
+      <Header
+        property={property}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-yardi-button'
     );
@@ -95,7 +127,14 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     property.numOfRequiredActionsForDeficientItems = 5;
     property.numOfFollowUpActionsForDeficientItems = 5;
 
-    render(<Header property={property} isMobile isYardiConfigured={false} />);
+    render(
+      <Header
+        property={property}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
     const deficientItem: HTMLElement = screen.queryByTestId(
       'property-profile-deficient-item'
     );
@@ -117,7 +156,14 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     property.numOfRequiredActionsForDeficientItems = 0;
     property.numOfFollowUpActionsForDeficientItems = 0;
 
-    render(<Header property={property} isMobile isYardiConfigured={false} />);
+    render(
+      <Header
+        property={property}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
     const deficientItem: HTMLElement = screen.queryByTestId(
       'property-profile-deficient-item'
     );

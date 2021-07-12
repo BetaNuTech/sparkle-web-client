@@ -99,6 +99,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   <span
                     className={clsx('-fw-bold', '-c-secondary')}
                     data-testid="property-profile-inspection-list-item-creation-date"
+                    data-time={inspection.creationDate}
                   >
                     {creationDate}
                   </span>
