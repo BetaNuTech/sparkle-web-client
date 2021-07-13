@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import styles from './styles.module.scss';
 import MobileHeader from '../../common/MobileHeader';
+import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyInspections from './hooks/usePropertyInspections';
 import useInspectionSorting from './hooks/useInspectionSorting';
@@ -107,7 +108,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
 
   // Loading State
   if (!property) {
-    return <p>Loading property</p>;
+    return <LoadingHud title="Loading Property" />;
   }
 
   // Display text for when filtered inspection does not have any records
