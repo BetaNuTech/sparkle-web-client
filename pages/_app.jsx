@@ -4,6 +4,7 @@ import { ToastProvider } from 'react-toast-notifications';
 import { useRouter } from 'next/router';
 import AuthProvider from '../common/Auth/Provider';
 import PrivateRoute from '../common/Auth/PrivateRoute';
+import AppLoader from '../common/AppLoader';
 import { NextHeader } from '../common/NextHeader';
 import errorReports from '../common/services/api/errorReports';
 import * as gtag from '../common/utils/gtag';
@@ -31,7 +32,7 @@ function MyApp({ Component, pageProps }) {
       <ToastProvider>
         {/* Initializes Firebase */}
         <AuthProvider>
-          <PrivateRoute>
+          <PrivateRoute fallback={<AppLoader />}>
             <NextHeader />
             <Component {...pageProps} />
           </PrivateRoute>

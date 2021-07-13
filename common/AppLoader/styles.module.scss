@@ -1,0 +1,22 @@
+@import '../../styles/index.scss';
+
+.loader {
+  position: fixed;
+  inset: 0;
+  background-color: $white;
+  z-index: 1010;
+  display: grid;
+  text-align: center;
+
+  &__centered {
+    margin: auto;
+  }
+
+  img {
+    margin-bottom: 1rem;
+  }
+
+  &__blink {
+    animation: fadeinout 1.2s linear infinite;
+  }
+}

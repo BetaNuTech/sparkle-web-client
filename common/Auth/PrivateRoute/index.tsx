@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useAuth } from '../Provider';
 
 // eslint-disable-next-line
-const PrivateRoute = ({ children }) => {
+const PrivateRoute = ({ children, fallback }) => {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
@@ -14,8 +14,7 @@ const PrivateRoute = ({ children }) => {
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
   if (!isAuthenticated && router.pathname !== '/login') {
-    // TODO setting loading UI
-    return <div>Loading</div>;
+    return fallback || <p>Loading...</p>;
   }
 
   return children;
