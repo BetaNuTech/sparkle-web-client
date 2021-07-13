@@ -20,7 +20,9 @@ describe('Integration | Features | Properties | Header', () => {
     const props = {
       canAddTeam: true,
       canAddProperty: false,
-      onSortChange
+      onSortChange,
+      sortBy: 'name',
+      sortDir: 'asc'
     };
     render(<PropertiesHeader {...props} />);
 
@@ -33,7 +35,9 @@ describe('Integration | Features | Properties | Header', () => {
     const props = {
       canAddTeam: false,
       canAddProperty: false,
-      onSortChange
+      onSortChange,
+      sortBy: 'name',
+      sortDir: 'asc'
     };
     render(<PropertiesHeader {...props} />);
 
