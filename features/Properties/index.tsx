@@ -71,7 +71,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     useState(false);
   const { queuePropertyForDelete, confirmPropertyDelete } = useDeleteProperty(
     firestore,
-    sendNotification
+    sendNotification,
+    user
   );
   const openPropertyDeletePrompt = (property: propertyModel) => {
     queuePropertyForDelete(property);
@@ -87,7 +88,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     useState(false);
   const { queueTeamForDelete, confirmTeamDelete } = useDeleteTeam(
     firestore,
-    sendNotification
+    sendNotification,
+    user
   );
   const openTeamDeletePrompt = (team: teamModel) => {
     queueTeamForDelete(team);

@@ -2,6 +2,9 @@ import { useState } from 'react';
 import propertiesApi from '../../../common/services/firestore/properties';
 import propertyModel from '../../../common/models/property';
 import errorReports from '../../../common/services/api/errorReports';
+import globalNotification from '../../../common/services/firestore/notifications';
+import userModel from '../../../common/models/user';
+import { getUserFullname } from '../../../common/utils/user';
 
 const PREFIX = 'features: properties: hooks: useDeleteProperty:';
 interface Returned {
@@ -16,7 +19,8 @@ type userNotifications = (message: string, options?: any) => any;
 /* eslint-disable */
 const useDeleteProperty = (
   firestore: any,
-  sendNotification: userNotifications
+  sendNotification: userNotifications,
+  user: userModel
 ): Returned => {
   /* eslint-enable */
   const [queuedPropertyForDeletion, setQueueDeleteProperty] = useState(null);
@@ -43,6 +47,31 @@ const useDeleteProperty = (
       errorReports.send(wrappedErr); // eslint-disable-line
       return wrappedErr;
     }
+
+    const { name } = queuedPropertyForDeletion;
+    const authorName = getUserFullname(user);
+    const authorEmail = user.email;
+
+    // Send global notification for property delete
+    // eslint-disable-next-line import/no-named-as-default-member
+    globalNotification.send(firestore, {
+      creator: user.id,
+      title: 'Property Deletion',
+      // eslint-disable-next-line import/no-named-as-default-member
+      summary: globalNotification.compileTemplate('property-delete-summary', {
+        name,
+        authorName
+      }),
+      // eslint-disable-next-line import/no-named-as-default-member
+      markdownBody: globalNotification.compileTemplate(
+        'property-delete-markdown-body',
+        {
+          name,
+          authorName,
+          authorEmail
+        }
+      )
+    });
 
     // Send success
     sendNotification('Property deleted successfully.', {

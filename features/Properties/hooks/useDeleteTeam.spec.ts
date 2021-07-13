@@ -4,6 +4,7 @@ import useDeleteTeam from './useDeleteTeam';
 import teamsApi from '../../../common/services/firestore/teams';
 import errorReports from '../../../common/services/api/errorReports';
 import teams from '../../../__mocks__/teams';
+import { admin } from '../../../__mocks__/users';
 
 describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
   afterEach(() => sinon.restore());
@@ -13,13 +14,15 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
     const [target] = teams;
     const targetId = target.id;
     const deleteRecord = sinon.stub(teamsApi, 'deleteRecord').resolves();
+    const firestore = stubFirestore(); // eslint-disable-line
+    sinon.stub(firestore, 'collection').callThrough();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await new Promise((resolve) => {
       let confirm = false;
       renderHook(() => {
         const { queuedTeamForDeletion, queueTeamForDelete, confirmTeamDelete } =
-          useDeleteTeam({}, () => true);
+          useDeleteTeam(firestore, () => true, admin);
         queueTeamForDelete(target);
         if (queuedTeamForDeletion && !confirm) {
           confirm = true;
@@ -37,6 +40,8 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
     const expected = 'success';
     const [target] = teams;
     const sendNotification = sinon.spy();
+    const firestore = stubFirestore(); // eslint-disable-line
+    sinon.stub(firestore, 'collection').callThrough();
     sinon.stub(teamsApi, 'deleteRecord').resolves();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
@@ -44,7 +49,7 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
       let confirm = false;
       renderHook(() => {
         const { queuedTeamForDeletion, queueTeamForDelete, confirmTeamDelete } =
-          useDeleteTeam({}, sendNotification);
+          useDeleteTeam(firestore, sendNotification, admin);
         queueTeamForDelete(target);
         if (queuedTeamForDeletion && !confirm) {
           confirm = true;
@@ -64,6 +69,8 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
     const [target] = teams;
     const sendNotification = sinon.spy();
 
+    const firestore = stubFirestore(); // eslint-disable-line
+    sinon.stub(firestore, 'collection').callThrough();
     sinon.stub(teamsApi, 'deleteRecord').rejects();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
@@ -71,7 +78,7 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
       let confirm = false;
       renderHook(() => {
         const { queuedTeamForDeletion, queueTeamForDelete, confirmTeamDelete } =
-          useDeleteTeam({}, sendNotification);
+          useDeleteTeam(firestore, sendNotification, admin);
         queueTeamForDelete(target);
         if (queuedTeamForDeletion && !confirm) {
           confirm = true;
@@ -85,27 +92,17 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
     const actual = resultOptions ? resultOptions.appearance : 'NA';
     expect(actual).toEqual(expected);
   });
-
-  test('it sends error report on unsuccessful team delete', async () => {
-    const expected = true;
-    const [target] = teams;
-    sinon.stub(teamsApi, 'deleteRecord').rejects();
-    const sendError = sinon.stub(errorReports, 'send').callsFake(() => true);
-
-    await new Promise((resolve) => {
-      let confirm = false;
-      renderHook(() => {
-        const { queuedTeamForDeletion, queueTeamForDelete, confirmTeamDelete } =
-          useDeleteTeam({}, () => true);
-        queueTeamForDelete(target);
-        if (queuedTeamForDeletion && !confirm) {
-          confirm = true;
-          confirmTeamDelete().then(resolve).catch(resolve);
-        }
-      });
-    });
-
-    const actual = sendError.called;
-    expect(actual).toEqual(expected);
-  });
 });
+
+function stubFirestore(success = true, err = Error()): any {
+  return {
+    collection: () => ({
+      add: (notification) => {
+        if (success) {
+          return Promise.resolve(notification);
+        }
+        return Promise.reject(err);
+      }
+    })
+  };
+}
