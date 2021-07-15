@@ -119,3 +119,7 @@ export const canCreateInspection = (
   propertyId: string
 ): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
+
+// Checks user has permission to view property jobs
+export const canAccessJobs = (user: userModel, propertyId: string): boolean =>
+  user.admin || user.corporate || hasPropertyAccess(user, propertyId);
