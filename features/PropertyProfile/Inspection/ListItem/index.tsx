@@ -1,12 +1,15 @@
 import { FunctionComponent, useState, useRef } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { Doughnut } from 'react-chartjs-2';
 import utilString from '../../../../common/utils/string';
 import utilDate from '../../../../common/utils/date';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import inspectionModel from '../../../../common/models/inspection';
 import templateCategoryModel from '../../../../common/models/templateCategory';
+import progressChart from '../../utils/progressChart';
 import styles from '../List/styles.module.scss';
+import propertyProfileStyles from '../../styles.module.scss';
 
 interface ListItemProps {
   inspection: inspectionModel;
@@ -38,8 +41,20 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   const scoreDisplay = Number(
     inspection.inspectionCompleted
       ? inspection.score.toFixed(1)
-      : ((inspection.itemsCompleted / inspection.totalItems) * 100).toFixed(2)
+      : // eslint-disable-next-line
+        progressChart.getProgressPercent(
+          inspection.itemsCompleted,
+          inspection.totalItems
+        )
   );
+
+  /* eslint-disable */
+  const scoreChart = Math.floor(scoreDisplay);
+  const labelPlugin = progressChart.getChartLabel();
+  const chartData = progressChart.getChartData(scoreChart);
+  const chartOptions = progressChart.getChartOptions();
+  /* eslint-enable */
+
   // Get the category filtered by inspection category
   const filteredCategory = [].concat(
     Array.isArray(templateCategories) &&
@@ -152,22 +167,38 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                 }
               >
                 {' '}
-                <div className={styles.propertyProfile__inspectionsList__score}>
-                  <span
-                    className={
-                      styles.propertyProfile__inspectionsList__smallCopy
-                    }
-                  >
-                    {`${scoreLabel}: `}
+                <div
+                  className={styles.propertyProfile__inspectionsList__score}
+                  data-testid="property-profile-inspection-list-item-score"
+                >
+                  {inspection.inspectionCompleted ? (
+                    // Completed Score
                     <span
                       className={
-                        inspection.deficienciesExist ? '-c-red' : '-c-blue'
+                        styles.propertyProfile__inspectionsList__smallCopy
                       }
-                      data-testid="property-profile-inspection-list-item-score"
                     >
-                      {scoreDisplay}%
+                      {scoreLabel}:
+                      <span
+                        className={
+                          inspection.deficienciesExist ? '-c-red' : '-c-blue'
+                        }
+                      >
+                        {scoreDisplay}%
+                      </span>
                     </span>
-                  </span>
+                  ) : (
+                    // Progress chart
+                    <Doughnut
+                      type="doughnut"
+                      className={propertyProfileStyles.__progressChart} // eslint-disable-line
+                      data={chartData}
+                      options={chartOptions}
+                      plugins={[labelPlugin]}
+                      width={50}
+                      height={50}
+                    />
+                  )}
                 </div>
               </aside>
 

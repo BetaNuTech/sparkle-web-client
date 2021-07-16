@@ -19,7 +19,6 @@
     flex: 1 1 auto;
     order: 0;
     overflow-y: auto;
-    
   }
 
   &__footer {
@@ -41,4 +40,11 @@
   @include media-query(tablet) {
     display: block;
   }
+}
+
+// Fixes for Progress Chart bugs
+// Hack to overwrite Chart.js inline styles
+.__progressChart {
+  width: rem-calc(55) !important;
+  height: rem-calc(55) !important;
 }

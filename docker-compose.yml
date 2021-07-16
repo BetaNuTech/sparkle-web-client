@@ -51,6 +51,8 @@ services:
       context: .
       dockerfile: Dockerfile
       target: builder
+    environment:
+      - BASE_PATH=${BASE_PATH}
     command: [sh, -c, 'yarn build && yarn export']
     volumes:
       - .:/app

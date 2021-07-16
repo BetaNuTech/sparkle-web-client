@@ -151,8 +151,8 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual.length).toEqual(expectedLength);
   });
 
-  it('score is colored red if inspection has existing deficiencies', () => {
-    const expected = '-c-red';
+  it('score is colored red if inspection has deficiencies', () => {
+    const expected = true;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.deficienciesExist = true;
 
@@ -163,15 +163,15 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
       />
     );
 
-    const items: HTMLElement = screen.queryByTestId(
+    const item: HTMLElement = screen.queryByTestId(
       'property-profile-inspection-list-item-score'
     );
-    const actual = items.className;
+    const actual = Boolean(item ? item.querySelector('.-c-red') : null);
     expect(actual).toEqual(expected);
   });
 
   it('score is colored blue if isnpection does not have deficiencies', () => {
-    const expected = '-c-blue';
+    const expected = true;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.deficienciesExist = false;
 
@@ -182,10 +182,10 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
       />
     );
 
-    const items: HTMLElement = screen.queryByTestId(
+    const item: HTMLElement = screen.queryByTestId(
       'property-profile-inspection-list-item-score'
     );
-    const actual = items.className;
+    const actual = Boolean(item ? item.querySelector('.-c-blue') : null);
     expect(actual).toEqual(expected);
   });
 
@@ -201,21 +201,17 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
       />
     );
 
-    const items: HTMLElement = screen.queryByTestId(
+    const item: HTMLElement = screen.queryByTestId(
       'property-profile-inspection-list-item-score'
     );
-    const actual = items.textContent;
+    const result = item ? item.textContent : '';
+    const actual = result.replace(/score:/i, '').trim();
     expect(actual).toEqual(expected);
   });
 
-  it('completion percentage appears if inspection is not completed', () => {
+  it('canvas with donught chart appears if inspection is not completed', () => {
     const inspectionItem = deepClone(fullInspection);
-    const expected = `${Number(
-      (
-        (inspectionItem.itemsCompleted / inspectionItem.totalItems) *
-        100
-      ).toFixed(2)
-    )}%`;
+    const expected = '';
     inspectionItem.inspectionCompleted = false;
 
     render(
@@ -225,10 +221,10 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
       />
     );
 
-    const items: HTMLElement = screen.queryByTestId(
+    const item: HTMLElement = screen.queryByTestId(
       'property-profile-inspection-list-item-score'
     );
-    const actual = items.textContent;
+    const actual = item ? item.textContent : '';
     expect(actual).toEqual(expected);
   });
 });

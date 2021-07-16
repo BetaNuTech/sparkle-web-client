@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { Doughnut } from 'react-chartjs-2';
 import utilString from '../../../../common/utils/string';
 import utilDate from '../../../../common/utils/date';
 import hasInspectionUpdateActions from '../../utils/hasInspectionUpdateActions';
@@ -9,7 +10,9 @@ import inspectionModel from '../../../../common/models/inspection';
 import templateCategoryModel from '../../../../common/models/templateCategory';
 import ActionsIcon from '../../../../public/icons/ios/actions.svg';
 import DropdownInspection from '../../DropdownInspection';
+import progressChart from '../../utils/progressChart';
 import styles from '../styles.module.scss';
+import propertyProfileStyles from '../../styles.module.scss';
 
 interface ListItemProps {
   user: userModel;
@@ -50,8 +53,20 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   const scoreDisplay = Number(
     inspection.inspectionCompleted
       ? inspection.score.toFixed(1)
-      : ((inspection.itemsCompleted / inspection.totalItems) * 100).toFixed(2)
+      : // eslint-disable-next-line
+        progressChart.getProgressPercent(
+          inspection.itemsCompleted,
+          inspection.totalItems
+        )
   );
+
+  /* eslint-disable */
+  const scoreChart = Math.floor(scoreDisplay);
+  const labelPlugin = progressChart.getChartLabel();
+  const chartData = progressChart.getChartData(scoreChart);
+  const chartOptions = progressChart.getChartOptions();
+  /* eslint-enable */
+
   // Get the category filtered by inspection category
   const filteredCategory = [].concat(
     Array.isArray(templateCategories) &&
@@ -140,7 +155,19 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           )}
           data-testid="inspection-grid-list-item-score"
         >
-          {`${scoreDisplay}%`}
+          {inspection.inspectionCompleted ? (
+            `${scoreDisplay}%`
+          ) : (
+            <Doughnut
+              type="doughnut"
+              className={propertyProfileStyles.__progressChart} // eslint-disable-line
+              data={chartData}
+              options={chartOptions}
+              plugins={[labelPlugin]}
+              width={50}
+              height={50}
+            />
+          )}
         </a>
       </Link>
       {hasActionColumn ? (
