@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
 
 export interface SessionResult {
   userId: string;
@@ -43,7 +46,7 @@ export default function useSession(firebase): SessionResult {
   // Terminate session
   // and redirect to login
   const signOut = () => {
-    Router.push('/login');
+    Router.push(`${publicRuntimeConfig.basePath || '/'}login`);
 
     return firebase
       .auth()

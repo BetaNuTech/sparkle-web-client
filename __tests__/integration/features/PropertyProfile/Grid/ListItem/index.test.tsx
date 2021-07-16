@@ -257,14 +257,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
     expect(actual).toEqual(expected);
   });
 
-  it('completion percentage appears if inspection is not completed', () => {
+  it('canvas with donught chart appears if inspection is not completed', () => {
     const inspectionItem = deepClone(fullInspection);
-    const expected = `${Number(
-      (
-        (inspectionItem.itemsCompleted / inspectionItem.totalItems) *
-        100
-      ).toFixed(2)
-    )}%`;
+    const expected = '';
     inspectionItem.inspectionCompleted = false;
 
     const props = {

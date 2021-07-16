@@ -63,6 +63,11 @@ All 3rd party code used by this application.
 
 - [Moment.js](https://momentjs.com/) manages the formatting of dates into human readable formats
 
+## Charts
+
+- [react-chartjs-2](https://github.com/reactchartjs/react-chartjs-2) React Component based library wrapper of chart.js  
+- [chart.js](https://www.chartjs.org/docs/latest/) library to show charts representation of data
+
 ## Misc
 
 - [Git Tag Version](https://github.com/bushee/git-tag-version) calculates and returns project's current version based on git tags. Used to provide context to notifications, error reports, etc.

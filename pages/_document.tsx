@@ -8,7 +8,6 @@ import Document, {
 import Script from 'next/script';
 
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
-const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 class MyDocument extends Document {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -22,7 +21,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          {IS_PRODUCTION && GA_TRACKING_ID && (
+          {GA_TRACKING_ID && (
             <>
               <Script
                 async
