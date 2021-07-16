@@ -1,0 +1,40 @@
+@import '../../../styles/index.scss';
+
+.header {
+  @extend %gridHeader;
+
+  &__backButton {
+    @extend %gridHeaderBackButton;
+  }
+
+  &__main {
+    @extend %gridHeaderMain;
+  }
+
+  &__title {
+    @extend %gridHeaderTitle;
+  }
+
+  &__propertyName {
+    @extend %gridHeaderTitle--ellipsis;
+  }
+
+  &__controls {
+    @extend %gridHeaderControls;
+  }
+
+  &__item {
+    &:first-child {
+      margin-right: $global-padding;
+    }
+
+    &__createButton {
+      @extend %gridHeaderCreateButton;
+
+      // Icon of Add button
+      span {
+        @extend %gridHeaderButtonIcon;
+      }
+    }
+  }
+}

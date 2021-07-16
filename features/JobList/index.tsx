@@ -7,6 +7,8 @@ import useProperty from '../../common/hooks/useProperty';
 import usePropertyJobs from './hooks/usePropertyJobs';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
+import Header from './Header';
+import MobileLayout from './MobileLayout';
 
 interface Props {
   user: userModel;
@@ -42,9 +44,29 @@ const JobList: FunctionComponent<Props> = ({
 
   // Loading State
   if (!property || jobs.length === 0) {
-    // TODO: Move loading hud here
+    return <LoadingHud title="Loading Jobs" />;
   }
-  return <LoadingHud title="Loading Jobs" />;
+
+  return (
+    <>
+      {isMobileorTablet && (
+        <MobileLayout
+          isOnline={isOnline}
+          isStaging={isStaging}
+          toggleNavOpen={toggleNavOpen}
+          jobCount={jobs.length}
+          propertyId={propertyId}
+        />
+      )}
+
+      {/* Desktop Header & Content */}
+      {isDesktop && (
+        <div className={styles.properties__container}>
+          <Header property={property} />
+        </div>
+      )}
+    </>
+  );
 };
 
 JobList.defaultProps = {

@@ -16,6 +16,21 @@
   }
 }
 
+%backButton {
+  display: inline-flex;
+  width: rem-calc(60);
+  height: rem-calc(60);
+  border-radius: 50%;
+  background-color: transparent;
+  border: 1px solid $gray-light-2;
+}
+
+%backButton--centered {
+  @extend %backButton;
+  justify-content: center;
+  align-items: center;
+}
+
 %baseButton {
   display: inline-block;
   padding: rem-calc(5) rem-calc(14);
@@ -141,7 +156,6 @@
   &:focus {
     color: $white;
   }
-
 }
 
 // previous .spk-flexy-button.alert
@@ -176,7 +190,6 @@
   );
 
   border: rem-calc(1) $primary-color solid;
-
 }
 // previous .hollowButton.-grayDark
 %hollowButton--grayDark {
@@ -189,7 +202,7 @@
 // previous .hollowButton.-thick
 %hollowButton--thick {
   @extend %hollowButton;
-  
+
   padding-top: rem-calc(12);
   padding-bottom: rem-calc(12);
   border-width: rem-calc(2);
