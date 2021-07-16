@@ -2,7 +2,6 @@ import firebase from 'firebase/app';
 import { useFirestoreCollectionData } from 'reactfire';
 import jobModel from '../../models/job';
 
-const PREFIX = 'common: services: firestore: jobs:';
 const COLLECTION_NAME = 'jobs';
 
 // Result of jobs collection query
