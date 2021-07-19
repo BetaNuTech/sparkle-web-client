@@ -115,6 +115,7 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
         isOnline={isOnline}
         isStaging={isStaging}
         actions={mobileHeaderActions}
+        testid="mobile-properties-header"
       />
 
       <div

@@ -7,8 +7,14 @@
     @extend %gridHeaderBackButton;
   }
 
+  &__left {
+    flex-wrap: wrap;
+    display: flex;
+  }
+
   &__main {
     @extend %gridHeaderMain;
+    margin-right: 1rem;
   }
 
   &__title {
@@ -30,11 +36,31 @@
 
     &__createButton {
       @extend %gridHeaderCreateButton;
+      display: inline-flex;
+      min-width: rem-calc(170);
 
       // Icon of Add button
       span {
         @extend %gridHeaderButtonIcon;
       }
+    }
+  }
+
+  &__overview {
+    &__link {
+      @extend %overviewDataLink;
+      @extend %overviewDataLink--inline;
+    }
+    &__metadata {
+      @extend %overviewDataLink--metadata;
+      @extend %overviewDataLink--metadataInline;
+    }
+    &__label {
+      @extend %overviewDataLink--label;
+      @extend %overviewDataLink--labelListItem;
+    }
+    &__labelSub {
+      @extend %overviewDataLink--labelSub;
     }
   }
 }

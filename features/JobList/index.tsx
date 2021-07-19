@@ -32,7 +32,10 @@ const JobList: FunctionComponent<Props> = ({
   const { data: property } = useProperty(firestore, propertyId);
 
   // Fetch all jobs for property
-  const { data: jobs } = usePropertyJobs(firestore, propertyId);
+  const { status: jobStatus, data: jobs } = usePropertyJobs(
+    firestore,
+    propertyId
+  );
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -43,7 +46,7 @@ const JobList: FunctionComponent<Props> = ({
   });
 
   // Loading State
-  if (!property || jobs.length === 0) {
+  if (!property) {
     return <LoadingHud title="Loading Jobs" />;
   }
 
@@ -62,7 +65,7 @@ const JobList: FunctionComponent<Props> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div className={styles.properties__container}>
-          <Header property={property} />
+          <Header property={property} jobs={jobs} jobStatus={jobStatus} />
         </div>
       )}
     </>

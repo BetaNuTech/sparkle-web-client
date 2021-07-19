@@ -1,5 +1,5 @@
 // previous .spk-deficient-items-link
-%deficient-items-link {
+%overviewDataLink {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -22,17 +22,17 @@
 }
 
 // previous .spk-deficient-items-link.-inline
-%deficient-items-link--inline {
+%overviewDataLink--inline {
   display: inline-flex;
   width: auto;
 }
 
 // previous .spk-deficient-items-link__metadata > li, .spk-deficient-items-link__label
-%deficient-items-link--label--li {
+%overviewDataLink--labelListItem {
   // height: rem-calc(18);
   line-height: rem-calc(16);
   padding: rem-calc(2) rem-calc(5) 0;
-  
+
   color: $white;
   font-size: $medium-font-size;
   font-weight: 600;
@@ -41,7 +41,7 @@
 }
 
 // previous .spk-deficient-items-link__label
-%deficient-items-link--label {
+%overviewDataLink--label {
   display: inline-block;
   margin-right: rem-calc(2);
   @include media-query(tablet) {
@@ -53,24 +53,24 @@
 }
 
 // previous .spk-deficient-items-link__labelSub
-%deficient-items-link--labelSub {
+%overviewDataLink--labelSub {
   display: block;
   color: $gray-med-dark-2;
   font-size: $medium-small-font-size;
 }
 
 // previous .spk-deficient-items-link__metadata
-%deficient-items-link--metadata {
+%overviewDataLink--metadata {
   display: flex;
   flex: 0 1 auto;
   align-items: center;
   list-style: none;
-  
+
   > li {
     display: flex;
     align-items: center;
     margin: 0 rem-calc(5);
-    
+
     &:first-child {
       margin-left: 0;
     }
@@ -78,7 +78,7 @@
       margin-right: 0;
     }
   }
-  
+
   @include media-query(tablet) {
     padding: rem-calc(8) rem-calc(9);
     margin-right: rem-calc(4);
@@ -88,7 +88,7 @@
 }
 
 // previous .spk-deficient-items-link.-inline .spk-deficient-items-link__metadata > li
-%deficient-items-link--metadata--inline {
+%overviewDataLink--metadataInline {
   > li {
     color: $black;
     font-weight: normal;
@@ -105,7 +105,7 @@
 }
 
 // previous .spk-deficient-items-link__metadata.-small > li
-%deficient-items-link--metadata--small {
+%overviewDataLink--metadata--small {
   // Shrink column gap
   > li {
     margin-left: rem-calc(2);

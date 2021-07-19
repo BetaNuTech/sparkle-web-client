@@ -65,19 +65,19 @@
 
   &__deficient {
     &__link {
-      @extend %deficient-items-link;
-      @extend %deficient-items-link--inline;
+      @extend %overviewDataLink;
+      @extend %overviewDataLink--inline;
     }
     &__metadata {
-      @extend %deficient-items-link--metadata;
-      @extend %deficient-items-link--metadata--inline;
+      @extend %overviewDataLink--metadata;
+      @extend %overviewDataLink--metadataInline;
     }
     &__label {
-      @extend %deficient-items-link--label--li;
-      @extend %deficient-items-link--label;
+      @extend %overviewDataLink--labelListItem;
+      @extend %overviewDataLink--label;
     }
     &__labelSub {
-      @extend %deficient-items-link--labelSub;
+      @extend %overviewDataLink--labelSub;
     }
   }
 
