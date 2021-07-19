@@ -6,6 +6,7 @@ import styles from './styles.module.scss';
 
 interface Props {
   title?: string;
+  testid?: string;
   toggleNavOpen?(): void;
   isStaging?: boolean;
   isOnline?: boolean;
@@ -19,7 +20,8 @@ const MobileHeader: FunctionComponent<Props> = ({
   isStaging,
   isOnline,
   actions,
-  className
+  className,
+  testid
 }) => {
   const offlineTheme = isOnline === false ? styles['header--isOffline'] : '';
   const stagingTheme = isOnline && isStaging ? styles['header--isStaging'] : '';
@@ -28,7 +30,7 @@ const MobileHeader: FunctionComponent<Props> = ({
   return (
     <header
       className={clsx(styles.header, containerTheme, className && className)}
-      data-testid="mobile-properties-header"
+      data-testid={testid}
     >
       {/* Navigation Elements */}
       <aside className={styles.header__aside}>
@@ -62,6 +64,10 @@ const MobileHeader: FunctionComponent<Props> = ({
       </aside>
     </header>
   );
+};
+
+MobileHeader.defaultProps = {
+  testid: 'mobile-header'
 };
 
 export default MobileHeader;

@@ -80,7 +80,7 @@ export const authorizedImprovementJob: jobModel = {
   property: 'property-1',
   createdAt: 1624289498,
   updatedAt: 1624289498,
-  state: 'approved',
+  state: 'authorized',
   type: 'improvement'
 };
 
@@ -94,7 +94,7 @@ export const authorizedMaintenanceJob: jobModel = {
   property: 'property-1',
   createdAt: 1624289498,
   updatedAt: 1624289498,
-  state: 'approved',
+  state: 'authorized',
   type: 'maintenance'
 };
 
@@ -129,6 +129,7 @@ export const completeMaintenanceJob: jobModel = {
 export default [
   openImprovementJob,
   openMaintenanceJob,
+  openMaintenanceExpeditedJob,
   approvedImprovementJob,
   approvedMaintenanceJob,
   authorizedImprovementJob,

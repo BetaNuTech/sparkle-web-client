@@ -44,6 +44,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         isOnline={isOnline}
         isStaging={isStaging}
         actions={mobileHeaderActions}
+        testid="mobile-joblist-header"
       />
     </>
   );
