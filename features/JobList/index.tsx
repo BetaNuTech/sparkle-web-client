@@ -6,6 +6,7 @@ import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyJobs from './hooks/usePropertyJobs';
 import userModel from '../../common/models/user';
+import configJobs from '../../config/jobs';
 import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import MobileLayout from './MobileLayout';
@@ -18,6 +19,14 @@ interface Props {
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
 }
+
+const colors = {
+  primary: '-bgc-primary',
+  secondary: '-bgc-secondary',
+  info: '-bgc-info',
+  alert: '-bgc-alert',
+  orange: '-bgc-orange'
+};
 
 const JobList: FunctionComponent<Props> = ({
   user,
@@ -57,8 +66,10 @@ const JobList: FunctionComponent<Props> = ({
           isOnline={isOnline}
           isStaging={isStaging}
           toggleNavOpen={toggleNavOpen}
-          jobCount={jobs.length}
+          jobs={jobs}
           propertyId={propertyId}
+          colors={colors}
+          configJobs={configJobs}
         />
       )}
 
@@ -79,4 +90,5 @@ JobList.defaultProps = {
   toggleNavOpen: () => {} // eslint-disable-line
 };
 
+export { colors };
 export default JobList;

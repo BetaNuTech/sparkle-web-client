@@ -57,7 +57,11 @@ All 3rd party code used by this application.
 
 ## Browser Sniffing
 
-- [Platform](https://github.com/bestiejs/platform.js) collects device information for use in notifications and error reports
+- [Platform](https://github.com/bestiejs/platform.js) collects device information for use in notifications and error reports.
+
+## Notifications
+
+- [React Toast Notifications](https://github.com/jossmac/react-toast-notifications) a nice service and UI for user notifications.  NOTE: no longer maintained transition to [React Hot Toast](https://github.com/timolins/react-hot-toast)
 
 ## Dates & Times
 

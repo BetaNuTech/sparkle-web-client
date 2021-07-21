@@ -1,9 +1,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import getConfig from 'next/config';
 import { useAuth } from '../Provider';
-
-const { publicRuntimeConfig } = getConfig();
 
 // Is current page login
 const isLoginPage = (router: any): boolean => {
@@ -26,7 +23,7 @@ const PrivateRoute = ({ children, fallback }) => {
 
   useEffect(() => {
     if (!isAuthenticated && !isLoginPage(router) && !isLoading) {
-      router.push(`${publicRuntimeConfig.basePath || '/'}login`);
+      router.push('/login');
     }
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
