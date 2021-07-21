@@ -54,11 +54,13 @@ describe('Integration | Features | Job List', () => {
       contextWidth: breakpoints.tablet.maxWidth
     });
     const desktopHeader = screen.queryByTestId('joblist-header');
+    const desktopGrid = screen.queryByTestId('joblist-grid-main');
 
     const mobileHeader = screen.queryByTestId('mobile-joblist-header');
     const mobileJobSection = screen.queryByTestId('job-sections-main-mobile');
 
     expect(desktopHeader).toBeNull();
+    expect(desktopGrid).toBeNull();
 
     expect(mobileHeader).toBeTruthy();
     expect(mobileJobSection).toBeTruthy();
@@ -69,11 +71,13 @@ describe('Integration | Features | Job List', () => {
       contextWidth: breakpoints.desktop.minWidth
     });
     const desktopHeader = screen.queryByTestId('joblist-header');
+    const desktopGrid = screen.queryByTestId('joblist-grid-main');
 
     const mobileHeader = screen.queryByTestId('mobile-joblist-header');
     const mobileJobSection = screen.queryByTestId('job-sections-main-mobile');
 
     expect(desktopHeader).toBeTruthy();
+    expect(desktopGrid).toBeTruthy();
 
     // Should be null as it is desktop
     expect(mobileHeader).toBeNull();

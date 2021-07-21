@@ -1,0 +1,133 @@
+@import '../../../styles/index.scss';
+
+.propertyJobs__grid {
+  @extend %grid;
+}
+
+// Maximum width &
+// support grid header
+// sibling sticky (to parent)
+.propertyJobs__grid,
+.propertyJobs__gridHeader {
+  @extend %gridWidth;
+}
+
+.propertyJobs__gridHeader {
+  @extend %gridTableHeader;
+
+  &__column {
+    @extend %gridTableColumn;
+  }
+
+  // Sort order arrows
+  &__direction {
+    @extend %gridTableDirection;
+  }
+
+  @include media-query(desktop) {
+    &__column {
+      border: 0;
+
+      &:first-child {
+        border-top-left-radius: $global-radius;
+      }
+
+      &:last-child {
+        border-top-right-radius: $global-radius;
+      }
+    }
+  }
+}
+
+//
+// Sort Direction Controls
+//
+
+.propertyJobs__gridHeader__column--ascending
+  .propertyJobs__gridHeader__direction,
+.propertyJobs__gridHeader__column--descending
+  .propertyJobs__gridHeader__direction {
+  height: rem-calc(4);
+}
+
+// Ascending
+
+.propertyJobs__gridHeader__column--ascending
+  .propertyJobs__gridHeader__direction::after {
+  display: none;
+}
+
+// Descending
+
+.propertyJobs__gridHeader__column--descending
+  .propertyJobs__gridHeader__direction::before {
+  display: none;
+}
+
+.propertyJobs__gridTitle {
+  @extend %gridTableSection;
+
+  &__head {
+    @extend %gridTableSectionTitle;
+    position: sticky;
+    top: rem-calc(72.7);
+    z-index: 12;
+  }
+}
+
+.propertyJobs__gridRow {
+  @extend %gridTableRow;
+
+  &__link {
+    @extend %gridTableRow--link;
+  }
+
+  &__noRecord {
+    @extend %gridTableRow--noRecord;
+  }
+
+  &__column {
+    @extend %gridTableRowColumn;
+
+    &.-tall {
+      padding-top: $global-sm-padding;
+      padding-bottom: $global-sm-padding;
+    }
+  }
+
+  @include media-query(desktop) {
+    border-right-width: rem-calc(1);
+    border-left-width: rem-calc(1);
+  }
+}
+
+// Child Horizontal Layout
+.propertyJobs__gridHeader__column,
+.propertyJobs__gridRow__column {
+  &:first-child {
+    padding-left: $global-padding;
+  }
+
+  &:last-child {
+    padding-right: $global-padding;
+  }
+
+  // 1st column
+  &:nth-child(1) {
+    width: 58%;
+    padding-right: $global-padding;
+  }
+
+  // 2nd & 3rd Column
+  &:nth-child(2),
+  &:nth-child(3) {
+    width: 13%;
+    padding-right: $global-padding;
+  }
+
+  // 4th
+  &:nth-child(4) {
+    width: 16%;
+    padding-right: $global-padding;
+  }
+}
