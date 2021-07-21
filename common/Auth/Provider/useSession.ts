@@ -39,14 +39,16 @@ export default function useSession(firebase): SessionResult {
         onAuthUpdate(response.user);
         // Forcing a page reload page allows
         // us to use reactFire auth utilites
-        window.location.href = '/properties';
+        window.location.href = `${
+          publicRuntimeConfig.basePath || ''
+        }/properties`;
       });
   };
 
   // Terminate session
   // and redirect to login
   const signOut = () => {
-    Router.push(`${publicRuntimeConfig.basePath || '/'}login`);
+    Router.push('/login');
 
     return firebase
       .auth()

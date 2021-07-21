@@ -1,0 +1,67 @@
+@import '../../../../styles/index.scss';
+
+.jobList {
+  &__box {
+    @extend %stickyBoundingBox;
+
+    &__list {
+      @extend %profile-list;
+
+      &__list__item {
+        @extend %stickyBoundingBox--listItem;
+      }
+    }
+
+    &__header {
+      @extend %stickyBoundingBox--header;
+    }
+  }
+
+  &__category {
+    @extend %profile-list;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    overflow: hidden;
+    font-size: $medium-small-font-size;
+
+    &__item {
+      @extend %profile-list--item;
+      flex-direction: column;
+      cursor: pointer;
+    }
+  }
+
+  &__record {
+    display: flex;
+    padding: rem-calc(8) rem-calc(16);
+    border-bottom: 1px solid $gray-lighter;
+
+    &__link {
+      display: flex;
+      justify-content: space-between;
+      flex: 1 1 auto;
+    }
+
+    &:last-child {
+      border-width: 0;
+    }
+
+    &__title {
+      font-size: rem-calc(14);
+      font-weight: bold;
+    }
+
+    &__row {
+      padding-top: rem-calc(4);
+    }
+
+    &__type {
+      background-color: $info-color;
+      color: $white;
+      padding: rem-calc(3) rem-calc(4);
+      border-radius: rem-calc(2);
+      margin-left: rem-calc(20);
+    }
+  }
+}

@@ -21,9 +21,14 @@ export default {
     let error = null;
     let data = null;
 
+    const propertyDocRef = firebase
+      .firestore()
+      .collection('properties')
+      .doc(propertyId);
+
     const query = firestore
       .collection(COLLECTION_NAME)
-      .where('property', '==', propertyId);
+      .where('property', '==', propertyDocRef);
 
     const {
       status: queryStatus,

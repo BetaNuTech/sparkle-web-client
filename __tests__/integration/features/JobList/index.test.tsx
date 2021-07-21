@@ -56,10 +56,12 @@ describe('Integration | Features | Job List', () => {
     const desktopHeader = screen.queryByTestId('joblist-header');
 
     const mobileHeader = screen.queryByTestId('mobile-joblist-header');
+    const mobileJobSection = screen.queryByTestId('job-sections-main-mobile');
 
     expect(desktopHeader).toBeNull();
 
     expect(mobileHeader).toBeTruthy();
+    expect(mobileJobSection).toBeTruthy();
   });
 
   it('renders only desktop content for desktop devices', () => {
@@ -69,10 +71,12 @@ describe('Integration | Features | Job List', () => {
     const desktopHeader = screen.queryByTestId('joblist-header');
 
     const mobileHeader = screen.queryByTestId('mobile-joblist-header');
+    const mobileJobSection = screen.queryByTestId('job-sections-main-mobile');
 
     expect(desktopHeader).toBeTruthy();
 
     // Should be null as it is desktop
     expect(mobileHeader).toBeNull();
+    expect(mobileJobSection).toBeNull();
   });
 });

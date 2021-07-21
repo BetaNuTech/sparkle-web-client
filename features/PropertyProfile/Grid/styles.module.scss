@@ -203,6 +203,7 @@
     display: inline-block;
     border-radius: 100%;
     width: $global-lg-padding;
+    min-width: $global-lg-padding;
     height: $global-lg-padding;
     margin-right: $global-sm-padding;
     font-size: 0;

@@ -8,12 +8,7 @@
   align-items: stretch;
 
   &__sortInfoLine {
-    padding: rem-calc(8) rem-calc(16);
-    display: flex;
-    justify-content: flex-start;
-    background-color: #94bdf2;
-    color: $white;
-    font-size: rem-calc(12);
+    @extend %sortInfo;
   }
 
   &__item {
@@ -22,17 +17,7 @@
   }
 
   &__itemHeader {
-    padding: rem-calc(8) rem-calc(16) rem-calc(6.4);
-    background-color: $primary-color;
-    text-align: center;
-    line-height: rem-calc(17);
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: rem-calc(14);
-    color: $white;
-    position: sticky;
-    top: 0;
-    z-index: 12;
+    @extend %stickyBoundingBox--header;
   }
 }
 

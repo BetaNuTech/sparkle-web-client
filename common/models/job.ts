@@ -1,5 +1,5 @@
 interface job {
-  id?: string;
+  id: string;
   title: string;
   need: string;
   authorizedRules: 'default' | 'expedite';
