@@ -1,0 +1,172 @@
+
+%grid {
+  display: block;
+  list-style: none;
+  margin-top: $global-padding;
+  margin-bottom: $global-llg-padding;
+  padding: 0 $global-padding;
+}
+
+%gridWidth {
+  max-width: rem-calc(1500) + (2 * $global-mlg-padding);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+%gridTableHeader {
+  display: flex;
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  border: rem-calc(1) solid $gray-lighter;
+  border-top-width: 0;
+}
+
+%gridTableColumn {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  padding-top: rem-calc(27);
+  padding-bottom: rem-calc(25);
+  margin-bottom: 0;
+  font-size: $medium-font-size;
+  line-height: 1.45;
+  color: $gray-darker;
+  background-color: $gray-light-3;
+  cursor: pointer;
+}
+
+%gridTableDirection {
+  position: relative;
+  display: inline-block;
+  width: rem-calc(8);
+  height: rem-calc(11);
+  margin-left: rem-calc(8);
+  font-size: 0;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-style: solid;
+  }
+
+  &::before {
+    top: 0;
+    border-width: 0 rem-calc(4) rem-calc(4) rem-calc(4);
+    border-color: transparent transparent $gray-darker transparent;
+  }
+
+  &::after {
+    bottom: 0;
+    border-width: rem-calc(4) rem-calc(4) 0 rem-calc(4);
+    border-color: $gray-darker transparent transparent transparent;
+  }
+}
+
+%gridTableRow {
+  display: flex;
+  flex-wrap: nowrap;
+  min-height: rem-calc(77);
+  background-color: $white;
+  border: rem-calc(1) solid $gray-lighter;
+  border-top-width: 0;
+  border-left-width: 0;
+  border-right-width: 0;
+}
+
+%gridTableRow--link {
+  display: flex;
+  flex: 1 1 auto;
+}
+
+%gridTableRow--noRecord {
+  padding: $global-md-padding;
+  border: rem-calc(1) solid $gray-lighter;
+  border-top-width: 0;
+  color: $gray-light;
+}
+
+%gridTableRowColumn {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  padding-top: $global-md-padding;
+  padding-bottom: $global-md-padding;
+  font-size: $medium-font-size;
+  color: $gray-dark;
+  line-height: 1.2;
+
+  &:hover {
+    color: $gray-dark;
+  }
+
+  // Doughnut chart
+  > canvas {
+    max-width: rem-calc(60);
+    max-height: rem-calc(60);
+  }
+}
+
+%gridTableRowAction {
+  display: block;
+  padding: rem-calc(8) rem-calc(10) rem-calc(8) rem-calc(8);
+  cursor: pointer;
+  position: relative;
+
+  &:hover {
+    background-color: transparent !important;
+  }
+
+  > svg {
+    width: rem-calc(22);
+    height: rem-calc(22);
+    transform: translateY(#{rem-calc(4)});
+  }
+
+  &:hover,
+  &:focus {
+    z-index: 999;
+    > ul {
+      height: auto;
+      visibility: visible;
+
+      // Animated
+      opacity: 1;
+      transform: translate(-50%, 0%);
+    }
+  }
+}
+
+%gridTableRowButton {
+  display: block;
+  border-width: 0;
+  background-color: transparent;
+  padding: rem-calc(4) rem-calc(12);
+  font-weight: bold;
+}
+
+%gridTableRowButtonHover {
+  background-color: $primary-color;
+  color: $white;
+}
+
+%gridTableSection {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+
+%gridTableSectionTitle {
+  border: rem-calc(1) solid $gray-lighter;
+  border-top-width: 0;
+  border-bottom-width: 0;
+  padding-top: rem-calc(24);
+  padding-bottom: rem-calc(24);
+  padding-left: $global-padding;
+  background-color: $gray-light-3;
+  font-weight: bold;
+  color: $gray-dark;
+}

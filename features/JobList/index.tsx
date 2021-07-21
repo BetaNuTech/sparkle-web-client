@@ -10,6 +10,7 @@ import configJobs from '../../config/jobs';
 import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import MobileLayout from './MobileLayout';
+import Grid from './Grid';
 
 interface Props {
   user: userModel;
@@ -77,6 +78,7 @@ const JobList: FunctionComponent<Props> = ({
       {isDesktop && (
         <div className={styles.properties__container}>
           <Header property={property} jobs={jobs} jobStatus={jobStatus} />
+          <Grid jobs={jobs} propertyId={propertyId}/>
         </div>
       )}
     </>
