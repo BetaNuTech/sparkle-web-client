@@ -162,6 +162,27 @@ describe('Unit | Common | Utils | User Permissions', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it should only allow admins, corporates, team leads, and property level users to see job bids', () => {
+    const propertyId = 'property-1';
+    const expected = [true, true, true, true, false];
+    const updatedTeamLead = Object.assign(deepClone(teamLead), {
+      teams: { 'team-1': { [propertyId]: true } }
+    });
+    const updatedPropertyMember = Object.assign(deepClone(propertyMember), {
+      properties: { [propertyId]: true }
+    });
+
+    const actual = [
+      util.canAccessBids(admin, propertyId),
+      util.canAccessBids(corporate, propertyId),
+      util.canAccessBids(updatedTeamLead, propertyId),
+      util.canAccessBids(updatedPropertyMember, propertyId),
+      util.canAccessBids(noAccess, propertyId)
+    ];
+
+    expect(actual).toEqual(expected);
+  });
+
   test('it combines users properties and teams to determine all property level access', () => {
     const prop1 = '-1';
     const prop2 = '-2';
