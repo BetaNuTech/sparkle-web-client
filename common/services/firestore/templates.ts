@@ -1,8 +1,7 @@
 import firebase from 'firebase/app';
 import { useFirestoreCollectionData } from 'reactfire';
 import templateModel from '../../models/template';
-
-const COLLECTION_NAME = 'templates';
+import fbCollections from '../../../config/collections';
 
 // Result of templates collection query
 export interface templatesCollectionResult {
@@ -22,7 +21,7 @@ export default {
     let data = [];
 
     const query = firestore
-      .collection(COLLECTION_NAME)
+      .collection(fbCollections.templates)
       .where('properties', 'array-contains', propertyId);
 
     const {

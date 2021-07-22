@@ -30,7 +30,6 @@ const colors = {
 };
 
 const JobList: FunctionComponent<Props> = ({
-  user,
   propertyId,
   isOnline,
   isStaging,
@@ -78,7 +77,7 @@ const JobList: FunctionComponent<Props> = ({
       {isDesktop && (
         <div className={styles.properties__container}>
           <Header property={property} jobs={jobs} jobStatus={jobStatus} />
-          <Grid jobs={jobs} propertyId={propertyId}/>
+          <Grid jobs={jobs} propertyId={propertyId} />
         </div>
       )}
     </>

@@ -1,9 +1,9 @@
 import firebase from 'firebase/app';
 import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import propertyModel from '../../models/property';
+import fbCollections from '../../../config/collections';
 
-const PREFIX = 'common: services: firestore: properties:';
-const COLLECTION_NAME = 'properties';
+const PREFIX = `common: services: firestore: ${fbCollections.properties}:`;
 
 // Result of properties collection query
 export interface propertiesCollectionResult {
@@ -23,7 +23,7 @@ export default {
   // Create query for all an
   // organizations' properties
   findAll(firestore: firebase.firestore.Firestore): propertiesCollectionResult {
-    const query = firestore.collection(COLLECTION_NAME);
+    const query = firestore.collection(fbCollections.properties);
 
     const {
       status,
@@ -53,7 +53,7 @@ export default {
     // do not call firestore query
     if (ids.length > 0) {
       const query = firestore
-        .collection(COLLECTION_NAME)
+        .collection(fbCollections.properties)
         .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
 
       const {
@@ -84,7 +84,7 @@ export default {
     let error = null;
     let data = {} as propertyModel;
 
-    const docRef = firestore.collection(COLLECTION_NAME).doc(id);
+    const docRef = firestore.collection(fbCollections.properties).doc(id);
 
     const {
       status: queryStatus,
@@ -110,7 +110,7 @@ export default {
     propertyId: string
   ): Promise<void> {
     return firestore
-      .collection(COLLECTION_NAME)
+      .collection(fbCollections.properties)
       .doc(propertyId)
       .delete()
       .catch((err) => Promise.reject(Error(`${PREFIX} deleteRecord: ${err}`))); // wrap error
