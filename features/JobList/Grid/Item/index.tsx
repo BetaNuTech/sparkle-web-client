@@ -18,24 +18,24 @@ const ListItem: FunctionComponent<ListItemProps> = ({ propertyId, job }) => (
   >
     <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
       <a className={parentStyles.propertyJobs__gridRow__link}>
-        <div className={parentStyles.propertyJobs__gridRow__column}>
+        <div className={parentStyles.propertyJobs__gridRow__column} data-testid="grid-row-job-title">
           {job.title}
         </div>
         <div
           className={parentStyles.propertyJobs__gridRow__column}
-          data-testid="job-created-text"
+          data-testid="grid-row-job-created"
         >
           {utilDate.toUserDateTimeDisplay(job.createdAt)}
         </div>
         <div
           className={parentStyles.propertyJobs__gridRow__column}
-          data-testid="job-updated-text"
+          data-testid="grid-row-job-updated"
         >
           {utilDate.toUserDateTimeDisplay(job.updatedAt)}
         </div>
         <div
           className={parentStyles.propertyJobs__gridRow__column}
-          data-testid="job-type-text"
+          data-testid="grid-row-job-type"
         >
           {utilString.titleize(job.type)}
         </div>

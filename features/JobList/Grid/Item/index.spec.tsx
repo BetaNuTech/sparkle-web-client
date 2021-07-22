@@ -14,7 +14,7 @@ describe('Unit | Features | Job List | Grid | Item', () => {
     props.job.type = 'improvement';
     render(<Item {...props} />);
 
-    const jobTypeText = screen.queryByTestId('job-type-text');
+    const jobTypeText = screen.queryByTestId('grid-row-job-type');
 
     expect(jobTypeText.textContent).toEqual('Improvement');
   });
@@ -32,7 +32,7 @@ describe('Unit | Features | Job List | Grid | Item', () => {
 
     render(<Item {...props} />);
 
-    const jobCreatedEl = screen.queryByTestId('job-created-text');
+    const jobCreatedEl = screen.queryByTestId('grid-row-job-created');
 
     expect(jobCreatedEl.textContent).toEqual(expected);
   });
@@ -50,7 +50,7 @@ describe('Unit | Features | Job List | Grid | Item', () => {
 
     render(<Item {...props} />);
 
-    const jobUpdatedEl = screen.queryByTestId('job-updated-text');
+    const jobUpdatedEl = screen.queryByTestId('grid-row-job-updated');
 
     expect(jobUpdatedEl.textContent).toEqual(expected);
   });
