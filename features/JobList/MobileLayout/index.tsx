@@ -5,6 +5,7 @@ import jobModel from '../../../common/models/job';
 import MobileHeader from '../../../common/MobileHeader';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
+import { activeJobSortFilter } from '../utils/jobSorting';
 import JobSections from './JobSections';
 import styles from './styles.module.scss';
 
@@ -16,6 +17,8 @@ interface Props {
   propertyId: string;
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
+  onSortChange?(): void;
+  sortBy?: string;
 }
 
 // Mobile layout
@@ -26,12 +29,14 @@ const MobileLayout: FunctionComponent<Props> = ({
   jobs,
   propertyId,
   colors,
-  configJobs
+  configJobs,
+  onSortChange,
+  sortBy
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={headStyle.header__button}>
+      <button className={headStyle.header__button} onClick={onSortChange} data-testid="mobile-header-sort">
         <FolderIcon />
       </button>
       <Link href={`/properties/${propertyId}/jobs/edit/new`}>
@@ -52,8 +57,8 @@ const MobileLayout: FunctionComponent<Props> = ({
         actions={mobileHeaderActions}
         testid="mobile-joblist-header"
       />
-      <aside className={styles.mobileJobList__sortInfoLine}>
-        Sorted by Last Updated
+      <aside className={styles.mobileJobList__sortInfoLine} data-testid="mobile-sort-text">
+        Sorted by {activeJobSortFilter(sortBy)}
       </aside>
       <JobSections
         jobs={jobs}

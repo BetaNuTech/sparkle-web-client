@@ -8,8 +8,8 @@ export const openImprovementJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1483209000,
+  updatedAt: 1485887400,
   state: 'open',
   type: 'improvement'
 };
@@ -22,8 +22,8 @@ export const openMaintenanceJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1488306600,
+  updatedAt: 1490985000,
   state: 'open',
   type: 'maintenance'
 };
@@ -36,8 +36,8 @@ export const openMaintenanceExpeditedJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1493577000,
+  updatedAt: 1496255400,
   state: 'open',
   type: 'maintenance'
 };
@@ -50,8 +50,8 @@ export const approvedImprovementJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1498847400,
+  updatedAt: 1501525800,
   state: 'approved',
   type: 'improvement'
 };
@@ -64,8 +64,8 @@ export const approvedMaintenanceJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-2',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1504204200,
+  updatedAt: 1506796200,
   state: 'approved',
   type: 'maintenance'
 };
@@ -78,8 +78,8 @@ export const authorizedImprovementJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1509474600,
+  updatedAt: 1512066600,
   state: 'authorized',
   type: 'improvement'
 };
@@ -92,8 +92,8 @@ export const authorizedMaintenanceJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1514745000,
+  updatedAt: 1517423400,
   state: 'authorized',
   type: 'maintenance'
 };
@@ -106,8 +106,8 @@ export const completeImprovementJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-2',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1519842600,
+  updatedAt: 1522521000,
   state: 'complete',
   type: 'improvement'
 };
@@ -120,8 +120,8 @@ export const completeMaintenanceJob: jobModel = {
   scopeOfWork: '',
   trelloCardURL: '',
   property: 'property-1',
-  createdAt: 1624289498,
-  updatedAt: 1624289498,
+  createdAt: 1525113000,
+  updatedAt: 1527791400,
   state: 'complete',
   type: 'maintenance'
 };

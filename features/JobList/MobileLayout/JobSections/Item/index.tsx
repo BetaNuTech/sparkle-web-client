@@ -23,10 +23,10 @@ const Item: FunctionComponent<ItemProps> = ({
     <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
       <a className={styles.jobList__record__link}>
         <div>
-          <h3 className={styles.jobList__record__title}>{job.title}</h3>
+          <h3 className={styles.jobList__record__title} data-testid="mobile-row-job-title">{job.title}</h3>
           <div className={styles.jobList__record__row}>
             <strong className="-c-black">Created:</strong>{' '}
-            <span className="-c-gray-light" data-testid="job-created-text">
+            <span className="-c-gray-light" data-testid="mobile-row-job-created">
               {utilDate.toUserDateTimeDisplay(job.createdAt)}
             </span>
           </div>
@@ -35,7 +35,7 @@ const Item: FunctionComponent<ItemProps> = ({
             data-testid="job-updated-time"
           >
             <strong className="-c-black">Updated:</strong>{' '}
-            <span className="-c-gray-light" data-testid="job-updated-text">
+            <span className="-c-gray-light" data-testid="mobile-row-job-updated">
               {utilDate.toUserDateTimeDisplay(job.updatedAt)}
             </span>
           </div>
@@ -46,7 +46,7 @@ const Item: FunctionComponent<ItemProps> = ({
               styles.jobList__record__type,
               colors[configJobs.typeColors[job.type]]
             )}
-            data-testid="job-type-text"
+            data-testid="mobile-row-job-type"
           >
             {utilString.titleize(job.type)}
           </span>

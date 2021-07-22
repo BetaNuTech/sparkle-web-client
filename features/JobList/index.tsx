@@ -5,6 +5,7 @@ import styles from './styles.module.scss';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import usePropertyJobs from './hooks/usePropertyJobs';
+import useJobSorting from './hooks/useJobSorting';
 import userModel from '../../common/models/user';
 import configJobs from '../../config/jobs';
 import breakpoints from '../../config/breakpoints';
@@ -46,6 +47,9 @@ const JobList: FunctionComponent<Props> = ({
     propertyId
   );
 
+  const { sortedJobs, sortBy, sortDir, onMobileSortChange, onSortChange } =
+    useJobSorting('', [], jobs);
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -66,10 +70,12 @@ const JobList: FunctionComponent<Props> = ({
           isOnline={isOnline}
           isStaging={isStaging}
           toggleNavOpen={toggleNavOpen}
-          jobs={jobs}
+          jobs={sortedJobs}
           propertyId={propertyId}
           colors={colors}
           configJobs={configJobs}
+          onSortChange={onMobileSortChange}
+          sortBy={sortBy}
         />
       )}
 
@@ -77,7 +83,13 @@ const JobList: FunctionComponent<Props> = ({
       {isDesktop && (
         <div className={styles.properties__container}>
           <Header property={property} jobs={jobs} jobStatus={jobStatus} />
-          <Grid jobs={jobs} propertyId={propertyId} />
+          <Grid
+            jobs={sortedJobs}
+            propertyId={propertyId}
+            onSortChange={onSortChange}
+            sortBy={sortBy}
+            sortDir={sortDir}
+          />
         </div>
       )}
     </>

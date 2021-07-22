@@ -22,7 +22,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
     props.job.type = 'improvement';
     render(<Item {...props} />);
 
-    const jobTypeText = screen.queryByTestId('job-type-text');
+    const jobTypeText = screen.queryByTestId('mobile-row-job-type');
 
     expect(jobTypeText.textContent).toEqual('Improvement');
   });
@@ -42,7 +42,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
 
     render(<Item {...props} />);
 
-    const jobCreatedEl = screen.queryByTestId('job-created-text');
+    const jobCreatedEl = screen.queryByTestId('mobile-row-job-created');
 
     expect(jobCreatedEl.textContent).toEqual(expected);
   });
@@ -62,7 +62,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
 
     render(<Item {...props} />);
 
-    const jobUpdatedEl = screen.queryByTestId('job-updated-text');
+    const jobUpdatedEl = screen.queryByTestId('mobile-row-job-updated');
 
     expect(jobUpdatedEl.textContent).toEqual(expected);
   });
@@ -85,7 +85,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
 
     render(<Item {...props} />);
 
-    const jobTypeTextEl = screen.queryByTestId('job-type-text');
+    const jobTypeTextEl = screen.queryByTestId('mobile-row-job-type');
 
     expect(jobTypeTextEl.classList.contains(colors.alert)).toEqual(true);
   });
@@ -108,7 +108,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
 
     render(<Item {...props} />);
 
-    const jobTypeTextEl = screen.queryByTestId('job-type-text');
+    const jobTypeTextEl = screen.queryByTestId('mobile-row-job-type');
 
     expect(jobTypeTextEl.classList.contains(colors.orange)).toEqual(true);
   });
