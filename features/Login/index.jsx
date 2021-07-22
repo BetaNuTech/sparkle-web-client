@@ -1,6 +1,8 @@
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import { useAuth } from '../../common/Auth/Provider';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
@@ -28,49 +30,61 @@ export const LoginForm = () => {
   const onSubmit = (data) => {
     signInWithEmail(data.email, data.password).catch((error) => {
       sendNotification(error.message, {
-        appearance: 'error'
+        type: 'error'
       });
     });
   };
 
   return (
-    <div className={styles.loginForm}>
-      <div className={styles.loginForm__container}>
-        <h2>Login To Your Account</h2>
-        <form
-          className={styles.loginForm__main}
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className={styles.loginForm__fields}>
-            <input
-              type="text"
-              name="email"
-              className={styles.loginForm__field}
-              id="email"
-              label="E-Mail"
-              placeholder="Email"
-              {...register('email')}
-            />
-            {/* {!!errors.email && <p>{errors.email?.message}</p>} */}
-            <input
-              type="text"
-              name="password"
-              className={styles.loginForm__field}
-              id="password"
-              label="Password"
-              placeholder="Password"
-              {...register('password')}
-            />
-            {/* {!!errors.password && <p>{errors.password?.message}</p>} */}
+    <>
+      <div className={styles.loginForm}>
+        <div className={styles.loginForm__container}>
+          <h2>Login To Your Account</h2>
+          <form
+            className={styles.loginForm__main}
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className={styles.loginForm__fields}>
+              <input
+                type="text"
+                name="email"
+                className={styles.loginForm__field}
+                id="email"
+                label="E-Mail"
+                placeholder="Email"
+                {...register('email')}
+              />
+              {/* {!!errors.email && <p>{errors.email?.message}</p>} */}
+              <input
+                type="text"
+                name="password"
+                className={styles.loginForm__field}
+                id="password"
+                label="Password"
+                placeholder="Password"
+                {...register('password')}
+              />
+              {/* {!!errors.password && <p>{errors.password?.message}</p>} */}
 
-            <div className="loginForm__actions">
-              <button className={styles.loginForm__button} type="submit">
-                Log in
-              </button>
+              <div className="loginForm__actions">
+                <button className={styles.loginForm__button} type="submit">
+                  Log in
+                </button>
+              </div>
             </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        pauseOnFocusLoss={false}
+        draggable
+        pauseOnHover
+      />
+    </>
   );
 };

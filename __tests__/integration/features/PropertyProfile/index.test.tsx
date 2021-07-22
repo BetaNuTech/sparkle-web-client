@@ -8,7 +8,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastContainer } from 'react-toastify';
 import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import mockTemplateCategories from '../../../../__mocks__/templateCategories';
@@ -59,11 +59,19 @@ function render(ui: any, options: any = {}) {
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <ToastProvider>
-        <ResponsiveContext.Provider value={{ width: contextWidth }}>
-          {ui}
-        </ResponsiveContext.Provider>
-      </ToastProvider>
+      <ResponsiveContext.Provider value={{ width: contextWidth }}>
+        {ui}
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar
+          newestOnTop={false}
+          closeOnClick
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover
+        />
+      </ResponsiveContext.Provider>
     </FirebaseAppProvider>,
     options
   );

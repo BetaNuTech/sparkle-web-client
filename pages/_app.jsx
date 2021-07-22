@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { FirebaseAppProvider } from 'reactfire';
-import { ToastProvider } from 'react-toast-notifications';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 import { useRouter } from 'next/router';
 import AuthProvider from '../common/Auth/Provider';
 import PrivateRoute from '../common/Auth/PrivateRoute';
@@ -29,15 +30,23 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      <ToastProvider>
-        {/* Initializes Firebase */}
-        <AuthProvider>
-          <PrivateRoute fallback={<AppLoader />}>
-            <NextHeader />
-            <Component {...pageProps} />
-          </PrivateRoute>
-        </AuthProvider>
-      </ToastProvider>
+      {/* Initializes Firebase */}
+      <AuthProvider>
+        <PrivateRoute fallback={<AppLoader />}>
+          <NextHeader />
+          <Component {...pageProps} />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar
+            newestOnTop={false}
+            closeOnClick
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover
+          />
+        </PrivateRoute>
+      </AuthProvider>
     </FirebaseAppProvider>
   );
 }

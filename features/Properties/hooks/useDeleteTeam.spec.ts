@@ -60,11 +60,11 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
 
     const result = sendNotification.firstCall || { args: [] };
     const resultOptions = result.args[1];
-    const actual = resultOptions ? resultOptions.appearance : 'NA';
+    const actual = resultOptions ? resultOptions.type : 'NA';
     expect(actual).toEqual(expected);
   });
 
-  test('it sends error report on unsuccessful team delete', async () => {
+  test('it sends error notification on failure', async () => {
     const expected = 'error';
     const [target] = teams;
     const sendNotification = sinon.spy();
@@ -89,7 +89,33 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
 
     const result = sendNotification.firstCall || { args: [] };
     const resultOptions = result.args[1];
-    const actual = resultOptions ? resultOptions.appearance : 'NA';
+    const actual = resultOptions ? resultOptions.type : 'NA';
+    expect(actual).toEqual(expected);
+  });
+
+  test('it sends error report on failure', async () => {
+    const expected = true;
+    const [target] = teams;
+    const firestore = stubFirestore(); // eslint-disable-line
+    const sendNotification = sinon.spy();
+    sinon.stub(firestore, 'collection').callThrough();
+    sinon.stub(teamsApi, 'deleteRecord').rejects();
+    const sendError = sinon.stub(errorReports, 'send').callsFake(() => true);
+
+    await new Promise((resolve) => {
+      let confirm = false;
+      renderHook(() => {
+        const { queuedTeamForDeletion, queueTeamForDelete, confirmTeamDelete } =
+          useDeleteTeam(firestore, sendNotification, admin);
+        queueTeamForDelete(target);
+        if (queuedTeamForDeletion && !confirm) {
+          confirm = true;
+          confirmTeamDelete().then(resolve).catch(resolve);
+        }
+      });
+    });
+
+    const actual = sendError.called;
     expect(actual).toEqual(expected);
   });
 });

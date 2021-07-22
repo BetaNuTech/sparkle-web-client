@@ -42,7 +42,7 @@ const useDeleteProperty = (
         `Failed to delete property: ${
           queuedPropertyForDeletion ? queuedPropertyForDeletion.name : 'Unknown'
         }`,
-        { appearance: 'error' }
+        { type: 'error' }
       );
       errorReports.send(wrappedErr); // eslint-disable-line
       return wrappedErr;
@@ -75,7 +75,7 @@ const useDeleteProperty = (
 
     // Send success
     sendNotification('Property deleted successfully.', {
-      appearance: 'success'
+      type: 'success'
     });
   };
 
