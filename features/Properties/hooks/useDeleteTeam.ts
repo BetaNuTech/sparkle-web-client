@@ -42,7 +42,7 @@ const useDeleteTeam = (
         `Failed to delete team: ${
           queuedTeamForDeletion ? queuedTeamForDeletion.name : 'Unknown'
         }`,
-        { appearance: 'error' }
+        { type: 'error' }
       );
       errorReports.send(wrappedErr); // eslint-disable-line
       return wrappedErr;
@@ -75,7 +75,7 @@ const useDeleteTeam = (
 
     // Send success
     sendNotification('Team deleted successfully.', {
-      appearance: 'success'
+      type: 'success'
     });
   };
 

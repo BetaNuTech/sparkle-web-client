@@ -12,7 +12,7 @@ const sendNotification = notifications.createPublisher(useNotifications());
 /* eslint-enable */
 
 // Send
-sendNotification('Failed to delete', { appearance: 'error' });
+sendNotification('Failed to delete', { type: 'error' });
 ```
 
 _Importing and configuring should be done in the controller._

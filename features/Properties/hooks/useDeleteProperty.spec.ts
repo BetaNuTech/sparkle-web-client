@@ -67,7 +67,7 @@ describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
 
     const result = sendNotification.firstCall || { args: [] };
     const resultOptions = result.args[1];
-    const actual = resultOptions ? resultOptions.appearance : 'NA';
+    const actual = resultOptions ? resultOptions.type : 'NA';
     expect(actual).toEqual(expected);
   });
 
@@ -103,7 +103,7 @@ describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('it sends error report on unsuccessful delete', async () => {
+  test('it sends error notification on failure', async () => {
     const expected = 'error';
     const [target] = properties;
     const sendNotification = sinon.spy();
@@ -131,11 +131,11 @@ describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
 
     const result = sendNotification.firstCall || { args: [] };
     const resultOptions = result.args[1];
-    const actual = resultOptions ? resultOptions.appearance : 'NA';
+    const actual = resultOptions ? resultOptions.type : 'NA';
     expect(actual).toEqual(expected);
   });
 
-  test('it sends error report on unsuccessful delete', async () => {
+  test('it sends error report on failure', async () => {
     const expected = true;
     const [target] = properties;
     const firestore = stubFirestore(); // eslint-disable-line

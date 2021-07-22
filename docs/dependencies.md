@@ -61,7 +61,7 @@ All 3rd party code used by this application.
 
 ## Notifications
 
-- [React Toast Notifications](https://github.com/jossmac/react-toast-notifications) a nice service and UI for user notifications.  NOTE: no longer maintained transition to [React Hot Toast](https://github.com/timolins/react-hot-toast)
+- [React Toastify](https://github.com/fkhadra/react-toastify) a nice service and UI for user notifications.
 
 ## Dates & Times
 

@@ -1,45 +1,23 @@
-import { ReactNode } from 'react';
-import { AppearanceTypes } from 'react-toast-notifications';
+import { TypeOptions, ToastContent, ToastOptions } from 'react-toastify';
 
-// Reference: https://github.com/jossmac/react-toast-notifications/blob/master/index.d.ts
-interface Options {
-  appearance?: 'error' | 'info' | 'success' | 'warning';
-  autoDismiss?: boolean;
-  autoDismissTimeout?: number;
-  children?: ReactNode;
-  isRunning?: boolean;
-  onDismiss?: (id?: string) => void;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
-  placement?:
-    | 'bottom-left'
-    | 'bottom-center'
-    | 'bottom-right'
-    | 'top-left'
-    | 'top-center'
-    | 'top-right';
-  transitionDuration?: number;
-  transitionState?: 'entering' | 'entered' | 'exiting' | 'exited';
-}
-
-type toastPublisher = (message: string, options: Options) => any;
-type toastInstance = { addToast: toastPublisher };
+type toastPublisher = (message: string, options: ToastOptions) => any;
+type toastInstance = {
+  (content: ToastContent, options?: ToastOptions | undefined): React.ReactText;
+};
 
 // Generate a notification publisher from
 // a toast instance that sends a toast
 // notification with defaults
 export const createPublisher =
   (toast: toastInstance): toastPublisher =>
-  (message: string, options: Options = {}): void => {
-    const appearance = `${
-      (options && options.appearance) || 'info'
-    }` as AppearanceTypes;
-    const autoDismiss = Boolean((options && options.autoDismiss) || true);
+  (message: string, options: ToastOptions = {}): void => {
+    const type = `${(options && options.type) || 'info'}` as TypeOptions;
+    const autoClose = (options && options.autoClose) || 5000;
 
-    toast.addToast(message, {
+    toast(message, {
       ...options,
-      appearance,
-      autoDismiss
+      type,
+      autoClose
     });
   };
 
