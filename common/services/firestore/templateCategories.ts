@@ -1,9 +1,9 @@
 import firebase from 'firebase/app';
 import { useFirestoreCollectionData } from 'reactfire';
 import templateCategoryModel from '../../models/templateCategory';
+import fbCollections from '../../../config/collections';
 
-// const PREFIX = 'common: services: firestore: templateCategories:';
-const COLLECTION_NAME = 'templateCategories';
+// const PREFIX = `common: services: firestore: ${fbCollections.templateCategories}:`;
 
 // Result of array of template categories collection query
 export interface templateCategoriesCollectionResult {
@@ -25,7 +25,7 @@ export default {
   findAll(
     firestore: firebase.firestore.Firestore
   ): templateCategoriesCollectionResult {
-    const query = firestore.collection(COLLECTION_NAME);
+    const query = firestore.collection(fbCollections.templateCategories);
 
     const {
       status,

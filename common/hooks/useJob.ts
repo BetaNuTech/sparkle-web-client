@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import mockBids from '../../../__mocks__/bids';
+import jobModel from '../models/job';
+import jobsApi, { jobResult } from '../services/firestore/jobs';
 
-interface useJobsBidsResult {
-  status: string;
-  error: any;
-  data: any[];
+interface useJobResult extends jobResult {
   memo: string;
   handlers: any;
 }
@@ -12,24 +10,23 @@ interface useJobsBidsResult {
 // Actions
 const handlers = {};
 
-// Hooks for loading all jobs for a property
-export default function useJobsBids(
+// Hooks for loading job record by job id
+export default function useJobRecord(
   firestore: any, // eslint-disable-line
   jobId: string
-): useJobsBidsResult {
-  const [memo, setMemo] = useState('[]');
+): useJobResult {
+  const [memo, setMemo] = useState('{}');
 
-  // No jobs payload
+  // No access payload
   const payload = {
     status: 'loading',
     error: null,
-    data: [],
+    data: {} as jobModel,
     handlers,
     memo
   };
 
-  // Load all jobs related to single property
-  const result = mockBids.filter((b) => b.job === jobId);
+  const result = jobsApi.findRecord(firestore, jobId);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

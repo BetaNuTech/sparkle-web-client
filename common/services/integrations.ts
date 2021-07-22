@@ -1,7 +1,6 @@
 import firebase from 'firebase/app';
 import { useFirestoreDocDataOnce } from 'reactfire';
-
-const COLLECTION_NAME = 'integrations';
+import fbCollections from '../../config/collections';
 
 export interface yardiIntegrationResult {
   status: string;
@@ -14,7 +13,7 @@ export default {
     firestore: firebase.firestore.Firestore
   ): yardiIntegrationResult {
     // Yardi document in integration collection of firestore
-    const docRef = firestore.collection(COLLECTION_NAME).doc('yardi');
+    const docRef = firestore.collection(fbCollections.integrations).doc('yardi');
 
     const {
       status,

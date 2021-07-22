@@ -1,9 +1,9 @@
 import firebase from 'firebase/app';
 import { useFirestoreCollectionData } from 'reactfire';
+import fbCollections from '../../../config/collections';
 import inspectionModel from '../../models/inspection';
 
-const PREFIX = 'common: services: firestore: inspections:';
-const COLLECTION_NAME = 'inspections';
+const PREFIX = `common: services: firestore: ${fbCollections.inspections}:`;
 
 // Result of inspections collection query
 export interface inspectionCollectionResult {
@@ -30,7 +30,7 @@ export default {
     let data = null;
 
     const query = firestore
-      .collection(COLLECTION_NAME)
+      .collection(fbCollections.inspections)
       .where('property', '==', propertyId);
 
     const {
@@ -57,7 +57,7 @@ export default {
     inspectionId: string
   ): Promise<void> {
     return firestore
-      .collection(COLLECTION_NAME)
+      .collection(fbCollections.inspections)
       .doc(inspectionId)
       .delete()
       .catch((err) => Promise.reject(Error(`${PREFIX} deleteRecord: ${err}`))); // wrap error

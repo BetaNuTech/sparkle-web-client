@@ -1,9 +1,9 @@
 import firebase from 'firebase/app';
 import { useFirestoreCollectionData } from 'reactfire';
+import fbCollections from '../../../config/collections';
 import teamModel from '../../models/team';
 
-const PREFIX = 'common: services: firestore: teams:';
-const COLLECTION_NAME = 'teams';
+const PREFIX = `common: services: firestore: ${fbCollections.teams}:`;
 
 // Result of teams collection query
 export interface teamsCollectionResult {
@@ -16,7 +16,7 @@ export default {
   // Create query for all an
   // organizations' teams
   findAll(firestore: firebase.firestore.Firestore): teamsCollectionResult {
-    const query = firestore.collection(COLLECTION_NAME);
+    const query = firestore.collection(fbCollections.teams);
 
     const {
       status,
@@ -45,7 +45,7 @@ export default {
     // do not call firestore query
     if (ids.length > 0) {
       const query = firestore
-        .collection(COLLECTION_NAME)
+        .collection(fbCollections.teams)
         .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
 
       const {
@@ -73,7 +73,7 @@ export default {
     teamId: string
   ): Promise<void> {
     return firestore
-      .collection(COLLECTION_NAME)
+      .collection(fbCollections.teams)
       .doc(teamId)
       .delete()
       .catch((err) => Promise.reject(Error(`${PREFIX} deleteRecord: ${err}`))); // wrap error
