@@ -4,9 +4,9 @@ import errorReports from '../api/errorReports';
 import currentUser from '../../utils/currentUser';
 import { userAgent } from '../../utils/browserSniffer';
 import notificationModel from '../../models/notification';
+import fbCollections from '../../../config/collections';
 
 const PREFIX = 'services: api: globalNotifications:';
-const COLLECTION_NAME = 'notifications';
 const IS_STAGING: boolean = process.env.NEXT_PUBLIC_STAGING === 'true';
 
 // Is incognito model enabled
@@ -49,7 +49,7 @@ export const send = async (
 
   // Write notification to Firestore
   return firestore
-    .collection(COLLECTION_NAME)
+    .collection(fbCollections.notifications)
     .add(notification)
     .then(() => notification)
     .catch((err) => {

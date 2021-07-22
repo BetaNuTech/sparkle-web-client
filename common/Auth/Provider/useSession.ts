@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import Router from 'next/router';
 import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
+const config = getConfig() || {};
+const publicRuntimeConfig = config.publicRuntimeConfig || {};
+const basePath = publicRuntimeConfig.basePath || '';
 
 export interface SessionResult {
   userId: string;
@@ -39,9 +41,7 @@ export default function useSession(firebase): SessionResult {
         onAuthUpdate(response.user);
         // Forcing a page reload page allows
         // us to use reactFire auth utilites
-        window.location.href = `${
-          publicRuntimeConfig.basePath || ''
-        }/properties`;
+        window.location.href = `${basePath}/properties`;
       });
   };
 
