@@ -4,13 +4,18 @@ import {
   approvedImprovementJob,
   authorizedImprovementJob
 } from '../../../__mocks__/jobs';
+import deepClone from '../../../__tests__/helpers/deepClone';
+import configJobs from '../../../config/jobs';
+import { colors } from '../index';
 import JobSections from './index';
 
 describe('Unit | Features | Job List | Grid', () => {
   it('should have title for each section', () => {
     const props = {
       jobs: [openImprovementJob, approvedImprovementJob],
-      propertyId: 'property-1'
+      propertyId: 'property-1',
+      colors,
+      configJobs
     };
     render(<JobSections {...props} />);
 
@@ -26,7 +31,9 @@ describe('Unit | Features | Job List | Grid', () => {
         approvedImprovementJob,
         authorizedImprovementJob
       ],
-      propertyId: 'property-1'
+      propertyId: 'property-1',
+      colors,
+      configJobs
     };
     render(<JobSections {...props} />);
 
@@ -35,14 +42,16 @@ describe('Unit | Features | Job List | Grid', () => {
     expect(jobTitle.length).toEqual(3);
   });
 
-  it('should have no job message present in different states in different sections', () => {
+  it('should have no job message present for states that contains no jobs', () => {
     const props = {
       jobs: [
         openImprovementJob,
         approvedImprovementJob,
         authorizedImprovementJob
       ],
-      propertyId: 'property-1'
+      propertyId: 'property-1',
+      colors,
+      configJobs
     };
     render(<JobSections {...props} />);
 
@@ -51,10 +60,12 @@ describe('Unit | Features | Job List | Grid', () => {
     expect(jobTitle.length).toEqual(1);
   });
 
-  it('should show no jobs message for property if no jobs is there on property', () => {
+  it('should show no jobs message for property if no jobs exist for property', () => {
     const props = {
       jobs: [],
-      propertyId: 'property-1'
+      propertyId: 'property-1',
+      colors,
+      configJobs
     };
     render(<JobSections {...props} />);
 
@@ -63,5 +74,40 @@ describe('Unit | Features | Job List | Grid', () => {
 
     expect(noJobTitle).toBeTruthy();
     expect(jobSectionMain).toBeNull();
+  });
+
+  it('should add configured section header color', () => {
+    const props = {
+      jobs: [
+        openImprovementJob,
+        approvedImprovementJob,
+        authorizedImprovementJob
+      ],
+      propertyId: 'property-1',
+      colors,
+      configJobs: deepClone({
+        ...configJobs,
+        ...{
+          stateColors: {
+            open: 'secondary',
+            approved: 'info',
+            authorized: 'alert',
+            complete: 'orange'
+          }
+        }
+      })
+    };
+
+    render(<JobSections {...props} />);
+
+    const jobSectionTitle = screen.queryAllByTestId('job-section-title');
+    const titleClasses = jobSectionTitle.map((title) => ({
+      [title.textContent]: title.firstElementChild.classList
+    }));
+
+    expect(titleClasses[0].Open).toContain(colors.secondary);
+    expect(titleClasses[1]['Action Required']).toContain(colors.info);
+    expect(titleClasses[2]['Authorized to Start']).toContain(colors.alert);
+    expect(titleClasses[3].Completed).toContain(colors.orange);
   });
 });
