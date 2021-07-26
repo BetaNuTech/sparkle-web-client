@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import styles from './styles.module.scss';
 import { SlideNav } from '../SlideNav';
 import { useNavigatorOnline } from '../utils/getOnlineStatus';
@@ -7,6 +8,7 @@ import { useNavigatorOnline } from '../utils/getOnlineStatus';
 const isStaging = process.env.NEXT_PUBLIC_STAGING === 'true';
 
 export const MainLayout = ({ children }) => {
+  const router = useRouter();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isOnline = useNavigatorOnline();
 
@@ -28,6 +30,25 @@ export const MainLayout = ({ children }) => {
       isStaging
     })
   );
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      // Check if mobile side nav os open
+      // then close it
+      if (isNavOpen) {
+        toggleNavOpen();
+      }
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method:
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
