@@ -8,6 +8,8 @@ import styles from './styles.module.scss';
 interface Props {
   jobs: Array<jobModel>;
   propertyId: string;
+  colors: Record<string, string>;
+  configJobs: Record<string, Record<string, string>>;
   onSortChange?(sortKey: string): void;
   sortBy?: string;
   sortDir?: string;
@@ -18,7 +20,9 @@ const Grid: FunctionComponent<Props> = ({
   propertyId,
   onSortChange,
   sortBy,
-  sortDir
+  sortDir,
+  colors,
+  configJobs
 }) => {
   const { sections } = useJobSections(jobs);
   const hasNoJobs = sections.filter((s) => s.jobs.length > 0).length === 0;
@@ -44,6 +48,9 @@ const Grid: FunctionComponent<Props> = ({
                   title={s.title}
                   jobs={s.jobs}
                   propertyId={propertyId}
+                  colors={colors}
+                  configJobs={configJobs}
+                  jobState={s.state}
                 />
               ))}
             </ul>

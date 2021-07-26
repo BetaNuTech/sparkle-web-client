@@ -9,16 +9,26 @@ import parentStyles from '../styles.module.scss';
 interface ListItemProps {
   propertyId: string;
   job: jobModel;
+  colors: Record<string, string>;
+  configJobs: Record<string, Record<string, string>>;
 }
 
-const ListItem: FunctionComponent<ListItemProps> = ({ propertyId, job }) => (
+const ListItem: FunctionComponent<ListItemProps> = ({
+  propertyId,
+  job,
+  colors,
+  configJobs
+}) => (
   <li
     className={clsx(parentStyles.propertyJobs__gridRow)}
     data-testid="job-item-record"
   >
     <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
       <a className={parentStyles.propertyJobs__gridRow__link}>
-        <div className={parentStyles.propertyJobs__gridRow__column} data-testid="grid-row-job-title">
+        <div
+          className={parentStyles.propertyJobs__gridRow__column}
+          data-testid="grid-row-job-title"
+        >
           {job.title}
         </div>
         <div
@@ -37,7 +47,15 @@ const ListItem: FunctionComponent<ListItemProps> = ({ propertyId, job }) => (
           className={parentStyles.propertyJobs__gridRow__column}
           data-testid="grid-row-job-type"
         >
-          {utilString.titleize(job.type)}
+          <span
+            className={clsx(
+              parentStyles.propertyJobs__gridRow__type,
+              colors[configJobs.typeColors[job.type]]
+            )}
+            data-testid="grid-row-job-type-label"
+          >
+            {utilString.titleize(job.type)}
+          </span>
         </div>
       </a>
     </Link>

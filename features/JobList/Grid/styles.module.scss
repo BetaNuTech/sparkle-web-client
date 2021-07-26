@@ -73,6 +73,10 @@
     top: rem-calc(72.7);
     z-index: 12;
   }
+
+  &__border {
+    @extend %gridTableSectionBorder
+  }
 }
 
 .propertyJobs__gridRow {
@@ -93,6 +97,10 @@
       padding-top: $global-sm-padding;
       padding-bottom: $global-sm-padding;
     }
+  }
+
+  &__type {
+    @extend %gridTableLabel;
   }
 
   @include media-query(desktop) {

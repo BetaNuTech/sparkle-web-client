@@ -3,6 +3,8 @@ import {
   openImprovementJob,
   approvedImprovementJob
 } from '../../../../__mocks__/jobs';
+import configJobs from '../../../../config/jobs';
+import { colors } from '../../index';
 import Section from './index';
 
 describe('Unit | Features | Job List | Grid | Sections', () => {
@@ -10,7 +12,10 @@ describe('Unit | Features | Job List | Grid | Sections', () => {
     const props = {
       title: 'my section',
       propertyId: 'property-1',
-      jobs: [openImprovementJob, approvedImprovementJob]
+      jobs: [openImprovementJob, approvedImprovementJob],
+      colors,
+      configJobs,
+      jobState: openImprovementJob.state
     };
     render(<Section {...props} />);
 
@@ -23,7 +28,10 @@ describe('Unit | Features | Job List | Grid | Sections', () => {
     const props = {
       title: 'my section',
       propertyId: 'property-1',
-      jobs: [openImprovementJob, approvedImprovementJob]
+      jobs: [openImprovementJob, approvedImprovementJob],
+      colors,
+      configJobs,
+      jobState: openImprovementJob.state
     };
     render(<Section {...props} />);
 
@@ -36,7 +44,10 @@ describe('Unit | Features | Job List | Grid | Sections', () => {
     const props = {
       title: 'my section',
       propertyId: 'property-1',
-      jobs: []
+      jobs: [],
+      colors,
+      configJobs,
+      jobState: ''
     };
     render(<Section {...props} />);
 

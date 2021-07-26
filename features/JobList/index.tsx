@@ -89,6 +89,8 @@ const JobList: FunctionComponent<Props> = ({
             onSortChange={onSortChange}
             sortBy={sortBy}
             sortDir={sortDir}
+            colors={colors}
+            configJobs={configJobs}
           />
         </div>
       )}

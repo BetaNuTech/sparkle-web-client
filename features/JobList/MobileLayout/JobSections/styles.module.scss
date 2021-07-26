@@ -57,11 +57,7 @@
     }
 
     &__type {
-      background-color: $info-color;
-      color: $white;
-      padding: rem-calc(3) rem-calc(4);
-      border-radius: rem-calc(2);
-      margin-left: rem-calc(20);
+      @extend %gridTableLabel;
     }
   }
 }
