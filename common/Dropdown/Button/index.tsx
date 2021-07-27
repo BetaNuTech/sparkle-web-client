@@ -5,16 +5,23 @@ interface Props {
   children: any;
   className?: string;
   onClick?: (any) => any;
+  testid?: string;
 }
-export const Button: FunctionComponent<Props> = ({
+export const DropdownButton: FunctionComponent<Props> = ({
   children,
   className,
+  testid,
   onClick
 }) => (
-  <li className={styles.dropdown__item} data-testid="dropdown-button">
+  <li className={styles.dropdown__item} data-testid={testid}>
     <button className={className} onClick={onClick}>
       {children}
     </button>
   </li>
 );
-export default Button;
+
+DropdownButton.defaultProps = {
+  testid: 'dropdown-button'
+};
+
+export default DropdownButton;

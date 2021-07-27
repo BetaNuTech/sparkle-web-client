@@ -66,6 +66,20 @@
   }
 }
 
+%gridHeaderCancelButton {
+  padding: 0.7em 1.2em;
+  position: relative;
+  border: rem-calc(1) solid $gray-3;
+  border-radius: 0.1875rem;
+  background: $white;
+  line-height: 1;
+  font-size: rem-calc(14.4);
+  color: $gray-3;
+  cursor: pointer;
+  transition: background 0.25s ease-out;
+
+}
+
 %gridHeaderCreateButton {
   padding: 0.7em 1.2em;
   position: relative;

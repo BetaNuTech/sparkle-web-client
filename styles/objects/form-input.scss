@@ -21,7 +21,7 @@
   background-position: rem-calc(6) center;
   background-size: rem-calc(16);
   transition: padding-left 120ms;
-  
+
   &:hover,
   &:focus {
     color: $white;
@@ -38,4 +38,17 @@
   &::placeholder {
     color: rgba($white, 0.6);
   }
+}
+
+%inputText {
+  border-radius: rem-calc(3);
+  padding: rem-calc(10) rem-calc(10) rem-calc(8);
+  height: auto;
+}
+
+%inputSelect {
+  border-radius: rem-calc(3);
+  padding: rem-calc(10) rem-calc(10) rem-calc(8);
+  height: auto;
+  background-color: $white;
 }

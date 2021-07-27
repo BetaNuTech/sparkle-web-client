@@ -1,0 +1,33 @@
+@import '../../../styles/index.scss';
+
+.header {
+  @extend %gridHeader;
+
+  &__backButton {
+    @extend %gridHeaderBackButton;
+  }
+
+  &__left {
+    flex-wrap: wrap;
+    display: flex;
+  }
+
+  &__main {
+    @extend %gridHeaderMain;
+    margin-right: 1rem;
+  }
+
+  &__title {
+    @extend %gridHeaderTitle;
+  }
+
+  &__propertyName {
+    @extend %gridHeaderTitle--ellipsis;
+  }
+
+  &__controls {
+    @extend %gridHeaderControls;
+  }
+
+
+}
