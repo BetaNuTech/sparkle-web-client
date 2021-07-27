@@ -1,0 +1,72 @@
+@import '../../styles/index.scss';
+
+.form__grid {
+  @extend %grid;
+
+  &__desktop {
+    max-width: rem-calc(600);
+  }
+}
+
+.button {
+  &__group {
+    &:first-child {
+      margin-right: $global-padding;
+    }
+
+    &__margin {
+      margin-top: rem-calc(12);
+    }
+  }
+
+  &__cancel {
+    @extend %gridHeaderCancelButton;
+    padding: 0.6em 1.2em;
+  }
+
+  &__submit {
+    @extend %gridHeaderCreateButton;
+    border: rem-calc(1) solid $primary-color;
+
+    // Icon of Add button
+    span {
+      @extend %gridHeaderButtonIcon;
+    }
+  }
+
+  &__fullwidth {
+    display: block;
+    width: 100%;
+  }
+}
+
+.jobNew {
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr !important;
+
+    &__icon {
+      path:last-child {
+        fill: $white !important;
+      }
+    }
+  }
+
+  &__formGroup {
+    label {
+      font-weight: 600;
+    }
+
+    input[type='text'] {
+      @extend %inputText;
+    }
+
+    textarea {
+      @extend %inputText;
+    }
+
+    select {
+      @extend %inputSelect;
+    }
+  }
+}

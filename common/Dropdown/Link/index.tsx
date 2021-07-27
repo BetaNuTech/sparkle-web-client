@@ -6,11 +6,17 @@ interface Props {
   children: string;
   href: string;
   testid?: string;
+  className?: any;
 }
-const DropdownLink: FunctionComponent<Props> = ({ children, href, testid }) => (
+const DropdownLink: FunctionComponent<Props> = ({
+  children,
+  href,
+  testid,
+  className
+}) => (
   <li className={styles.dropdown__item} data-testid={testid}>
     <Link href={href}>
-      <a>{children}</a>
+      <a className={className}>{children}</a>
     </Link>
   </li>
 );

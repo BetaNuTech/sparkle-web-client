@@ -8,5 +8,9 @@ export default {
   typeColors: {
     improvement: 'info',
     maintenance: 'info'
+  },
+  types: {
+    improvement: 'Improvement',
+    maintenance: 'Maintenance'
   }
 };
