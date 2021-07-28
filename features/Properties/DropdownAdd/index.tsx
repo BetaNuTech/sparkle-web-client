@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import Dropdown, { DropdownLink } from '../../../common/Dropdown';
+import features from '../../../config/features';
 
 interface Props {
   canAddTeam: boolean;
@@ -12,12 +13,20 @@ const DropdownAdd: FunctionComponent<Props> = ({
 }) => (
   <Dropdown>
     {canAddTeam && (
-      <DropdownLink href="/teams/create/" testid="dropdown-add-team">
+      <DropdownLink
+        href="/teams/create/"
+        featureEnabled={features.supportBetaTeamCreate}
+        testid="dropdown-add-team"
+      >
         Add Team
       </DropdownLink>
     )}
     {canAddProperty && (
-      <DropdownLink href="/properties/update/" testid="dropdown-add-property">
+      <DropdownLink
+        href="/properties/update/new"
+        featureEnabled={features.supportBetaPropertyCreate}
+        testid="dropdown-add-property"
+      >
         Add Property
       </DropdownLink>
     )}

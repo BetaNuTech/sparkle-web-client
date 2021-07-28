@@ -1,8 +1,9 @@
 import clsx from 'clsx';
-import Link from 'next/link';
 import PropTypes from 'prop-types';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
+import features from '../../config/features';
+import LinkFeature from '../LinkFeature';
 import { useAuth } from '../Auth/Provider';
 import styles from './SlideNav.module.scss';
 import Logo from '../../public/icons/sparkle/logo.svg';
@@ -52,34 +53,49 @@ export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
         <div className={styles.slideNav__links}>
           <div>
             <div className={styles.slideNav__links__link}>
-              <Link href="/properties">
-                <a>Properties</a>
-              </Link>
+              <LinkFeature
+                featureEnabled={features.supportBetaPropertiesList}
+                href="/properties"
+              >
+                Properties
+              </LinkFeature>
             </div>
             <div className={styles.slideNav__links__link}>
-              <Link href="/templates">
-                <a>Templates</a>
-              </Link>
+              <LinkFeature
+                featureEnabled={features.supportBetaTemplatesList}
+                href="/templates"
+              >
+                Templates
+              </LinkFeature>
             </div>
             <div className={styles.slideNav__links__link}>
-              <Link href="/users">
-                <a>Users</a>
-              </Link>
+              <LinkFeature
+                featureEnabled={features.supportBetaUsers}
+                href="/users"
+              >
+                Users
+              </LinkFeature>
             </div>
           </div>
 
           <div>
             {userId && (
               <div className={styles.slideNav__links__link}>
-                <Link href={`/admin/users/${userId}`}>
-                  <a>Profile</a>
-                </Link>
+                <LinkFeature
+                  featureEnabled={features.supportBetaUserProfile}
+                  href={`/admin/users/${userId}`}
+                >
+                  Profile
+                </LinkFeature>
               </div>
             )}
             <div className={styles.slideNav__links__link}>
-              <Link href="/settings">
-                <a>Settings</a>
-              </Link>
+              <LinkFeature
+                featureEnabled={features.supportBetaSettings}
+                href="/settings"
+              >
+                Settings
+              </LinkFeature>
             </div>
             <div className={styles.slideNav__links__link}>
               <div

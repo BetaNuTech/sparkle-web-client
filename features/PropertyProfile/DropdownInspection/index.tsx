@@ -8,14 +8,19 @@ import Dropdown, {
   DropdownLink,
   DropdownButton
 } from '../../../common/Dropdown';
+import features from '../../../config/features';
 
 interface Props {
   user: userModel;
+  propertyId: string;
+  inspectionId: string;
   onDeleteClick?: () => any;
 }
 
 const DropdownInspection: FunctionComponent<Props> = ({
   user,
+  propertyId,
+  inspectionId,
   onDeleteClick
 }) => (
   <Dropdown>
@@ -23,7 +28,12 @@ const DropdownInspection: FunctionComponent<Props> = ({
       <DropdownButton onClick={onDeleteClick}>Delete</DropdownButton>
     ) : null}
     {canReassignInspectionProperty(user) ? (
-      <DropdownLink href="/properties/update/">Move</DropdownLink>
+      <DropdownLink
+        href={`/properties/${propertyId}/reassign-inspection/${inspectionId}`}
+        featureEnabled={features.supportBetaPropertyInspectionMove}
+      >
+        Move
+      </DropdownLink>
     ) : null}
   </Dropdown>
 );

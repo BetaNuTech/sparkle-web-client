@@ -1,10 +1,10 @@
 import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useFirestore } from 'reactfire';
-import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Link from 'next/link';
-import styles from './styles.module.scss';
+import features from '../../config/features';
+import LinkFeature from '../../common/LinkFeature';
 import MobileHeader from '../../common/MobileHeader';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
@@ -29,6 +29,7 @@ import Inspection from './Inspection';
 import Overview from './Overview';
 import Grid from './Grid';
 import DeleteInspectionPropmpt from './DeleteInspectionPrompt';
+import styles from './styles.module.scss';
 
 interface PropertiesModel {
   user: userModel;
@@ -47,7 +48,6 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   toggleNavOpen
 }) => {
   const firestore = useFirestore();
-  const router = useRouter();
   const [inspectionFilter, setInspectionFilter] = useState('');
 
   // Fetch the data of property profile
@@ -117,16 +117,16 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
       ? getInspectionNoRecordText(inspectionFilter)
       : '';
 
-  const onCreateInspection = () => {
-    router.push(`/properties/${id}/create-inspection`);
-  };
-
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={headStyle.header__button} onClick={onCreateInspection}>
+      <LinkFeature
+        href={`/properties/${id}/create-inspection`}
+        className={headStyle.header__button}
+        featureEnabled={features.supportBetaPropertyInspectionCreate}
+      >
         <AddIcon />
-      </button>
+      </LinkFeature>
 
       <button
         className={headStyle.header__button}
@@ -171,6 +171,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
                 <Inspection
                   inspections={sortedInspections}
                   templateCategories={templateCategories}
+                  propertyId={id}
                 />
               )}
             </div>
@@ -221,6 +222,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
             ) : Array.isArray(inspections) && inspections.length > 0 ? (
               <Grid
                 user={user}
+                propertyId={id}
                 inspections={sortedInspections}
                 templateCategories={templateCategories}
                 openInspectionDeletePrompt={openInspectionDeletePrompt}

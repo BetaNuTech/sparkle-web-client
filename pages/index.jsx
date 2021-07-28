@@ -1,18 +1,16 @@
-import Link from 'next/link';
+import Router from 'next/router';
 
 export default function Home() {
-  return (
-    <div style={{ padding: '40px' }}>
-      <p>
-        <Link href="/properties">
-          <a>Go to authenticated route</a>
-        </Link>
-      </p>
-      <p>
-        <Link href="/login">
-          <a>Login</a>
-        </Link>
-      </p>
-    </div>
-  );
+  const path = Router.asPath;
+
+  // Automcatically direct users
+  // to properties page as default
+  if (path === '/') {
+    Router.push('/properties');
+  } else {
+    // Direct user to requested subpage
+    Router.push(path);
+  }
+
+  return null;
 }

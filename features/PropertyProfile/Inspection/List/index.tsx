@@ -5,11 +5,13 @@ import ListItem from '../ListItem';
 import styles from './styles.module.scss';
 
 interface Props {
+  propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
 }
 
 const InspectionList: FunctionComponent<Props> = ({
+  propertyId,
   inspections,
   templateCategories
 }) => {
@@ -21,6 +23,7 @@ const InspectionList: FunctionComponent<Props> = ({
       >
         {inspections.map((lineItem) => (
           <ListItem
+            propertyId={propertyId}
             key={lineItem.id}
             inspection={lineItem}
             templateCategories={templateCategories}

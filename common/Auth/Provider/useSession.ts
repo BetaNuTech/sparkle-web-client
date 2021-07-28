@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
 import getConfig from 'next/config';
+import features from '../../../config/features';
 
 const config = getConfig() || {};
 const publicRuntimeConfig = config.publicRuntimeConfig || {};
@@ -48,7 +49,11 @@ export default function useSession(firebase): SessionResult {
   // Terminate session
   // and redirect to login
   const signOut = () => {
-    Router.push('/login');
+    if (features.supportBetaLogin) {
+      Router.push('/login');
+    } else {
+      window.location.href = '/login';
+    }
 
     return firebase
       .auth()

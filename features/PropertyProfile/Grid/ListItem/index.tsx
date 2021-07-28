@@ -17,6 +17,7 @@ import propertyProfileStyles from '../../styles.module.scss';
 interface ListItemProps {
   user: userModel;
   inspection: inspectionModel;
+  propertyId: string;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: () => void;
 }
@@ -24,6 +25,7 @@ interface ListItemProps {
 const ListItem: FunctionComponent<ListItemProps> = ({
   user,
   inspection,
+  propertyId,
   templateCategories,
   openInspectionDeletePrompt
 }) => {
@@ -89,12 +91,16 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           className={styles.propertyProfile__gridRow__column}
           data-testid="inspection-grid-list-item-creator"
         >
-          <span
+          {/*
+            <span
             className={clsx(
               styles.propertyProfile__gridRow__avatar,
-              styles['-fallback']
+              styles['-fallback'],
+              '-d-none'
             )}
           ></span>
+            */}
+
           {creatorName}
         </a>
       </Link>
@@ -179,6 +185,8 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             <ActionsIcon />
             <DropdownInspection
               user={user}
+              propertyId={propertyId}
+              inspectionId={inspection.id}
               onDeleteClick={() => openInspectionDeletePrompt()}
             />
           </span>

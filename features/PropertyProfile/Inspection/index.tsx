@@ -4,18 +4,24 @@ import templateCategoryModel from '../../../common/models/templateCategory';
 import List from './List';
 
 interface Props {
+  propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
   isMobile?: boolean;
 }
 
 const Inspection: FunctionComponent<Props> = ({
+  propertyId,
   inspections,
   templateCategories
 }) => {
   if (inspections) {
     return (
-      <List inspections={inspections} templateCategories={templateCategories} />
+      <List
+        propertyId={propertyId}
+        inspections={inspections}
+        templateCategories={templateCategories}
+      />
     );
   }
   return null;

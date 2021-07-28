@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react';
-import Link from 'next/link';
+import LinkFeature from '../../LinkFeature';
 import styles from '../styles.module.scss';
 
 interface Props {
@@ -7,22 +7,25 @@ interface Props {
   href: string;
   testid?: string;
   className?: any;
+  featureEnabled?: boolean;
 }
 const DropdownLink: FunctionComponent<Props> = ({
   children,
   href,
   testid,
-  className
+  className,
+  featureEnabled
 }) => (
   <li className={styles.dropdown__item} data-testid={testid}>
-    <Link href={href}>
-      <a className={className}>{children}</a>
-    </Link>
+    <LinkFeature href={href} className={className} featureEnabled={featureEnabled}>
+      {children}
+    </LinkFeature>
   </li>
 );
 
 DropdownLink.defaultProps = {
-  testid: 'dropdown-link'
+  testid: 'dropdown-link',
+  featureEnabled: false
 };
 
 export default DropdownLink;
