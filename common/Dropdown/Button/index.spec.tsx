@@ -1,17 +1,17 @@
 import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import DropdownButton from './index';
+import ActionButton from './index';
 
 describe('Unit | Common | Dropdown | Button', () => {
   it('matches prior snapshot', () => {
-    const { container } = render(<DropdownButton>Delete</DropdownButton>);
+    const { container } = render(<ActionButton>Delete</ActionButton>);
     expect(container).toMatchSnapshot();
   });
 
   it('allows dynamic setting text on button', () => {
     const expected = 'Delete';
-    const { container } = render(<DropdownButton>Delete</DropdownButton>);
+    const { container } = render(<ActionButton>Delete</ActionButton>);
 
     const actual = container.querySelector(
       '[data-testid=dropdown-button]'
@@ -26,7 +26,7 @@ describe('Unit | Common | Dropdown | Button', () => {
       className: 'test-class-name'
     };
     const { container } = render(
-      <DropdownButton {...props}>Delete</DropdownButton>
+      <ActionButton {...props}>Delete</ActionButton>
     );
 
     const actual = container
@@ -42,7 +42,7 @@ describe('Unit | Common | Dropdown | Button', () => {
       className: 'test-class-name'
     };
     const { container } = render(
-      <DropdownButton {...props}>Delete</DropdownButton>
+      <ActionButton {...props}>Delete</ActionButton>
     );
 
     const actual = container
@@ -63,7 +63,7 @@ describe('Unit | Common | Dropdown | Button', () => {
     };
 
     const { container } = render(
-      <DropdownButton {...props}>Delete</DropdownButton>
+      <ActionButton {...props}>Delete</ActionButton>
     );
 
     const button = container.querySelector('button');

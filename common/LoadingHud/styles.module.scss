@@ -2,12 +2,18 @@
 
 .overlay {
   position: fixed;
+  width: calc(100% - #{$sliderNavWidth});
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   z-index: 1000;
   background-color: rgba(51, 51, 51, 0.7);
-  cursor: pointer;
-  width: calc(100% - 15.625rem);
-  height: 100vh;
-  display: grid;
+
+  @include media-query(desktop) {
+    width: calc(100% - #{2 * $sliderNavWidth});
+  }
 }
 
 .loader {
@@ -17,7 +23,10 @@
   max-height: rem-calc(276);
   background-color: $white;
 
-  display: grid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
   margin: auto;
   text-align: center;
 

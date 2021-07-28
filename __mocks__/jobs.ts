@@ -17,9 +17,9 @@ export const openImprovementJob: jobModel = {
 export const openMaintenanceJob: jobModel = {
   id: 'job-2',
   title: 'Swimming pool cleaning',
-  need: '',
+  need: 'pool has gone dirty',
   authorizedRules: 'default',
-  scopeOfWork: '',
+  scopeOfWork: 'clean pool, add chemicals',
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1488306600,
