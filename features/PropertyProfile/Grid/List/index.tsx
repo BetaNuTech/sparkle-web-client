@@ -8,6 +8,7 @@ import styles from '../styles.module.scss';
 
 interface Props {
   user: userModel;
+  propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: () => void;
@@ -15,6 +16,7 @@ interface Props {
 
 const InspectionList: FunctionComponent<Props> = ({
   user,
+  propertyId,
   inspections,
   templateCategories,
   openInspectionDeletePrompt
@@ -28,6 +30,7 @@ const InspectionList: FunctionComponent<Props> = ({
         {inspections.map((lineItem) => (
           <ListItem
             user={user}
+            propertyId={propertyId}
             key={lineItem.id}
             inspection={lineItem}
             templateCategories={templateCategories}

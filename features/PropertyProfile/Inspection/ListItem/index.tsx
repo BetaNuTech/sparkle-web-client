@@ -1,7 +1,8 @@
 import { FunctionComponent, useState, useRef } from 'react';
 import clsx from 'clsx';
-import Link from 'next/link';
 import { Doughnut } from 'react-chartjs-2';
+import features from '../../../../config/features';
+import LinkFeature from '../../../../common/LinkFeature';
 import utilString from '../../../../common/utils/string';
 import utilDate from '../../../../common/utils/date';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
@@ -12,11 +13,13 @@ import styles from '../List/styles.module.scss';
 import propertyProfileStyles from '../../styles.module.scss';
 
 interface ListItemProps {
+  propertyId: string;
   inspection: inspectionModel;
   templateCategories: Array<templateCategoryModel>;
 }
 
 const ListItem: FunctionComponent<ListItemProps> = ({
+  propertyId,
   inspection,
   templateCategories
 }) => {
@@ -68,174 +71,174 @@ const ListItem: FunctionComponent<ListItemProps> = ({
       className={clsx(styles.propertyProfile__inspectionsList__listItem)}
       data-testid="property-profile-inspection-list-item"
     >
-      <Link href="/properties">
-        <a>
+      <LinkFeature
+        href={`/properties/${propertyId}/update-inspection/${inspection.id}`}
+        featureEnabled={features.supportBetaPropertyInspectionUpdate}
+      >
+        <div
+          className={clsx(
+            styles.propertyProfile__inspectionsList__swipe,
+            isSwipeOpen &&
+              styles.propertyProfile__inspectionsList__swipe__revealed
+          )}
+        >
           <div
             className={clsx(
-              styles.propertyProfile__inspectionsList__swipe,
-              isSwipeOpen &&
-                styles.propertyProfile__inspectionsList__swipe__revealed
+              styles.propertyProfile__inspectionsList__swipe__visible,
+              styles.propertyProfile__inspectionsList__content,
+              isSwipeOpen && styles.propertyProfile__inspectionsList__swipeOpen
             )}
           >
+            {/* Inspection Details */}
             <div
               className={clsx(
-                styles.propertyProfile__inspectionsList__swipe__visible,
-                styles.propertyProfile__inspectionsList__content,
-                isSwipeOpen &&
-                  styles.propertyProfile__inspectionsList__swipeOpen
+                styles.propertyProfile__inspectionsList__overview,
+                styles['-restrict-width']
               )}
             >
-              {/* Inspection Details */}
               <div
-                className={clsx(
-                  styles.propertyProfile__inspectionsList__overview,
-                  styles['-restrict-width']
-                )}
-              >
-                <div
-                  className={
-                    styles.propertyProfile__inspectionsList__overview__row
-                  }
-                >
-                  <strong className="-c-black">Creator:</strong>{' '}
-                  <span
-                    className="-c-gray-dark"
-                    data-testid="property-profile-inspection-list-item-creator"
-                  >
-                    {creatorName}
-                  </span>
-                </div>
-                <div
-                  className={
-                    styles.propertyProfile__inspectionsList__overview__row
-                  }
-                >
-                  <strong className="-c-black">Date:</strong>{' '}
-                  <span
-                    className={clsx('-fw-bold', '-c-secondary')}
-                    data-testid="property-profile-inspection-list-item-creation-date"
-                    data-time={inspection.creationDate}
-                  >
-                    {creationDate}
-                  </span>
-                </div>
-                <div
-                  className={
-                    styles.propertyProfile__inspectionsList__overview__row
-                  }
-                >
-                  <strong className="-c-black">Updated:</strong>{' '}
-                  <span
-                    className={clsx('-fw-bold', '-c-secondary')}
-                    data-testid="property-profile-inspection-list-item-update-date"
-                  >
-                    {updatedAt}
-                  </span>
-                </div>
-                <div
-                  className={
-                    styles.propertyProfile__inspectionsList__overview__row
-                  }
-                >
-                  <strong className="-c-black">Template:</strong>{' '}
-                  <span
-                    className="-c-gray-light"
-                    data-testid="property-profile-inspection-list-item-template"
-                  >
-                    {templateName}
-                  </span>
-                </div>
-                <div
-                  className={
-                    styles.propertyProfile__inspectionsList__overview__row
-                  }
-                >
-                  <strong className="-c-black">Category:</strong>{' '}
-                  <span
-                    className="-c-gray-light"
-                    data-testid="property-profile-inspection-list-item-template-category"
-                  >
-                    {templateCategory}
-                  </span>
-                </div>
-              </div>
-
-              {/* Inspection Score */}
-              <aside
                 className={
-                  styles.propertyProfile__inspectionsList__visualizations
+                  styles.propertyProfile__inspectionsList__overview__row
                 }
               >
-                {' '}
-                <div
-                  className={styles.propertyProfile__inspectionsList__score}
-                  data-testid="property-profile-inspection-list-item-score"
+                <strong className="-c-black">Creator:</strong>{' '}
+                <span
+                  className="-c-gray-dark"
+                  data-testid="property-profile-inspection-list-item-creator"
                 >
-                  {inspection.inspectionCompleted ? (
-                    // Completed Score
+                  {creatorName}
+                </span>
+              </div>
+              <div
+                className={
+                  styles.propertyProfile__inspectionsList__overview__row
+                }
+              >
+                <strong className="-c-black">Date:</strong>{' '}
+                <span
+                  className={clsx('-fw-bold', '-c-secondary')}
+                  data-testid="property-profile-inspection-list-item-creation-date"
+                  data-time={inspection.creationDate}
+                >
+                  {creationDate}
+                </span>
+              </div>
+              <div
+                className={
+                  styles.propertyProfile__inspectionsList__overview__row
+                }
+              >
+                <strong className="-c-black">Updated:</strong>{' '}
+                <span
+                  className={clsx('-fw-bold', '-c-secondary')}
+                  data-testid="property-profile-inspection-list-item-update-date"
+                >
+                  {updatedAt}
+                </span>
+              </div>
+              <div
+                className={
+                  styles.propertyProfile__inspectionsList__overview__row
+                }
+              >
+                <strong className="-c-black">Template:</strong>{' '}
+                <span
+                  className="-c-gray-light"
+                  data-testid="property-profile-inspection-list-item-template"
+                >
+                  {templateName}
+                </span>
+              </div>
+              <div
+                className={
+                  styles.propertyProfile__inspectionsList__overview__row
+                }
+              >
+                <strong className="-c-black">Category:</strong>{' '}
+                <span
+                  className="-c-gray-light"
+                  data-testid="property-profile-inspection-list-item-template-category"
+                >
+                  {templateCategory}
+                </span>
+              </div>
+            </div>
+
+            {/* Inspection Score */}
+            <aside
+              className={
+                styles.propertyProfile__inspectionsList__visualizations
+              }
+            >
+              {' '}
+              <div
+                className={styles.propertyProfile__inspectionsList__score}
+                data-testid="property-profile-inspection-list-item-score"
+              >
+                {inspection.inspectionCompleted ? (
+                  // Completed Score
+                  <span
+                    className={
+                      styles.propertyProfile__inspectionsList__smallCopy
+                    }
+                  >
+                    {scoreLabel}:
                     <span
                       className={
-                        styles.propertyProfile__inspectionsList__smallCopy
+                        inspection.deficienciesExist ? '-c-red' : '-c-blue'
                       }
                     >
-                      {scoreLabel}:
-                      <span
-                        className={
-                          inspection.deficienciesExist ? '-c-red' : '-c-blue'
-                        }
-                      >
-                        {scoreDisplay}%
-                      </span>
+                      {scoreDisplay}%
                     </span>
-                  ) : (
-                    // Progress chart
-                    <Doughnut
-                      type="doughnut"
-                      className={propertyProfileStyles.__progressChart} // eslint-disable-line
-                      data={chartData}
-                      options={chartOptions}
-                      plugins={[labelPlugin]}
-                      width={50}
-                      height={50}
-                    />
-                  )}
-                </div>
-              </aside>
-
-              {/* Link Icon */}
-              <span
-                className={
-                  styles.propertyProfile__inspectionsList__swipe__visible__link
-                }
-              ></span>
-            </div>
-
-            {/* Swipe Revealed Buttons */}
-            <div
-              className={styles.propertyProfile__inspectionsList__swipe__hidden}
-            >
-              <button
-                className={clsx(
-                  styles.propertyProfile__inspectionsList__revealButton,
-                  '-bgc-alert'
+                  </span>
+                ) : (
+                  // Progress chart
+                  <Doughnut
+                    type="doughnut"
+                    className={propertyProfileStyles.__progressChart} // eslint-disable-line
+                    data={chartData}
+                    options={chartOptions}
+                    plugins={[labelPlugin]}
+                    width={50}
+                    height={50}
+                  />
                 )}
-                disabled
-              >
-                Delete
-              </button>
-              <button
-                className={clsx(
-                  styles.propertyProfile__inspectionsList__revealButton,
-                  '-bgc-orange'
-                )}
-                disabled
-              >
-                Move
-              </button>
-            </div>
+              </div>
+            </aside>
+
+            {/* Link Icon */}
+            <span
+              className={
+                styles.propertyProfile__inspectionsList__swipe__visible__link
+              }
+            ></span>
           </div>
-        </a>
-      </Link>
+
+          {/* Swipe Revealed Buttons */}
+          <div
+            className={styles.propertyProfile__inspectionsList__swipe__hidden}
+          >
+            <button
+              className={clsx(
+                styles.propertyProfile__inspectionsList__revealButton,
+                '-bgc-alert'
+              )}
+              disabled
+            >
+              Delete
+            </button>
+            <button
+              className={clsx(
+                styles.propertyProfile__inspectionsList__revealButton,
+                '-bgc-orange'
+              )}
+              disabled
+            >
+              Move
+            </button>
+          </div>
+        </div>
+      </LinkFeature>
     </li>
   );
 };

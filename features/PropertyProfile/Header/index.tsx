@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
-import Link from 'next/link';
+import LinkFeature from '../../../common/LinkFeature';
+import features from '../../../config/features';
 import propertyModel from '../../../common/models/property';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import styles from './styles.module.scss';
@@ -29,61 +30,67 @@ const getMobileExtra: FunctionComponent<Props> = ({
             data-testid="property-profile-yardi-button"
           >
             <li>
-              <Link href="/properties">
-                <a>
-                  Residents <ChevronIcon />
-                </a>
-              </Link>
+              <LinkFeature
+                href={`/properties/${property.id}/yardi-residents`}
+                featureEnabled={features.supportBetaPropertyYardiResident}
+              >
+                Residents <ChevronIcon />
+              </LinkFeature>
             </li>
             <li>
-              <Link href="/properties">
-                <a>
-                  Open WOs <ChevronIcon />
-                </a>
-              </Link>
+              <LinkFeature
+                href={`/properties/${property.id}/yardi-work-orders`}
+                featureEnabled={features.supportBetaPropertyYardiResident}
+              >
+                Open WOs <ChevronIcon />
+              </LinkFeature>
             </li>
           </ul>
         ) : null}
-
-        <ol className={clsx(styles.propertyProfile__header__deficientItems)}>
-          <li data-testid="property-profile-deficient-item">
-            <span
-              className={clsx(
-                styles.propertyProfile__header__label,
-                '-bgc-black'
-              )}
-            >
-              {property.numOfDeficientItems}
-            </span>
-            {` Deficient Item${property.numOfDeficientItems > 1 ? 's' : ''}`}
-          </li>
-          <li data-testid="property-profile-deficient-item-actions">
-            <span
-              className={clsx(
-                styles.propertyProfile__header__label,
-                '-bgc-alert-secondary'
-              )}
-            >
-              {property.numOfRequiredActionsForDeficientItems}
-            </span>
-            {` Action${
-              property.numOfRequiredActionsForDeficientItems > 1 ? 's' : ''
-            } Required`}
-          </li>
-          <li data-testid="property-profile-deficient-item-followups">
-            <span
-              className={clsx(
-                styles.propertyProfile__header__label,
-                '-bgc-quaternary'
-              )}
-            >
-              {property.numOfFollowUpActionsForDeficientItems}
-            </span>
-            {` Follow Up${
-              property.numOfFollowUpActionsForDeficientItems > 1 ? 's' : ''
-            }`}
-          </li>
-        </ol>
+        <LinkFeature
+          href={`/properties/${property.id}/deficient-items`}
+          featureEnabled={features.supportBetaPropertyDeficient}
+        >
+          <ol className={clsx(styles.propertyProfile__header__deficientItems)}>
+            <li data-testid="property-profile-deficient-item">
+              <span
+                className={clsx(
+                  styles.propertyProfile__header__label,
+                  '-bgc-black'
+                )}
+              >
+                {property.numOfDeficientItems}
+              </span>
+              {` Deficient Item${property.numOfDeficientItems > 1 ? 's' : ''}`}
+            </li>
+            <li data-testid="property-profile-deficient-item-actions">
+              <span
+                className={clsx(
+                  styles.propertyProfile__header__label,
+                  '-bgc-alert-secondary'
+                )}
+              >
+                {property.numOfRequiredActionsForDeficientItems}
+              </span>
+              {` Action${
+                property.numOfRequiredActionsForDeficientItems > 1 ? 's' : ''
+              } Required`}
+            </li>
+            <li data-testid="property-profile-deficient-item-followups">
+              <span
+                className={clsx(
+                  styles.propertyProfile__header__label,
+                  '-bgc-quaternary'
+                )}
+              >
+                {property.numOfFollowUpActionsForDeficientItems}
+              </span>
+              {` Follow Up${
+                property.numOfFollowUpActionsForDeficientItems > 1 ? 's' : ''
+              }`}
+            </li>
+          </ol>
+        </LinkFeature>
         <footer
           className={clsx(styles.propertyProfile__header__subMenu)}
           data-testid="property-profile-mobile-footer"

@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
-import Link from 'next/link';
+import LinkFeature from '../../../common/LinkFeature';
+import features from '../../../config/features';
 import propertyModel from '../../../common/models/property';
 import inspectionModel from '../../../common/models/inspection';
 import AddIcon from '../../../public/icons/ios/add.svg';
@@ -14,22 +15,29 @@ interface Props {
 }
 
 const YardiButtons: FunctionComponent<{
+  propertyId: string;
   isYardiConfigured: boolean;
-}> = ({ isYardiConfigured }) =>
+}> = ({ propertyId, isYardiConfigured }) =>
   isYardiConfigured ? (
     <ul
       className={clsx(styles.propertyProfile__overview__links, '-p-none')}
       data-testid="property-profile-yardi-button"
     >
       <li>
-        <Link href="/properties">
-          <a>Residents</a>
-        </Link>
+        <LinkFeature
+          href={`/properties/${propertyId}/yardi-residents`}
+          featureEnabled={features.supportBetaPropertyYardiResident}
+        >
+          Residents
+        </LinkFeature>
       </li>
       <li>
-        <Link href="/properties">
-          <a>Open WOs</a>
-        </Link>
+        <LinkFeature
+          href={`/properties/${propertyId}/yardi-work-orders`}
+          featureEnabled={features.supportBetaPropertyYardiWorkOrder}
+        >
+          Open WOs
+        </LinkFeature>
       </li>
     </ul>
   ) : null;
@@ -103,9 +111,7 @@ const FilterView: FunctionComponent<{
       <select
         id="inspection-filter"
         name="inspection-filter"
-        onChange={(ev) =>
-          setInspectionFilter(ev.target.value)
-        }
+        onChange={(ev) => setInspectionFilter(ev.target.value)}
         data-testid="inspections-filter"
       >
         <option value="">None</option>
@@ -148,27 +154,32 @@ const Overview: FunctionComponent<Props> = ({
             {property.name}
           </h1>
         )}
-        <Link href={`/properties/${property.id}/create-inspection`}>
-          <a className={clsx('button', styles.button, styles.primary)}>
-            Add Inspection{' '}
-            <span className={styles.propertyProfile__overview__iconButton}>
-              <AddIcon />
-            </span>
-          </a>
-        </Link>
+        <LinkFeature
+          href={`/properties/${property.id}/create-inspection`}
+          className={clsx('button', styles.button, styles.primary)}
+          featureEnabled={features.supportBetaPropertyInspectionCreate}
+        >
+          Add Inspection{' '}
+          <span className={styles.propertyProfile__overview__iconButton}>
+            <AddIcon />
+          </span>
+        </LinkFeature>
       </div>
       <footer className={styles.propertyProfile__overview__footer}>
-        <YardiButtons isYardiConfigured={isYardiConfigured} />
-        <Link href="/properties">
-          <a
-            className={clsx(
-              styles.propertyProfile__overview__deficient__link,
-              styles['-no-container']
-            )}
-          >
-            <DeficiencienItemsLink property={property} />
-          </a>
-        </Link>
+        <YardiButtons
+          isYardiConfigured={isYardiConfigured}
+          propertyId={property.id}
+        />
+        <LinkFeature
+          href={`/properties/${property.id}/deficient-items`}
+          className={clsx(
+            styles.propertyProfile__overview__deficient__link,
+            styles['-no-container']
+          )}
+          featureEnabled={features.supportBetaPropertyDeficient}
+        >
+          <DeficiencienItemsLink property={property} />
+        </LinkFeature>
         <FilterView
           inspections={inspections}
           setInspectionFilter={setInspectionFilter}

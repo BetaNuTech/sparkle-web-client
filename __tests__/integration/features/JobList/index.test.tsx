@@ -8,7 +8,6 @@ import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import mockJobs, {
   openImprovementJob,
-  openMaintenanceJob,
   openMaintenanceExpeditedJob,
   approvedImprovementJob,
   approvedMaintenanceJob,

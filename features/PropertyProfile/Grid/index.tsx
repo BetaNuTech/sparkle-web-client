@@ -8,6 +8,7 @@ import List from './List';
 
 interface Props {
   user: userModel;
+  propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: () => void;
@@ -18,6 +19,7 @@ interface Props {
 
 const Grid: FunctionComponent<Props> = ({
   user,
+  propertyId,
   inspections,
   templateCategories,
   openInspectionDeletePrompt,
@@ -36,6 +38,7 @@ const Grid: FunctionComponent<Props> = ({
         />
         <List
           user={user}
+          propertyId={propertyId}
           inspections={inspections}
           templateCategories={templateCategories}
           openInspectionDeletePrompt={openInspectionDeletePrompt}
