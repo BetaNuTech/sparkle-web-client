@@ -24,6 +24,10 @@
       background-color: $gray-dark;
     }
 
+    &:nth-child(3n) > a {
+      background-color: $gray-light;
+    }
+
     > a {
       display: block;
       position: relative;

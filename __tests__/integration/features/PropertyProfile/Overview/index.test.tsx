@@ -19,6 +19,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
     const expected = 1;
     render(
       <Overview
+        canUserAccessJob={false}
         property={fullProperty}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -40,6 +41,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
 
     render(
       <Overview
+        canUserAccessJob={false}
         property={property}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -69,6 +71,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
 
     render(
       <Overview
+        canUserAccessJob={false}
         property={property}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -100,6 +103,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
 
     render(
       <Overview
+        canUserAccessJob={false}
         property={property}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -124,6 +128,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
     const expected = 1;
     render(
       <Overview
+        canUserAccessJob={false}
         property={fullProperty}
         inspections={inspectionsMock}
         isYardiConfigured
@@ -141,6 +146,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
     const expected = property.logoURL;
     render(
       <Overview
+        canUserAccessJob={false}
         property={property}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -166,6 +172,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
     property.logoURL = '';
     render(
       <Overview
+        canUserAccessJob={false}
         property={property}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -192,6 +199,7 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
     property.logoURL = '';
     render(
       <Overview
+        canUserAccessJob={false}
         property={property}
         inspections={inspectionsMock}
         isYardiConfigured={false}
@@ -212,5 +220,48 @@ describe('Integration | Features | Properties | Profile | Overview', () => {
 
     // Check if text matches the name of property
     expect(heading.textContent).toEqual(property.name);
+  });
+
+  it('renders jobs page link if user is permitted to access job', () => {
+    const property = { ...fullProperty };
+    const expectedLink = `/properties/${property.id}/jobs`;
+    render(
+      <Overview
+        canUserAccessJob
+        property={property}
+        inspections={inspectionsMock}
+        isYardiConfigured={false}
+      />
+    );
+    const jobLink: HTMLElement = screen.queryByTestId(
+      'property-profile-view-jobs'
+    );
+
+    const linkTagName = jobLink.tagName;
+
+    const cancelLink = jobLink.getAttribute('href');
+
+    // Check cancel is a link
+    expect(linkTagName).toEqual('A');
+
+    // Check link is correct
+    expect(cancelLink).toEqual(expectedLink);
+  });
+
+  it('do not renders jobs page link if user is not permitted to access job', () => {
+    const property = { ...fullProperty };
+    render(
+      <Overview
+        canUserAccessJob={false}
+        property={property}
+        inspections={inspectionsMock}
+        isYardiConfigured={false}
+      />
+    );
+    const jobLink: HTMLElement = screen.queryByTestId(
+      'property-profile-view-jobs'
+    );
+
+    expect(jobLink).toBeNull();
   });
 });

@@ -8,6 +8,7 @@ import LinkFeature from '../../common/LinkFeature';
 import MobileHeader from '../../common/MobileHeader';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
+import { canAccessJobs } from '../../common/utils/userPermissions';
 import usePropertyInspections from './hooks/usePropertyInspections';
 import useInspectionSorting from './hooks/useInspectionSorting';
 import useYardiIntegration from './hooks/useYardiIntegration';
@@ -117,6 +118,9 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
       ? getInspectionNoRecordText(inspectionFilter)
       : '';
 
+  // Check if user can access jobs
+  const canUserAccessJob = canAccessJobs(user, property.id);
+
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
@@ -151,6 +155,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
           />
           <div className={styles.propertyProfile}>
             <Header
+              canUserAccessJob={canUserAccessJob}
               property={property}
               isYardiConfigured={isYardiConfigured}
               isMobile
@@ -201,8 +206,13 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div className={styles.propertyProfile}>
-          <Header property={property} isYardiConfigured={isYardiConfigured} />
+          <Header
+            canUserAccessJob={canUserAccessJob}
+            property={property}
+            isYardiConfigured={isYardiConfigured}
+          />
           <Overview
+            canUserAccessJob={canUserAccessJob}
             property={property}
             inspections={inspections}
             isYardiConfigured={isYardiConfigured}

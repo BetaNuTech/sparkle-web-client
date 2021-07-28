@@ -1,5 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
+import Link from 'next/link';
+import getConfig from 'next/config';
 import LinkFeature from '../../../common/LinkFeature';
 import features from '../../../config/features';
 import propertyModel from '../../../common/models/property';
@@ -7,6 +9,7 @@ import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import styles from './styles.module.scss';
 
 interface Props {
+  canUserAccessJob: boolean;
   property: propertyModel;
   isMobile?: boolean;
   isYardiConfigured: boolean;
@@ -15,38 +18,57 @@ interface Props {
 }
 
 const getMobileExtra: FunctionComponent<Props> = ({
+  canUserAccessJob,
   property,
   isMobile,
   isYardiConfigured,
   activeInspectionSortFilter,
   sortBy
 }) => {
+  const config = getConfig() || {};
+  const publicRuntimeConfig = config.publicRuntimeConfig || {};
+  const basePath = publicRuntimeConfig.basePath || '';
+
+  const jobLink = `${basePath}/properties/${property.id}/jobs`;
+
   if (isMobile) {
     return (
       <>
-        {isYardiConfigured ? (
-          <ul
-            className={clsx(styles.propertyProfile__header__ctaItems)}
-            data-testid="property-profile-yardi-button"
-          >
-            <li>
-              <LinkFeature
-                href={`/properties/${property.id}/yardi-residents`}
-                featureEnabled={features.supportBetaPropertyYardiResident}
-              >
-                Residents <ChevronIcon />
-              </LinkFeature>
-            </li>
-            <li>
-              <LinkFeature
-                href={`/properties/${property.id}/yardi-work-orders`}
-                featureEnabled={features.supportBetaPropertyYardiResident}
-              >
-                Open WOs <ChevronIcon />
-              </LinkFeature>
-            </li>
-          </ul>
-        ) : null}
+        {
+          // eslint-disable-next-line no-nested-ternary
+          (isYardiConfigured || canUserAccessJob) && (
+            <ul className={clsx(styles.propertyProfile__header__ctaItems)}>
+              {isYardiConfigured && (
+                <>
+                  <li data-testid="property-profile-yardi-button">
+                    <Link href="/properties">
+                      <a>
+                        Residents <ChevronIcon />
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/properties">
+                      <a>
+                        Open WOs <ChevronIcon />
+                      </a>
+                    </Link>
+                  </li>
+                </>
+              )}
+              {canUserAccessJob && (
+                <li>
+                  <Link href={jobLink}>
+                    <a data-testid="property-profile-view-jobs">
+                      Jobs <ChevronIcon />
+                    </a>
+                  </Link>
+                </li>
+              )}
+            </ul>
+          )
+        }
+
         <LinkFeature
           href={`/properties/${property.id}/deficient-items`}
           featureEnabled={features.supportBetaPropertyDeficient}
@@ -91,6 +113,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
             </li>
           </ol>
         </LinkFeature>
+
         <footer
           className={clsx(styles.propertyProfile__header__subMenu)}
           data-testid="property-profile-mobile-footer"
@@ -104,6 +127,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
 };
 
 const Header: FunctionComponent<Props> = ({
+  canUserAccessJob,
   property,
   isMobile,
   isYardiConfigured,
@@ -149,6 +173,7 @@ const Header: FunctionComponent<Props> = ({
           </div>
         </div>
         {getMobileExtra({
+          canUserAccessJob,
           property,
           isMobile,
           isYardiConfigured,

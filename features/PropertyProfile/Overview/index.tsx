@@ -1,5 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
+import Link from 'next/link';
+import getConfig from 'next/config';
 import LinkFeature from '../../../common/LinkFeature';
 import features from '../../../config/features';
 import propertyModel from '../../../common/models/property';
@@ -8,6 +10,7 @@ import AddIcon from '../../../public/icons/ios/add.svg';
 import styles from './styles.module.scss';
 
 interface Props {
+  canUserAccessJob: boolean;
   property: propertyModel;
   inspections: Array<inspectionModel>;
   isYardiConfigured: boolean;
@@ -123,6 +126,7 @@ const FilterView: FunctionComponent<{
   ) : null;
 
 const Overview: FunctionComponent<Props> = ({
+  canUserAccessJob,
   property,
   inspections,
   isYardiConfigured,
@@ -133,6 +137,12 @@ const Overview: FunctionComponent<Props> = ({
 
   // If it was false above then set to bannerPhotoURL
   logoUrl = !logoUrl ? property.bannerPhotoURL : logoUrl;
+
+  const config = getConfig() || {};
+  const publicRuntimeConfig = config.publicRuntimeConfig || {};
+  const basePath = publicRuntimeConfig.basePath || '';
+  const jobLink = `${basePath}/properties/${property.id}/jobs`;
+
   return (
     <div
       className={styles.propertyProfile__overview}
@@ -154,16 +164,28 @@ const Overview: FunctionComponent<Props> = ({
             {property.name}
           </h1>
         )}
-        <LinkFeature
-          href={`/properties/${property.id}/create-inspection`}
-          className={clsx('button', styles.button, styles.primary)}
-          featureEnabled={features.supportBetaPropertyInspectionCreate}
-        >
-          Add Inspection{' '}
-          <span className={styles.propertyProfile__overview__iconButton}>
-            <AddIcon />
-          </span>
-        </LinkFeature>
+        <div>
+          {canUserAccessJob ? (
+            <Link href={jobLink}>
+              <a
+                className={clsx(styles.propertyProfile__overview__linkButton)}
+                data-testid="property-profile-view-jobs"
+              >
+                View Jobs
+              </a>
+            </Link>
+          ) : null}
+          <LinkFeature
+            href={`/properties/${property.id}/create-inspection`}
+            className={clsx('button', styles.button, styles.primary)}
+            featureEnabled={features.supportBetaPropertyInspectionCreate}
+          >
+            Add Inspection{' '}
+            <span className={styles.propertyProfile__overview__iconButton}>
+              <AddIcon />
+            </span>
+          </LinkFeature>
+        </div>
       </div>
       <footer className={styles.propertyProfile__overview__footer}>
         <YardiButtons
