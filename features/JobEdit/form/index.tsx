@@ -23,10 +23,11 @@ interface Props {
   toggleNavOpen?(): void;
 }
 
-const Layout: FunctionComponent<{ isMobile: boolean; jobLink: string }> = ({
-  isMobile,
-  jobLink
-}) => (
+const Layout: FunctionComponent<{
+  isMobile: boolean;
+  jobLink: string;
+  job: jobModel;
+}> = ({ isMobile, job, jobLink }) => (
   <div
     className={clsx(styles.form__grid, !isMobile && styles.form__grid__desktop)}
   >
@@ -40,7 +41,9 @@ const Layout: FunctionComponent<{ isMobile: boolean; jobLink: string }> = ({
           type="text"
           name="title"
           className={styles.jobNew__input}
+          defaultValue={job.title}
           required
+          data-testid="job-form-title"
         />
       </div>
       <div className={styles.jobNew__formGroup}>
@@ -51,12 +54,19 @@ const Layout: FunctionComponent<{ isMobile: boolean; jobLink: string }> = ({
           id="jobDescription"
           className="form-control"
           rows={4}
+          defaultValue={job.need}
           required
+          data-testid="job-form-description"
         ></textarea>
       </div>
       <div className={styles.jobNew__formGroup}>
         <label htmlFor="jobType">Job Type</label>
-        <select name="" id="jobType">
+        <select
+          name=""
+          id="jobType"
+          data-testid="job-form-type"
+          defaultValue={job.type}
+        >
           {Object.keys(jobsConfig.types).map((t) => (
             <option key={t} value={t}>
               {jobsConfig.types[t]}
@@ -72,7 +82,9 @@ const Layout: FunctionComponent<{ isMobile: boolean; jobLink: string }> = ({
           id="jobScope"
           className="form-control"
           rows={6}
+          defaultValue={job.scopeOfWork}
           required
+          data-testid="job-form-scope"
         ></textarea>
       </div>
       <div className={clsx(styles.button__group, '-mt-lg')}>
@@ -111,6 +123,7 @@ const Layout: FunctionComponent<{ isMobile: boolean; jobLink: string }> = ({
 
 const JobForm: FunctionComponent<Props> = ({
   property,
+  job,
   isOnline,
   isStaging,
   toggleNavOpen
@@ -157,7 +170,11 @@ const JobForm: FunctionComponent<Props> = ({
             actions={mobileHeaderActions}
             className={styles.jobNew__header}
           />
-          <Layout isMobile={isMobileorTablet} jobLink={jobLink} />
+          <Layout
+            isMobile={isMobileorTablet}
+            job={job || ({} as jobModel)}
+            jobLink={jobLink}
+          />
         </>
       )}
 
@@ -165,7 +182,11 @@ const JobForm: FunctionComponent<Props> = ({
       {isDesktop && (
         <div data-testid="desktop-form">
           <Header property={property} />
-          <Layout isMobile={isMobileorTablet} jobLink={jobLink} />
+          <Layout
+            isMobile={isMobileorTablet}
+            job={job || ({} as jobModel)}
+            jobLink={jobLink}
+          />
         </div>
       )}
     </>
