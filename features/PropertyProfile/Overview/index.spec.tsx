@@ -7,6 +7,7 @@ describe('Unit | Features | Properties | Profile | Overview', () => {
   it('matches prior snapshot', () => {
     const { container } = render(
       <Overview
+        canUserAccessJob={false}
         property={fullProperty}
         inspections={inspections}
         isYardiConfigured={false}

@@ -21,6 +21,12 @@
     margin: 0;
   }
 
+  &__linkButton {
+    @extend %button;
+    text-decoration: underline;
+
+  }
+
   &__logo {
     display: block;
     max-height: rem-calc(90);

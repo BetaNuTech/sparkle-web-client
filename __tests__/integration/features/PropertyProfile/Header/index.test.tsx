@@ -18,6 +18,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const expected = 1;
     render(
       <Header
+        canUserAccessJob={false}
         property={fullProperty}
         isYardiConfigured={false}
         activeInspectionSortFilter={() => ''}
@@ -41,6 +42,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const expected = 1;
     render(
       <Header
+        canUserAccessJob={false}
         property={fullProperty}
         isMobile
         isYardiConfigured={false}
@@ -68,6 +70,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
 
     render(
       <Header
+        canUserAccessJob={false}
         property={property}
         isMobile
         isYardiConfigured={false}
@@ -88,6 +91,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
 
     render(
       <Header
+        canUserAccessJob={false}
         property={property}
         isMobile
         isYardiConfigured
@@ -108,6 +112,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
 
     render(
       <Header
+        canUserAccessJob={false}
         property={property}
         isMobile
         isYardiConfigured={false}
@@ -129,6 +134,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
 
     render(
       <Header
+        canUserAccessJob={false}
         property={property}
         isMobile
         isYardiConfigured={false}
@@ -158,6 +164,7 @@ describe('Integration | Features | Properties | Profile | Header', () => {
 
     render(
       <Header
+        canUserAccessJob={false}
         property={property}
         isMobile
         isYardiConfigured={false}
@@ -177,5 +184,49 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     expect(deficientItem.textContent).toEqual('0 Deficient Item');
     expect(deficientItemAction.textContent).toEqual('0 Action Required');
     expect(deficientItemFollowup.textContent).toEqual('0 Follow Up');
+  });
+
+  it('renders jobs page link for mobile if user is permitted to access job', () => {
+    const property = { ...fullProperty };
+    const expectedLink = `/properties/${property.id}/jobs`;
+    render(
+      <Header
+        canUserAccessJob
+        property={property}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
+    const jobLink: HTMLElement = screen.queryByTestId(
+      'property-profile-view-jobs'
+    );
+    const linkTagName = jobLink.tagName;
+    const cancelLink = jobLink.getAttribute('href');
+
+    // Check cancel is a link
+    expect(linkTagName).toEqual('A');
+
+    // Check link is correct
+    expect(cancelLink).toEqual(expectedLink);
+  });
+
+  it('does not renders jobs page link for mobile if user is not permitted to access job', () => {
+    const property = { ...fullProperty };
+    render(
+      <Header
+        canUserAccessJob={false}
+        property={property}
+        isMobile
+        isYardiConfigured={false}
+        activeInspectionSortFilter={() => ''}
+      />
+    );
+
+    const jobLink: HTMLElement = screen.queryByTestId(
+      'property-profile-view-jobs'
+    );
+
+    expect(jobLink).toBeNull();
   });
 });
