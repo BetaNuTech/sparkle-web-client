@@ -4,6 +4,7 @@ import { Context as ResponsiveContext } from 'react-responsive';
 import { openImprovementJob } from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
 import breakpoints from '../../../config/breakpoints';
+import jobsConfig from '../../../config/jobs';
 import JobForm from './index';
 
 function render(ui: any, options: any = {}) {
@@ -137,9 +138,34 @@ describe('Unit | Features | Job Edit | Form', () => {
       contextWidth: breakpoints.tablet.maxWidth
     });
 
-    const headerSubmitButton = screen.queryByTestId('form-submit');
+    const headerSubmitButton = screen.queryByTestId('job-form-submit');
 
     // Check link is correct
     expect(headerSubmitButton).toBeTruthy();
+  });
+
+  it('should allow all job type options to be selected', () => {
+    const expected = Object.keys(jobsConfig.types)
+      .map((jt) => jobsConfig.types[jt])
+      .join(' | ');
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const selectJobType = screen.queryByTestId('job-form-type');
+    const jobTypeOptions = selectJobType.querySelectorAll('option');
+    const textContentList = [];
+
+    // Push text content of options
+    jobTypeOptions.forEach((o) => textContentList.push(o.textContent));
+
+    const actual = textContentList.join(' | ');
+
+    expect(actual).toEqual(expected);
   });
 });
