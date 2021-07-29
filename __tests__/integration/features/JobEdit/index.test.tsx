@@ -1,5 +1,7 @@
 import sinon from 'sinon';
-import { render as rtlRender, screen } from '@testing-library/react';
+
+import { render as rtlRender, act, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
 import { ToastContainer } from 'react-toastify';
@@ -10,6 +12,7 @@ import {
   openMaintenanceJob
 } from '../../../../__mocks__/jobs';
 import JobEdit from '../../../../features/JobEdit';
+import JobErrors from '../../../../features/JobEdit/Form/errors';
 import propertiesApi, {
   propertyResult
 } from '../../../../common/services/firestore/properties';
@@ -131,5 +134,41 @@ describe('Integration | Features | Job List', () => {
 
     // Scope should match
     expect(actualScope).toEqual(expectedScope);
+  });
+
+  it('checks that form validation is showing errors', async () => {
+    render(<JobEdit user={user} propertyId="property-1" jobId="new" />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    await act(async () => {
+      const { container } = render(
+        <JobEdit user={user} propertyId="property-1" jobId="new" />,
+        {
+          contextWidth: breakpoints.tablet.maxWidth
+        }
+      );
+
+      // Form submit button
+      const jobSubmitBtn = container.querySelector(
+        '[data-testid="job-form-submit"]'
+      );
+
+      await userEvent.click(jobSubmitBtn);
+    });
+
+    const formErrorTitle = screen.queryByTestId(
+      'error-label-title'
+    ) as HTMLElement;
+
+    // Title error message
+    expect(formErrorTitle).toBeTruthy();
+
+    const expectedTitle = JobErrors.titleRequired;
+
+    const actualTitle = formErrorTitle.textContent;
+
+    // Check the error message matches
+    expect(actualTitle).toEqual(expectedTitle);
   });
 });

@@ -1,0 +1,17 @@
+@import '../../styles/index.scss';
+
+.error {
+  display: grid;
+  margin: 0;
+  background-color: $alert-color;
+  padding: rem-calc(5) rem-calc(8);
+  border-bottom-left-radius: rem-calc(3);
+  border-bottom-right-radius: rem-calc(3);
+  border: rem-calc(1) solid $alert-secondary-color;
+  grid-template-columns: 1fr auto;
+  color: $white;
+
+  &__icon {
+    cursor: pointer;
+  }
+}

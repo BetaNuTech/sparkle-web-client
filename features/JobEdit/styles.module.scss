@@ -59,10 +59,16 @@
 
     input[type='text'] {
       @extend %inputText;
+      margin: 0;
+    }
+
+    &__control {
+      margin-bottom: rem-calc(16);
     }
 
     textarea {
       @extend %inputText;
+      margin: 0;
     }
 
     select {
