@@ -9,39 +9,36 @@ interface Props {
   propertyId: string;
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
+  searchParam?: string;
 }
 
 const JobSections: FunctionComponent<Props> = ({
   jobs,
   propertyId,
   colors,
-  configJobs
+  configJobs,
+  searchParam
 }) => {
-  if (jobs.length > 0) {
-    const { sections } = useJobSections(jobs);
+  const { sections } = useJobSections(jobs);
 
-    return (
-      <div
-        className={styles.jobList__box}
-        data-testid="job-sections-main-mobile"
-      >
-        <ul className={styles.jobList__box__list}>
-          {sections.map((s) => (
-            <Section
-              key={s.title}
-              title={s.title}
-              state={s.state}
-              jobs={s.jobs}
-              propertyId={propertyId}
-              colors={colors}
-              configJobs={configJobs}
-            />
-          ))}
-        </ul>
-      </div>
-    );
-  }
-  return null;
+  return (
+    <div className={styles.jobList__box} data-testid="job-sections-main-mobile">
+      <ul className={styles.jobList__box__list}>
+        {sections.map((s) => (
+          <Section
+            key={s.title}
+            title={s.title}
+            state={s.state}
+            jobs={s.jobs}
+            propertyId={propertyId}
+            colors={colors}
+            configJobs={configJobs}
+            searchParam={searchParam}
+          />
+        ))}
+      </ul>
+    </div>
+  );
 };
 
 export default JobSections;

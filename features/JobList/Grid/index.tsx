@@ -11,8 +11,10 @@ interface Props {
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
   onSortChange?(sortKey: string): void;
+  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
   sortBy?: string;
   sortDir?: string;
+  searchParam?: string;
 }
 
 const Grid: FunctionComponent<Props> = ({
@@ -21,14 +23,17 @@ const Grid: FunctionComponent<Props> = ({
   onSortChange,
   sortBy,
   sortDir,
+  searchParam,
+  onSearchKeyDown,
   colors,
   configJobs
 }) => {
   const { sections } = useJobSections(jobs);
   const hasNoJobs = sections.filter((s) => s.jobs.length > 0).length === 0;
+
   return (
     <div className={styles.propertyJobs__grid} data-testid="joblist-grid-main">
-      {hasNoJobs ? (
+      {hasNoJobs && !searchParam ? (
         <h3 className="-c-gray-light" data-testid="job-sections-no-jobs">
           Property has no open jobs
         </h3>
@@ -39,6 +44,8 @@ const Grid: FunctionComponent<Props> = ({
             onSortChange={onSortChange}
             sortBy={sortBy}
             sortDir={sortDir}
+            searchParam={searchParam}
+            onSearchKeyDown={onSearchKeyDown}
           />
           <div className={styles.jobList__box} data-testid="job-sections-main">
             <ul className={styles.jobList__box__list}>
@@ -48,6 +55,7 @@ const Grid: FunctionComponent<Props> = ({
                   title={s.title}
                   jobs={s.jobs}
                   propertyId={propertyId}
+                  searchParam={searchParam}
                   colors={colors}
                   configJobs={configJobs}
                   jobState={s.state}

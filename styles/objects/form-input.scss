@@ -40,6 +40,36 @@
   }
 }
 
+%mobileSearchInputMain {
+  background-color: $gray-lighter;
+  padding: rem-calc(10) rem-calc(15);
+}
+
+%mobileSearchInput {
+  @extend %searchInput;
+  background-color: $white;
+  color: $black;
+  margin: 0;
+  border: rem-calc(1) solid $gray-light;
+  border-radius: rem-calc(3);
+
+  &:hover,
+  &:focus {
+    color: $black;
+    border: rem-calc(1) solid $gray-light;
+    background-color: $white;
+  }
+
+  &:focus {
+    padding-left: $global-sm-padding;
+    background-image: none;
+  }
+
+  &::placeholder {
+    color: rgba($black, 0.6);
+  }
+}
+
 %inputText {
   border-radius: rem-calc(3);
   padding: rem-calc(10) rem-calc(10) rem-calc(8);

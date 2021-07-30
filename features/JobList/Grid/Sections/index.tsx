@@ -8,6 +8,7 @@ interface Props {
   title?: string;
   propertyId: string;
   jobs: Array<jobModel>;
+  searchParam?: string;
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
   jobState?: string;
@@ -17,6 +18,7 @@ const Section: FunctionComponent<Props> = ({
   title,
   propertyId,
   jobs,
+  searchParam,
   colors,
   configJobs,
   jobState
@@ -52,7 +54,7 @@ const Section: FunctionComponent<Props> = ({
         className={styles.propertyJobs__gridRow__noRecord}
         data-testid="job-section-no-jobs"
       >
-        No jobs present
+        {searchParam ? 'No jobs match query' : 'No jobs present'}
       </h3>
     )}
   </li>
