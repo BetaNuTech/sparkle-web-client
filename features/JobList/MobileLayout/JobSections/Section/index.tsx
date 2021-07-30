@@ -11,6 +11,7 @@ interface Props {
   configJobs: Record<string, Record<string, string>>;
   title?: string;
   state?: string;
+  searchParam?: string;
 }
 
 const Section: FunctionComponent<Props> = ({
@@ -19,7 +20,8 @@ const Section: FunctionComponent<Props> = ({
   colors,
   configJobs,
   jobs,
-  propertyId
+  propertyId,
+  searchParam
 }) => (
   <li className={styles.jobList__box__listItem} data-testid="job-section-main">
     <header
@@ -48,7 +50,7 @@ const Section: FunctionComponent<Props> = ({
         className={clsx('-c-gray-light', '-pt-sm', '-pl-sm', '-pb-sm')}
         data-testid="job-section-no-jobs"
       >
-        No jobs present
+        {searchParam ? 'No jobs match query' : 'No jobs present'}
       </h3>
     )}
   </li>

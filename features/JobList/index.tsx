@@ -4,11 +4,13 @@ import { useFirestore } from 'reactfire';
 import styles from './styles.module.scss';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
-import usePropertyJobs from './hooks/usePropertyJobs';
-import useJobSorting from './hooks/useJobSorting';
 import userModel from '../../common/models/user';
+import jobModel from '../../common/models/job';
+import useSearching from '../../common/hooks/useSearching';
 import configJobs from '../../config/jobs';
 import breakpoints from '../../config/breakpoints';
+import usePropertyJobs from './hooks/usePropertyJobs';
+import useJobSorting from './hooks/useJobSorting';
 import Header from './Header';
 import MobileLayout from './MobileLayout';
 import Grid from './Grid';
@@ -47,8 +49,16 @@ const JobList: FunctionComponent<Props> = ({
     propertyId
   );
 
+  // Job search setup
+  const { onSearchKeyDown, filteredItems, searchParam } = useSearching(jobs, [
+    'title',
+    'type'
+  ]);
+  const filteredJobs = filteredItems.map((itm) => itm as jobModel);
+
+  // Job sorting setup
   const { sortedJobs, sortBy, sortDir, onMobileSortChange, onSortChange } =
-    useJobSorting('', [], jobs);
+    useJobSorting(searchParam, filteredJobs, jobs);
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -70,12 +80,15 @@ const JobList: FunctionComponent<Props> = ({
           isOnline={isOnline}
           isStaging={isStaging}
           toggleNavOpen={toggleNavOpen}
+          property={property}
           jobs={sortedJobs}
           propertyId={propertyId}
           colors={colors}
           configJobs={configJobs}
           onSortChange={onMobileSortChange}
           sortBy={sortBy}
+          onSearchKeyDown={onSearchKeyDown}
+          searchParam={searchParam}
         />
       )}
 
@@ -89,6 +102,8 @@ const JobList: FunctionComponent<Props> = ({
             onSortChange={onSortChange}
             sortBy={sortBy}
             sortDir={sortDir}
+            onSearchKeyDown={onSearchKeyDown}
+            searchParam={searchParam}
             colors={colors}
             configJobs={configJobs}
           />

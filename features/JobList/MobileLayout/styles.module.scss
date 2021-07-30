@@ -5,3 +5,11 @@
     @extend %sortInfo;
   }
 }
+
+.searchMain {
+  @extend %mobileSearchInputMain;
+
+  &__input[type='search'] {
+    @extend %mobileSearchInput;
+  }
+}

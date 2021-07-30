@@ -5,14 +5,18 @@ import parentStyles from '../styles.module.scss';
 
 interface Props {
   onSortChange?(sortKey: string): void;
+  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
   sortBy?: string;
   sortDir?: string;
+  searchParam?: string;
 }
 
 const GridHeader: FunctionComponent<Props> = ({
   onSortChange,
+  onSearchKeyDown,
   sortBy,
-  sortDir
+  sortDir,
+  searchParam
 }) => (
   <>
     <label className={styles.propertyJobs__search}>
@@ -20,6 +24,9 @@ const GridHeader: FunctionComponent<Props> = ({
         placeholder="Search Jobs"
         className={styles.propertyJobs__search__input}
         type="search"
+        defaultValue={searchParam}
+        onKeyDown={onSearchKeyDown}
+        data-testid="job-search-box"
       />
     </label>
     <header

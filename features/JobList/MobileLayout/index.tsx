@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import MobileHeader from '../../../common/MobileHeader';
 import AddIcon from '../../../public/icons/ios/add.svg';
@@ -13,12 +14,15 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
+  property: propertyModel;
   jobs: Array<jobModel>;
   propertyId: string;
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
   onSortChange?(): void;
+  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>):  void;
   sortBy?: string;
+  searchParam?: string;
 }
 
 // Mobile layout
@@ -26,17 +30,24 @@ const MobileLayout: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   toggleNavOpen,
+  property,
   jobs,
   propertyId,
   colors,
   configJobs,
   onSortChange,
-  sortBy
+  onSearchKeyDown,
+  sortBy,
+  searchParam
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={headStyle.header__button} onClick={onSortChange} data-testid="mobile-header-sort">
+      <button
+        className={headStyle.header__button}
+        onClick={onSortChange}
+        data-testid="mobile-header-sort"
+      >
         <FolderIcon />
       </button>
       <Link href={`/properties/${propertyId}/jobs/edit/new`}>
@@ -57,7 +68,20 @@ const MobileLayout: FunctionComponent<Props> = ({
         actions={mobileHeaderActions}
         testid="mobile-joblist-header"
       />
-      <aside className={styles.mobileJobList__sortInfoLine} data-testid="mobile-sort-text">
+      <div className={styles.searchMain}>
+        <input
+          placeholder={`Search ${property.name} Jobs`}
+          className={styles.searchMain__input}
+          type="search"
+          defaultValue={searchParam}
+          onKeyDown={onSearchKeyDown}
+          data-testid="job-search-box"
+        />
+      </div>
+      <aside
+        className={styles.mobileJobList__sortInfoLine}
+        data-testid="mobile-sort-text"
+      >
         Sorted by {activeJobSortFilter(sortBy)}
       </aside>
       <JobSections
@@ -65,6 +89,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         propertyId={propertyId}
         colors={colors}
         configJobs={configJobs}
+        searchParam={searchParam}
       />
     </>
   );

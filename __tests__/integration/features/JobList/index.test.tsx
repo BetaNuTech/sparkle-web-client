@@ -1,5 +1,11 @@
 import sinon from 'sinon';
-import { render as rtlRender, screen } from '@testing-library/react';
+import {
+  render as rtlRender,
+  act,
+  screen,
+  waitFor,
+  fireEvent
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
@@ -634,9 +640,7 @@ describe('Integration | Features | Job List', () => {
     sections.forEach((s) => {
       const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
 
-      const titles = s.querySelectorAll(
-        '[data-testid="mobile-row-job-type"]'
-      );
+      const titles = s.querySelectorAll('[data-testid="mobile-row-job-type"]');
 
       const texts = [];
 
@@ -657,5 +661,59 @@ describe('Integration | Features | Job List', () => {
     expect(sortTextEl.textContent).toEqual(
       `Sorted by ${activeJobSortFilter('type')}`
     );
+  });
+
+  test('Typing a search query removes irrelevant results from the jobs list', async () => {
+    const expected = [
+      'Open: ',
+      'Action Required: ',
+      `Authorized to Start: ${authorizedImprovementJob.title}`,
+      `Completed: ${completeImprovementJob.title}`
+    ].join(' | ');
+
+    await act(async () => {
+      const { container } = render(
+        <JobList user={user} propertyId="property-1" />,
+        {
+          contextWidth: breakpoints.desktop.minWidth
+        }
+      );
+
+      // Search box
+      const searchBox = container.querySelector(
+        '[data-testid=job-search-box]'
+      ) as HTMLInputElement;
+
+      searchBox.value = 'lat';
+
+      // We are searching for keyword "lat"
+      await fireEvent.keyDown(searchBox);
+
+      // Wait for debounce to execute and filter results
+      await new Promise((r) => setTimeout(r, 350));
+    });
+
+    // Get all sections in table
+    const sections = screen.queryAllByTestId('job-section-main');
+
+    const sectionTexts = [];
+    // Loop to get all section text content and row test values by test id
+    sections.forEach((s) => {
+      const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
+
+      const titles = s.querySelectorAll('[data-testid="grid-row-job-title"]');
+
+      const texts = [];
+
+      // Push first element in test
+      titles.forEach((t, idx) => idx === 0 && texts.push(t.textContent));
+
+      // Push section title and all title text
+      sectionTexts.push(`${sectionTitle.textContent}: ${texts.join(',')}`);
+    });
+
+    const actual = sectionTexts.join(' | ');
+
+    expect(actual).toEqual(expected);
   });
 });
