@@ -1,6 +1,10 @@
 import sinon from 'sinon';
-
-import { render as rtlRender, act, screen } from '@testing-library/react';
+import {
+  render as rtlRender,
+  act,
+  screen,
+  fireEvent
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
@@ -16,8 +20,10 @@ import JobErrors from '../../../../features/JobEdit/Form/errors';
 import propertiesApi, {
   propertyResult
 } from '../../../../common/services/firestore/properties';
-import jobsApi, { jobResult } from '../../../../common/services/firestore/jobs';
-
+import jobsStore, {
+  jobResult
+} from '../../../../common/services/firestore/jobs';
+import jobsApi from '../../../../common/services/api/jobs';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 
@@ -37,7 +43,7 @@ function render(ui: any, options: any = {}) {
     error: options.jobError || null,
     data: options.job || (!options.jobStatus && openImprovementJob)
   };
-  sinon.stub(jobsApi, 'findRecord').returns(jobPayload);
+  sinon.stub(jobsStore, 'findRecord').returns(jobPayload);
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
@@ -60,7 +66,7 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-describe('Integration | Features | Job List', () => {
+describe('Integration | Features | Job Edit', () => {
   it('shows loading text until the property is loaded', () => {
     const expected = 'Loading Job';
 
@@ -142,19 +148,13 @@ describe('Integration | Features | Job List', () => {
     });
 
     await act(async () => {
-      const { container } = render(
-        <JobEdit user={user} propertyId="property-1" jobId="new" />,
-        {
-          contextWidth: breakpoints.tablet.maxWidth
-        }
-      );
+      render(<JobEdit user={user} propertyId="property-1" jobId="new" />, {
+        contextWidth: breakpoints.tablet.maxWidth
+      });
 
       // Form submit button
-      const jobSubmitBtn = container.querySelector(
-        '[data-testid="job-form-submit"]'
-      );
-
-      await userEvent.click(jobSubmitBtn);
+      const [submit] = await screen.findAllByTestId('job-form-submit');
+      await userEvent.click(submit);
     });
 
     const formErrorTitle = screen.queryByTestId(
@@ -165,10 +165,47 @@ describe('Integration | Features | Job List', () => {
     expect(formErrorTitle).toBeTruthy();
 
     const expectedTitle = JobErrors.titleRequired;
-
     const actualTitle = formErrorTitle.textContent;
 
     // Check the error message matches
     expect(actualTitle).toEqual(expectedTitle);
+  });
+
+  it('Publishes a new job when it does not exist yet', async () => {
+    const expected = true;
+    render(<JobEdit user={user} propertyId="property-1" jobId="new" />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const postReq = sinon.stub(jobsApi, 'createNewJob').resolves({});
+
+    await act(async () => {
+      const [submit] = await screen.findAllByTestId('job-form-submit');
+      const titleInput = await screen.findByTestId('job-form-title');
+      await fireEvent.change(titleInput, { target: { value: 'New Job' } });
+      await userEvent.click(submit);
+    });
+
+    const actual = postReq.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Updates a new job when it already exists', async () => {
+    const expected = true;
+    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const putReq = sinon.stub(jobsApi, 'updateJob').resolves({});
+
+    await act(async () => {
+      const [submit] = await screen.findAllByTestId('job-form-submit');
+      const titleInput = await screen.findByTestId('job-form-title');
+      await fireEvent.change(titleInput, { target: { value: 'New Job' } });
+      await userEvent.click(submit);
+    });
+
+    const actual = putReq.called;
+    expect(actual).toEqual(expected);
   });
 });

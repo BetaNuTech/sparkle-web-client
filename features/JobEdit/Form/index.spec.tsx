@@ -19,11 +19,26 @@ function render(ui: any, options: any = {}) {
   );
 }
 
+const apiState = {
+  isLoading: false,
+  statusCode: 0,
+  response: {}
+};
+
 describe('Unit | Features | Job Edit | Form', () => {
   it('renders only mobile content for mobile devices', () => {
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -44,7 +59,16 @@ describe('Unit | Features | Job Edit | Form', () => {
   it('renders only desktop content for desktop devices', () => {
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -66,7 +90,16 @@ describe('Unit | Features | Job Edit | Form', () => {
   it('renders submit button in header for desktop', () => {
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -83,7 +116,16 @@ describe('Unit | Features | Job Edit | Form', () => {
     const expected = `/properties/${fullProperty.id}/jobs`;
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -99,7 +141,16 @@ describe('Unit | Features | Job Edit | Form', () => {
     const expected = `/properties/${fullProperty.id}/jobs`;
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -115,7 +166,16 @@ describe('Unit | Features | Job Edit | Form', () => {
     const expected = `/properties/${fullProperty.id}/jobs`;
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -131,7 +191,16 @@ describe('Unit | Features | Job Edit | Form', () => {
   it('renders submit button below form', () => {
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {
@@ -150,7 +219,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       .join(' | ');
     const props = {
       job: openImprovementJob,
-      property: fullProperty
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
     };
 
     render(<JobForm {...props} />, {

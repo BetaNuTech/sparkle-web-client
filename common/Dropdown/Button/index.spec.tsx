@@ -54,12 +54,29 @@ describe('Unit | Common | Dropdown | Button', () => {
 
   it('invokes on click action when button is clicked', () => {
     const expected = true;
-
     const onClickSpy = sinon.spy();
-
     const props = {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onClick: onClickSpy
+    };
+    const { container } = render(
+      <ActionButton {...props}>Delete</ActionButton>
+    );
+    const button = container.querySelector('button');
+
+    userEvent.click(button);
+
+    const actual = onClickSpy.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('does not invoke click when button is disabled', () => {
+    const expected = false;
+    const onClickSpy = sinon.spy();
+    const props = {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onClick: onClickSpy,
+      disabled: true
     };
 
     const { container } = render(

@@ -27,7 +27,12 @@ export default function useJobRecord(
   };
 
   const result = jobsApi.findRecord(firestore, jobId);
-  Object.assign(payload, result, { handlers });
+
+  if (jobId === 'new') {
+    Object.assign(payload, { data: {}, status: 'success', error: null }, { handlers });
+  } else {
+    Object.assign(payload, result, { handlers });
+  }
 
   // Notify of updates
   // by updating memo

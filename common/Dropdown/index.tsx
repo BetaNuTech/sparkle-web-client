@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import styles from './styles.module.scss';
 import DropdownLink from './Link';
-import DropdownButton from './Button';
+import DropdownButton from './Button'; // eslint-disable-line
 
 interface Props {
   children: React.ReactElement | React.ReactElement[];

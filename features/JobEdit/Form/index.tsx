@@ -1,18 +1,26 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import {
+  useForm,
+  SubmitHandler,
+  UseFormRegister,
+  FormState
+} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
 import getConfig from 'next/config';
 import propertyModel from '../../../common/models/property';
+import LoadingHud from '../../../common/LoadingHud';
 import jobModel from '../../../common/models/job';
 import MobileHeader from '../../../common/MobileHeader';
 import ErrorLabel from '../../../common/ErrorLabel';
+import ErrorList from '../../../common/ErrorList';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
+import { JobApiResult } from '../hooks/useJobForm';
 import DropdownHeader from '../DropdownHeader';
 import Header from '../Header';
 import styles from '../styles.module.scss';
@@ -21,6 +29,9 @@ import formErrors from './errors';
 interface Props {
   property: propertyModel;
   job: jobModel;
+  apiState: JobApiResult;
+  postJobCreate(propertyId: string, job: jobModel): void;
+  putJobUpdate(propertyId: string, job: jobModel): void;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
@@ -38,18 +49,15 @@ const Layout: FunctionComponent<{
   isMobile: boolean;
   jobLink: string;
   job: jobModel;
-}> = ({ isMobile, job, jobLink }) => {
-  const validationSchema = yup.object().shape({
-    title: yup.string().required(formErrors.titleRequired),
-  });
-
-  const { register, handleSubmit, formState } = useForm<Inputs>({
-    mode: 'all',
-    resolver: yupResolver(validationSchema)
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const onSubmit: SubmitHandler<Inputs> = () => {};
+  apiState: JobApiResult;
+  onSubmit: (any?) => Promise<void>;
+  register: UseFormRegister<Inputs>;
+  formState: FormState<Inputs>;
+}> = ({ isMobile, job, jobLink, apiState, onSubmit, register, formState }) => {
+  const apiErrors =
+    apiState.statusCode === 400 && apiState.response.errors
+      ? apiState.response.errors.map((e) => e.detail)
+      : [];
 
   return (
     <div
@@ -58,7 +66,9 @@ const Layout: FunctionComponent<{
         !isMobile && styles.form__grid__desktop
       )}
     >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <ErrorList errors={apiErrors} />
+
+      <form onSubmit={onSubmit}>
         <div className={styles.jobNew__formGroup}>
           <label htmlFor="jobTitle">
             Title <span>*</span>
@@ -72,14 +82,13 @@ const Layout: FunctionComponent<{
               defaultValue={job.title}
               data-testid="job-form-title"
               {...register('title')}
+              disabled={apiState.isLoading}
             />
             <ErrorLabel formName="title" errors={formState.errors} />
           </div>
         </div>
         <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobDescription">
-            Required
-          </label>
+          <label htmlFor="jobDescription">Required</label>
           <div className={styles.jobNew__formGroup__control}>
             <textarea
               id="jobDescription"
@@ -89,6 +98,7 @@ const Layout: FunctionComponent<{
               defaultValue={job.need}
               data-testid="job-form-description"
               {...register('need')}
+              disabled={apiState.isLoading}
             ></textarea>
             <ErrorLabel formName="need" errors={formState.errors} />
           </div>
@@ -101,6 +111,7 @@ const Layout: FunctionComponent<{
             data-testid="job-form-type"
             defaultValue={job.type}
             {...register('type')}
+            disabled={apiState.isLoading}
           >
             {Object.keys(jobsConfig.types).map((t) => (
               <option key={t} value={t}>
@@ -110,9 +121,7 @@ const Layout: FunctionComponent<{
           </select>
         </div>
         <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobScope">
-            Scope of work
-          </label>
+          <label htmlFor="jobScope">Scope of work</label>
           <div className={styles.jobNew__formGroup__control}>
             <textarea
               id="jobScope"
@@ -122,6 +131,7 @@ const Layout: FunctionComponent<{
               defaultValue={job.scopeOfWork}
               data-testid="job-form-scope"
               {...register('scopeOfWork')}
+              disabled={apiState.isLoading}
             ></textarea>
             <ErrorLabel formName="scopeOfWork" errors={formState.errors} />
           </div>
@@ -130,6 +140,7 @@ const Layout: FunctionComponent<{
           <button
             type="submit"
             data-testid="job-form-submit"
+            disabled={apiState.isLoading}
             className={clsx(
               styles.button__submit,
               isMobile && styles.button__fullwidth
@@ -166,6 +177,9 @@ const JobForm: FunctionComponent<Props> = ({
   job,
   isOnline,
   isStaging,
+  apiState,
+  postJobCreate,
+  putJobUpdate,
   toggleNavOpen
 }) => {
   // Responsive queries
@@ -175,16 +189,46 @@ const JobForm: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-
   const config = getConfig() || {};
   const publicRuntimeConfig = config.publicRuntimeConfig || {};
   const basePath = publicRuntimeConfig.basePath || '';
-
   const jobLink = `${basePath}/properties/${property.id}/jobs`;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const formJob = {
+      ...data
+    } as jobModel;
+
+    // Check if we have job data
+    // Means it is an edit form
+    if (Object.keys(job).length > 0) {
+      formJob.id = job.id;
+      // Update request
+      putJobUpdate(property.id, formJob);
+    } else {
+      // Save request
+      postJobCreate(property.id, formJob);
+    }
+  };
+
+  // Setup form validations
+  const validationSchema = yup.object().shape({
+    title: yup.string().required(formErrors.titleRequired)
+  });
+
+  // Setup form submissions
+  const { register, handleSubmit, formState } = useForm<Inputs>({
+    mode: 'all',
+    resolver: yupResolver(validationSchema)
+  });
+
+  const submitHandler = handleSubmit(onSubmit);
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
+      {apiState.isLoading && <LoadingHud title="Saving..." />}
       <div
         className={clsx(
           headStyle.header__button,
@@ -193,7 +237,11 @@ const JobForm: FunctionComponent<Props> = ({
         )}
       >
         <ActionsIcon />
-        <DropdownHeader jobLink={jobLink} />
+        <DropdownHeader
+          jobLink={jobLink}
+          apiState={apiState}
+          onSubmit={submitHandler}
+        />
       </div>
     </>
   );
@@ -214,6 +262,10 @@ const JobForm: FunctionComponent<Props> = ({
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
             jobLink={jobLink}
+            onSubmit={submitHandler}
+            register={register}
+            formState={formState}
+            apiState={apiState}
           />
         </>
       )}
@@ -221,11 +273,16 @@ const JobForm: FunctionComponent<Props> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div data-testid="desktop-form">
-          <Header property={property} />
+          {apiState.isLoading && <LoadingHud title="Saving..." />}
+          <Header property={property} apiState={apiState} />
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
             jobLink={jobLink}
+            onSubmit={submitHandler}
+            register={register}
+            formState={formState}
+            apiState={apiState}
           />
         </div>
       )}
