@@ -2,18 +2,23 @@
 
 .error {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
-  margin: 0;
   background-color: $alert-color;
   padding: rem-calc(5) rem-calc(8);
-  border-bottom-left-radius: rem-calc(3);
-  border-bottom-right-radius: rem-calc(3);
+  border-radius: rem-calc(3);
   border: rem-calc(1) solid $alert-secondary-color;
   color: $white;
+  margin-bottom: rem-calc(16);
 
-  &__form {
-    border-radius: rem-calc(3);
-    margin-bottom: rem-calc(16);
+  &__title {
+    display: grid;
+    margin-bottom: rem-calc(5);
+    grid-template-columns: 1fr auto;
+  }
+
+  &__list {
+    padding-left: rem-calc(15);
   }
 
   &__icon {
@@ -22,7 +27,6 @@
     > svg {
       width: rem-calc(14);
       height: rem-calc(14);
-      transform: translateY(3px);
     }
   }
 }

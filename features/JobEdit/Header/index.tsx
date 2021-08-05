@@ -4,14 +4,16 @@ import Link from 'next/link';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 import propertyModel from '../../../common/models/property';
+import { JobApiResult } from '../hooks/useJobForm';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 
 interface JobsHeaderModel {
   property: propertyModel;
+  apiState: JobApiResult;
 }
 
-const Header: FunctionComponent<JobsHeaderModel> = ({ property }) => {
+const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState }) => {
   const router = useRouter();
   const config = getConfig() || {};
   const publicRuntimeConfig = config.publicRuntimeConfig || {};
@@ -54,6 +56,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({ property }) => {
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading}
             data-testid="jobedit-header-submit"
           >
             Submit

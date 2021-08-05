@@ -3,14 +3,23 @@ import Dropdown, {
   DropdownLink,
   DropdownButton
 } from '../../../common/Dropdown';
+import { JobApiResult } from '../hooks/useJobForm';
 
 interface Props {
   jobLink: string;
+  apiState: JobApiResult;
+  onSubmit: (any?) => Promise<void>;
 }
 
-const DropdownAdd: FunctionComponent<Props> = ({ jobLink }) => (
+const DropdownAdd: FunctionComponent<Props> = ({
+  jobLink,
+  apiState,
+  onSubmit
+}) => (
   <Dropdown isOnRight>
-    <DropdownButton>Submit</DropdownButton>
+    <DropdownButton disabled={apiState.isLoading} onClick={onSubmit}>
+      Submit
+    </DropdownButton>
     <DropdownLink href={jobLink} testid="dropdown-header-cancel">
       Cancel
     </DropdownLink>

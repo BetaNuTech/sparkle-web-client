@@ -6,22 +6,33 @@ interface Props {
   className?: string;
   onClick?: (any) => any;
   testid?: string;
+  disabled?: boolean;
+  // All other props
+  [x: string]: any;
 }
 export const DropdownButton: FunctionComponent<Props> = ({
   children,
   className,
   testid,
-  onClick
+  disabled,
+  onClick,
+  ...props
 }) => (
   <li className={styles.dropdown__item} data-testid={testid}>
-    <button className={className} onClick={onClick}>
+    <button
+      className={className}
+      disabled={disabled}
+      onClick={onClick}
+      {...props}
+    >
       {children}
     </button>
   </li>
 );
 
 DropdownButton.defaultProps = {
-  testid: 'dropdown-button'
+  testid: 'dropdown-button',
+  disabled: false
 };
 
 export default DropdownButton;

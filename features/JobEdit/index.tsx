@@ -7,6 +7,8 @@ import userModel from '../../common/models/user';
 import useJob from '../../common/hooks/useJob';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
+import useJobForm from './hooks/useJobForm';
+import useJobStatus from './hooks/useJobStatus';
 import JobForm from './Form';
 
 interface Props {
@@ -28,17 +30,17 @@ const JobNew: FunctionComponent<Props> = ({
 }) => {
   const firestore = useFirestore();
 
+  /* eslint-disable */
+  const sendNotification = notifications.createPublisher(useNotifications());
+  /* eslint-enable */
+
   // Fetch the data of property profile
   const { data: property } = useProperty(firestore, propertyId);
-
+  const { apiState, postJobCreate, putJobUpdate } = useJobForm();
+  // Show job error status
+  useJobStatus(apiState, jobId, propertyId, sendNotification);
   // Fetch the data of job
-  const {
-    data: job,
-    status: jobStatus,
-    error: jobError
-  } = jobId === 'new'
-    ? { data: null, status: 'success', error: null }
-    : useJob(firestore, jobId);
+  const { data: job, status: jobStatus } = useJob(firestore, jobId);
 
   // Loading State
   if (!property || (jobId !== 'new' && !job)) {
@@ -47,10 +49,7 @@ const JobNew: FunctionComponent<Props> = ({
 
   // Redirect user requesting non-existent job
   if (jobId !== 'new' && jobStatus === 'error') {
-    /* eslint-disable */
-    const sendNotification = notifications.createPublisher(useNotifications());
-    /* eslint-enable */
-    sendNotification('Job coound not be found', { type: 'error' });
+    sendNotification('Job could not be found', { type: 'error' });
     Router.push(`/properties/${propertyId}/jobs`);
   }
 
@@ -63,6 +62,9 @@ const JobNew: FunctionComponent<Props> = ({
       isStaging={isStaging}
       toggleNavOpen={toggleNavOpen}
       job={jobData}
+      apiState={apiState}
+      postJobCreate={postJobCreate}
+      putJobUpdate={putJobUpdate}
     />
   );
 };
