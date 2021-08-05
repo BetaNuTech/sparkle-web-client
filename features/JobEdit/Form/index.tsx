@@ -17,6 +17,7 @@ import jobModel from '../../../common/models/job';
 import MobileHeader from '../../../common/MobileHeader';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
+import utilString from '../../../common/utils/string';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
@@ -29,6 +30,7 @@ import formErrors from './errors';
 interface Props {
   property: propertyModel;
   job: jobModel;
+  isNewJob: boolean;
   apiState: JobApiResult;
   postJobCreate(propertyId: string, job: jobModel): void;
   putJobUpdate(propertyId: string, job: jobModel): void;
@@ -44,21 +46,33 @@ type Inputs = {
   scopeOfWork: string;
   type: string;
 };
-
-const Layout: FunctionComponent<{
+interface LayoutProps {
   isMobile: boolean;
   jobLink: string;
   job: jobModel;
+  isNewJob: boolean;
   apiState: JobApiResult;
   onSubmit: (any?) => Promise<void>;
   register: UseFormRegister<Inputs>;
   formState: FormState<Inputs>;
-}> = ({ isMobile, job, jobLink, apiState, onSubmit, register, formState }) => {
+}
+
+const Layout: FunctionComponent<LayoutProps> = ({
+  isMobile,
+  job,
+  isNewJob,
+  jobLink,
+  apiState,
+  onSubmit,
+  register,
+  formState
+}) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
       ? apiState.response.errors.map((e) => e.detail)
       : [];
 
+  const nextState = !isNewJob && jobsConfig.nextState[job.state];
   return (
     <div
       className={clsx(
@@ -66,6 +80,52 @@ const Layout: FunctionComponent<{
         !isMobile && styles.form__grid__desktop
       )}
     >
+      {!isNewJob && (
+        <>
+          {isMobile && (
+            <h1
+              data-testid="job-form-title-mobile"
+              className={styles.mobileTitle}
+            >
+              {job.title}
+            </h1>
+          )}
+          <div
+            className={clsx(
+              styles.job__info,
+              isMobile && styles.job__info__mobile
+            )}
+          >
+            <div
+              className={clsx(
+                styles.job__info__box,
+                isMobile
+                  ? styles.job__info__box__mobile
+                  : styles.job__info__box__desktop
+              )}
+            >
+              <p>Job Status{!isMobile && <> :&nbsp;</>}</p>
+              <h3 data-testid="job-form-edit-state">
+                {utilString.titleize(job.state)}
+              </h3>
+            </div>
+            {nextState && (
+              <div
+                className={clsx(
+                  styles.job__info__box,
+                  isMobile
+                    ? styles.job__info__box__mobile
+                    : styles.job__info__box__desktop
+                )}
+              >
+                <p>Requires{!isMobile && <> :&nbsp;</>}</p>
+                <h3 data-testid="job-form-edit-nextstatus">{nextState}</h3>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
       <ErrorList errors={apiErrors} />
 
       <form onSubmit={onSubmit}>
@@ -175,6 +235,7 @@ const Layout: FunctionComponent<{
 const JobForm: FunctionComponent<Props> = ({
   property,
   job,
+  isNewJob,
   isOnline,
   isStaging,
   apiState,
@@ -251,7 +312,7 @@ const JobForm: FunctionComponent<Props> = ({
       {isMobileorTablet && (
         <>
           <MobileHeader
-            title="Create New Job"
+            title={isNewJob ? 'Create New Job' : `${property.name} Job`}
             toggleNavOpen={toggleNavOpen}
             isOnline={isOnline}
             isStaging={isStaging}
@@ -261,6 +322,7 @@ const JobForm: FunctionComponent<Props> = ({
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
+            isNewJob={isNewJob}
             jobLink={jobLink}
             onSubmit={submitHandler}
             register={register}
@@ -274,10 +336,16 @@ const JobForm: FunctionComponent<Props> = ({
       {isDesktop && (
         <div data-testid="desktop-form">
           {apiState.isLoading && <LoadingHud title="Saving..." />}
-          <Header property={property} apiState={apiState} />
+          <Header
+            property={property}
+            apiState={apiState}
+            job={job}
+            isNewJob={isNewJob}
+          />
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
+            isNewJob={isNewJob}
             jobLink={jobLink}
             onSubmit={submitHandler}
             register={register}

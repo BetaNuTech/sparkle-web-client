@@ -29,6 +29,7 @@ const JobNew: FunctionComponent<Props> = ({
   toggleNavOpen
 }) => {
   const firestore = useFirestore();
+  const isNewJob = jobId === 'new';
 
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
@@ -62,6 +63,7 @@ const JobNew: FunctionComponent<Props> = ({
       isStaging={isStaging}
       toggleNavOpen={toggleNavOpen}
       job={jobData}
+      isNewJob={isNewJob}
       apiState={apiState}
       postJobCreate={postJobCreate}
       putJobUpdate={putJobUpdate}

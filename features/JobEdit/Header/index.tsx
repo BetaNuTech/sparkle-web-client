@@ -4,6 +4,7 @@ import Link from 'next/link';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 import propertyModel from '../../../common/models/property';
+import jobModel from '../../../common/models/job';
 import { JobApiResult } from '../hooks/useJobForm';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
@@ -11,9 +12,11 @@ import styles from './styles.module.scss';
 interface JobsHeaderModel {
   property: propertyModel;
   apiState: JobApiResult;
+  job: jobModel;
+  isNewJob: boolean;
 }
 
-const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState }) => {
+const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState, job, isNewJob }) => {
   const router = useRouter();
   const config = getConfig() || {};
   const publicRuntimeConfig = config.publicRuntimeConfig || {};
@@ -36,7 +39,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState }) => {
               className={styles.header__propertyName}
             >{`${property.name}`}</span>
             <span>&nbsp;/ Jobs</span>
-            <span>&nbsp;/ Create New</span>
+            <span data-testid="jobedit-header-name">&nbsp;/ {isNewJob ? 'Create New' : job.title}</span>
           </h1>
         </aside>
       </aside>
