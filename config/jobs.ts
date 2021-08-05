@@ -5,6 +5,12 @@ export default {
     authorized: 'primary',
     complete: 'primary'
   },
+  nextState: {
+    open: 'Approval',
+    approved: 'Authorization',
+    authorized: 'Completed Bid',
+    complete: ''
+  },
   typeColors: {
     improvement: 'info',
     maintenance: 'info'

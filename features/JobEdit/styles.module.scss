@@ -8,6 +8,57 @@
   }
 }
 
+.mobileTitle {
+  font-size: rem-calc(20);
+  margin-bottom: rem-calc(16);
+}
+
+.job__info {
+  display: flex;
+
+  &__mobile {
+    justify-content: space-between;
+  }
+
+  &__box {
+    padding: rem-calc(26);
+    background: $gray-5;
+    border-radius: rem-calc(10);
+    margin-bottom: rem-calc(25);
+
+    > p {
+      color: $gray-6;
+      margin: 0;
+      font-size: rem-calc(12);
+    }
+
+    &__mobile {
+      text-align: center;
+      width: 48%;
+      & p {
+        font-size: rem-calc(12);
+      }
+      & h3 {
+        font-size: rem-calc(18);
+      }
+    }
+
+    &__desktop {
+      display: flex;
+      align-items: center;
+
+      &:first-child {
+        margin-right: rem-calc(16);
+      }
+
+      > p,
+      h3 {
+        font-size: rem-calc(16);
+      }
+    }
+  }
+}
+
 .button {
   &__group {
     &:first-child {

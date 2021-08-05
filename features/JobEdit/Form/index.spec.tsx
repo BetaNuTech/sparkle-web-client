@@ -1,7 +1,12 @@
 import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { openImprovementJob } from '../../../__mocks__/jobs';
+import {
+  openImprovementJob,
+  approvedImprovementJob,
+  authorizedImprovementJob,
+  completeImprovementJob
+} from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
@@ -33,6 +38,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -63,6 +69,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -94,6 +101,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -120,6 +128,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -145,6 +154,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -170,6 +180,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -195,6 +206,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -223,6 +235,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       apiState,
       isOnline: true,
       isStaging: true,
+      isNewJob: false,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -245,5 +258,208 @@ describe('Unit | Features | Job Edit | Form', () => {
     const actual = textContentList.join(' | ');
 
     expect(actual).toEqual(expected);
+  });
+
+  it('should show title on top of form on mobile', () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const mobileTitle = screen.queryByTestId('job-form-title-mobile');
+
+    expect(mobileTitle).toBeTruthy();
+  });
+
+  it('should not show state and next action on new form', () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formEditState = screen.queryByTestId('job-form-edit-state');
+    const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
+
+    expect(formEditState).toBeNull();
+    expect(formEditNextStatus).toBeNull();
+  });
+
+  it('should show Approval word when job in open state', () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formEditState = screen.queryByTestId('job-form-edit-state');
+    const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
+
+    // Check if the elements are present
+    expect(formEditState).toBeTruthy();
+    expect(formEditNextStatus).toBeTruthy();
+
+    const expectedState = 'Open';
+    const expectedNextStatus = 'Approval';
+
+    const actualState = formEditState.textContent;
+    const actualNextStatus = formEditNextStatus.textContent;
+
+    // Check the values are shown correctly
+    expect(actualState).toEqual(expectedState);
+    expect(actualNextStatus).toEqual(expectedNextStatus);
+  });
+
+  it('should show Authorization word when job in approved state', () => {
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formEditState = screen.queryByTestId('job-form-edit-state');
+    const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
+
+    // Check if the elements are present
+    expect(formEditState).toBeTruthy();
+    expect(formEditNextStatus).toBeTruthy();
+
+    const expectedState = 'Approved';
+    const expectedNextStatus = 'Authorization';
+
+    const actualState = formEditState.textContent;
+    const actualNextStatus = formEditNextStatus.textContent;
+
+    // Check the values are shown correctly
+    expect(actualState).toEqual(expectedState);
+    expect(actualNextStatus).toEqual(expectedNextStatus);
+  });
+
+  it('should show Completed Bid word when job in authorized state', () => {
+    const props = {
+      job: authorizedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formEditState = screen.queryByTestId('job-form-edit-state');
+    const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
+
+    // Check if the elements are present
+    expect(formEditState).toBeTruthy();
+    expect(formEditNextStatus).toBeTruthy();
+
+    const expectedState = 'Authorized';
+    const expectedNextStatus = 'Completed Bid';
+
+    const actualState = formEditState.textContent;
+    const actualNextStatus = formEditNextStatus.textContent;
+
+    // Check the values are shown correctly
+    expect(actualState).toEqual(expectedState);
+    expect(actualNextStatus).toEqual(expectedNextStatus);
+  });
+
+  it('should not show action required box when job in complete state', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formEditState = screen.queryByTestId('job-form-edit-state');
+    const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
+
+    // Check if the elements are present
+    expect(formEditState).toBeTruthy();
+
+    // It should be null as we are not showing this
+    expect(formEditNextStatus).toBeNull();
+
+    const expectedState = 'Complete';
+
+    const actualState = formEditState.textContent;
+
+    // Check the values are shown correctly
+    expect(actualState).toEqual(expectedState);
   });
 });
