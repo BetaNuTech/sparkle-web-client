@@ -73,9 +73,9 @@ export const approvedMaintenanceJob: jobModel = {
 export const authorizedImprovementJob: jobModel = {
   id: 'job-5',
   title: 'Security camera installation',
-  need: '',
+  need: 'to increase survilleance in society',
   authorizedRules: 'default',
-  scopeOfWork: '',
+  scopeOfWork: 'install cameras and control room',
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1509474600,

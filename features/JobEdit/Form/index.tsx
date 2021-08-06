@@ -51,6 +51,8 @@ interface LayoutProps {
   jobLink: string;
   job: jobModel;
   isNewJob: boolean;
+  isApprovedOrAuthorized: boolean;
+  isJobComplete: boolean;
   apiState: JobApiResult;
   onSubmit: (any?) => Promise<void>;
   register: UseFormRegister<Inputs>;
@@ -61,6 +63,8 @@ const Layout: FunctionComponent<LayoutProps> = ({
   isMobile,
   job,
   isNewJob,
+  isApprovedOrAuthorized,
+  isJobComplete,
   jobLink,
   apiState,
   onSubmit,
@@ -142,13 +146,15 @@ const Layout: FunctionComponent<LayoutProps> = ({
               defaultValue={job.title}
               data-testid="job-form-title"
               {...register('title')}
-              disabled={apiState.isLoading}
+              disabled={apiState.isLoading || isJobComplete}
             />
             <ErrorLabel formName="title" errors={formState.errors} />
           </div>
         </div>
         <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobDescription">Required</label>
+          <label htmlFor="jobDescription">
+            Need {isApprovedOrAuthorized && <span>*</span>}
+          </label>
           <div className={styles.jobNew__formGroup__control}>
             <textarea
               id="jobDescription"
@@ -158,7 +164,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
               defaultValue={job.need}
               data-testid="job-form-description"
               {...register('need')}
-              disabled={apiState.isLoading}
+              disabled={apiState.isLoading || isJobComplete}
             ></textarea>
             <ErrorLabel formName="need" errors={formState.errors} />
           </div>
@@ -171,7 +177,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
             data-testid="job-form-type"
             defaultValue={job.type}
             {...register('type')}
-            disabled={apiState.isLoading}
+            disabled={apiState.isLoading || isJobComplete}
           >
             {Object.keys(jobsConfig.types).map((t) => (
               <option key={t} value={t}>
@@ -181,7 +187,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
           </select>
         </div>
         <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobScope">Scope of work</label>
+          <label htmlFor="jobScope">
+            Scope of work {isApprovedOrAuthorized && <span>*</span>}
+          </label>
           <div className={styles.jobNew__formGroup__control}>
             <textarea
               id="jobScope"
@@ -191,24 +199,27 @@ const Layout: FunctionComponent<LayoutProps> = ({
               defaultValue={job.scopeOfWork}
               data-testid="job-form-scope"
               {...register('scopeOfWork')}
-              disabled={apiState.isLoading}
+              disabled={apiState.isLoading || isJobComplete}
             ></textarea>
             <ErrorLabel formName="scopeOfWork" errors={formState.errors} />
           </div>
         </div>
-        <div className={clsx(styles.button__group, '-mt-lg')}>
-          <button
-            type="submit"
-            data-testid="job-form-submit"
-            disabled={apiState.isLoading}
-            className={clsx(
-              styles.button__submit,
-              isMobile && styles.button__fullwidth
-            )}
-          >
-            Submit
-          </button>
-        </div>
+        {!isJobComplete && (
+          <div className={clsx(styles.button__group, '-mt-lg')}>
+            <button
+              type="submit"
+              data-testid="job-form-submit"
+              disabled={apiState.isLoading}
+              className={clsx(
+                styles.button__submit,
+                isMobile && styles.button__fullwidth
+              )}
+            >
+              Submit
+            </button>
+          </div>
+        )}
+
         {isMobile && (
           <div
             className={clsx(styles.button__group, styles.button__group__margin)}
@@ -273,10 +284,31 @@ const JobForm: FunctionComponent<Props> = ({
     }
   };
 
+  const validationShape = {
+    title: yup.string().required(formErrors.titleRequired),
+    need: yup.string(),
+    scopeOfWork: yup.string()
+  };
+
+  const isApprovedOrAuthorized =
+    !isNewJob && ['approved', 'authorized'].includes(job.state);
+
+  const isJobComplete = !isNewJob && job.state === 'complete';
+
+  if (isApprovedOrAuthorized) {
+    // Add need validation if job is in approve or authorized state
+    validationShape.need = yup
+      .string()
+      .required(formErrors.descriptionRequired);
+
+    // Add need validation if job is in approve or authorized state
+    validationShape.scopeOfWork = yup
+      .string()
+      .required(formErrors.scopeRequired);
+  }
+
   // Setup form validations
-  const validationSchema = yup.object().shape({
-    title: yup.string().required(formErrors.titleRequired)
-  });
+  const validationSchema = yup.object().shape(validationShape);
 
   // Setup form submissions
   const { register, handleSubmit, formState } = useForm<Inputs>({
@@ -301,6 +333,7 @@ const JobForm: FunctionComponent<Props> = ({
         <DropdownHeader
           jobLink={jobLink}
           apiState={apiState}
+          isJobComplete={isJobComplete}
           onSubmit={submitHandler}
         />
       </div>
@@ -323,6 +356,8 @@ const JobForm: FunctionComponent<Props> = ({
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
             isNewJob={isNewJob}
+            isApprovedOrAuthorized={isApprovedOrAuthorized}
+            isJobComplete={isJobComplete}
             jobLink={jobLink}
             onSubmit={submitHandler}
             register={register}
@@ -341,11 +376,14 @@ const JobForm: FunctionComponent<Props> = ({
             apiState={apiState}
             job={job}
             isNewJob={isNewJob}
+            isJobComplete={isJobComplete}
           />
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
             isNewJob={isNewJob}
+            isApprovedOrAuthorized={isApprovedOrAuthorized}
+            isJobComplete={isJobComplete}
             jobLink={jobLink}
             onSubmit={submitHandler}
             register={register}

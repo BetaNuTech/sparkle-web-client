@@ -8,18 +8,23 @@ import { JobApiResult } from '../hooks/useJobForm';
 interface Props {
   jobLink: string;
   apiState: JobApiResult;
+  isJobComplete: boolean;
   onSubmit: (any?) => Promise<void>;
 }
 
 const DropdownAdd: FunctionComponent<Props> = ({
   jobLink,
   apiState,
+  isJobComplete,
   onSubmit
 }) => (
   <Dropdown isOnRight>
-    <DropdownButton disabled={apiState.isLoading} onClick={onSubmit}>
-      Submit
-    </DropdownButton>
+    {!isJobComplete && (
+      <DropdownButton disabled={apiState.isLoading} onClick={onSubmit} testid="jobedit-mobile-header-submit">
+        Submit
+      </DropdownButton>
+    )}
+
     <DropdownLink href={jobLink} testid="dropdown-header-cancel">
       Cancel
     </DropdownLink>
