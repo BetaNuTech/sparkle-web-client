@@ -1,7 +1,10 @@
 import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { openImprovementJob } from '../../../__mocks__/jobs';
+import {
+  completeImprovementJob,
+  openImprovementJob
+} from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
 import breakpoints from '../../../config/breakpoints';
 import Header from './index';
@@ -31,7 +34,8 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
       job: openImprovementJob,
       property: fullProperty,
       apiState,
-      isNewJob: false
+      isNewJob: false,
+      isJobComplete: false
     };
 
     render(<Header {...props} />, {
@@ -52,7 +56,8 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
       job: openImprovementJob,
       property: fullProperty,
       apiState,
-      isNewJob: true
+      isNewJob: true,
+      isJobComplete: false
     };
 
     render(<Header {...props} />, {
@@ -65,5 +70,23 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
     const actual = title.indexOf('Create New') >= 0;
 
     expect(actual).toEqual(expected);
+  });
+
+  it('should not show submit button if job state is complete', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const headerSubmitBtn = screen.queryByTestId('jobedit-header-submit');
+
+    expect(headerSubmitBtn).toBeNull();
   });
 });

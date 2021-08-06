@@ -1,5 +1,10 @@
 import sinon from 'sinon';
-import { render as rtlRender, screen } from '@testing-library/react';
+import {
+  render as rtlRender,
+  screen,
+  fireEvent,
+  act
+} from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
 import {
   openImprovementJob,
@@ -461,5 +466,109 @@ describe('Unit | Features | Job Edit | Form', () => {
 
     // Check the values are shown correctly
     expect(actualState).toEqual(expectedState);
+  });
+
+  it('should not show submit button when job in complete state', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formSubmitBtn = screen.queryByTestId('job-form-submit');
+
+    // It should be null as we are not showing this when job is complete
+    expect(formSubmitBtn).toBeNull();
+  });
+
+  it('should restrict changing value of form when job state is complete', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const formTitle = screen.queryByTestId('job-form-title');
+    const formDescription = screen.queryByTestId('job-form-description');
+    const formType = screen.queryByTestId('job-form-type');
+    const formScope = screen.queryByTestId('job-form-scope');
+
+    // It should be disabled when job is complete
+    expect(formTitle.hasAttribute('disabled')).toBe(true);
+    expect(formDescription.hasAttribute('disabled')).toBe(true);
+    expect(formType.hasAttribute('disabled')).toBe(true);
+    expect(formScope.hasAttribute('disabled')).toBe(true);
+  });
+
+  it('should show error message when authorized job has empty title, need, or scope', async () => {
+    const props = {
+      job: authorizedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    await act(async () => {
+      render(<JobForm {...props} />, {
+        contextWidth: breakpoints.tablet.maxWidth
+      });
+
+      const formTitle = screen.queryByTestId('job-form-title');
+      const formDescription = screen.queryByTestId(
+        'job-form-description'
+      ) as HTMLTextAreaElement;
+      const formScope = screen.queryByTestId('job-form-scope');
+      // Set empty value for need
+      await fireEvent.change(formTitle, { target: { value: '' } });
+
+      // Set empty value for need
+      await fireEvent.change(formDescription, { target: { value: '' } });
+
+      // Set empty value for scope
+      await fireEvent.change(formScope, { target: { value: '' } });
+    });
+
+    const errorTitle = screen.queryByTestId('error-label-title');
+    const errorNeed = screen.queryByTestId('error-label-need');
+    const errorScope = screen.queryByTestId('error-label-scopeOfWork');
+
+    // It should be true because error message will come as they are required
+    expect(errorTitle).toBeTruthy();
+    expect(errorNeed).toBeTruthy();
+    expect(errorScope).toBeTruthy();
   });
 });

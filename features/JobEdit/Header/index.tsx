@@ -14,9 +14,16 @@ interface JobsHeaderModel {
   apiState: JobApiResult;
   job: jobModel;
   isNewJob: boolean;
+  isJobComplete: boolean;
 }
 
-const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState, job, isNewJob }) => {
+const Header: FunctionComponent<JobsHeaderModel> = ({
+  property,
+  apiState,
+  job,
+  isNewJob,
+  isJobComplete
+}) => {
   const router = useRouter();
   const config = getConfig() || {};
   const publicRuntimeConfig = config.publicRuntimeConfig || {};
@@ -39,7 +46,9 @@ const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState, job, i
               className={styles.header__propertyName}
             >{`${property.name}`}</span>
             <span>&nbsp;/ Jobs</span>
-            <span data-testid="jobedit-header-name">&nbsp;/ {isNewJob ? 'Create New' : job.title}</span>
+            <span data-testid="jobedit-header-name">
+              &nbsp;/ {isNewJob ? 'Create New' : job.title}
+            </span>
           </h1>
         </aside>
       </aside>
@@ -55,16 +64,18 @@ const Header: FunctionComponent<JobsHeaderModel> = ({ property, apiState, job, i
             </a>
           </Link>
         </div>
-        <div className={parentStyles.button__group}>
-          <button
-            type="button"
-            className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading}
-            data-testid="jobedit-header-submit"
-          >
-            Submit
-          </button>
-        </div>
+        {!isJobComplete && (
+          <div className={parentStyles.button__group}>
+            <button
+              type="button"
+              className={clsx(parentStyles.button__submit)}
+              disabled={apiState.isLoading}
+              data-testid="jobedit-header-submit"
+            >
+              Submit
+            </button>
+          </div>
+        )}
       </aside>
     </header>
   );
