@@ -1,16 +1,28 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
+import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import features from '../../config/features';
 import LinkFeature from '../LinkFeature';
 import { useAuth } from '../Auth/Provider';
-import styles from './SlideNav.module.scss';
+import styles from './styles.module.scss';
 import Logo from '../../public/icons/sparkle/logo.svg';
 import BusinessLogo from '../../public/icons/sparkle/bluestone-logo.svg';
 import CancelIcon from '../../public/icons/sparkle/cancel-simple.svg';
 
-export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
+interface Props {
+  toggleNavOpen?(): void;
+  isStaging?: boolean;
+  isOnline?: boolean;
+  appVersion?: string;
+}
+
+const SlideNav: FunctionComponent<Props> = ({
+  toggleNavOpen,
+  isStaging,
+  isOnline,
+  appVersion
+}) => {
   const { userId, signOut } = useAuth();
   const offlineTheme = isOnline === false ? styles['slideNav--isOffline'] : '';
   const stagingTheme =
@@ -115,15 +127,23 @@ export const SlideNav = ({ toggleNavOpen, isStaging, isOnline }) => {
           <div className={styles.slideNav__footer__logo}>
             <BusinessLogo />
           </div>
-          <div className={styles.slideNav__footer__version}>V2.5.2</div>
+          {/* Release Version */}
+          {appVersion && (
+            <div
+              data-testid="app-release-version"
+              className={styles.slideNav__footer__version}
+            >
+              v{appVersion}
+            </div>
+          )}
         </footer>
       </div>
     </nav>
   );
 };
 
-SlideNav.propTypes = {
-  toggleNavOpen: PropTypes.func.isRequired,
-  isStaging: PropTypes.bool.isRequired,
-  isOnline: PropTypes.bool.isRequired
+SlideNav.defaultProps = {
+  appVersion: '0.0.0'
 };
+
+export default SlideNav;
