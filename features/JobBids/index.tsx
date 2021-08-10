@@ -3,16 +3,37 @@ import { useFirestore } from 'reactfire';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
+import configBids from '../../config/bids';
 import useJobBids from './hooks/useJobBids';
 import userModel from '../../common/models/user';
+import MobileLayout from './MobileLayout';
 
 interface Props {
   user: userModel;
   propertyId: string;
   jobId: string;
+  isOnline?: boolean;
+  isStaging?: boolean;
+  isNavOpen?: boolean;
+  toggleNavOpen?(): void;
 }
 
-const JobBids: FunctionComponent<Props> = ({ propertyId, jobId }) => {
+const colors = {
+  primary: '-bgc-primary',
+  secondary: '-bgc-secondary',
+  gray: '-bgc-gray-light',
+  info: '-bgc-info',
+  alert: '-bgc-alert',
+  orange: '-bgc-orange'
+};
+
+const JobBids: FunctionComponent<Props> = ({
+  propertyId,
+  jobId,
+  isOnline,
+  isStaging,
+  toggleNavOpen
+}) => {
   const firestore = useFirestore();
 
   // Fetch the data of property profile
@@ -30,9 +51,22 @@ const JobBids: FunctionComponent<Props> = ({ propertyId, jobId }) => {
     return <LoadingHud title="Loading Bids" />;
   }
 
-  return <p>Job Bids page</p>;
+  return (
+    <MobileLayout
+      isOnline={isOnline}
+      isStaging={isStaging}
+      toggleNavOpen={toggleNavOpen}
+      property={property}
+      job={job}
+      bids={bids}
+      propertyId={propertyId}
+      colors={colors}
+      configBids={configBids}
+    />
+  );
 };
 
 JobBids.defaultProps = {};
 
+export { colors };
 export default JobBids;
