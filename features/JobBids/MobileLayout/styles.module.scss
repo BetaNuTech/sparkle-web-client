@@ -1,0 +1,14 @@
+@import '../../../styles/index.scss';
+
+.mobileBidList {
+  &__sortInfoLine {
+    @extend %sortInfo;
+  }
+}
+
+.mobileTitle {
+  font-size: rem-calc(20);
+  display: flex;
+  padding: rem-calc(12);
+  justify-content: center;
+}
