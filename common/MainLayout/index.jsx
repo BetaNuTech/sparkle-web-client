@@ -1,11 +1,15 @@
 import clsx from 'clsx';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import getConfig from 'next/config';
 import styles from './styles.module.scss';
-import { SlideNav } from '../SlideNav';
+import SlideNav from '../SlideNav';
 import { useNavigatorOnline } from '../utils/getOnlineStatus';
 
 const isStaging = process.env.NEXT_PUBLIC_STAGING === 'true';
+const config = getConfig() || {};
+const publicRuntimeConfig = config.publicRuntimeConfig || {};
+const APP_VERSION = publicRuntimeConfig.appVersion || '';
 
 export const MainLayout = ({ children }) => {
   const router = useRouter();
@@ -63,6 +67,7 @@ export const MainLayout = ({ children }) => {
         isOnline={isOnline}
         isStaging={isStaging}
         toggleNavOpen={toggleNavOpen}
+        appVersion={APP_VERSION}
       />
       <main className={styles.mainSide}>{childrenWithProps}</main>
     </div>

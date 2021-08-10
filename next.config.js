@@ -9,6 +9,6 @@ module.exports = {
 
   publicRuntimeConfig: {
     basePath: BASE_PATH,
-    appVersion: `${gitVersion() || '0.0.0'}`.split(/-|_/)[0]
+    appVersion: `${gitVersion()}`.split(/-|_/)[0]
   }
 };
