@@ -1,12 +1,16 @@
 import { FunctionComponent } from 'react';
 import { useFirestore } from 'reactfire';
+import { useMediaQuery } from 'react-responsive';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
 import configBids from '../../config/bids';
-import useJobBids from './hooks/useJobBids';
 import userModel from '../../common/models/user';
+import breakpoints from '../../config/breakpoints';
+import useJobBids from './hooks/useJobBids';
 import MobileLayout from './MobileLayout';
+import Header from './Header';
+import Grid from './Grid';
 
 interface Props {
   user: userModel;
@@ -44,7 +48,15 @@ const JobBids: FunctionComponent<Props> = ({
 
   // Fetch all jobs for property
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { data: bids } = useJobBids(firestore, jobId);
+  const { status: bidStatus, data: bids } = useJobBids(firestore, jobId);
+
+  // Responsive queries
+  const isMobileorTablet = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
+  const isDesktop = useMediaQuery({
+    minWidth: breakpoints.desktop.minWidth
+  });
 
   // Loading State
   if (!property || !job) {
@@ -52,17 +64,40 @@ const JobBids: FunctionComponent<Props> = ({
   }
 
   return (
-    <MobileLayout
-      isOnline={isOnline}
-      isStaging={isStaging}
-      toggleNavOpen={toggleNavOpen}
-      property={property}
-      job={job}
-      bids={bids}
-      propertyId={propertyId}
-      colors={colors}
-      configBids={configBids}
-    />
+    <>
+      {isMobileorTablet && (
+        <MobileLayout
+          isOnline={isOnline}
+          isStaging={isStaging}
+          toggleNavOpen={toggleNavOpen}
+          property={property}
+          job={job}
+          bids={bids}
+          propertyId={propertyId}
+          colors={colors}
+          configBids={configBids}
+        />
+      )}
+
+      {/* Desktop Header & Content */}
+      {isDesktop && (
+        <div>
+          <Header
+            property={property}
+            bids={bids}
+            bidStatus={bidStatus}
+            job={job}
+          />
+          <Grid
+            job={job}
+            bids={bids}
+            propertyId={propertyId}
+            colors={colors}
+            configBids={configBids}
+          />
+        </div>
+      )}
+    </>
   );
 };
 
