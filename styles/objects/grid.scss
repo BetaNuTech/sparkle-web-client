@@ -19,6 +19,8 @@
   top: 0;
   border: rem-calc(1) solid $gray-lighter;
   border-top-width: 0;
+  border-top-left-radius: rem-calc(6);
+  border-top-right-radius: rem-calc(6);
 }
 
 %gridTableColumn {

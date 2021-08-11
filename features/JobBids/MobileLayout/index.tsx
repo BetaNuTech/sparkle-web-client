@@ -23,7 +23,6 @@ const MobileLayout: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   toggleNavOpen,
-  property,
   job,
   bids,
   propertyId,

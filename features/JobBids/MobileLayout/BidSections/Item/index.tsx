@@ -4,8 +4,8 @@ import Link from 'next/link';
 import getConfig from 'next/config';
 import jobModel from '../../../../../common/models/job';
 import bidModel from '../../../../../common/models/bid';
-import utilString from '../../../../../common/utils/string';
 import utilDate from '../../../../../common/utils/date';
+import useBidsCost from '../../../hooks/useBidsCost';
 import styles from '../styles.module.scss';
 
 interface ItemProps {
@@ -15,12 +15,7 @@ interface ItemProps {
 }
 
 const Item: FunctionComponent<ItemProps> = ({ job, bid, propertyId }) => {
-  const bidRange =
-    bid.costMin === bid.costMax
-      ? utilString.getFormattedCurrency(bid.costMin)
-      : `${utilString.getFormattedCurrency(
-          bid.costMin
-        )} - ${utilString.getFormattedCurrency(bid.costMax)}`;
+  const bidRange = useBidsCost(bid);
 
   const config = getConfig() || {};
   const publicRuntimeConfig = config.publicRuntimeConfig || {};

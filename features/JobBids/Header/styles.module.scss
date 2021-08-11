@@ -1,0 +1,71 @@
+@import '../../../styles/index.scss';
+
+.header {
+  @extend %gridHeader;
+
+  &__bottom {
+    padding-top: 0;
+  }
+
+  &__backButton {
+    @extend %gridHeaderBackButton;
+  }
+
+  &__left {
+    flex-wrap: wrap;
+    display: flex;
+  }
+
+  &__main {
+    @extend %gridHeaderMain;
+    margin-right: 1rem;
+  }
+
+  &__title {
+    @extend %gridHeaderTitle;
+  }
+
+  &__propertyName, &__jobTitle {
+    @extend %gridHeaderTitle--ellipsis;
+  }
+
+
+  &__controls {
+    @extend %gridHeaderControls;
+  }
+
+  &__item {
+    &:first-child {
+      margin-right: $global-padding;
+    }
+
+    &__createButton {
+      @extend %gridHeaderCreateButton;
+      display: inline-flex;
+      min-width: rem-calc(170);
+
+      // Icon of Add button
+      span {
+        @extend %gridHeaderButtonIcon;
+      }
+    }
+  }
+
+  &__overview {
+    &__link {
+      @extend %overviewDataLink;
+      @extend %overviewDataLink--inline;
+    }
+    &__metadata {
+      @extend %overviewDataLink--metadata;
+      @extend %overviewDataLink--metadataInline;
+    }
+    &__label {
+      @extend %overviewDataLink--label;
+      @extend %overviewDataLink--labelListItem;
+    }
+    &__labelSub {
+      @extend %overviewDataLink--labelSub;
+    }
+  }
+}

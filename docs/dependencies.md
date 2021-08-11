@@ -8,10 +8,6 @@ All 3rd party code used by this application.
 - [React-dom](https://www.npmjs.com/package/react-dom) serves as the entry point to the DOM and server renderers for React.
 - [Typescript](https://www.typescriptlang.org/) Typed Javascript
 
-## Services
-
-- [Firebase](https://firebase.google.com/) products and solutions by Google.
-
 ## Tooling
 
 - [Next.js React Framework](https://nextjs.org/) manages the development environment, build, and more.
@@ -23,10 +19,8 @@ All 3rd party code used by this application.
 
 ## Store & Data
 
-- [Redux](https://redux.js.org/) predictable State Container for JS Apps.
-- [Immer](https://immerjs.github.io/immer/) you can interact with your data by simply modifying it while keeping all the benefits of immutable data in reducers.
-- [React-Redux](https://react-redux.js.org/) predictable state container for JavaScript applications.
-- [Redux-Saga](https://redux-saga.js.org/docs/basics/DeclarativeEffects) Redux side effect manager.
+- [Firebase SDK](https://github.com/firebase/firebase-js-sdk) this acts as our application store.  [We do not use Redux with firebase](https://prescottprue.medium.com/react-and-firebase-without-redux-5c1b2b6a6ba1).  [Learn more](https://firebase.google.com/)
+- [React Fire](https://github.com/FirebaseExtended/reactfire) firestore update watchers and miscellaneous firebase utilities.
 
 ## Linting
 
