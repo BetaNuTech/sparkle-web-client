@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { useFirestoreCollectionData } from 'reactfire';
+import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
 import bidModel from '../../models/bid';
 
@@ -8,6 +8,13 @@ export interface bidsCollectionResult {
   status: string;
   error?: Error;
   data: Array<bidModel>;
+}
+
+// Result of bid document
+export interface bidResult {
+  status: string;
+  error?: Error;
+  data: bidModel;
 }
 
 export default {
@@ -44,6 +51,32 @@ export default {
 
     // Cast firestore data into job model records
     data = queryData.map((itemData: any) => itemData as bidModel);
+
+    // Result
+    return { status, error, data };
+  },
+
+  // Lookup bid by it's id
+  findRecord(firestore: firebase.firestore.Firestore, id: string): bidResult {
+    let status = 'success';
+    let error = null;
+    let data = {} as bidModel;
+
+    const docRef = firestore.collection(fbCollections.bids).doc(id);
+
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData
+    } = useFirestoreDocData(docRef, {
+      idField: 'id'
+    });
+
+    status = queryStatus;
+    error = queryError;
+
+    // Cast firestore data into property records
+    data = queryData as bidModel;
 
     // Result
     return { status, error, data };
