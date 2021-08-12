@@ -8,6 +8,7 @@ import useJobBids from '../../common/hooks/useJobBids';
 import configBids from '../../config/bids';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
+import useBidSorting from './hooks/useBidSorting';
 import MobileLayout from './MobileLayout';
 import Header from './Header';
 import Grid from './Grid';
@@ -58,6 +59,12 @@ const JobBids: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  // Job sorting setup
+  const { sortedBids, sortBy, sortDir, onSortChange } = useBidSorting(
+    bids,
+    isMobileorTablet
+  );
+
   // Loading State
   if (!property || !job) {
     return <LoadingHud title="Loading Bids" />;
@@ -72,7 +79,7 @@ const JobBids: FunctionComponent<Props> = ({
           toggleNavOpen={toggleNavOpen}
           property={property}
           job={job}
-          bids={bids}
+          bids={sortedBids}
           propertyId={propertyId}
           colors={colors}
           configBids={configBids}
@@ -90,7 +97,10 @@ const JobBids: FunctionComponent<Props> = ({
           />
           <Grid
             job={job}
-            bids={bids}
+            bids={sortedBids}
+            onSortChange={onSortChange}
+            sortBy={sortBy}
+            sortDir={sortDir}
             propertyId={propertyId}
             colors={colors}
             configBids={configBids}

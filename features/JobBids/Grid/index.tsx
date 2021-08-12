@@ -9,6 +9,9 @@ import styles from './styles.module.scss';
 interface Props {
   job: jobModel;
   bids: Array<bidModel>;
+  onSortChange?(sortKey: string): void;
+  sortBy?: string;
+  sortDir?: string;
   propertyId: string;
   colors: Record<string, string>;
   configBids: Record<string, Record<string, string>>;
@@ -17,6 +20,9 @@ interface Props {
 const Grid: FunctionComponent<Props> = ({
   job,
   bids,
+  onSortChange,
+  sortBy,
+  sortDir,
   propertyId,
   colors,
   configBids
@@ -25,7 +31,10 @@ const Grid: FunctionComponent<Props> = ({
   const hasNoBids = sections.filter((s) => s.bids.length > 0).length === 0;
 
   return (
-    <div className={styles.propertyJobBids__grid} data-testid="bidlist-grid-main">
+    <div
+      className={styles.propertyJobBids__grid}
+      data-testid="bidlist-grid-main"
+    >
       {hasNoBids ? (
         <h3 className="-c-gray-light" data-testid="bid-sections-no-bids">
           Job has no bids
@@ -33,7 +42,11 @@ const Grid: FunctionComponent<Props> = ({
       ) : (
         <>
           {' '}
-          <GridHeader />
+          <GridHeader
+            onSortChange={onSortChange}
+            sortBy={sortBy}
+            sortDir={sortDir}
+          />
           <div data-testid="bid-sections-main">
             <ul>
               {sections.map((s) => (
