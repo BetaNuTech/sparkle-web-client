@@ -11,6 +11,7 @@ import { FirebaseAppProvider } from 'reactfire';
 import { ToastContainer } from 'react-toastify';
 import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
+import bids from '../../../../__mocks__/bids';
 import {
   openImprovementJob,
   openMaintenanceJob
@@ -23,6 +24,9 @@ import propertiesApi, {
 import jobsStore, {
   jobResult
 } from '../../../../common/services/firestore/jobs';
+import bidsApi, {
+  bidsCollectionResult
+} from '../../../../common/services/firestore/bids';
 import jobsApi from '../../../../common/services/api/jobs';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
@@ -44,6 +48,14 @@ function render(ui: any, options: any = {}) {
     data: options.job || (!options.jobStatus && openImprovementJob)
   };
   sinon.stub(jobsStore, 'findRecord').returns(jobPayload);
+
+  // Stub job bids
+  const bidsPayload: bidsCollectionResult = {
+    status: options.bidsStatus || 'success',
+    error: options.bidsError || null,
+    data: options.bids || bids
+  };
+  sinon.stub(bidsApi, 'queryByJob').returns(bidsPayload);
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(

@@ -3,9 +3,9 @@ import jobModel from '../common/models/job';
 export const openImprovementJob: jobModel = {
   id: 'job-1',
   title: 'Install Playground Equipement',
-  need: '',
+  need: 'for kids play zone',
   authorizedRules: 'default',
-  scopeOfWork: '',
+  scopeOfWork: 'install equipments in garden area',
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1483209000,
@@ -45,9 +45,9 @@ export const openMaintenanceExpeditedJob: jobModel = {
 export const approvedImprovementJob: jobModel = {
   id: 'job-3',
   title: 'Replace leasing office tiling',
-  need: '',
+  need: 'office tiles needs to be replaced',
   authorizedRules: 'default',
-  scopeOfWork: '',
+  scopeOfWork: 'Replace floor tiles',
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1498847400,

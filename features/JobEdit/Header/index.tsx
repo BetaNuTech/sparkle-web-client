@@ -15,6 +15,10 @@ interface JobsHeaderModel {
   job: jobModel;
   isNewJob: boolean;
   isJobComplete: boolean;
+  canApprove: boolean;
+  canAuthorize: boolean;
+  canExpedite: boolean;
+  onFormAction: (action: string) => void;
 }
 
 const Header: FunctionComponent<JobsHeaderModel> = ({
@@ -22,7 +26,11 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   apiState,
   job,
   isNewJob,
-  isJobComplete
+  isJobComplete,
+  canApprove,
+  canAuthorize,
+  canExpedite,
+  onFormAction
 }) => {
   const router = useRouter();
   const config = getConfig() || {};
@@ -71,8 +79,48 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
               className={clsx(parentStyles.button__submit)}
               disabled={apiState.isLoading}
               data-testid="jobedit-header-submit"
+              onClick={() => onFormAction('save')}
             >
-              Submit
+              Save
+            </button>
+          </div>
+        )}
+        {canApprove && (
+          <div className={parentStyles.button__group}>
+            <button
+              type="button"
+              className={clsx(parentStyles.button__submit)}
+              disabled={apiState.isLoading}
+              data-testid="jobedit-header-approve"
+              onClick={() => onFormAction('approved')}
+            >
+              Approve
+            </button>
+          </div>
+        )}
+        {canAuthorize && (
+          <div className={parentStyles.button__group}>
+            <button
+              type="button"
+              className={clsx(parentStyles.button__submit)}
+              disabled={apiState.isLoading}
+              data-testid="jobedit-header-authorize"
+              onClick={() => onFormAction('authorized')}
+            >
+              Authorize
+            </button>
+          </div>
+        )}
+        {canExpedite && (
+          <div className={parentStyles.button__group}>
+            <button
+              type="button"
+              className={clsx(parentStyles.button__submit)}
+              disabled={apiState.isLoading}
+              data-testid="jobedit-header-expedite"
+              onClick={() => onFormAction('expedite')}
+            >
+              Expedite
             </button>
           </div>
         )}

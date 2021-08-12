@@ -16,16 +16,23 @@ interface useJobFormResult {
   error: Error;
 }
 
-export default function useJobForm(): useJobFormResult {
+export default function useJobForm(jobApi: jobModel): useJobFormResult {
   const [apiState, setApiState] = useState({
     isLoading: false,
     statusCode: 0,
-    response: null
+    response: null,
+    job: JSON.stringify(jobApi)
   });
+
   const [error, setError] = useState(null);
 
   const postJobCreate = async (propertyId: string, job: jobModel) => {
-    setApiState({ isLoading: true, statusCode: 0, response: null });
+    setApiState({
+      isLoading: true,
+      statusCode: 0,
+      response: null,
+      job: JSON.stringify(job)
+    });
 
     let res = null;
     try {
@@ -45,12 +52,18 @@ export default function useJobForm(): useJobFormResult {
     setApiState({
       isLoading: false,
       statusCode: res ? res.status : 0,
-      response: json
+      response: json,
+      job: JSON.stringify(job)
     });
   };
 
   const putJobUpdate = async (propertyId: string, job: jobModel) => {
-    setApiState({ isLoading: true, statusCode: 0, response: null });
+    setApiState({
+      isLoading: true,
+      statusCode: 0,
+      response: null,
+      job: JSON.stringify(job)
+    });
 
     let res = null;
     try {
@@ -70,9 +83,19 @@ export default function useJobForm(): useJobFormResult {
     setApiState({
       isLoading: false,
       statusCode: res ? res.status : 0,
-      response: json
+      response: json,
+      job: JSON.stringify(job)
     });
   };
+
+  if (!apiState.isLoading && apiState.job !== JSON.stringify(jobApi)) {
+    setApiState({
+      isLoading: false,
+      statusCode: 0,
+      response: null,
+      job: JSON.stringify(jobApi)
+    });
+  }
 
   return { apiState, postJobCreate, putJobUpdate, error };
 }
