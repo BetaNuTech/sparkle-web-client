@@ -1,0 +1,88 @@
+@import '../../styles/index.scss';
+
+.form__grid {
+  @extend %grid;
+
+  @include media-query(desktop) {
+    max-width: rem-calc(600);
+  }
+}
+
+.mobileTitle {
+  font-size: rem-calc(20);
+  margin-bottom: rem-calc(16);
+}
+
+.bid__info {
+  display: flex;
+  justify-content: space-between;
+
+  &__box {
+    width: 48%;
+    padding: rem-calc(26);
+    border-radius: rem-calc(10);
+    margin-bottom: rem-calc(25);
+    text-align: center;
+    background: $gray-5;
+
+    > p {
+      color: $gray-6;
+      margin: 0;
+      font-size: rem-calc(12);
+    }
+
+    > h3 {
+      font-size: rem-calc(18);
+    }
+  }
+
+  @include media-query(desktop) {
+    justify-content: flex-start;
+
+    &__box {
+      display: flex;
+      align-items: center;
+
+      &:first-child {
+        margin-right: $global-padding;
+      }
+
+      > p,
+      > h3 {
+        font-size: rem-calc(16);
+      }
+    }
+  }
+}
+
+.button {
+  &__group {
+    &:first-child {
+      margin-right: $global-padding;
+    }
+
+    &__margin {
+      margin-top: rem-calc(12);
+    }
+  }
+
+  &__cancel {
+    @extend %gridHeaderCancelButton;
+    padding: 0.6em 1.2em;
+  }
+
+  &__submit {
+    @extend %gridHeaderCreateButton;
+    border: rem-calc(1) solid $primary-color;
+
+    // Icon of Add button
+    span {
+      @extend %gridHeaderButtonIcon;
+    }
+  }
+
+  &__fullwidth {
+    display: block;
+    width: 100%;
+  }
+}

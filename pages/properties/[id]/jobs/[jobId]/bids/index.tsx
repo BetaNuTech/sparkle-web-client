@@ -2,12 +2,12 @@ import 'firebase/firestore';
 import { ReactElement } from 'react';
 import Router, { useRouter } from 'next/router';
 import { useUser, useFirestore } from 'reactfire';
-import { MainLayout } from '../../../../../common/MainLayout';
-import { canAccessBids } from '../../../../../common/utils/userPermissions';
-import JobBids from '../../../../../features/JobBids';
-import useFirestoreUser from '../../../../../common/hooks/useFirestoreUser';
+import { MainLayout } from '../../../../../../common/MainLayout';
+import { canAccessBids } from '../../../../../../common/utils/userPermissions';
+import JobBids from '../../../../../../features/JobBids';
+import useFirestoreUser from '../../../../../../common/hooks/useFirestoreUser';
 
-const PropertiesDetailsPage: React.FC = (): ReactElement => {
+const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
   const { data: authUser } = useUser();
   const router = useRouter();
@@ -31,4 +31,4 @@ const PropertiesDetailsPage: React.FC = (): ReactElement => {
   );
 };
 
-export default PropertiesDetailsPage;
+export default Page;
