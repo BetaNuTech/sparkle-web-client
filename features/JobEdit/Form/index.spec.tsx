@@ -5,6 +5,7 @@ import {
   fireEvent,
   act
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import {
   openImprovementJob,
@@ -13,6 +14,8 @@ import {
   completeImprovementJob
 } from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
+import bids, { approvedBid } from '../../../__mocks__/bids';
+import { admin as user, noAccess } from '../../../__mocks__/users';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
 import JobForm from './index';
@@ -44,6 +47,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -75,6 +80,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -107,6 +114,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -134,6 +143,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -160,6 +171,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -186,6 +199,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -212,6 +227,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -241,6 +258,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -273,6 +292,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -298,6 +319,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: true,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -325,6 +348,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -363,6 +388,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -401,6 +428,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -439,6 +468,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -476,6 +507,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -502,6 +535,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -534,6 +569,8 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      user,
+      bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -570,5 +607,224 @@ describe('Unit | Features | Job Edit | Form', () => {
     expect(errorTitle).toBeTruthy();
     expect(errorNeed).toBeTruthy();
     expect(errorScope).toBeTruthy();
+  });
+
+  it('should show approve button when job is in open state', () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user,
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const btnApprove = screen.queryByTestId('job-form-approve');
+
+    // Check if the elements are present
+    expect(btnApprove).toBeTruthy();
+  });
+
+  it('should show authorize button when expedited job is approved and has only bid that is approved', () => {
+    const approvedExpeditedJob = { ...approvedImprovementJob };
+    approvedExpeditedJob.authorizedRules = 'expedite';
+    const props = {
+      job: approvedExpeditedJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user,
+      bids: [{ ...approvedBid }],
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const btnAuthorize = screen.queryByTestId('job-form-authorize');
+
+    // Check if the elements are present
+    expect(btnAuthorize).toBeTruthy();
+  });
+
+  it('should show authorize button if job is approved & has 3 bids with one that is approved', () => {
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user,
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const btnAuthorize = screen.queryByTestId('job-form-authorize');
+
+    // Check if the elements are present
+    expect(btnAuthorize).toBeTruthy();
+  });
+
+  it('should not show expedite button if user is not admin', () => {
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...noAccess },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const btnExpedite = screen.queryByTestId('job-form-expedite');
+
+    // Check if the button is not present
+    expect(btnExpedite).toBeNull();
+  });
+
+  it('should request to transition job to approved when approve button selected', async () => {
+    const putReq = sinon.spy();
+    const expected = 'approved';
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...noAccess },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    await act(async () => {
+      const btnApprove = screen.queryByTestId('job-form-approve');
+      await userEvent.click(btnApprove);
+    });
+
+    // Send update request
+    const result = putReq.called ? putReq.getCall(0).args[1] : {};
+    const actual = result.state || '';
+    expect(actual).toEqual(expected);
+  });
+
+  it('should request to transition job to authorized when authorize button selected', async () => {
+    const putReq = sinon.spy();
+    const expected = 'authorized';
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...noAccess },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    await act(async () => {
+      const btnAuthorize = screen.queryByTestId('job-form-authorize');
+      await userEvent.click(btnAuthorize);
+    });
+
+    // Send update request
+    const result = putReq.called ? putReq.getCall(0).args[1] : {};
+    const actual = result.state || '';
+    expect(actual).toEqual(expected);
+  });
+
+  it('should request to transition job to expedite when expedite button selected', async () => {
+    const putReq = sinon.spy();
+    const expected = 'expedite';
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    await act(async () => {
+      const btnExpedite = screen.queryByTestId('job-form-expedite');
+      await userEvent.click(btnExpedite);
+    });
+
+    // Send update request
+    const result = putReq.called ? putReq.getCall(0).args[1] : {};
+    const actual = result.authorizedRules || '';
+    expect(actual).toEqual(expected);
   });
 });

@@ -8,7 +8,10 @@ describe('Unit | Features | Job Edit | Dropdown Header', () => {
       jobLink: '',
       apiState: {} as JobApiResult,
       isJobComplete: false,
-      onSubmit: () => Promise.resolve()
+      canApprove: false,
+      canAuthorize: false,
+      canExpedite: false,
+      onFormAction: () => Promise.resolve()
     };
     const { container } = render(<DropdownHeader {...props} />);
 
@@ -25,7 +28,10 @@ describe('Unit | Features | Job Edit | Dropdown Header', () => {
       jobLink: '/property/jobs',
       apiState: {} as JobApiResult,
       isJobComplete: false,
-      onSubmit: () => Promise.resolve()
+      canApprove: false,
+      canAuthorize: false,
+      canExpedite: false,
+      onFormAction: () => Promise.resolve()
     };
     const { container } = render(<DropdownHeader {...props} />);
 
@@ -41,11 +47,16 @@ describe('Unit | Features | Job Edit | Dropdown Header', () => {
       jobLink: '/property/jobs',
       apiState: {} as JobApiResult,
       isJobComplete: true,
-      onSubmit: () => Promise.resolve()
+      canApprove: false,
+      canAuthorize: false,
+      canExpedite: false,
+      onFormAction: () => Promise.resolve()
     };
     const { container } = render(<DropdownHeader {...props} />);
 
-    const headerSubmitBtn = container.querySelector('[data-testid="jobedit-mobile-header-submit"]');
+    const headerSubmitBtn = container.querySelector(
+      '[data-testid="jobedit-mobile-header-submit"]'
+    );
 
     expect(headerSubmitBtn).toBeNull();
   });

@@ -61,12 +61,10 @@
 
 .button {
   &__group {
-    &:first-child {
-      margin-right: $global-padding;
-    }
+    margin-right: $global-padding;
 
-    &__margin {
-      margin-top: rem-calc(12);
+    &:last-child {
+      margin-right: 0;
     }
   }
 

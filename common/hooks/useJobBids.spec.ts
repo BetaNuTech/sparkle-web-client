@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useJobBids from './useJobBids';
-import bidsApi from '../../../common/services/firestore/bids';
+import bidsApi from '../services/firestore/bids';
 
 const emptyCollectionResult = {
   status: 'success',
