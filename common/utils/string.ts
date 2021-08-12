@@ -18,6 +18,9 @@ export default {
 
   // Converts number into comma separated currency
   getFormattedCurrency(input: number): string {
-    return String(Number(input.toFixed(2))).replace(/(.)(?=(\d{3})+$)/g, '$1,');
+    return String(Number(Number(input).toFixed(2))).replace(
+      /(.)(?=(\d{3})+$)/g,
+      '$1,'
+    );
   }
 };

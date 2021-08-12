@@ -5,6 +5,7 @@ import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import userModel from '../../common/models/user';
 import useJob from '../../common/hooks/useJob';
+import useJobBids from '../../common/hooks/useJobBids';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import useJobForm from './hooks/useJobForm';
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const JobNew: FunctionComponent<Props> = ({
+  user,
   propertyId,
   jobId,
   isOnline,
@@ -37,11 +39,16 @@ const JobNew: FunctionComponent<Props> = ({
 
   // Fetch the data of property profile
   const { data: property } = useProperty(firestore, propertyId);
-  const { apiState, postJobCreate, putJobUpdate } = useJobForm();
-  // Show job error status
-  useJobStatus(apiState, jobId, propertyId, sendNotification);
+
   // Fetch the data of job
   const { data: job, status: jobStatus } = useJob(firestore, jobId);
+
+  const { apiState, postJobCreate, putJobUpdate } = useJobForm(job);
+  // Show job error status
+  useJobStatus(apiState, jobId, propertyId, sendNotification);
+
+  // Fetch bids related to jobs
+  const { data: bids } = useJobBids(firestore, jobId);
 
   // Loading State
   if (!property || (jobId !== 'new' && !job)) {
@@ -58,11 +65,13 @@ const JobNew: FunctionComponent<Props> = ({
 
   return (
     <JobForm
+      user={user}
       property={property}
       isOnline={isOnline}
       isStaging={isStaging}
       toggleNavOpen={toggleNavOpen}
       job={jobData}
+      bids={bids}
       isNewJob={isNewJob}
       apiState={apiState}
       postJobCreate={postJobCreate}

@@ -39,6 +39,7 @@ $dropdown-carrot-size: rem-calc(5);
     a,
     button {
       display: block;
+      width: 100%;
       padding: ($global-padding * 0.75) $global-padding;
       background-color: transparent;
       outline-width: 0;

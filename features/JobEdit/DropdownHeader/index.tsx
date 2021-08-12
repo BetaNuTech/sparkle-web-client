@@ -9,19 +9,56 @@ interface Props {
   jobLink: string;
   apiState: JobApiResult;
   isJobComplete: boolean;
-  onSubmit: (any?) => Promise<void>;
+  canApprove: boolean;
+  canAuthorize: boolean;
+  canExpedite: boolean;
+  onFormAction: (action: string) => void;
 }
 
 const DropdownAdd: FunctionComponent<Props> = ({
   jobLink,
   apiState,
   isJobComplete,
-  onSubmit
+  canApprove,
+  canAuthorize,
+  canExpedite,
+  onFormAction
 }) => (
   <Dropdown isOnRight>
     {!isJobComplete && (
-      <DropdownButton disabled={apiState.isLoading} onClick={onSubmit} testid="jobedit-mobile-header-submit">
-        Submit
+      <DropdownButton
+        disabled={apiState.isLoading}
+        onClick={() => onFormAction('save')}
+        testid="jobedit-mobile-header-submit"
+      >
+        Save
+      </DropdownButton>
+    )}
+    {canApprove && (
+      <DropdownButton
+        disabled={apiState.isLoading}
+        onClick={() => onFormAction('approved')}
+        testid="jobedit-mobile-header-approve"
+      >
+        Approve
+      </DropdownButton>
+    )}
+    {canAuthorize && (
+      <DropdownButton
+        disabled={apiState.isLoading}
+        onClick={() => onFormAction('authorized')}
+        testid="jobedit-mobile-header-authorize"
+      >
+        Authorize
+      </DropdownButton>
+    )}
+    {canExpedite && (
+      <DropdownButton
+        disabled={apiState.isLoading}
+        onClick={() => onFormAction('expedite')}
+        testid="jobedit-mobile-header-expedite"
+      >
+        Expedite
       </DropdownButton>
     )}
 

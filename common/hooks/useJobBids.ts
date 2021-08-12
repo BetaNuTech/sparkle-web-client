@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
-import bidsApi, {
-  bidsCollectionResult
-} from '../../../common/services/firestore/bids';
+import bidsApi, { bidsCollectionResult } from '../services/firestore/bids';
 
 interface useJobsBidsResult extends bidsCollectionResult {
   memo: string;
