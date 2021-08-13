@@ -3,8 +3,10 @@
 .form__grid {
   @extend %grid;
 
-  @include media-query(desktop) {
-    max-width: rem-calc(600);
+  &__info {
+    @include media-query(desktop) {
+      max-width: rem-calc(600);
+    }
   }
 }
 
@@ -84,5 +86,162 @@
   &__fullwidth {
     display: block;
     width: 100%;
+  }
+}
+
+.form {
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr !important;
+
+    &__icon path:last-child {
+      fill: $white !important;
+    }
+  }
+
+  &__fields {
+    // &__leftColumn {}
+    // &__rightColumn {}
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: rem-calc(-15);
+    margin-left: rem-calc(-15);
+
+    &__cell {
+      position: relative;
+      min-height: 1px;
+      padding-right: rem-calc(15);
+      padding-left: rem-calc(15);
+      flex: 0 0 50%;
+      max-width: 50%;
+
+      &--twoColumns {
+        max-width: 100%;
+        flex: 0 0 100%;
+      }
+
+      &--fillRow {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+  }
+
+  &__formCost {
+    display: flex;
+    justify-content: space-between;
+    label {
+      font-weight: 600;
+    }
+    &__select {
+      display: flex;
+
+      button {
+        font-weight: initial;
+        color: $gray-light;
+        text-decoration: underline;
+        cursor: pointer;
+        background: transparent;
+        border: 0;
+        margin-bottom: rem-calc(8);
+      }
+
+      button.active {
+        font-weight: 600;
+        color: $primary-dark-color;
+        text-decoration: initial;
+      }
+    }
+    &__separator {
+      background-color: $gray-light;
+      width: rem-calc(1);
+      margin: 0 rem-calc(8);
+      margin-bottom: rem-calc(8);
+    }
+  }
+
+  &__formSeparatedLabel {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__formInput {
+    width: rem-calc(1);
+    height: rem-calc(1);
+    opacity: 0;
+  }
+
+  &__upload {
+    color: $primary-color;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+
+    svg {
+      width: rem-calc(14);
+      height: rem-calc(14);
+      margin-right: rem-calc(2);
+      transform: translateY(1px);
+    }
+
+    svg > path {
+      fill: $primary-color;
+    }
+  }
+
+  &__group {
+    label {
+      font-weight: 600;
+    }
+
+    input[type='text'],
+    input[type='date'],
+    input[type='number'] {
+      @extend %inputText;
+      margin: 0;
+    }
+
+    &__control {
+      margin-bottom: rem-calc(16);
+    }
+
+    textarea {
+      @extend %inputText;
+      margin: 0;
+    }
+
+    select {
+      @extend %inputSelect;
+    }
+  }
+
+  &__attachmentList {
+    border: rem-calc(1) solid $gray-light;
+    border-radius: rem-calc(6);
+    list-style: none;
+    padding: rem-calc(12) rem-calc(16);
+
+    &__item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: rem-calc(8) 0;
+    }
+  }
+
+  @include media-query(desktop) {
+    &__fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: rem-calc(30);
+    }
+
+    &__row__cell--twoColumns {
+      flex: 0 0 50%;
+      max-width: 50%;
+    }
   }
 }
