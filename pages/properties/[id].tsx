@@ -6,14 +6,18 @@ import { MainLayout } from '../../common/MainLayout';
 import PropertyProfile from '../../features/PropertyProfile';
 import useFirestoreUser from '../../common/hooks/useFirestoreUser';
 
-const PropertiesDetailsPage: React.FC = (): ReactElement => {
+const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
   const { data: authUser } = useUser();
   const router = useRouter();
   const { id } = router.query;
   const { data: user } = useFirestoreUser(firestore, authUser.uid || '');
   const propertyId = typeof id === 'string' ? id : id[0];
-  return <MainLayout>{user && <PropertyProfile user={user} id={propertyId} />}</MainLayout>;
+  return (
+    <MainLayout>
+      {user && <PropertyProfile user={user} id={propertyId} />}
+    </MainLayout>
+  );
 };
 
-export default PropertiesDetailsPage;
+export default Page;

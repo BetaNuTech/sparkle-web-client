@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
-import styles from './Header.module.scss';
+import styles from './styles.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import Dropdown from '../DropdownAdd';
 
@@ -25,14 +25,11 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
 
     <aside className={styles.header__controls}>
       {(canAddTeam || canAddProperty) && (
-        <div
-          className={styles['header-item']}
-          data-testid="property-list-create"
-        >
+        <div className={styles.header__item} data-testid="property-list-create">
           <button
             className={clsx(
-              styles['header-item__createButton'],
-              styles['header-item__createButton--dropdown']
+              styles.header__item__createButton,
+              styles['header__item__createButton--dropdown']
             )}
           >
             Create
@@ -45,10 +42,10 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
       )}
 
       {/* Sort By, Selector */}
-      <div className={styles['header-item']}>
+      <div className={styles.header__item}>
         <label
           htmlFor="properties-sort-by"
-          className={styles['header-item__label']}
+          className={styles.header__item__label}
         >
           Sort by:
         </label>
@@ -57,7 +54,7 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
           id="properties-sort-by"
           value={sortBy}
           onChange={onSortChange('sortBy')}
-          className={styles['header-item__menu']}
+          className={styles.header__item__menu}
         >
           <option value="name">Name</option>
           <option value="city">City</option>
@@ -68,12 +65,12 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
       </div>
 
       {/* Sort Direction, Selector */}
-      <div className={styles['header-item']}>
+      <div className={styles.header__item}>
         <button
           aria-label="Change the sort direction"
           onClick={onSortChange('sortDir')}
           className={clsx(
-            styles['header-item__sortDirButton'],
+            styles.header__item__sortDirButton,
             styles[`-${sortDir}`]
           )}
         />

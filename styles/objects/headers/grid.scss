@@ -77,7 +77,6 @@
   color: $gray-3;
   cursor: pointer;
   transition: background 0.25s ease-out;
-
 }
 
 %gridHeaderCreateButton {
@@ -91,20 +90,19 @@
   color: $white;
   cursor: pointer;
   transition: background 0.25s ease-out;
-  // Dropdown with options
-  &--dropdown {
-    &:focus,
-    &:hover {
-      background-color: #1259e2;
+}
 
-      > ul {
-        height: auto;
-        visibility: visible;
+%gridHeaderCreateButton--dropdown {
+  &:focus,
+  &:hover {
+    > ul {
+      height: auto;
+      visibility: visible;
+      white-space: nowrap;
 
-        // Animated
-        opacity: 1;
-        transform: translate(-50%, 0%);
-      }
+      // Animated
+      opacity: 1;
+      transform: translate(-50%, 0%);
     }
   }
 }

@@ -88,6 +88,7 @@
   @extend %swipeReveal;
   @extend %swipeReveal__hidden;
 
+  > a,
   > button {
     @extend %flexButton;
     align-items: center;
