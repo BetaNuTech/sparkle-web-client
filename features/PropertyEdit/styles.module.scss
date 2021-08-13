@@ -1,0 +1,102 @@
+@import '../../styles/index.scss';
+
+.saveButton {
+  background: transparent;
+  border-width: 0;
+  padding: 1em;
+}
+
+.propertyNew {
+  &__form {
+    height: 100%;
+    background-color: #f2f2f2;
+    overflow: auto;
+    padding: 0 $global-lg-padding $global-lg-padding;
+  }
+
+  &__imageInputLabel {
+    height: rem-calc(150);
+    max-width: rem-calc(200);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: $global-sm-padding;
+    position: relative;
+    transition: all 400ms ease-in;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: $white;
+    text-align: center;
+  }
+
+  &__imageInput {
+    display: none;
+  }
+
+  &__formGroup {
+    label {
+      font-weight: 600;
+      color: $primary-dark-color;
+    }
+
+    input[type='text'] {
+      @extend %inputText;
+      margin: 0 0 rem-calc(3) 0;
+    }
+
+    input[id='yearBuilt'],
+    input[id='numberOfUnits'] {
+      width: rem-calc(86);
+    }
+
+    &__control {
+      margin-bottom: $global-padding;
+
+      &__heading {
+        text-align: center;
+        font-size: $medium-font-size;
+      }
+    }
+
+    textarea {
+      @extend %inputText;
+      margin: 0;
+    }
+
+    select {
+      @extend %inputSelect;
+    }
+  }
+  &__teamButton {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    background: transparent;
+    color: $primary-color;
+    border: 1px $primary-color solid;
+    text-align: center;
+    line-height: $global-lg-padding;
+    border-radius: $global-radius;
+    cursor: pointer;
+  }
+
+  &__trelloButton,
+  &__templatesButton {
+    font-size: $medium-small-font-size;
+    display: block;
+    width: 100%;
+    background: $primary-color;
+    color: $white;
+    text-align: center;
+    line-height: $global-lg-padding;
+    border-radius: $global-radius;
+    border-width: 0;
+  }
+
+  &__trelloButton {
+    background: #a2c6f1;
+  }
+}

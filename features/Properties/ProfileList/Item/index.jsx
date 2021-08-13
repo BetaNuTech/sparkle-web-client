@@ -86,7 +86,7 @@ export const Item = ({ property }) => {
         </LinkFeature>
 
         <LinkFeature
-          href={`/properties/update/${property.id}`}
+          href={`/properties/edit/${property.id}`}
           className={styles.item__editButton}
           featureEnabled={features.supportBetaPropertyUpdate}
         >

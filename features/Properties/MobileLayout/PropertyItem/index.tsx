@@ -130,7 +130,13 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
           isSwipeOpen && parentStyles.swipeReveal__reveal
         )}
       >
-        <button className={parentStyles.swipeReveal__editButton}>Edit</button>
+        <LinkFeature
+          href={`/properties/edit/${property.id}`}
+          className={parentStyles.swipeReveal__editButton}
+          featureEnabled={features.supportBetaPropertyUpdate}
+        >
+          Edit
+        </LinkFeature>
         <button
           className={parentStyles.swipeReveal__deleteButton}
           onClick={() => onQueuePropertyDelete(property)}

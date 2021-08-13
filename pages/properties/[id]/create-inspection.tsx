@@ -7,7 +7,7 @@ import { canCreateInspection } from '../../../common/utils/userPermissions';
 import CreateInspection from '../../../features/CreateInspection';
 import useFirestoreUser from '../../../common/hooks/useFirestoreUser';
 
-const PropertiesDetailsPage: React.FC = (): ReactElement => {
+const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
   const { data: authUser } = useUser();
   const router = useRouter();
@@ -28,4 +28,4 @@ const PropertiesDetailsPage: React.FC = (): ReactElement => {
   );
 };
 
-export default PropertiesDetailsPage;
+export default Page;

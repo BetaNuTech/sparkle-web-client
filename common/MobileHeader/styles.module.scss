@@ -8,7 +8,7 @@
 
   display: grid;
   grid-gap: 0 $global-padding;
-  grid-template-columns: 33% 1fr 33%;
+  grid-template-columns: 30% 1fr 30%;
   grid-template-areas:
     'left center right'
     'bottom bottom bottom'
@@ -94,19 +94,11 @@
 
     // Dropdown with options
     &--dropdown {
+      @extend %gridHeaderCreateButton--dropdown;
+
       &:focus,
       &:hover {
         background-color: rgba(0, 0, 0, 0.25);
-
-        > ul {
-          height: auto;
-          visibility: visible;
-          white-space: nowrap;
-
-          // Animated
-          opacity: 1;
-          transform: translate(-50%, 0%);
-        }
       }
     }
 

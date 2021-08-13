@@ -7,7 +7,7 @@ import { canAccessJobs } from '../../../common/utils/userPermissions';
 import JobList from '../../../features/JobList';
 import useFirestoreUser from '../../../common/hooks/useFirestoreUser';
 
-const PropertiesDetailsPage: React.FC = (): ReactElement => {
+const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
   const { data: authUser } = useUser();
   const router = useRouter();
@@ -28,4 +28,4 @@ const PropertiesDetailsPage: React.FC = (): ReactElement => {
   );
 };
 
-export default PropertiesDetailsPage;
+export default Page;

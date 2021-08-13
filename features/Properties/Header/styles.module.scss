@@ -11,7 +11,7 @@
     @extend %gridHeaderControls;
   }
 
-  &-item {
+  &__item {
     &:first-child {
       margin-right: $global-padding;
     }
@@ -22,6 +22,11 @@
       // Icon of Add button
       span {
         @extend %gridHeaderButtonIcon;
+      }
+
+      // Dropdown with options
+      &--dropdown {
+        @extend %gridHeaderCreateButton--dropdown;
       }
     }
 
