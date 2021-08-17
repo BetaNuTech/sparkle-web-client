@@ -1,6 +1,6 @@
 export default {
   stateColors: {
-    open: 'gray',
+    open: 'purple',
     approved: 'primary',
     rejected: 'alert',
     incomplete: 'orange',

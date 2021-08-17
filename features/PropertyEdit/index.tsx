@@ -1,5 +1,8 @@
 import { FunctionComponent } from 'react';
-import PropertyForm from './Form/index';
+import { useMediaQuery } from 'react-responsive';
+import breakpoints from '../../config/breakpoints';
+import PropertyMobileForm from './MobileForm/index';
+import PropertyDesktopForm from './DesktopForm/index';
 import MobileHeader from '../../common/MobileHeader/index';
 import styles from './styles.module.scss';
 
@@ -20,20 +23,26 @@ const PropertyEdit: FunctionComponent<Props> = ({
       Save
     </button>
   );
+  const isMobileorTablet = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
 
   return (
-    <>
-      <MobileHeader
-        title="Property Edit"
-        toggleNavOpen={toggleNavOpen}
-        isOnline={isOnline}
-        isStaging={isStaging}
-        actions={mobileHeaderActions}
-        testid="mobile-properties-header"
-      />
-
-      <PropertyForm isOnline={isOnline} />
-    </>
+    isMobileorTablet ? (
+      <>
+        <MobileHeader
+          title="Property Edit"
+          toggleNavOpen={toggleNavOpen}
+          isOnline={isOnline}
+          isStaging={isStaging}
+          actions={mobileHeaderActions}
+          testid="mobile-properties-header"
+        />
+        <PropertyMobileForm isOnline={isOnline} />
+      </>
+    ):(
+      <PropertyDesktopForm isOnline={isOnline} />
+    )
   );
 };
 

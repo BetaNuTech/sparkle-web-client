@@ -41,15 +41,15 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   return (
     <header className={styles.header} data-testid="jobedit-header">
       {/* Title And Create Button */}
-      <aside className={styles.header__left}>
-        <aside className={styles.header__main}>
+      <div className={styles.header__content}>
+        <div className={styles.header__content__main}>
           <button
             type="button"
             className={styles.header__backButton}
             onClick={() => router.back()}
             data-testid="property-jobs-back"
           ></button>
-          <h1 className={styles.header__title}>
+          <h1 className={styles.header__content__main__title}>
             <span
               className={styles.header__propertyName}
             >{`${property.name}`}</span>
@@ -58,8 +58,8 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
               &nbsp;/ {isNewJob ? 'Create New' : job.title}
             </span>
           </h1>
-        </aside>
-      </aside>
+        </div>
+      </div>
 
       <aside className={styles.header__controls}>
         <div className={parentStyles.button__group}>

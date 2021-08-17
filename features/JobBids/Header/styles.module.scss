@@ -27,6 +27,7 @@
 
   &__propertyName, &__jobTitle {
     @extend %gridHeaderTitle--ellipsis;
+    max-width: 9ch;
   }
 
 

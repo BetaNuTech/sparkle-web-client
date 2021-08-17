@@ -22,7 +22,7 @@ describe('Unit | Features | Job List | Grid | Item', () => {
     props.job.type = 'improvement';
     render(<Item {...props} />);
 
-    const result = screen.queryByTestId('grid-row-job-type');
+    const result = screen.queryByTestId('grid-row-job-type-label');
     const actual = result && result.textContent;
     expect(actual).toEqual(expected);
   });

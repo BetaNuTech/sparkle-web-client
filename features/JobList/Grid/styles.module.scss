@@ -75,7 +75,7 @@
   }
 
   &__border {
-    @extend %gridTableSectionBorder
+    @extend %gridTableSectionBorder;
   }
 }
 
@@ -101,6 +101,36 @@
 
   &__type {
     @extend %gridTableLabel;
+  }
+
+  &__actions {
+    display: block;
+    padding: rem-calc(8) rem-calc(10) rem-calc(8) rem-calc(8);
+    cursor: pointer;
+    position: relative;
+
+    &:hover {
+      background-color: transparent !important;
+    }
+
+    > svg {
+      width: rem-calc(22);
+      height: rem-calc(22);
+      transform: translateY(#{rem-calc(4)});
+    }
+
+    &:hover,
+    &:focus {
+      z-index: 999;
+      > ul {
+        height: auto;
+        visibility: visible;
+
+        // Animated
+        opacity: 1;
+        transform: translate(-50%, 0%);
+      }
+    }
   }
 
   @include media-query(desktop) {

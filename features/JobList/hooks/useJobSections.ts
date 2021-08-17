@@ -24,12 +24,12 @@ export default function useJobSections(
       jobs: <jobModel[]>[]
     },
     {
-      title: 'Action Required',
+      title: 'Approved',
       state: 'approved',
       jobs: <jobModel[]>[]
     },
     {
-      title: 'Authorized to Start',
+      title: 'Authorized',
       state: 'authorized',
       jobs: <jobModel[]>[]
     },

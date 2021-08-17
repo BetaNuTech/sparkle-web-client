@@ -106,8 +106,8 @@ describe('Unit | Features | Job List | Grid', () => {
     }));
 
     expect(titleClasses[0].Open).toContain(colors.secondary);
-    expect(titleClasses[1]['Action Required']).toContain(colors.info);
-    expect(titleClasses[2]['Authorized to Start']).toContain(colors.alert);
+    expect(titleClasses[1].Approved).toContain(colors.info);
+    expect(titleClasses[2].Authorized).toContain(colors.alert);
     expect(titleClasses[3].Completed).toContain(colors.orange);
   });
 });
