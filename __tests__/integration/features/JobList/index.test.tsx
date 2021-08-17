@@ -113,7 +113,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on desktop', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Action Required: Replace leasing office tiling,Solar roof fitting | Authorized to Start: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Authorized: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(<JobList user={user} propertyId="property-1" />, {
       contextWidth: breakpoints.desktop.minWidth
     });
@@ -144,7 +144,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort title by descending on desktop', async () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Swimming pool cleaning | Action Required: Solar roof fitting | Authorized to Start: Water Tank cleaning | Completed: Wifi Installation';
+      'Open: Swimming pool cleaning | Approved: Solar roof fitting | Authorized: Water Tank cleaning | Completed: Wifi Installation';
     render(<JobList user={user} propertyId="property-1" />, {
       contextWidth: breakpoints.desktop.minWidth
     });
@@ -183,10 +183,10 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilDate.toUserDateTimeDisplay(
         openMaintenanceExpeditedJob.createdAt
       )}`,
-      `Action Required: ${utilDate.toUserDateTimeDisplay(
+      `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.createdAt
       )}`,
-      `Authorized to Start: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -229,10 +229,10 @@ describe('Integration | Features | Job List', () => {
   it('should sort created at by asc on desktop', async () => {
     const expected = [
       `Open: ${utilDate.toUserDateTimeDisplay(openImprovementJob.createdAt)}`,
-      `Action Required: ${utilDate.toUserDateTimeDisplay(
+      `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedImprovementJob.createdAt
       )}`,
-      `Authorized to Start: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedImprovementJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -279,10 +279,10 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilDate.toUserDateTimeDisplay(
         openMaintenanceExpeditedJob.updatedAt
       )}`,
-      `Action Required: ${utilDate.toUserDateTimeDisplay(
+      `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.updatedAt
       )}`,
-      `Authorized to Start: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -325,10 +325,10 @@ describe('Integration | Features | Job List', () => {
   it('should sort updated at by asc on desktop', async () => {
     const expected = [
       `Open: ${utilDate.toUserDateTimeDisplay(openImprovementJob.updatedAt)}`,
-      `Action Required: ${utilDate.toUserDateTimeDisplay(
+      `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedImprovementJob.updatedAt
       )}`,
-      `Authorized to Start: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedImprovementJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -373,8 +373,8 @@ describe('Integration | Features | Job List', () => {
   it('should sort type by desc on desktop', async () => {
     const expected = [
       `Open: ${utilString.titleize(openMaintenanceExpeditedJob.type)}`,
-      `Action Required: ${utilString.titleize(approvedMaintenanceJob.type)}`,
-      `Authorized to Start: ${utilString.titleize(
+      `Approved: ${utilString.titleize(approvedMaintenanceJob.type)}`,
+      `Authorized: ${utilString.titleize(
         authorizedMaintenanceJob.type
       )}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
@@ -396,7 +396,7 @@ describe('Integration | Features | Job List', () => {
     sections.forEach((s) => {
       const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
 
-      const titles = s.querySelectorAll('[data-testid="grid-row-job-type"]');
+      const titles = s.querySelectorAll('[data-testid="grid-row-job-type-label"]');
 
       const texts = [];
 
@@ -415,8 +415,8 @@ describe('Integration | Features | Job List', () => {
   it('should sort type by asc on desktop', async () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
-      `Action Required: ${utilString.titleize(approvedImprovementJob.type)}`,
-      `Authorized to Start: ${utilString.titleize(
+      `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
+      `Authorized: ${utilString.titleize(
         authorizedImprovementJob.type
       )}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
@@ -440,7 +440,7 @@ describe('Integration | Features | Job List', () => {
     sections.forEach((s) => {
       const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
 
-      const titles = s.querySelectorAll('[data-testid="grid-row-job-type"]');
+      const titles = s.querySelectorAll('[data-testid="grid-row-job-type-label"]');
 
       const texts = [];
 
@@ -459,7 +459,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on mobile', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Action Required: Replace leasing office tiling,Solar roof fitting | Authorized to Start: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Authorized: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(<JobList user={user} propertyId="property-1" />, {
       contextWidth: breakpoints.mobile.maxWidth
     });
@@ -499,10 +499,10 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilDate.toUserDateTimeDisplay(
         openMaintenanceExpeditedJob.updatedAt
       )}`,
-      `Action Required: ${utilDate.toUserDateTimeDisplay(
+      `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.updatedAt
       )}`,
-      `Authorized to Start: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -556,10 +556,10 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilDate.toUserDateTimeDisplay(
         openMaintenanceExpeditedJob.createdAt
       )}`,
-      `Action Required: ${utilDate.toUserDateTimeDisplay(
+      `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.createdAt
       )}`,
-      `Authorized to Start: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -613,8 +613,8 @@ describe('Integration | Features | Job List', () => {
   it('should sort by type in asc on mobile', async () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
-      `Action Required: ${utilString.titleize(approvedImprovementJob.type)}`,
-      `Authorized to Start: ${utilString.titleize(
+      `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
+      `Authorized: ${utilString.titleize(
         authorizedImprovementJob.type
       )}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
@@ -665,8 +665,8 @@ describe('Integration | Features | Job List', () => {
   test('Typing a search query removes irrelevant results from the jobs list', async () => {
     const expected = [
       'Open: ',
-      'Action Required: ',
-      `Authorized to Start: ${authorizedImprovementJob.title}`,
+      'Approved: ',
+      `Authorized: ${authorizedImprovementJob.title}`,
       `Completed: ${completeImprovementJob.title}`
     ].join(' | ');
 

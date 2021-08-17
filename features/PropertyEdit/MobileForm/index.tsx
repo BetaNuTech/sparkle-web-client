@@ -1,11 +1,11 @@
 import { FunctionComponent, useState } from 'react';
-import styles from '../styles.module.scss';
+import styles from './styles.module.scss';
 
 interface Props {
   isOnline: boolean;
 }
 
-const PropertyEditForm: FunctionComponent<Props> = ({ isOnline }) => {
+const PropertyMobileForm: FunctionComponent<Props> = ({ isOnline }) => {
   const [properyImg, setProperyImg] = useState<string>('');
   const [logoImg, setLogoImg] = useState<string>('');
 
@@ -21,7 +21,7 @@ const PropertyEditForm: FunctionComponent<Props> = ({ isOnline }) => {
             name="propertyImage"
             disabled={!isOnline}
             className={styles.propertyNew__imageInput}
-            data-testid="property-form-add-image"
+            data-testid="property-form-add-image-mobile"
             onChange={(e) => {
               setProperyImg(URL.createObjectURL(e.target.files[0]));
             }}
@@ -54,7 +54,7 @@ const PropertyEditForm: FunctionComponent<Props> = ({ isOnline }) => {
             disabled={!isOnline}
             name="logo"
             className={styles.propertyNew__imageInput}
-            data-testid="property-form-add-logo"
+            data-testid="property-form-add-logo-mobile"
             onChange={(e) => {
               setLogoImg(URL.createObjectURL(e.target.files[0]));
             }}
@@ -237,4 +237,4 @@ const PropertyEditForm: FunctionComponent<Props> = ({ isOnline }) => {
   );
 };
 
-export default PropertyEditForm;
+export default PropertyMobileForm;

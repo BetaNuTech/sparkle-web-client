@@ -52,8 +52,8 @@ describe('Integration | Features | Job List | Header', () => {
 
     expect(jobTotal.textContent).toEqual('7Total Jobs');
     expect(jobOpen.textContent).toEqual('3Open');
-    expect(jobActions.textContent).toEqual('4Actions Required');
-    expect(jobProgress.textContent).toEqual('2In Progress');
+    expect(jobActions.textContent).toEqual('1Approved');
+    expect(jobProgress.textContent).toEqual('2Authorized');
   });
 
   it('singular labels when property has plural job meta data', () => {
@@ -71,7 +71,7 @@ describe('Integration | Features | Job List | Header', () => {
 
     expect(jobTotal.textContent).toEqual('1Total Job');
     expect(jobOpen.textContent).toEqual('1Open');
-    expect(jobActions.textContent).toEqual('1Action Required');
-    expect(jobProgress.textContent).toEqual('0In Progress');
+    expect(jobActions.textContent).toEqual('0Approved');
+    expect(jobProgress.textContent).toEqual('0Authorized');
   });
 });

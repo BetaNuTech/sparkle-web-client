@@ -1,9 +1,9 @@
 export default {
   stateColors: {
-    open: 'primary',
+    open: 'purple',
     approved: 'primary',
-    authorized: 'primary',
-    complete: 'primary'
+    authorized: 'green',
+    complete: 'info'
   },
   nextState: {
     open: 'Approval',

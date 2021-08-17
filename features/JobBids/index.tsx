@@ -29,7 +29,8 @@ const colors = {
   gray: '-bgc-gray-light',
   info: '-bgc-info',
   alert: '-bgc-alert',
-  orange: '-bgc-orange'
+  orange: '-bgc-orange',
+  purple: '-bgc-quaternary'
 };
 
 const JobBids: FunctionComponent<Props> = ({

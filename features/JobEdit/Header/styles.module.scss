@@ -2,23 +2,29 @@
 
 .header {
   @extend %gridHeader;
+  padding-bottom: 0;
+  flex-wrap: wrap;
 
   &__backButton {
     @extend %gridHeaderBackButton;
   }
 
-  &__left {
+  &__content {
     flex-wrap: wrap;
     display: flex;
-  }
 
-  &__main {
-    @extend %gridHeaderMain;
-    margin-right: 1rem;
-  }
+    &__main {
+      @extend %gridHeaderMain;
+      margin-right: $global-padding;
 
-  &__title {
-    @extend %gridHeaderTitle;
+      &__title {
+        @extend %gridHeaderTitle;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        margin-bottom: $global-padding;
+      }
+    }
   }
 
   &__propertyName {
@@ -27,7 +33,6 @@
 
   &__controls {
     @extend %gridHeaderControls;
+    margin-bottom: $global-padding;
   }
-
-
 }

@@ -19,15 +19,13 @@ const MetaData: FunctionComponent<{
 }> = ({ jobs, jobStatus }) => {
   const totalJobs = jobs.length;
   const openJobs = jobs.filter((j) => j.state === 'open').length;
-  const actionRequiredJobs = jobs.filter(
-    (j) => j.state === 'approved' || j.state === 'open'
-  ).length;
-  const inProgressJobs = jobs.filter((j) => j.state === 'authorized').length;
+  const approvedJobs = jobs.filter((j) => j.state === 'approved').length;
+  const authorizedJobs = jobs.filter((j) => j.state === 'authorized').length;
   return (
     <ul className={clsx(styles.header__overview__metadata, '-p-none')}>
       <li data-testid="job-total-text">
         <span
-          className={clsx(styles.header__overview__label)}
+          className={clsx(styles.header__overview__label, '-bgc-quaternary')}
           data-testid="job-total"
         >
           {totalJobs}
@@ -46,10 +44,7 @@ const MetaData: FunctionComponent<{
       </li>
       <li data-testid="job-open-text">
         <span
-          className={clsx(
-            styles.header__overview__label,
-            '-bgc-alert-secondary'
-          )}
+          className={clsx(styles.header__overview__label, '-bgc-gray-light')}
           data-testid="job-open"
         >
           {openJobs}
@@ -68,13 +63,13 @@ const MetaData: FunctionComponent<{
       </li>
       <li data-testid="job-actions-text">
         <span
-          className={clsx(styles.header__overview__label, '-bgc-quaternary')}
+          className={clsx(styles.header__overview__label, '-bgc-primary')}
           data-testid="job-actions"
         >
-          {actionRequiredJobs}
+          {approvedJobs}
         </span>
         <div>
-          {`Action${actionRequiredJobs > 1 ? 's' : ''} Required`}
+          Approved
           {jobStatus === 'loading' && (
             <small
               className={styles.header__overview__labelSub}
@@ -87,13 +82,13 @@ const MetaData: FunctionComponent<{
       </li>
       <li data-testid="job-progress-text">
         <span
-          className={clsx(styles.header__overview__label, '-bgc-quaternary')}
+          className={clsx(styles.header__overview__label, '-bgc-sea-green')}
           data-testid="job-progress"
         >
-          {inProgressJobs}
+          {authorizedJobs}
         </span>
         <div>
-          In Progress
+          Authorized
           {jobStatus === 'loading' && (
             <small
               className={styles.header__overview__labelSub}
