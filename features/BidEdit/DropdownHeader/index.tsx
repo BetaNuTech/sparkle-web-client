@@ -6,17 +6,19 @@ import Dropdown, {
 
 interface Props {
   bidLink: string;
+  showSaveButton: boolean;
   isBidComplete: boolean;
   onFormAction: (action: string) => void;
 }
 
 const DropdownHeader: FunctionComponent<Props> = ({
   bidLink,
+  showSaveButton,
   isBidComplete,
   onFormAction
 }) => (
   <Dropdown isOnRight>
-    {!isBidComplete && (
+    {showSaveButton && !isBidComplete && (
       <DropdownButton
         onClick={() => onFormAction('save')}
         testid="jobedit-mobile-header-submit"

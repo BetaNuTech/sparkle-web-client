@@ -14,7 +14,7 @@
 
   &__main {
     @extend %gridHeaderMain;
-    margin-right: 1rem;
+    margin-right: $global-padding;
   }
 
   &__title {
@@ -29,6 +29,4 @@
   &__controls {
     @extend %gridHeaderControls;
   }
-
-
 }

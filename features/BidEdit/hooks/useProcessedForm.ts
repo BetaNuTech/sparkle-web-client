@@ -7,12 +7,10 @@ export default function useProcessedForm(
   formBid.costMin = Number(formBid.costMin);
   formBid.costMax = Number(formBid.costMax);
 
-  formBid.startAt = formBid.startAt
-    ? moment(formBid.startAt).unix()
-    : formBid.startAt;
+  formBid.startAt = formBid.startAt ? moment(formBid.startAt).unix() : 0;
   formBid.completeAt = formBid.completeAt
     ? moment(formBid.completeAt).unix()
-    : formBid.completeAt;
+    : 0;
 
   if (isFixedCostType) {
     // Set the costMax same to as that of cost min as
