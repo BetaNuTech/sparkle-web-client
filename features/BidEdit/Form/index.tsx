@@ -77,6 +77,7 @@ interface LayoutProps {
   startAtProcessed: number;
   completeAtProcessed: number;
   attachments: Array<bidAttachmentModel>;
+  isApprovedOrComplete: boolean;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -88,6 +89,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   onSubmit,
   register,
   apiState,
+  isBidComplete,
   isOnline,
   formState,
   onCostTypeChange,
@@ -95,7 +97,8 @@ const Layout: FunctionComponent<LayoutProps> = ({
   showSaveButton,
   startAtProcessed,
   completeAtProcessed,
-  attachments
+  attachments,
+  isApprovedOrComplete
 }) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
@@ -162,12 +165,13 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   defaultValue={bid.vendor}
                   data-testid="bid-form-vendor"
                   {...register('vendor')}
+                  disabled={apiState.isLoading || isBidComplete}
                 />
                 <ErrorLabel formName="vendor" errors={formState.errors} />
               </div>
             </div>
             <div className={styles.form__formCost}>
-              <label>Cost</label>
+              <label>Cost {isApprovedOrComplete && <span>*</span>}</label>
               <div className={styles.form__formCost__select}>
                 <button
                   type="button"
@@ -179,6 +183,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 <span className={styles.form__formCost__separator}></span>
                 <button
                   type="button"
+                  id="btnRange"
                   className={clsx(!isFixedCostType && styles.active)}
                   onClick={() => onCostTypeChange('range')}
                 >
@@ -202,12 +207,14 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   <div className={styles.form__group__control}>
                     <input
                       type="number"
+                      id="costMin"
                       name="costMin"
                       className={styles.form__input}
                       placeholder={isFixedCostType ? '' : 'Minimum'}
                       defaultValue={bid.costMin}
                       data-testid="bid-form-cost-min"
                       {...register('costMin')}
+                      disabled={apiState.isLoading || isBidComplete}
                     />
                     <ErrorLabel formName="costMin" errors={formState.errors} />
                   </div>
@@ -219,12 +226,14 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     <div className={styles.form__group__control}>
                       <input
                         type="number"
+                        id="costMax"
                         name="costMax"
                         className={styles.form__input}
                         placeholder="Maximum"
                         defaultValue={bid.costMax}
                         data-testid="bid-form-cost-max"
                         {...register('costMax')}
+                        disabled={apiState.isLoading || isBidComplete}
                       />
                       <ErrorLabel
                         formName="costMax"
@@ -243,7 +252,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 )}
               >
                 <div className={styles.form__group}>
-                  <label htmlFor="bidStartAt">Start Date</label>
+                  <label htmlFor="bidStartAt">
+                    Start Date {isApprovedOrComplete && <span>*</span>}
+                  </label>
                   <div className={styles.form__group__control}>
                     <input
                       id="bidStartAt"
@@ -253,6 +264,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       defaultValue={startAtProcessed}
                       data-testid="bid-form-start-at"
                       {...register('startAt')}
+                      disabled={apiState.isLoading || isBidComplete}
                     />
                     <ErrorLabel formName="startAt" errors={formState.errors} />
                   </div>
@@ -265,7 +277,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 )}
               >
                 <div className={styles.form__group}>
-                  <label htmlFor="bidVendor">Complete Date</label>
+                  <label htmlFor="bidVendor">
+                    Complete Date {isApprovedOrComplete && <span>*</span>}
+                  </label>
                   <div className={styles.form__group__control}>
                     <input
                       id="bidCompleteAt"
@@ -275,6 +289,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       defaultValue={completeAtProcessed}
                       data-testid="bid-form-complete-at"
                       {...register('completeAt')}
+                      disabled={apiState.isLoading || isBidComplete}
                     />
                     <ErrorLabel
                       formName="completeAt"
@@ -296,6 +311,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   defaultValue={bid.vendorDetails}
                   data-testid="bid-form-vendor-details"
                   {...register('vendorDetails')}
+                  disabled={apiState.isLoading || isBidComplete}
                 ></textarea>
                 <ErrorLabel formName="need" errors={formState.errors} />
               </div>
@@ -414,14 +430,72 @@ const BidForm: FunctionComponent<Props> = ({
     attachments = bid.attachments ? bid.attachments : [];
   }
 
+  // Cost min validator to check it should be less than max cost
+  const costMinValidator = (value) => {
+    let isValid = true;
+    const costMax: HTMLInputElement = document.getElementById(
+      'costMax'
+    ) as HTMLInputElement;
+    if (value && costMax) {
+      isValid = Number(costMax.value) >= Number(value);
+    }
+    return isValid;
+  };
+  // Cost max validator to check it should be more than min cost
+  const costMaxValidator = (value) => {
+    let isValid = true;
+    const costMin: HTMLInputElement = document.getElementById(
+      'costMin'
+    ) as HTMLInputElement;
+    if (value && costMin) {
+      isValid = Number(costMin.value) <= Number(value);
+    }
+    return isValid;
+  };
+
+  // Start at validator to check it should be less than completion date
+  const startDateValidator = (value) => {
+    let isValid = true;
+    const bidCompleteAt: HTMLInputElement = document.getElementById(
+      'bidCompleteAt'
+    ) as HTMLInputElement;
+    if (value && bidCompleteAt) {
+      isValid = moment(bidCompleteAt.value).unix() >= moment(value).unix();
+    }
+    return isValid;
+  };
+
+  // Complete at validator to check it should be more than start date
+  const completeDateValidator = (value) => {
+    let isValid = true;
+    const bidStartAt: HTMLInputElement = document.getElementById(
+      'bidStartAt'
+    ) as HTMLInputElement;
+    if (value && bidStartAt) {
+      isValid = moment(bidStartAt.value).unix() <= moment(value).unix();
+    }
+    return isValid;
+  };
+
   const validationShape = {
     vendor: yup.string().required(formErrors.vendorRequired),
-    costMin: yup.string(),
-    costMax: yup.string(),
-    startAt: yup.string(),
-    completeAt: yup.string(),
+    costMin: yup
+      .string()
+      .test('cost-min-max', formErrors.costMinMaxGreater, costMinValidator),
+    costMax: yup
+      .string()
+      .test('cost-max-min', formErrors.costMaxMinGreater, costMaxValidator),
+    startAt: yup
+      .string()
+      .test('start-date', formErrors.startAtLess, startDateValidator),
+    completeAt: yup
+      .string()
+      .test('complete-date', formErrors.completeAtLess, completeDateValidator),
     vendorDetails: yup.string()
   };
+
+  const isApprovedOrComplete =
+    !isNewBid && ['approved', 'complete'].includes(bid.state);
 
   // Publish bid updates to API
   const onPublish = (data, action) => {
@@ -445,6 +519,29 @@ const BidForm: FunctionComponent<Props> = ({
       postBidCreate(property.id, job.id, formBidProcessed);
     }
   };
+
+  if (isApprovedOrComplete) {
+    // Add need validation if bid is in approved or complete state
+    validationShape.startAt = yup
+      .string()
+      .required(formErrors.startAtRequired)
+      .test('start-date', formErrors.startAtLess, startDateValidator);
+
+    // Add need validation if bid is in approved or complete state
+    validationShape.completeAt = yup
+      .string()
+      .required(formErrors.completeAtRequired)
+      .test('complete-date', formErrors.completeAtLess, completeDateValidator);
+
+    validationShape.costMin = yup
+      .string()
+      .required(formErrors.costRequired)
+      .test('cost-min-max', formErrors.costMinMaxGreater, costMinValidator);
+    validationShape.costMax = yup
+      .string()
+      .required(formErrors.costRequired)
+      .test('cost-max-min', formErrors.costMaxMinGreater, costMaxValidator);
+  }
 
   // Setup form validations
   const validationSchema = yup.object().shape(validationShape);
@@ -481,48 +578,48 @@ const BidForm: FunctionComponent<Props> = ({
     setValue('cost', type);
   };
 
+  const apiBid = (({
+    vendor,
+    costMin,
+    costMax,
+    startAt,
+    completeAt,
+    vendorDetails
+  }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
+    bid
+  );
+
+  // Setup watcher for form changes
+  const formData = useWatch({
+    control,
+    defaultValue: {
+      vendor: apiBid.vendor,
+      vendorDetails: apiBid.vendorDetails,
+      cost: bid.costMin === bid.costMax ? 'fixed' : 'range',
+      costMin: apiBid.costMin,
+      costMax: apiBid.costMax,
+      startAt: startAtProcessed,
+      completeAt: completeAtProcessed
+    }
+  });
+
+  const formBid = (({
+    vendor,
+    costMin,
+    costMax,
+    startAt,
+    completeAt,
+    vendorDetails
+  }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
+    formData
+  );
+
+  // process form data for number and unix timestamp
+  const formBidProcessed = useProcessedForm(formBid, isFixedCostType);
+
   let showSaveButton = isNewBid;
   // Check if we have any new updates
   if (!isNewBid && !isBidComplete) {
-    const apiBid = (({
-      vendor,
-      costMin,
-      costMax,
-      startAt,
-      completeAt,
-      vendorDetails
-    }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
-      bid
-    );
-
-    // Setup watcher for form changes
-    const formData = useWatch({
-      control,
-      defaultValue: {
-        vendor: apiBid.vendor,
-        vendorDetails: apiBid.vendorDetails,
-        cost: bid.costMin === bid.costMax ? 'fixed' : 'range',
-        costMin: apiBid.costMin,
-        costMax: apiBid.costMax,
-        startAt: startAtProcessed,
-        completeAt: completeAtProcessed
-      }
-    });
-
-    const formBid = (({
-      vendor,
-      costMin,
-      costMax,
-      startAt,
-      completeAt,
-      vendorDetails
-    }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
-      formData
-    );
-
-    // process form data for number and unix timestamp
-    const formBidProcessed = useProcessedForm(formBid, isFixedCostType);
-
     // Compare form data with api data
     showSaveButton =
       JSON.stringify(formBidProcessed) !== JSON.stringify(apiBid);
@@ -542,6 +639,7 @@ const BidForm: FunctionComponent<Props> = ({
         <ActionsIcon />
         <DropdownHeader
           bidLink={bidLink}
+          showSaveButton={showSaveButton}
           isBidComplete={isBidComplete}
           onFormAction={onSubmit}
         />
@@ -580,6 +678,7 @@ const BidForm: FunctionComponent<Props> = ({
             startAtProcessed={startAtProcessed}
             completeAtProcessed={completeAtProcessed}
             attachments={attachments}
+            isApprovedOrComplete={isApprovedOrComplete}
           />
         </>
       )}
@@ -617,6 +716,7 @@ const BidForm: FunctionComponent<Props> = ({
             startAtProcessed={startAtProcessed}
             completeAtProcessed={completeAtProcessed}
             attachments={attachments}
+            isApprovedOrComplete={isApprovedOrComplete}
           />
         </div>
       )}

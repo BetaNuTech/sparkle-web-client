@@ -135,7 +135,7 @@ describe('Integration | Features | Bid Edit', () => {
     expect(loaderText).toBeNull();
   });
 
-  it('checks that form validation is showing errors', async () => {
+  it('checks that empty vendor name validation error shows when form submits', async () => {
     render(
       <BidEdit
         user={user}

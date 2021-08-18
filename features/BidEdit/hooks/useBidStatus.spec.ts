@@ -58,7 +58,7 @@ describe('Unit | Features | Job Edit | Hooks | Use Job Status', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('should an error report on unexpected update errors', () => {
+  test('should send an error report on unexpected update errors', () => {
     const expected = true;
     const sendNotification = sinon.spy();
     const apiState = {
