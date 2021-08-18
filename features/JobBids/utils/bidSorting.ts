@@ -6,9 +6,10 @@ export const sortBid =
   (a, b): number => {
     const aValue = a[key];
     const bValue = b[key];
-    const isString = typeof aValue === 'string';
+    const isAString = typeof aValue === 'string';
+    const isBString = typeof bValue === 'string';
 
-    if (sortDir === 'asc' && isString) {
+    if (sortDir === 'asc' && isAString) {
       return aValue.localeCompare(bValue);
     }
 
@@ -20,7 +21,7 @@ export const sortBid =
 
     // Descending logic
 
-    if (isString) {
+    if (isBString) {
       return bValue.localeCompare(aValue);
     }
 

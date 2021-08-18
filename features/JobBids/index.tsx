@@ -89,7 +89,7 @@ const JobBids: FunctionComponent<Props> = ({
 
       {/* Desktop Header & Content */}
       {isDesktop && (
-        <div>
+        <>
           <Header
             property={property}
             bids={bids}
@@ -106,7 +106,7 @@ const JobBids: FunctionComponent<Props> = ({
             colors={colors}
             configBids={configBids}
           />
-        </div>
+        </>
       )}
     </>
   );

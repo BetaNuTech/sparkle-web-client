@@ -78,6 +78,12 @@ interface LayoutProps {
   completeAtProcessed: number;
   attachments: Array<bidAttachmentModel>;
   isApprovedOrComplete: boolean;
+  canApprove: boolean;
+  canApproveEnabled: boolean;
+  canReject: boolean;
+  canMarkIncomplete: boolean;
+  canMarkComplete: boolean;
+  canReopen: boolean;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -98,7 +104,13 @@ const Layout: FunctionComponent<LayoutProps> = ({
   startAtProcessed,
   completeAtProcessed,
   attachments,
-  isApprovedOrComplete
+  isApprovedOrComplete,
+  canApprove,
+  canApproveEnabled,
+  canReject,
+  canMarkIncomplete,
+  canMarkComplete,
+  canReopen
 }) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
@@ -354,6 +366,95 @@ const Layout: FunctionComponent<LayoutProps> = ({
           </div>
         </div>
 
+        {canApprove && (
+          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+            <button
+              type="button"
+              data-testid="bid-form-approve"
+              disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
+              className={clsx(
+                styles.button__submit,
+                isMobile && styles.button__fullwidth
+              )}
+              onClick={() => onSubmit('approved')}
+            >
+              Approve Bid
+            </button>
+          </div>
+        )}
+
+        {canMarkComplete && (
+          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+            <button
+              type="button"
+              data-testid="bid-form-complete-bid"
+              disabled={apiState.isLoading || !isOnline}
+              className={clsx(
+                styles.button__cancel,
+                '-c-info',
+                isMobile && styles.button__fullwidth
+              )}
+              onClick={() => onSubmit('complete')}
+            >
+              Complete
+            </button>
+          </div>
+        )}
+
+        {canMarkIncomplete && (
+          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+            <button
+              type="button"
+              data-testid="bid-form-incomplete-bid"
+              disabled={apiState.isLoading || !isOnline}
+              className={clsx(
+                styles.button__cancel,
+                '-c-warning',
+                isMobile && styles.button__fullwidth
+              )}
+              onClick={() => onSubmit('incomplete')}
+            >
+              Incomplete
+            </button>
+          </div>
+        )}
+
+        {canReject && (
+          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+            <button
+              type="button"
+              data-testid="bid-form-reject-bid"
+              disabled={apiState.isLoading || !isOnline}
+              className={clsx(
+                styles.button__cancel,
+                '-c-alert',
+                isMobile && styles.button__fullwidth
+              )}
+              onClick={() => onSubmit('rejected')}
+            >
+              Reject Bid
+            </button>
+          </div>
+        )}
+
+        {canReopen && (
+          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+            <button
+              type="button"
+              data-testid="bid-form-reopen-bid"
+              disabled={apiState.isLoading || !isOnline}
+              className={clsx(
+                styles.button__cancel,
+                '-c-info',
+                isMobile && styles.button__fullwidth
+              )}
+              onClick={() => onSubmit('reopen')}
+            >
+              Reopen
+            </button>
+          </div>
+        )}
+
         {showSaveButton && (
           <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
             <button
@@ -503,6 +604,20 @@ const BidForm: FunctionComponent<Props> = ({
       ...data
     } as bidModel;
 
+    switch (action) {
+      case 'approved':
+      case 'rejected':
+      case 'incomplete':
+      case 'complete':
+        formBid.state = action;
+        break;
+      case 'reopen':
+        formBid.state = 'open';
+        break;
+      default:
+        break;
+    }
+
     const formBidProcessed = useProcessedForm(
       formBid,
       data.cost === 'fixed'
@@ -539,8 +654,11 @@ const BidForm: FunctionComponent<Props> = ({
       .test('cost-min-max', formErrors.costMinMaxGreater, costMinValidator);
     validationShape.costMax = yup
       .string()
-      .required(formErrors.costRequired)
-      .test('cost-max-min', formErrors.costMaxMinGreater, costMaxValidator);
+      .test('cost-max-min', formErrors.costMaxMinGreater, costMaxValidator)
+      .when('costMaxRequired', {
+        is: !isFixedCostType,
+        then: yup.string().required(formErrors.costRequired)
+      });
   }
 
   // Setup form validations
@@ -602,6 +720,14 @@ const BidForm: FunctionComponent<Props> = ({
       completeAt: completeAtProcessed
     }
   });
+
+  const canApprove = !isNewBid && bid.state === 'open';
+  const canApproveEnabled =
+    canApprove && Object.keys(formState.errors).length === 0;
+  const canReject = !isNewBid && bid.state === 'approved';
+  const canMarkIncomplete = !isNewBid && bid.state === 'approved';
+  const canMarkComplete = !isNewBid && bid.state === 'approved';
+  const canReopen = !isNewBid && ['rejected', 'incomplete'].includes(bid.state);
 
   const formBid = (({
     vendor,
@@ -679,6 +805,12 @@ const BidForm: FunctionComponent<Props> = ({
             completeAtProcessed={completeAtProcessed}
             attachments={attachments}
             isApprovedOrComplete={isApprovedOrComplete}
+            canApprove={canApprove}
+            canApproveEnabled={canApproveEnabled}
+            canReject={canReject}
+            canMarkIncomplete={canMarkIncomplete}
+            canMarkComplete={canMarkComplete}
+            canReopen={canReopen}
           />
         </>
       )}
@@ -696,6 +828,12 @@ const BidForm: FunctionComponent<Props> = ({
             apiState={apiState}
             showSaveButton={showSaveButton}
             onSubmit={onSubmit}
+            canApprove={canApprove}
+            canApproveEnabled={canApproveEnabled}
+            canReject={canReject}
+            canMarkIncomplete={canMarkIncomplete}
+            canMarkComplete={canMarkComplete}
+            canReopen={canReopen}
           />
           <Layout
             isMobile={isMobileorTablet}
@@ -717,6 +855,12 @@ const BidForm: FunctionComponent<Props> = ({
             completeAtProcessed={completeAtProcessed}
             attachments={attachments}
             isApprovedOrComplete={isApprovedOrComplete}
+            canApprove={canApprove}
+            canApproveEnabled={canApproveEnabled}
+            canReject={canReject}
+            canMarkIncomplete={canMarkIncomplete}
+            canMarkComplete={canMarkComplete}
+            canReopen={canReopen}
           />
         </div>
       )}
