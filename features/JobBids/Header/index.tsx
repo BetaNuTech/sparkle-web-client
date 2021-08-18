@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import getConfig from 'next/config';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
@@ -14,6 +14,10 @@ interface BidsHeaderModel {
   bids: Array<bidModel>;
   bidStatus: string;
 }
+
+const config = getConfig() || {};
+const publicRuntimeConfig = config.publicRuntimeConfig || {};
+const basePath = publicRuntimeConfig.basePath || '';
 
 const MetaData: FunctionComponent<{
   bids?: Array<bidModel>;
@@ -74,19 +78,19 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
   bids,
   bidStatus
 }) => {
-  const router = useRouter();
+  const backLink = `${basePath}/properties/${property.id}/jobs`;
   return (
     <>
       <header className={styles.header} data-testid="bidlist-header">
         {/* Title And Create Button */}
         <aside className={styles.header__left}>
           <aside className={styles.header__main}>
-            <button
-              type="button"
-              className={styles.header__backButton}
-              onClick={() => router.back()}
-              data-testid="property-jobs-back"
-            ></button>
+            <Link href={backLink}>
+              <a
+                className={styles.header__backButton}
+                data-testid="property-jobs-back"
+              ></a>
+            </Link>
             <h1 className={styles.header__title}>
               <span
                 className={styles.header__propertyName}

@@ -9,7 +9,7 @@ import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { openImprovementJob } from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
-import { approvedBid } from '../../../__mocks__/bids';
+import { approvedBid, openBid, rejectedBid } from '../../../__mocks__/bids';
 import { admin as user } from '../../../__mocks__/users';
 import breakpoints from '../../../config/breakpoints';
 import BidEditForm from './index';
@@ -58,27 +58,23 @@ describe('Unit | Features | Bid Edit | Form', () => {
     await act(async () => {
       const formVendor = screen.queryByTestId('bid-form-vendor');
       const formCostMin = screen.queryByTestId('bid-form-cost-min');
-      const formCostMax = screen.queryByTestId('bid-form-cost-max');
       const formStartAt = screen.queryByTestId('bid-form-start-at');
       const formCompleteAt = screen.queryByTestId('bid-form-complete-at');
       // Set empty value
       await fireEvent.change(formVendor, { target: { value: '' } });
       await fireEvent.change(formCostMin, { target: { value: '' } });
-      await fireEvent.change(formCostMax, { target: { value: '' } });
       await fireEvent.change(formStartAt, { target: { value: '' } });
       await fireEvent.change(formCompleteAt, { target: { value: '' } });
     });
 
     const errorTitle = screen.queryByTestId('error-label-vendor');
     const errorCostMin = screen.queryByTestId('error-label-costMin');
-    const errorCostMax = screen.queryByTestId('error-label-costMax');
     const errorStartAt = screen.queryByTestId('error-label-startAt');
     const errorCompleteAt = screen.queryByTestId('error-label-completeAt');
 
     // It should be true because error message will come as they are required
     expect(errorTitle).toBeTruthy();
     expect(errorCostMin).toBeTruthy();
-    expect(errorCostMax).toBeTruthy();
     expect(errorStartAt).toBeTruthy();
     expect(errorCompleteAt).toBeTruthy();
   });
@@ -187,7 +183,9 @@ describe('Unit | Features | Bid Edit | Form', () => {
       const formStartAt = screen.queryByTestId('bid-form-start-at');
       const formCompleteAt = screen.queryByTestId('bid-form-complete-at');
       // Set empty value
-      await fireEvent.change(formCompleteAt, { target: { value: '2021-07-16' } });
+      await fireEvent.change(formCompleteAt, {
+        target: { value: '2021-07-16' }
+      });
       await fireEvent.change(formStartAt, { target: { value: '2021-07-19' } });
     });
 
@@ -224,12 +222,137 @@ describe('Unit | Features | Bid Edit | Form', () => {
       const formCompleteAt = screen.queryByTestId('bid-form-complete-at');
       // Set empty value
       await fireEvent.change(formStartAt, { target: { value: '2021-07-19' } });
-      await fireEvent.change(formCompleteAt, { target: { value: '2021-07-16' } });
+      await fireEvent.change(formCompleteAt, {
+        target: { value: '2021-07-16' }
+      });
     });
 
     const errorCompleteAt = screen.queryByTestId('error-label-completeAt');
 
     // It should be true because error message will come as they are required
     expect(errorCompleteAt).toBeTruthy();
+  });
+
+  it('should show approve button when bid is in open state', async () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: openBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: () => {}
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const btnApprove = screen.queryByTestId('bid-form-approve');
+
+    // Check if the elements are present
+    expect(btnApprove).toBeTruthy();
+  });
+
+  it('should show complete, incomplete, reject button when bid is in approved state', async () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: approvedBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: () => {}
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const btnComplete = screen.queryByTestId('bid-form-complete-bid');
+    const btnIncomplete = screen.queryByTestId('bid-form-incomplete-bid');
+    const btnReject = screen.queryByTestId('bid-form-reject-bid');
+
+    // Check if the elements are present
+    expect(btnComplete).toBeTruthy();
+    expect(btnIncomplete).toBeTruthy();
+    expect(btnReject).toBeTruthy();
+  });
+
+  it('should show reopen button when bid is in rejected state', async () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: rejectedBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: () => {}
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const btnReopen = screen.queryByTestId('bid-form-reopen-bid');
+
+    // Check if the elements are present
+    expect(btnReopen).toBeTruthy();
+  });
+
+  it('should request to transition bid to complete when complete button selected', async () => {
+    const putReq = sinon.spy();
+    const expected = 'complete';
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: approvedBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: putReq
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    await act(async () => {
+      const btnComplete = screen.queryByTestId('bid-form-complete-bid');
+      await userEvent.click(btnComplete);
+    });
+
+    // Send update request
+    const result = putReq.called ? putReq.getCall(0).args[2] : {};
+    const actual = result.state || '';
+    expect(actual).toEqual(expected);
   });
 });

@@ -107,19 +107,21 @@ const Layout: FunctionComponent<LayoutProps> = ({
               isMobile && styles.job__info__mobile
             )}
           >
-            <div
-              className={clsx(
-                styles.job__info__box,
-                isMobile
-                  ? styles.job__info__box__mobile
-                  : styles.job__info__box__desktop
-              )}
-            >
-              <p>Job Status{!isMobile && <> :&nbsp;</>}</p>
-              <h3 data-testid="job-form-edit-state">
-                {utilString.titleize(job.state)}
-              </h3>
-            </div>
+            {job.state && (
+              <div
+                className={clsx(
+                  styles.job__info__box,
+                  isMobile
+                    ? styles.job__info__box__mobile
+                    : styles.job__info__box__desktop
+                )}
+              >
+                <p>Job Status{!isMobile && <> :&nbsp;</>}</p>
+                <h3 data-testid="job-form-edit-state">
+                  {utilString.titleize(job.state)}
+                </h3>
+              </div>
+            )}
             {nextState && (
               <div
                 className={clsx(

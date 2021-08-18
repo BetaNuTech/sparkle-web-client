@@ -2,7 +2,6 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import getConfig from 'next/config';
-import { useRouter } from 'next/router';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import { JobApiResult } from '../hooks/useJobForm';
@@ -20,6 +19,9 @@ interface JobsHeaderModel {
   canExpedite: boolean;
   onFormAction: (action: string) => void;
 }
+const config = getConfig() || {};
+const publicRuntimeConfig = config.publicRuntimeConfig || {};
+const basePath = publicRuntimeConfig.basePath || '';
 
 const Header: FunctionComponent<JobsHeaderModel> = ({
   property,
@@ -32,23 +34,19 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   canExpedite,
   onFormAction
 }) => {
-  const router = useRouter();
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
-
   const jobLink = `${basePath}/properties/${property.id}/jobs`;
+
   return (
     <header className={styles.header} data-testid="jobedit-header">
       {/* Title And Create Button */}
       <div className={styles.header__content}>
         <div className={styles.header__content__main}>
-          <button
-            type="button"
-            className={styles.header__backButton}
-            onClick={() => router.back()}
-            data-testid="property-jobs-back"
-          ></button>
+          <Link href={jobLink}>
+            <a
+              className={styles.header__backButton}
+              data-testid="property-jobs-back"
+            ></a>
+          </Link>
           <h1 className={styles.header__content__main__title}>
             <span
               className={styles.header__propertyName}

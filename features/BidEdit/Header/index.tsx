@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'react';
-import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
@@ -18,6 +17,12 @@ interface JobsHeaderModel {
   isOnline?: boolean;
   showSaveButton: boolean;
   onSubmit: (action: string) => void;
+  canApprove: boolean;
+  canApproveEnabled: boolean;
+  canReject: boolean;
+  canMarkIncomplete: boolean;
+  canMarkComplete: boolean;
+  canReopen: boolean;
 }
 
 const Header: FunctionComponent<JobsHeaderModel> = ({
@@ -28,68 +33,135 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   isOnline,
   apiState,
   showSaveButton,
-  onSubmit
-}) => {
-  const router = useRouter();
+  onSubmit,
+  canApprove,
+  // canApproveEnabled,
+  canReject,
+  canMarkIncomplete,
+  canMarkComplete,
+  canReopen
+}) => (
+  <header className={styles.header} data-testid="bidedit-header">
+    {/* Title And Create Button */}
+    <div className={styles.header__content}>
+      <div className={styles.header__content__main}>
+        <Link href={bidLink}>
+          <a className={styles.header__backButton}></a>
+        </Link>
 
-  return (
-    <header className={styles.header} data-testid="bidedit-header">
-      {/* Title And Create Button */}
-      <aside className={styles.header__left}>
-        <aside className={styles.header__main}>
-          <button
-            type="button"
-            className={styles.header__backButton}
-            onClick={() => router.back()}
-          ></button>
-          <h1 className={styles.header__title}>
-            <span
-              className={styles.header__propertyName}
-            >{`${property.name}`}</span>
-            <span>&nbsp;/ Jobs</span>
-            <span className={styles.header__propertyName}>
-              &nbsp;/ {`${job.title}`}
-            </span>
-            <span data-testid="bidedit-header-name">
-              &nbsp;/ {isNewBid ? 'New' : 'Edit'}
-            </span>
-          </h1>
-        </aside>
-      </aside>
-      <aside className={styles.header__controls}>
-        {isOnline ? (
-          <>
+        <h1 className={styles.header__content__main__title}>
+          <span
+            className={styles.header__propertyName}
+          >{`${property.name}`}</span>
+          <span>&nbsp;/ Jobs</span>
+          <span className={styles.header__propertyName}>
+            &nbsp;/ {`${job.title}`}
+          </span>
+          <span data-testid="bidedit-header-name">
+            &nbsp;/ {isNewBid ? 'New' : 'Edit'}
+          </span>
+        </h1>
+      </div>
+    </div>
+
+    <aside className={styles.header__controls}>
+      {isOnline ? (
+        <>
+          <div className={parentStyles.button__group}>
+            <Link href={bidLink}>
+              <a
+                className={clsx(parentStyles.button__cancel)}
+                data-testid="bidedit-header-cancel"
+              >
+                Cancel
+              </a>
+            </Link>
+          </div>
+          {canApprove && (
             <div className={parentStyles.button__group}>
-              <Link href={bidLink}>
-                <a
-                  className={clsx(parentStyles.button__cancel)}
-                  data-testid="bidedit-header-cancel"
-                >
-                  Cancel
-                </a>
-              </Link>
+              <button
+                type="button"
+                className={clsx(parentStyles.button__submit)}
+                disabled={apiState.isLoading || !isOnline}
+                data-testid="bidedit-header-approve"
+                onClick={() => onSubmit('approved')}
+              >
+                Approve Bid
+              </button>
             </div>
-            {showSaveButton && (
-              <div className={parentStyles.button__group}>
-                <button
-                  type="button"
-                  className={clsx(parentStyles.button__submit)}
-                  disabled={apiState.isLoading}
-                  data-testid="bidedit-header-submit"
-                  onClick={() => onSubmit('save')}
-                >
-                  Save
-                </button>
-              </div>
-            )}
-          </>
-        ) : (
-          <OfflineDesktop />
-        )}
-      </aside>
-    </header>
-  );
-};
+          )}
+          {canMarkComplete && (
+            <div className={parentStyles.button__group}>
+              <button
+                type="button"
+                className={clsx(parentStyles.button__cancel, '-c-info')}
+                disabled={apiState.isLoading || !isOnline}
+                data-testid="bidedit-header-complete"
+                onClick={() => onSubmit('complete')}
+              >
+                Complete
+              </button>
+            </div>
+          )}
+          {canMarkIncomplete && (
+            <div className={parentStyles.button__group}>
+              <button
+                type="button"
+                className={clsx(parentStyles.button__cancel, '-c-warning')}
+                disabled={apiState.isLoading || !isOnline}
+                data-testid="bidedit-header-incomplete"
+                onClick={() => onSubmit('incomplete')}
+              >
+                Incomplete
+              </button>
+            </div>
+          )}
+          {canReject && (
+            <div className={parentStyles.button__group}>
+              <button
+                type="button"
+                className={clsx(parentStyles.button__cancel, '-c-alert')}
+                disabled={apiState.isLoading || !isOnline}
+                data-testid="bidedit-header-reject"
+                onClick={() => onSubmit('rejected')}
+              >
+                Reject Bid
+              </button>
+            </div>
+          )}
+          {canReopen && (
+            <div className={parentStyles.button__group}>
+              <button
+                type="button"
+                className={clsx(parentStyles.button__cancel, '-c-info')}
+                disabled={apiState.isLoading || !isOnline}
+                data-testid="bidedit-header-reopen"
+                onClick={() => onSubmit('reopen')}
+              >
+                Reopen
+              </button>
+            </div>
+          )}
+          {showSaveButton && (
+            <div className={parentStyles.button__group}>
+              <button
+                type="button"
+                className={clsx(parentStyles.button__submit)}
+                disabled={apiState.isLoading || !isOnline}
+                data-testid="bidedit-header-submit"
+                onClick={() => onSubmit('save')}
+              >
+                Save
+              </button>
+            </div>
+          )}
+        </>
+      ) : (
+        <OfflineDesktop />
+      )}
+    </aside>
+  </header>
+);
 
 Header.defaultProps = {};
 

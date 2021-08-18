@@ -59,8 +59,9 @@
 
 .button {
   &__group {
-    &:first-child {
-      margin-right: $global-padding;
+    margin-right: $global-padding;
+    &:last-child {
+      margin-right: 0;
     }
 
     &__margin {
