@@ -160,10 +160,6 @@ describe('Integration | Features | Job Edit', () => {
     });
 
     await act(async () => {
-      render(<JobEdit user={user} propertyId="property-1" jobId="new" />, {
-        contextWidth: breakpoints.tablet.maxWidth
-      });
-
       // Form submit button
       const [submit] = await screen.findAllByTestId('job-form-submit');
       await userEvent.click(submit);

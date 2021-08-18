@@ -1,0 +1,18 @@
+@import '../../styles/index.scss';
+
+.offline {
+  display: flex;
+  flex: 1 1 auto;
+  align-self: stretch;
+  white-space: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+
+  & svg {
+    max-width: rem-calc(15);
+    max-height: rem-calc(15);
+    > path {
+      fill: $warning-color;
+    }
+  }
+}

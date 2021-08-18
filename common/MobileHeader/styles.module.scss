@@ -108,6 +108,27 @@
       color: $white;
     }
   }
+
+  &__footer {
+    grid-area: bottom;
+    flex: 1 0 100%;
+    display: flex;
+    order: 4;
+    padding: 0.5rem 1rem;
+    flex-wrap: nowrap;
+    font-size: 0.75rem;
+    align-items: center;
+    justify-content: center;
+    background-color: $gray-lighter;
+
+    & svg {
+      max-width: rem-calc(15);
+      max-height: rem-calc(15);
+      > path {
+        fill: $warning-color;
+      }
+    }
+  }
 }
 
 @include media-query(desktop) {

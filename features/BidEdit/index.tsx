@@ -9,6 +9,8 @@ import userModel from '../../common/models/user';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import useBid from './hooks/useBid';
+import useBidForm from './hooks/useBidForm';
+import useBidStatus from './hooks/useBidStatus';
 import BidForm from './Form';
 
 interface Props {
@@ -47,6 +49,9 @@ const BidEdit: FunctionComponent<Props> = ({
   // Fetch the data of bid
   const { data: bid, status: bidStatus } = useBid(firestore, bidId);
 
+  const { apiState, postBidCreate, putBidUpdate } = useBidForm(bid);
+  // Show job error status
+  useBidStatus(apiState, bidId, jobId, propertyId, sendNotification);
   // Loading State
   if (!property || !job || (bidId !== 'new' && !bid)) {
     return <LoadingHud title="Loading Bid" />;
@@ -67,6 +72,9 @@ const BidEdit: FunctionComponent<Props> = ({
       job={job}
       bid={bid}
       isNewBid={isNewBid}
+      apiState={apiState}
+      postBidCreate={postBidCreate}
+      putBidUpdate={putBidUpdate}
     />
   );
 };

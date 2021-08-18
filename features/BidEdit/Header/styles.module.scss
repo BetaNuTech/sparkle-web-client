@@ -23,6 +23,7 @@
 
   &__propertyName {
     @extend %gridHeaderTitle--ellipsis;
+    max-width: 7ch;
   }
 
   &__controls {
