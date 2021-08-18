@@ -1,6 +1,6 @@
 @import '../../../styles/index.scss';
 
-.propertyNew__desktop {
+.propertyEditDesktop {
   &__mainContainer {
     background-color: #f2f2f2;
     max-height: 100vh;
@@ -9,7 +9,7 @@
   &__form {
     position: relative;
     top: 2%;
-    left: 2%;
+    left: 1.3%;
     background-color: #fff;
     width: 45rem;
     height: 96%;
@@ -31,15 +31,16 @@
     &__image {
       grid-area: img;
       border: 1px solid #d9d9d9;
-      padding: 0 $global-padding;
+      padding: 0;
     }
     &__fields {
       grid-area: fields;
+      display: flex;
       border: 1px solid #d9d9d9;
       border-top: none;
-      padding: $global-padding;
+      padding: 1rem;
+      padding-bottom: 2rem;
       overflow: auto;
-      display: flex;
       background-color: #f8f8f8;
     }
     &__templates {
@@ -51,27 +52,40 @@
   }
 
   &__logoContainer {
-    width: 45%;
+    width: 50%;
   }
 
   &__fieldsContainer {
-    width: 80%;
+    width: 70%;
   }
 
   &__cancelButton {
-    @extend %baseButton;
+    padding: 0.5rem;
+    width: 5rem;
     position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background-color: $gray;
+    color: $body-font-color;
+    border-radius: $global-radius;
+    font-size: 0.75rem;
     z-index: 150;
-    margin-top: 1rem;
+    border: 1px solid $black;
+    &__chevronIcon {
+      width: 0.4rem;
+      transform: rotate(180deg);
+      margin-right: 0.4em;
+    }
   }
-  &__removeLogoButton,
-  &__removeButton {
+
+  &__removePropertyImageButton,
+  &__removeLogoButton {
     position: absolute;
+    top: 54.3%;
+    left: 46%;
+    background-color: transparent;
     text-decoration: underline;
     color: $primary-dark-color;
-    top: 53.75%;
-    left: 44%;
-    background-color: transparent;
     border: none;
     z-index: 150;
     margin-top: 1rem;
@@ -79,13 +93,11 @@
   }
 
   &__removeLogoButton {
-    top: 79.75%;
-    left: 11%;
+    top: 80.5%;
+    left: 9%;
   }
 
   &__imageInputLabel {
-    color: $primary-dark-color;
-    font-weight: 600;
     height: 100%;
     max-width: 100%;
     display: flex;
@@ -95,6 +107,8 @@
     margin-right: auto;
     margin-bottom: $global-sm-padding;
     position: relative;
+    color: $primary-dark-color;
+    font-weight: 600;
     transition: all 400ms ease-in;
     overflow: hidden;
     cursor: pointer;
@@ -103,54 +117,56 @@
     z-index: 100;
     background-color: transparent;
 
-    .propertyNew__desktop__options {
+    .propertyEditDesktop__options {
+      height: 1.5rem;
+      width: 18rem;
       position: absolute;
-      top: 93%;
-      left: 27%;
+      top: 94%;
+      left: 34%;
       display: flex;
       justify-content: space-between;
       align-items: center;
       text-align: center;
       background-color: rgba(242, 242, 242, 0.75);
-      height: 1.5rem;
-      width: 18rem;
       font-size: 0.8rem;
       padding: 0.8rem;
       z-index: 150;
 
-      p {
+      &__title {
         margin: 0;
         font-size: 0.8rem;
         color: #1d1e20;
         cursor: pointer;
       }
 
-      p:nth-child(2) {
+      &__option {
         margin: 0;
         text-decoration: underline;
         font-size: 0.8rem;
         color: $primary-dark-color;
       }
-      div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-      }
     }
   }
 
   &__logoInputLabel {
-    @extend .propertyNew__desktop__imageInputLabel;
+    @extend .propertyEditDesktop__imageInputLabel;
     background-color: #fff;
-    height: 7rem;
-    width: 7rem;
-    margin-top: 1rem;
-    .propertyNew__desktop__options {
-      top: 80%;
-      left: 0%;
+    height: 8rem;
+    width: 9rem;
+    margin-top: 0.5rem;
+    margin-left: 0;
+    &__text {
+      padding-bottom: 1.5rem;
+      color: #666;
+      font-size: 0.8rem;
     }
-    p:nth-child(1) {
+    .propertyEditDesktop__options {
+      top: 79%;
+      left: 0%;
+      border: 1px solid #d9d9d9;
+      width: 100%;
+    }
+    &__option {
       margin: 0;
       text-decoration: underline;
       font-size: 0.8rem;
@@ -212,11 +228,14 @@
   }
 
   &__saveButton {
-    @extend .propertyNew__desktop__teamButton;
+    @extend .propertyEditDesktop__teamButton;
     background: $primary-color;
     color: $white;
     border: 1px $primary-color solid;
-    margin-bottom: 2em;
+  }
+
+  &__spacer {
+    height: 1rem;
   }
 
   &__templates__title {
@@ -244,13 +263,13 @@
 
   &__trelloButton,
   &__templatesButton {
-    font-size: $medium-font-size;
-    font-weight: 600;
     display: block;
     width: 80%;
     background: transparent;
     border: solid 2px $primary-color;
     color: $primary-color;
+    font-size: $medium-font-size;
+    font-weight: 600;
     text-align: center;
     line-height: $global-lg-padding;
     border-radius: $global-radius;

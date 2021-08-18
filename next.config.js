@@ -10,5 +10,15 @@ module.exports = {
   publicRuntimeConfig: {
     basePath: BASE_PATH,
     appVersion: `${gitVersion() || '0.0.0'}`.split(/-|_/)[0]
+  },
+
+  // Fix issue with node build
+  // in some environments: https://stackoverflow.com/questions/67478532/module-not-found-cant-resolve-fs-nextjs
+  webpack: (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback, // include other fallback
+      fs: false // the solution
+    };
+    return config;
   }
 };
