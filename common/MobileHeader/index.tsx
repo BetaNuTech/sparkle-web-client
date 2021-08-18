@@ -2,6 +2,7 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 
 import HamburgerIcon from '../../public/icons/ios/hamburger.svg';
+import WarningIcon from '../../public/icons/sparkle/warning.svg';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -62,6 +63,14 @@ const MobileHeader: FunctionComponent<Props> = ({
       <aside className={styles.header__aside} data-testid="mobile-actions">
         {typeof actions === 'function' && actions(styles)}
       </aside>
+      {!isOnline && (
+        <footer className={styles.header__footer}>
+          <WarningIcon />
+          <span className="-pl-sm">
+            You&lsquo;re disconnected, further updates may be lost.
+          </span>
+        </footer>
+      )}
     </header>
   );
 };

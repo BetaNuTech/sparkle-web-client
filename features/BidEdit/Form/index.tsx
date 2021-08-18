@@ -1,24 +1,34 @@
 import { FunctionComponent, useState, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useForm, UseFormRegister, FormState } from 'react-hook-form';
+import {
+  useForm,
+  UseFormRegister,
+  FormState,
+  useWatch,
+  UseFormSetValue
+} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
 import getConfig from 'next/config';
 import moment from 'moment';
+import LoadingHud from '../../../common/LoadingHud';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
 import bidAttachmentModel from '../../../common/models/bidAttachment';
 import utilString from '../../../common/utils/string';
 import ErrorLabel from '../../../common/ErrorLabel';
+import ErrorList from '../../../common/ErrorList';
 import MobileHeader from '../../../common/MobileHeader';
 import breakpoints from '../../../config/breakpoints';
 import bidsConfig from '../../../config/bids';
 import formats from '../../../config/formats';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
+import { BidApiResult } from '../hooks/useBidForm';
+import useProcessedForm from '../hooks/useProcessedForm';
 import DropdownHeader from '../DropdownHeader';
 import Header from '../Header';
 import styles from '../styles.module.scss';
@@ -33,6 +43,9 @@ interface Props {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
+  apiState: BidApiResult;
+  postBidCreate(propertyId: string, jobId: string, bid: bidModel): void;
+  putBidUpdate(propertyId: string, jobId: string, bid: bidModel): void;
 }
 
 type Inputs = {
@@ -41,6 +54,7 @@ type Inputs = {
   costMax: number;
   startAt: string;
   completeAt: string;
+  cost: string;
   vendorDetails: string;
 };
 
@@ -51,9 +65,18 @@ interface LayoutProps {
   bidLink: string;
   isNewBid: boolean;
   isBidComplete: boolean;
+  isOnline: boolean;
+  apiState: BidApiResult;
   onSubmit: (action: string) => void;
   register: UseFormRegister<Inputs>;
   formState: FormState<Inputs>;
+  setValue: UseFormSetValue<Inputs>;
+  onCostTypeChange: (type: 'fixed' | 'range') => void;
+  isFixedCostType: boolean;
+  showSaveButton: boolean;
+  startAtProcessed: number;
+  completeAtProcessed: number;
+  attachments: Array<bidAttachmentModel>;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -62,29 +85,26 @@ const Layout: FunctionComponent<LayoutProps> = ({
   bid,
   bidLink,
   isNewBid,
-  isBidComplete,
   onSubmit,
   register,
-  formState
+  apiState,
+  isOnline,
+  formState,
+  onCostTypeChange,
+  isFixedCostType,
+  showSaveButton,
+  startAtProcessed,
+  completeAtProcessed,
+  attachments
 }) => {
-  const nextState = !isNewBid && bidsConfig.nextState[bid.state];
-  const [isFixedCostType, setFixedCostType] = useState(
-    isNewBid ? true : bid.costMin === bid.costMax
-  );
-  const inputFile = useRef(null);
+  const apiErrors =
+    apiState.statusCode === 400 && apiState.response.errors
+      ? apiState.response.errors.map((e) => e.detail)
+      : [];
+  const bidState = !isNewBid && bid.state ? bid.state : 'open';
+  const nextState = !isNewBid && bidsConfig.nextState[bidState];
 
-  let startAt = null;
-  let completeAt = null;
-  let attachments: bidAttachmentModel[] = [];
-  if (!isNewBid) {
-    startAt =
-      bid.startAt &&
-      moment.unix(bid.startAt).format(formats.browserDateDisplay);
-    completeAt =
-      bid.completeAt &&
-      moment.unix(bid.completeAt).format(formats.browserDateDisplay);
-    attachments = bid.attachments;
-  }
+  const inputFile = useRef(null);
 
   const onUploadClick = () => {
     if (inputFile && inputFile.current) {
@@ -109,7 +129,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
               <div className={styles.bid__info__box}>
                 <p>Bid Status{!isMobile && <> :&nbsp;</>}</p>
                 <h3 data-testid="bid-form-edit-state">
-                  {utilString.titleize(bid.state)}
+                  {utilString.titleize(bidState)}
                 </h3>
               </div>
               {nextState && (
@@ -123,6 +143,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
         </>
       )}
 
+      <div className={styles.form__fields}>
+        <ErrorList errors={apiErrors} />
+      </div>
       <form>
         <div className={styles.form__fields}>
           <div className={styles.form__fields__leftColumn}>
@@ -149,7 +172,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 <button
                   type="button"
                   className={clsx(isFixedCostType && styles.active)}
-                  onClick={() => setFixedCostType(true)}
+                  onClick={() => onCostTypeChange('fixed')}
                 >
                   Fixed Cost
                 </button>
@@ -157,11 +180,16 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 <button
                   type="button"
                   className={clsx(!isFixedCostType && styles.active)}
-                  onClick={() => setFixedCostType(false)}
+                  onClick={() => onCostTypeChange('range')}
                 >
                   Range
                 </button>
               </div>
+              <input
+                type="hidden"
+                defaultValue={isFixedCostType ? 'fixed' : 'range'}
+                {...register('cost')}
+              />
             </div>
             <div className={styles.form__row}>
               <div
@@ -222,7 +250,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       type="date"
                       name="startAt"
                       className={styles.form__input}
-                      defaultValue={startAt}
+                      defaultValue={startAtProcessed}
                       data-testid="bid-form-start-at"
                       {...register('startAt')}
                     />
@@ -244,7 +272,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       type="date"
                       name="vendor"
                       className={styles.form__input}
-                      defaultValue={completeAt}
+                      defaultValue={completeAtProcessed}
                       data-testid="bid-form-complete-at"
                       {...register('completeAt')}
                     />
@@ -310,11 +338,12 @@ const Layout: FunctionComponent<LayoutProps> = ({
           </div>
         </div>
 
-        {!isBidComplete && (
+        {showSaveButton && (
           <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
             <button
               type="button"
               data-testid="bid-form-submit"
+              disabled={apiState.isLoading || !isOnline}
               className={clsx(
                 styles.button__submit,
                 isMobile && styles.button__fullwidth
@@ -325,7 +354,6 @@ const Layout: FunctionComponent<LayoutProps> = ({
             </button>
           </div>
         )}
-
         {isMobile && (
           <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
             <Link href={bidLink}>
@@ -347,14 +375,17 @@ const Layout: FunctionComponent<LayoutProps> = ({
   );
 };
 
-const JobForm: FunctionComponent<Props> = ({
+const BidForm: FunctionComponent<Props> = ({
   property,
   job,
   bid,
   isNewBid,
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  apiState,
+  postBidCreate,
+  putBidUpdate
 }) => {
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -367,11 +398,52 @@ const JobForm: FunctionComponent<Props> = ({
   const publicRuntimeConfig = config.publicRuntimeConfig || {};
   const basePath = publicRuntimeConfig.basePath || '';
   const bidLink = `${basePath}/properties/${property.id}/jobs/${job.id}/bids`;
+  const [isFixedCostType, setFixedCostType] = useState(
+    isNewBid ? true : bid.costMin === bid.costMax
+  );
+  let startAtProcessed = null;
+  let completeAtProcessed = null;
+  let attachments: bidAttachmentModel[] = [];
+  if (!isNewBid) {
+    startAtProcessed =
+      bid.startAt &&
+      moment.unix(bid.startAt).format(formats.browserDateDisplay);
+    completeAtProcessed =
+      bid.completeAt &&
+      moment.unix(bid.completeAt).format(formats.browserDateDisplay);
+    attachments = bid.attachments ? bid.attachments : [];
+  }
 
   const validationShape = {
     vendor: yup.string().required(formErrors.vendorRequired),
-    need: yup.string(),
-    scopeOfWork: yup.string()
+    costMin: yup.string(),
+    costMax: yup.string(),
+    startAt: yup.string(),
+    completeAt: yup.string(),
+    vendorDetails: yup.string()
+  };
+
+  // Publish bid updates to API
+  const onPublish = (data, action) => {
+    const formBid = {
+      ...data
+    } as bidModel;
+
+    const formBidProcessed = useProcessedForm(
+      formBid,
+      data.cost === 'fixed'
+    ) as bidModel;
+
+    // Check if we have bid data
+    // Means it is an edit form
+    if (Object.keys(bid).length > 0) {
+      formBidProcessed.id = bid.id;
+      // Update request
+      putBidUpdate(property.id, job.id, formBidProcessed);
+    } else {
+      // Save request
+      postBidCreate(property.id, job.id, formBidProcessed);
+    }
   };
 
   // Setup form validations
@@ -382,27 +454,84 @@ const JobForm: FunctionComponent<Props> = ({
   // Setup form submissions
   const {
     register,
+    control,
+    getValues: getFormValues,
     trigger: triggerFormValidation,
-    formState
+    formState,
+    setValue
   } = useForm<Inputs>({
     mode: 'all',
     resolver: yupResolver(validationSchema)
   });
 
   // Handle form submissions
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onSubmit = async (action) => {
     // Check if form is valid
     await triggerFormValidation();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const hasErrors = Boolean(Object.keys(formState.errors).length);
-    // eslint-disable-next-line no-useless-return
-    return;
+    if (hasErrors) return;
+
+    // Make request to api call
+    const formData = getFormValues();
+    onPublish(formData, action);
   };
+
+  const onCostTypeChange = (type: 'fixed' | 'range') => {
+    setFixedCostType(type === 'fixed');
+    setValue('cost', type);
+  };
+
+  let showSaveButton = isNewBid;
+  // Check if we have any new updates
+  if (!isNewBid && !isBidComplete) {
+    const apiBid = (({
+      vendor,
+      costMin,
+      costMax,
+      startAt,
+      completeAt,
+      vendorDetails
+    }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
+      bid
+    );
+
+    // Setup watcher for form changes
+    const formData = useWatch({
+      control,
+      defaultValue: {
+        vendor: apiBid.vendor,
+        vendorDetails: apiBid.vendorDetails,
+        cost: bid.costMin === bid.costMax ? 'fixed' : 'range',
+        costMin: apiBid.costMin,
+        costMax: apiBid.costMax,
+        startAt: startAtProcessed,
+        completeAt: completeAtProcessed
+      }
+    });
+
+    const formBid = (({
+      vendor,
+      costMin,
+      costMax,
+      startAt,
+      completeAt,
+      vendorDetails
+    }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
+      formData
+    );
+
+    // process form data for number and unix timestamp
+    const formBidProcessed = useProcessedForm(formBid, isFixedCostType);
+
+    // Compare form data with api data
+    showSaveButton =
+      JSON.stringify(formBidProcessed) !== JSON.stringify(apiBid);
+  }
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
+      {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
       <div
         className={clsx(
           headStyle.header__button,
@@ -440,8 +569,17 @@ const JobForm: FunctionComponent<Props> = ({
             bidLink={bidLink}
             register={register}
             formState={formState}
+            apiState={apiState}
+            isOnline={isOnline}
             onSubmit={onSubmit}
+            setValue={setValue}
             isBidComplete={isBidComplete}
+            onCostTypeChange={onCostTypeChange}
+            isFixedCostType={isFixedCostType}
+            showSaveButton={showSaveButton}
+            startAtProcessed={startAtProcessed}
+            completeAtProcessed={completeAtProcessed}
+            attachments={attachments}
           />
         </>
       )}
@@ -449,11 +587,16 @@ const JobForm: FunctionComponent<Props> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div data-testid="desktop-form">
+          {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
           <Header
+            isOnline={isOnline}
             property={property}
             job={job}
             isNewBid={isNewBid}
             bidLink={bidLink}
+            apiState={apiState}
+            showSaveButton={showSaveButton}
+            onSubmit={onSubmit}
           />
           <Layout
             isMobile={isMobileorTablet}
@@ -463,8 +606,17 @@ const JobForm: FunctionComponent<Props> = ({
             bidLink={bidLink}
             register={register}
             formState={formState}
+            apiState={apiState}
+            isOnline={isOnline}
             onSubmit={onSubmit}
+            setValue={setValue}
             isBidComplete={isBidComplete}
+            onCostTypeChange={onCostTypeChange}
+            isFixedCostType={isFixedCostType}
+            showSaveButton={showSaveButton}
+            startAtProcessed={startAtProcessed}
+            completeAtProcessed={completeAtProcessed}
+            attachments={attachments}
           />
         </div>
       )}
@@ -472,4 +624,4 @@ const JobForm: FunctionComponent<Props> = ({
   );
 };
 
-export default JobForm;
+export default BidForm;
