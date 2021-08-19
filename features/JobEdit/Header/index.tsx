@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import { JobApiResult } from '../hooks/useJobForm';
@@ -19,9 +18,6 @@ interface JobsHeaderModel {
   canExpedite: boolean;
   onFormAction: (action: string) => void;
 }
-const config = getConfig() || {};
-const publicRuntimeConfig = config.publicRuntimeConfig || {};
-const basePath = publicRuntimeConfig.basePath || '';
 
 const Header: FunctionComponent<JobsHeaderModel> = ({
   property,
@@ -34,7 +30,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   canExpedite,
   onFormAction
 }) => {
-  const jobLink = `${basePath}/properties/${property.id}/jobs`;
+  const jobLink = `/properties/${property.id}/jobs`;
 
   return (
     <header className={styles.header} data-testid="jobedit-header">

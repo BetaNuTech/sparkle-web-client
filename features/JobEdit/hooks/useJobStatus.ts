@@ -1,11 +1,6 @@
 import Router from 'next/router';
-import getConfig from 'next/config';
 import errorReports from '../../../common/services/api/errorReports';
 import { JobApiResult } from './useJobForm';
-
-const config = getConfig() || {};
-const publicRuntimeConfig = config.publicRuntimeConfig || {};
-const basePath = publicRuntimeConfig.basePath || '';
 
 const PREFIX = 'features: jobEdit: hooks: useJobStatus:';
 
@@ -53,7 +48,7 @@ export default function useJobForm(
       );
       if (jobId === 'new' && apiState.response && apiState.response.data) {
         Router.push(
-          `${basePath}/properties/${propertyId}/jobs/edit/${apiState.response.data.id}/`
+          `/properties/${propertyId}/jobs/edit/${apiState.response.data.id}/`
         );
       }
       break;

@@ -5,7 +5,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import propertyModel from '../../../common/models/property';
 import LoadingHud from '../../../common/LoadingHud';
 import jobModel from '../../../common/models/job';
@@ -322,10 +321,7 @@ const JobForm: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
-  const jobLink = `${basePath}/properties/${property.id}/jobs`;
+  const jobLink = `/properties/${property.id}/jobs`;
 
   // Publish Job updates to API
   const onPublish = (data, action) => {

@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import utilDate from '../../../../common/utils/date';
 import jobModel from '../../../../common/models/job';
 import bidModel from '../../../../common/models/bid';
@@ -21,16 +20,13 @@ const ListItem: FunctionComponent<ListItemProps> = ({
 }) => {
   const bidRange = useBidsCost(bid);
 
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
   return (
     <li
       className={clsx(parentStyles.propertyJobBids__gridRow)}
       data-testid="bid-item-record"
     >
       <Link
-        href={`${basePath}/properties/${propertyId}/jobs/${job.id}/bids/${bid.id}`}
+        href={`/properties/${propertyId}/jobs/${job.id}/bids/${bid.id}`}
       >
         <a className={parentStyles.propertyJobBids__gridRow__link}>
           <div

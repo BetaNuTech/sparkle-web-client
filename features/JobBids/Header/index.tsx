@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
@@ -14,10 +13,6 @@ interface BidsHeaderModel {
   bids: Array<bidModel>;
   bidStatus: string;
 }
-
-const config = getConfig() || {};
-const publicRuntimeConfig = config.publicRuntimeConfig || {};
-const basePath = publicRuntimeConfig.basePath || '';
 
 const MetaData: FunctionComponent<{
   bids?: Array<bidModel>;
@@ -78,7 +73,7 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
   bids,
   bidStatus
 }) => {
-  const backLink = `${basePath}/properties/${property.id}/jobs`;
+  const backLink = `/properties/${property.id}/jobs`;
   return (
     <>
       <header className={styles.header} data-testid="bidlist-header">

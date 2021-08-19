@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import LinkFeature from '../../../common/LinkFeature';
 import features from '../../../config/features';
 import propertyModel from '../../../common/models/property';
@@ -25,11 +24,8 @@ const getMobileExtra: FunctionComponent<Props> = ({
   activeInspectionSortFilter,
   sortBy
 }) => {
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
 
-  const jobLink = `${basePath}/properties/${property.id}/jobs`;
+  const jobLink = `/properties/${property.id}/jobs`;
 
   if (isMobile) {
     return (

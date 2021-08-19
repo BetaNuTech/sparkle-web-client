@@ -11,7 +11,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import moment from 'moment';
 import LoadingHud from '../../../common/LoadingHud';
 import propertyModel from '../../../common/models/property';
@@ -511,10 +510,7 @@ const BidForm: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
-  const bidLink = `${basePath}/properties/${property.id}/jobs/${job.id}/bids`;
+  const bidLink = `/properties/${property.id}/jobs/${job.id}/bids`;
   const [isFixedCostType, setFixedCostType] = useState(
     isNewBid ? true : bid.costMin === bid.costMax
   );

@@ -1,11 +1,6 @@
 import Router from 'next/router';
-import getConfig from 'next/config';
 import errorReports from '../../../common/services/api/errorReports';
 import { BidApiResult } from './useBidForm';
-
-const config = getConfig() || {};
-const publicRuntimeConfig = config.publicRuntimeConfig || {};
-const basePath = publicRuntimeConfig.basePath || '';
 
 const PREFIX = 'features: bidEdit: hooks: useBidStatus:';
 
@@ -54,7 +49,7 @@ export default function useBidStatus(
       );
       if (bidId === 'new' && apiState.response && apiState.response.data) {
         Router.push(
-          `${basePath}/properties/${propertyId}/jobs/${jobId}/bids/${apiState.response.data.id}/`
+          `/properties/${propertyId}/jobs/${jobId}/bids/${apiState.response.data.id}/`
         );
       }
       break;

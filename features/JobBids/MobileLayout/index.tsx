@@ -1,6 +1,5 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
-import getConfig from 'next/config';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
@@ -33,11 +32,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   colors,
   configBids
 }) => {
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
 
-  const newBidLink = `${basePath}/properties/${propertyId}/jobs/${job.id}/bids/new`;
+  const newBidLink = `/properties/${propertyId}/jobs/${job.id}/bids/new`;
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
