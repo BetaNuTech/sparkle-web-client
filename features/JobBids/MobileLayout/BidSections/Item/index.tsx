@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import jobModel from '../../../../../common/models/job';
 import bidModel from '../../../../../common/models/bid';
 import utilDate from '../../../../../common/utils/date';
@@ -17,14 +16,10 @@ interface ItemProps {
 const Item: FunctionComponent<ItemProps> = ({ job, bid, propertyId }) => {
   const bidRange = useBidsCost(bid);
 
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
-
   return (
     <li className={styles.bidList__record} data-testid="bid-item-record">
       <Link
-        href={`${basePath}/properties/${propertyId}/jobs/${job.id}/bids/${bid.id}`}
+        href={`/properties/${propertyId}/jobs/${job.id}/bids/${bid.id}`}
       >
         <a className={styles.bidList__record__link}>
           <div>

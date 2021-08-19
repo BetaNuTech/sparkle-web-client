@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import { useFirestore } from 'reactfire';
 import Router from 'next/router';
-import getConfig from 'next/config';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
@@ -32,9 +31,6 @@ const BidEdit: FunctionComponent<Props> = ({
   isStaging,
   toggleNavOpen
 }) => {
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
   const firestore = useFirestore();
   const isNewBid = bidId === 'new';
 
@@ -60,7 +56,7 @@ const BidEdit: FunctionComponent<Props> = ({
   // Redirect user requesting non-existent job
   if (bidId !== 'new' && bidStatus === 'error') {
     sendNotification('Bid could not be found', { type: 'error' });
-    Router.push(`${basePath}/properties/${propertyId}/jobs/${bidId}/bids`);
+    Router.push(`/properties/${propertyId}/jobs/${bidId}/bids`);
   }
 
   return (

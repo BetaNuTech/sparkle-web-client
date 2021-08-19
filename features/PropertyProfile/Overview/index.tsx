@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import LinkFeature from '../../../common/LinkFeature';
 import features from '../../../config/features';
 import propertyModel from '../../../common/models/property';
@@ -138,10 +137,7 @@ const Overview: FunctionComponent<Props> = ({
   // If it was false above then set to bannerPhotoURL
   logoUrl = !logoUrl ? property.bannerPhotoURL : logoUrl;
 
-  const config = getConfig() || {};
-  const publicRuntimeConfig = config.publicRuntimeConfig || {};
-  const basePath = publicRuntimeConfig.basePath || '';
-  const jobLink = `${basePath}/properties/${property.id}/jobs`;
+  const jobLink = `/properties/${property.id}/jobs`;
 
   return (
     <div
