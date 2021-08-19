@@ -1,7 +1,6 @@
 import { useState, useRef, FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import getConfig from 'next/config';
 import jobModel from '../../../../../common/models/job';
 import utilString from '../../../../../common/utils/string';
 import utilDate from '../../../../../common/utils/date';
@@ -15,10 +14,6 @@ interface ItemProps {
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
 }
-
-const config = getConfig() || {};
-const publicRuntimeConfig = config.publicRuntimeConfig || {};
-const BASE_PATH = publicRuntimeConfig.basePath || '';
 
 const Item: FunctionComponent<ItemProps> = ({
   job,
@@ -43,9 +38,7 @@ const Item: FunctionComponent<ItemProps> = ({
             : styles.itemResult__content
         }
       >
-        <Link
-          href={`${BASE_PATH}/properties/${propertyId}/jobs/${job.id}/bids`}
-        >
+        <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
           <a className={styles.jobList__record__link}>
             <div>
               <h3
@@ -101,9 +94,7 @@ const Item: FunctionComponent<ItemProps> = ({
           isSwipeOpen && styles.swipeReveal__reveal
         )}
       >
-        <Link
-          href={`${BASE_PATH}/properties/${propertyId}/jobs/edit/${job.id}`}
-        >
+        <Link href={`/properties/${propertyId}/jobs/edit/${job.id}`}>
           <a className={styles.swipeReveal__editButton}>Edit</a>
         </Link>
       </div>

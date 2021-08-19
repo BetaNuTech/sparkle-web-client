@@ -2,7 +2,6 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import Router from 'next/router';
-import getConfig from 'next/config';
 import utilDate from '../../../../common/utils/date';
 import utilString from '../../../../common/utils/string';
 import jobModel from '../../../../common/models/job';
@@ -17,10 +16,6 @@ interface ListItemProps {
   configJobs: Record<string, Record<string, string>>;
 }
 
-const config = getConfig() || {};
-const publicRuntimeConfig = config.publicRuntimeConfig || {};
-const BASE_PATH = publicRuntimeConfig.basePath || '';
-
 const ListItem: FunctionComponent<ListItemProps> = ({
   propertyId,
   job,
@@ -30,7 +25,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   // Hack to allow nested linking
   const goToEditJob = (evt) => {
     evt.preventDefault();
-    Router.push(`${BASE_PATH}/properties/${propertyId}/jobs/edit/${job.id}`);
+    Router.push(`/properties/${propertyId}/jobs/edit/${job.id}`);
   };
 
   return (
@@ -38,7 +33,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
       className={clsx(parentStyles.propertyJobs__gridRow)}
       data-testid="job-item-record"
     >
-      <Link href={`${BASE_PATH}/properties/${propertyId}/jobs/${job.id}/bids`}>
+      <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
         <a className={parentStyles.propertyJobs__gridRow__link}>
           <div
             className={parentStyles.propertyJobs__gridRow__column}
