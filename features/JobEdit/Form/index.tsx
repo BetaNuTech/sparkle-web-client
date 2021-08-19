@@ -340,7 +340,6 @@ const JobForm: FunctionComponent<Props> = ({
         formJob.authorizedRules = 'expedite';
         break;
       default:
-        formJob.state = 'open';
         break;
     }
 

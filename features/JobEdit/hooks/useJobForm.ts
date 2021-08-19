@@ -88,7 +88,11 @@ export default function useJobForm(jobApi: jobModel): useJobFormResult {
     });
   };
 
-  if (!apiState.isLoading && apiState.job !== JSON.stringify(jobApi)) {
+  if (
+    !apiState.isLoading &&
+    apiState.statusCode !== 400 &&
+    apiState.job !== JSON.stringify(jobApi)
+  ) {
     setApiState({
       isLoading: false,
       statusCode: 0,
