@@ -15,6 +15,7 @@ interface Props {
   sortBy?: string;
   sortDir?: string;
   searchParam?: string;
+  filterState?: string;
 }
 
 const Grid: FunctionComponent<Props> = ({
@@ -26,9 +27,10 @@ const Grid: FunctionComponent<Props> = ({
   searchParam,
   onSearchKeyDown,
   colors,
-  configJobs
+  configJobs,
+  filterState
 }) => {
-  const { sections } = useJobSections(jobs);
+  const { sections } = useJobSections(jobs, filterState);
   const hasNoJobs = sections.filter((s) => s.jobs.length > 0).length === 0;
 
   return (

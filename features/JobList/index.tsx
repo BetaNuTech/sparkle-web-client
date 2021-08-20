@@ -7,6 +7,7 @@ import useProperty from '../../common/hooks/useProperty';
 import userModel from '../../common/models/user';
 import jobModel from '../../common/models/job';
 import useSearching from '../../common/hooks/useSearching';
+import useFilterState from '../../common/hooks/useFilterState';
 import configJobs from '../../config/jobs';
 import breakpoints from '../../config/breakpoints';
 import usePropertyJobs from './hooks/usePropertyJobs';
@@ -52,11 +53,14 @@ const JobList: FunctionComponent<Props> = ({
     propertyId
   );
 
+  // Job filter by state
+  const { stateItems, filterState, changeFilterState } = useFilterState(jobs);
+
   // Job search setup
-  const { onSearchKeyDown, filteredItems, searchParam } = useSearching(jobs, [
-    'title',
-    'type'
-  ]);
+  const { onSearchKeyDown, filteredItems, searchParam } = useSearching(
+    stateItems,
+    ['title', 'type']
+  );
   const filteredJobs = filteredItems.map((itm) => itm as jobModel);
 
   // Job sorting setup
@@ -98,7 +102,14 @@ const JobList: FunctionComponent<Props> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div className={styles.properties__container}>
-          <Header property={property} jobs={jobs} jobStatus={jobStatus} />
+          <Header
+            property={property}
+            jobs={jobs}
+            jobStatus={jobStatus}
+            filterState={filterState}
+            changeJobFilterState={changeFilterState}
+            colors={colors}
+          />
           <Grid
             jobs={sortedJobs}
             propertyId={propertyId}
@@ -109,6 +120,7 @@ const JobList: FunctionComponent<Props> = ({
             searchParam={searchParam}
             colors={colors}
             configJobs={configJobs}
+            filterState={filterState}
           />
         </div>
       )}

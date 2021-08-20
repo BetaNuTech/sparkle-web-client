@@ -21,7 +21,7 @@ const BidSections: FunctionComponent<Props> = ({
   colors,
   configBids
 }) => {
-  const { sections } = useBidSections(bids);
+  const { sections } = useBidSections(bids, '');
   return (
     <div className={styles.bidList__box} data-testid="bid-sections-main-mobile">
       <ul className={styles.bidList__box__list}>

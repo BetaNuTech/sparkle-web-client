@@ -2,6 +2,7 @@ import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { fullProperty } from '../../../../../__mocks__/properties';
 import mockJobs, { openImprovementJob } from '../../../../../__mocks__/jobs';
+import { colors } from '../../../../../features/JobList';
 import Header from '../../../../../features/JobList/Header';
 import breakpoints from '../../../../../config/breakpoints';
 
@@ -24,14 +25,13 @@ describe('Integration | Features | Job List | Header', () => {
         property={fullProperty}
         jobs={getPropertyJobs()}
         jobStatus="loading"
+        colors={colors}
       />
     );
-    const jobTotal = screen.queryByTestId('job-total-loading');
     const jobOpen = screen.queryByTestId('job-open-loading');
     const jobActions = screen.queryByTestId('job-actions-loading');
     const jobProgress = screen.queryByTestId('job-progress-loading');
 
-    expect(jobTotal).toBeTruthy();
     expect(jobOpen).toBeTruthy();
     expect(jobActions).toBeTruthy();
     expect(jobProgress).toBeTruthy();
@@ -43,14 +43,13 @@ describe('Integration | Features | Job List | Header', () => {
         property={fullProperty}
         jobs={getPropertyJobs()}
         jobStatus="success"
+        colors={colors}
       />
     );
-    const jobTotal = screen.queryByTestId('job-total-text');
     const jobOpen = screen.queryByTestId('job-open-text');
     const jobActions = screen.queryByTestId('job-actions-text');
     const jobProgress = screen.queryByTestId('job-progress-text');
 
-    expect(jobTotal.textContent).toEqual('7Total Jobs');
     expect(jobOpen.textContent).toEqual('3Open');
     expect(jobActions.textContent).toEqual('1Approved');
     expect(jobProgress.textContent).toEqual('2Authorized');
@@ -62,14 +61,13 @@ describe('Integration | Features | Job List | Header', () => {
         property={fullProperty}
         jobs={[openImprovementJob]}
         jobStatus="success"
+        colors={colors}
       />
     );
-    const jobTotal = screen.queryByTestId('job-total-text');
     const jobOpen = screen.queryByTestId('job-open-text');
     const jobActions = screen.queryByTestId('job-actions-text');
     const jobProgress = screen.queryByTestId('job-progress-text');
 
-    expect(jobTotal.textContent).toEqual('1Total Job');
     expect(jobOpen.textContent).toEqual('1Open');
     expect(jobActions.textContent).toEqual('0Approved');
     expect(jobProgress.textContent).toEqual('0Authorized');

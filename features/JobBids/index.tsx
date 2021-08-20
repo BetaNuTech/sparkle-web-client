@@ -5,6 +5,7 @@ import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
 import useJobBids from '../../common/hooks/useJobBids';
+import useFilterState from '../../common/hooks/useFilterState';
 import configBids from '../../config/bids';
 import userModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
@@ -52,6 +53,9 @@ const JobBids: FunctionComponent<Props> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { status: bidStatus, data: bids } = useJobBids(firestore, jobId);
 
+  // Bid filter by state
+  const { stateItems, filterState, changeFilterState } = useFilterState(bids);
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -62,7 +66,7 @@ const JobBids: FunctionComponent<Props> = ({
 
   // Job sorting setup
   const { sortedBids, sortBy, sortDir, onSortChange } = useBidSorting(
-    bids,
+    stateItems,
     isMobileorTablet
   );
 
@@ -95,6 +99,9 @@ const JobBids: FunctionComponent<Props> = ({
             bids={bids}
             bidStatus={bidStatus}
             job={job}
+            filterState={filterState}
+            colors={colors}
+            changeFilterState={changeFilterState}
           />
           <Grid
             job={job}
@@ -105,6 +112,7 @@ const JobBids: FunctionComponent<Props> = ({
             propertyId={propertyId}
             colors={colors}
             configBids={configBids}
+            filterState={filterState}
           />
         </>
       )}

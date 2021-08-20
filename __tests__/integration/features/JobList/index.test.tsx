@@ -152,7 +152,9 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-title');
 
-    await userEvent.click(titleButton);
+    await act(async () => {
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -200,7 +202,9 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-created');
 
-    await userEvent.click(titleButton);
+    await act(async () => {
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -246,9 +250,11 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-created');
 
-    // Twice to change the sort order to ascending
-    await userEvent.click(titleButton);
-    await userEvent.click(titleButton);
+    await act(async () => {
+      // Twice to change the sort order to ascending
+      await userEvent.click(titleButton);
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -296,7 +302,9 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-updated');
 
-    await userEvent.click(titleButton);
+    await act(async () => {
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -342,9 +350,11 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-updated');
 
-    // Twice to change the sort order to ascending
-    await userEvent.click(titleButton);
-    await userEvent.click(titleButton);
+    await act(async () => {
+      // Twice to change the sort order to ascending
+      await userEvent.click(titleButton);
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -374,9 +384,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openMaintenanceExpeditedJob.type)}`,
       `Approved: ${utilString.titleize(approvedMaintenanceJob.type)}`,
-      `Authorized: ${utilString.titleize(
-        authorizedMaintenanceJob.type
-      )}`,
+      `Authorized: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
     render(<JobList user={user} propertyId="property-1" />, {
@@ -386,7 +394,9 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-type');
 
-    await userEvent.click(titleButton);
+    await act(async () => {
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -396,7 +406,9 @@ describe('Integration | Features | Job List', () => {
     sections.forEach((s) => {
       const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
 
-      const titles = s.querySelectorAll('[data-testid="grid-row-job-type-label"]');
+      const titles = s.querySelectorAll(
+        '[data-testid="grid-row-job-type-label"]'
+      );
 
       const texts = [];
 
@@ -416,9 +428,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
-      `Authorized: ${utilString.titleize(
-        authorizedImprovementJob.type
-      )}`,
+      `Authorized: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
     ].join(' | ');
     render(<JobList user={user} propertyId="property-1" />, {
@@ -428,9 +438,11 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-type');
 
-    // Twice to change the sort order to ascending
-    await userEvent.click(titleButton);
-    await userEvent.click(titleButton);
+    await act(async () => {
+      // Twice to change the sort order to ascending
+      await userEvent.click(titleButton);
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -440,7 +452,9 @@ describe('Integration | Features | Job List', () => {
     sections.forEach((s) => {
       const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
 
-      const titles = s.querySelectorAll('[data-testid="grid-row-job-type-label"]');
+      const titles = s.querySelectorAll(
+        '[data-testid="grid-row-job-type-label"]'
+      );
 
       const texts = [];
 
@@ -516,7 +530,9 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('mobile-header-sort');
 
-    await userEvent.click(titleButton);
+    await act(async () => {
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -573,9 +589,11 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('mobile-header-sort');
 
-    // Twice to reach at created at sort by
-    await userEvent.click(titleButton);
-    await userEvent.click(titleButton);
+    await act(async () => {
+      // Twice to reach at created at sort by
+      await userEvent.click(titleButton);
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -614,9 +632,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
-      `Authorized: ${utilString.titleize(
-        authorizedImprovementJob.type
-      )}`,
+      `Authorized: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
     ].join(' | ');
     render(<JobList user={user} propertyId="property-1" />, {
@@ -626,10 +642,12 @@ describe('Integration | Features | Job List', () => {
     // Header sort button
     const titleButton = screen.queryByTestId('mobile-header-sort');
 
-    // Thrice to reach at created at sort by
-    await userEvent.click(titleButton);
-    await userEvent.click(titleButton);
-    await userEvent.click(titleButton);
+    await act(async () => {
+      // Thrice to reach at created at sort by
+      await userEvent.click(titleButton);
+      await userEvent.click(titleButton);
+      await userEvent.click(titleButton);
+    });
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -670,21 +688,20 @@ describe('Integration | Features | Job List', () => {
       `Completed: ${completeImprovementJob.title}`
     ].join(' | ');
 
+    const { container } = render(
+      <JobList user={user} propertyId="property-1" />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
+
+    // Search box
+    const searchBox = container.querySelector(
+      '[data-testid=job-search-box]'
+    ) as HTMLInputElement;
+
+    searchBox.value = 'lat';
     await act(async () => {
-      const { container } = render(
-        <JobList user={user} propertyId="property-1" />,
-        {
-          contextWidth: breakpoints.desktop.minWidth
-        }
-      );
-
-      // Search box
-      const searchBox = container.querySelector(
-        '[data-testid=job-search-box]'
-      ) as HTMLInputElement;
-
-      searchBox.value = 'lat';
-
       // We are searching for keyword "lat"
       await fireEvent.keyDown(searchBox);
 
@@ -706,6 +723,49 @@ describe('Integration | Features | Job List', () => {
 
       // Push first element in test
       titles.forEach((t, idx) => idx === 0 && texts.push(t.textContent));
+
+      // Push section title and all title text
+      sectionTexts.push(`${sectionTitle.textContent}: ${texts.join(',')}`);
+    });
+
+    const actual = sectionTexts.join(' | ');
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('Filtering job by state should show only selected state job', async () => {
+    const expected =
+      // eslint-disable-next-line max-len
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning';
+
+    const { container } = render(
+      <JobList user={user} propertyId="property-1" />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
+
+    const openLi = container.querySelector('[data-testid="job-open-text"]');
+    const filterButton = openLi.querySelector('button');
+    await act(async () => {
+      // We are searching for keyword "lat"
+      await userEvent.click(filterButton);
+    });
+
+    // Get all sections in table
+    const sections = screen.queryAllByTestId('job-section-main');
+
+    const sectionTexts = [];
+    // Loop to get all section text content and row test values by test id
+    sections.forEach((s) => {
+      const sectionTitle = s.querySelector('[data-testid="job-section-title"]');
+
+      const titles = s.querySelectorAll('[data-testid="grid-row-job-title"]');
+
+      const texts = [];
+
+      // Push first element in test
+      titles.forEach((t) => texts.push(t.textContent));
 
       // Push section title and all title text
       sectionTexts.push(`${sectionTitle.textContent}: ${texts.join(',')}`);
