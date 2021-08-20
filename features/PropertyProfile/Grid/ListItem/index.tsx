@@ -19,7 +19,7 @@ interface ListItemProps {
   inspection: inspectionModel;
   propertyId: string;
   templateCategories: Array<templateCategoryModel>;
-  openInspectionDeletePrompt: () => void;
+  openInspectionDeletePrompt: (inspection: inspectionModel) => void;
 }
 
 const ListItem: FunctionComponent<ListItemProps> = ({
@@ -187,7 +187,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
               user={user}
               propertyId={propertyId}
               inspectionId={inspection.id}
-              onDeleteClick={() => openInspectionDeletePrompt()}
+              onDeleteClick={() => openInspectionDeletePrompt(inspection)}
             />
           </span>
         </div>

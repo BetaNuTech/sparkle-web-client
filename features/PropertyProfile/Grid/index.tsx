@@ -11,7 +11,7 @@ interface Props {
   propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
-  openInspectionDeletePrompt: () => void;
+  openInspectionDeletePrompt: (inspection: inspectionModel) => void;
   onSortChange?(sortKey: string): void;
   sortBy?: string;
   sortDir?: string;
