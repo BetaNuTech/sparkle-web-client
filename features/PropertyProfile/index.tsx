@@ -15,7 +15,11 @@ import useYardiIntegration from './hooks/useYardiIntegration';
 import useInspectionFilter from './hooks/useInspectionFilter';
 import { activeInspectionSortFilter } from './utils/inspectionSorting';
 import useTemplateCategories from '../../common/hooks/useTemplateCategories';
+import useDeleteInspection from './hooks/useDeleteInspection';
+import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
+import notifications from '../../common/services/notifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
+import inspectionModel from '../../common/models/inspection';
 import breakpoints from '../../config/breakpoints';
 import SortIcon from '../../public/icons/sparkle/sort.svg';
 import AddIcon from '../../public/icons/ios/add.svg';
@@ -51,6 +55,11 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   const firestore = useFirestore();
   const [inspectionFilter, setInspectionFilter] = useState('');
 
+  // User notifications setup
+  /* eslint-disable */
+  const sendNotification = notifications.createPublisher(useNotifications());
+  /* eslint-enable */
+
   // Fetch the data of property profile
   const { data: property } = useProperty(firestore, id);
 
@@ -85,15 +94,18 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
-  // Queue and Delete Property
+  // Queue and Delete Inspection
   const [isDeleteInspectionPromptVisible, setDeleteInspectionPromptVisible] =
     useState(false);
-
-  const openInspectionDeletePrompt = () => {
+  const { queueInspectionForDelete, confirmInspectionDelete } =
+    useDeleteInspection(firestore, sendNotification, user);
+  const openInspectionDeletePrompt = (inspection: inspectionModel) => {
+    queueInspectionForDelete(inspection);
     setDeleteInspectionPromptVisible(true);
   };
   const closeDeleteInspctionPrompt = () => {
     setDeleteInspectionPromptVisible(false);
+    queueInspectionForDelete(null);
   };
 
   // Activate next inspection fitler in series
@@ -254,6 +266,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
         </div>
       )}
       <DeleteInspectionPropmpt
+        onConfirm={confirmInspectionDelete}
         isVisible={isDeleteInspectionPromptVisible}
         onClose={closeDeleteInspctionPrompt}
       />
