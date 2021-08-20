@@ -15,6 +15,7 @@ interface Props {
   propertyId: string;
   colors: Record<string, string>;
   configBids: Record<string, Record<string, string>>;
+  filterState?: string;
 }
 
 const Grid: FunctionComponent<Props> = ({
@@ -25,9 +26,10 @@ const Grid: FunctionComponent<Props> = ({
   sortDir,
   propertyId,
   colors,
-  configBids
+  configBids,
+  filterState
 }) => {
-  const { sections } = useBidSections(bids);
+  const { sections } = useBidSections(bids, filterState);
   const hasNoBids = sections.filter((s) => s.bids.length > 0).length === 0;
 
   return (

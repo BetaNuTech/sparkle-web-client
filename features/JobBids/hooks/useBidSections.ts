@@ -13,7 +13,8 @@ interface useBidSectionsResult {
 
 // Hooks for filtering inspections list
 export default function useBidSections(
-  bids: Array<bidModel>
+  bids: Array<bidModel>,
+  filterState: string
 ): useBidSectionsResult {
   const [memo, setMemo] = useState('[]');
 
@@ -43,7 +44,7 @@ export default function useBidSections(
       state: 'complete',
       bids: <bidModel[]>[]
     }
-  ];
+  ].filter((s) => (filterState ? s.state === filterState : true));
 
   sections.forEach((s) => {
     s.bids = [...bids.filter((b) => b.state === s.state)];

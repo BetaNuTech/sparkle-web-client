@@ -13,7 +13,8 @@ interface useJobSectionsResult {
 
 // Hooks for filtering inspections list
 export default function useJobSections(
-  jobs: Array<jobModel>
+  jobs: Array<jobModel>,
+  filterState: string
 ): useJobSectionsResult {
   const [memo, setMemo] = useState('[]');
 
@@ -38,7 +39,7 @@ export default function useJobSections(
       state: 'complete',
       jobs: <jobModel[]>[]
     }
-  ];
+  ].filter((s) => (filterState ? s.state === filterState : true));
 
   sections.forEach((s) => {
     s.jobs = [...jobs.filter((j) => j.state === s.state)];

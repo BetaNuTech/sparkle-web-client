@@ -11,6 +11,13 @@
     @extend %gridHeaderBackButton;
   }
 
+  &__filterButton {
+    background-color: transparent;
+    border: 0;
+    display: flex;
+    align-items: center;
+  }
+
   &__left {
     flex-wrap: wrap;
     display: flex;
@@ -25,11 +32,11 @@
     @extend %gridHeaderTitle;
   }
 
-  &__propertyName, &__jobTitle {
+  &__propertyName,
+  &__jobTitle {
     @extend %gridHeaderTitle--ellipsis;
     max-width: 9ch;
   }
-
 
   &__controls {
     @extend %gridHeaderControls;
@@ -60,6 +67,11 @@
     &__metadata {
       @extend %overviewDataLink--metadata;
       @extend %overviewDataLink--metadataInline;
+      > li {
+        &.-inactive {
+          opacity: 0.35;
+        }
+      }
     }
     &__label {
       @extend %overviewDataLink--label;

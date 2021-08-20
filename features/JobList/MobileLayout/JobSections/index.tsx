@@ -19,7 +19,7 @@ const JobSections: FunctionComponent<Props> = ({
   configJobs,
   searchParam
 }) => {
-  const { sections } = useJobSections(jobs);
+  const { sections } = useJobSections(jobs, '');
 
   return (
     <div className={styles.jobList__box} data-testid="job-sections-main-mobile">
