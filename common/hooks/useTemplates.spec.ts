@@ -15,7 +15,7 @@ describe('Unit | Common | Hooks | Use Templates', () => {
   test('should request all templates', () => {
     const expected = true;
     const findAll = sinon
-      .stub(templatesApi, 'queryAll')
+      .stub(templatesApi, 'findAll')
       .returns(emptyCollectionResult);
     renderHook(() => useTemplates({}));
 
