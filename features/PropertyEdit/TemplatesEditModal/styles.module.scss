@@ -1,0 +1,79 @@
+@import '../../../styles/index.scss';
+@import '../../../common/Modal/styles.module.scss';
+
+.templatesEditModal {
+  padding: $global-md-padding;
+  &__categoryBox {
+    list-style-type: none;
+  }
+
+  &__main {
+    @extend .modal__main__content;
+    padding: 0 $global-lg-padding 0 $global-lg-padding;
+  }
+
+  &__items {
+    list-style-type: none;
+    border-bottom: 1px solid $gray-light-3;
+
+    &__input {
+      display: none;
+    }
+
+    &__label {
+      width: 100%;
+      padding: rem-calc(8);
+      margin-left: 0 !important;
+      display: flex !important;
+      justify-content: space-between;
+      align-items: center;
+
+      font-size: rem-calc(15);
+      cursor: pointer;
+      &__text {
+        width: 90%;
+        height: 100%;
+        display: inline-block;
+        font-weight: bold;
+      }
+      &__chequedIcon,
+      &__notChequedIcon {
+        width: rem-calc(18);
+        height: rem-calc(18);
+        padding: 0;
+        padding-top: rem-calc(2) !important;
+        opacity: 0.4;
+        flex-shrink: 0;
+      }
+    }
+    &__input:checked + &__label {
+      background-color: #d9d9d9;
+    }
+
+    &__input:checked + &__label__notChequedIcon {
+      display: none;
+    }
+  }
+  &__boxHeader {
+    @extend %stickyBoundingBox--header;
+    background-color: $gray-dark;
+  }
+  &__search {
+    @extend %search;
+    margin: $global-lg-padding $global-lg-padding 0 $global-lg-padding;
+    padding-top: $global-sm-padding;
+    padding-bottom: $global-md-padding;
+
+    label > &__input[type='search'],
+    label > &__input[type='search']:hover {
+      @extend %searchInput;
+    }
+
+    &__input,
+    &__input[type='search'] {
+      @extend %searchInput;
+      margin: 0;
+      padding-bottom: 0;
+    }
+  }
+}

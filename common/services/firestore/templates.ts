@@ -40,5 +40,31 @@ export default {
 
     // Result
     return { status, error, data };
+  },
+
+  // Lookup all templates
+  findAll(firestore: firebase.firestore.Firestore): templatesCollectionResult {
+    let status = 'success';
+    let error = null;
+    let data = [];
+
+    const query = firestore.collection(fbCollections.templates);
+
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData = []
+    } = useFirestoreCollectionData(query, {
+      idField: 'id'
+    });
+
+    status = queryStatus;
+    error = queryError;
+
+    // Cast firestore data into property records
+    data = queryData.map((itemData: any) => itemData as templateModel);
+
+    // Result
+    return { status, error, data };
   }
 };
