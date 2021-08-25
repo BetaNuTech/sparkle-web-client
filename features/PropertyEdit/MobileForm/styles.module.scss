@@ -77,6 +77,13 @@
     cursor: pointer;
   }
 
+  &__saveButton {
+    @extend .propertyEditMobile__teamButton;
+    background: $primary-color;
+    color: $white;
+    border: 1px $primary-color solid;
+  }
+
   &__trelloButton,
   &__templatesButton {
     font-size: $medium-small-font-size;

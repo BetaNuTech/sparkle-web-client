@@ -1,17 +1,60 @@
+import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { FunctionComponent, useState } from 'react';
+import UpdateTeamModal from '../UpdateTeamModal/index';
+import TemplatesEditModal from '../TemplatesEditModal/index';
 import styles from './styles.module.scss';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 
 interface Props {
   isOnline: boolean;
+  isUpdateTeamModalVisible: boolean;
+  isTemplatesEditModalVisible: boolean;
+  teams: Array<any>;
+  categories: Array<any>;
+  searchParam?: string;
+  property?: any;
+  openUpdateTeamModal: () => void;
+  closeUpdateTeamModal: () => void;
+  openTemplatesEditModal: () => void;
+  closeTemplatesEditModal: () => void;
+  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
 }
 
-const PropertyDesktopForm: FunctionComponent<Props> = ({ isOnline }) => {
+const PropertyDesktopForm: FunctionComponent<Props> = ({
+  isOnline,
+  isUpdateTeamModalVisible,
+  isTemplatesEditModalVisible,
+  teams,
+  categories,
+  searchParam,
+  openUpdateTeamModal,
+  closeUpdateTeamModal,
+  openTemplatesEditModal,
+  closeTemplatesEditModal,
+  onSearchKeyDown
+}) => {
   const router = useRouter();
 
   const [properyImg, setProperyImg] = useState<string>('');
   const [logoImg, setLogoImg] = useState<string>('');
+  const [selectedTeamId, setSelectedTeamId] = useState<string>('');
+  const [selectedTemplates, setSelectedTemplates] = useState<any[]>([]);
+
+  const updateTempatesList = (templateId) => {
+    const index = selectedTemplates.indexOf(templateId);
+    if (index > -1) {
+      setSelectedTemplates(
+        selectedTemplates.filter((item) => item !== templateId)
+      );
+    } else {
+      setSelectedTemplates([templateId, ...selectedTemplates]);
+    }
+  };
+
+  const changeTeamSelection = (newId) => {
+    setSelectedTeamId(newId);
+  };
 
   const removePropertyImage = () => {
     setProperyImg('');
@@ -24,6 +67,16 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({ isOnline }) => {
   const cancel = (e) => {
     e.preventDefault();
     router.push('/properties');
+  };
+
+  const openTeamModal = (e) => {
+    e.preventDefault();
+    openUpdateTeamModal();
+  };
+
+  const openTemplatesModal = (e) => {
+    e.preventDefault();
+    openTemplatesEditModal();
   };
 
   return (
@@ -110,7 +163,10 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({ isOnline }) => {
           <div className={styles.propertyEditDesktop__templates__list}></div>
           <div className={styles.propertyEditDesktop__templates__buttons}>
             {/* Templates button */}
-            <button className={styles.propertyEditDesktop__templatesButton}>
+            <button
+              onClick={openTemplatesModal}
+              className={styles.propertyEditDesktop__templatesButton}
+            >
               TEMPLATES
             </button>
             {/* Trello Button */}
@@ -193,8 +249,19 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({ isOnline }) => {
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
                 <label htmlFor="team">Team</label>
-                <button className={styles.propertyEditDesktop__teamButton}>
-                  Not set
+                <button
+                  onClick={openTeamModal}
+                  className={clsx(
+                    !selectedTeamId
+                      ? styles.propertyEditDesktop__teamButton
+                      : styles.propertyEditDesktop__saveButton
+                  )}
+                >
+                  {!selectedTeamId
+                    ? 'Not Set'
+                    : teams
+                        .filter((team) => team.id === selectedTeamId)
+                        .map((team) => team.name)}
                 </button>
               </div>
             </div>
@@ -322,7 +389,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({ isOnline }) => {
               </div>
             </div>
             {/* Save button */}
-
             <button className={styles.propertyEditDesktop__saveButton}>
               Save
             </button>
@@ -330,6 +396,22 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({ isOnline }) => {
           </div>
         </div>
       </form>
+      <UpdateTeamModal
+        isVisible={isUpdateTeamModalVisible}
+        onClose={closeUpdateTeamModal}
+        teams={teams}
+        selectedTeamId={selectedTeamId}
+        changeTeamSelection={changeTeamSelection}
+      />
+      <TemplatesEditModal
+        isVisible={isTemplatesEditModalVisible}
+        onClose={closeTemplatesEditModal}
+        categories={categories}
+        selectedTemplates={selectedTemplates}
+        updateTempatesList={updateTempatesList}
+        onSearchKeyDown={onSearchKeyDown}
+        searchParam={searchParam}
+      />
     </div>
   );
 };

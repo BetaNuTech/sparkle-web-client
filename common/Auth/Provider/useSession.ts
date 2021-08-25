@@ -21,7 +21,7 @@ export default function useSession(firebase): SessionResult {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const onAuthUpdate = async (user) => {
+  const onAuthUpdate = (user) => {
     if (user) {
       setIsAuthenticated(true);
       if (user.uid) setUserId(user.uid);

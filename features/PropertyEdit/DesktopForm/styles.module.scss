@@ -2,7 +2,7 @@
 
 .propertyEditDesktop {
   &__mainContainer {
-    background-color: #f2f2f2;
+    background-color: $gray;
     max-height: 100vh;
   }
 
@@ -10,8 +10,8 @@
     position: relative;
     top: 2%;
     left: 1.3%;
-    background-color: #fff;
-    width: 45rem;
+    background-color: $white;
+    width: rem-calc(720);
     height: 96%;
     overflow: auto;
     display: grid;
@@ -30,22 +30,22 @@
   &__container {
     &__image {
       grid-area: img;
-      border: 1px solid #d9d9d9;
+      border: 1px solid $gray-lighter;
       padding: 0;
     }
     &__fields {
       grid-area: fields;
       display: flex;
-      border: 1px solid #d9d9d9;
+      border: 1px solid $gray-lighter;
       border-top: none;
-      padding: 1rem;
-      padding-bottom: 2rem;
+      padding: $global-padding;
+      padding-bottom: $global-lg-padding;
       overflow: auto;
-      background-color: #f8f8f8;
+      background-color: $white-dark;
     }
     &__templates {
       grid-area: temp;
-      border: 1px solid #d9d9d9;
+      border: 1px solid $gray-lighter;
       border-left: none;
       overflow: auto;
     }
@@ -60,21 +60,22 @@
   }
 
   &__cancelButton {
-    padding: 0.5rem;
-    width: 5rem;
+    padding: $global-sm-padding;
+    width: rem-calc(80);
     position: absolute;
-    top: 1rem;
-    left: 1rem;
+    top: $global-padding;
+    left: $global-padding;
     background-color: $gray;
     color: $body-font-color;
     border-radius: $global-radius;
-    font-size: 0.75rem;
+    font-size: $medium-font-size;
     z-index: 150;
     border: 1px solid $black;
+
     &__chevronIcon {
-      width: 0.4rem;
+      width: rem-calc(6.4);
       transform: rotate(180deg);
-      margin-right: 0.4em;
+      margin-right: rem-calc(5);
     }
   }
 
@@ -88,8 +89,8 @@
     color: $primary-dark-color;
     border: none;
     z-index: 150;
-    margin-top: 1rem;
-    font-size: 0.8rem;
+    margin-top: $global-padding;
+    font-size: $medium-font-size;
   }
 
   &__removeLogoButton {
@@ -118,8 +119,8 @@
     background-color: transparent;
 
     .propertyEditDesktop__options {
-      height: 1.5rem;
-      width: 18rem;
+      height: $global-mlg-padding;
+      width: rem-calc(288);
       position: absolute;
       top: 94%;
       left: 34%;
@@ -128,13 +129,14 @@
       align-items: center;
       text-align: center;
       background-color: rgba(242, 242, 242, 0.75);
-      font-size: 0.8rem;
-      padding: 0.8rem;
+      font-size: $medium-font-size;
+      padding: $global-md-padding;
       z-index: 150;
+      border: 1px solid $gray-lighter;
 
       &__title {
         margin: 0;
-        font-size: 0.8rem;
+        font-size: $medium-font-size;
         color: #1d1e20;
         cursor: pointer;
       }
@@ -142,7 +144,7 @@
       &__option {
         margin: 0;
         text-decoration: underline;
-        font-size: 0.8rem;
+        font-size: $medium-font-size;
         color: $primary-dark-color;
       }
     }
@@ -150,26 +152,29 @@
 
   &__logoInputLabel {
     @extend .propertyEditDesktop__imageInputLabel;
-    background-color: #fff;
-    height: 8rem;
-    width: 9rem;
-    margin-top: 0.5rem;
+    background-color: $white;
+    height: rem-calc(128);
+    width: rem-calc(144);
+    margin-top: rem-calc(8);
     margin-left: 0;
+
     &__text {
-      padding-bottom: 1.5rem;
-      color: #666;
-      font-size: 0.8rem;
+      padding-bottom: $global-mlg-padding;
+      color: $gray-med-dark;
+      font-size: $medium-font-size;
     }
+
     .propertyEditDesktop__options {
       top: 79%;
       left: 0%;
-      border: 1px solid #d9d9d9;
+      border: 1px solid $gray-lighter;
       width: 100%;
     }
+
     &__option {
       margin: 0;
       text-decoration: underline;
-      font-size: 0.8rem;
+      font-size: $medium-font-size;
       color: $primary-dark-color;
     }
   }
@@ -235,24 +240,24 @@
   }
 
   &__spacer {
-    height: 1rem;
+    height: $global-padding;
   }
 
   &__templates__title {
     height: 10%;
     text-align: center;
-    padding: 1.5rem 1rem;
-    color: #555;
+    padding: $global-mlg-padding $global-padding;
+    color: $gray-dark;
     font-weight: bold;
     font-size: 0.85rem;
     text-transform: uppercase;
     background-color: #eaeaea;
-    border-bottom: 1px solid #d9d9d9;
+    border-bottom: 1px solid $gray-lighter;
   }
 
   &__templates__list {
     height: 65%;
-    background-color: #f8f8f8;
+    background-color: $white-dark;
   }
 
   &__templates__buttons {
@@ -273,12 +278,12 @@
     text-align: center;
     line-height: $global-lg-padding;
     border-radius: $global-radius;
-    margin-top: 1.3rem;
+    margin-top: rem-calc(21);
   }
 
   &__trelloButton {
-    border: solid 2px #555;
-    color: #555;
-    margin-top: 1rem;
+    border: solid 2px $gray-dark;
+    color: $gray-dark;
+    margin-top: $global-padding;
   }
 }

@@ -7,7 +7,8 @@
   padding-top: $global-mlg-padding;
   background-color: $white;
   border-radius: $global-radius;
-  overflow: visible;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   // Center horizontally/vertically
   position: absolute;
@@ -116,8 +117,8 @@
 .modal__closeButton {
   position: absolute;
   color: #aaa;
-  top: -1.8 * $global-padding;
-  right: -2.1 * $global-padding;
+  top: 1.8 * $global-padding;
+  right: 2.1 * $global-padding;
   font-size: 2.5em;
   line-height: 0.5;
   background-color: transparent;
