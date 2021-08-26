@@ -7,7 +7,7 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { openImprovementJob } from '../../../__mocks__/jobs';
+import { authorizedImprovementJob, openImprovementJob } from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
 import { approvedBid, openBid, rejectedBid } from '../../../__mocks__/bids';
 import { admin as user } from '../../../__mocks__/users';
@@ -333,7 +333,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
     expect(btnApprove).toBeTruthy();
   });
 
-  it('should show complete, incomplete, reject button when bid is in approved state', async () => {
+  it('should show incomplete, reject button when bid is in approved state', async () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
@@ -367,12 +367,10 @@ describe('Unit | Features | Bid Edit | Form', () => {
       contextWidth: breakpoints.tablet.maxWidth
     });
 
-    const btnComplete = screen.queryByTestId('bid-form-complete-bid');
     const btnIncomplete = screen.queryByTestId('bid-form-incomplete-bid');
     const btnReject = screen.queryByTestId('bid-form-reject-bid');
 
     // Check if the elements are present
-    expect(btnComplete).toBeTruthy();
     expect(btnIncomplete).toBeTruthy();
     expect(btnReject).toBeTruthy();
   });
@@ -421,7 +419,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const putReq = sinon.spy();
     const expected = 'complete';
     const props = {
-      job: openImprovementJob,
+      job: authorizedImprovementJob,
       property: fullProperty,
       apiState,
       isOnline: true,
@@ -462,5 +460,32 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const result = putReq.called ? putReq.getCall(0).args[2] : {};
     const actual = result.state || '';
     expect(actual).toEqual(expected);
+  });
+
+  it('should not show complete button for bid if job not in authorized state', async () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: approvedBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: () => {}
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const btnComplete = screen.queryByTestId('bid-form-complete-bid');
+
+    expect(btnComplete).toBeNull();
   });
 });
