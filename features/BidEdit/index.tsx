@@ -1,15 +1,18 @@
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent, useState } from 'react';
 import { useFirestore } from 'reactfire';
 import Router from 'next/router';
 import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
+import useStorage, { StorageResult } from '../../common/hooks/useStorage';
 import userModel from '../../common/models/user';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
+import errorReports from '../../common/services/api/errorReports';
 import useBid from './hooks/useBid';
 import useBidForm from './hooks/useBidForm';
 import useBidStatus from './hooks/useBidStatus';
+import uploadAttachmentService from './services/uploadAttachment';
 import BidForm from './Form';
 
 interface Props {
@@ -22,6 +25,8 @@ interface Props {
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
 }
+
+const PREFIX = 'feature: BidEdit:';
 
 const BidEdit: FunctionComponent<Props> = ({
   propertyId,
@@ -46,7 +51,68 @@ const BidEdit: FunctionComponent<Props> = ({
   const { data: bid, status: bidStatus } = useBid(firestore, bidId);
 
   const { apiState, postBidCreate, putBidUpdate } = useBidForm(bid);
+
+  const { uploadFileToStorage } = useStorage();
+
+  const [uploadState, setUploadState] = useState(false);
+
+  const onFileChange = async (ev: ChangeEvent<HTMLInputElement>) => {
+    const fileEl = ev.target;
+    if (!fileEl.files || fileEl.files.length === 0) {
+      return;
+    }
+    // Set loading state
+    setUploadState(true);
+
+    // Get the file from files array
+    const file = fileEl.files[0];
+    let result: StorageResult = null;
+    try {
+      // Upload file to the firebase storage
+      result = await uploadFileToStorage(
+        `/jobs/${jobId}/bids/${bidId}/attachments/${file.name}`,
+        file
+      );
+    } catch (err) {
+      const wrappedErr = Error(
+        `${PREFIX} onFileChange: failed to upload to storage: ${err}`
+      );
+      // Send notification if storage api fails
+      sendNotification(
+        'Upload failed, please try again or upload a different file',
+        { type: 'error' }
+      );
+      // Also send the error report to backend
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+      return setUploadState(false);
+    }
+
+    // Perform the updation on bid record for new attachment uploaded
+    try {
+      await uploadAttachmentService.updateBidAttachment(
+        firestore,
+        bid,
+        file,
+        result
+      );
+    } catch (err) {
+      // Handle error
+      const wrappedErr = Error(
+        `${PREFIX} onFileChange: failed to update firestore attachment: ${err}`
+      );
+      sendNotification('Upload failed, could not update attachment record', {
+        type: 'error'
+      });
+      errorReports.send(wrappedErr); // eslint-disable-line
+    }
+    // Update loading state to false
+    setUploadState(false);
+  };
+
   // Show job error status
+  // NOTE: contains side effects: redirects, notifications, and error reporting
+  // TODO: refactor away from hook to more appropriate abstraction
   useBidStatus(apiState, bidId, jobId, propertyId, sendNotification);
   // Loading State
   if (!property || !job || (bidId !== 'new' && !bid)) {
@@ -71,6 +137,8 @@ const BidEdit: FunctionComponent<Props> = ({
       apiState={apiState}
       postBidCreate={postBidCreate}
       putBidUpdate={putBidUpdate}
+      onFileChange={onFileChange}
+      uploadState={uploadState}
     />
   );
 };

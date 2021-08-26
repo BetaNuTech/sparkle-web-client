@@ -15,6 +15,7 @@ describe('Unit | Features | Job Edit | Hooks | Use Job Status', () => {
       statusCode: 403,
       response: {}
     } as BidApiResult;
+    sinon.stub(errorReports, 'send').callsFake(() => true);
     renderHook(() =>
       useBidStatus(apiState, 'bid-1', 'job-1', 'property-1', sendNotification)
     );
@@ -49,6 +50,7 @@ describe('Unit | Features | Job Edit | Hooks | Use Job Status', () => {
       statusCode: 500,
       response: {}
     } as BidApiResult;
+    sinon.stub(errorReports, 'send').callsFake(() => true);
     renderHook(() =>
       useBidStatus(apiState, 'bid-1', 'job-1', 'property-1', sendNotification)
     );

@@ -29,7 +29,11 @@ export default function useJobRecord(
   const result = bidsApi.findRecord(firestore, bidId);
 
   if (bidId === 'new') {
-    Object.assign(payload, { data: {}, status: 'success', error: null }, { handlers });
+    Object.assign(
+      payload,
+      { data: {}, status: 'success', error: null },
+      { handlers }
+    );
   } else {
     Object.assign(payload, result, { handlers });
   }

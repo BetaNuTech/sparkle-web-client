@@ -48,7 +48,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {
@@ -94,7 +106,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     const { container } = render(<BidEditForm {...props} />, {
@@ -133,7 +157,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     const { container } = render(<BidEditForm {...props} />, {
@@ -172,7 +208,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {
@@ -210,7 +258,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {
@@ -248,7 +308,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {
@@ -276,7 +348,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {
@@ -308,7 +392,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {
@@ -338,7 +434,19 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: putReq
+      putBidUpdate: putReq,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onFileChange: () => {},
+      storageState: {
+        isLoading: false,
+        error: false,
+        uploaded: false,
+        fileUrl: null,
+        fileName: null,
+        fileSize: null,
+        fileType: null
+      },
+      attachmentState: { isLoading: false, error: false }
     };
 
     render(<BidEditForm {...props} />, {

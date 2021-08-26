@@ -2,6 +2,9 @@ import firebase from 'firebase/app';
 import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
 import bidModel from '../../models/bid';
+import bidAttachmentModel from '../../models/bidAttachment';
+
+const PREFIX = 'services: api: firestore: bids';
 
 // Result of bids collection query
 export interface bidsCollectionResult {
@@ -80,5 +83,28 @@ export default {
 
     // Result
     return { status, error, data };
+  },
+
+  // Add attachment record to bids document
+  addBidAttachment(
+    firestore: firebase.firestore.Firestore,
+    id: string,
+    attachment: bidAttachmentModel
+  ): Promise<bidAttachmentModel> {
+    // Update attachment record to firestore
+    return firestore
+      .collection(fbCollections.bids)
+      .doc(id)
+      .update({
+        attachments: firebase.firestore.FieldValue.arrayUnion(attachment)
+      })
+      .then(() => attachment)
+      .catch((err) => {
+        const wrappedErr = Error(
+          `${PREFIX} updateBidAttachment: failed to update bid attachments: ${err}`
+        );
+
+        return Promise.reject(wrappedErr);
+      });
   }
 };
