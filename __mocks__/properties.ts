@@ -21,8 +21,10 @@ export const fullProperty: propertyModel = {
   logoName: 'Jpg',
   logoURL: '/url.jpg',
   photoName: 'Jpg',
-  // eslint-disable-next-line max-len
-  photoURL: 'https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2F3e1c1a56d1bd381af398.jpeg?alt=media&token=5d69f6db-f240-4db9-9e52-843c66ee1e05',
+  /* eslint-disable */
+  photoURL:
+    'https://firebasestorage.googleapis.com/v0/b/sparkle-jwc.appspot.com/o/propertyImages%2F3e1c1a56d1bd381af398.jpeg?alt=media&token=5d69f6db-f240-4db9-9e52-843c66ee1e05',
+  /* eslint-enable */
   year_built: 1984, // eslint-disable-line camelcase
   slackChannel: 'one',
   zip: '85555',
@@ -97,7 +99,7 @@ export const propertyE: propertyModel = {
 
 export const partialProperty: propertyModel = {
   id: 'property-6',
-  name: 'Team Two'
+  name: 'partial property'
 };
 
 export default [fullProperty, propertyB, propertyC, propertyD, propertyE];
