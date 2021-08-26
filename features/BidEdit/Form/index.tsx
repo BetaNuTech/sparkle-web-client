@@ -741,7 +741,9 @@ const BidForm: FunctionComponent<Props> = ({
     canApprove && Object.keys(formState.errors).length === 0;
   const canReject = !isNewBid && bid.state === 'approved';
   const canMarkIncomplete = !isNewBid && bid.state === 'approved';
-  const canMarkComplete = !isNewBid && bid.state === 'approved';
+  // Should not be able to mark complete if the job is not in authroized state
+  const canMarkComplete =
+    !isNewBid && bid.state === 'approved' && job.state === 'authorized';
   const canReopen = !isNewBid && ['rejected', 'incomplete'].includes(bid.state);
 
   const formBid = (({
