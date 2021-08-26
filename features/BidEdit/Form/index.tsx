@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useRef } from 'react';
+import { FunctionComponent, useState, useRef, ChangeEvent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import {
   useForm,
@@ -29,6 +29,7 @@ import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import { BidApiResult } from '../hooks/useBidForm';
 import useProcessedForm from '../hooks/useProcessedForm';
 import DropdownHeader from '../DropdownHeader';
+import DropdownAttachment from '../DropdownAttachment';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
@@ -45,6 +46,8 @@ interface Props {
   apiState: BidApiResult;
   postBidCreate(propertyId: string, jobId: string, bid: bidModel): void;
   putBidUpdate(propertyId: string, jobId: string, bid: bidModel): void;
+  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
+  uploadState: boolean;
 }
 
 type Inputs = {
@@ -83,6 +86,8 @@ interface LayoutProps {
   canMarkIncomplete: boolean;
   canMarkComplete: boolean;
   canReopen: boolean;
+  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
+  isUploadingFile: boolean;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -109,7 +114,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
   canReject,
   canMarkIncomplete,
   canMarkComplete,
-  canReopen
+  canReopen,
+  onFileChange,
+  isUploadingFile
 }) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
@@ -337,17 +344,24 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   type="button"
                   className={styles.form__upload}
                   onClick={onUploadClick}
+                  disabled={isUploadingFile}
                 >
                   <AddIcon /> Upload
                   <input
                     type="file"
                     ref={inputFile}
                     className={styles.form__formInput}
+                    onChange={onFileChange}
+                    data-testid="input-file-attachment"
                   />
                 </button>
               </div>
               {attachments.length === 0 ? (
-                <h3>No Attachments</h3>
+                <ul className={styles.form__attachmentList}>
+                  <li className={styles.form__attachmentList__item}>
+                    No Attachments
+                  </li>
+                </ul>
               ) : (
                 <ul className={styles.form__attachmentList}>
                   {attachments.map((ba) => (
@@ -356,7 +370,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       key={ba.name}
                     >
                       {ba.name}
-                      <ActionsIcon />
+                      <span className={styles['button--dropdown']}>
+                        <ActionsIcon />
+                        <DropdownAttachment fileUrl={ba.url} />
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -501,7 +518,9 @@ const BidForm: FunctionComponent<Props> = ({
   toggleNavOpen,
   apiState,
   postBidCreate,
-  putBidUpdate
+  putBidUpdate,
+  onFileChange,
+  uploadState
 }) => {
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -751,6 +770,7 @@ const BidForm: FunctionComponent<Props> = ({
   const mobileHeaderActions = (headStyle) => (
     <>
       {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
+      {uploadState && <LoadingHud title="Uploading..." />}
       <div
         className={clsx(
           headStyle.header__button,
@@ -807,6 +827,8 @@ const BidForm: FunctionComponent<Props> = ({
             canMarkIncomplete={canMarkIncomplete}
             canMarkComplete={canMarkComplete}
             canReopen={canReopen}
+            onFileChange={onFileChange}
+            isUploadingFile={uploadState}
           />
         </>
       )}
@@ -815,6 +837,7 @@ const BidForm: FunctionComponent<Props> = ({
       {isDesktop && (
         <div data-testid="desktop-form">
           {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
+          {uploadState && <LoadingHud title="Uploading..." />}
           <Header
             isOnline={isOnline}
             property={property}
@@ -857,6 +880,8 @@ const BidForm: FunctionComponent<Props> = ({
             canMarkIncomplete={canMarkIncomplete}
             canMarkComplete={canMarkComplete}
             canReopen={canReopen}
+            onFileChange={onFileChange}
+            isUploadingFile={uploadState}
           />
         </div>
       )}

@@ -8,16 +8,24 @@ interface Props {
   testid?: string;
   className?: any;
   featureEnabled?: boolean;
+  // All other props
+  [x: string]: any;
 }
 const DropdownLink: FunctionComponent<Props> = ({
   children,
   href,
   testid,
   className,
-  featureEnabled
+  featureEnabled,
+  ...props
 }) => (
   <li className={styles.dropdown__item} data-testid={testid}>
-    <LinkFeature href={href} className={className} featureEnabled={featureEnabled}>
+    <LinkFeature
+      href={href}
+      className={className}
+      featureEnabled={featureEnabled}
+      {...props}
+    >
       {children}
     </LinkFeature>
   </li>

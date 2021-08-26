@@ -50,6 +50,7 @@ $dropdown-carrot-size: rem-calc(5);
       font-weight: bold;
       text-decoration: none;
       color: $gray-dark;
+      cursor: pointer;
 
       &:hover {
         background-color: $primary-color;

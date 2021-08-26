@@ -3,7 +3,8 @@ import {
   render as rtlRender,
   act,
   screen,
-  fireEvent
+  fireEvent,
+  waitFor
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
@@ -25,6 +26,9 @@ import bidsApi, {
   bidsCollectionResult
 } from '../../../../common/services/firestore/bids';
 import bidServiceApi from '../../../../common/services/api/bids';
+import storageApi from '../../../../common/services/storage';
+import errorReports from '../../../../common/services/api/errorReports';
+import uploadAttachmentService from '../../../../features/BidEdit/services/uploadAttachment';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 
@@ -199,7 +203,7 @@ describe('Integration | Features | Bid Edit', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('Updates a new bid when it already exists', async () => {
+  it('Updates a bid when it already exists', async () => {
     const expected = true;
     render(
       <BidEdit
@@ -226,6 +230,81 @@ describe('Integration | Features | Bid Edit', () => {
     });
 
     const actual = putReq.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Send error report when an attachment fails to upload', async () => {
+    const expected = true;
+    render(
+      <BidEdit
+        user={user}
+        bidId="bid-1"
+        propertyId="property-1"
+        jobId="job-1"
+        isOnline
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
+
+    sinon.stub(storageApi, 'createUploadTask').throws(Error('fail'));
+    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
+
+    act(() => {
+      const attachementInput = screen.getByTestId('input-file-attachment');
+      fireEvent.change(attachementInput, {
+        target: {
+          files: [new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })]
+        }
+      });
+    });
+
+    await waitFor(() => sendReport.called);
+
+    const actual = sendReport.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Send error report when an attachment fails to be saved to bid', async () => {
+    const expected = true;
+    render(
+      <BidEdit
+        user={user}
+        bidId="bid-1"
+        propertyId="property-1"
+        jobId="job-1"
+        isOnline
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
+
+    sinon.stub(storageApi, 'createUploadTask').returns({
+      snapshot: { ref: 'test' },
+      on(evt, onStart, onError, onComplete) {
+        onComplete();
+      }
+    });
+    sinon.stub(storageApi, 'getFileUrl').resolves('/test.png');
+    sinon
+      .stub(uploadAttachmentService, 'updateBidAttachment')
+      .rejects(Error('oops'));
+    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
+
+    act(() => {
+      const attachementInput = screen.getByTestId('input-file-attachment');
+      fireEvent.change(attachementInput, {
+        target: {
+          files: [new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })]
+        }
+      });
+    });
+
+    await waitFor(() => sendReport.called);
+
+    const actual = sendReport.called;
     expect(actual).toEqual(expected);
   });
 });
