@@ -2,7 +2,8 @@
 @import '../../../common/Modal/styles.module.scss';
 
 .updateTeamModal {
-  padding: rem-calc(12);
+  padding: $global-md-padding;
+
   &__items {
     list-style-type: none;
     border-bottom: 1px solid $gray-light-3;
@@ -13,35 +14,32 @@
 
     &__label {
       width: 100%;
-      padding: rem-calc(8);
+      padding: $global-sm-padding;
       margin-left: 0 !important;
-      display: flex;
+      display: flex !important;
+      justify-content: space-between;
       align-items: center;
-
       font-size: rem-calc(15);
       cursor: pointer;
+
       &__text {
         display: inline-block;
         width: 90%;
         height: 100%;
       }
-      &__chequedIcon {
-        width: rem-calc(15);
-        height: rem-calc(15);
-        padding-top: rem-calc(2) !important;
-        opacity: 0.4;
-        padding: 0;
-      }
+      &__chequedIcon,
       &__notChequedIcon {
-        width: rem-calc(15);
-        height: rem-calc(15);
+        width: rem-calc(18);
+        height: rem-calc(18);
+        padding: 0;
         padding-top: rem-calc(2) !important;
         opacity: 0.4;
-        padding: 0;
+        flex-shrink: 0;
       }
     }
+
     &__input:checked + &__label {
-      background-color: #d9d9d9;
+      background-color: $gray-lighter;
     }
 
     &__input:checked + &__label__notChequedIcon {

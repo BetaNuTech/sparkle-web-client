@@ -25,8 +25,7 @@ const UpdateTeamModal: FunctionComponent<Props> = (props) => {
     if (selectedTeamId === id) {
       changeTeamSelection('');
     } else {
-      const itemChecked = id;
-      changeTeamSelection(itemChecked);
+      changeTeamSelection(id);
     }
   };
 
@@ -51,10 +50,11 @@ const UpdateTeamModal: FunctionComponent<Props> = (props) => {
                 <input
                   type="checkbox"
                   id={team.id}
+                  data-testid={`checkbox-item-${team.id}`}
                   className={styles.updateTeamModal__items__input}
                   checked={selectedTeamId === team.id}
                   onChange={() => checkItem(team.id)}
-                  value={selectedTeamId}
+                  value={team.id}
                 />
                 <label
                   htmlFor={team.id}

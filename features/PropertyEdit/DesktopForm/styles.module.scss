@@ -60,8 +60,8 @@
   }
 
   &__cancelButton {
-    padding: $global-sm-padding;
     width: rem-calc(80);
+    padding: $global-sm-padding;
     position: absolute;
     top: $global-padding;
     left: $global-padding;
@@ -75,7 +75,7 @@
     &__chevronIcon {
       width: rem-calc(6.4);
       transform: rotate(180deg);
-      margin-right: rem-calc(5);
+      margin-right: rem-calc(4);
     }
   }
 
@@ -249,7 +249,7 @@
     padding: $global-mlg-padding $global-padding;
     color: $gray-dark;
     font-weight: bold;
-    font-size: 0.85rem;
+    font-size: $medium-font-size;
     text-transform: uppercase;
     background-color: #eaeaea;
     border-bottom: 1px solid $gray-lighter;
