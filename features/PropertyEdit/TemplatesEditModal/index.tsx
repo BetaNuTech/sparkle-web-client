@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'react';
+import clsx from 'clsx';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import styles from './styles.module.scss';
 import CategoryItem from './CategoryItem';
@@ -43,9 +44,13 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
       >
         ×
       </button>
-      <header className={styles.modal__header}>
+
+      <header
+        className={clsx(styles.modal__header, '-mb-sm', '-br-bottom-none')}
+      >
         <h5 className={styles.modal__heading}>Templates Select</h5>
       </header>
+
       <label className={styles.templatesEditModal__search}>
         <input
           placeholder="Search Templates"
@@ -69,7 +74,12 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
               />
             ))
           ) : (
-            <h5 data-testid="no-templates">No templates found</h5>
+            <h5
+              data-testid="no-templates"
+              className={styles.templatesEditModal__emptyHeading}
+            >
+              No templates found
+            </h5>
           )}
         </ul>
       </div>

@@ -1,4 +1,6 @@
+import sinon from 'sinon';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { templateA, templateC } from '../../../../../__mocks__/templates';
 import ListItem from './index';
 
@@ -18,6 +20,27 @@ describe('Unit | Features | Property Edit | Templates Edit Modal | Category Item
     ) as HTMLInputElement;
 
     const actual = item.checked;
+    expect(actual).toEqual(expected);
+  });
+
+  it('submits selected team when clicked', () => {
+    const expected = templateA.id;
+    const updateTempatesList = sinon.stub().returns([]);
+    const props = {
+      template: templateA,
+      selectedTemplates: [templateA.id],
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      updateTempatesList
+    };
+    render(<ListItem {...props} />);
+
+    const item = screen.getByTestId(
+      `checkbox-item-${templateA.id}`
+    ) as HTMLInputElement;
+    userEvent.click(item);
+
+    const result = updateTempatesList.firstCall || { args: [] };
+    const actual = result.args[0];
     expect(actual).toEqual(expected);
   });
 

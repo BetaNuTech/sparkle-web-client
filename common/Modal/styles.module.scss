@@ -78,7 +78,7 @@
 }
 .modal__subHeading {
   margin-bottom: $global-mlg-padding;
-  font-size: 1rem;
+  font-size: $paragraph-font-size;
   line-height: 1.25;
   color: $gray-med-dark-2;
 }
@@ -116,9 +116,9 @@
 // Buttons
 .modal__closeButton {
   position: absolute;
-  color: #aaa;
-  top: 1.8 * $global-padding;
-  right: 2.1 * $global-padding;
+  color: $gray-light;
+  top: rem-calc(29);
+  right: rem-calc(34);
   font-size: 2.5em;
   line-height: 0.5;
   background-color: transparent;
@@ -141,7 +141,7 @@
   padding-left: 0;
   color: $gray-med-dark;
   font-weight: bold;
-  font-size: 1rem;
+  font-size: $paragraph-font-size;
   background-color: transparent;
   border-width: 0;
   outline-width: 0;
@@ -292,7 +292,7 @@
   position: relative;
   flex-wrap: nowrap;
   flex-grow: 1;
-  max-height: calc(100% - 50px);
+  max-height: calc(100% - #{rem-calc(50)});
   transform: translateX(0);
 
   list-style: none;
@@ -327,7 +327,7 @@
   display: flex;
   position: absolute;
   top: 50%;
-  margin-top: -10px;
+  margin-top: rem-calc(-10);
   left: 0;
   bottom: 0;
   z-index: 10;
