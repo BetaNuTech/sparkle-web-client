@@ -2,14 +2,19 @@
 @import '../../../common/Modal/styles.module.scss';
 
 .templatesEditModal {
-  padding: $global-md-padding;
+  padding: $global-md-padding 0;
+
   &__categoryBox {
     list-style-type: none;
   }
 
   &__main {
     @extend .modal__main__content;
-    padding: 0 $global-lg-padding 0 $global-lg-padding;
+    padding: 0;
+  }
+
+  &__emptyHeading {
+    padding: $global-padding $global-lg-padding;
   }
 
   &__items {
@@ -20,60 +25,75 @@
       display: none;
     }
 
-    &__label {
+    &__label,
+    input[type='checkbox'] + &__label {
       width: 100%;
-      padding: rem-calc(8);
-      margin-left: 0 !important;
-      display: flex !important;
+      padding: rem-calc(8) $global-lg-padding;
+      margin-left: 0;
+      display: flex;
       justify-content: space-between;
       align-items: center;
-
       font-size: rem-calc(15);
       cursor: pointer;
+
       &__text {
         width: 90%;
         height: 100%;
         display: inline-block;
         font-weight: bold;
       }
+
       &__chequedIcon,
       &__notChequedIcon {
         width: rem-calc(18);
         height: rem-calc(18);
         padding: 0;
-        padding-top: rem-calc(2) !important;
+        padding-top: rem-calc(2);
         opacity: 0.4;
         flex-shrink: 0;
       }
     }
+
     &__input:checked + &__label {
-      background-color: #d9d9d9;
+      background-color: $info-color;
     }
 
     &__input:checked + &__label__notChequedIcon {
       display: none;
     }
   }
+
   &__boxHeader {
     @extend %stickyBoundingBox--header;
     background-color: $gray-dark;
   }
+
   &__search {
     @extend %search;
-    margin: $global-lg-padding $global-lg-padding 0 $global-lg-padding;
+    margin: 0;
     padding-top: $global-sm-padding;
-    padding-bottom: $global-md-padding;
-
-    label > &__input[type='search'],
-    label > &__input[type='search']:hover {
-      @extend %searchInput;
-    }
+    padding-bottom: $global-sm-padding;
+    background-color: $gray-lighter;
+    border-radius: 0;
 
     &__input,
     &__input[type='search'] {
+      // label > &__input[type='search'] {
       @extend %searchInput;
       margin: 0;
       padding-bottom: 0;
+      border-radius: $global-radius;
+      background-color: $white;
+      color: $body-font-color;
+      line-height: rem-calc(30);
+
+      &::placeholder {
+        color: $gray-lighter;
+      }
+    }
+
+    &__input:focus {
+      padding-left: rem-calc(8);
     }
   }
 }
