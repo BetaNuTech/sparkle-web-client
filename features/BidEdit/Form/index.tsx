@@ -30,6 +30,7 @@ import { BidApiResult } from '../hooks/useBidForm';
 import useProcessedForm from '../hooks/useProcessedForm';
 import DropdownHeader from '../DropdownHeader';
 import DropdownAttachment from '../DropdownAttachment';
+import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
@@ -48,6 +49,12 @@ interface Props {
   putBidUpdate(propertyId: string, jobId: string, bid: bidModel): void;
   onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
   uploadState: boolean;
+  setDeleteAttachmentPromptVisible(newState: boolean): void;
+  isDeleteAttachmentPromptVisible: boolean;
+  confirmAttachmentDelete(bidAttachment: bidAttachmentModel): Promise<any>;
+  queueAttachmentForDelete(attachment: bidAttachmentModel): any;
+  queuedAttachmentForDeletion: bidAttachmentModel;
+  deleteAtachmentLoading: boolean;
 }
 
 type Inputs = {
@@ -88,6 +95,8 @@ interface LayoutProps {
   canReopen: boolean;
   onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
   isUploadingFile: boolean;
+  setDeleteAttachmentPromptVisible(newState: boolean): void;
+  queueAttachmentForDelete(attachment: bidAttachmentModel): any;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -116,7 +125,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
   canMarkComplete,
   canReopen,
   onFileChange,
-  isUploadingFile
+  isUploadingFile,
+  queueAttachmentForDelete,
+  setDeleteAttachmentPromptVisible
 }) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
@@ -131,6 +142,11 @@ const Layout: FunctionComponent<LayoutProps> = ({
     if (inputFile && inputFile.current) {
       inputFile.current.click();
     }
+  };
+
+  const openAttachmentDeletePrompt = (attachment: bidAttachmentModel) => {
+    queueAttachmentForDelete(attachment);
+    setDeleteAttachmentPromptVisible(true);
   };
 
   return (
@@ -372,7 +388,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       {ba.name}
                       <span className={styles['button--dropdown']}>
                         <ActionsIcon />
-                        <DropdownAttachment fileUrl={ba.url} />
+                        <DropdownAttachment
+                          fileUrl={ba.url}
+                          onDelete={() => openAttachmentDeletePrompt(ba)}
+                        />
                       </span>
                     </li>
                   ))}
@@ -520,8 +539,19 @@ const BidForm: FunctionComponent<Props> = ({
   postBidCreate,
   putBidUpdate,
   onFileChange,
-  uploadState
+  uploadState,
+  setDeleteAttachmentPromptVisible,
+  isDeleteAttachmentPromptVisible,
+  queueAttachmentForDelete,
+  confirmAttachmentDelete,
+  queuedAttachmentForDeletion,
+  deleteAtachmentLoading
 }) => {
+  const closeAttachmentDeletePrompt = () => {
+    setDeleteAttachmentPromptVisible(false);
+    queueAttachmentForDelete(null);
+  };
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -773,6 +803,7 @@ const BidForm: FunctionComponent<Props> = ({
     <>
       {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
       {uploadState && <LoadingHud title="Uploading..." />}
+      {deleteAtachmentLoading && <LoadingHud title="Remove Attachment..." />}
       <div
         className={clsx(
           headStyle.header__button,
@@ -831,6 +862,8 @@ const BidForm: FunctionComponent<Props> = ({
             canReopen={canReopen}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
+            queueAttachmentForDelete={queueAttachmentForDelete}
+            setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
           />
         </>
       )}
@@ -840,6 +873,9 @@ const BidForm: FunctionComponent<Props> = ({
         <div data-testid="desktop-form">
           {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
           {uploadState && <LoadingHud title="Uploading..." />}
+          {deleteAtachmentLoading && (
+            <LoadingHud title="Remove Attachment..." />
+          )}
           <Header
             isOnline={isOnline}
             property={property}
@@ -884,9 +920,20 @@ const BidForm: FunctionComponent<Props> = ({
             canReopen={canReopen}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
+            queueAttachmentForDelete={queueAttachmentForDelete}
+            setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
           />
         </div>
       )}
+
+      <DeleteAttachmentPrompt
+        fileName={
+          queuedAttachmentForDeletion && queuedAttachmentForDeletion.name
+        }
+        onConfirm={() => confirmAttachmentDelete(queuedAttachmentForDeletion)}
+        isVisible={isDeleteAttachmentPromptVisible}
+        onClose={closeAttachmentDeletePrompt}
+      />
     </>
   );
 };

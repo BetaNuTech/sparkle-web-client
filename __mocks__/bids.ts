@@ -1,8 +1,19 @@
 import bidModel from '../common/models/bid';
+import bidAttachmentModel from '../common/models/bidAttachment';
 
 export const openBid: bidModel = {
   id: 'bid-1',
-  attachments: [],
+  attachments: [
+    {
+      id: 'attach-1',
+      createdAt: 1630089989,
+      name: 'property-garden.jpg',
+      type: 'image/jpeg',
+      url: 'https://google.com/images/property-garden.jpg',
+      storageRef: 'images/property-garden.jpg',
+      size: 59384
+    }
+  ],
   completeAt: 1625013600,
   costMax: 4000,
   costMin: 3500,
