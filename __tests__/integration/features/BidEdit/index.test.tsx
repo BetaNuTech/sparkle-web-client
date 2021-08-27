@@ -307,4 +307,69 @@ describe('Integration | Features | Bid Edit', () => {
     const actual = sendReport.called;
     expect(actual).toEqual(expected);
   });
+
+  it('Send error report when an attachment fails to delete from storage', async () => {
+    const expected = true;
+    render(
+      <BidEdit
+        user={user}
+        bidId="bid-1"
+        propertyId="property-1"
+        jobId="job-1"
+        isOnline
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
+
+    sinon.stub(storageApi, 'deleteFile').throws(Error('fail'));
+    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
+
+    await act(async () => {
+      const [btnDelete] = screen.getAllByTestId('button-delete-attachment');
+      await userEvent.click(btnDelete);
+      const btnConfirm = screen.getByTestId('btn-confirm-delete-attachment');
+      await userEvent.click(btnConfirm);
+    });
+
+    await waitFor(() => sendReport.called);
+
+    const actual = sendReport.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Send error report when removing an attachment fails to be updated to bid', async () => {
+    const expected = true;
+    render(
+      <BidEdit
+        user={user}
+        bidId="bid-1"
+        propertyId="property-1"
+        jobId="job-1"
+        isOnline
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
+
+    sinon.stub(storageApi, 'deleteFile').resolves(true);
+    sinon
+      .stub(bidsApi, 'removeBidAttachment')
+      .rejects(Error('oops'));
+    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
+
+    await act(async () => {
+      const [btnDelete] = screen.getAllByTestId('button-delete-attachment');
+      await userEvent.click(btnDelete);
+      const btnConfirm = screen.getByTestId('btn-confirm-delete-attachment');
+      await userEvent.click(btnConfirm);
+    });
+
+    await waitFor(() => sendReport.called);
+
+    const actual = sendReport.called;
+    expect(actual).toEqual(expected);
+  });
 });

@@ -101,7 +101,30 @@ export default {
       .then(() => attachment)
       .catch((err) => {
         const wrappedErr = Error(
-          `${PREFIX} updateBidAttachment: failed to update bid attachments: ${err}`
+          `${PREFIX} addBidAttachment: failed to add bid attachments: ${err}`
+        );
+
+        return Promise.reject(wrappedErr);
+      });
+  },
+
+  // Remove attachment record by index
+  removeBidAttachment(
+    firestore: firebase.firestore.Firestore,
+    id: string,
+    attachment: bidAttachmentModel
+  ): Promise<bidAttachmentModel> {
+    // Update attachment record to firestore
+    return firestore
+      .collection(fbCollections.bids)
+      .doc(id)
+      .update({
+        attachments: firebase.firestore.FieldValue.arrayRemove(attachment)
+      })
+      .then(() => attachment)
+      .catch((err) => {
+        const wrappedErr = Error(
+          `${PREFIX} removeBidAttachment: failed to delete index from bid attachment: ${err}`
         );
 
         return Promise.reject(wrappedErr);

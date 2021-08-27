@@ -32,5 +32,22 @@ export default {
     } catch (err) {
       throw Error(`${PREFIX} getFileUrl: ${err}`);
     }
+  },
+
+  // Remove a fail from
+  // anywhere in firebase storage
+  async deleteFile(location: string): Promise<any> {
+    // Create a storage reference
+    const storageRef = firebase.storage().ref();
+
+    // Create a reference to image reference in storage
+    const fileRef = storageRef.child(location);
+
+    // Perform delete operation
+    try {
+      await fileRef.delete();
+    } catch (err) {
+      throw Error(`${PREFIX} deleteFile: ${err}`);
+    }
   }
 };

@@ -6,13 +6,17 @@ import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
 import useStorage, { StorageResult } from '../../common/hooks/useStorage';
 import userModel from '../../common/models/user';
+import bidAttachmentModel from '../../common/models/bidAttachment';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import errorReports from '../../common/services/api/errorReports';
+import bidsDb from '../../common/services/firestore/bids';
+import storage from '../../common/services/storage';
 import useBid from './hooks/useBid';
 import useBidForm from './hooks/useBidForm';
 import useBidStatus from './hooks/useBidStatus';
 import uploadAttachmentService from './services/uploadAttachment';
+import useDeleteAttachment from './hooks/useDeleteAttachment';
 import BidForm from './Form';
 
 interface Props {
@@ -55,6 +59,12 @@ const BidEdit: FunctionComponent<Props> = ({
   const { uploadFileToStorage } = useStorage();
 
   const [uploadState, setUploadState] = useState(false);
+  const [isDeleteAttachmentPromptVisible, setDeleteAttachmentPromptVisible] =
+    useState(false);
+  const [deleteAtachmentLoading, setDeleteAtachmentLoading] = useState(false);
+
+  const { queueAttachmentForDelete, queuedAttachmentForDeletion } =
+    useDeleteAttachment();
 
   const onFileChange = async (ev: ChangeEvent<HTMLInputElement>) => {
     const fileEl = ev.target;
@@ -110,6 +120,42 @@ const BidEdit: FunctionComponent<Props> = ({
     setUploadState(false);
   };
 
+  const onConfirmAttachmentDelete = async (attachment: bidAttachmentModel) => {
+    setDeleteAtachmentLoading(true);
+
+    try {
+      await storage.deleteFile(attachment.storageRef);
+    } catch (err) {
+      // Handle error
+      const wrappedErr = Error(
+        `${PREFIX} confirmAttachmentDelete: failed to remove file from storage: ${err}`
+      );
+      sendNotification('Failed to delete attachment, please try again', {
+        type: 'error'
+      });
+      errorReports.send(wrappedErr); // eslint-disable-line
+      return setDeleteAtachmentLoading(false);
+    }
+
+    try {
+      await bidsDb.removeBidAttachment(firestore, bidId, attachment);
+    } catch (err) {
+      // Handle error
+      const wrappedErr = Error(
+        `${PREFIX} confirmAttachmentDelete: failed to update firestore bid: ${err}`
+      );
+      sendNotification(
+        'Attachment removed, but an unexpected error occurred.  Our team has been notified of this issue.',
+        {
+          type: 'error'
+        }
+      );
+      errorReports.send(wrappedErr); // eslint-disable-line
+    }
+
+    setDeleteAtachmentLoading(false);
+  };
+
   // Show job error status
   // NOTE: contains side effects: redirects, notifications, and error reporting
   // TODO: refactor away from hook to more appropriate abstraction
@@ -139,6 +185,12 @@ const BidEdit: FunctionComponent<Props> = ({
       putBidUpdate={putBidUpdate}
       onFileChange={onFileChange}
       uploadState={uploadState}
+      setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
+      isDeleteAttachmentPromptVisible={isDeleteAttachmentPromptVisible}
+      queueAttachmentForDelete={queueAttachmentForDelete}
+      queuedAttachmentForDeletion={queuedAttachmentForDeletion}
+      confirmAttachmentDelete={onConfirmAttachmentDelete}
+      deleteAtachmentLoading={deleteAtachmentLoading}
     />
   );
 };
