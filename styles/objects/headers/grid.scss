@@ -27,6 +27,29 @@
   }
 }
 
+%gridMobileHeaderBackButton {
+  display: flex;
+  align-items: center;
+  background-color: $gray;
+  padding: rem-calc(12);
+  font-size: rem-calc(20);
+
+  // Left chevron
+  a::before {
+    @extend %backButton--centered;
+    content: '';
+    display: block;
+    width: rem-calc(30);
+    height: rem-calc(30);
+    transform: rotate(-90deg);
+    background-image: url("data:image/svg+xml,%3Csvg width='20' height='20' version='1' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill='none' stroke='%23878b8f' stroke-miterlimit='10' stroke-width='2' d='M3 15.5l9-9 9 9'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-position: center;
+    margin-right: rem-calc(8);
+  }
+}
+
 %gridHeaderMain {
   display: flex;
   align-items: center;

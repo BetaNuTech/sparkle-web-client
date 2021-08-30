@@ -27,7 +27,7 @@ const DropdownHeader: FunctionComponent<Props> = ({
       </DropdownButton>
     )}
 
-    <DropdownLink href={bidLink} testid="dropdown-header-cancel">
+    <DropdownLink href={bidLink} testid="dropdown-header-cancel" featureEnabled>
       Cancel
     </DropdownLink>
   </Dropdown>

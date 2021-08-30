@@ -101,6 +101,7 @@
 
   &__type {
     @extend %gridTableLabel;
+    margin-left: 0;
   }
 
   &__actions {
@@ -167,5 +168,6 @@
   &:nth-child(4) {
     width: 16%;
     padding-right: $global-padding;
+    justify-content: flex-end;
   }
 }

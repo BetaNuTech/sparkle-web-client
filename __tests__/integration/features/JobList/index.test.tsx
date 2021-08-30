@@ -113,7 +113,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on desktop', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Authorized: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(<JobList user={user} propertyId="property-1" />, {
       contextWidth: breakpoints.desktop.minWidth
     });
@@ -144,7 +144,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort title by descending on desktop', async () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Swimming pool cleaning | Approved: Solar roof fitting | Authorized: Water Tank cleaning | Completed: Wifi Installation';
+      'Open: Swimming pool cleaning | Approved: Solar roof fitting | Under Contract: Water Tank cleaning | Completed: Wifi Installation';
     render(<JobList user={user} propertyId="property-1" />, {
       contextWidth: breakpoints.desktop.minWidth
     });
@@ -188,7 +188,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.createdAt
       )}`,
-      `Authorized: ${utilDate.toUserDateTimeDisplay(
+      `Under Contract: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -236,7 +236,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedImprovementJob.createdAt
       )}`,
-      `Authorized: ${utilDate.toUserDateTimeDisplay(
+      `Under Contract: ${utilDate.toUserDateTimeDisplay(
         authorizedImprovementJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -288,7 +288,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.updatedAt
       )}`,
-      `Authorized: ${utilDate.toUserDateTimeDisplay(
+      `Under Contract: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -336,7 +336,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedImprovementJob.updatedAt
       )}`,
-      `Authorized: ${utilDate.toUserDateTimeDisplay(
+      `Under Contract: ${utilDate.toUserDateTimeDisplay(
         authorizedImprovementJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -384,7 +384,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openMaintenanceExpeditedJob.type)}`,
       `Approved: ${utilString.titleize(approvedMaintenanceJob.type)}`,
-      `Authorized: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
+      `Under Contract: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
     render(<JobList user={user} propertyId="property-1" />, {
@@ -428,7 +428,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
-      `Authorized: ${utilString.titleize(authorizedImprovementJob.type)}`,
+      `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
     ].join(' | ');
     render(<JobList user={user} propertyId="property-1" />, {
@@ -473,7 +473,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on mobile', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Authorized: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(<JobList user={user} propertyId="property-1" />, {
       contextWidth: breakpoints.mobile.maxWidth
     });
@@ -516,7 +516,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.updatedAt
       )}`,
-      `Authorized: ${utilDate.toUserDateTimeDisplay(
+      `Under Contract: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -575,7 +575,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.createdAt
       )}`,
-      `Authorized: ${utilDate.toUserDateTimeDisplay(
+      `Under Contract: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -632,7 +632,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
-      `Authorized: ${utilString.titleize(authorizedImprovementJob.type)}`,
+      `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
     ].join(' | ');
     render(<JobList user={user} propertyId="property-1" />, {
@@ -684,7 +684,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       'Open: ',
       'Approved: ',
-      `Authorized: ${authorizedImprovementJob.title}`,
+      `Under Contract: ${authorizedImprovementJob.title}`,
       `Completed: ${completeImprovementJob.title}`
     ].join(' | ');
 

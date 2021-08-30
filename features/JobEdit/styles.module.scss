@@ -9,8 +9,7 @@
 }
 
 .mobileTitle {
-  font-size: rem-calc(20);
-  margin-bottom: rem-calc(16);
+  @extend %gridMobileHeaderBackButton;
 }
 
 .job__info {
@@ -70,7 +69,7 @@
 
   &__cancel {
     @extend %gridHeaderCancelButton;
-    padding: 0.6em 1.2em;
+    display: block;
   }
 
   &__submit {

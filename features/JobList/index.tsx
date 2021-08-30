@@ -109,6 +109,7 @@ const JobList: FunctionComponent<Props> = ({
             filterState={filterState}
             changeJobFilterState={changeFilterState}
             colors={colors}
+            isOnline={isOnline}
           />
           <Grid
             jobs={sortedJobs}
