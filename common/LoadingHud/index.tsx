@@ -8,6 +8,10 @@ const basePath = publicRuntimeConfig.basePath || '';
 
 interface Props {
   title?: string;
+  toggleNavOpen?(): void;
+  isStaging?: boolean;
+  isOnline?: boolean;
+  isNavOpen?: boolean;
 }
 
 const LoadingHud: FunctionComponent<Props> = ({ title }) => (

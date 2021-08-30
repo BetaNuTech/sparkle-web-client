@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import errorReports from '../../../common/services/api/errorReports';
 import userModel from '../../../common/models/user';
+import teamsModel from '../../../common/models/team';
 import { getLevelName, getTeams } from '../../../common/utils/userPermissions';
 import teamsApi, {
   teamsCollectionResult
@@ -18,10 +19,11 @@ const handlers = {};
 // Hooks for all user's teams based on roll
 export default function useTeams(
   firestore: any, // eslint-disable-line
-  user: userModel
+  user?: userModel
 ): useTeamsResult {
   const [memo, setMemo] = useState('[]');
-  const permissionLevel = getLevelName(user);
+  // Return all users if no permision
+  const permissionLevel = user ? getLevelName(user) : 'admin';
 
   // No access payload
   const payload = {

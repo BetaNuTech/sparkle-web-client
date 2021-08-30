@@ -1,4 +1,3 @@
-// import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import teamModel from '../../../common/models/team';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
@@ -7,12 +6,12 @@ import CheckedIcon from '../../../public/icons/sparkle/checked.svg';
 import NotCheckedIcon from '../../../public/icons/sparkle/not-checked.svg';
 
 interface Props extends ModalProps {
+  team: teamModel;
+  selectedTeamId: string;
+  teams: Array<any>;
   closeUpdateTeamModal: () => void;
   isUpdateTeamModalVisible: () => void;
-  selectedTeamId: string;
-  changeTeamSelection: (string) => string;
-  teams: Array<any>;
-  team: teamModel;
+  changeTeamSelection: (string) => void;
 }
 
 const UpdateTeamModal: FunctionComponent<Props> = (props) => {
@@ -30,7 +29,7 @@ const UpdateTeamModal: FunctionComponent<Props> = (props) => {
   };
 
   return (
-    <div className={styles.updateTeamModal}>
+    <div className={styles.updateTeamModal} data-testid="update-team-modal">
       <button
         onClick={closeModal}
         className={styles.modal__closeButton}

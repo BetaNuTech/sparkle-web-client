@@ -1,82 +1,42 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { FunctionComponent, useState } from 'react';
-import UpdateTeamModal from '../UpdateTeamModal/index';
-import TemplatesEditModal from '../TemplatesEditModal/index';
+import { FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 
 interface Props {
-  isOnline: boolean;
-  isUpdateTeamModalVisible: boolean;
-  isTemplatesEditModalVisible: boolean;
+  isOnline?: boolean;
   teams: Array<any>;
-  categories: Array<any>;
-  searchParam?: string;
+  selectedTeamId: string;
   property?: any;
-  openUpdateTeamModal: () => void;
-  closeUpdateTeamModal: () => void;
-  openTemplatesEditModal: () => void;
-  closeTemplatesEditModal: () => void;
-  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  properyImg: string;
+  logoImg: string;
+  openUpdateTeamModal: (e) => void;
+  openTemplatesEditModal: (e) => void;
+  onSubmit: (action: any) => void;
+  handleChange: (string) => void;
+  removePropertyImage: () => void;
+  removeLogo: () => void;
 }
 
 const PropertyDesktopForm: FunctionComponent<Props> = ({
   isOnline,
-  isUpdateTeamModalVisible,
-  isTemplatesEditModalVisible,
   teams,
-  categories,
-  searchParam,
+  selectedTeamId,
+  properyImg,
+  logoImg,
   openUpdateTeamModal,
-  closeUpdateTeamModal,
   openTemplatesEditModal,
-  closeTemplatesEditModal,
-  onSearchKeyDown
+  handleChange,
+  onSubmit,
+  removePropertyImage,
+  removeLogo
 }) => {
   const router = useRouter();
-
-  const [properyImg, setProperyImg] = useState<string>('');
-  const [logoImg, setLogoImg] = useState<string>('');
-  const [selectedTeamId, setSelectedTeamId] = useState<string>('');
-  const [selectedTemplates, setSelectedTemplates] = useState<any[]>([]);
-
-  const updateTempatesList = (templateId) => {
-    const index = selectedTemplates.indexOf(templateId);
-    if (index > -1) {
-      setSelectedTemplates(
-        selectedTemplates.filter((item) => item !== templateId)
-      );
-    } else {
-      setSelectedTemplates([templateId, ...selectedTemplates]);
-    }
-  };
-
-  const changeTeamSelection = (newId) => {
-    setSelectedTeamId(newId);
-  };
-
-  const removePropertyImage = () => {
-    setProperyImg('');
-  };
-
-  const removeLogo = () => {
-    setLogoImg('');
-  };
 
   const cancel = (e) => {
     e.preventDefault();
     router.push('/properties');
-  };
-
-  const openTeamModal = (e) => {
-    e.preventDefault();
-    openUpdateTeamModal();
-  };
-
-  const openTemplatesModal = (e) => {
-    e.preventDefault();
-    openTemplatesEditModal();
   };
 
   return (
@@ -124,9 +84,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             disabled={!isOnline}
             className={styles.propertyEditDesktop__imageInput}
             data-testid="property-form-add-image"
-            onChange={(e) => {
-              setProperyImg(URL.createObjectURL(e.target.files[0]));
-            }}
+            onChange={handleChange}
           />
           <label
             className={styles.propertyEditDesktop__imageInputLabel}
@@ -164,8 +122,9 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
           <div className={styles.propertyEditDesktop__templates__buttons}>
             {/* Templates button */}
             <button
-              onClick={openTemplatesModal}
+              onClick={openTemplatesEditModal}
               className={styles.propertyEditDesktop__templatesButton}
+              data-testid="templates-button-desktop"
             >
               TEMPLATES
             </button>
@@ -189,9 +148,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="logo"
                   className={styles.propertyEditDesktop__imageInput}
                   data-testid="property-form-add-logo"
-                  onChange={(e) => {
-                    setLogoImg(URL.createObjectURL(e.target.files[0]));
-                  }}
+                  onChange={handleChange}
                 />
                 <label
                   className={styles.propertyEditDesktop__logoInputLabel}
@@ -242,6 +199,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="name"
                   className={styles.propertyEditDesktop__input}
                   data-testid="property-name"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -250,12 +208,13 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               <div className={styles.propertyEditDesktop__formGroup__control}>
                 <label htmlFor="team">Team</label>
                 <button
-                  onClick={openTeamModal}
+                  onClick={openUpdateTeamModal}
                   className={clsx(
                     !selectedTeamId
                       ? styles.propertyEditDesktop__teamButton
                       : styles.propertyEditDesktop__saveButton
                   )}
+                  data-testid="team-button-desktop"
                 >
                   {!selectedTeamId
                     ? 'Not Set'
@@ -288,6 +247,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="address1"
                   className={styles.propertyEditDesktop__input}
                   data-testid="address-1"
+                  onChange={handleChange}
                 />
                 <input
                   id="address2"
@@ -296,6 +256,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="address2"
                   className={styles.propertyEditDesktop__input}
                   data-testid="address-2"
+                  onChange={handleChange}
                 />
                 <input
                   id="city"
@@ -304,6 +265,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="city"
                   className={styles.propertyEditDesktop__input}
                   data-testid="city"
+                  onChange={handleChange}
                 />
                 <input
                   id="state"
@@ -312,6 +274,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="state"
                   className={styles.propertyEditDesktop__input}
                   data-testid="state"
+                  onChange={handleChange}
                 />
                 <input
                   id="zip"
@@ -320,6 +283,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="zip"
                   className={styles.propertyEditDesktop__input}
                   data-testid="zip"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -333,6 +297,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="yearBuilt"
                   className={styles.propertyEditDesktop__input}
                   data-testid="year-built"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -346,6 +311,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="numberOfUnits"
                   className={styles.propertyEditDesktop__input}
                   data-testid="number-of-units"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -359,6 +325,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="managerName"
                   className={styles.propertyEditDesktop__input}
                   data-testid="manager-name"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -372,6 +339,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="superName"
                   className={styles.propertyEditDesktop__input}
                   data-testid="super-name"
+                  onChange={handleChange}
                 />
               </div>
             </div>
@@ -385,33 +353,22 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   name="loanType"
                   className={styles.propertyEditDesktop__input}
                   data-testid="loan-type"
+                  onChange={handleChange}
                 />
               </div>
             </div>
             {/* Save button */}
-            <button className={styles.propertyEditDesktop__saveButton}>
+            <button
+              onClick={(e) => onSubmit(e)}
+              className={styles.propertyEditDesktop__saveButton}
+              data-testid="save-button-desktop"
+            >
               Save
             </button>
             <div className={styles.propertyEditDesktop__spacer}></div>
           </div>
         </div>
       </form>
-      <UpdateTeamModal
-        isVisible={isUpdateTeamModalVisible}
-        onClose={closeUpdateTeamModal}
-        teams={teams}
-        selectedTeamId={selectedTeamId}
-        changeTeamSelection={changeTeamSelection}
-      />
-      <TemplatesEditModal
-        isVisible={isTemplatesEditModalVisible}
-        onClose={closeTemplatesEditModal}
-        categories={categories}
-        selectedTemplates={selectedTemplates}
-        updateTempatesList={updateTempatesList}
-        onSearchKeyDown={onSearchKeyDown}
-        searchParam={searchParam}
-      />
     </div>
   );
 };
