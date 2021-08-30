@@ -36,7 +36,10 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <div className={styles.templatesEditModal}>
+    <div
+      className={styles.templatesEditModal}
+      data-testid="property-edit-template-modal"
+    >
       <button
         onClick={closeModal}
         className={styles.modal__closeButton}

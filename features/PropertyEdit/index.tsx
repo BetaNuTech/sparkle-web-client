@@ -1,9 +1,5 @@
 import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useFirestore } from 'reactfire';
-import useTeams from '../Properties/hooks/useTeams';
-import useTemplates from '../../common/hooks/useTemplates';
-import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import useSearching from '../../common/hooks/useSearching';
 import useCategorizedTemplates from '../CreateInspection/hooks/useCategorizedTemplates';
 import userModel from '../../common/models/user';
@@ -12,15 +8,22 @@ import breakpoints from '../../config/breakpoints';
 import PropertyMobileForm from './MobileForm/index';
 import PropertyDesktopForm from './DesktopForm/index';
 import MobileHeader from '../../common/MobileHeader/index';
+import UpdateTeamModal from './UpdateTeamModal/index';
+import TemplatesEditModal from './TemplatesEditModal/index';
+import propertiesApi from '../../common/services/api/properties';
 import styles from './styles.module.scss';
 
 interface Props {
-  isOnline: boolean;
-  toggleNavOpen(): void;
-  isStaging: boolean;
+  isNavOpen?: boolean;
+  isOnline?: boolean;
+  toggleNavOpen?(): void;
+  isStaging?: boolean;
   user: userModel;
   id: string;
-  property?: any;
+  property: any;
+  teams: Array<any>;
+  templates: Array<any>;
+  templateCategories: Array<any>;
 }
 
 const PropertyEdit: FunctionComponent<Props> = ({
@@ -28,20 +31,18 @@ const PropertyEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   user,
-  property
+  property,
+  teams,
+  templates,
+  templateCategories
 }) => {
-  const firestore = useFirestore();
-  // Fetch Teams
-  const { data: teams } = useTeams(firestore, user);
-
-  // Fetch Templates
-  const { data: templates } = useTemplates(firestore);
-  // Fetch all data in template categories
-  const { data: templateCategories } = useTemplateCategories(firestore);
+  // Form state
+  const [formState, setFormState] = useState<any>({});
 
   // Open & Close Team Modal
   const [isUpdateTeamModalVisible, setUpdateTeamModalVisible] = useState(false);
-  const openUpdateTeamModal = () => {
+  const openUpdateTeamModal = (e) => {
+    e.preventDefault();
     setUpdateTeamModalVisible(true);
   };
   const closeUpdateTeamModal = () => {
@@ -50,11 +51,35 @@ const PropertyEdit: FunctionComponent<Props> = ({
   // Open & Close Templates Modal
   const [isTemplatesEditModalVisible, setTemplatesEditModalVisible] =
     useState(false);
-  const openTemplatesEditModal = () => {
+  const openTemplatesEditModal = (e) => {
+    e.preventDefault();
     setTemplatesEditModalVisible(true);
   };
   const closeTemplatesEditModal = () => {
     setTemplatesEditModalVisible(false);
+  };
+
+  // Handle Team Selection
+  const [selectedTeamId, setSelectedTeamId] = useState<string>('');
+  const changeTeamSelection = (newId) => {
+    setSelectedTeamId(newId);
+    formState.team = newId;
+    setFormState(formState);
+  };
+  // Handle Template Selection
+  const [selectedTemplates, setSelectedTemplates] = useState<any>(
+    Object.keys(property.templates || {})
+  );
+  const updateTempatesList = (selectedId: string) => {
+    const isRemoving = selectedTemplates.includes(selectedId);
+    if (isRemoving) {
+      selectedTemplates.splice(selectedTemplates.indexOf(selectedId), 1);
+    } else {
+      selectedTemplates.push(selectedId);
+    }
+    setSelectedTemplates([...selectedTemplates]);
+    formState.templates = selectedTemplates;
+    setFormState(formState);
   };
 
   // Templates search setup
@@ -68,9 +93,54 @@ const PropertyEdit: FunctionComponent<Props> = ({
     templateCategories,
     filteredTemplates
   );
+
+  // Form Images
+  const [properyImg, setProperyImg] = useState<string>('');
+  const [logoImg, setLogoImg] = useState<string>('');
+  const removePropertyImage = () => {
+    setProperyImg('');
+  };
+  const removeLogo = () => {
+    setLogoImg('');
+  };
+
+  // Handle OnChange input event
+
+  const handleChange = (e) => {
+    const fieldName = e.target.name;
+    const fleldVal = e.target.value;
+    if (fieldName === 'propertyImage') {
+      setProperyImg(URL.createObjectURL(e.target.files[0]));
+    }
+    if (fieldName === 'logo') {
+      setLogoImg(URL.createObjectURL(e.target.files[0]));
+    }
+    setFormState({ ...formState, [fieldName]: fleldVal });
+  };
+
+  // Form submit handler
+  // convert form state into
+  // API friendly JSON and publish
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const payload: any = { ...formState };
+
+    if (formState.templates) {
+      payload.templates = formState.templates.reduce((acc, templateId) => {
+        acc[templateId] = true;
+        return acc;
+      }, {});
+    }
+    propertiesApi.update(property.id, payload);
+  };
+
   //   Mobile header save button
   const mobileHeaderActions = () => (
-    <button data-testid="mobile-header-button" className={styles.saveButton}>
+    <button
+      data-testid="save-button-mobile"
+      className={styles.saveButton}
+      onClick={(e) => onSubmit(e)}
+    >
       Save
     </button>
   );
@@ -79,48 +149,64 @@ const PropertyEdit: FunctionComponent<Props> = ({
   });
 
   return (
-    user &&
-    (isMobileorTablet ? (
+    user && (
       <>
-        <MobileHeader
-          title="Property Edit"
-          toggleNavOpen={toggleNavOpen}
-          isOnline={isOnline}
-          isStaging={isStaging}
-          actions={mobileHeaderActions}
-          testid="mobile-properties-header"
-        />
-        <PropertyMobileForm
-          isOnline={isOnline}
+        {isMobileorTablet ? (
+          <>
+            <MobileHeader
+              title="Property Edit"
+              toggleNavOpen={toggleNavOpen}
+              isOnline={isOnline}
+              isStaging={isStaging}
+              actions={mobileHeaderActions}
+              testid="mobile-properties-header"
+            />
+            <PropertyMobileForm
+              isOnline={isOnline}
+              teams={teams}
+              openUpdateTeamModal={openUpdateTeamModal}
+              openTemplatesEditModal={openTemplatesEditModal}
+              property={property}
+              selectedTeamId={selectedTeamId}
+              handleChange={handleChange}
+              properyImg={properyImg}
+              logoImg={logoImg}
+            />
+          </>
+        ) : (
+          <PropertyDesktopForm
+            isOnline={isOnline}
+            teams={teams}
+            openUpdateTeamModal={openUpdateTeamModal}
+            openTemplatesEditModal={openTemplatesEditModal}
+            property={property}
+            selectedTeamId={selectedTeamId}
+            onSubmit={(e) => onSubmit(e)}
+            handleChange={handleChange}
+            properyImg={properyImg}
+            logoImg={logoImg}
+            removePropertyImage={removePropertyImage}
+            removeLogo={removeLogo}
+          />
+        )}
+        <UpdateTeamModal
+          isVisible={isUpdateTeamModalVisible}
+          onClose={closeUpdateTeamModal}
           teams={teams}
-          openUpdateTeamModal={openUpdateTeamModal}
-          closeUpdateTeamModal={closeUpdateTeamModal}
-          isUpdateTeamModalVisible={isUpdateTeamModalVisible}
-          openTemplatesEditModal={openTemplatesEditModal}
-          closeTemplatesEditModal={closeTemplatesEditModal}
-          isTemplatesEditModalVisible={isTemplatesEditModalVisible}
+          changeTeamSelection={changeTeamSelection}
+          selectedTeamId={selectedTeamId}
+        />
+        <TemplatesEditModal
+          isVisible={isTemplatesEditModalVisible}
+          onClose={closeTemplatesEditModal}
           categories={sortedCategories}
+          selectedTemplates={selectedTemplates}
+          updateTempatesList={updateTempatesList}
           onSearchKeyDown={onSearchKeyDown}
           searchParam={searchParam}
-          property={property}
         />
       </>
-    ) : (
-      <PropertyDesktopForm
-        isOnline={isOnline}
-        teams={teams}
-        openUpdateTeamModal={openUpdateTeamModal}
-        closeUpdateTeamModal={closeUpdateTeamModal}
-        isUpdateTeamModalVisible={isUpdateTeamModalVisible}
-        openTemplatesEditModal={openTemplatesEditModal}
-        closeTemplatesEditModal={closeTemplatesEditModal}
-        isTemplatesEditModalVisible={isTemplatesEditModalVisible}
-        categories={sortedCategories}
-        onSearchKeyDown={onSearchKeyDown}
-        searchParam={searchParam}
-        property={property}
-      />
-    ))
+    )
   );
 };
 

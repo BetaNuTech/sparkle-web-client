@@ -84,220 +84,222 @@ const Layout: FunctionComponent<LayoutProps> = ({
 
   const nextState = !isNewJob && jobsConfig.nextState[job.state];
   return (
-    <div
-      className={clsx(
-        styles.form__grid,
-        !isMobile && styles.form__grid__desktop
+    <>
+      {!isNewJob && isMobile && (
+        <h1 data-testid="job-form-title-mobile" className={styles.mobileTitle}>
+          <Link href={jobLink}>
+            <a></a>
+          </Link>
+          {job.title}
+        </h1>
       )}
-    >
-      {!isNewJob && (
-        <>
-          {isMobile && (
-            <h1
-              data-testid="job-form-title-mobile"
-              className={styles.mobileTitle}
+      <div
+        className={clsx(
+          styles.form__grid,
+          !isMobile && styles.form__grid__desktop
+        )}
+      >
+        {!isNewJob && (
+          <>
+            <div
+              className={clsx(
+                styles.job__info,
+                isMobile && styles.job__info__mobile
+              )}
             >
-              {job.title}
-            </h1>
+              {job.state && (
+                <div
+                  className={clsx(
+                    styles.job__info__box,
+                    isMobile
+                      ? styles.job__info__box__mobile
+                      : styles.job__info__box__desktop
+                  )}
+                >
+                  <p>Job Status{!isMobile && <> :&nbsp;</>}</p>
+                  <h3 data-testid="job-form-edit-state">
+                    {utilString.titleize(job.state)}
+                  </h3>
+                </div>
+              )}
+              {nextState && (
+                <div
+                  className={clsx(
+                    styles.job__info__box,
+                    isMobile
+                      ? styles.job__info__box__mobile
+                      : styles.job__info__box__desktop
+                  )}
+                >
+                  <p>Requires{!isMobile && <> :&nbsp;</>}</p>
+                  <h3 data-testid="job-form-edit-nextstatus">{nextState}</h3>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+
+        <ErrorList errors={apiErrors} />
+
+        <form>
+          <div className={styles.jobNew__formGroup}>
+            <label htmlFor="jobTitle">
+              Title <span>*</span>
+            </label>
+            <div className={styles.jobNew__formGroup__control}>
+              <input
+                id="jobTitle"
+                type="text"
+                name="title"
+                className={styles.jobNew__input}
+                defaultValue={job.title}
+                data-testid="job-form-title"
+                {...register('title')}
+                disabled={apiState.isLoading || isJobComplete}
+              />
+              <ErrorLabel formName="title" errors={formState.errors} />
+            </div>
+          </div>
+          <div className={styles.jobNew__formGroup}>
+            <label htmlFor="jobDescription">
+              Need {isApprovedOrAuthorized && <span>*</span>}
+            </label>
+            <div className={styles.jobNew__formGroup__control}>
+              <textarea
+                id="jobDescription"
+                className="form-control"
+                rows={4}
+                name="need"
+                defaultValue={job.need}
+                data-testid="job-form-description"
+                {...register('need')}
+                disabled={apiState.isLoading || isJobComplete}
+              ></textarea>
+              <ErrorLabel formName="need" errors={formState.errors} />
+            </div>
+          </div>
+          <div className={styles.jobNew__formGroup}>
+            <label htmlFor="jobType">Job Type</label>
+            <select
+              name="type"
+              id="jobType"
+              data-testid="job-form-type"
+              defaultValue={job.type}
+              {...register('type')}
+              disabled={apiState.isLoading || isJobComplete}
+            >
+              {Object.keys(jobsConfig.types).map((t) => (
+                <option key={t} value={t}>
+                  {jobsConfig.types[t]}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className={styles.jobNew__formGroup}>
+            <label htmlFor="jobScope">
+              Scope of work {isApprovedOrAuthorized && <span>*</span>}
+            </label>
+            <div className={styles.jobNew__formGroup__control}>
+              <textarea
+                id="jobScope"
+                className="form-control"
+                rows={6}
+                name="scopeOfWork"
+                defaultValue={job.scopeOfWork}
+                data-testid="job-form-scope"
+                {...register('scopeOfWork')}
+                disabled={apiState.isLoading || isJobComplete}
+              ></textarea>
+              <ErrorLabel formName="scopeOfWork" errors={formState.errors} />
+            </div>
+          </div>
+          {canApprove && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="job-form-approve"
+                disabled={apiState.isLoading}
+                className={clsx(
+                  styles.button__submit,
+                  isMobile && styles.button__fullwidth
+                )}
+                onClick={() => onFormAction('approved')}
+              >
+                Approve
+              </button>
+            </div>
           )}
-          <div
-            className={clsx(
-              styles.job__info,
-              isMobile && styles.job__info__mobile
-            )}
-          >
-            {job.state && (
-              <div
+          {canAuthorize && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="job-form-authorize"
+                disabled={apiState.isLoading}
                 className={clsx(
-                  styles.job__info__box,
-                  isMobile
-                    ? styles.job__info__box__mobile
-                    : styles.job__info__box__desktop
+                  styles.button__submit,
+                  isMobile && styles.button__fullwidth
                 )}
+                data-value="authorized"
+                onClick={() => onFormAction('authorized')}
               >
-                <p>Job Status{!isMobile && <> :&nbsp;</>}</p>
-                <h3 data-testid="job-form-edit-state">
-                  {utilString.titleize(job.state)}
-                </h3>
-              </div>
-            )}
-            {nextState && (
-              <div
+                Authorize
+              </button>
+            </div>
+          )}
+          {canExpedite && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="job-form-expedite"
+                disabled={apiState.isLoading}
                 className={clsx(
-                  styles.job__info__box,
-                  isMobile
-                    ? styles.job__info__box__mobile
-                    : styles.job__info__box__desktop
+                  styles.button__submit,
+                  isMobile && styles.button__fullwidth
                 )}
+                data-value="expedite"
+                onClick={() => onFormAction('expedite')}
               >
-                <p>Requires{!isMobile && <> :&nbsp;</>}</p>
-                <h3 data-testid="job-form-edit-nextstatus">{nextState}</h3>
-              </div>
-            )}
-          </div>
-        </>
-      )}
+                Expedite
+              </button>
+            </div>
+          )}
 
-      <ErrorList errors={apiErrors} />
-
-      <form>
-        <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobTitle">
-            Title <span>*</span>
-          </label>
-          <div className={styles.jobNew__formGroup__control}>
-            <input
-              id="jobTitle"
-              type="text"
-              name="title"
-              className={styles.jobNew__input}
-              defaultValue={job.title}
-              data-testid="job-form-title"
-              {...register('title')}
-              disabled={apiState.isLoading || isJobComplete}
-            />
-            <ErrorLabel formName="title" errors={formState.errors} />
-          </div>
-        </div>
-        <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobDescription">
-            Need {isApprovedOrAuthorized && <span>*</span>}
-          </label>
-          <div className={styles.jobNew__formGroup__control}>
-            <textarea
-              id="jobDescription"
-              className="form-control"
-              rows={4}
-              name="need"
-              defaultValue={job.need}
-              data-testid="job-form-description"
-              {...register('need')}
-              disabled={apiState.isLoading || isJobComplete}
-            ></textarea>
-            <ErrorLabel formName="need" errors={formState.errors} />
-          </div>
-        </div>
-        <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobType">Job Type</label>
-          <select
-            name="type"
-            id="jobType"
-            data-testid="job-form-type"
-            defaultValue={job.type}
-            {...register('type')}
-            disabled={apiState.isLoading || isJobComplete}
-          >
-            {Object.keys(jobsConfig.types).map((t) => (
-              <option key={t} value={t}>
-                {jobsConfig.types[t]}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className={styles.jobNew__formGroup}>
-          <label htmlFor="jobScope">
-            Scope of work {isApprovedOrAuthorized && <span>*</span>}
-          </label>
-          <div className={styles.jobNew__formGroup__control}>
-            <textarea
-              id="jobScope"
-              className="form-control"
-              rows={6}
-              name="scopeOfWork"
-              defaultValue={job.scopeOfWork}
-              data-testid="job-form-scope"
-              {...register('scopeOfWork')}
-              disabled={apiState.isLoading || isJobComplete}
-            ></textarea>
-            <ErrorLabel formName="scopeOfWork" errors={formState.errors} />
-          </div>
-        </div>
-        {canApprove && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="job-form-approve"
-              disabled={apiState.isLoading}
-              className={clsx(
-                styles.button__submit,
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onFormAction('approved')}
-            >
-              Approve
-            </button>
-          </div>
-        )}
-        {canAuthorize && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="job-form-authorize"
-              disabled={apiState.isLoading}
-              className={clsx(
-                styles.button__submit,
-                isMobile && styles.button__fullwidth
-              )}
-              data-value="authorized"
-              onClick={() => onFormAction('authorized')}
-            >
-              Authorize
-            </button>
-          </div>
-        )}
-        {canExpedite && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="job-form-expedite"
-              disabled={apiState.isLoading}
-              className={clsx(
-                styles.button__submit,
-                isMobile && styles.button__fullwidth
-              )}
-              data-value="expedite"
-              onClick={() => onFormAction('expedite')}
-            >
-              Expedite
-            </button>
-          </div>
-        )}
-
-        {!isJobComplete && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="job-form-submit"
-              disabled={apiState.isLoading}
-              className={clsx(
-                styles.button__submit,
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onFormAction('save')}
-            >
-              Save
-            </button>
-          </div>
-        )}
-
-        {isMobile && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <Link href={jobLink}>
-              <a
+          {!isJobComplete && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="job-form-submit"
+                disabled={apiState.isLoading}
                 className={clsx(
-                  styles.button__cancel,
-                  styles.button__fullwidth,
-                  '-ta-center'
+                  styles.button__submit,
+                  isMobile && styles.button__fullwidth
                 )}
-                data-testid="mobile-form-cancel"
+                onClick={() => onFormAction('save')}
               >
-                Cancel
-              </a>
-            </Link>
-          </div>
-        )}
-      </form>
-    </div>
+                Save
+              </button>
+            </div>
+          )}
+
+          {isMobile && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <Link href={jobLink}>
+                <a
+                  className={clsx(
+                    styles.button__cancel,
+                    styles.button__fullwidth,
+                    '-ta-center'
+                  )}
+                  data-testid="mobile-form-cancel"
+                >
+                  Cancel
+                </a>
+              </Link>
+            </div>
+          )}
+        </form>
+      </div>
+    </>
   );
 };
 
@@ -488,6 +490,7 @@ const JobForm: FunctionComponent<Props> = ({
             apiState={apiState}
             job={job}
             isNewJob={isNewJob}
+            isOnline={isOnline}
             isJobComplete={isJobComplete}
             canApprove={canApprove}
             canAuthorize={canAuthorize}

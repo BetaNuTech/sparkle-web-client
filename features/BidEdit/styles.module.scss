@@ -11,8 +11,7 @@
 }
 
 .mobileTitle {
-  font-size: rem-calc(20);
-  margin-bottom: rem-calc(16);
+  @extend %gridMobileHeaderBackButton;
 }
 
 .bid__info {
@@ -42,6 +41,7 @@
     justify-content: flex-start;
 
     &__box {
+      width: auto;
       display: flex;
       align-items: center;
 
@@ -71,7 +71,7 @@
 
   &__cancel {
     @extend %gridHeaderCancelButton;
-    padding: 0.6em 1.2em;
+    display: block;
   }
 
   &__submit {
@@ -191,11 +191,20 @@
     background: transparent;
     border: 0;
 
+    &__icon {
+      background-color: $gray;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: rem-calc(22);
+      height: rem-calc(22);
+      border-radius: 50%;
+      margin-left: rem-calc(4);
+    }
+
     svg {
-      width: rem-calc(14);
-      height: rem-calc(14);
-      margin-right: rem-calc(2);
-      transform: translateY(1px);
+      width: rem-calc(10);
+      height: rem-calc(10);
     }
 
     svg > path {
@@ -234,6 +243,7 @@
     border-radius: rem-calc(6);
     list-style: none;
     padding: rem-calc(12) rem-calc(16);
+    margin-top: rem-calc(8);
 
     &__item {
       display: flex;

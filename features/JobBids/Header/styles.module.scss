@@ -1,10 +1,8 @@
 @import '../../../styles/index.scss';
 
 .header {
-  @extend %gridHeader;
-
-  &__bottom {
-    padding-top: 0;
+  &__padding {
+    padding-bottom: $global-padding;
   }
 
   &__backButton {
@@ -18,28 +16,10 @@
     align-items: center;
   }
 
-  &__left {
-    flex-wrap: wrap;
-    display: flex;
-  }
-
-  &__main {
-    @extend %gridHeaderMain;
-    margin-right: 1rem;
-  }
-
-  &__title {
-    @extend %gridHeaderTitle;
-  }
-
   &__propertyName,
   &__jobTitle {
     @extend %gridHeaderTitle--ellipsis;
     max-width: 9ch;
-  }
-
-  &__controls {
-    @extend %gridHeaderControls;
   }
 
   &__item {

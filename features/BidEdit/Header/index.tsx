@@ -2,8 +2,8 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
-import OfflineDesktop from '../../../common/OfflineDesktop';
 import jobModel from '../../../common/models/job';
+import DesktopHeader from '../../../common/DesktopHeader';
 import { BidApiResult } from '../hooks/useBidForm';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
@@ -40,16 +40,106 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   canMarkIncomplete,
   canMarkComplete,
   canReopen
-}) => (
-  <header className={styles.header} data-testid="bidedit-header">
-    {/* Title And Create Button */}
-    <div className={styles.header__content}>
-      <div className={styles.header__content__main}>
+}) => {
+  const RightSide = () => (
+    <>
+      <div className={parentStyles.button__group}>
         <Link href={bidLink}>
-          <a className={styles.header__backButton}></a>
+          <a
+            className={clsx(parentStyles.button__cancel)}
+            data-testid="bidedit-header-cancel"
+          >
+            Cancel
+          </a>
         </Link>
+      </div>
+      {canApprove && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading || !isOnline}
+            data-testid="bidedit-header-approve"
+            onClick={() => onSubmit('approved')}
+          >
+            Approve Bid
+          </button>
+        </div>
+      )}
+      {canMarkComplete && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__cancel, '-c-info')}
+            disabled={apiState.isLoading || !isOnline}
+            data-testid="bidedit-header-complete"
+            onClick={() => onSubmit('complete')}
+          >
+            Complete
+          </button>
+        </div>
+      )}
+      {canMarkIncomplete && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__cancel, '-c-warning')}
+            disabled={apiState.isLoading || !isOnline}
+            data-testid="bidedit-header-incomplete"
+            onClick={() => onSubmit('incomplete')}
+          >
+            Incomplete
+          </button>
+        </div>
+      )}
+      {canReject && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__cancel, '-c-alert')}
+            disabled={apiState.isLoading || !isOnline}
+            data-testid="bidedit-header-reject"
+            onClick={() => onSubmit('rejected')}
+          >
+            Reject Bid
+          </button>
+        </div>
+      )}
+      {canReopen && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__cancel, '-c-info')}
+            disabled={apiState.isLoading || !isOnline}
+            data-testid="bidedit-header-reopen"
+            onClick={() => onSubmit('reopen')}
+          >
+            Reopen
+          </button>
+        </div>
+      )}
+      {showSaveButton && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading || !isOnline}
+            data-testid="bidedit-header-submit"
+            onClick={() => onSubmit('save')}
+          >
+            Save
+          </button>
+        </div>
+      )}
+    </>
+  );
 
-        <h1 className={styles.header__content__main__title}>
+  return (
+    <DesktopHeader
+      backLink={bidLink}
+      headerTestId="bidedit-header"
+      title={
+        <>
           <span
             className={styles.header__propertyName}
           >{`${property.name}`}</span>
@@ -60,108 +150,13 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           <span data-testid="bidedit-header-name">
             &nbsp;/ {isNewBid ? 'New' : 'Edit'}
           </span>
-        </h1>
-      </div>
-    </div>
-
-    <aside className={styles.header__controls}>
-      {isOnline ? (
-        <>
-          <div className={parentStyles.button__group}>
-            <Link href={bidLink}>
-              <a
-                className={clsx(parentStyles.button__cancel)}
-                data-testid="bidedit-header-cancel"
-              >
-                Cancel
-              </a>
-            </Link>
-          </div>
-          {canApprove && (
-            <div className={parentStyles.button__group}>
-              <button
-                type="button"
-                className={clsx(parentStyles.button__submit)}
-                disabled={apiState.isLoading || !isOnline}
-                data-testid="bidedit-header-approve"
-                onClick={() => onSubmit('approved')}
-              >
-                Approve Bid
-              </button>
-            </div>
-          )}
-          {canMarkComplete && (
-            <div className={parentStyles.button__group}>
-              <button
-                type="button"
-                className={clsx(parentStyles.button__cancel, '-c-info')}
-                disabled={apiState.isLoading || !isOnline}
-                data-testid="bidedit-header-complete"
-                onClick={() => onSubmit('complete')}
-              >
-                Complete
-              </button>
-            </div>
-          )}
-          {canMarkIncomplete && (
-            <div className={parentStyles.button__group}>
-              <button
-                type="button"
-                className={clsx(parentStyles.button__cancel, '-c-warning')}
-                disabled={apiState.isLoading || !isOnline}
-                data-testid="bidedit-header-incomplete"
-                onClick={() => onSubmit('incomplete')}
-              >
-                Incomplete
-              </button>
-            </div>
-          )}
-          {canReject && (
-            <div className={parentStyles.button__group}>
-              <button
-                type="button"
-                className={clsx(parentStyles.button__cancel, '-c-alert')}
-                disabled={apiState.isLoading || !isOnline}
-                data-testid="bidedit-header-reject"
-                onClick={() => onSubmit('rejected')}
-              >
-                Reject Bid
-              </button>
-            </div>
-          )}
-          {canReopen && (
-            <div className={parentStyles.button__group}>
-              <button
-                type="button"
-                className={clsx(parentStyles.button__cancel, '-c-info')}
-                disabled={apiState.isLoading || !isOnline}
-                data-testid="bidedit-header-reopen"
-                onClick={() => onSubmit('reopen')}
-              >
-                Reopen
-              </button>
-            </div>
-          )}
-          {showSaveButton && (
-            <div className={parentStyles.button__group}>
-              <button
-                type="button"
-                className={clsx(parentStyles.button__submit)}
-                disabled={apiState.isLoading || !isOnline}
-                data-testid="bidedit-header-submit"
-                onClick={() => onSubmit('save')}
-              >
-                Save
-              </button>
-            </div>
-          )}
         </>
-      ) : (
-        <OfflineDesktop />
-      )}
-    </aside>
-  </header>
-);
+      }
+      isOnline={isOnline}
+      right={<RightSide />}
+    />
+  );
+};
 
 Header.defaultProps = {};
 

@@ -23,6 +23,12 @@ export default function useBidStatus(
         { type: 'error' }
       );
       break;
+    case 409:
+      // Update fails due to conflict
+      sendNotification('Could not update bid, please try again.', {
+        type: 'error'
+      });
+      break;
     case 500:
       // User not allowed to create or update bid
       sendNotification('Please try again, or contact an admin.', {

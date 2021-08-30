@@ -1,32 +1,6 @@
 @import '../../../styles/index.scss';
 
 .header {
-  @extend %gridHeader;
-  padding-bottom: 0;
-  flex-wrap: wrap;
-
-  &__backButton {
-    @extend %gridHeaderBackButton;
-  }
-
-  &__content {
-    flex-wrap: wrap;
-    display: flex;
-
-    &__main {
-      @extend %gridHeaderMain;
-      margin-right: $global-padding;
-
-      &__title {
-        @extend %gridHeaderTitle;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        margin-bottom: $global-padding;
-      }
-    }
-  }
-
   &__propertyName {
     @extend %gridHeaderTitle--ellipsis;
     max-width: 7ch;
@@ -34,5 +8,7 @@
 
   &__controls {
     @extend %gridHeaderControls;
+    padding-top: 0.3em;
+    align-items: flex-start;
   }
 }

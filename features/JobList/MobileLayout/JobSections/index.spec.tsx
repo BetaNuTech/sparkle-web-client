@@ -73,7 +73,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections', () => {
 
     expect(titleClasses[0].Open).toContain(colors.secondary);
     expect(titleClasses[1].Approved).toContain(colors.info);
-    expect(titleClasses[2].Authorized).toContain(colors.alert);
+    expect(titleClasses[2]['Under Contract']).toContain(colors.alert);
     expect(titleClasses[3].Completed).toContain(colors.orange);
   });
 });

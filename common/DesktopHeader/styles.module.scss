@@ -1,0 +1,40 @@
+@import '../../styles/index.scss';
+
+.header {
+  @extend %gridHeader;
+  padding-bottom: 0;
+  flex-wrap: wrap;
+
+  &__bottom {
+    padding-top: 0;
+  }
+  
+  &__backButton {
+    @extend %gridHeaderBackButton;
+    margin-top: 0.3em;
+  }
+
+  &__content {
+    flex-wrap: wrap;
+    display: flex;
+
+    &__main {
+      @extend %gridHeaderMain;
+      margin-right: $global-padding;
+      align-items: flex-start;
+
+      &__title {
+        @extend %gridHeaderTitle;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &__controls {
+    @extend %gridHeaderControls;
+    padding-top: 0.3em;
+    align-items: flex-start;
+  }
+}
