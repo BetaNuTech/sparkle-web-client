@@ -102,6 +102,7 @@ const JobBids: FunctionComponent<Props> = ({
             filterState={filterState}
             colors={colors}
             changeFilterState={changeFilterState}
+            isOnline={isOnline}
           />
           <Grid
             job={job}

@@ -68,6 +68,7 @@ type Inputs = {
 };
 
 interface LayoutProps {
+  propertyId: string;
   isMobile: boolean;
   job: jobModel;
   bid: bidModel;
@@ -100,6 +101,7 @@ interface LayoutProps {
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
+  propertyId,
   isMobile,
   job,
   bid,
@@ -144,386 +146,398 @@ const Layout: FunctionComponent<LayoutProps> = ({
     }
   };
 
+  const jobBidsLink = `/properties/${propertyId}/jobs/${job.id}/bids`;
   const openAttachmentDeletePrompt = (attachment: bidAttachmentModel) => {
     queueAttachmentForDelete(attachment);
     setDeleteAttachmentPromptVisible(true);
   };
 
   return (
-    <div className={styles.form__grid}>
-      {!isNewBid && (
-        <>
-          {isMobile && (
-            <h1
-              data-testid="bid-form-title-mobile"
-              className={styles.mobileTitle}
-            >
-              {job.title}
-            </h1>
-          )}
-          <div className={styles.form__grid__info}>
-            <div className={styles.bid__info}>
-              <div className={styles.bid__info__box}>
-                <p>Bid Status{!isMobile && <> :&nbsp;</>}</p>
-                <h3 data-testid="bid-form-edit-state">
-                  {utilString.titleize(bidState)}
-                </h3>
-              </div>
-              {nextState && (
-                <div className={styles.bid__info__box}>
-                  <p>Requires{!isMobile && <> :&nbsp;</>}</p>
-                  <h3 data-testid="bid-form-edit-nextstatus">{nextState}</h3>
-                </div>
-              )}
-            </div>
-          </div>
-        </>
+    <>
+      {!isNewBid && isMobile && (
+        <h1 data-testid="bid-form-title-mobile" className={styles.mobileTitle}>
+          <Link href={jobBidsLink}>
+            <a></a>
+          </Link>
+          {job.title}
+        </h1>
       )}
-
-      <div className={styles.form__fields}>
-        <ErrorList errors={apiErrors} />
-      </div>
-      <form>
-        <div className={styles.form__fields}>
-          <div className={styles.form__fields__leftColumn}>
-            <div className={styles.form__group}>
-              <label htmlFor="bidVendor">
-                Vendor <span>*</span>
-              </label>
-              <div className={styles.form__group__control}>
-                <input
-                  id="bidVendor"
-                  type="text"
-                  name="vendor"
-                  className={styles.form__input}
-                  defaultValue={bid.vendor}
-                  data-testid="bid-form-vendor"
-                  {...register('vendor')}
-                  disabled={apiState.isLoading || isBidComplete}
-                />
-                <ErrorLabel formName="vendor" errors={formState.errors} />
-              </div>
-            </div>
-            <div className={styles.form__formCost}>
-              <label>Cost {isApprovedOrComplete && <span>*</span>}</label>
-              <div className={styles.form__formCost__select}>
-                <button
-                  type="button"
-                  className={clsx(isFixedCostType && styles.active)}
-                  onClick={() => onCostTypeChange('fixed')}
-                >
-                  Fixed Cost
-                </button>
-                <span className={styles.form__formCost__separator}></span>
-                <button
-                  type="button"
-                  id="btnRange"
-                  className={clsx(!isFixedCostType && styles.active)}
-                  onClick={() => onCostTypeChange('range')}
-                >
-                  Range
-                </button>
-              </div>
-              <input
-                type="hidden"
-                defaultValue={isFixedCostType ? 'fixed' : 'range'}
-                {...register('cost')}
-              />
-            </div>
-            <div className={styles.form__row}>
-              <div
-                className={clsx(
-                  styles.form__row__cell,
-                  isFixedCostType ? styles['form__row__cell--fillRow'] : ''
-                )}
-              >
-                <div className={styles.form__group}>
-                  <div className={styles.form__group__control}>
-                    <input
-                      type="number"
-                      id="costMin"
-                      name="costMin"
-                      className={styles.form__input}
-                      placeholder={isFixedCostType ? '' : 'Minimum'}
-                      defaultValue={bid.costMin}
-                      data-testid="bid-form-cost-min"
-                      {...register('costMin')}
-                      disabled={apiState.isLoading || isBidComplete}
-                    />
-                    <ErrorLabel formName="costMin" errors={formState.errors} />
+      <div className={styles.form__grid}>
+        {!isNewBid && (
+          <>
+            <div className={styles.form__grid__info}>
+              <div className={styles.bid__info}>
+                <div className={styles.bid__info__box}>
+                  <p>Bid Status{!isMobile && <> :&nbsp;</>}</p>
+                  <h3 data-testid="bid-form-edit-state">
+                    {utilString.titleize(bidState)}
+                  </h3>
+                </div>
+                {nextState && (
+                  <div className={styles.bid__info__box}>
+                    <p>Requires{!isMobile && <> :&nbsp;</>}</p>
+                    <h3 data-testid="bid-form-edit-nextstatus">{nextState}</h3>
                   </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        <div className={styles.form__fields}>
+          <ErrorList errors={apiErrors} />
+        </div>
+        <form>
+          <div className={styles.form__fields}>
+            <div className={styles.form__fields__leftColumn}>
+              <div className={styles.form__group}>
+                <label htmlFor="bidVendor">
+                  Vendor <span>*</span>
+                </label>
+                <div className={styles.form__group__control}>
+                  <input
+                    id="bidVendor"
+                    type="text"
+                    name="vendor"
+                    className={styles.form__input}
+                    defaultValue={bid.vendor}
+                    data-testid="bid-form-vendor"
+                    {...register('vendor')}
+                    disabled={apiState.isLoading || isBidComplete}
+                  />
+                  <ErrorLabel formName="vendor" errors={formState.errors} />
                 </div>
               </div>
-              {!isFixedCostType && (
-                <div className={styles.form__row__cell}>
+              <div className={styles.form__formCost}>
+                <label>Cost {isApprovedOrComplete && <span>*</span>}</label>
+                <div className={styles.form__formCost__select}>
+                  <button
+                    type="button"
+                    className={clsx(isFixedCostType && styles.active)}
+                    onClick={() => onCostTypeChange('fixed')}
+                  >
+                    Fixed Cost
+                  </button>
+                  <span className={styles.form__formCost__separator}></span>
+                  <button
+                    type="button"
+                    id="btnRange"
+                    className={clsx(!isFixedCostType && styles.active)}
+                    onClick={() => onCostTypeChange('range')}
+                  >
+                    Range
+                  </button>
+                </div>
+                <input
+                  type="hidden"
+                  defaultValue={isFixedCostType ? 'fixed' : 'range'}
+                  {...register('cost')}
+                />
+              </div>
+              <div className={styles.form__row}>
+                <div
+                  className={clsx(
+                    styles.form__row__cell,
+                    isFixedCostType ? styles['form__row__cell--fillRow'] : ''
+                  )}
+                >
                   <div className={styles.form__group}>
                     <div className={styles.form__group__control}>
                       <input
                         type="number"
-                        id="costMax"
-                        name="costMax"
+                        id="costMin"
+                        name="costMin"
                         className={styles.form__input}
-                        placeholder="Maximum"
-                        defaultValue={bid.costMax}
-                        data-testid="bid-form-cost-max"
-                        {...register('costMax')}
+                        placeholder={isFixedCostType ? '' : 'Minimum'}
+                        defaultValue={bid.costMin}
+                        data-testid="bid-form-cost-min"
+                        {...register('costMin')}
                         disabled={apiState.isLoading || isBidComplete}
                       />
                       <ErrorLabel
-                        formName="costMax"
+                        formName="costMin"
                         errors={formState.errors}
                       />
                     </div>
                   </div>
                 </div>
-              )}
-            </div>
-            <div className={styles.form__row}>
-              <div
-                className={clsx(
-                  styles.form__row__cell,
-                  styles['form__row__cell--twoColumns']
-                )}
-              >
-                <div className={styles.form__group}>
-                  <label htmlFor="bidStartAt">
-                    Start Date {isApprovedOrComplete && <span>*</span>}
-                  </label>
-                  <div className={styles.form__group__control}>
-                    <input
-                      id="bidStartAt"
-                      type="date"
-                      name="startAt"
-                      className={styles.form__input}
-                      defaultValue={startAtProcessed}
-                      data-testid="bid-form-start-at"
-                      {...register('startAt')}
-                      disabled={apiState.isLoading || isBidComplete}
-                    />
-                    <ErrorLabel formName="startAt" errors={formState.errors} />
-                  </div>
-                </div>
-              </div>
-              <div
-                className={clsx(
-                  styles.form__row__cell,
-                  styles['form__row__cell--twoColumns']
-                )}
-              >
-                <div className={styles.form__group}>
-                  <label htmlFor="bidVendor">
-                    Complete Date {isApprovedOrComplete && <span>*</span>}
-                  </label>
-                  <div className={styles.form__group__control}>
-                    <input
-                      id="bidCompleteAt"
-                      type="date"
-                      name="vendor"
-                      className={styles.form__input}
-                      defaultValue={completeAtProcessed}
-                      data-testid="bid-form-complete-at"
-                      {...register('completeAt')}
-                      disabled={apiState.isLoading || isBidComplete}
-                    />
-                    <ErrorLabel
-                      formName="completeAt"
-                      errors={formState.errors}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.form__group}>
-              <label htmlFor="bidVendorDetails">Vendor Details</label>
-              <div className={styles.form__group__control}>
-                <textarea
-                  id="bidVendorDetails"
-                  className="form-control"
-                  rows={7}
-                  name="vendorDetails"
-                  defaultValue={bid.vendorDetails}
-                  data-testid="bid-form-vendor-details"
-                  {...register('vendorDetails')}
-                  disabled={apiState.isLoading || isBidComplete}
-                ></textarea>
-                <ErrorLabel formName="need" errors={formState.errors} />
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.form__fields__rightColumn}>
-            <div className={styles.form__group}>
-              <div className={styles.form__formSeparatedLabel}>
-                <label htmlFor="bidVendorDetails">Attachments</label>
-                <button
-                  type="button"
-                  className={styles.form__upload}
-                  onClick={onUploadClick}
-                  disabled={isUploadingFile}
-                >
-                  <AddIcon /> Upload
-                  <input
-                    type="file"
-                    ref={inputFile}
-                    className={styles.form__formInput}
-                    onChange={onFileChange}
-                    data-testid="input-file-attachment"
-                  />
-                </button>
-              </div>
-              {attachments.length === 0 ? (
-                <ul className={styles.form__attachmentList}>
-                  <li className={styles.form__attachmentList__item}>
-                    No Attachments
-                  </li>
-                </ul>
-              ) : (
-                <ul className={styles.form__attachmentList}>
-                  {attachments.map((ba) => (
-                    <li
-                      className={styles.form__attachmentList__item}
-                      key={ba.name}
-                    >
-                      {ba.name}
-                      <span className={styles['button--dropdown']}>
-                        <ActionsIcon />
-                        <DropdownAttachment
-                          fileUrl={ba.url}
-                          onDelete={() => openAttachmentDeletePrompt(ba)}
+                {!isFixedCostType && (
+                  <div className={styles.form__row__cell}>
+                    <div className={styles.form__group}>
+                      <div className={styles.form__group__control}>
+                        <input
+                          type="number"
+                          id="costMax"
+                          name="costMax"
+                          className={styles.form__input}
+                          placeholder="Maximum"
+                          defaultValue={bid.costMax}
+                          data-testid="bid-form-cost-max"
+                          {...register('costMax')}
+                          disabled={apiState.isLoading || isBidComplete}
                         />
-                      </span>
+                        <ErrorLabel
+                          formName="costMax"
+                          errors={formState.errors}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className={styles.form__row}>
+                <div
+                  className={clsx(
+                    styles.form__row__cell,
+                    styles['form__row__cell--twoColumns']
+                  )}
+                >
+                  <div className={styles.form__group}>
+                    <label htmlFor="bidStartAt">
+                      Start Date {isApprovedOrComplete && <span>*</span>}
+                    </label>
+                    <div className={styles.form__group__control}>
+                      <input
+                        id="bidStartAt"
+                        type="date"
+                        name="startAt"
+                        className={styles.form__input}
+                        defaultValue={startAtProcessed}
+                        data-testid="bid-form-start-at"
+                        {...register('startAt')}
+                        disabled={apiState.isLoading || isBidComplete}
+                      />
+                      <ErrorLabel
+                        formName="startAt"
+                        errors={formState.errors}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div
+                  className={clsx(
+                    styles.form__row__cell,
+                    styles['form__row__cell--twoColumns']
+                  )}
+                >
+                  <div className={styles.form__group}>
+                    <label htmlFor="bidVendor">
+                      Complete Date {isApprovedOrComplete && <span>*</span>}
+                    </label>
+                    <div className={styles.form__group__control}>
+                      <input
+                        id="bidCompleteAt"
+                        type="date"
+                        name="vendor"
+                        className={styles.form__input}
+                        defaultValue={completeAtProcessed}
+                        data-testid="bid-form-complete-at"
+                        {...register('completeAt')}
+                        disabled={apiState.isLoading || isBidComplete}
+                      />
+                      <ErrorLabel
+                        formName="completeAt"
+                        errors={formState.errors}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className={styles.form__group}>
+                <label htmlFor="bidVendorDetails">Vendor Details</label>
+                <div className={styles.form__group__control}>
+                  <textarea
+                    id="bidVendorDetails"
+                    className="form-control"
+                    rows={7}
+                    name="vendorDetails"
+                    defaultValue={bid.vendorDetails}
+                    data-testid="bid-form-vendor-details"
+                    {...register('vendorDetails')}
+                    disabled={apiState.isLoading || isBidComplete}
+                  ></textarea>
+                  <ErrorLabel formName="need" errors={formState.errors} />
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.form__fields__rightColumn}>
+              <div className={styles.form__group}>
+                <div className={styles.form__formSeparatedLabel}>
+                  <label htmlFor="bidVendorDetails">Attachments</label>
+                  <button
+                    type="button"
+                    className={styles.form__upload}
+                    onClick={onUploadClick}
+                    disabled={isUploadingFile}
+                  >
+                    Upload
+                    <span className={styles.form__upload__icon}>
+                      <AddIcon />
+                    </span>
+                    <input
+                      type="file"
+                      ref={inputFile}
+                      className={styles.form__formInput}
+                      onChange={onFileChange}
+                      data-testid="input-file-attachment"
+                    />
+                  </button>
+                </div>
+                {attachments.length === 0 ? (
+                  <ul className={styles.form__attachmentList}>
+                    <li className={styles.form__attachmentList__item}>
+                      No Attachments
                     </li>
-                  ))}
-                </ul>
-              )}
+                  </ul>
+                ) : (
+                  <ul className={styles.form__attachmentList}>
+                    {attachments.map((ba) => (
+                      <li
+                        className={styles.form__attachmentList__item}
+                        key={ba.name}
+                      >
+                        {ba.name}
+                        <span className={styles['button--dropdown']}>
+                          <ActionsIcon />
+                          <DropdownAttachment
+                            fileUrl={ba.url}
+                            onDelete={() => openAttachmentDeletePrompt(ba)}
+                          />
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        {canApprove && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="bid-form-approve"
-              disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
-              className={clsx(
-                styles.button__submit,
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onSubmit('approved')}
-            >
-              Approve Bid
-            </button>
-          </div>
-        )}
+          {canApprove && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="bid-form-approve"
+                disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
+                className={clsx(
+                  styles.button__submit,
+                  isMobile && styles.button__fullwidth
+                )}
+                onClick={() => onSubmit('approved')}
+              >
+                Approve Bid
+              </button>
+            </div>
+          )}
 
-        {canMarkComplete && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="bid-form-complete-bid"
-              disabled={apiState.isLoading || !isOnline}
-              className={clsx(
-                styles.button__cancel,
-                '-c-info',
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onSubmit('complete')}
-            >
-              Complete
-            </button>
-          </div>
-        )}
-
-        {canMarkIncomplete && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="bid-form-incomplete-bid"
-              disabled={apiState.isLoading || !isOnline}
-              className={clsx(
-                styles.button__cancel,
-                '-c-warning',
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onSubmit('incomplete')}
-            >
-              Incomplete
-            </button>
-          </div>
-        )}
-
-        {canReject && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="bid-form-reject-bid"
-              disabled={apiState.isLoading || !isOnline}
-              className={clsx(
-                styles.button__cancel,
-                '-c-alert',
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onSubmit('rejected')}
-            >
-              Reject Bid
-            </button>
-          </div>
-        )}
-
-        {canReopen && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="bid-form-reopen-bid"
-              disabled={apiState.isLoading || !isOnline}
-              className={clsx(
-                styles.button__cancel,
-                '-c-info',
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onSubmit('reopen')}
-            >
-              Reopen
-            </button>
-          </div>
-        )}
-
-        {showSaveButton && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <button
-              type="button"
-              data-testid="bid-form-submit"
-              disabled={apiState.isLoading || !isOnline}
-              className={clsx(
-                styles.button__submit,
-                isMobile && styles.button__fullwidth
-              )}
-              onClick={() => onSubmit('save')}
-            >
-              Save
-            </button>
-          </div>
-        )}
-        {isMobile && (
-          <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-            <Link href={bidLink}>
-              <a
+          {canMarkComplete && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="bid-form-complete-bid"
+                disabled={apiState.isLoading || !isOnline}
                 className={clsx(
                   styles.button__cancel,
-                  styles.button__fullwidth,
-                  '-ta-center'
+                  '-c-info',
+                  isMobile && styles.button__fullwidth
                 )}
-                data-testid="mobile-form-cancel"
+                onClick={() => onSubmit('complete')}
               >
-                Cancel
-              </a>
-            </Link>
-          </div>
-        )}
-      </form>
-    </div>
+                Complete
+              </button>
+            </div>
+          )}
+
+          {canMarkIncomplete && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="bid-form-incomplete-bid"
+                disabled={apiState.isLoading || !isOnline}
+                className={clsx(
+                  styles.button__cancel,
+                  '-c-warning',
+                  isMobile && styles.button__fullwidth
+                )}
+                onClick={() => onSubmit('incomplete')}
+              >
+                Incomplete
+              </button>
+            </div>
+          )}
+
+          {canReject && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="bid-form-reject-bid"
+                disabled={apiState.isLoading || !isOnline}
+                className={clsx(
+                  styles.button__cancel,
+                  '-c-alert',
+                  isMobile && styles.button__fullwidth
+                )}
+                onClick={() => onSubmit('rejected')}
+              >
+                Reject Bid
+              </button>
+            </div>
+          )}
+
+          {canReopen && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="bid-form-reopen-bid"
+                disabled={apiState.isLoading || !isOnline}
+                className={clsx(
+                  styles.button__cancel,
+                  '-c-info',
+                  isMobile && styles.button__fullwidth
+                )}
+                onClick={() => onSubmit('reopen')}
+              >
+                Reopen
+              </button>
+            </div>
+          )}
+
+          {showSaveButton && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <button
+                type="button"
+                data-testid="bid-form-submit"
+                disabled={apiState.isLoading || !isOnline}
+                className={clsx(
+                  styles.button__submit,
+                  isMobile && styles.button__fullwidth
+                )}
+                onClick={() => onSubmit('save')}
+              >
+                Save
+              </button>
+            </div>
+          )}
+          {isMobile && (
+            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+              <Link href={bidLink}>
+                <a
+                  className={clsx(
+                    styles.button__cancel,
+                    styles.button__fullwidth,
+                    '-ta-center'
+                  )}
+                  data-testid="mobile-form-cancel"
+                >
+                  Cancel
+                </a>
+              </Link>
+            </div>
+          )}
+        </form>
+      </div>
+    </>
   );
 };
 
@@ -605,7 +619,8 @@ const BidForm: FunctionComponent<Props> = ({
     const bidCompleteAt: HTMLInputElement = document.getElementById(
       'bidCompleteAt'
     ) as HTMLInputElement;
-    if (value && bidCompleteAt) {
+    // Should not check for less value if it doesn't have value
+    if (value && bidCompleteAt && bidCompleteAt.value) {
       isValid = moment(bidCompleteAt.value).unix() >= moment(value).unix();
     }
     return isValid;
@@ -617,7 +632,8 @@ const BidForm: FunctionComponent<Props> = ({
     const bidStartAt: HTMLInputElement = document.getElementById(
       'bidStartAt'
     ) as HTMLInputElement;
-    if (value && bidStartAt) {
+    // Should not check for less value if it doesn't have value
+    if (value && bidStartAt && bidStartAt.value) {
       isValid = moment(bidStartAt.value).unix() <= moment(value).unix();
     }
     return isValid;
@@ -835,6 +851,7 @@ const BidForm: FunctionComponent<Props> = ({
             className={styles.form__header}
           />
           <Layout
+            propertyId={property.id}
             isMobile={isMobileorTablet}
             job={job}
             bid={bid || ({} as bidModel)}
@@ -893,6 +910,7 @@ const BidForm: FunctionComponent<Props> = ({
             canReopen={canReopen}
           />
           <Layout
+            propertyId={property.id}
             isMobile={isMobileorTablet}
             job={job}
             bid={bid || ({} as bidModel)}

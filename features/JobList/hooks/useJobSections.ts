@@ -30,7 +30,7 @@ export default function useJobSections(
       jobs: <jobModel[]>[]
     },
     {
-      title: 'Authorized',
+      title: 'Under Contract',
       state: 'authorized',
       jobs: <jobModel[]>[]
     },

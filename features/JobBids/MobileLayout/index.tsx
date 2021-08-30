@@ -32,8 +32,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   colors,
   configBids
 }) => {
-
   const newBidLink = `/properties/${propertyId}/jobs/${job.id}/bids/new`;
+  const jobListLink = `/properties/${propertyId}/jobs`;
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -56,6 +56,9 @@ const MobileLayout: FunctionComponent<Props> = ({
         testid="mobile-bidlist-header"
       />
       <h1 data-testid="bid-job-title-mobile" className={styles.mobileTitle}>
+        <Link href={jobListLink}>
+          <a></a>
+        </Link>
         {job.title}
       </h1>
       <BidSections

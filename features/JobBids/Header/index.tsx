@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import DesktopHeader from '../../../common/DesktopHeader';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
@@ -15,6 +16,7 @@ interface BidsHeaderModel {
   bidStatus: string;
   colors: Record<string, string>;
   filterState?: string;
+  isOnline: boolean;
   changeFilterState?(state: string): void;
 }
 
@@ -170,35 +172,29 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
   bidStatus,
   colors,
   filterState,
+  isOnline,
   changeFilterState
 }) => {
   const backLink = `/properties/${property.id}/jobs`;
   return (
-    <>
-      <header className={styles.header} data-testid="bidlist-header">
-        {/* Title And Create Button */}
-        <aside className={styles.header__left}>
-          <aside className={styles.header__main}>
-            <Link href={backLink}>
-              <a
-                className={styles.header__backButton}
-                data-testid="property-jobs-back"
-              ></a>
-            </Link>
-            <h1 className={styles.header__title}>
-              <span
-                className={styles.header__propertyName}
-              >{`${property.name}`}</span>
-              <span>&nbsp;/ Jobs</span>
-              <span className={styles.header__jobTitle}>
-                &nbsp;/{` ${job.title}`}
-              </span>
-              <span>&nbsp;/ Bids</span>
-            </h1>
-          </aside>
-        </aside>
-      </header>
-      <div className={clsx(styles.header, styles.header__bottom)}>
+    <DesktopHeader
+      backLink={backLink}
+      headerTestId="bidlist-header"
+      headerClass={styles.header__padding}
+      title={
+        <>
+          <span
+            className={styles.header__propertyName}
+          >{`${property.name}`}</span>
+          <span>&nbsp;/ Jobs</span>
+          <span className={styles.header__jobTitle}>
+            &nbsp;/{` ${job.title}`}
+          </span>
+          <span>&nbsp;/ Bids</span>
+        </>
+      }
+      isOnline={isOnline}
+      nextLine={
         <MetaData
           bids={bids}
           bidStatus={bidStatus}
@@ -206,24 +202,23 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
           colors={colors}
           changeFilterState={changeFilterState}
         />
-
-        <aside className={styles.header__controls}>
-          <div className={styles.header__item}>
-            <Link href={`/properties/${property.id}/jobs/${job.id}/bids/new`}>
-              <a
-                className={clsx(styles.header__item__createButton)}
-                data-testid="job-bid-create"
-              >
-                Create New Bid
-                <span className="iconAddButton">
-                  <AddIcon />
-                </span>
-              </a>
-            </Link>
-          </div>
-        </aside>
-      </div>
-    </>
+      }
+      nextLineRight={
+        <div className={styles.header__item}>
+          <Link href={`/properties/${property.id}/jobs/${job.id}/bids/new`}>
+            <a
+              className={clsx(styles.header__item__createButton)}
+              data-testid="job-bid-create"
+            >
+              Create New Bid
+              <span className="iconAddButton">
+                <AddIcon />
+              </span>
+            </a>
+          </Link>
+        </div>
+      }
+    />
   );
 };
 

@@ -29,7 +29,7 @@ const Item: FunctionComponent<ItemProps> = ({ job, bid, propertyId }) => {
             >
               {bid.vendor}
             </h3>
-            {bid.startAt && (
+            {bid.startAt > 0 && (
               <div>
                 <strong className="-c-black">Started:</strong>{' '}
                 <span
@@ -40,7 +40,7 @@ const Item: FunctionComponent<ItemProps> = ({ job, bid, propertyId }) => {
                 </span>
               </div>
             )}
-            {bid.completeAt && (
+            {bid.completeAt > 0 && (
               <div data-testid="bid-completed-time">
                 <strong className="-c-black">Completed:</strong>{' '}
                 <span

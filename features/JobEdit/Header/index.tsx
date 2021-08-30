@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import DesktopHeader from '../../../common/DesktopHeader';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import { JobApiResult } from '../hooks/useJobForm';
@@ -11,6 +12,7 @@ interface JobsHeaderModel {
   property: propertyModel;
   apiState: JobApiResult;
   job: jobModel;
+  isOnline: boolean;
   isNewJob: boolean;
   isJobComplete: boolean;
   canApprove: boolean;
@@ -28,98 +30,96 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   canApprove,
   canAuthorize,
   canExpedite,
+  isOnline,
   onFormAction
 }) => {
   const jobLink = `/properties/${property.id}/jobs`;
 
-  return (
-    <header className={styles.header} data-testid="jobedit-header">
-      {/* Title And Create Button */}
-      <div className={styles.header__content}>
-        <div className={styles.header__content__main}>
-          <Link href={jobLink}>
-            <a
-              className={styles.header__backButton}
-              data-testid="property-jobs-back"
-            ></a>
-          </Link>
-          <h1 className={styles.header__content__main__title}>
-            <span
-              className={styles.header__propertyName}
-            >{`${property.name}`}</span>
-            <span>&nbsp;/ Jobs</span>
-            <span data-testid="jobedit-header-name">
-              &nbsp;/ {isNewJob ? 'Create New' : job.title}
-            </span>
-          </h1>
-        </div>
+  const RightSide = () => (
+    <>
+      <div className={parentStyles.button__group}>
+        <Link href={jobLink}>
+          <a
+            className={clsx(parentStyles.button__cancel)}
+            data-testid="jobedit-header-cancel"
+          >
+            Cancel
+          </a>
+        </Link>
       </div>
-
-      <aside className={styles.header__controls}>
+      {!isJobComplete && (
         <div className={parentStyles.button__group}>
-          <Link href={jobLink}>
-            <a
-              className={clsx(parentStyles.button__cancel)}
-              data-testid="jobedit-header-cancel"
-            >
-              Cancel
-            </a>
-          </Link>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading}
+            data-testid="jobedit-header-submit"
+            onClick={() => onFormAction('save')}
+          >
+            Save
+          </button>
         </div>
-        {!isJobComplete && (
-          <div className={parentStyles.button__group}>
-            <button
-              type="button"
-              className={clsx(parentStyles.button__submit)}
-              disabled={apiState.isLoading}
-              data-testid="jobedit-header-submit"
-              onClick={() => onFormAction('save')}
-            >
-              Save
-            </button>
-          </div>
-        )}
-        {canApprove && (
-          <div className={parentStyles.button__group}>
-            <button
-              type="button"
-              className={clsx(parentStyles.button__submit)}
-              disabled={apiState.isLoading}
-              data-testid="jobedit-header-approve"
-              onClick={() => onFormAction('approved')}
-            >
-              Approve
-            </button>
-          </div>
-        )}
-        {canAuthorize && (
-          <div className={parentStyles.button__group}>
-            <button
-              type="button"
-              className={clsx(parentStyles.button__submit)}
-              disabled={apiState.isLoading}
-              data-testid="jobedit-header-authorize"
-              onClick={() => onFormAction('authorized')}
-            >
-              Authorize
-            </button>
-          </div>
-        )}
-        {canExpedite && (
-          <div className={parentStyles.button__group}>
-            <button
-              type="button"
-              className={clsx(parentStyles.button__submit)}
-              disabled={apiState.isLoading}
-              data-testid="jobedit-header-expedite"
-              onClick={() => onFormAction('expedite')}
-            >
-              Expedite
-            </button>
-          </div>
-        )}
-      </aside>
-    </header>
+      )}
+      {canApprove && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading}
+            data-testid="jobedit-header-approve"
+            onClick={() => onFormAction('approved')}
+          >
+            Approve
+          </button>
+        </div>
+      )}
+      {canAuthorize && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading}
+            data-testid="jobedit-header-authorize"
+            onClick={() => onFormAction('authorized')}
+          >
+            Authorize
+          </button>
+        </div>
+      )}
+      {canExpedite && (
+        <div className={parentStyles.button__group}>
+          <button
+            type="button"
+            className={clsx(parentStyles.button__submit)}
+            disabled={apiState.isLoading}
+            data-testid="jobedit-header-expedite"
+            onClick={() => onFormAction('expedite')}
+          >
+            Expedite
+          </button>
+        </div>
+      )}
+    </>
+  );
+
+  return (
+    <DesktopHeader
+      backLink={jobLink}
+      headerTestId="jobedit-header"
+      title={
+        <>
+          <span
+            className={styles.header__propertyName}
+          >{`${property.name}`}</span>
+          <span>&nbsp;/ Jobs</span>
+          <span data-testid="jobedit-header-name">
+            &nbsp;/ {isNewJob ? 'Create New' : job.title}
+          </span>
+        </>
+      }
+      isOnline={isOnline}
+      right={<RightSide />}
+    />
   );
 };
 

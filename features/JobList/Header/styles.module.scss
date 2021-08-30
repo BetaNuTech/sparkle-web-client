@@ -1,12 +1,6 @@
 @import '../../../styles/index.scss';
 
 .header {
-  @extend %gridHeader;
-
-  &__backButton {
-    @extend %gridHeaderBackButton;
-  }
-
   &__filterButton {
     background-color: transparent;
     border: 0;
@@ -14,26 +8,8 @@
     align-items: center;
   }
 
-  &__left {
-    flex-wrap: wrap;
-    display: flex;
-  }
-
-  &__main {
-    @extend %gridHeaderMain;
-    margin-right: 1rem;
-  }
-
-  &__title {
-    @extend %gridHeaderTitle;
-  }
-
   &__propertyName {
     @extend %gridHeaderTitle--ellipsis;
-  }
-
-  &__controls {
-    @extend %gridHeaderControls;
   }
 
   &__item {

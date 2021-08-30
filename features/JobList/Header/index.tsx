@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import DesktopHeader from '../../../common/DesktopHeader';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import configJobs from '../../../config/jobs';
@@ -14,6 +14,7 @@ interface JobsHeaderModel {
   jobStatus: string;
   colors: Record<string, string>;
   filterState?: string;
+  isOnline: boolean;
   changeJobFilterState?(state: string): void;
 }
 
@@ -135,27 +136,38 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   jobStatus,
   colors,
   filterState,
+  isOnline,
   changeJobFilterState
 }) => {
-  const router = useRouter();
+  const backLink = `/properties/${property.id}/`;
+  const RightSide = () => (
+    <div className={styles.header__item}>
+      <Link href={`/properties/${property.id}/jobs/edit/new`}>
+        <a
+          className={clsx(styles.header__item__createButton)}
+          data-testid="property-jobs-create"
+        >
+          Create New Job
+          <span className="iconAddButton">
+            <AddIcon />
+          </span>
+        </a>
+      </Link>
+    </div>
+  );
   return (
-    <header className={styles.header} data-testid="joblist-header">
-      {/* Title And Create Button */}
-      <aside className={styles.header__left}>
-        <aside className={styles.header__main}>
-          <button
-            type="button"
-            className={styles.header__backButton}
-            onClick={() => router.back()}
-            data-testid="property-jobs-back"
-          ></button>
-          <h1 className={styles.header__title}>
-            <span
-              className={styles.header__propertyName}
-            >{`${property.name}`}</span>
-            <span>&nbsp;/ Jobs</span>
-          </h1>
-        </aside>
+    <DesktopHeader
+      backLink={backLink}
+      headerTestId="joblist-header"
+      title={
+        <>
+          <span
+            className={styles.header__propertyName}
+          >{`${property.name}`}</span>
+          <span>&nbsp;/ Jobs</span>
+        </>
+      }
+      titleInfo={
         <MetaData
           jobs={jobs}
           jobStatus={jobStatus}
@@ -163,24 +175,10 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           colors={colors}
           changeJobFilterState={changeJobFilterState}
         />
-      </aside>
-
-      <aside className={styles.header__controls}>
-        <div className={styles.header__item}>
-          <Link href={`/properties/${property.id}/jobs/edit/new`}>
-            <a
-              className={clsx(styles.header__item__createButton)}
-              data-testid="property-jobs-create"
-            >
-              Create New Job
-              <span className="iconAddButton">
-                <AddIcon />
-              </span>
-            </a>
-          </Link>
-        </div>
-      </aside>
-    </header>
+      }
+      isOnline={isOnline}
+      right={<RightSide />}
+    />
   );
 };
 
