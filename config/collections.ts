@@ -1,4 +1,5 @@
 export default {
+  attachments: 'attachments',
   bids: 'bids',
   inspections: 'inspections',
   integrations: 'integrations',

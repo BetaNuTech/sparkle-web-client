@@ -6,6 +6,7 @@ export const openImprovementJob: jobModel = {
   need: 'for kids play zone',
   authorizedRules: 'default',
   scopeOfWork: 'install equipments in garden area',
+  scopeOfWorkAttachment: '/attachments/attach-1',
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1483209000,

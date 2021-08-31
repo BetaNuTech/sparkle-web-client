@@ -3,6 +3,7 @@ interface job {
   title: string;
   need: string;
   authorizedRules?: 'default' | 'expedite';
+  scopeOfWorkAttachment?: any; // Reference of attachment id
   scopeOfWork?: string;
   trelloCardURL?: string;
   property: string;
