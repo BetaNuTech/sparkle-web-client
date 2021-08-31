@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { useRef, FunctionComponent, ChangeEvent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useForm, UseFormRegister, FormState } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,15 +10,19 @@ import LoadingHud from '../../../common/LoadingHud';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
 import userModel from '../../../common/models/user';
+import attachmentModel from '../../../common/models/attachments';
 import MobileHeader from '../../../common/MobileHeader';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
 import utilString from '../../../common/utils/string';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
+import AddIcon from '../../../public/icons/ios/add.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import { JobApiResult } from '../hooks/useJobForm';
 import DropdownHeader from '../DropdownHeader';
+import DropdownAttachment from '../DropdownAttachment';
+import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
@@ -36,6 +40,13 @@ interface Props {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
+  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
+  uploadState: boolean;
+  jobAttachment: attachmentModel;
+  setDeleteAttachmentPromptVisible(newState: boolean): void;
+  isDeleteAttachmentPromptVisible: boolean;
+  confirmAttachmentDelete(): Promise<any>;
+  deleteAtachmentLoading: boolean;
 }
 
 type Inputs = {
@@ -60,6 +71,10 @@ interface LayoutProps {
   onFormAction: (action: string) => void;
   register: UseFormRegister<Inputs>;
   formState: FormState<Inputs>;
+  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
+  isUploadingFile: boolean;
+  jobAttachment: attachmentModel;
+  setDeleteAttachmentPromptVisible(newState: boolean): void;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -75,7 +90,11 @@ const Layout: FunctionComponent<LayoutProps> = ({
   apiState,
   onFormAction,
   register,
-  formState
+  formState,
+  onFileChange,
+  isUploadingFile,
+  jobAttachment,
+  setDeleteAttachmentPromptVisible
 }) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
@@ -83,6 +102,19 @@ const Layout: FunctionComponent<LayoutProps> = ({
       : [];
 
   const nextState = !isNewJob && jobsConfig.nextState[job.state];
+
+  const inputFile = useRef(null);
+
+  const onUploadClick = () => {
+    if (inputFile && inputFile.current) {
+      inputFile.current.click();
+    }
+  };
+
+  const openAttachmentDeletePrompt = () => {
+    setDeleteAttachmentPromptVisible(true);
+  };
+
   return (
     <>
       {!isNewJob && isMobile && (
@@ -196,9 +228,41 @@ const Layout: FunctionComponent<LayoutProps> = ({
             </select>
           </div>
           <div className={styles.jobNew__formGroup}>
-            <label htmlFor="jobScope">
-              Scope of work {isApprovedOrAuthorized && <span>*</span>}
-            </label>
+            <div className={styles.jobNew__formSeparatedLabel}>
+              <label htmlFor="jobScope">
+                Scope of work {isApprovedOrAuthorized && <span>*</span>}
+              </label>
+              {!isNewJob &&
+                (job.scopeOfWorkAttachment && jobAttachment ? (
+                  <span className={styles['jobNew__formGroup--dropdown']}>
+                    Attachment
+                    <ActionsIcon />
+                    <DropdownAttachment
+                      fileUrl={jobAttachment.url}
+                      onDelete={() => openAttachmentDeletePrompt()}
+                    />
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.jobNew__formGroup__upload}
+                    onClick={onUploadClick}
+                    disabled={isUploadingFile}
+                  >
+                    Upload
+                    <span className={styles.jobNew__formGroup__upload__icon}>
+                      <AddIcon />
+                    </span>
+                    <input
+                      type="file"
+                      ref={inputFile}
+                      className={styles.jobNew__formGroup__file}
+                      onChange={onFileChange}
+                      data-testid="input-file-attachment"
+                    />
+                  </button>
+                ))}
+            </div>
             <div className={styles.jobNew__formGroup__control}>
               <textarea
                 id="jobScope"
@@ -314,8 +378,19 @@ const JobForm: FunctionComponent<Props> = ({
   apiState,
   postJobCreate,
   putJobUpdate,
-  toggleNavOpen
+  toggleNavOpen,
+  onFileChange,
+  uploadState,
+  jobAttachment,
+  setDeleteAttachmentPromptVisible,
+  isDeleteAttachmentPromptVisible,
+  confirmAttachmentDelete,
+  deleteAtachmentLoading
 }) => {
+  const closeAttachmentDeletePrompt = () => {
+    setDeleteAttachmentPromptVisible(false);
+  };
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -430,6 +505,8 @@ const JobForm: FunctionComponent<Props> = ({
   const mobileHeaderActions = (headStyle) => (
     <>
       {apiState.isLoading && <LoadingHud title="Saving..." />}
+      {uploadState && <LoadingHud title="Uploading..." />}
+      {deleteAtachmentLoading && <LoadingHud title="Remove Attachment..." />}
       <div
         className={clsx(
           headStyle.header__button,
@@ -477,6 +554,10 @@ const JobForm: FunctionComponent<Props> = ({
             register={register}
             formState={formState}
             apiState={apiState}
+            onFileChange={onFileChange}
+            isUploadingFile={uploadState}
+            jobAttachment={jobAttachment}
+            setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
           />
         </>
       )}
@@ -485,6 +566,10 @@ const JobForm: FunctionComponent<Props> = ({
       {isDesktop && (
         <div data-testid="desktop-form">
           {apiState.isLoading && <LoadingHud title="Saving..." />}
+          {uploadState && <LoadingHud title="Uploading..." />}
+          {deleteAtachmentLoading && (
+            <LoadingHud title="Remove Attachment..." />
+          )}
           <Header
             property={property}
             apiState={apiState}
@@ -511,9 +596,20 @@ const JobForm: FunctionComponent<Props> = ({
             register={register}
             formState={formState}
             apiState={apiState}
+            onFileChange={onFileChange}
+            isUploadingFile={uploadState}
+            jobAttachment={jobAttachment}
+            setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
           />
         </div>
       )}
+
+      <DeleteAttachmentPrompt
+        fileName={jobAttachment && jobAttachment.name}
+        onConfirm={() => confirmAttachmentDelete()}
+        isVisible={isDeleteAttachmentPromptVisible}
+        onClose={closeAttachmentDeletePrompt}
+      />
     </>
   );
 };

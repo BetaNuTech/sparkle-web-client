@@ -80,7 +80,7 @@ const BidEdit: FunctionComponent<Props> = ({
     try {
       // Upload file to the firebase storage
       result = await uploadFileToStorage(
-        `/jobs/${jobId}/bids/${bidId}/attachments/${file.name}`,
+        `/properties/${propertyId}/jobs/${jobId}/bids/${bidId}/attachments/${file.name}`,
         file
       );
     } catch (err) {
