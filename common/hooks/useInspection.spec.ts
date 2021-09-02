@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useJob from './useJob';
-import jobsDb from '../services/firestore/jobs';
+import useInspection from './useInspection';
+import inspectionsDb from '../services/firestore/inspections';
 
 const emptyCollectionResult = {
   status: 'success',
@@ -9,15 +9,15 @@ const emptyCollectionResult = {
   data: []
 };
 
-describe('Unit | Common | Hooks | Use Job', () => {
+describe('Unit | Features | Properties | Hooks | Use Inspection', () => {
   afterEach(() => sinon.restore());
 
-  test('should request job record', () => {
-    const expected = 'job-123';
+  test('should request inspection', () => {
+    const expected = 'inspection-123';
     const findRecord = sinon
-      .stub(jobsDb, 'findRecord')
+      .stub(inspectionsDb, 'findRecord')
       .returns(emptyCollectionResult);
-    renderHook(() => useJob({}, expected));
+    renderHook(() => useInspection({}, expected));
 
     const result = findRecord.firstCall || { args: [] };
     const actual = result.args[1];

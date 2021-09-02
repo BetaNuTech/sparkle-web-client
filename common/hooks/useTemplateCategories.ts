@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import templateCategoryApi, {
+import templateCategoryDb, {
   templateCategoriesCollectionResult
 } from '../services/firestore/templateCategories';
 
-interface useTemplateCategoriesResult extends templateCategoriesCollectionResult {
+interface useTemplateCategoriesResult
+  extends templateCategoriesCollectionResult {
   memo: string;
   handlers: any;
 }
@@ -27,7 +28,7 @@ export default function useTemplateCategories(
   };
 
   // Load all properties for admin & corporate
-  const result = templateCategoryApi.findAll(firestore);
+  const result = templateCategoryDb.findAll(firestore);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useProperty from './useProperty';
+import useQueryProperties from './useQueryProperties';
 import propertiesDb from '../services/firestore/properties';
 
 const emptyCollectionResult = {
@@ -9,17 +9,17 @@ const emptyCollectionResult = {
   data: []
 };
 
-describe('Unit | Common | Hooks | Use Property', () => {
+describe('Unit | Common | Hooks | Use Query Properties', () => {
   afterEach(() => sinon.restore());
 
   test('should request property record', () => {
-    const expected = 'property-123';
-    const findRecord = sinon
-      .stub(propertiesDb, 'findRecord')
+    const expected = ['property-123'];
+    const queryRecords = sinon
+      .stub(propertiesDb, 'queryRecords')
       .returns(emptyCollectionResult);
-    renderHook(() => useProperty({}, expected));
+    renderHook(() => useQueryProperties({}, expected));
 
-    const result = findRecord.firstCall || { args: [] };
+    const result = queryRecords.firstCall || { args: [] };
     const actual = result.args[1];
     expect(actual).toEqual(expected);
   });

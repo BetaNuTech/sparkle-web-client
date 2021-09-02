@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useTemplateCategories from './useTemplateCategories';
-import templateCategoryApi from '../services/firestore/templateCategories';
+import templateCategoryDb from '../services/firestore/templateCategories';
 
 const emptyCollectionResult = {
   status: 'success',
@@ -15,7 +15,7 @@ describe('Unit | Common | Hooks | Use Template Categories', () => {
   test('should fetch all template categories', () => {
     const expected = true;
     const findAll = sinon
-      .stub(templateCategoryApi, 'findAll')
+      .stub(templateCategoryDb, 'findAll')
       .returns(emptyCollectionResult);
     renderHook(() => useTemplateCategories({}));
 

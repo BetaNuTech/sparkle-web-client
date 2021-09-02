@@ -1,32 +1,36 @@
 import { useEffect, useState } from 'react';
-import propertyModel from '../models/property';
-import propertiesDb, { propertyResult } from '../services/firestore/properties';
+import propertiesDb, {
+  propertiesCollectionResult
+} from '../services/firestore/properties';
 
-interface usePropertiesResult extends propertyResult {
+interface usePropertiesResult extends propertiesCollectionResult {
   memo: string;
   handlers: any;
 }
-
 // Actions
 const handlers = {};
 
-// Hooks for all user's properties based on roll
-export default function useProperties(
+export default function useQueryProperties(
   firestore: any, // eslint-disable-line
-  propertyId: string
+  propertyIds: string[]
 ): usePropertiesResult {
-  const [memo, setMemo] = useState('{}');
+  const [memo, setMemo] = useState('[]');
+  const isValidReq = propertyIds.length;
+
+  // Fix for requiring all hooks to call
+  // on every render, we provide fake doc reference
+  const queryIds = isValidReq ? propertyIds : ['undefined'];
 
   // No access payload
   const payload = {
     status: 'loading',
     error: null,
-    data: {} as propertyModel,
+    data: [],
     handlers,
     memo
   };
 
-  const result = propertiesDb.findRecord(firestore, propertyId);
+  const result = propertiesDb.queryRecords(firestore, queryIds);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

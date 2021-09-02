@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import propertyModel from '../models/property';
-import propertiesDb, { propertyResult } from '../services/firestore/properties';
+import templatesDb, { templateResult } from '../services/firestore/templates';
+import templateModel from '../models/template';
 
-interface usePropertiesResult extends propertyResult {
+interface useTemplateResult extends templateResult {
   memo: string;
   handlers: any;
 }
@@ -10,23 +10,25 @@ interface usePropertiesResult extends propertyResult {
 // Actions
 const handlers = {};
 
-// Hooks for all user's properties based on roll
-export default function useProperties(
+// Hooks for loading template by id
+export default function useTemplate(
   firestore: any, // eslint-disable-line
-  propertyId: string
-): usePropertiesResult {
+  templateId: string
+): useTemplateResult {
   const [memo, setMemo] = useState('{}');
 
-  // No access payload
+  // No template payload
   const payload = {
     status: 'loading',
     error: null,
-    data: {} as propertyModel,
+    data: {} as templateModel,
     handlers,
     memo
   };
 
-  const result = propertiesDb.findRecord(firestore, propertyId);
+  // Support multi-step request
+
+  const result = templatesDb.findRecord(firestore, templateId);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

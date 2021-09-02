@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useTemplates from './useTemplates';
-import templatesApi from '../services/firestore/templates';
+import templatesDb from '../services/firestore/templates';
 
 const emptyCollectionResult = {
   status: 'success',
@@ -15,7 +15,7 @@ describe('Unit | Common | Hooks | Use Templates', () => {
   test('should request all templates', () => {
     const expected = true;
     const findAll = sinon
-      .stub(templatesApi, 'findAll')
+      .stub(templatesDb, 'findAll')
       .returns(emptyCollectionResult);
     renderHook(() => useTemplates({}));
 
