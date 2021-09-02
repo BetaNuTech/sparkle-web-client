@@ -18,30 +18,29 @@ function render(ui: any, options = {}) {
 }
 
 describe('Integration | Features | Properties | Profile | Inspection | List Item', () => {
-  it('renders', () => {
-    const expected = 1;
-    render(
-      <ListItem
-        inspection={fullInspection}
-        templateCategories={templateCategories}
-      />
-    );
-    const items: Array<HTMLElement> = screen.queryAllByTestId(
-      'property-profile-inspection-list-item'
-    );
-    const actual = items.length;
-    expect(actual).toEqual(expected);
+  beforeEach(() => {
+    // IntersectionObserver isn't available in test environment
+    const mockIntersectionObserver = jest.fn();
+    mockIntersectionObserver.mockReturnValue({
+      observe: () => null,
+      unobserve: () => null,
+      disconnect: () => null
+    });
+    window.IntersectionObserver = mockIntersectionObserver;
   });
 
   it('defaults to Unknown inspector name', () => {
     const expected = 'Unknown';
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.inspectorName = '';
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -56,11 +55,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expected = 'Matt Jensen';
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.inspectorName = 'matt jensen';
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -75,11 +77,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expected = 'Unknown';
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.templateName = '';
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -94,11 +99,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expected = 'Uncategorized';
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.templateCategory = '';
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -114,11 +122,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expectedLength = expected.length;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.creationDate = 0;
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -135,11 +146,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expectedLength = expected.length;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.updatedAt = 0;
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -155,11 +169,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expected = true;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.deficienciesExist = true;
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -174,11 +191,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const expected = true;
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.deficienciesExist = false;
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -191,13 +211,16 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
 
   it('score appears instead of progress if inspection is completed', () => {
     const inspectionItem = deepClone(fullInspection);
-    const expected = `${Number(inspectionItem.score.toFixed(1))}%`;
     inspectionItem.inspectionCompleted = true;
+    const expected = `${Number(inspectionItem.score.toFixed(1))}%`;
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 
@@ -213,11 +236,14 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     const inspectionItem = deepClone(fullInspection);
     const expected = '';
     inspectionItem.inspectionCompleted = false;
+    const forceVisible = true;
 
     render(
       <ListItem
+        propertyId="property-1"
         inspection={inspectionItem}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
 

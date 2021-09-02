@@ -4,6 +4,7 @@ import moment from 'moment';
 import { admin, teamMember } from '../../../../../../__mocks__/users';
 import templateCategories from '../../../../../../__mocks__/templateCategories';
 import { fullInspection } from '../../../../../../__mocks__/inspections';
+import stubIntersectionObserver from '../../../../../helpers/stubIntersectionObserver';
 import ListItem from '../../../../../../features/PropertyProfile/Grid/ListItem';
 import breakpoints from '../../../../../../config/breakpoints';
 import deepClone from '../../../../../helpers/deepClone';
@@ -19,6 +20,8 @@ function render(ui: any, options = {}) {
 }
 
 describe('Integration | Features | Properties | Profile | Inspection | Grid | List Item', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should render 6 column for user without having inspection rights', () => {
     const expected = 6;
 
@@ -27,7 +30,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: deepClone(fullInspection),
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -47,7 +52,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: deepClone(fullInspection),
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -69,7 +76,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -91,7 +100,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -113,7 +124,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -135,7 +148,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -157,7 +172,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -179,7 +196,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -201,7 +220,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -223,7 +244,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -245,7 +268,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -267,7 +292,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -294,7 +321,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -321,7 +350,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: inspectionItem,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -341,7 +372,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: fullInspection,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -361,7 +394,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: fullInspection,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);
@@ -381,7 +416,9 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       inspection: fullInspection,
       templateCategories,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      openInspectionDeletePrompt: () => {}
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
     };
 
     render(<ListItem {...props} />);

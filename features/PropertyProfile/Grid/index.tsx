@@ -15,6 +15,7 @@ interface Props {
   onSortChange?(sortKey: string): void;
   sortBy?: string;
   sortDir?: string;
+  forceVisible: boolean;
 }
 
 const Grid: FunctionComponent<Props> = ({
@@ -25,7 +26,8 @@ const Grid: FunctionComponent<Props> = ({
   openInspectionDeletePrompt,
   onSortChange,
   sortBy,
-  sortDir
+  sortDir,
+  forceVisible
 }) => {
   if (inspections) {
     return (
@@ -42,6 +44,7 @@ const Grid: FunctionComponent<Props> = ({
           inspections={inspections}
           templateCategories={templateCategories}
           openInspectionDeletePrompt={openInspectionDeletePrompt}
+          forceVisible={forceVisible}
         />
       </>
     );

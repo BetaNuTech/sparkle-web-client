@@ -28,6 +28,8 @@ import firebaseConfig from '../../../../config/firebase';
 import { shuffle } from '../../../helpers/array';
 import deepClone from '../../../helpers/deepClone';
 
+const FORCE_VISIBLE = true;
+
 function render(ui: any, options: any = {}) {
   sinon.restore();
   // Stub all properties requests
@@ -78,10 +80,28 @@ function render(ui: any, options: any = {}) {
 }
 
 describe('Integration | Features | Properties | Profile', () => {
-  it('renders only mobile content for mobile devices', () => {
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
+  beforeEach(() => {
+    // IntersectionObserver isn't available in test environment
+    const mockIntersectionObserver = jest.fn();
+    mockIntersectionObserver.mockReturnValue({
+      observe: () => null,
+      unobserve: () => null,
+      disconnect: () => null
     });
+    window.IntersectionObserver = mockIntersectionObserver;
+  });
+
+  it('renders only mobile content for mobile devices', () => {
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
     const desktopHeader = screen.queryByTestId('property-profile-header');
     const propertyProfileOverview = screen.queryByTestId(
       'property-profile-overview'
@@ -104,9 +124,16 @@ describe('Integration | Features | Properties | Profile', () => {
   });
 
   it('renders only desktop content for desktop devices', () => {
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
     const desktopHeader = screen.queryByTestId('property-profile-header');
     const propertyProfileOverview = screen.queryByTestId(
       'property-profile-overview'
@@ -131,9 +158,16 @@ describe('Integration | Features | Properties | Profile', () => {
 
   it('should show only completed inspections for desktop devices', () => {
     const expected = 2;
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     const filterControl = screen.queryByTestId('inspections-filter');
 
@@ -148,9 +182,16 @@ describe('Integration | Features | Properties | Profile', () => {
 
   it('should show only incomplete inspections for desktop devices', () => {
     const expected = 1;
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     const filterControl = screen.queryByTestId('inspections-filter');
 
@@ -165,9 +206,16 @@ describe('Integration | Features | Properties | Profile', () => {
 
   it('should show only deficient exists inspections for desktop devices', () => {
     const expected = 1;
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     const filterControl = screen.queryByTestId('inspections-filter');
 
@@ -184,9 +232,16 @@ describe('Integration | Features | Properties | Profile', () => {
 
   it('should show only completed inspections for mobile devices', () => {
     const expected = 2;
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     const filterControl = screen.queryByTestId('inspections-filter');
 
@@ -203,9 +258,16 @@ describe('Integration | Features | Properties | Profile', () => {
 
   it('should show only incomplete inspections for mobile devices', () => {
     const expected = 1;
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     const filterControl = screen.queryByTestId('inspections-filter');
 
@@ -223,9 +285,16 @@ describe('Integration | Features | Properties | Profile', () => {
 
   it('should show only deficient exists inspections for mobile devices', () => {
     const expected = 1;
-    render(<PropertyProfile user={user} id="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     const filterControl = screen.queryByTestId('inspections-filter');
 
@@ -252,10 +321,17 @@ describe('Integration | Features | Properties | Profile', () => {
       }
     });
 
-    render(<PropertyProfile user={user} id="property-1" />, {
-      inspections: shuffle(inspections), // randomized inspections
-      contextWidth: breakpoints.desktop.minWidth // set to desktop UI
-    });
+    render(
+      <PropertyProfile
+        user={user}
+        id="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        inspections: shuffle(inspections), // randomized inspections
+        contextWidth: breakpoints.desktop.minWidth // set to desktop UI
+      }
+    );
 
     const inspectionCreationDate: Array<HTMLElement> = screen.queryAllByTestId(
       'inspection-grid-list-item-creation-date'
@@ -278,7 +354,11 @@ describe('Integration | Features | Properties | Profile', () => {
 
     await act(async () => {
       const { container } = render(
-        <PropertyProfile user={user} id="property-1" />,
+        <PropertyProfile
+          user={user}
+          id="property-1"
+          forceVisible={FORCE_VISIBLE}
+        />,
         {
           inspections: shuffle(inspections) // randomized inspections
         }
@@ -299,40 +379,39 @@ describe('Integration | Features | Properties | Profile', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('automatically sorts by descending inspection creation date for mobile users', async () => {
-    const times = [1625244317, 1625244316, 1625244315];
-    const expected = times.map((c) => `${c}`).join(' | ');
+  it('sorts inspections by inspector name 22', async () => {
+    const inspectors = ['matt jensen', 'john wick', 'aaron thompson'];
+    const expected = inspectors.map((c) => `${c.toLowerCase()}`).join(' | ');
     const inspections = deepClone(mockInspections);
-    shuffle(times).forEach((time, i) => {
+    inspectors.forEach((inspector, i) => {
       if (inspections[i]) {
-        inspections[i].creationDate = time;
+        inspections[i].inspectorName = inspector;
       }
     });
 
     await act(async () => {
       const { container } = render(
-        <PropertyProfile user={user} id="property-1" />,
+        <PropertyProfile
+          user={user}
+          id="property-1"
+          forceVisible={FORCE_VISIBLE}
+        />,
         {
-          inspections: shuffle(inspections), // randomized inspections
-          contextWidth: breakpoints.tablet.maxWidth // set to mobile UI
+          inspections: shuffle(inspections) // randomized inspections
         }
       );
 
-      const sortHeaderButton = container.querySelector(
-        '[data-testid=mobile-property-profile-sort-by]'
+      const sortInspector = container.querySelector(
+        '[data-testid=grid-head-inspector-name]'
       );
-      await userEvent.click(sortHeaderButton);
-      await userEvent.click(sortHeaderButton);
-      await userEvent.click(sortHeaderButton);
-      await userEvent.click(sortHeaderButton);
-      await userEvent.click(sortHeaderButton);
+      await userEvent.click(sortInspector);
     });
 
     const propertyItems: Array<HTMLElement> = screen.queryAllByTestId(
-      'property-profile-inspection-list-item-creation-date'
+      'inspection-grid-list-item-creator'
     );
     const actual = propertyItems
-      .map((item) => item.getAttribute('data-time'))
+      .map((item) => item.textContent.trim().toLowerCase())
       .join(' | ');
     expect(actual).toEqual(expected);
   });
