@@ -43,6 +43,7 @@ interface PropertiesModel {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
+  forceVisible?: boolean;
 }
 
 const PropertyProfile: FunctionComponent<PropertiesModel> = ({
@@ -50,7 +51,8 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   id,
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  forceVisible
 }) => {
   const firestore = useFirestore();
   const [inspectionFilter, setInspectionFilter] = useState('');
@@ -189,6 +191,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
                   inspections={sortedInspections}
                   templateCategories={templateCategories}
                   propertyId={id}
+                  forceVisible={forceVisible}
                 />
               )}
             </div>
@@ -251,6 +254,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
                 onSortChange={onSortChange}
                 sortBy={sortBy}
                 sortDir={sortDir}
+                forceVisible={forceVisible}
               />
             ) : (
               <p
@@ -278,7 +282,8 @@ PropertyProfile.defaultProps = {
   isOnline: false,
   isStaging: false,
   isNavOpen: false,
-  toggleNavOpen: () => {} // eslint-disable-line
+  toggleNavOpen: () => {}, // eslint-disable-line
+  forceVisible: false
 };
 
 export default PropertyProfile;

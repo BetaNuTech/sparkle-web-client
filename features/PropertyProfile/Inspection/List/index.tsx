@@ -8,12 +8,14 @@ interface Props {
   propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
+  forceVisible: boolean;
 }
 
 const InspectionList: FunctionComponent<Props> = ({
   propertyId,
   inspections,
-  templateCategories
+  templateCategories,
+  forceVisible
 }) => {
   if (inspections) {
     return (
@@ -27,6 +29,7 @@ const InspectionList: FunctionComponent<Props> = ({
             key={lineItem.id}
             inspection={lineItem}
             templateCategories={templateCategories}
+            forceVisible={forceVisible}
           />
         ))}
       </ul>

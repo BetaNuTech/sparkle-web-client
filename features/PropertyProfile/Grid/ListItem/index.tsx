@@ -1,10 +1,11 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { Doughnut } from 'react-chartjs-2';
 import utilString from '../../../../common/utils/string';
 import utilDate from '../../../../common/utils/date';
 import hasInspectionUpdateActions from '../../utils/hasInspectionUpdateActions';
+import useVisibility from '../../../../common/hooks/useVisibility';
 import userModel from '../../../../common/models/user';
 import inspectionModel from '../../../../common/models/inspection';
 import templateCategoryModel from '../../../../common/models/templateCategory';
@@ -20,6 +21,7 @@ interface ListItemProps {
   propertyId: string;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
+  forceVisible?: boolean;
 }
 
 const ListItem: FunctionComponent<ListItemProps> = ({
@@ -27,10 +29,12 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   inspection,
   propertyId,
   templateCategories,
-  openInspectionDeletePrompt
+  openInspectionDeletePrompt,
+  forceVisible
 }) => {
   // State
 
+  const ref = useRef(null);
   // Data parsing
   const creationDate = inspection.creationDate
     ? utilDate.toUserDateDisplay(inspection.creationDate)
@@ -80,18 +84,22 @@ const ListItem: FunctionComponent<ListItemProps> = ({
 
   // Can user take action on inspection row
   const hasActionColumn = hasInspectionUpdateActions(user);
+  const { isVisible } = useVisibility(ref, {}, forceVisible);
 
   return (
     <li
       className={clsx(styles.propertyProfile__gridRow, '-six-columns')}
       data-testid="inspection-grid-listitem"
+      ref={ref}
     >
-      <Link href={inspectionUpdateUrl}>
-        <a
-          className={styles.propertyProfile__gridRow__column}
-          data-testid="inspection-grid-list-item-creator"
-        >
-          {/*
+      {isVisible ? (
+        <>
+          <Link href={inspectionUpdateUrl}>
+            <a
+              className={styles.propertyProfile__gridRow__column}
+              data-testid="inspection-grid-list-item-creator"
+            >
+              {/*
             <span
             className={clsx(
               styles.propertyProfile__gridRow__avatar,
@@ -101,99 +109,105 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           ></span>
             */}
 
-          {creatorName}
-        </a>
-      </Link>
-      <Link href={inspectionUpdateUrl}>
-        <a
-          className={styles.propertyProfile__gridRow__column}
-          data-testid="inspection-grid-list-item-creation-date"
-          data-time={inspection.creationDate}
-        >
-          {inspection.creationDate ? (
-            <>
-              {creationDate}
-              <br />
-              {creationTime}
-            </>
-          ) : (
-            '--'
-          )}
-        </a>
-      </Link>
-      <Link href={inspectionUpdateUrl}>
-        <a
-          className={styles.propertyProfile__gridRow__column}
-          data-testid="inspection-grid-list-item-update-date"
-        >
-          {inspection.updatedAt ? (
-            <>
-              {updatedDate}
-              <br />
-              {updatedTime}
-            </>
-          ) : (
-            '--'
-          )}
-        </a>
-      </Link>
-      <Link href={inspectionUpdateUrl}>
-        <a
-          className={styles.propertyProfile__gridRow__column}
-          data-testid="inspection-grid-list-item-template"
-        >
-          {templateName}
-        </a>
-      </Link>
-      <Link href={inspectionUpdateUrl}>
-        <a
-          className={styles.propertyProfile__gridRow__column}
-          data-testid="inspection-grid-list-item-template-cat"
-        >
-          {templateCategory}
-        </a>
-      </Link>
-      <Link href={inspectionUpdateUrl}>
-        <a
-          className={clsx(
-            styles.propertyProfile__gridRow__column,
-            inspection.deficienciesExist ? '-c-red' : '-c-blue'
-          )}
-          data-testid="inspection-grid-list-item-score"
-        >
-          {inspection.inspectionCompleted ? (
-            `${scoreDisplay}%`
-          ) : (
-            <Doughnut
-              type="doughnut"
-              className={propertyProfileStyles.__progressChart} // eslint-disable-line
-              data={chartData}
-              options={chartOptions}
-              plugins={[labelPlugin]}
-              width={50}
-              height={50}
-            />
-          )}
-        </a>
-      </Link>
-      {hasActionColumn ? (
-        <div
-          className={styles.propertyProfile__gridRow__column}
-          data-testid="inspection-grid-list-item-actions"
-        >
-          <span className={styles.propertyProfile__gridRow__actions}>
-            <ActionsIcon />
-            <DropdownInspection
-              user={user}
-              propertyId={propertyId}
-              inspectionId={inspection.id}
-              onDeleteClick={() => openInspectionDeletePrompt(inspection)}
-            />
-          </span>
-        </div>
+              {creatorName}
+            </a>
+          </Link>
+          <Link href={inspectionUpdateUrl}>
+            <a
+              className={styles.propertyProfile__gridRow__column}
+              data-testid="inspection-grid-list-item-creation-date"
+              data-time={inspection.creationDate}
+            >
+              {inspection.creationDate ? (
+                <>
+                  {creationDate}
+                  <br />
+                  {creationTime}
+                </>
+              ) : (
+                '--'
+              )}
+            </a>
+          </Link>
+          <Link href={inspectionUpdateUrl}>
+            <a
+              className={styles.propertyProfile__gridRow__column}
+              data-testid="inspection-grid-list-item-update-date"
+            >
+              {inspection.updatedAt ? (
+                <>
+                  {updatedDate}
+                  <br />
+                  {updatedTime}
+                </>
+              ) : (
+                '--'
+              )}
+            </a>
+          </Link>
+          <Link href={inspectionUpdateUrl}>
+            <a
+              className={styles.propertyProfile__gridRow__column}
+              data-testid="inspection-grid-list-item-template"
+            >
+              {templateName}
+            </a>
+          </Link>
+          <Link href={inspectionUpdateUrl}>
+            <a
+              className={styles.propertyProfile__gridRow__column}
+              data-testid="inspection-grid-list-item-template-cat"
+            >
+              {templateCategory}
+            </a>
+          </Link>
+          <Link href={inspectionUpdateUrl}>
+            <a
+              className={clsx(
+                styles.propertyProfile__gridRow__column,
+                inspection.deficienciesExist ? '-c-red' : '-c-blue'
+              )}
+              data-testid="inspection-grid-list-item-score"
+            >
+              {inspection.inspectionCompleted ? (
+                `${scoreDisplay}%`
+              ) : (
+                <Doughnut
+                  type="doughnut"
+                  className={propertyProfileStyles.__progressChart} // eslint-disable-line
+                  data={chartData}
+                  options={chartOptions}
+                  plugins={[labelPlugin]}
+                  width={50}
+                  height={50}
+                />
+              )}
+            </a>
+          </Link>
+          {hasActionColumn ? (
+            <div
+              className={styles.propertyProfile__gridRow__column}
+              data-testid="inspection-grid-list-item-actions"
+            >
+              <span className={styles.propertyProfile__gridRow__actions}>
+                <ActionsIcon />
+                <DropdownInspection
+                  user={user}
+                  propertyId={propertyId}
+                  inspectionId={inspection.id}
+                  onDeleteClick={() => openInspectionDeletePrompt(inspection)}
+                />
+              </span>
+            </div>
+          ) : null}
+        </>
       ) : null}
     </li>
   );
+};
+
+ListItem.defaultProps = {
+  forceVisible: false
 };
 
 export default ListItem;

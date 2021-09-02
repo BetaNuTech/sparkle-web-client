@@ -101,5 +101,6 @@
 
   &__listItem {
     @extend %stickyBoundingBoxReveal;
+    min-height: rem-calc(112);
   }
 }

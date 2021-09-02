@@ -7,13 +7,15 @@ interface Props {
   propertyId: string;
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
+  forceVisible: boolean;
   isMobile?: boolean;
 }
 
 const Inspection: FunctionComponent<Props> = ({
   propertyId,
   inspections,
-  templateCategories
+  templateCategories,
+  forceVisible
 }) => {
   if (inspections) {
     return (
@@ -21,6 +23,7 @@ const Inspection: FunctionComponent<Props> = ({
         propertyId={propertyId}
         inspections={inspections}
         templateCategories={templateCategories}
+        forceVisible={forceVisible}
       />
     );
   }
