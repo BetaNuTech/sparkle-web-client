@@ -49,27 +49,23 @@ export default {
     let error = null;
     let data = [];
 
-    // If we do not have any ids,
-    // do not call firestore query
-    if (ids.length > 0) {
-      const query = firestore
-        .collection(fbCollections.properties)
-        .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
+    const query = firestore
+      .collection(fbCollections.properties)
+      .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
 
-      const {
-        status: queryStatus,
-        error: queryError,
-        data: queryData = []
-      } = useFirestoreCollectionData(query, {
-        idField: 'id'
-      });
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData = []
+    } = useFirestoreCollectionData(query, {
+      idField: 'id'
+    });
 
-      status = queryStatus;
-      error = queryError;
+    status = queryStatus;
+    error = queryError;
 
-      // Cast firestore data into property records
-      data = queryData.map((itemData: any) => itemData as propertyModel);
-    }
+    // Cast firestore data into property records
+    data = queryData.map((itemData: any) => itemData as propertyModel);
 
     // Result
     return { status, error, data };

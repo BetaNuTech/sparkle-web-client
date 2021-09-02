@@ -1,0 +1,56 @@
+@import '../../../styles/index.scss';
+
+.reasignInspection {
+  &__headerActions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__button {
+    width: rem-calc(100);
+    height: rem-calc(50);
+    display: block;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: $global-radius;
+    background: transparent;
+    color: $white;
+    border: none;
+    text-align: center;
+    line-height: $global-lg-padding;
+    cursor: pointer;
+    font-size: $paragraph-aside-font-size;
+
+    &__done {
+      @extend .reasignInspection__button;
+    }
+
+    &__cancel {
+      @extend .reasignInspection__button;
+      position: absolute;
+      left: rem-calc(250);
+    }
+
+    &__done:disabled {
+      @extend .reasignInspection__button;
+      opacity: $button-opacity-disabled;
+    }
+  }
+
+  &__titleContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: $global-md-padding;
+  }
+
+  &__propertyName {
+    color: $gray-6;
+  }
+
+  &__selectedProperty {
+    color: $primary-color;
+  }
+}

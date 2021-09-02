@@ -1,32 +1,35 @@
 import { useEffect, useState } from 'react';
-import propertyModel from '../models/property';
-import propertiesDb, { propertyResult } from '../services/firestore/properties';
+import inspectionDb, {
+  propertyResult as inspectionResult
+} from '../services/firestore/inspections';
+import inspectionModel from '../models/inspection';
 
-interface usePropertiesResult extends propertyResult {
+interface useInspectionResult extends inspectionResult {
   memo: string;
-  handlers: any;
+  data: any;
 }
 
 // Actions
 const handlers = {};
 
-// Hooks for all user's properties based on roll
-export default function useProperties(
+// Hooks for loading an inspection by id
+export default function usePropertyInspections(
   firestore: any, // eslint-disable-line
-  propertyId: string
-): usePropertiesResult {
+  inspectionId: string
+): useInspectionResult {
   const [memo, setMemo] = useState('{}');
 
-  // No access payload
+  // No inspection payload
   const payload = {
     status: 'loading',
     error: null,
-    data: {} as propertyModel,
+    data: {} as inspectionModel,
     handlers,
     memo
   };
 
-  const result = propertiesDb.findRecord(firestore, propertyId);
+  // Load a single inspection
+  const result = inspectionDb.findRecord(firestore, inspectionId);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

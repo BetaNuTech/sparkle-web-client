@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import templatesApi, {
+import templatesDb, {
   templatesCollectionResult
 } from '../services/firestore/templates';
 
@@ -27,7 +27,7 @@ export default function usePropertyTemplates(
   };
 
   // Load all templates related to single property
-  const result = templatesApi.findAll(firestore);
+  const result = templatesDb.findAll(firestore);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

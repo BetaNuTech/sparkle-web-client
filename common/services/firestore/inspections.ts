@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { useFirestoreCollectionData } from 'reactfire';
+import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
 import inspectionModel from '../../models/inspection';
 
@@ -20,6 +20,36 @@ export interface propertyResult {
 }
 
 export default {
+  // Lookup inspection by id
+  findRecord(
+    firestore: firebase.firestore.Firestore,
+    inspectionId: string
+  ): propertyResult {
+    let status = 'success';
+    let error = null;
+    let data = {} as inspectionModel;
+
+    const docRef = firestore
+      .collection(fbCollections.inspections)
+      .doc(inspectionId);
+
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData
+    } = useFirestoreDocData(docRef, {
+      idField: 'id'
+    });
+
+    status = queryStatus;
+    error = queryError;
+    // Cast firestore data into property records
+    data = queryData as inspectionModel;
+
+    // Result
+    return { status, error, data };
+  },
+
   // Lookup property inspections by property id
   queryByProperty(
     firestore: firebase.firestore.Firestore,

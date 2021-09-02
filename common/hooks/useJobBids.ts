@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import bidsApi, { bidsCollectionResult } from '../services/firestore/bids';
+import bidsDb, { bidsCollectionResult } from '../services/firestore/bids';
 
 interface useJobsBidsResult extends bidsCollectionResult {
   memo: string;
@@ -26,7 +26,7 @@ export default function useJobsBids(
   };
 
   // Load all bids related to single job
-  const result = bidsApi.queryByJob(firestore, jobId);
+  const result = bidsDb.queryByJob(firestore, jobId);
   Object.assign(payload, result, { handlers });
 
   // Notify of updates

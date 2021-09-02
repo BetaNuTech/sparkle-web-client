@@ -1,0 +1,66 @@
+@import '../../../../styles/index.scss';
+
+.reasignInspection {
+  &__list {
+    list-style: none;
+    padding: 0;
+  }
+
+  &__items {
+    padding: 0;
+    border-bottom: 1px solid $gray-light-3;
+
+    &__input {
+      display: none;
+    }
+
+    &__label {
+      width: 100%;
+      margin-left: 0;
+      padding: $global-sm-padding;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: rem-calc(15);
+      cursor: pointer;
+
+      &__text {
+        display: inline-block;
+        width: 90%;
+        height: 100%;
+        font-size: $medium-font-size;
+      }
+    }
+
+    &__input + &__label {
+      margin-left: 0;
+    }
+
+    &__input:checked + &__label {
+      background-color: $gray-lighter;
+    }
+
+    &__input:checked + &__label__notChequedIcon {
+      margin-left: 0;
+      display: none;
+    }
+  }
+
+  &__box {
+    @extend %stickyBoundingBox;
+
+    &__list {
+      @extend %profile-list;
+
+      &Item {
+        @extend %stickyBoundingBox--listItem;
+      }
+    }
+
+    &__header {
+      @extend %stickyBoundingBox--header;
+      padding: $global-xsm-padding;
+      background-color: $gray-dark;
+    }
+  }
+}

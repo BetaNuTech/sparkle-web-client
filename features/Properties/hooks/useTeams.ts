@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import errorReports from '../../../common/services/api/errorReports';
 import userModel from '../../../common/models/user';
-import teamsModel from '../../../common/models/team';
 import { getLevelName, getTeams } from '../../../common/utils/userPermissions';
 import teamsApi, {
   teamsCollectionResult

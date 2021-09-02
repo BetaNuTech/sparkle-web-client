@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import jobModel from '../models/job';
-import jobsApi, { jobResult } from '../services/firestore/jobs';
+import jobsDb, { jobResult } from '../services/firestore/jobs';
 
 interface useJobResult extends jobResult {
   memo: string;
@@ -26,10 +26,14 @@ export default function useJobRecord(
     memo
   };
 
-  const result = jobsApi.findRecord(firestore, jobId);
+  const result = jobsDb.findRecord(firestore, jobId);
 
   if (jobId === 'new') {
-    Object.assign(payload, { data: {}, status: 'success', error: null }, { handlers });
+    Object.assign(
+      payload,
+      { data: {}, status: 'success', error: null },
+      { handlers }
+    );
   } else {
     Object.assign(payload, result, { handlers });
   }

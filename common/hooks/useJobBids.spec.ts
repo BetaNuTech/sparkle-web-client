@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useJobBids from './useJobBids';
-import bidsApi from '../services/firestore/bids';
+import bidsDb from '../services/firestore/bids';
 
 const emptyCollectionResult = {
   status: 'success',
@@ -15,7 +15,7 @@ describe('Unit | Features | Jobs Bids | Hooks | Use Job Bids', () => {
   test('should request job bids associated with a job', () => {
     const expected = 'bid-1';
     const queryByJob = sinon
-      .stub(bidsApi, 'queryByJob')
+      .stub(bidsDb, 'queryByJob')
       .returns(emptyCollectionResult);
     renderHook(() => useJobBids({}, expected));
 
