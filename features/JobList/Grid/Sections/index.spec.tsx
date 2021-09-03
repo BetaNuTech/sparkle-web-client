@@ -3,11 +3,16 @@ import {
   openImprovementJob,
   approvedImprovementJob
 } from '../../../../__mocks__/jobs';
+import stubIntersectionObserver from '../../../../__tests__/helpers/stubIntersectionObserver';
 import configJobs from '../../../../config/jobs';
 import { colors } from '../../index';
 import Section from './index';
 
+const FORCE_VISIBLE = true;
+
 describe('Unit | Features | Job List | Grid | Sections', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should match title of the section', () => {
     const props = {
       title: 'my section',
@@ -15,7 +20,8 @@ describe('Unit | Features | Job List | Grid | Sections', () => {
       jobs: [openImprovementJob, approvedImprovementJob],
       colors,
       configJobs,
-      jobState: openImprovementJob.state
+      jobState: openImprovementJob.state,
+      forceVisible: FORCE_VISIBLE
     };
     render(<Section {...props} />);
 
@@ -31,7 +37,8 @@ describe('Unit | Features | Job List | Grid | Sections', () => {
       jobs: [openImprovementJob, approvedImprovementJob],
       colors,
       configJobs,
-      jobState: openImprovementJob.state
+      jobState: openImprovementJob.state,
+      forceVisible: FORCE_VISIBLE
     };
     render(<Section {...props} />);
 
@@ -47,7 +54,8 @@ describe('Unit | Features | Job List | Grid | Sections', () => {
       jobs: [],
       colors,
       configJobs,
-      jobState: ''
+      jobState: '',
+      forceVisible: FORCE_VISIBLE
     };
     render(<Section {...props} />);
 

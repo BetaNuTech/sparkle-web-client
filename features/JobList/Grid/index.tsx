@@ -16,6 +16,7 @@ interface Props {
   sortDir?: string;
   searchParam?: string;
   filterState?: string;
+  forceVisible?: boolean;
 }
 
 const Grid: FunctionComponent<Props> = ({
@@ -28,7 +29,8 @@ const Grid: FunctionComponent<Props> = ({
   onSearchKeyDown,
   colors,
   configJobs,
-  filterState
+  filterState,
+  forceVisible
 }) => {
   const { sections } = useJobSections(jobs, filterState);
   const hasNoJobs = sections.filter((s) => s.jobs.length > 0).length === 0;
@@ -61,6 +63,7 @@ const Grid: FunctionComponent<Props> = ({
                   colors={colors}
                   configJobs={configJobs}
                   jobState={s.state}
+                  forceVisible={forceVisible}
                 />
               ))}
             </ul>
@@ -69,6 +72,10 @@ const Grid: FunctionComponent<Props> = ({
       )}
     </div>
   );
+};
+
+Grid.defaultProps = {
+  forceVisible: false
 };
 
 export default Grid;

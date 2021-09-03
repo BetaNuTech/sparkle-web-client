@@ -2,11 +2,14 @@ import { render, screen } from '@testing-library/react';
 import { openImprovementJob } from '../../../__mocks__/jobs';
 import bids, { approvedBid, openBid } from '../../../__mocks__/bids';
 import deepClone from '../../../__tests__/helpers/deepClone';
+import stubIntersectionObserver from '../../../__tests__/helpers/stubIntersectionObserver';
 import configBids from '../../../config/bids';
 import { colors } from '../index';
 import BidSections from './index';
 
 describe('Unit | Features | Job Bid List | Grid', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should have title for each section', () => {
     const props = {
       job: openImprovementJob,

@@ -36,6 +36,7 @@
     display: flex;
     border-bottom: 1px solid $gray-lighter;
     position: relative;
+    min-height: rem-calc(80);
 
     &__link {
       display: flex;

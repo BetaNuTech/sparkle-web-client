@@ -5,19 +5,25 @@ import {
   openMaintenanceJob
 } from '../../../../__mocks__/jobs';
 import deepClone from '../../../../__tests__/helpers/deepClone';
+import stubIntersectionObserver from '../../../../__tests__/helpers/stubIntersectionObserver';
 import formats from '../../../../config/formats';
 import configJobs from '../../../../config/jobs';
 import { colors } from '../../index';
 import Item from './index';
 
+const FORCE_VISIBLE = true;
+
 describe('Unit | Features | Job List | Grid | Item', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should show titelize type of job', () => {
     const expected = 'Improvement';
     const props = {
       job: deepClone(openImprovementJob),
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     props.job.type = 'improvement';
     render(<Item {...props} />);
@@ -32,7 +38,8 @@ describe('Unit | Features | Job List | Grid | Item', () => {
       job: deepClone(openImprovementJob),
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     props.job.createdAt = 1626736443;
 
@@ -52,7 +59,8 @@ describe('Unit | Features | Job List | Grid | Item', () => {
       job: deepClone(openImprovementJob),
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     props.job.updatedAt = 1626736443;
 
@@ -81,7 +89,8 @@ describe('Unit | Features | Job List | Grid | Item', () => {
             maintenance: 'info'
           }
         }
-      })
+      }),
+      forceVisible: FORCE_VISIBLE
     };
 
     render(<Item {...props} />);
@@ -105,7 +114,8 @@ describe('Unit | Features | Job List | Grid | Item', () => {
             maintenance: 'orange'
           }
         }
-      })
+      }),
+      forceVisible: FORCE_VISIBLE
     };
 
     render(<Item {...props} />);

@@ -1,5 +1,4 @@
 import bidModel from '../common/models/bid';
-import bidAttachmentModel from '../common/models/bidAttachment';
 
 export const openBid: bidModel = {
   id: 'bid-1',

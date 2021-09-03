@@ -23,6 +23,7 @@ interface Props {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
+  forceVisible?: boolean;
 }
 
 const colors = {
@@ -40,7 +41,8 @@ const JobList: FunctionComponent<Props> = ({
   propertyId,
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  forceVisible
 }) => {
   const firestore = useFirestore();
 
@@ -96,6 +98,7 @@ const JobList: FunctionComponent<Props> = ({
           sortBy={sortBy}
           onSearchKeyDown={onSearchKeyDown}
           searchParam={searchParam}
+          forceVisible={forceVisible}
         />
       )}
 
@@ -122,6 +125,7 @@ const JobList: FunctionComponent<Props> = ({
             colors={colors}
             configJobs={configJobs}
             filterState={filterState}
+            forceVisible={forceVisible}
           />
         </div>
       )}
@@ -133,7 +137,8 @@ JobList.defaultProps = {
   isOnline: false,
   isStaging: false,
   isNavOpen: false,
-  toggleNavOpen: () => {} // eslint-disable-line
+  toggleNavOpen: () => {}, // eslint-disable-line
+  forceVisible: false
 };
 
 export { colors };

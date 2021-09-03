@@ -12,6 +12,7 @@ interface Props {
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
   jobState?: string;
+  forceVisible?: boolean;
 }
 
 const Section: FunctionComponent<Props> = ({
@@ -21,7 +22,8 @@ const Section: FunctionComponent<Props> = ({
   searchParam,
   colors,
   configJobs,
-  jobState
+  jobState,
+  forceVisible
 }) => (
   <li className={styles.propertyJobs__gridTitle} data-testid="job-section-main">
     <header
@@ -46,6 +48,7 @@ const Section: FunctionComponent<Props> = ({
             propertyId={propertyId}
             colors={colors}
             configJobs={configJobs}
+            forceVisible={forceVisible}
           />
         ))}
       </ul>
@@ -59,5 +62,9 @@ const Section: FunctionComponent<Props> = ({
     )}
   </li>
 );
+
+Section.defaultProps = {
+  forceVisible: false
+};
 
 export default Section;

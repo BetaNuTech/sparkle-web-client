@@ -12,6 +12,7 @@ interface Props {
   title?: string;
   state?: string;
   searchParam?: string;
+  forceVisible?: boolean;
 }
 
 const Section: FunctionComponent<Props> = ({
@@ -21,7 +22,8 @@ const Section: FunctionComponent<Props> = ({
   configJobs,
   jobs,
   propertyId,
-  searchParam
+  searchParam,
+  forceVisible
 }) => (
   <li className={styles.jobList__box__listItem} data-testid="job-section-main">
     <header
@@ -42,6 +44,7 @@ const Section: FunctionComponent<Props> = ({
             propertyId={propertyId}
             colors={colors}
             configJobs={configJobs}
+            forceVisible={forceVisible}
           />
         ))}
       </ul>
@@ -55,5 +58,9 @@ const Section: FunctionComponent<Props> = ({
     )}
   </li>
 );
+
+Section.defaultProps = {
+  forceVisible: false
+};
 
 export default Section;

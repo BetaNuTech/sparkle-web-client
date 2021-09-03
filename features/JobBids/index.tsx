@@ -22,6 +22,7 @@ interface Props {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
+  forceVisible?: boolean;
 }
 
 const colors = {
@@ -39,7 +40,8 @@ const JobBids: FunctionComponent<Props> = ({
   jobId,
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  forceVisible
 }) => {
   const firestore = useFirestore();
 
@@ -88,6 +90,7 @@ const JobBids: FunctionComponent<Props> = ({
           propertyId={propertyId}
           colors={colors}
           configBids={configBids}
+          forceVisible={forceVisible}
         />
       )}
 
@@ -114,6 +117,7 @@ const JobBids: FunctionComponent<Props> = ({
             colors={colors}
             configBids={configBids}
             filterState={filterState}
+            forceVisible={forceVisible}
           />
         </>
       )}
@@ -121,7 +125,9 @@ const JobBids: FunctionComponent<Props> = ({
   );
 };
 
-JobBids.defaultProps = {};
+JobBids.defaultProps = {
+  forceVisible: false
+};
 
 export { colors };
 export default JobBids;

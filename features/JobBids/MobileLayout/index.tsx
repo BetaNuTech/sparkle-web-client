@@ -19,6 +19,7 @@ interface Props {
   propertyId: string;
   colors: Record<string, string>;
   configBids: Record<string, Record<string, string>>;
+  forceVisible?: boolean;
 }
 
 // Mobile layout
@@ -30,7 +31,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   bids,
   propertyId,
   colors,
-  configBids
+  configBids,
+  forceVisible
 }) => {
   const newBidLink = `/properties/${propertyId}/jobs/${job.id}/bids/new`;
   const jobListLink = `/properties/${propertyId}/jobs`;
@@ -67,9 +69,14 @@ const MobileLayout: FunctionComponent<Props> = ({
         propertyId={propertyId}
         colors={colors}
         configBids={configBids}
+        forceVisible={forceVisible}
       />
     </>
   );
+};
+
+MobileLayout.defaultProps = {
+  forceVisible: false
 };
 
 export default MobileLayout;

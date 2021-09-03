@@ -12,6 +12,7 @@ interface Props {
   colors: Record<string, string>;
   configBids: Record<string, Record<string, string>>;
   searchParam?: string;
+  forceVisible?: boolean;
 }
 
 const BidSections: FunctionComponent<Props> = ({
@@ -19,7 +20,8 @@ const BidSections: FunctionComponent<Props> = ({
   bids,
   propertyId,
   colors,
-  configBids
+  configBids,
+  forceVisible
 }) => {
   const { sections } = useBidSections(bids, '');
   return (
@@ -35,11 +37,16 @@ const BidSections: FunctionComponent<Props> = ({
             propertyId={propertyId}
             colors={colors}
             configBids={configBids}
+            forceVisible={forceVisible}
           />
         ))}
       </ul>
     </div>
   );
+};
+
+BidSections.defaultProps = {
+  forceVisible: false
 };
 
 export default BidSections;

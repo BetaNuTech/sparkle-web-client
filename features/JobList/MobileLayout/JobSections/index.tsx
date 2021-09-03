@@ -10,6 +10,7 @@ interface Props {
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
   searchParam?: string;
+  forceVisible?: boolean;
 }
 
 const JobSections: FunctionComponent<Props> = ({
@@ -17,7 +18,8 @@ const JobSections: FunctionComponent<Props> = ({
   propertyId,
   colors,
   configJobs,
-  searchParam
+  searchParam,
+  forceVisible
 }) => {
   const { sections } = useJobSections(jobs, '');
 
@@ -34,11 +36,16 @@ const JobSections: FunctionComponent<Props> = ({
             colors={colors}
             configJobs={configJobs}
             searchParam={searchParam}
+            forceVisible={forceVisible}
           />
         ))}
       </ul>
     </div>
   );
+};
+
+JobSections.defaultProps = {
+  forceVisible: false
 };
 
 export default JobSections;

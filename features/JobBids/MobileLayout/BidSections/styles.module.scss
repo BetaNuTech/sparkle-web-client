@@ -37,6 +37,7 @@
     display: flex;
     padding: rem-calc(8) rem-calc(16);
     border-bottom: 1px solid $gray-lighter;
+    min-height: rem-calc(48);
 
     &__link {
       display: flex;
