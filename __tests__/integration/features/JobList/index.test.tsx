@@ -21,6 +21,7 @@ import mockJobs, {
   completeImprovementJob,
   completeMaintenanceJob
 } from '../../../../__mocks__/jobs';
+import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import JobList from '../../../../features/JobList';
 import { activeJobSortFilter } from '../../../../features/JobList/utils/jobSorting';
 import propertiesApi, {
@@ -34,6 +35,8 @@ import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 import utilDate from '../../../../common/utils/date';
 import utilString from '../../../../common/utils/string';
+
+const FORCE_VISIBLE = true;
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
@@ -75,10 +78,19 @@ function render(ui: any, options: any = {}) {
 }
 
 describe('Integration | Features | Job List', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('renders only mobile content for mobile devices', () => {
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
     const desktopHeader = screen.queryByTestId('joblist-header');
     const desktopGrid = screen.queryByTestId('joblist-grid-main');
 
@@ -93,9 +105,16 @@ describe('Integration | Features | Job List', () => {
   });
 
   it('renders only desktop content for desktop devices', () => {
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
     const desktopHeader = screen.queryByTestId('joblist-header');
     const desktopGrid = screen.queryByTestId('joblist-grid-main');
 
@@ -114,9 +133,16 @@ describe('Integration | Features | Job List', () => {
     const expected =
       // eslint-disable-next-line max-len
       'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -145,9 +171,16 @@ describe('Integration | Features | Job List', () => {
     const expected =
       // eslint-disable-next-line max-len
       'Open: Swimming pool cleaning | Approved: Solar roof fitting | Under Contract: Water Tank cleaning | Completed: Wifi Installation';
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-title');
@@ -195,9 +228,16 @@ describe('Integration | Features | Job List', () => {
         completeMaintenanceJob.createdAt
       )}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-created');
@@ -243,9 +283,16 @@ describe('Integration | Features | Job List', () => {
         completeImprovementJob.createdAt
       )}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-created');
@@ -295,9 +342,16 @@ describe('Integration | Features | Job List', () => {
         completeMaintenanceJob.updatedAt
       )}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-updated');
@@ -343,9 +397,16 @@ describe('Integration | Features | Job List', () => {
         completeImprovementJob.updatedAt
       )}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-updated');
@@ -387,9 +448,16 @@ describe('Integration | Features | Job List', () => {
       `Under Contract: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-type');
@@ -431,9 +499,16 @@ describe('Integration | Features | Job List', () => {
       `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('grid-head-job-type');
@@ -474,9 +549,16 @@ describe('Integration | Features | Job List', () => {
     const expected =
       // eslint-disable-next-line max-len
       'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.mobile.maxWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.mobile.maxWidth
+      }
+    );
 
     // Get all sections in table
     const sections = screen.queryAllByTestId('job-section-main');
@@ -523,9 +605,16 @@ describe('Integration | Features | Job List', () => {
         completeMaintenanceJob.updatedAt
       )}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('mobile-header-sort');
@@ -582,9 +671,16 @@ describe('Integration | Features | Job List', () => {
         completeMaintenanceJob.createdAt
       )}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('mobile-header-sort');
@@ -635,9 +731,16 @@ describe('Integration | Features | Job List', () => {
       `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeImprovementJob.type)}`
     ].join(' | ');
-    render(<JobList user={user} propertyId="property-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     // Header sort button
     const titleButton = screen.queryByTestId('mobile-header-sort');
@@ -689,7 +792,11 @@ describe('Integration | Features | Job List', () => {
     ].join(' | ');
 
     const { container } = render(
-      <JobList user={user} propertyId="property-1" />,
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
       {
         contextWidth: breakpoints.desktop.minWidth
       }
@@ -739,7 +846,11 @@ describe('Integration | Features | Job List', () => {
       'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning';
 
     const { container } = render(
-      <JobList user={user} propertyId="property-1" />,
+      <JobList
+        user={user}
+        propertyId="property-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
       {
         contextWidth: breakpoints.desktop.minWidth
       }

@@ -1,11 +1,16 @@
 import { render, screen } from '@testing-library/react';
 import { openBid, approvedBid } from '../../../../../__mocks__/bids';
 import { openImprovementJob } from '../../../../../__mocks__/jobs';
+import stubIntersectionObserver from '../../../../../__tests__/helpers/stubIntersectionObserver';
 import configBids from '../../../../../config/bids';
 import { colors } from '../../../index';
 import Section from './index';
 
+const FORCE_VISIBLE = true;
+
 describe('Unit | Features | Job Bid List | Mobile Layout | Bid Sections | Section', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should match title of the section', () => {
     const props = {
       title: 'my section',
@@ -13,7 +18,8 @@ describe('Unit | Features | Job Bid List | Mobile Layout | Bid Sections | Sectio
       job: openImprovementJob,
       bids: [openBid, approvedBid],
       colors,
-      configBids
+      configBids,
+      forceVisible: FORCE_VISIBLE
     };
     render(<Section {...props} />);
 
@@ -29,7 +35,8 @@ describe('Unit | Features | Job Bid List | Mobile Layout | Bid Sections | Sectio
       job: openImprovementJob,
       bids: [openBid, approvedBid],
       colors,
-      configBids
+      configBids,
+      forceVisible: FORCE_VISIBLE
     };
     render(<Section {...props} />);
 
@@ -45,7 +52,8 @@ describe('Unit | Features | Job Bid List | Mobile Layout | Bid Sections | Sectio
       job: openImprovementJob,
       bids: [],
       colors,
-      configBids
+      configBids,
+      forceVisible: FORCE_VISIBLE
     };
     render(<Section {...props} />);
 

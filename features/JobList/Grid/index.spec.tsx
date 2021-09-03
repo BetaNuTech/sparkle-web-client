@@ -5,17 +5,23 @@ import {
   authorizedImprovementJob
 } from '../../../__mocks__/jobs';
 import deepClone from '../../../__tests__/helpers/deepClone';
+import stubIntersectionObserver from '../../../__tests__/helpers/stubIntersectionObserver';
 import configJobs from '../../../config/jobs';
 import { colors } from '../index';
 import JobSections from './index';
 
+const FORCE_VISIBLE = true;
+
 describe('Unit | Features | Job List | Grid', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should have title for each section', () => {
     const props = {
       jobs: [openImprovementJob, approvedImprovementJob],
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     render(<JobSections {...props} />);
 
@@ -33,7 +39,8 @@ describe('Unit | Features | Job List | Grid', () => {
       ],
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     render(<JobSections {...props} />);
 
@@ -51,7 +58,8 @@ describe('Unit | Features | Job List | Grid', () => {
       ],
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     render(<JobSections {...props} />);
 
@@ -65,7 +73,8 @@ describe('Unit | Features | Job List | Grid', () => {
       jobs: [],
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     render(<JobSections {...props} />);
 
@@ -95,7 +104,8 @@ describe('Unit | Features | Job List | Grid', () => {
             complete: 'orange'
           }
         }
-      })
+      }),
+      forceVisible: FORCE_VISIBLE
     };
 
     render(<JobSections {...props} />);

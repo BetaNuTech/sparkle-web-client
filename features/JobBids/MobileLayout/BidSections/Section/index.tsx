@@ -13,6 +13,7 @@ interface Props {
   configBids: Record<string, Record<string, string>>;
   title?: string;
   state?: string;
+  forceVisible?: boolean;
 }
 
 const Section: FunctionComponent<Props> = ({
@@ -22,7 +23,8 @@ const Section: FunctionComponent<Props> = ({
   colors,
   configBids,
   bids,
-  propertyId
+  propertyId,
+  forceVisible
 }) => (
   <li className={styles.bidList__box__listItem} data-testid="bid-section-main">
     <header
@@ -37,7 +39,13 @@ const Section: FunctionComponent<Props> = ({
     {bids.length > 0 ? (
       <ul className={styles.bidList__category} data-testid="bid-section-items">
         {bids.map((bid) => (
-          <Item key={`${bid.id}`} job={job} bid={bid} propertyId={propertyId} />
+          <Item
+            key={`${bid.id}`}
+            job={job}
+            bid={bid}
+            propertyId={propertyId}
+            forceVisible={forceVisible}
+          />
         ))}
       </ul>
     ) : (
@@ -50,5 +58,9 @@ const Section: FunctionComponent<Props> = ({
     )}
   </li>
 );
+
+Section.defaultProps = {
+  forceVisible: false
+};
 
 export default Section;

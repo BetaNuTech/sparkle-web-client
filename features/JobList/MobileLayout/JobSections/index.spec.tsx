@@ -4,18 +4,24 @@ import {
   approvedImprovementJob,
   authorizedImprovementJob
 } from '../../../../__mocks__/jobs';
+import stubIntersectionObserver from '../../../../__tests__/helpers/stubIntersectionObserver';
 import configJobs from '../../../../config/jobs';
 import deepClone from '../../../../__tests__/helpers/deepClone';
 import { colors } from '../../index';
 import JobSections from './index';
 
+const FORCE_VISIBLE = true;
+
 describe('Unit | Features | Job List | Mobile Layout | Job Sections', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should have title for each section', () => {
     const props = {
       jobs: [openImprovementJob, approvedImprovementJob],
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     render(<JobSections {...props} />);
 
@@ -33,7 +39,8 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections', () => {
       ],
       propertyId: 'property-1',
       colors,
-      configJobs
+      configJobs,
+      forceVisible: FORCE_VISIBLE
     };
     render(<JobSections {...props} />);
 
@@ -61,7 +68,8 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections', () => {
             complete: 'orange'
           }
         }
-      })
+      }),
+      forceVisible: FORCE_VISIBLE
     };
 
     render(<JobSections {...props} />);

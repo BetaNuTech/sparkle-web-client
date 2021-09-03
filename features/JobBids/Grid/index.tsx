@@ -16,6 +16,7 @@ interface Props {
   colors: Record<string, string>;
   configBids: Record<string, Record<string, string>>;
   filterState?: string;
+  forceVisible?: boolean;
 }
 
 const Grid: FunctionComponent<Props> = ({
@@ -27,7 +28,8 @@ const Grid: FunctionComponent<Props> = ({
   propertyId,
   colors,
   configBids,
-  filterState
+  filterState,
+  forceVisible
 }) => {
   const { sections } = useBidSections(bids, filterState);
   const hasNoBids = sections.filter((s) => s.bids.length > 0).length === 0;
@@ -61,6 +63,7 @@ const Grid: FunctionComponent<Props> = ({
                   colors={colors}
                   configBids={configBids}
                   bidState={s.state}
+                  forceVisible={forceVisible}
                 />
               ))}
             </ul>
@@ -69,6 +72,10 @@ const Grid: FunctionComponent<Props> = ({
       )}
     </div>
   );
+};
+
+Grid.defaultProps = {
+  forceVisible: false
 };
 
 export default Grid;

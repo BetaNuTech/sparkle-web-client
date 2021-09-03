@@ -20,9 +20,10 @@ interface Props {
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string>>;
   onSortChange?(): void;
-  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>):  void;
+  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
   sortBy?: string;
   searchParam?: string;
+  forceVisible?: boolean;
 }
 
 // Mobile layout
@@ -38,7 +39,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   onSortChange,
   onSearchKeyDown,
   sortBy,
-  searchParam
+  searchParam,
+  forceVisible
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -90,9 +92,14 @@ const MobileLayout: FunctionComponent<Props> = ({
         colors={colors}
         configJobs={configJobs}
         searchParam={searchParam}
+        forceVisible={forceVisible}
       />
     </>
   );
+};
+
+MobileLayout.defaultProps = {
+  forceVisible: false
 };
 
 export default MobileLayout;

@@ -8,6 +8,7 @@ import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import { openImprovementJob } from '../../../../__mocks__/jobs';
 import mockBids from '../../../../__mocks__/bids';
+import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import JobBids from '../../../../features/JobBids';
 import propertiesApi, {
   propertyResult
@@ -67,7 +68,11 @@ function render(ui: any, options: any = {}) {
   );
 }
 
+const FORCE_VISIBLE = true;
+
 describe('Integration | Features | Job Bids', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('shows loading text until the property is loaded', () => {
     const expected = 'Loading Bids';
 
@@ -109,7 +114,12 @@ describe('Integration | Features | Job Bids', () => {
       'Open: Rob Playground';
 
     const { container } = render(
-      <JobBids user={user} propertyId="property-1" jobId="job-1" />,
+      <JobBids
+        user={user}
+        propertyId="property-1"
+        jobId="job-1"
+        forceVisible={FORCE_VISIBLE}
+      />,
       {
         contextWidth: breakpoints.desktop.minWidth
       }
