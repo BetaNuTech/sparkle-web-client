@@ -1,6 +1,11 @@
 import { useRef, FunctionComponent, ChangeEvent } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useForm, UseFormRegister, FormState } from 'react-hook-form';
+import {
+  useForm,
+  UseFormRegister,
+  FormState,
+  UseFormSetValue
+} from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
@@ -12,20 +17,25 @@ import bidModel from '../../../common/models/bid';
 import userModel from '../../../common/models/user';
 import attachmentModel from '../../../common/models/attachments';
 import MobileHeader from '../../../common/MobileHeader';
+import Dropdown, { DropdownButton } from '../../../common/Dropdown';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
 import utilString from '../../../common/utils/string';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
 import AddIcon from '../../../public/icons/ios/add.svg';
+import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import { JobApiResult } from '../hooks/useJobForm';
 import DropdownHeader from '../DropdownHeader';
 import DropdownAttachment from '../DropdownAttachment';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
+import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
+
+type userNotifications = (message: string, options?: any) => any;
 
 interface Props {
   user: userModel;
@@ -47,6 +57,9 @@ interface Props {
   isDeleteAttachmentPromptVisible: boolean;
   confirmAttachmentDelete(): Promise<any>;
   deleteAtachmentLoading: boolean;
+  sendNotification: userNotifications;
+  setDeleteTrelloCardPromptVisible(newState: boolean): void;
+  isDeleteTrelloCardPromptVisible: boolean;
 }
 
 type Inputs = {
@@ -55,6 +68,7 @@ type Inputs = {
   scopeOfWork: string;
   type: string;
   action: string;
+  trelloCardURL: string;
 };
 
 interface LayoutProps {
@@ -75,6 +89,9 @@ interface LayoutProps {
   isUploadingFile: boolean;
   jobAttachment: attachmentModel;
   setDeleteAttachmentPromptVisible(newState: boolean): void;
+  sendNotification?: userNotifications;
+  setValue?: UseFormSetValue<Inputs>;
+  setDeleteTrelloCardPromptVisible(newState: boolean): void;
 }
 
 const Layout: FunctionComponent<LayoutProps> = ({
@@ -94,7 +111,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
   onFileChange,
   isUploadingFile,
   jobAttachment,
-  setDeleteAttachmentPromptVisible
+  setDeleteAttachmentPromptVisible,
+  sendNotification,
+  setValue,
+  setDeleteTrelloCardPromptVisible
 }) => {
   const apiErrors =
     apiState.statusCode === 400 && apiState.response.errors
@@ -115,6 +135,34 @@ const Layout: FunctionComponent<LayoutProps> = ({
     setDeleteAttachmentPromptVisible(true);
   };
 
+  const openTrelloCardDeletePrompt = () => {
+    setDeleteTrelloCardPromptVisible(true);
+  };
+
+  const openTrelloCardInputPrompt = (oldTrellCardURL?: string) => {
+    const trelloCardURL = prompt(
+      'Enter job trello card link.',
+      oldTrellCardURL
+    );
+
+    if (trelloCardURL) {
+      const regExp = /https:\/\/trello\.com\/c\/\w+(?:\/[a-zA-Z0-9-]*)?/;
+      // If reg ex matches then send update request
+      if (regExp.test(trelloCardURL)) {
+        setValue('trelloCardURL', trelloCardURL);
+        onFormAction('save');
+      } else {
+        // Show notificaiton
+        sendNotification(
+          'Not a valid trello card URL. Try again with valid URL.',
+          {
+            type: 'error'
+          }
+        );
+      }
+    }
+  };
+
   return (
     <>
       {!isNewJob && isMobile && (
@@ -125,12 +173,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
           {job.title}
         </h1>
       )}
-      <div
-        className={clsx(
-          styles.form__grid,
-          !isMobile && styles.form__grid__desktop
-        )}
-      >
+      <div className={clsx(styles.form__grid)}>
         {!isNewJob && (
           <>
             <div
@@ -174,109 +217,189 @@ const Layout: FunctionComponent<LayoutProps> = ({
         <ErrorList errors={apiErrors} />
 
         <form>
-          <div className={styles.jobNew__formGroup}>
-            <label htmlFor="jobTitle">
-              Title <span>*</span>
-            </label>
-            <div className={styles.jobNew__formGroup__control}>
+          <div className={styles.form__grid__fields}>
+            <div>
+              <div className={styles.jobNew__formGroup}>
+                <label htmlFor="jobTitle">
+                  Title <span>*</span>
+                </label>
+                <div className={styles.jobNew__formGroup__control}>
+                  <input
+                    id="jobTitle"
+                    type="text"
+                    name="title"
+                    className={styles.jobNew__input}
+                    defaultValue={job.title}
+                    data-testid="job-form-title"
+                    {...register('title')}
+                    disabled={apiState.isLoading || isJobComplete}
+                  />
+                  <ErrorLabel formName="title" errors={formState.errors} />
+                </div>
+              </div>
               <input
-                id="jobTitle"
-                type="text"
-                name="title"
-                className={styles.jobNew__input}
-                defaultValue={job.title}
-                data-testid="job-form-title"
-                {...register('title')}
-                disabled={apiState.isLoading || isJobComplete}
+                type="hidden"
+                defaultValue={job.trelloCardURL}
+                {...register('trelloCardURL')}
               />
-              <ErrorLabel formName="title" errors={formState.errors} />
+              <div className={styles.jobNew__formGroup}>
+                <label htmlFor="jobDescription">
+                  Need {isApprovedOrAuthorized && <span>*</span>}
+                </label>
+                <div className={styles.jobNew__formGroup__control}>
+                  <textarea
+                    id="jobDescription"
+                    className="form-control"
+                    rows={4}
+                    name="need"
+                    defaultValue={job.need}
+                    data-testid="job-form-description"
+                    {...register('need')}
+                    disabled={apiState.isLoading || isJobComplete}
+                  ></textarea>
+                  <ErrorLabel formName="need" errors={formState.errors} />
+                </div>
+              </div>
+              <div className={styles.jobNew__formGroup}>
+                <label htmlFor="jobType">Job Type</label>
+                <select
+                  name="type"
+                  id="jobType"
+                  data-testid="job-form-type"
+                  defaultValue={job.type}
+                  {...register('type')}
+                  disabled={apiState.isLoading || isJobComplete}
+                >
+                  {Object.keys(jobsConfig.types).map((t) => (
+                    <option key={t} value={t}>
+                      {jobsConfig.types[t]}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.jobNew__formGroup}>
+                <div className={styles.jobNew__formSeparatedLabel}>
+                  <label htmlFor="jobScope">
+                    Scope of work {isApprovedOrAuthorized && <span>*</span>}
+                  </label>
+                  {!isNewJob &&
+                    (job.scopeOfWorkAttachment && jobAttachment ? (
+                      <span className={styles['jobNew__formGroup--dropdown']}>
+                        Attachment
+                        <ActionsIcon />
+                        <DropdownAttachment
+                          fileUrl={jobAttachment.url}
+                          onDelete={() => openAttachmentDeletePrompt()}
+                        />
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className={styles.jobNew__formGroup__upload}
+                        onClick={onUploadClick}
+                        disabled={isUploadingFile}
+                      >
+                        Upload
+                        <span
+                          className={styles.jobNew__formGroup__upload__icon}
+                        >
+                          <AddIcon />
+                        </span>
+                        <input
+                          type="file"
+                          ref={inputFile}
+                          className={styles.jobNew__formGroup__file}
+                          onChange={onFileChange}
+                          data-testid="input-file-attachment"
+                        />
+                      </button>
+                    ))}
+                </div>
+                <div className={styles.jobNew__formGroup__control}>
+                  <textarea
+                    id="jobScope"
+                    className="form-control"
+                    rows={6}
+                    name="scopeOfWork"
+                    defaultValue={job.scopeOfWork}
+                    data-testid="job-form-scope"
+                    {...register('scopeOfWork')}
+                    disabled={apiState.isLoading || isJobComplete}
+                  ></textarea>
+                  <ErrorLabel
+                    formName="scopeOfWork"
+                    errors={formState.errors}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              {/** Trello card */}
+              {!isNewJob && (
+                <div className={styles.jobNew__card}>
+                  <div className={styles.jobNew__card__pill__action}>
+                    <h4 className={styles.jobNew__card__title}>Trello Card</h4>
+                    {job.trelloCardURL && (
+                      <span className={styles.jobNew__card__pill__action__menu}>
+                        <ActionsIcon />
+                        <Dropdown>
+                          <DropdownButton
+                            type="button"
+                            disabled={apiState.isLoading}
+                            onClick={() =>
+                              openTrelloCardInputPrompt(job.trelloCardURL)
+                            }
+                          >
+                            Update
+                          </DropdownButton>
+                          <DropdownButton
+                            type="button"
+                            disabled={apiState.isLoading}
+                            onClick={() => openTrelloCardDeletePrompt()}
+                          >
+                            Delete
+                          </DropdownButton>
+                        </Dropdown>
+                      </span>
+                    )}
+                  </div>
+                  {job.trelloCardURL ? (
+                    <div className={clsx(styles.jobNew__card__pill, '-mt')} data-testid="trello-card-pill">
+                      <h5 className={styles.jobNew__card__pill__title}>
+                        <AlbumIcon />
+                        Trello Card #1
+                      </h5>
+                      <a
+                        href={job.trelloCardURL}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View Card
+                      </a>
+                    </div>
+                  ) : (
+                    <div
+                      className={clsx(styles.button__group, '-mt', '-mr-none')}
+                    >
+                      <button
+                        type="button"
+                        disabled={apiState.isLoading}
+                        className={clsx(
+                          styles.button__submit,
+                          isMobile && styles.button__fullwidth
+                        )}
+                        onClick={() => openTrelloCardInputPrompt()}
+                        data-testid="add-trello-card-btn"
+                      >
+                        Add Trello Card
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
-          <div className={styles.jobNew__formGroup}>
-            <label htmlFor="jobDescription">
-              Need {isApprovedOrAuthorized && <span>*</span>}
-            </label>
-            <div className={styles.jobNew__formGroup__control}>
-              <textarea
-                id="jobDescription"
-                className="form-control"
-                rows={4}
-                name="need"
-                defaultValue={job.need}
-                data-testid="job-form-description"
-                {...register('need')}
-                disabled={apiState.isLoading || isJobComplete}
-              ></textarea>
-              <ErrorLabel formName="need" errors={formState.errors} />
-            </div>
-          </div>
-          <div className={styles.jobNew__formGroup}>
-            <label htmlFor="jobType">Job Type</label>
-            <select
-              name="type"
-              id="jobType"
-              data-testid="job-form-type"
-              defaultValue={job.type}
-              {...register('type')}
-              disabled={apiState.isLoading || isJobComplete}
-            >
-              {Object.keys(jobsConfig.types).map((t) => (
-                <option key={t} value={t}>
-                  {jobsConfig.types[t]}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className={styles.jobNew__formGroup}>
-            <div className={styles.jobNew__formSeparatedLabel}>
-              <label htmlFor="jobScope">
-                Scope of work {isApprovedOrAuthorized && <span>*</span>}
-              </label>
-              {!isNewJob &&
-                (job.scopeOfWorkAttachment && jobAttachment ? (
-                  <span className={styles['jobNew__formGroup--dropdown']}>
-                    Attachment
-                    <ActionsIcon />
-                    <DropdownAttachment
-                      fileUrl={jobAttachment.url}
-                      onDelete={() => openAttachmentDeletePrompt()}
-                    />
-                  </span>
-                ) : (
-                  <button
-                    type="button"
-                    className={styles.jobNew__formGroup__upload}
-                    onClick={onUploadClick}
-                    disabled={isUploadingFile}
-                  >
-                    Upload
-                    <span className={styles.jobNew__formGroup__upload__icon}>
-                      <AddIcon />
-                    </span>
-                    <input
-                      type="file"
-                      ref={inputFile}
-                      className={styles.jobNew__formGroup__file}
-                      onChange={onFileChange}
-                      data-testid="input-file-attachment"
-                    />
-                  </button>
-                ))}
-            </div>
-            <div className={styles.jobNew__formGroup__control}>
-              <textarea
-                id="jobScope"
-                className="form-control"
-                rows={6}
-                name="scopeOfWork"
-                defaultValue={job.scopeOfWork}
-                data-testid="job-form-scope"
-                {...register('scopeOfWork')}
-                disabled={apiState.isLoading || isJobComplete}
-              ></textarea>
-              <ErrorLabel formName="scopeOfWork" errors={formState.errors} />
-            </div>
-          </div>
+
           {canApprove && (
             <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
               <button
@@ -385,10 +508,17 @@ const JobForm: FunctionComponent<Props> = ({
   setDeleteAttachmentPromptVisible,
   isDeleteAttachmentPromptVisible,
   confirmAttachmentDelete,
-  deleteAtachmentLoading
+  deleteAtachmentLoading,
+  sendNotification,
+  setDeleteTrelloCardPromptVisible,
+  isDeleteTrelloCardPromptVisible
 }) => {
   const closeAttachmentDeletePrompt = () => {
     setDeleteAttachmentPromptVisible(false);
+  };
+
+  const closeTrelloCardDeletePrompt = () => {
+    setDeleteTrelloCardPromptVisible(false);
   };
 
   // Responsive queries
@@ -483,7 +613,8 @@ const JobForm: FunctionComponent<Props> = ({
     register,
     getValues: getFormValues,
     trigger: triggerFormValidation,
-    formState
+    formState,
+    setValue
   } = useForm<Inputs>({
     mode: 'all',
     resolver: yupResolver(validationSchema)
@@ -499,6 +630,13 @@ const JobForm: FunctionComponent<Props> = ({
     // Make request to api call
     const formData = getFormValues();
     onPublish(formData, action);
+  };
+
+  const confirmTrelloCardDelete = () => {
+    // Remove the trello card url from hidden value
+    setValue('trelloCardURL', '');
+    // Save the form
+    onSubmit('save');
   };
 
   // Mobile Header actions buttons
@@ -558,6 +696,9 @@ const JobForm: FunctionComponent<Props> = ({
             isUploadingFile={uploadState}
             jobAttachment={jobAttachment}
             setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
+            sendNotification={sendNotification}
+            setValue={setValue}
+            setDeleteTrelloCardPromptVisible={setDeleteTrelloCardPromptVisible}
           />
         </>
       )}
@@ -600,6 +741,9 @@ const JobForm: FunctionComponent<Props> = ({
             isUploadingFile={uploadState}
             jobAttachment={jobAttachment}
             setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
+            sendNotification={sendNotification}
+            setValue={setValue}
+            setDeleteTrelloCardPromptVisible={setDeleteTrelloCardPromptVisible}
           />
         </div>
       )}
@@ -609,6 +753,11 @@ const JobForm: FunctionComponent<Props> = ({
         onConfirm={() => confirmAttachmentDelete()}
         isVisible={isDeleteAttachmentPromptVisible}
         onClose={closeAttachmentDeletePrompt}
+      />
+      <DeleteTrelloCardPrompt
+        onConfirm={() => confirmTrelloCardDelete()}
+        isVisible={isDeleteTrelloCardPromptVisible}
+        onClose={closeTrelloCardDeletePrompt}
       />
     </>
   );

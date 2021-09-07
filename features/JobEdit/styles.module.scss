@@ -6,6 +6,13 @@
   &__desktop {
     max-width: rem-calc(600);
   }
+  @include media-query(desktop) {
+    &__fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-column-gap: rem-calc(30);
+    }
+  }
 }
 
 .mobileTitle {
@@ -34,9 +41,11 @@
     &__mobile {
       text-align: center;
       width: 48%;
+
       & p {
         font-size: rem-calc(12);
       }
+
       & h3 {
         font-size: rem-calc(18);
       }
@@ -96,6 +105,58 @@
     &__icon {
       path:last-child {
         fill: $white !important;
+      }
+    }
+  }
+
+  &__card {
+    @extend %card;
+
+    &__title {
+      @extend %card__title;
+    }
+
+    &__pill {
+      @extend %card__pill;
+
+      &__title {
+        @extend %card__pill__title;
+      }
+
+      &__action {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        &__menu {
+          display: block;
+          padding: rem-calc(8) rem-calc(10) rem-calc(8) rem-calc(8);
+          cursor: pointer;
+          position: relative;
+
+          &:hover {
+            background-color: transparent !important;
+          }
+
+          > svg {
+            width: rem-calc(22);
+            height: rem-calc(22);
+            transform: translateY(#{rem-calc(4)});
+          }
+
+          &:hover,
+          &:focus {
+            z-index: 999;
+            > ul {
+              height: auto;
+              visibility: visible;
+
+              // Animated
+              opacity: 1;
+              transform: translate(-50%, 0%);
+            }
+          }
+        }
       }
     }
   }

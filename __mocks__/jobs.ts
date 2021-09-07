@@ -63,7 +63,7 @@ export const approvedMaintenanceJob: jobModel = {
   need: '',
   authorizedRules: 'default',
   scopeOfWork: '',
-  trelloCardURL: '',
+  trelloCardURL: 'https://trello.com/c/lxfZsLN4',
   property: 'property-2',
   createdAt: 1504204200,
   updatedAt: 1506796200,

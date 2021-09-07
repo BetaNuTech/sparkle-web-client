@@ -1,0 +1,31 @@
+$card-gray-border: $gray-light-4;
+
+%card {
+  border: 1px solid $card-gray-border;
+  border-radius: rem-calc(3);
+  padding: rem-calc(18) rem-calc(20);
+}
+
+%card__title {
+  font-size: rem-calc(18);
+}
+
+%card__pill {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: rem-calc(16) rem-calc(24);
+  border-radius: rem-calc(3);
+  border: 1px solid $card-gray-border;
+}
+
+%card__pill__title {
+  display: flex;
+  align-items: center;
+  font-size: rem-calc(14);
+
+  svg {
+    margin-right: rem-calc(8);
+    width: rem-calc(20);
+  }
+}
