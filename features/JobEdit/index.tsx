@@ -46,6 +46,8 @@ const JobNew: FunctionComponent<Props> = ({
   const [isDeleteAttachmentPromptVisible, setDeleteAttachmentPromptVisible] =
     useState(false);
   const [deleteAtachmentLoading, setDeleteAtachmentLoading] = useState(false);
+  const [isDeleteTrelloCardPromptVisible, setDeleteTrelloCardPromptVisible] =
+    useState(false);
 
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
@@ -218,6 +220,9 @@ const JobNew: FunctionComponent<Props> = ({
       isDeleteAttachmentPromptVisible={isDeleteAttachmentPromptVisible}
       confirmAttachmentDelete={onConfirmAttachmentDelete}
       deleteAtachmentLoading={deleteAtachmentLoading}
+      sendNotification={sendNotification}
+      setDeleteTrelloCardPromptVisible={setDeleteTrelloCardPromptVisible}
+      isDeleteTrelloCardPromptVisible={isDeleteTrelloCardPromptVisible}
     />
   );
 };

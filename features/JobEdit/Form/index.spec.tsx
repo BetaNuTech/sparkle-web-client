@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import sinon from 'sinon';
 import {
   render as rtlRender,
@@ -11,8 +12,10 @@ import {
   openImprovementJob,
   approvedImprovementJob,
   authorizedImprovementJob,
-  completeImprovementJob
+  completeImprovementJob,
+  approvedMaintenanceJob
 } from '../../../__mocks__/jobs';
+import { photoAttachment } from '../../../__mocks__/attachments';
 import { fullProperty } from '../../../__mocks__/properties';
 import bids, { approvedBid } from '../../../__mocks__/bids';
 import { admin as user, noAccess } from '../../../__mocks__/users';
@@ -810,7 +813,17 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postJobCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: putReq
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false
     };
 
     render(<JobForm {...props} />, {
@@ -826,5 +839,83 @@ describe('Unit | Features | Job Edit | Form', () => {
     const result = putReq.called ? putReq.getCall(0).args[1] : {};
     const actual = result.authorizedRules || '';
     expect(actual).toEqual(expected);
+  });
+
+  it('should show add trello card button', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const btnAddTrelloCard = screen.queryByTestId('add-trello-card-btn');
+    expect(btnAddTrelloCard).toBeTruthy();
+    const elTrelloCard = screen.queryByTestId('trello-card-pill');
+    expect(elTrelloCard).toBeNull();
+  });
+
+  it('should show trello card if trello card url is there', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: approvedMaintenanceJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const elTrelloCard = screen.queryByTestId('trello-card-pill');
+    expect(elTrelloCard).toBeTruthy();
+    const btnAddTrelloCard = screen.queryByTestId('add-trello-card-btn');
+    expect(btnAddTrelloCard).toBeNull();
   });
 });
