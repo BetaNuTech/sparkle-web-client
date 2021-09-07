@@ -50,6 +50,7 @@ const putRequest = (
         costMin: bid.costMin,
         costMax: bid.costMax,
         startAt: bid.startAt,
+        scope: bid.scope,
         completeAt: bid.completeAt,
         state: bid.state
       })

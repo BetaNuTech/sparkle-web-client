@@ -261,7 +261,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
                 className={styles.propertyProfile__createInspectionLink}
                 data-testid="create-inspection-link"
               >
-                <Link href="/properties/dvSsHLv8cxAvIMKv9Gk0/create-inspection">
+                <Link href={`/properties/${id}/create-inspection`}>
                   <a className="-td-underline">Create first inspection</a>
                 </Link>
               </p>

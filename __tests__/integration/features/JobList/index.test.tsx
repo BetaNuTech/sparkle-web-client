@@ -446,7 +446,7 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilString.titleize(openMaintenanceExpeditedJob.type)}`,
       `Approved: ${utilString.titleize(approvedMaintenanceJob.type)}`,
       `Under Contract: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
-      `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
+      `Completed: ${utilString.titleize(authorizedImprovementJob.type)}`
     ].join(' | ');
     render(
       <JobList
@@ -497,7 +497,7 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
       `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
-      `Completed: ${utilString.titleize(completeImprovementJob.type)}`
+      `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
     render(
       <JobList
@@ -729,7 +729,7 @@ describe('Integration | Features | Job List', () => {
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
       `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
-      `Completed: ${utilString.titleize(completeImprovementJob.type)}`
+      `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
     render(
       <JobList

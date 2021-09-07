@@ -152,7 +152,7 @@ describe('Integration | Features | Job Edit', () => {
 
     const expectedTitle = 'Swimming pool cleaning';
     const expectedDescription = 'pool has gone dirty';
-    const expectedType = 'maintenance';
+    const expectedType = 'asset management project';
     const expectedScope = 'clean pool, add chemicals';
 
     // Title should match

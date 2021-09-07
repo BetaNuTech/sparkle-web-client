@@ -12,7 +12,7 @@ export const openImprovementJob: jobModel = {
   createdAt: 1483209000,
   updatedAt: 1485887400,
   state: 'open',
-  type: 'improvement'
+  type: 'asset management project'
 };
 
 export const openMaintenanceJob: jobModel = {
@@ -26,7 +26,7 @@ export const openMaintenanceJob: jobModel = {
   createdAt: 1488306600,
   updatedAt: 1490985000,
   state: 'open',
-  type: 'maintenance'
+  type: 'asset management project'
 };
 
 export const openMaintenanceExpeditedJob: jobModel = {
@@ -40,7 +40,7 @@ export const openMaintenanceExpeditedJob: jobModel = {
   createdAt: 1493577000,
   updatedAt: 1496255400,
   state: 'open',
-  type: 'maintenance'
+  type: 'asset management project'
 };
 
 export const approvedImprovementJob: jobModel = {
@@ -54,7 +54,7 @@ export const approvedImprovementJob: jobModel = {
   createdAt: 1498847400,
   updatedAt: 1501525800,
   state: 'approved',
-  type: 'improvement'
+  type: 'asset management project'
 };
 
 export const approvedMaintenanceJob: jobModel = {
@@ -68,7 +68,7 @@ export const approvedMaintenanceJob: jobModel = {
   createdAt: 1504204200,
   updatedAt: 1506796200,
   state: 'approved',
-  type: 'maintenance'
+  type: 'asset management project'
 };
 
 export const authorizedImprovementJob: jobModel = {
@@ -82,7 +82,7 @@ export const authorizedImprovementJob: jobModel = {
   createdAt: 1509474600,
   updatedAt: 1512066600,
   state: 'authorized',
-  type: 'improvement'
+  type: 'property management project'
 };
 
 export const authorizedMaintenanceJob: jobModel = {
@@ -96,7 +96,7 @@ export const authorizedMaintenanceJob: jobModel = {
   createdAt: 1514745000,
   updatedAt: 1517423400,
   state: 'authorized',
-  type: 'maintenance'
+  type: 'property management project'
 };
 
 export const completeImprovementJob: jobModel = {
@@ -110,7 +110,7 @@ export const completeImprovementJob: jobModel = {
   createdAt: 1519842600,
   updatedAt: 1522521000,
   state: 'complete',
-  type: 'improvement'
+  type: 'property management project'
 };
 
 export const completeMaintenanceJob: jobModel = {
@@ -124,7 +124,7 @@ export const completeMaintenanceJob: jobModel = {
   createdAt: 1525113000,
   updatedAt: 1527791400,
   state: 'complete',
-  type: 'maintenance'
+  type: 'hybrid capital project'
 };
 
 export default [

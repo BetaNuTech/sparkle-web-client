@@ -226,6 +226,16 @@
 
     &__control {
       margin-bottom: rem-calc(16);
+      &--radio {
+        display: flex;
+        gap: rem-calc(16);
+        label {
+          font-weight: normal;
+        }
+        input[type='radio'] {
+          margin-right: rem-calc(8);
+        }
+      }
     }
 
     textarea {
