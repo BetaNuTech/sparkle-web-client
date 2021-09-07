@@ -33,6 +33,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   const ref = useRef(null);
 
   const { isVisible } = useVisibility(ref, {}, forceVisible);
+  const jobType = utilString.titleize(job.type);
   return (
     <li
       className={clsx(parentStyles.propertyJobs__gridRow)}
@@ -70,8 +71,9 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   colors[configJobs.typeColors[job.type]]
                 )}
                 data-testid="grid-row-job-type-label"
+                title={jobType}
               >
-                {utilString.titleize(job.type)}
+                {jobType}
               </span>
               <div className={parentStyles.propertyProfile__gridRow__column}>
                 <span className={parentStyles.propertyJobs__gridRow__actions}>

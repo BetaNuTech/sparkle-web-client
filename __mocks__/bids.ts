@@ -21,7 +21,8 @@ export const openBid: bidModel = {
   startAt: 1623199200,
   state: 'open',
   updatedAt: 1623026400,
-  vendor: 'Rob Playground'
+  vendor: 'Rob Playground',
+  scope: 'local'
 };
 
 export const approvedBid: bidModel = {
@@ -35,7 +36,8 @@ export const approvedBid: bidModel = {
   startAt: 1623565800,
   state: 'approved',
   updatedAt: 1623479400,
-  vendor: 'Rob Playground'
+  vendor: 'Rob Playground',
+  scope: 'local'
 };
 
 export const rejectedBid: bidModel = {
@@ -49,7 +51,8 @@ export const rejectedBid: bidModel = {
   startAt: 1623997800,
   state: 'rejected',
   updatedAt: 1623911400,
-  vendor: 'Rob Playground'
+  vendor: 'Rob Playground',
+  scope: 'local'
 };
 
 export const incompleteBid: bidModel = {
@@ -63,7 +66,8 @@ export const incompleteBid: bidModel = {
   startAt: 1624181400,
   state: 'incomplete',
   updatedAt: 1624091400,
-  vendor: 'Rob Playground'
+  vendor: 'Rob Playground',
+  scope: 'local'
 };
 
 export const completeBid: bidModel = {
@@ -77,7 +81,8 @@ export const completeBid: bidModel = {
   startAt: 1624289498,
   state: 'complete',
   updatedAt: 1624361400,
-  vendor: 'Rob Playground'
+  vendor: 'Rob Playground',
+  scope: 'local'
 };
 
 export default [openBid, approvedBid, rejectedBid, incompleteBid, completeBid];

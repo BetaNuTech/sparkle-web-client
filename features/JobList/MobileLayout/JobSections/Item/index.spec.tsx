@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import moment from 'moment';
 import {
-  openImprovementJob,
-  openMaintenanceJob
+  authorizedImprovementJob,
+  openImprovementJob
 } from '../../../../../__mocks__/jobs';
 import stubIntersectionObserver from '../../../../../__tests__/helpers/stubIntersectionObserver';
 import deepClone from '../../../../../__tests__/helpers/deepClone';
@@ -74,7 +74,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
     expect(jobUpdatedEl.textContent).toEqual(expected);
   });
 
-  it('should have correct inspection color for inspection job type', () => {
+  it('should have correct inspection color for asset management project job type', () => {
     const props = {
       job: deepClone(openImprovementJob),
       propertyId: 'property-1',
@@ -83,8 +83,8 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
         ...configJobs,
         ...{
           typeColors: {
-            improvement: 'alert',
-            maintenance: 'info'
+            'asset management project': 'alert',
+            'property management project': 'info'
           }
         }
       }),
@@ -98,17 +98,17 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
     expect(jobTypeTextEl.classList.contains(colors.alert)).toEqual(true);
   });
 
-  it('should have correct maintenance color for maintenance job type', () => {
+  it('should have correct maintenance color for property management project job type', () => {
     const props = {
-      job: deepClone(openMaintenanceJob),
+      job: deepClone(authorizedImprovementJob),
       propertyId: 'property-1',
       colors,
       configJobs: deepClone({
         ...configJobs,
         ...{
           typeColors: {
-            improvement: 'info',
-            maintenance: 'orange'
+            'asset management project': 'info',
+            'property management project': 'orange'
           }
         }
       }),

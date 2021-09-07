@@ -12,11 +12,13 @@ export default {
     complete: ''
   },
   typeColors: {
-    improvement: 'info',
-    maintenance: 'info'
+    'asset management project': 'info',
+    'property management project': 'info',
+    'hybrid capital project': 'info'
   },
   types: {
-    improvement: 'Improvement',
-    maintenance: 'Maintenance'
+    'asset management project': 'Asset Management Project',
+    'property management project': 'Property Management Project',
+    'hybrid capital project': 'Hybrid Capital Project'
   }
 };

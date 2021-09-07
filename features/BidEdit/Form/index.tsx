@@ -64,6 +64,7 @@ type Inputs = {
   startAt: string;
   completeAt: string;
   cost: string;
+  scope: string;
   vendorDetails: string;
 };
 
@@ -285,6 +286,52 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   </div>
                 )}
               </div>
+              {/* Bid scope */}
+              {!isNewBid && (
+                <div className={styles.form__row}>
+                  <div className={clsx(styles.form__row__cell)}>
+                    <div className={styles.form__group}>
+                      <label htmlFor="bidStartAt">
+                        Scope <span>*</span>
+                      </label>
+                      <div
+                        className={clsx(
+                          styles.form__group__control,
+                          styles['form__group__control--radio']
+                        )}
+                      >
+                        <label>
+                          <input
+                            type="radio"
+                            name="bidScope"
+                            className={styles.form__input}
+                            value="local"
+                            {...register('scope')}
+                            defaultChecked={
+                              (bid.scope && bid.scope === 'local') || !bid.scope
+                            }
+                          />
+                          Local
+                        </label>
+                        <label>
+                          <input
+                            type="radio"
+                            name="bidScope"
+                            className={styles.form__input}
+                            value="national"
+                            {...register('scope')}
+                            defaultChecked={
+                              bid.scope && bid.scope === 'national'
+                            }
+                          />
+                          National
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <div className={styles.form__row}>
                 <div
                   className={clsx(
@@ -762,11 +809,18 @@ const BidForm: FunctionComponent<Props> = ({
     costMin,
     costMax,
     startAt,
+    scope,
     completeAt,
     vendorDetails
-  }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
-    bid
-  );
+  }) => ({
+    vendor,
+    costMin,
+    costMax,
+    startAt,
+    completeAt,
+    scope,
+    vendorDetails
+  }))(bid);
 
   // Setup watcher for form changes
   const formData = useWatch({
@@ -777,6 +831,7 @@ const BidForm: FunctionComponent<Props> = ({
       cost: bid.costMin === bid.costMax ? 'fixed' : 'range',
       costMin: apiBid.costMin,
       costMax: apiBid.costMax,
+      scope: apiBid.scope,
       startAt: startAtProcessed,
       completeAt: completeAtProcessed
     }
@@ -796,12 +851,19 @@ const BidForm: FunctionComponent<Props> = ({
     vendor,
     costMin,
     costMax,
+    scope,
     startAt,
     completeAt,
     vendorDetails
-  }) => ({ vendor, costMin, costMax, startAt, completeAt, vendorDetails }))(
-    formData
-  );
+  }) => ({
+    vendor,
+    costMin,
+    costMax,
+    startAt,
+    scope,
+    completeAt,
+    vendorDetails
+  }))(formData);
 
   // process form data for number and unix timestamp
   const formBidProcessed = useProcessedForm(formBid, isFixedCostType);

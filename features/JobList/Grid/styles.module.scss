@@ -102,6 +102,10 @@
   &__type {
     @extend %gridTableLabel;
     margin-left: 0;
+    max-width: rem-calc(112);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   &__actions {

@@ -10,6 +10,7 @@ interface bid {
   job: string;
   startAt?: number; // Unix timestamp
   state: 'open' | 'approved' | 'rejected' | 'incomplete' | 'complete';
+  scope: 'local' | 'national';
   updatedAt: number; // Unix timestamp
   vendor: string;
   vendorDetails?: string;

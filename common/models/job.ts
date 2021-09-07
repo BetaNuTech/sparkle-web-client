@@ -10,7 +10,7 @@ interface job {
   createdAt?: number;
   updatedAt?: number;
   state?: 'open' | 'approved' | 'authorized' | 'complete';
-  type: 'improvement' | 'maintenance';
+  type: 'asset management project' | 'property management project' | 'hybrid capital project';
 }
 
 export default job;
