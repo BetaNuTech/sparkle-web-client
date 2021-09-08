@@ -80,7 +80,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   );
   const templateCategory =
     filteredCategory.length > 0 ? filteredCategory[0].name : 'Uncategorized';
-  const inspectionUpdateUrl = '/properties/';
+  const inspectionUpdateUrl = `/properties/${propertyId}/update-inspection/${inspection.id}`;
 
   // Can user take action on inspection row
   const hasActionColumn = hasInspectionUpdateActions(user);

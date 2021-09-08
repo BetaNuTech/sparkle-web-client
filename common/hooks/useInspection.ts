@@ -6,7 +6,7 @@ import inspectionModel from '../models/inspection';
 
 interface useInspectionResult extends inspectionResult {
   memo: string;
-  data: any;
+  handlers: any;
 }
 
 // Actions

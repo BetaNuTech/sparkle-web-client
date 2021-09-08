@@ -21,6 +21,7 @@ const getSparkleApiToken = async () => {
   let authToken = '';
   try {
     authToken = await currentUser.getIdToken();
+    authToken = `FB-JWT ${authToken}`;
   } catch (err) {
     /* eslint-disable no-console */
     console.error(
@@ -28,9 +29,10 @@ const getSparkleApiToken = async () => {
     ); /* eslint-enable */
   }
 
-  copyTextToClipboard(
-    authToken ? `FB-JWT ${authToken}` : 'failed to get Sparkle API token'
-  );
+  if (authToken) {
+    copyTextToClipboard(authToken);
+    console.log(authToken); // eslint-disable-line
+  }
 };
 
 function MyApp({ Component, pageProps }) {
