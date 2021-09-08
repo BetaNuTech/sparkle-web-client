@@ -10,12 +10,36 @@ import { NextHeader } from '../common/NextHeader';
 import errorReports from '../common/services/api/errorReports';
 import * as gtag from '../common/utils/gtag';
 import firebaseConfig from '../config/firebase';
+import currentUser from '../common/utils/currentUser';
+import copyTextToClipboard from '../common/utils/copyTextToClipboard';
 import '../styles/app.scss';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
+// Copy Firebase Auth token to clipboard
+const getSparkleApiToken = async () => {
+  let authToken = '';
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (err) {
+    /* eslint-disable no-console */
+    console.error(
+      Error(`auth token requested before user session started: ${err}`)
+    ); /* eslint-enable */
+  }
+
+  copyTextToClipboard(
+    authToken ? `FB-JWT ${authToken}` : 'failed to get Sparkle API token'
+  );
+};
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
+
+  // Export the auth token method to global scope
+  if (typeof window !== 'undefined') {
+    window.getSparkleApiToken = getSparkleApiToken;
+  }
 
   useEffect(() => {
     const handleRouteChange = (url) => {
