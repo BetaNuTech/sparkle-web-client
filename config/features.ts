@@ -7,7 +7,7 @@ export default {
   supportBetaTeamCreate: false,
   supportBetaPropertiesList: true,
   supportBetaPropertyProfile: true,
-  supportBetaPropertyCreate: false,
+  supportBetaPropertyCreate: true,
   supportBetaPropertyDeficient: false,
   supportBetaPropertyYardiResident: false,
   supportBetaPropertyYardiWorkOrder: false,
