@@ -12,7 +12,7 @@ export interface JobApiResult {
 interface useJobFormResult {
   apiState: JobApiResult;
   postJobCreate(propertyId: string, job: jobModel): void;
-  putJobUpdate(propertyId: string, job: jobModel): void;
+  putJobUpdate(propertyId: string, jobId: string, job: jobModel): void;
   error: Error;
 }
 
@@ -57,7 +57,7 @@ export default function useJobForm(jobApi: jobModel): useJobFormResult {
     });
   };
 
-  const putJobUpdate = async (propertyId: string, job: jobModel) => {
+  const putJobUpdate = async (propertyId: string, jobId: string, job: jobModel) => {
     setApiState({
       isLoading: true,
       statusCode: 0,
@@ -68,7 +68,7 @@ export default function useJobForm(jobApi: jobModel): useJobFormResult {
     let res = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      res = await jobsApi.updateJob(propertyId, job);
+      res = await jobsApi.updateJob(propertyId, jobId, job);
     } catch (err) {
       setError(Error(`${PREFIX} putJobUpdate: request failed: ${err}`));
     }
