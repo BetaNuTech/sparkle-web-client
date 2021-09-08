@@ -2,54 +2,40 @@ import currentUser from '../../utils/currentUser';
 import jobModel from '../../models/job';
 
 const PREFIX = 'services: api: jobs:';
+const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
 
 // POST an Job Request
 const postRequest = (
   authToken: string,
   propertyId: string,
-  job: jobModel
+  job: any
 ): Promise<any> =>
-  fetch(
-    `${process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN}/api/v0/properties/${propertyId}/jobs`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `FB-JWT ${authToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title: job.title,
-        need: job.need,
-        scopeOfWork: job.scopeOfWork,
-        type: job.type
-      })
-    }
-  );
+  fetch(`${API_DOMAIN}/api/v0/properties/${propertyId}/jobs`, {
+    method: 'POST',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ...job })
+  });
 
 // PUT Job Request
 const putRequest = (
   authToken: string,
   propertyId: string,
-  job: jobModel
+  jobId: string,
+  job: any
 ): Promise<any> =>
-  fetch(
-    `${process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN}/api/v0/properties/${propertyId}/jobs/${job.id}`,
-    {
-      method: 'PUT',
-      headers: {
-        Authorization: `FB-JWT ${authToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        title: job.title,
-        need: job.need,
-        scopeOfWork: job.scopeOfWork,
-        type: job.type,
-        state: job.state,
-        authorizedRules: job.authorizedRules,
-      })
-    }
-  );
+  fetch(`${API_DOMAIN}/api/v0/properties/${propertyId}/jobs/${jobId}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      ...job
+    })
+  });
 
 export const createNewJob = async (
   propertyId: string,
@@ -59,39 +45,27 @@ export const createNewJob = async (
 
   try {
     authToken = await currentUser.getIdToken();
-  } catch (tokenErr) {
-    /* eslint-disable no-console */
-    console.error(
-      Error(
-        `${PREFIX} send: auth token requested before user session started: ${tokenErr}`
-      )
-    ); /* eslint-enable */
-    return Promise.resolve(); // avoid rejection
+  } catch (err) {
+    throw Error(`${PREFIX} createNewJob: could not recover token: ${err}`);
   }
 
   return postRequest(authToken, propertyId, job);
 };
 
-
 export const updateJob = async (
   propertyId: string,
+  jobId: string,
   job: jobModel
 ): Promise<any> => {
   let authToken = '';
 
   try {
     authToken = await currentUser.getIdToken();
-  } catch (tokenErr) {
-    /* eslint-disable no-console */
-    console.error(
-      Error(
-        `${PREFIX} send: auth token requested before user session started: ${tokenErr}`
-      )
-    ); /* eslint-enable */
-    return Promise.resolve(); // avoid rejection
+  } catch (err) {
+    throw Error(`${PREFIX} updateJob: could not recover token: ${err}`);
   }
 
-  return putRequest(authToken, propertyId, job);
+  return putRequest(authToken, propertyId, jobId, job);
 };
 
 export default { createNewJob, updateJob };

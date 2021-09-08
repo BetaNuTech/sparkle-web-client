@@ -10,6 +10,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { diff } from 'deep-object-diff';
 import propertyModel from '../../../common/models/property';
 import LoadingHud from '../../../common/LoadingHud';
 import jobModel from '../../../common/models/job';
@@ -45,7 +46,7 @@ interface Props {
   isNewJob: boolean;
   apiState: JobApiResult;
   postJobCreate(propertyId: string, job: jobModel): void;
-  putJobUpdate(propertyId: string, job: jobModel): void;
+  putJobUpdate(propertyId: string, jobId: string, job: jobModel): void;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
@@ -140,7 +141,8 @@ const Layout: FunctionComponent<LayoutProps> = ({
   };
 
   const openTrelloCardInputPrompt = (oldTrellCardURL?: string) => {
-    const trelloCardURL = prompt(
+    // eslint-disable-next-line no-alert
+    const trelloCardURL = window.prompt(
       'Enter job trello card link.',
       oldTrellCardURL
     );
@@ -364,7 +366,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     )}
                   </div>
                   {job.trelloCardURL ? (
-                    <div className={clsx(styles.jobNew__card__pill, '-mt')} data-testid="trello-card-pill">
+                    <div
+                      className={clsx(styles.jobNew__card__pill, '-mt')}
+                      data-testid="trello-card-pill"
+                    >
                       <h5 className={styles.jobNew__card__pill__title}>
                         <AlbumIcon />
                         Trello Card #1
@@ -553,9 +558,8 @@ const JobForm: FunctionComponent<Props> = ({
     // Check if we have job data
     // Means it is an edit form
     if (Object.keys(job).length > 0) {
-      formJob.id = job.id;
       // Update request
-      putJobUpdate(property.id, formJob);
+      putJobUpdate(property.id, job.id, formJob);
     } else {
       // Save request
       postJobCreate(property.id, formJob);
@@ -620,6 +624,14 @@ const JobForm: FunctionComponent<Props> = ({
     resolver: yupResolver(validationSchema)
   });
 
+  const apiJob = (({ title, need, type, scopeOfWork, trelloCardURL }) => ({
+    title,
+    need,
+    type,
+    scopeOfWork,
+    trelloCardURL
+  }))(job);
+
   // Handle form submissions
   const onSubmit = async (action) => {
     // Check if form is valid
@@ -627,9 +639,10 @@ const JobForm: FunctionComponent<Props> = ({
     const hasErrors = Boolean(Object.keys(formState.errors).length);
     if (hasErrors) return;
 
-    // Make request to api call
     const formData = getFormValues();
-    onPublish(formData, action);
+    const difference = diff(apiJob, formData);
+    // Make request to api call
+    onPublish(difference, action);
   };
 
   const confirmTrelloCardDelete = () => {

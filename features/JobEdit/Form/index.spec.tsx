@@ -756,7 +756,7 @@ describe('Unit | Features | Job Edit | Form', () => {
     });
 
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[1] : {};
+    const result = putReq.called ? putReq.getCall(0).args[2] : {};
     const actual = result.state || '';
     expect(actual).toEqual(expected);
   });
@@ -791,7 +791,7 @@ describe('Unit | Features | Job Edit | Form', () => {
     });
 
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[1] : {};
+    const result = putReq.called ? putReq.getCall(0).args[2] : {};
     const actual = result.state || '';
     expect(actual).toEqual(expected);
   });
@@ -836,7 +836,7 @@ describe('Unit | Features | Job Edit | Form', () => {
     });
 
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[1] : {};
+    const result = putReq.called ? putReq.getCall(0).args[2] : {};
     const actual = result.authorizedRules || '';
     expect(actual).toEqual(expected);
   });
