@@ -12,6 +12,7 @@ import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
 import moment from 'moment';
+import { diff } from 'deep-object-diff';
 import LoadingHud from '../../../common/LoadingHud';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
@@ -46,7 +47,12 @@ interface Props {
   toggleNavOpen?(): void;
   apiState: BidApiResult;
   postBidCreate(propertyId: string, jobId: string, bid: bidModel): void;
-  putBidUpdate(propertyId: string, jobId: string, bid: bidModel): void;
+  putBidUpdate(
+    propertyId: string,
+    jobId: string,
+    bidId: string,
+    bid: bidModel
+  ): void;
   onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
   uploadState: boolean;
   setDeleteAttachmentPromptVisible(newState: boolean): void;
@@ -726,20 +732,14 @@ const BidForm: FunctionComponent<Props> = ({
         break;
     }
 
-    const formBidProcessed = useProcessedForm(
-      formBid,
-      data.cost === 'fixed'
-    ) as bidModel;
-
     // Check if we have bid data
     // Means it is an edit form
     if (Object.keys(bid).length > 0) {
-      formBidProcessed.id = bid.id;
       // Update request
-      putBidUpdate(property.id, job.id, formBidProcessed);
+      putBidUpdate(property.id, job.id, bid.id, formBid);
     } else {
       // Save request
-      postBidCreate(property.id, job.id, formBidProcessed);
+      postBidCreate(property.id, job.id, formBid);
     }
   };
 
@@ -787,23 +787,6 @@ const BidForm: FunctionComponent<Props> = ({
     resolver: yupResolver(validationSchema)
   });
 
-  // Handle form submissions
-  const onSubmit = async (action) => {
-    // Check if form is valid
-    await triggerFormValidation();
-    const hasErrors = Boolean(Object.keys(formState.errors).length);
-    if (hasErrors) return;
-
-    // Make request to api call
-    const formData = getFormValues();
-    onPublish(formData, action);
-  };
-
-  const onCostTypeChange = (type: 'fixed' | 'range') => {
-    setFixedCostType(type === 'fixed');
-    setValue('cost', type);
-  };
-
   const apiBid = (({
     vendor,
     costMin,
@@ -821,6 +804,28 @@ const BidForm: FunctionComponent<Props> = ({
     scope,
     vendorDetails
   }))(bid);
+
+  // Handle form submissions
+  const onSubmit = async (action) => {
+    // Check if form is valid
+    await triggerFormValidation();
+    const hasErrors = Boolean(Object.keys(formState.errors).length);
+    if (hasErrors) return;
+
+    // Make request to api call
+    const formData = getFormValues();
+    const formBidProcessed = useProcessedForm(
+      formData,
+      formData.cost === 'fixed'
+    ) as bidModel;
+    const difference = diff(apiBid, formBidProcessed);
+    onPublish(difference, action);
+  };
+
+  const onCostTypeChange = (type: 'fixed' | 'range') => {
+    setFixedCostType(type === 'fixed');
+    setValue('cost', type);
+  };
 
   // Setup watcher for form changes
   const formData = useWatch({

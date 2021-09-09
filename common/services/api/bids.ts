@@ -8,7 +8,7 @@ const postRequest = (
   authToken: string,
   propertyId: string,
   jobId: string,
-  bid: bidModel
+  bid: any
 ): Promise<any> =>
   fetch(
     `${process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN}/api/v0/properties/${propertyId}/jobs/${jobId}/bids`,
@@ -18,14 +18,7 @@ const postRequest = (
         Authorization: `FB-JWT ${authToken}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        vendor: bid.vendor,
-        vendorDetails: bid.vendorDetails,
-        costMin: bid.costMin,
-        costMax: bid.costMax,
-        startAt: bid.startAt,
-        completeAt: bid.completeAt
-      })
+      body: JSON.stringify(bid)
     }
   );
 
@@ -34,26 +27,18 @@ const putRequest = (
   authToken: string,
   propertyId: string,
   jobId: string,
-  bid: bidModel
+  bidId: string,
+  bid: any
 ): Promise<any> =>
   fetch(
-    `${process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN}/api/v0/properties/${propertyId}/jobs/${jobId}/bids/${bid.id}`,
+    `${process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN}/api/v0/properties/${propertyId}/jobs/${jobId}/bids/${bidId}`,
     {
       method: 'PUT',
       headers: {
         Authorization: `FB-JWT ${authToken}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        vendor: bid.vendor,
-        vendorDetails: bid.vendorDetails,
-        costMin: bid.costMin,
-        costMax: bid.costMax,
-        startAt: bid.startAt,
-        scope: bid.scope,
-        completeAt: bid.completeAt,
-        state: bid.state
-      })
+      body: JSON.stringify(bid)
     }
   );
 
@@ -66,14 +51,8 @@ export const createNewBid = async (
 
   try {
     authToken = await currentUser.getIdToken();
-  } catch (tokenErr) {
-    /* eslint-disable no-console */
-    console.error(
-      Error(
-        `${PREFIX} send: auth token requested before user session started: ${tokenErr}`
-      )
-    ); /* eslint-enable */
-    return Promise.resolve(); // avoid rejection
+  } catch (err) {
+    throw Error(`${PREFIX} createNewBid: could not recover token: ${err}`);
   }
 
   return postRequest(authToken, propertyId, jobId, bid);
@@ -82,23 +61,18 @@ export const createNewBid = async (
 export const updateBid = async (
   propertyId: string,
   jobId: string,
+  bidId: string,
   bid: bidModel
 ): Promise<any> => {
   let authToken = '';
 
   try {
     authToken = await currentUser.getIdToken();
-  } catch (tokenErr) {
-    /* eslint-disable no-console */
-    console.error(
-      Error(
-        `${PREFIX} send: auth token requested before user session started: ${tokenErr}`
-      )
-    ); /* eslint-enable */
-    return Promise.resolve(); // avoid rejection
+  } catch (err) {
+    throw Error(`${PREFIX} updateBid: could not recover token: ${err}`);
   }
 
-  return putRequest(authToken, propertyId, jobId, bid);
+  return putRequest(authToken, propertyId, jobId, bidId, bid);
 };
 
 export default { createNewBid, updateBid };
