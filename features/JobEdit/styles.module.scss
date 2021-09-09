@@ -6,6 +6,7 @@
   &__desktop {
     max-width: rem-calc(600);
   }
+
   @include media-query(desktop) {
     &__fields {
       display: grid;
@@ -106,6 +107,23 @@
       path:last-child {
         fill: $white !important;
       }
+    }
+  }
+
+  &__bid {
+    &__title {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    &__status {
+      @extend %gridHeaderCreateButton;
+    }
+
+    a {
+      text-decoration: underline;
+      min-width: rem-calc(62);
     }
   }
 
