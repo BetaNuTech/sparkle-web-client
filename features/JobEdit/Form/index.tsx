@@ -24,6 +24,7 @@ import ErrorList from '../../../common/ErrorList';
 import utilString from '../../../common/utils/string';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
+import bidsConfig from '../../../config/bids';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
@@ -32,6 +33,7 @@ import DropdownHeader from '../DropdownHeader';
 import DropdownAttachment from '../DropdownAttachment';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
+import { colors as bidColors } from '../../JobBids';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
@@ -76,6 +78,8 @@ interface LayoutProps {
   isMobile: boolean;
   jobLink: string;
   job: jobModel;
+  bids: Array<bidModel>;
+  propertyId: string;
   isNewJob: boolean;
   isApprovedOrAuthorized: boolean;
   isJobComplete: boolean;
@@ -98,6 +102,8 @@ interface LayoutProps {
 const Layout: FunctionComponent<LayoutProps> = ({
   isMobile,
   job,
+  bids,
+  propertyId,
   isNewJob,
   isApprovedOrAuthorized,
   isJobComplete,
@@ -396,8 +402,74 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         onClick={() => openTrelloCardInputPrompt()}
                         data-testid="add-trello-card-btn"
                       >
-                        Add Trello Card
+                        Add Trello Card{' '}
+                        <span>
+                          <AddIcon />
+                        </span>
                       </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {/** Add Bid card */}
+              {!isNewJob && (
+                <div className={clsx(styles.jobNew__card, '-mt')}>
+                  <div className={styles.jobNew__card__pill__action}>
+                    <h4 className={styles.jobNew__card__title}>Bids</h4>
+                  </div>
+                  {bids.length > 0 ? (
+                    bids.map((b) => (
+                      <Link
+                        href={`/properties/${propertyId}/jobs/${job.id}/bids/${b.id}`}
+                        key={b.id}
+                      >
+                        <a>
+                          <div
+                            className={clsx(
+                              styles.jobNew__card__pill,
+                              styles.jobNew__bid,
+                              '-mt'
+                            )}
+                            data-testid="bid-edit-card-pill"
+                          >
+                            <div className={styles.jobNew__bid__title}>
+                              <h5 className={styles.jobNew__card__pill__title}>
+                                {b.vendor}
+                              </h5>
+                              <span
+                                className={clsx(
+                                  styles.jobNew__bid__status,
+                                  bidColors[bidsConfig.stateColors[b.state]]
+                                )}
+                              >
+                                {utilString.titleize(b.state)}
+                              </span>
+                            </div>
+                            <a>View Bid</a>
+                          </div>
+                        </a>
+                      </Link>
+                    ))
+                  ) : (
+                    <div
+                      className={clsx(styles.button__group, '-mt', '-mr-none')}
+                    >
+                      <Link
+                        href={`/properties/${propertyId}/jobs/${job.id}/bids/new`}
+                      >
+                        <a
+                          className={clsx(
+                            styles.button__submit,
+                            isMobile && styles.button__fullwidth
+                          )}
+                          data-testid="add-bid-card-btn"
+                        >
+                          Add First Bid{' '}
+                          <span>
+                            <AddIcon />
+                          </span>
+                        </a>
+                      </Link>
                     </div>
                   )}
                 </div>
@@ -694,6 +766,8 @@ const JobForm: FunctionComponent<Props> = ({
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
+            bids={bids}
+            propertyId={property.id}
             isNewJob={isNewJob}
             isApprovedOrAuthorized={isApprovedOrAuthorized}
             isJobComplete={isJobComplete}
@@ -739,6 +813,8 @@ const JobForm: FunctionComponent<Props> = ({
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}
+            bids={bids}
+            propertyId={property.id}
             isNewJob={isNewJob}
             isApprovedOrAuthorized={isApprovedOrAuthorized}
             isJobComplete={isJobComplete}

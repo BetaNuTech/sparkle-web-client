@@ -918,4 +918,82 @@ describe('Unit | Features | Job Edit | Form', () => {
     const btnAddTrelloCard = screen.queryByTestId('add-trello-card-btn');
     expect(btnAddTrelloCard).toBeNull();
   });
+
+  it('should show bid add if no bids are present', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: approvedMaintenanceJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids: [],
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const elAddBidCard = screen.queryByTestId('add-bid-card-btn');
+    const elEditBidCard = screen.queryAllByTestId('bid-edit-card-pill');
+    expect(elAddBidCard).toBeTruthy();
+    expect(elEditBidCard.length).toEqual(0);
+  });
+
+  it('should show bid list cards if bids are present', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: approvedMaintenanceJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const elAddBidCard = screen.queryByTestId('add-bid-card-btn');
+    const elEditBidCard = screen.queryAllByTestId('bid-edit-card-pill');
+    expect(elAddBidCard).toBeNull();
+    expect(elEditBidCard.length).toEqual(bids.length);
+  });
 });
