@@ -38,11 +38,28 @@
     position: relative;
     min-height: rem-calc(80);
 
-    &__link {
+    &__edit {
       display: flex;
-      justify-content: space-between;
       flex: 1 1 auto;
-      position: relative;
+      a {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+      }
+    }
+
+    &__bid {
+      display: flex;
+      a {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      &Link {
+        text-decoration: underline;
+        margin-top: $global-sm-padding;
+      }
     }
 
     &:last-child {
@@ -89,8 +106,8 @@
   transition: transform 400ms ease-out;
   padding: rem-calc(8) rem-calc(16);
   background-color: $white;
+  justify-content: space-between;
 }
-
 
 //
 // Swipe Reveal Buttons
@@ -112,5 +129,4 @@
   &__editButton {
     background-color: $primary-dark-color !important;
   }
-
 }

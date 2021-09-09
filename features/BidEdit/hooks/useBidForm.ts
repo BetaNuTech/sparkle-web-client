@@ -12,7 +12,7 @@ export interface BidApiResult {
 interface useBidFormResult {
   apiState: BidApiResult;
   postBidCreate(propertyId: string, jobId: string, bid: bidModel): void;
-  putBidUpdate(propertyId: string, jobId: string, bid: bidModel): void;
+  putBidUpdate(propertyId: string, jobId: string, bidId: string, bid: bidModel): void;
   error: Error;
 }
 
@@ -64,6 +64,7 @@ export default function useBidForm(bidApi: bidModel): useBidFormResult {
   const putBidUpdate = async (
     propertyId: string,
     jobId: string,
+    bidId: string,
     bid: bidModel
   ) => {
     setApiState({
@@ -76,7 +77,7 @@ export default function useBidForm(bidApi: bidModel): useBidFormResult {
     let res = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      res = await bidsApi.updateBid(propertyId, jobId, bid);
+      res = await bidsApi.updateBid(propertyId, jobId, bidId, bid);
     } catch (err) {
       setError(Error(`${PREFIX} putBidUpdate: request failed: ${err}`));
     }

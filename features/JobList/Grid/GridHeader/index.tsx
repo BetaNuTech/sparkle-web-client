@@ -105,6 +105,7 @@ const GridHeader: FunctionComponent<Props> = ({
           className={parentStyles.propertyJobs__gridHeader__direction}
         ></span>
       </button>
+      <h6 className={parentStyles.propertyJobs__gridHeader__column}>&nbsp;</h6>
     </header>
   </>
 );

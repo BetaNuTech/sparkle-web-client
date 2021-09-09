@@ -457,7 +457,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
     });
 
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[2] : {};
+    const result = putReq.called ? putReq.getCall(0).args[3] : {};
     const actual = result.state || '';
     expect(actual).toEqual(expected);
   });
