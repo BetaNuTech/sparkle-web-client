@@ -1,6 +1,5 @@
 import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
-import { Context as ResponsiveContext } from 'react-responsive';
 import userEvent from '@testing-library/user-event';
 import { FirebaseAppProvider } from 'reactfire';
 import { ToastContainer } from 'react-toastify';
@@ -9,7 +8,6 @@ import mockProperties, { propertyB } from '../../../../../__mocks__/properties';
 import mockTeams from '../../../../../__mocks__/teams';
 import { fullInspection } from '../../../../../__mocks__/inspections';
 import ReasingInspection from '../../../../../features/PropertyProfile/ReasignInspection';
-import breakpoints from '../../../../../config/breakpoints';
 import firebaseConfig from '../../../../../config/firebase';
 
 function render(ui: any, options: any = {}) {

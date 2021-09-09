@@ -6,7 +6,6 @@ import utilString from '../../../../../common/utils/string';
 import utilDate from '../../../../../common/utils/date';
 import useVisibility from '../../../../../common/hooks/useVisibility';
 import useSwipeReveal from '../../../../../common/hooks/useSwipeReveal';
-import ChevronIcon from '../../../../../public/icons/ios/chevron.svg';
 import styles from '../styles.module.scss';
 
 interface ItemProps {
@@ -27,6 +26,7 @@ const Item: FunctionComponent<ItemProps> = ({
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
   useSwipeReveal(ref, setIsSwipeOpen);
+  const viewBidLink = `/properties/${propertyId}/jobs/${job.id}/bids`;
 
   const { isVisible } = useVisibility(ref, {}, forceVisible);
   return (
@@ -47,9 +47,9 @@ const Item: FunctionComponent<ItemProps> = ({
                 : styles.itemResult__content
             }
           >
-            <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
-              <a className={styles.jobList__record__link}>
-                <div>
+            <div className={styles.jobList__record__edit}>
+              <Link href={`/properties/${propertyId}/jobs/edit/${job.id}`}>
+                <a>
                   <h3
                     className={styles.jobList__record__title}
                     data-testid="mobile-row-job-title"
@@ -77,8 +77,12 @@ const Item: FunctionComponent<ItemProps> = ({
                       {utilDate.toUserDateTimeDisplay(job.updatedAt)}
                     </span>
                   </div>
-                </div>
-                <div>
+                </a>
+              </Link>
+            </div>
+            <div className={styles.jobList__record__bid}>
+              <Link href={viewBidLink}>
+                <a>
                   <span
                     className={clsx(
                       styles.jobList__record__type,
@@ -88,12 +92,10 @@ const Item: FunctionComponent<ItemProps> = ({
                   >
                     {utilString.titleize(job.type)}
                   </span>
-                  <span className={styles.jobList__record__toogle}>
-                    <ChevronIcon />
-                  </span>
-                </div>
-              </a>
-            </Link>
+                  <span className={styles.jobList__record__bidLink}>View Bids</span>
+                </a>
+              </Link>
+            </div>
           </div>
 
           {/* Swipe Reveal Actions */}

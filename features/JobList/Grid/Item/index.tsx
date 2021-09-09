@@ -1,13 +1,10 @@
 import { FunctionComponent, useRef } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
-import Router from 'next/router';
 import utilDate from '../../../../common/utils/date';
 import utilString from '../../../../common/utils/string';
 import jobModel from '../../../../common/models/job';
 import useVisibility from '../../../../common/hooks/useVisibility';
-import Dropdown, { DropdownButton } from '../../../../common/Dropdown';
-import ActionsIcon from '../../../../public/icons/ios/actions.svg';
 import parentStyles from '../styles.module.scss';
 
 interface ListItemProps {
@@ -25,15 +22,11 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   configJobs,
   forceVisible
 }) => {
-  // Hack to allow nested linking
-  const goToEditJob = (evt) => {
-    evt.preventDefault();
-    Router.push(`/properties/${propertyId}/jobs/edit/${job.id}`);
-  };
   const ref = useRef(null);
 
   const { isVisible } = useVisibility(ref, {}, forceVisible);
   const jobType = utilString.titleize(job.type);
+  const viewBidLink = `/properties/${propertyId}/jobs/${job.id}/bids`;
   return (
     <li
       className={clsx(parentStyles.propertyJobs__gridRow)}
@@ -41,7 +34,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
       ref={ref}
     >
       {isVisible ? (
-        <Link href={`/properties/${propertyId}/jobs/${job.id}/bids`}>
+        <Link href={`/properties/${propertyId}/jobs/edit/${job.id}`}>
           <a className={parentStyles.propertyJobs__gridRow__link}>
             <div
               className={parentStyles.propertyJobs__gridRow__column}
@@ -75,14 +68,11 @@ const ListItem: FunctionComponent<ListItemProps> = ({
               >
                 {jobType}
               </span>
-              <div className={parentStyles.propertyProfile__gridRow__column}>
-                <span className={parentStyles.propertyJobs__gridRow__actions}>
-                  <ActionsIcon />
-                  <Dropdown>
-                    <DropdownButton onClick={goToEditJob}>Edit</DropdownButton>
-                  </Dropdown>
-                </span>
-              </div>
+            </div>
+            <div className={parentStyles.propertyJobs__gridRow__column}>
+              <Link href={viewBidLink}>
+                <a>View Bids</a>
+              </Link>
             </div>
           </a>
         </Link>
