@@ -121,7 +121,7 @@
       @extend %gridHeaderCreateButton;
     }
 
-    a {
+    &__link {
       text-decoration: underline;
       min-width: rem-calc(62);
     }

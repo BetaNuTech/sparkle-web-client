@@ -150,7 +150,9 @@
     padding-right: $global-padding;
     justify-content: flex-end;
     align-items: initial;
-    a {
+
+    span {
+      color: $primary-color;
       text-decoration: underline;
       display: flex;
       flex: 1 1 auto;

@@ -5,14 +5,15 @@ import LoadingHud from '../../common/LoadingHud';
 import useProperty from '../../common/hooks/useProperty';
 import useJob from '../../common/hooks/useJob';
 import useStorage, { StorageResult } from '../../common/hooks/useStorage';
+import useJobBids from '../../common/hooks/useJobBids';
 import userModel from '../../common/models/user';
+import bidModel from '../../common/models/bid';
 import bidAttachmentModel from '../../common/models/bidAttachment';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import errorReports from '../../common/services/api/errorReports';
 import bidsDb from '../../common/services/firestore/bids';
 import storage from '../../common/services/storage';
-import useBid from './hooks/useBid';
 import useBidForm from './hooks/useBidForm';
 import useBidStatus from './hooks/useBidStatus';
 import uploadAttachmentService from './services/uploadAttachment';
@@ -52,10 +53,26 @@ const BidEdit: FunctionComponent<Props> = ({
   // Fetch the data of job
   const { data: job } = useJob(firestore, jobId);
   // Fetch the data of bid
-  const { data: bid, status: bidStatus } = useBid(firestore, bidId);
+  const { data: bids, status: bidApiStatus } = useJobBids(firestore, jobId);
+
+  // Get current bid from bids array
+  const selectedBid = bids.filter((b) => b.id === bidId);
+  const bid = selectedBid.length > 0 ? selectedBid[0] : ({} as bidModel);
+
+  // Get all other bids
+  const otherBids = bids.filter((b) => b.id !== bidId);
+
+  // We are checking that when we have success from bids api
+  // then if we have bid then means we have bid otherwise it is error
+  const bidStatus =
+    // eslint-disable-next-line no-nested-ternary
+    bidApiStatus === 'success'
+      ? Object.keys(bid).length > 0
+        ? 'success'
+        : 'error'
+      : 'loading';
 
   const { apiState, postBidCreate, putBidUpdate } = useBidForm(bid);
-
   const { uploadFileToStorage } = useStorage();
 
   const [uploadState, setUploadState] = useState(false);
@@ -160,15 +177,17 @@ const BidEdit: FunctionComponent<Props> = ({
   // NOTE: contains side effects: redirects, notifications, and error reporting
   // TODO: refactor away from hook to more appropriate abstraction
   useBidStatus(apiState, bidId, jobId, propertyId, sendNotification);
+
   // Loading State
-  if (!property || !job || (bidId !== 'new' && !bid)) {
+  const isLoadingBid = bidId !== 'new' && Object.keys(bid).length === 0;
+  if (!property || !job || isLoadingBid) {
     return <LoadingHud title="Loading Bid" />;
   }
 
   // Redirect user requesting non-existent job
   if (bidId !== 'new' && bidStatus === 'error') {
     sendNotification('Bid could not be found', { type: 'error' });
-    Router.push(`/properties/${propertyId}/jobs/${bidId}/bids`);
+    Router.push(`/properties/${propertyId}/jobs/${jobId}/bids`);
   }
 
   return (
@@ -179,6 +198,7 @@ const BidEdit: FunctionComponent<Props> = ({
       toggleNavOpen={toggleNavOpen}
       job={job}
       bid={bid}
+      otherBids={otherBids}
       isNewBid={isNewBid}
       apiState={apiState}
       postBidCreate={postBidCreate}

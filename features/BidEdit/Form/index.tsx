@@ -24,7 +24,9 @@ import ErrorList from '../../../common/ErrorList';
 import MobileHeader from '../../../common/MobileHeader';
 import breakpoints from '../../../config/breakpoints';
 import bidsConfig from '../../../config/bids';
+import jobsConfig from '../../../config/jobs';
 import formats from '../../../config/formats';
+import { colors as jobColors } from '../../JobList';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import { BidApiResult } from '../hooks/useBidForm';
@@ -40,6 +42,7 @@ interface Props {
   property: propertyModel;
   job: jobModel;
   bid: bidModel;
+  otherBids: bidModel[];
   isNewBid: boolean;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -79,6 +82,7 @@ interface LayoutProps {
   isMobile: boolean;
   job: jobModel;
   bid: bidModel;
+  otherBids: bidModel[];
   bidLink: string;
   isNewBid: boolean;
   isBidComplete: boolean;
@@ -112,6 +116,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   isMobile,
   job,
   bid,
+  otherBids,
   bidLink,
   isNewBid,
   onSubmit,
@@ -154,20 +159,51 @@ const Layout: FunctionComponent<LayoutProps> = ({
   };
 
   const jobBidsLink = `/properties/${propertyId}/jobs/${job.id}/bids`;
+  const jobEditLink = `/properties/${propertyId}/jobs/edit/${job.id}`;
   const openAttachmentDeletePrompt = (attachment: bidAttachmentModel) => {
     queueAttachmentForDelete(attachment);
     setDeleteAttachmentPromptVisible(true);
   };
 
+  const otherBidsText =
+    // eslint-disable-next-line no-nested-ternary
+    otherBids.length === 0
+      ? 'No other bids'
+      : otherBids.length === 1
+      ? '1 other bid'
+      : `${otherBids.length} other bids`;
+
   return (
     <>
       {!isNewBid && isMobile && (
-        <h1 data-testid="bid-form-title-mobile" className={styles.mobileTitle}>
-          <Link href={jobBidsLink}>
-            <a></a>
-          </Link>
-          {job.title}
-        </h1>
+        <header className={styles.form__extHeader}>
+          <h1
+            data-testid="bid-form-title-mobile"
+            className={styles.form__extHeader__title}
+          >
+            <Link href={jobBidsLink}>
+              <a></a>
+            </Link>
+            {job.title}
+          </h1>
+
+          <aside className={styles.form__extHeader__aside}>
+            <span
+              className={clsx(
+                styles.form__extHeader__aside__status,
+                jobColors[jobsConfig.stateColors[job.state]]
+              )}
+            >
+              {utilString.titleize(job.state)}
+            </span>
+            <span className={styles.form__extHeader__aside__meta}>
+              {otherBidsText}
+            </span>
+            <Link href={jobEditLink}>
+              <a className={styles.form__extHeader__aside__cta}>Edit Job</a>
+            </Link>
+          </aside>
+        </header>
       )}
       <div className={styles.form__grid}>
         {!isNewBid && (
@@ -416,7 +452,27 @@ const Layout: FunctionComponent<LayoutProps> = ({
             </div>
 
             <div className={styles.form__fields__rightColumn}>
-              <div className={styles.form__group}>
+              <div className={clsx(styles.form__group)}>
+                <label>Job Info</label>
+              </div>
+              <div className={clsx(styles.form__card__pill, '-mt')}>
+                <span
+                  className={clsx(
+                    styles.mobileJobInfo__status,
+                    jobColors[jobsConfig.stateColors[job.state]]
+                  )}
+                >
+                  {utilString.titleize(job.state)}
+                </span>
+                <span className={styles.mobileJobInfo__other}>
+                  {otherBidsText}
+                </span>
+                <Link href={jobEditLink}>
+                  <a>Edit Job</a>
+                </Link>
+              </div>
+
+              <div className={clsx(styles.form__group, '-mt-lg')}>
                 <div className={styles.form__formSeparatedLabel}>
                   <label htmlFor="bidVendorDetails">Attachments</label>
                   <button
@@ -598,6 +654,7 @@ const BidForm: FunctionComponent<Props> = ({
   property,
   job,
   bid,
+  otherBids,
   isNewBid,
   isOnline,
   isStaging,
@@ -922,6 +979,7 @@ const BidForm: FunctionComponent<Props> = ({
             isMobile={isMobileorTablet}
             job={job}
             bid={bid || ({} as bidModel)}
+            otherBids={otherBids}
             isNewBid={isNewBid}
             bidLink={bidLink}
             register={register}
@@ -981,6 +1039,7 @@ const BidForm: FunctionComponent<Props> = ({
             isMobile={isMobileorTablet}
             job={job}
             bid={bid || ({} as bidModel)}
+            otherBids={otherBids}
             isNewBid={isNewBid}
             bidLink={bidLink}
             register={register}
