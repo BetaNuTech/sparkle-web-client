@@ -46,7 +46,6 @@ const Page: FunctionComponent = () => {
       {isLoaded ? (
         <PropertyEdit
           user={user}
-          id={id}
           property={property}
           teams={teams}
           templates={templates}

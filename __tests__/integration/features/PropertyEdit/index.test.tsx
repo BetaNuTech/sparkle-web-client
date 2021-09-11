@@ -1,5 +1,11 @@
 import sinon from 'sinon';
-import { render as rtlRender, screen, waitFor } from '@testing-library/react';
+import {
+  render as rtlRender,
+  screen,
+  waitFor,
+  act,
+  fireEvent
+} from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
 import userEvent from '@testing-library/user-event';
@@ -45,12 +51,12 @@ describe('Integration | Features | Property Edit', () => {
       'template-2': true
     };
     const [template] = mockTemplates;
-    const onSave = sinon.stub(propertiesAPI, 'update').resolves(fullProperty);
+    const onSave = sinon
+      .stub(propertiesAPI, 'updateRecord')
+      .resolves(fullProperty);
     const props = {
       isOnline: true,
       user,
-      id: fullProperty.id,
-      propertyId: '123',
       property: fullProperty,
       teams: mockTeams,
       templates: mockTemplates,
@@ -59,12 +65,16 @@ describe('Integration | Features | Property Edit', () => {
     render(<PropertyEdit {...props} />);
 
     const templatesButton = screen.getByTestId('templates-button-desktop');
-    userEvent.click(templatesButton);
+    await act(async () => {
+      await userEvent.click(templatesButton);
+    });
     await waitFor(() => screen.queryByTestId('property-edit-template-modal'));
     const template1 = screen.getByTestId(`checkbox-item-${template.id}`);
     const save = screen.getByTestId('save-button-desktop');
-    await userEvent.click(template1);
-    await userEvent.click(save);
+    await act(async () => {
+      await userEvent.click(template1);
+      await userEvent.click(save);
+    });
 
     const result = onSave.firstCall || { args: [] };
     const payload = result.args[1] || { templates: [] };
@@ -82,12 +92,12 @@ describe('Integration | Features | Property Edit', () => {
     const [template] = mockTemplates;
     const property = deepClone(fullProperty);
     (property.templates || {})[template.id] = true; // add template to property
-    const onSave = sinon.stub(propertiesAPI, 'update').resolves(fullProperty);
+    const onSave = sinon
+      .stub(propertiesAPI, 'updateRecord')
+      .resolves(fullProperty);
     const props = {
       isOnline: true,
       user,
-      id: fullProperty.id,
-      propertyId: '123',
       property: fullProperty,
       teams: mockTeams,
       templates: mockTemplates,
@@ -101,9 +111,11 @@ describe('Integration | Features | Property Edit', () => {
     const template3 = screen.getByTestId('checkbox-item-template-3');
     const template4 = screen.getByTestId('checkbox-item-template-4');
     const save = screen.getByTestId('save-button-desktop');
-    await userEvent.click(template3);
-    await userEvent.click(template4);
-    await userEvent.click(save);
+    await act(async () => {
+      await userEvent.click(template3);
+      await userEvent.click(template4);
+      await userEvent.click(save);
+    });
 
     const result = onSave.firstCall || { args: [] };
     const payload = result.args[1] || { templates: [] };
@@ -113,12 +125,12 @@ describe('Integration | Features | Property Edit', () => {
 
   it('should allow users to unselect team and submit', async () => {
     const expected = '';
-    const onSave = sinon.stub(propertiesAPI, 'update').resolves(fullProperty);
+    const onSave = sinon
+      .stub(propertiesAPI, 'updateRecord')
+      .resolves(fullProperty);
     const props = {
       isOnline: true,
       user,
-      id: fullProperty.id,
-      propertyId: '123',
       property: fullProperty,
       teams: mockTeams,
       templates: mockTemplates,
@@ -127,13 +139,14 @@ describe('Integration | Features | Property Edit', () => {
     render(<PropertyEdit {...props} />);
 
     const teamButton = screen.getByTestId('team-button-desktop');
-    userEvent.click(teamButton);
+    await userEvent.click(teamButton);
     screen.queryByTestId('update-team-modal');
     const team1 = screen.getByTestId('checkbox-item-team-1');
     await userEvent.click(team1);
-    await userEvent.click(team1);
     const save = screen.getByTestId('save-button-desktop');
-    await userEvent.click(save);
+    await act(async () => {
+      await userEvent.click(save);
+    });
 
     const result = onSave.firstCall || { args: [] };
     const payload = result.args[1] || { team: 'team-1' };
@@ -144,12 +157,12 @@ describe('Integration | Features | Property Edit', () => {
 
   it('should allow users to select team and submit', async () => {
     const expected = 'team-2';
-    const onSave = sinon.stub(propertiesAPI, 'update').resolves(fullProperty);
+    const onSave = sinon
+      .stub(propertiesAPI, 'updateRecord')
+      .resolves(fullProperty);
     const props = {
       isOnline: true,
       user,
-      id: fullProperty.id,
-      propertyId: '123',
       property: fullProperty,
       teams: mockTeams,
       templates: mockTemplates,
@@ -163,11 +176,67 @@ describe('Integration | Features | Property Edit', () => {
     const team2 = screen.getByTestId('checkbox-item-team-2');
     const save = screen.getByTestId('save-button-desktop');
     await userEvent.click(team2);
-    await userEvent.click(save);
+    await act(async () => {
+      await userEvent.click(save);
+    });
 
     const result = onSave.firstCall || { args: [] };
     const payload = result.args[1] || { team: '' };
     const actual = payload.team;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Publishes a new property when it does not exist yet', async () => {
+    const expected = true;
+    const props = {
+      isOnline: true,
+      user,
+      property: {},
+      teams: mockTeams,
+      templates: mockTemplates,
+      templateCategories: mockTemplateCategories
+    };
+    render(<PropertyEdit {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const postReq = sinon.stub(propertiesAPI, 'createRecord').resolves({});
+
+    await act(async () => {
+      const [save] = await screen.findAllByTestId('save-button-desktop');
+      const nameInput = await screen.findByTestId('property-form-name');
+      await fireEvent.change(nameInput, { target: { value: 'New Property' } });
+      await userEvent.click(save);
+    });
+
+    const actual = postReq.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('Updates a property when it already exists', async () => {
+    const expected = true;
+    const props = {
+      isOnline: true,
+      user,
+      property: fullProperty,
+      teams: mockTeams,
+      templates: mockTemplates,
+      templateCategories: mockTemplateCategories
+    };
+    render(<PropertyEdit {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const putReq = sinon.stub(propertiesAPI, 'updateRecord').resolves({});
+
+    await act(async () => {
+      const [save] = await screen.findAllByTestId('save-button-desktop');
+      const nameInput = await screen.findByTestId('property-form-name');
+      await fireEvent.change(nameInput, { target: { value: 'New Property' } });
+      await userEvent.click(save);
+    });
+
+    const actual = putReq.called;
     expect(actual).toEqual(expected);
   });
 });
