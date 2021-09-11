@@ -12,7 +12,7 @@ import { FirebaseAppProvider } from 'reactfire';
 import { ToastContainer } from 'react-toastify';
 import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
-import { openBid } from '../../../../__mocks__/bids';
+import mockBids from '../../../../__mocks__/bids';
 import { openImprovementJob } from '../../../../__mocks__/jobs';
 import BidEdit from '../../../../features/BidEdit';
 import BidErrors from '../../../../features/BidEdit/Form/errors';
@@ -54,9 +54,9 @@ function render(ui: any, options: any = {}) {
   const bidsPayload: bidsCollectionResult = {
     status: options.bidStatus || 'success',
     error: options.bidError || null,
-    data: options.bid || (!options.bidStatus && openBid)
+    data: options.bids || (!options.bidStatus && mockBids)
   };
-  sinon.stub(bidsApi, 'findRecord').returns(bidsPayload);
+  sinon.stub(bidsApi, 'queryByJob').returns(bidsPayload);
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
@@ -113,6 +113,7 @@ describe('Integration | Features | Bid Edit', () => {
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth,
+        bids: [],
         bidStatus: 'loading'
       }
     );

@@ -60,7 +60,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -118,7 +119,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     const { container } = render(<BidEditForm {...props} />, {
@@ -169,7 +171,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     const { container } = render(<BidEditForm {...props} />, {
@@ -220,7 +223,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -270,7 +274,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -320,7 +325,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -360,7 +366,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -402,7 +409,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -444,7 +452,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileSize: null,
         fileType: null
       },
-      attachmentState: { isLoading: false, error: false }
+      attachmentState: { isLoading: false, error: false },
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {
@@ -477,7 +486,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       postBidCreate: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {}
+      putBidUpdate: () => {},
+      otherBids: []
     };
 
     render(<BidEditForm {...props} />, {

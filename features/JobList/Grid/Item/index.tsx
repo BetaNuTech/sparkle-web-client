@@ -71,7 +71,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             </div>
             <div className={parentStyles.propertyJobs__gridRow__column}>
               <Link href={viewBidLink}>
-                <a>View Bids</a>
+                <span>View Bids</span>
               </Link>
             </div>
           </a>

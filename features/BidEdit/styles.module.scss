@@ -10,8 +10,36 @@
   }
 }
 
-.mobileTitle {
-  @extend %gridMobileHeaderBackButton;
+.form__extHeader {
+  background-color: $gray;
+  padding: rem-calc(12);
+
+  &__title {
+    @extend %gridMobileHeaderBackButton;
+    padding: 0;
+  }
+
+  &__aside {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: rem-calc(38);
+
+    &__meta {
+      color: $gray-6;
+    }
+
+    &__status {
+      @extend %gridHeaderCreateButton;
+      cursor: default;
+    }
+
+    &__cta {
+      display: flex;
+      align-items: center;
+      text-decoration: underline;
+    }
+  }
 }
 
 .bid__info {
@@ -115,6 +143,22 @@
     // &__rightColumn {}
   }
 
+  &__card {
+    @extend %card;
+
+    &__title {
+      @extend %card__title;
+    }
+
+    &__pill {
+      @extend %card__pill;
+
+      &__title {
+        @extend %card__pill__title;
+      }
+    }
+  }
+
   &__row {
     display: flex;
     flex-wrap: wrap;
@@ -144,9 +188,11 @@
   &__formCost {
     display: flex;
     justify-content: space-between;
+
     label {
       font-weight: 600;
     }
+
     &__select {
       display: flex;
 
@@ -226,12 +272,15 @@
 
     &__control {
       margin-bottom: rem-calc(16);
+
       &--radio {
         display: flex;
         gap: rem-calc(16);
+
         label {
           font-weight: normal;
         }
+
         input[type='radio'] {
           margin-right: rem-calc(8);
         }

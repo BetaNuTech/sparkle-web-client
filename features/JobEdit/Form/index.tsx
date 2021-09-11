@@ -445,7 +445,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                                 {utilString.titleize(b.state)}
                               </span>
                             </div>
-                            <a>View Bid</a>
+                            <span className={styles.jobNew__bid__link}>
+                              View Bid
+                            </span>
                           </div>
                         </a>
                       </Link>
