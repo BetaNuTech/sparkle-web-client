@@ -190,17 +190,15 @@ const Layout: FunctionComponent<LayoutProps> = ({
           <aside className={styles.form__extHeader__aside}>
             <span
               className={clsx(
-                styles.form__extHeader__aside__status,
+                styles.form__parentStatusLabel,
                 jobColors[jobsConfig.stateColors[job.state]]
               )}
             >
               {utilString.titleize(job.state)}
             </span>
-            <span className={styles.form__extHeader__aside__meta}>
-              {otherBidsText}
-            </span>
+            <span className={styles.form__parentDetail}>{otherBidsText}</span>
             <Link href={jobEditLink}>
-              <a className={styles.form__extHeader__aside__cta}>Edit Job</a>
+              <a className={styles.form__parentLink}>Edit Job</a>
             </Link>
           </aside>
         </header>
@@ -458,17 +456,17 @@ const Layout: FunctionComponent<LayoutProps> = ({
               <div className={clsx(styles.form__card__pill, '-mt')}>
                 <span
                   className={clsx(
-                    styles.mobileJobInfo__status,
+                    styles.form__parentStatusLabel,
                     jobColors[jobsConfig.stateColors[job.state]]
                   )}
                 >
                   {utilString.titleize(job.state)}
                 </span>
-                <span className={styles.mobileJobInfo__other}>
+                <span className={styles.form__parentDetail}>
                   {otherBidsText}
                 </span>
                 <Link href={jobEditLink}>
-                  <a>Edit Job</a>
+                  <a className={styles.form__parentLink}>Edit Job</a>
                 </Link>
               </div>
 

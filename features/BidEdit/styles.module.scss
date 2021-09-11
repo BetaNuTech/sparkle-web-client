@@ -24,21 +24,6 @@
     justify-content: space-between;
     align-items: center;
     margin-left: rem-calc(38);
-
-    &__meta {
-      color: $gray-6;
-    }
-
-    &__status {
-      @extend %gridHeaderCreateButton;
-      cursor: default;
-    }
-
-    &__cta {
-      display: flex;
-      align-items: center;
-      text-decoration: underline;
-    }
   }
 }
 
@@ -324,4 +309,20 @@
       max-width: 50%;
     }
   }
+}
+
+// Parent Job UI Elements
+.form__parentStatusLabel {
+  @extend %gridHeaderCreateButton;
+  cursor: default;
+}
+
+.form__parentDetail {
+  color: $gray-6;
+}
+
+.form__parentLink {
+  display: flex;
+  align-items: center;
+  text-decoration: underline;
 }

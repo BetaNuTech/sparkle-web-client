@@ -2,8 +2,8 @@
 
 .propertyEditDesktop {
   &__mainContainer {
-    background-color: $gray;
     max-height: 100vh;
+    background-color: $gray;
   }
 
   &__form {
@@ -33,6 +33,7 @@
       border: 1px solid $gray-lighter;
       padding: 0;
     }
+
     &__fields {
       grid-area: fields;
       display: flex;
@@ -43,6 +44,7 @@
       overflow: auto;
       background-color: $white-dark;
     }
+
     &__templates {
       grid-area: temp;
       border: 1px solid $gray-lighter;
@@ -258,6 +260,16 @@
   &__templates__list {
     height: 65%;
     background-color: $white-dark;
+    overflow: auto;
+    &__item {
+      height: rem-calc(45);
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding-left: $global-mlg-padding;
+      font-size: $medium-small-font-size;
+      border-bottom: 1px solid $gray-lighter;
+    }
   }
 
   &__templates__buttons {

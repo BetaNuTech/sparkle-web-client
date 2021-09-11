@@ -1,7 +1,10 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import { FunctionComponent } from 'react';
+import { PropertyApiResult } from '../hooks/usePropertyForm';
 import styles from './styles.module.scss';
+import propertyModel from '../../../common/models/property';
+import ErrorLabel from '../../../common/ErrorLabel';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 
 interface Props {
@@ -11,6 +14,10 @@ interface Props {
   property?: any;
   properyImg: string;
   logoImg: string;
+  formState: propertyModel;
+  templateNames: Array<string>;
+  apiState: PropertyApiResult;
+  formErrors?: any;
   openUpdateTeamModal: (e) => void;
   openTemplatesEditModal: (e) => void;
   onSubmit: (action: any) => void;
@@ -25,6 +32,10 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
   selectedTeamId,
   properyImg,
   logoImg,
+  formState,
+  templateNames,
+  apiState,
+  formErrors,
   openUpdateTeamModal,
   openTemplatesEditModal,
   handleChange,
@@ -77,10 +88,10 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
           )}
           {/* Property Image */}
           <input
-            id="propertyImage"
+            id="photoURL"
             type="file"
             accept="image/png, image/jpeg"
-            name="propertyImage"
+            name="photoURL"
             disabled={!isOnline}
             className={styles.propertyEditDesktop__imageInput}
             data-testid="property-form-add-image"
@@ -88,7 +99,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
           />
           <label
             className={styles.propertyEditDesktop__imageInputLabel}
-            htmlFor="propertyImage"
+            htmlFor="photoURL"
           >
             {properyImg ? (
               <>
@@ -116,9 +127,23 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
         </div>
         <div className={styles.propertyEditDesktop__container__templates}>
           <div className={styles.propertyEditDesktop__templates__title}>
-            TEMPLATES
+            TEMPLATES ({templateNames.length})
           </div>
-          <div className={styles.propertyEditDesktop__templates__list}></div>
+          <div className={styles.propertyEditDesktop__templates__list}>
+            {templateNames.length
+              ? templateNames.map((template) => (
+                  <div
+                    key={template}
+                    className={
+                      styles.propertyEditDesktop__templates__list__item
+                    }
+                    data-testid={`template-${template}`}
+                  >
+                    {template}
+                  </div>
+                ))
+              : null}
+          </div>
           <div className={styles.propertyEditDesktop__templates__buttons}>
             {/* Templates button */}
             <button
@@ -141,18 +166,18 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               <label htmlFor="logo">Logo Image</label>
               <div className={styles.propertyEditDesktop__formGroup__control}>
                 <input
-                  id="logo"
+                  id="logoURL"
                   type="file"
                   accept="image/png, image/jpeg"
                   disabled={!isOnline}
-                  name="logo"
+                  name="logoURL"
                   className={styles.propertyEditDesktop__imageInput}
                   data-testid="property-form-add-logo"
                   onChange={handleChange}
                 />
                 <label
                   className={styles.propertyEditDesktop__logoInputLabel}
-                  htmlFor="logo"
+                  htmlFor="logoURL"
                 >
                   {' '}
                   {logoImg ? (
@@ -193,13 +218,15 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
                 <label htmlFor="name">Name</label>
+                <ErrorLabel formName="nameRequired" errors={formErrors} />
                 <input
                   id="name"
                   type="text"
                   name="name"
                   className={styles.propertyEditDesktop__input}
-                  data-testid="property-name"
+                  data-testid="property-form-name"
                   onChange={handleChange}
+                  value={formState.name || ''}
                 />
               </div>
             </div>
@@ -226,13 +253,15 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             </div>
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
-                <label htmlFor="cobaltCode">Cobalt Property Code</label>
+                <label htmlFor="code">Cobalt Property Code</label>
                 <input
-                  id="cobaltCode"
+                  id="code"
                   type="text"
-                  name="cobaltCode"
+                  name="code"
                   className={styles.propertyEditDesktop__input}
                   data-testid="cobalt-code"
+                  onChange={handleChange}
+                  value={formState.code || ''}
                 />
               </div>
             </div>
@@ -241,22 +270,24 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               <div className={styles.propertyEditDesktop__formGroup__control}>
                 <label htmlFor="address">Address</label>
                 <input
-                  id="address1"
+                  id="addr1"
                   placeholder="Address 1"
                   type="text"
-                  name="address1"
+                  name="addr1"
                   className={styles.propertyEditDesktop__input}
                   data-testid="address-1"
                   onChange={handleChange}
+                  value={formState.addr1 || ''}
                 />
                 <input
-                  id="address2"
+                  id="addr2"
                   placeholder="Address 2"
                   type="text"
-                  name="address2"
+                  name="addr2"
                   className={styles.propertyEditDesktop__input}
                   data-testid="address-2"
                   onChange={handleChange}
+                  value={formState.addr2 || ''}
                 />
                 <input
                   id="city"
@@ -266,6 +297,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   className={styles.propertyEditDesktop__input}
                   data-testid="city"
                   onChange={handleChange}
+                  value={formState.city || ''}
                 />
                 <input
                   id="state"
@@ -275,6 +307,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   className={styles.propertyEditDesktop__input}
                   data-testid="state"
                   onChange={handleChange}
+                  value={formState.state || ''}
                 />
                 <input
                   id="zip"
@@ -284,76 +317,82 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   className={styles.propertyEditDesktop__input}
                   data-testid="zip"
                   onChange={handleChange}
+                  value={formState.zip || ''}
                 />
               </div>
             </div>
             {/* Year Built */}
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
-                <label htmlFor="yearBuilt">Year Built</label>
+                <label htmlFor="year_built">Year Built</label>
                 <input
-                  id="yearBuilt"
+                  id="year_built"
                   type="number"
-                  name="yearBuilt"
+                  name="year_built"
                   className={styles.propertyEditDesktop__input}
                   data-testid="year-built"
                   onChange={handleChange}
+                  value={formState.year_built || ''}
                 />
               </div>
             </div>
             {/* Number of Units */}
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
-                <label htmlFor="numberOfUnits">Number of Units</label>
+                <label htmlFor="num_of_units">Number of Units</label>
                 <input
-                  id="numberOfUnits"
+                  id="num_of_units"
                   type="number"
-                  name="numberOfUnits"
+                  name="num_of_units"
                   className={styles.propertyEditDesktop__input}
                   data-testid="number-of-units"
                   onChange={handleChange}
+                  value={formState.num_of_units || ''}
                 />
               </div>
             </div>
             {/* Manager Name */}
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
-                <label htmlFor="managerName">Manager&#39;s Name</label>
+                <label htmlFor="manager_name">Manager&#39;s Name</label>
                 <input
-                  id="managerName"
+                  id="manager_name"
                   type="text"
-                  name="managerName"
+                  name="manager_name"
                   className={styles.propertyEditDesktop__input}
                   data-testid="manager-name"
                   onChange={handleChange}
+                  value={formState.manager_name || ''}
                 />
               </div>
             </div>
             {/* Super Name */}
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
-                <label htmlFor="superName">Super&#39;s Name</label>
+                <label htmlFor="maint_super_name">Super&#39;s Name</label>
                 <input
-                  id="superName"
+                  id="maint_super_name"
                   type="text"
-                  name="superName"
+                  name="maint_super_name"
                   className={styles.propertyEditDesktop__input}
                   data-testid="super-name"
                   onChange={handleChange}
+                  value={formState.maint_super_name || ''}
                 />
               </div>
             </div>
             {/* Loan Type */}
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
-                <label htmlFor="loanType">Loan Type</label>
+                <label htmlFor="loan_type">Loan Type</label>
                 <input
-                  id="loanType"
+                  id="loan_type"
                   type="text"
-                  name="loanType"
+                  name="loan_type"
                   className={styles.propertyEditDesktop__input}
                   data-testid="loan-type"
                   onChange={handleChange}
+                  value={formState.loan_type || ''}
                 />
               </div>
             </div>
@@ -362,6 +401,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               onClick={(e) => onSubmit(e)}
               className={styles.propertyEditDesktop__saveButton}
               data-testid="save-button-desktop"
+              disabled={apiState.isLoading}
             >
               Save
             </button>
