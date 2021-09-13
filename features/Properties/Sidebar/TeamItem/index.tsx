@@ -1,10 +1,22 @@
 import Link from 'next/link';
-import PropTypes from 'prop-types';
-import styles from './TeamItem.module.scss';
-import { TeamValues } from '../../../../common/TeamValues';
+import { FunctionComponent } from 'react';
+import styles from './styles.module.scss';
+import teamModel from '../../../../common/models/team';
+import TeamValues from '../../../../common/TeamValues';
 import ActionsIcon from '../../../../public/icons/ios/actions.svg';
 
-export const TeamItem = ({ team, teamCalculatedValues }) => (
+interface summaryPropertyCalcValues {
+  totalNumOfDeficientItems: number;
+  totalNumOfFollowUpActionsForDeficientItems: number;
+  totalNumOfRequiredActionsForDeficientItems: number;
+}
+
+interface Props {
+  team: teamModel;
+  teamCalculatedValues: summaryPropertyCalcValues;
+}
+
+const TeamItem: FunctionComponent<Props> = ({ team, teamCalculatedValues }) => (
   <li className={styles.teamItem} data-testid="team-item" data-team={team.id}>
     {/* Team Name */}
     <Link href="/teams">
@@ -29,17 +41,6 @@ export const TeamItem = ({ team, teamCalculatedValues }) => (
   </li>
 );
 
-TeamItem.propTypes = {
-  team: PropTypes.shape({
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  teamCalculatedValues: PropTypes.shape({
-    totalNumOfDeficientItems: PropTypes.number.isRequired,
-    totalNumOfFollowUpActionsForDeficientItems: PropTypes.number.isRequired,
-    totalNumOfRequiredActionsForDeficientItems: PropTypes.number.isRequired
-  })
-};
-
 TeamItem.defaultProps = {
   teamCalculatedValues: {
     totalNumOfDeficientItems: 0,
@@ -47,3 +48,5 @@ TeamItem.defaultProps = {
     totalNumOfRequiredActionsForDeficientItems: 0
   }
 };
+
+export default TeamItem;
