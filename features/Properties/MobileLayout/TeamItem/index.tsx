@@ -4,7 +4,7 @@ import { useState, useRef, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 import parentStyles from '../styles.module.scss';
 import teamModel from '../../../../common/models/team';
-import { TeamValues } from '../../../../common/TeamValues';
+import TeamValues from '../../../../common/TeamValues';
 import propertyMetaData from '../../../../common/models/propertyMetaData';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';

@@ -25,7 +25,7 @@ import breakpoints from '../../config/breakpoints';
 import styles from './styles.module.scss';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { ProfileList } from './ProfileList';
+import ProfileList from './ProfileList';
 import MobileLayout from './MobileLayout';
 
 interface PropertiesModel {

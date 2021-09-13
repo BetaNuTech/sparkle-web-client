@@ -1,12 +1,17 @@
 /* eslint-disable no-unused-vars */
-import PropTypes from 'prop-types';
-import styles from './Item.module.scss';
+import { FunctionComponent } from 'react';
+import styles from './styles.module.scss';
+import propertyModel from '../../../../common/models/property';
 import LinkFeature from '../../../../common/LinkFeature';
-import { TeamValues } from '../../../../common/TeamValues';
+import TeamValues from '../../../../common/TeamValues';
 import features from '../../../../config/features';
 import getLastInspectionEntry from '../../utils/getLastInspectionEntry';
 
-export const Item = ({ property }) => {
+interface Props {
+  property: propertyModel;
+}
+
+const Item: FunctionComponent<Props> = ({ property }) => {
   const lastInspectionEntry = getLastInspectionEntry(property);
   return (
     <li
@@ -23,9 +28,11 @@ export const Item = ({ property }) => {
         <aside
           className={styles.item__image}
           style={
-            property.photoURL && {
-              backgroundImage: `url(${property.photoURL})`
-            }
+            property.photoURL
+              ? {
+                  backgroundImage: `url(${property.photoURL})`
+                }
+              : {}
           }
         />
 
@@ -97,16 +104,4 @@ export const Item = ({ property }) => {
   );
 };
 
-Item.propTypes = {
-  property: PropTypes.shape({
-    photoURL: PropTypes.string,
-    name: PropTypes.string.isRequired,
-    addr1: PropTypes.string.isRequired,
-    addr2: PropTypes.string.isRequired,
-    city: PropTypes.string.isRequired,
-    state: PropTypes.string.isRequired,
-    zip: PropTypes.string,
-    lastInspectionDate: PropTypes.number.isRequired,
-    lastInspectionScore: PropTypes.number.isRequired
-  }).isRequired
-};
+export default Item;

@@ -1,8 +1,15 @@
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import styles from './TeamValues.module.scss';
+import { FunctionComponent } from 'react';
+import styles from './styles.module.scss';
 
-export const TeamValues = ({
+interface Props {
+  numOfDeficientItems: number;
+  numOfRequiredActionsForDeficientItems: number;
+  numOfFollowUpActionsForDeficientItems: number;
+  isNarrowField: boolean;
+}
+
+const TeamValues: FunctionComponent<Props> = ({
   numOfDeficientItems,
   numOfRequiredActionsForDeficientItems,
   numOfFollowUpActionsForDeficientItems,
@@ -25,9 +32,11 @@ export const TeamValues = ({
   </ul>
 );
 
-TeamValues.propTypes = {
-  numOfDeficientItems: PropTypes.number.isRequired,
-  numOfRequiredActionsForDeficientItems: PropTypes.number.isRequired,
-  numOfFollowUpActionsForDeficientItems: PropTypes.number.isRequired,
-  isNarrowField: PropTypes.bool.isRequired
+TeamValues.defaultProps = {
+  numOfDeficientItems: 0,
+  numOfRequiredActionsForDeficientItems: 0,
+  numOfFollowUpActionsForDeficientItems: 0,
+  isNarrowField: false
 };
+
+export default TeamValues;

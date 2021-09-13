@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { useState, useRef, FunctionComponent } from 'react';
 import propertyModel from '../../../../common/models/property';
-import { TeamValues } from '../../../../common/TeamValues';
+import TeamValues from '../../../../common/TeamValues';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import LinkFeature from '../../../../common/LinkFeature';
 import features from '../../../../config/features';
@@ -24,6 +24,7 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
   useSwipeReveal(ref, setIsSwipeOpen);
 
   const lastInspectionEntry = getLastInspectionEntry(property);
+
   return (
     <div
       ref={ref}
@@ -55,9 +56,9 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
             <aside
               className={styles.propertyItem__image}
               style={
-                property.photoURL && {
-                  backgroundImage: `url(${property.photoURL})`
-                }
+                property.photoURL
+                  ? { backgroundImage: `url(${property.photoURL})` }
+                  : {}
               }
             />
 
