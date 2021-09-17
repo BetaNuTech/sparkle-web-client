@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react';
 import jobModel from '../../../common/models/job';
-import {
-  sortJob,
-  nextJobSort
-} from '../utils/jobSorting';
+import globalEvents from '../../../common/utils/globalEvents';
+import { sortJob, nextJobSort } from '../utils/jobSorting';
 
 export const useSortBy = (defaultSort = 'title'): Array<any> => {
   const [sortBy, setSortBy] = useState(defaultSort);
@@ -49,6 +47,7 @@ export default function useJobSort(
     }
     // Update inspection sort
     setSortBy(activeSortValue);
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   // Set sort attribute & direction
@@ -60,6 +59,7 @@ export default function useJobSort(
       setSortBy(sortKey); // Update sort by
       setSortDir('desc');
     }
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   const sortedJobs =

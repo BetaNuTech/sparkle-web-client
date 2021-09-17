@@ -3,6 +3,7 @@
 .item {
   display: flex;
   flex-wrap: wrap;
+  min-height: rem-calc(135);
   background-color: $white;
   border: rem-calc(1) solid $gray-lighter;
 
