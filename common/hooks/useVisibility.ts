@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import globalEvents from '../utils/globalEvents';
 
 type config = {
   root?: any;
@@ -19,14 +20,19 @@ const useVisibility = (ref = null, options: config = {}, visible = false) => {
   const [isVisible, setIsVisible] = useState(visible);
   const [element, setElement] = useState(ref);
   const { isDisconnectedOnInitialRender } = options;
+  let unsubscribe = () => true;
 
   const forceVisible = () => {
     setIsVisible(true);
   };
 
   const forceCheck = () => {
-    observer.unobserve(element.current);
-    observer.observe(element.current);
+    setTimeout(() => {
+      if (observer && element.current) {
+        observer.unobserve(element.current);
+        observer.observe(element.current);
+      }
+    }, 100);
   };
 
   const visibilityCallBack = ([entry]) => {
@@ -41,6 +47,7 @@ const useVisibility = (ref = null, options: config = {}, visible = false) => {
     // Support one and done visiblity
     if (isIntersecting && isDisconnectedOnInitialRender) {
       observer.disconnect();
+      unsubscribe();
     }
   };
 
@@ -54,13 +61,25 @@ const useVisibility = (ref = null, options: config = {}, visible = false) => {
     if (!element || !element.current) {
       return;
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
     observer = new IntersectionObserver(visibilityCallBack, {
       ...defaultConfig,
       ...options
     });
     observer.observe(element.current);
-    return () => observer && observer.disconnect && observer.disconnect();
+
+    // Subscribe to global visibility force check
+    // eslint-disable-next-line
+    unsubscribe = globalEvents.subscribe('visibilityForceCheck', forceCheck);
+
+    // Cleanup
+    return () => {
+      if (observer && observer.disconnect) {
+        observer.disconnect();
+      }
+      unsubscribe();
+    };
   }, [element, options.root, options.rootMargin, options.threshold]);
 
   return { setElement, isVisible, forceVisible, forceCheck };

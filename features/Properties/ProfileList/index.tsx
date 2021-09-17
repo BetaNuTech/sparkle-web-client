@@ -5,14 +5,22 @@ import Item from './Item';
 
 interface Props {
   properties: Array<propertyModel>;
+  forceVisible?: boolean;
 }
 
-const ProfileList: FunctionComponent<Props> = ({ properties }) => (
+const ProfileList: FunctionComponent<Props> = ({
+  properties,
+  forceVisible
+}) => (
   <ul className={styles.profileList} data-testid="properties-list">
     {properties.map((property) => (
-      <Item key={property.id} property={property} />
+      <Item key={property.id} property={property} forceVisible={forceVisible} />
     ))}
   </ul>
 );
+
+ProfileList.defaultProps = {
+  forceVisible: false
+};
 
 export default ProfileList;

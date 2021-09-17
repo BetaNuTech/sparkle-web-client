@@ -14,10 +14,13 @@ import propertiesApi, {
 import teamsApi, {
   teamsCollectionResult
 } from '../../../../common/services/firestore/teams';
+import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import Properties from '../../../../features/Properties';
 import breakpoints from '../../../../config/breakpoints';
 import { shuffle } from '../../../helpers/array';
 import deepClone from '../../../helpers/deepClone';
+
+const FORCE_VISIBLE = true;
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
@@ -60,11 +63,15 @@ function render(ui: any, options: any = {}) {
 }
 
 describe('Integration | Features | Properties', () => {
+  beforeEach(() => stubIntersectionObserver());
   it('renders all mobile teams', () => {
     const expected = mockTeams.length;
-    const { container } = render(<Properties user={user} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    const { container } = render(
+      <Properties user={user} forceVisible={FORCE_VISIBLE} />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
     const teamItems: Array<HTMLElement> = Array.from(
       container.querySelectorAll('[data-testid=team-item]')
     );
@@ -74,7 +81,9 @@ describe('Integration | Features | Properties', () => {
 
   it('renders all desktop teams', () => {
     const expected = mockTeams.length;
-    const { container } = render(<Properties user={user} />);
+    const { container } = render(
+      <Properties user={user} forceVisible={FORCE_VISIBLE} />
+    );
     const teamItems: Array<HTMLElement> = Array.from(
       container.querySelectorAll('[data-testid=team-item]')
     );
@@ -84,9 +93,12 @@ describe('Integration | Features | Properties', () => {
 
   it('renders all mobile properties', () => {
     const expected = mockPropertes.length;
-    const { container } = render(<Properties user={user} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    const { container } = render(
+      <Properties user={user} forceVisible={FORCE_VISIBLE} />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
     const propertyItems: Array<HTMLElement> = Array.from(
       container.querySelectorAll('[data-testid=property-item]')
     );
@@ -96,7 +108,9 @@ describe('Integration | Features | Properties', () => {
 
   it('renders all desktop properties', () => {
     const expected = mockPropertes.length;
-    const { container } = render(<Properties user={user} />);
+    const { container } = render(
+      <Properties user={user} forceVisible={FORCE_VISIBLE} />
+    );
     const propertyItems: Array<HTMLElement> = Array.from(
       container.querySelectorAll('[data-testid=property-item]')
     );
@@ -105,7 +119,7 @@ describe('Integration | Features | Properties', () => {
   });
 
   it('renders only mobile content for mobile devices', () => {
-    render(<Properties user={user} />, {
+    render(<Properties user={user} forceVisible={FORCE_VISIBLE} />, {
       contextWidth: breakpoints.tablet.maxWidth
     });
     const header = screen.queryByTestId('properties-header');
@@ -124,7 +138,7 @@ describe('Integration | Features | Properties', () => {
   });
 
   it('renders only desktop content for desktop devices', () => {
-    render(<Properties user={user} />, {
+    render(<Properties user={user} forceVisible={FORCE_VISIBLE} />, {
       contextWidth: breakpoints.desktop.minWidth
     });
     const header = screen.queryByTestId('properties-header');
@@ -153,9 +167,12 @@ describe('Integration | Features | Properties', () => {
     });
 
     await act(async () => {
-      const { container } = render(<Properties user={user} />, {
-        properties: shuffle(properties) // randomized properties
-      });
+      const { container } = render(
+        <Properties user={user} forceVisible={FORCE_VISIBLE} />,
+        {
+          properties: shuffle(properties) // randomized properties
+        }
+      );
 
       const sortSelect = container.querySelector('#properties-sort-by');
       userEvent.selectOptions(sortSelect, 'city');
@@ -180,7 +197,7 @@ describe('Integration | Features | Properties', () => {
     });
 
     await act(async () => {
-      render(<Properties user={user} />, {
+      render(<Properties user={user} forceVisible={FORCE_VISIBLE} />, {
         properties: shuffle(properties), // randomized properties
         contextWidth: breakpoints.tablet.maxWidth // set to mobile UI
       });
@@ -212,7 +229,7 @@ describe('Integration | Features | Properties', () => {
     });
 
     await act(async () => {
-      render(<Properties user={user} />, {
+      render(<Properties user={user} forceVisible={FORCE_VISIBLE} />, {
         properties: shuffle(properties), // randomized properties
         contextWidth: breakpoints.tablet.maxWidth // set to mobile UI
       });
@@ -236,7 +253,7 @@ describe('Integration | Features | Properties', () => {
   it('do not show city if not set on property', () => {
     const properties = deepClone(mockPropertes);
     properties[0].city = '';
-    render(<Properties user={user} />, {
+    render(<Properties user={user} forceVisible={FORCE_VISIBLE} />, {
       contextWidth: breakpoints.desktop.minWidth,
       properties
     });
@@ -249,7 +266,7 @@ describe('Integration | Features | Properties', () => {
   it('do not show state if not set on property', () => {
     const properties = deepClone(mockPropertes);
     properties[0].state = '';
-    render(<Properties user={user} />, {
+    render(<Properties user={user} forceVisible={FORCE_VISIBLE} />, {
       contextWidth: breakpoints.desktop.minWidth,
       properties
     });

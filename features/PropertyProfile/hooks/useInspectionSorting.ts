@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import inspectionModel from '../../../common/models/inspection';
+import globalEvents from '../../../common/utils/globalEvents';
 import {
   sortInspection,
   nextInspectionsSort
@@ -49,6 +50,7 @@ export default function useInspectionSort(
     }
     // Update inspection sort
     setSortBy(activeSortValue);
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   // Set sort attribute & direction
@@ -60,6 +62,7 @@ export default function useInspectionSort(
       setSortBy(sortKey); // Update sort by
       setSortDir('desc');
     }
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   const sortedInspections =

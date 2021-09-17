@@ -40,6 +40,7 @@ interface PropertiesMobileLayoutModel {
   nextPropertiesSort?(): void;
   sortBy?: string;
   activePropertiesSortFilter?(string): string;
+  forceVisible?: boolean;
 }
 
 // Wrapper around team items
@@ -79,7 +80,8 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
   toggleNavOpen,
   nextPropertiesSort,
   sortBy,
-  activePropertiesSortFilter
+  activePropertiesSortFilter,
+  forceVisible
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -154,6 +156,7 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
               key={property.id}
               property={property}
               onQueuePropertyDelete={openPropertyDeletePrompt}
+              forceVisible={forceVisible}
             />
           ))}
         </li>
@@ -172,6 +175,10 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
       />
     </>
   );
+};
+
+MobileLayout.defaultProps = {
+  forceVisible: false
 };
 
 export default MobileLayout;

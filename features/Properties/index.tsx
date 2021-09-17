@@ -20,7 +20,8 @@ import useNotifications from '../../common/hooks/useNotifications'; // eslint-di
 import userModel from '../../common/models/user';
 import propertyModel from '../../common/models/property';
 import teamModel from '../../common/models/team';
-import notifications from '../../common/services/notifications'; // eslint-disable-line
+import notifications from '../../common/services/notifications';
+import globalEvents from '../../common/utils/globalEvents';
 import breakpoints from '../../config/breakpoints';
 import styles from './styles.module.scss';
 import Header from './Header';
@@ -34,13 +35,15 @@ interface PropertiesModel {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
+  forceVisible?: boolean;
 }
 
 const Properties: FunctionComponent<PropertiesModel> = ({
   user,
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  forceVisible
 }) => {
   const firestore = useFirestore();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
@@ -149,6 +152,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     }
     // Update Property sort
     setSortBy(activeSortValue);
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   // Set sort attribute & direction
@@ -163,6 +167,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     } else {
       setSortBy(value); // Update sort by
     }
+
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   return (
@@ -188,6 +194,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           nextPropertiesSort={nextPropertiesSort}
           sortBy={sortBy}
           activePropertiesSortFilter={activePropertiesSortFilter}
+          forceVisible={forceVisible}
         />
       )}
 
@@ -203,7 +210,10 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           />
 
           <div className={styles.properties__main}>
-            <ProfileList properties={sortedProperties} />
+            <ProfileList
+              properties={sortedProperties}
+              forceVisible={forceVisible}
+            />
           </div>
 
           <aside>
@@ -222,7 +232,8 @@ Properties.defaultProps = {
   isOnline: false,
   isStaging: false,
   isNavOpen: false,
-  toggleNavOpen: () => {} // eslint-disable-line
+  toggleNavOpen: () => {}, // eslint-disable-line
+  forceVisible: false
 };
 
 export default Properties;

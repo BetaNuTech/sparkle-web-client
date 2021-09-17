@@ -55,8 +55,7 @@ const Page: React.FC = (): ReactElement => {
   const isPropertyNotFound =
     propertyStatus === 'success' && Boolean(property.name) === false;
   const isInspectionNotFound =
-    inspectionStatus === 'success' &&
-    Boolean(inspection.creationDate) === false;
+    inspectionStatus === 'success' && Boolean(inspection.id) === false;
   const isInspectioNotPropertys =
     inspectionStatus === 'success' && inspection.property !== propertyId;
 

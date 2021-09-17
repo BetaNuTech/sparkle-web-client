@@ -49,6 +49,7 @@ describe('Unit | Features | Job Edit | Hooks | Use Job Status', () => {
       statusCode: 500,
       response: {}
     } as JobApiResult;
+    sinon.stub(errorReports, 'send').callsFake(() => true);
     renderHook(() =>
       useJobStatus(apiState, 'job-1', 'property-1', sendNotification)
     );

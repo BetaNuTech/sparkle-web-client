@@ -6,6 +6,7 @@ import mockTeams from '../../../../../__mocks__/teams';
 import mockPropertes from '../../../../../__mocks__/properties';
 import PropertiesMobileLayout from '../../../../../features/Properties/MobileLayout';
 import breakpoints from '../../../../../config/breakpoints';
+import stubIntersectionObserver from '../../../../helpers/stubIntersectionObserver';
 import { shuffle } from '../../../../helpers/array';
 import deepClone from '../../../../helpers/deepClone';
 
@@ -25,7 +26,10 @@ function render(ui: any, options = {}) {
   );
 }
 
+const FORCE_VISIBLE = true;
+
 describe('Integration | Features | Properties | Mobile Layout', () => {
+  beforeEach(() => stubIntersectionObserver());
   it('renders all teams', () => {
     const expected = mockTeams.length;
     render(
@@ -34,6 +38,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('team-item');
@@ -50,6 +55,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('property-item');
@@ -70,6 +76,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
 
@@ -99,6 +106,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -120,6 +128,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -139,6 +148,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -160,6 +170,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -179,6 +190,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
         activePropertiesSortFilter={() => ''}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const propertyList = container.querySelectorAll(
@@ -200,6 +212,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         isDeletePropertyPromptVisible={false}
         activePropertiesSortFilter={() => ''}
         nextPropertiesSort={onClickSpy}
+        forceVisible={FORCE_VISIBLE}
       />
     );
     const button = screen.queryByTestId('mobile-properties-sort-by');
@@ -218,7 +231,8 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
       teams: mockTeams,
       teamCalculatedValues: defaultPropertyMeta,
       isDeletePropertyPromptVisible: false,
-      activePropertiesSortFilter: () => ''
+      activePropertiesSortFilter: () => '',
+      forceVisible: FORCE_VISIBLE
     };
     render(<PropertiesMobileLayout {...props} />);
 
@@ -235,7 +249,8 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
       teams: mockTeams,
       teamCalculatedValues: defaultPropertyMeta,
       isDeletePropertyPromptVisible: false,
-      activePropertiesSortFilter: () => ''
+      activePropertiesSortFilter: () => '',
+      forceVisible: FORCE_VISIBLE
     };
     render(<PropertiesMobileLayout {...props} />);
 

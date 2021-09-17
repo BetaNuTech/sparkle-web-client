@@ -1,6 +1,10 @@
 @import '../../../../styles/index.scss';
 
 .propertyItem {
+  // Visible Element
+  &__placeholder {
+    min-height: rem-calc(135);
+  }
   // Picture and description
   &__wrapper {
     display: flex;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import bidModel from '../../../common/models/bid';
+import globalEvents from '../../../common/utils/globalEvents';
 import { sortBid, sortBidMobile } from '../utils/bidSorting';
 
 export const useSortBy = (defaultSort = 'vendor'): Array<any> => {
@@ -37,6 +38,8 @@ export default function useJobSort(
       setSortBy(sortKey); // Update sort by
       setSortDir('desc');
     }
+
+    globalEvents.trigger('visibilityForceCheck');
   };
 
   const sortedBids = isMobileorTablet
