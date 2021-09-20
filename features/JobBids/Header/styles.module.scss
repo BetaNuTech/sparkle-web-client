@@ -44,19 +44,21 @@
       @extend %overviewDataLink;
       @extend %overviewDataLink--inline;
     }
+
     &__metadata {
       @extend %overviewDataLink--metadata;
       @extend %overviewDataLink--metadataInline;
-      > li {
-        &.-inactive {
-          opacity: 0.35;
-        }
+
+      > li.-inactive {
+        opacity: 0.35;
       }
     }
+
     &__label {
       @extend %overviewDataLink--label;
       @extend %overviewDataLink--labelListItem;
     }
+
     &__labelSub {
       @extend %overviewDataLink--labelSub;
     }

@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+import Router from 'next/router';
 import {
   render as rtlRender,
   act,
@@ -10,21 +11,13 @@ import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
 import { ToastContainer } from 'react-toastify';
-import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import mockBids from '../../../../__mocks__/bids';
+import bidModel from '../../../../common/models/bid';
 import { openImprovementJob } from '../../../../__mocks__/jobs';
 import BidEdit from '../../../../features/BidEdit';
 import BidErrors from '../../../../features/BidEdit/Form/errors';
-import propertiesApi, {
-  propertyResult
-} from '../../../../common/services/firestore/properties';
-import jobsStore, {
-  jobResult
-} from '../../../../common/services/firestore/jobs';
-import bidsApi, {
-  bidsCollectionResult
-} from '../../../../common/services/firestore/bids';
+import bidsApi from '../../../../common/services/firestore/bids';
 import bidServiceApi from '../../../../common/services/api/bids';
 import storageApi from '../../../../common/services/storage';
 import errorReports from '../../../../common/services/api/errorReports';
@@ -32,32 +25,9 @@ import uploadAttachmentService from '../../../../features/BidEdit/services/uploa
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 
+const IS_ONLINE = true;
+
 function render(ui: any, options: any = {}) {
-  sinon.restore();
-  // Stub all properties requests
-  const propertyPayload: propertyResult = {
-    status: options.propertyStatus || 'success',
-    error: options.propertyError || null,
-    data: options.property || (!options.propertyStatus && fullProperty)
-  };
-  sinon.stub(propertiesApi, 'findRecord').returns(propertyPayload);
-
-  // Stub job details
-  const jobPayload: jobResult = {
-    status: options.jobStatus || 'success',
-    error: options.jobError || null,
-    data: options.job || (!options.jobStatus && openImprovementJob)
-  };
-  sinon.stub(jobsStore, 'findRecord').returns(jobPayload);
-
-  // Stub bid
-  const bidsPayload: bidsCollectionResult = {
-    status: options.bidStatus || 'success',
-    error: options.bidError || null,
-    data: options.bids || (!options.bidStatus && mockBids)
-  };
-  sinon.stub(bidsApi, 'queryByJob').returns(bidsPayload);
-
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
@@ -80,82 +50,28 @@ function render(ui: any, options: any = {}) {
 }
 
 describe('Integration | Features | Bid Edit', () => {
-  it('shows loading text until the property is loaded', () => {
-    const expected = 'Loading Bid';
-
-    render(
-      <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-      />,
-      {
-        contextWidth: breakpoints.tablet.maxWidth,
-        propertyStatus: 'loading'
-      }
-    );
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeTruthy();
-    expect(loaderText.textContent).toEqual(expected);
-  });
-
-  it('shows loading text until the bid is loaded', () => {
-    const expected = 'Loading Bid';
-
-    render(
-      <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-      />,
-      {
-        contextWidth: breakpoints.tablet.maxWidth,
-        bids: [],
-        bidStatus: 'loading'
-      }
-    );
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeTruthy();
-    expect(loaderText.textContent).toEqual(expected);
-  });
-
-  it('should not show loading text after property and bid have loaded', () => {
-    render(
-      <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-      />,
-      {
-        contextWidth: breakpoints.tablet.maxWidth
-      }
-    );
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeNull();
-  });
+  afterEach(() => sinon.restore());
 
   it('checks that empty vendor name validation error shows when form submits', async () => {
+    const isNewBid = true;
+    const newBid = { id: 'new' } as bidModel;
+
     render(
       <BidEdit
-        user={user}
-        bidId="new"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        bid={newBid}
+        otherBids={mockBids}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth
       }
     );
 
+    // Submit form
     await act(async () => {
-      // Form submit button
       const [submit] = await screen.findAllByTestId('bid-form-submit');
       await userEvent.click(submit);
     });
@@ -174,23 +90,36 @@ describe('Integration | Features | Bid Edit', () => {
     expect(actualTitle).toEqual(expectedTitle);
   });
 
-  it('Publishes a new bid when it does not exist yet', async () => {
+  it('Publishes a new bid when non-existent and redirects user to update form', async () => {
     const expected = true;
+    const isNewBid = true;
+    const expectedUrl = `/properties/${fullProperty.id}/jobs/${openImprovementJob.id}/bids/test/`;
+    const newBid = { id: 'new' } as bidModel;
+
     render(
       <BidEdit
-        user={user}
-        bidId="new"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        bid={newBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        otherBids={mockBids}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth
       }
     );
 
-    const postReq = sinon.stub(bidServiceApi, 'createNewBid').resolves({});
+    const postReq = sinon.stub(bidServiceApi, 'createNewBid').resolves({
+      status: 201,
+      json: () =>
+        Promise.resolve({
+          data: { id: 'test' }
+        })
+    });
+    const redirected = sinon.stub(Router, 'push').returns();
 
+    // Enter vendor name & submit
     await act(async () => {
       const [submit] = await screen.findAllByTestId('bid-form-submit');
       const vendorInput = await screen.findByTestId('bid-form-vendor');
@@ -201,18 +130,23 @@ describe('Integration | Features | Bid Edit', () => {
     });
 
     const actual = postReq.called;
+    const actualUrl = redirected.firstCall.firstArg;
     expect(actual).toEqual(expected);
+    expect(actualUrl).toEqual(expectedUrl);
   });
 
   it('Updates a bid when it already exists', async () => {
     const expected = true;
+    const isNewBid = false;
+
     render(
       <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        bid={mockBids[0]}
+        otherBids={mockBids.splice(1)}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth
@@ -236,13 +170,16 @@ describe('Integration | Features | Bid Edit', () => {
 
   it('Send error report when an attachment fails to upload', async () => {
     const expected = true;
+    const isNewBid = false;
+
     render(
       <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        bid={mockBids[0]}
+        otherBids={mockBids.splice(1)}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth
@@ -269,13 +206,16 @@ describe('Integration | Features | Bid Edit', () => {
 
   it('Send error report when an attachment fails to be saved to bid', async () => {
     const expected = true;
+    const isNewBid = false;
+
     render(
       <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        bid={mockBids[0]}
+        otherBids={mockBids.splice(1)}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth
@@ -311,13 +251,16 @@ describe('Integration | Features | Bid Edit', () => {
 
   it('Send error report when an attachment fails to delete from storage', async () => {
     const expected = true;
+    const isNewBid = false;
+
     render(
       <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        bid={mockBids[0]}
+        otherBids={mockBids.splice(1)}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.desktop.minWidth
@@ -342,13 +285,16 @@ describe('Integration | Features | Bid Edit', () => {
 
   it('Send error report when removing an attachment fails to be updated to bid', async () => {
     const expected = true;
+    const isNewBid = false;
+
     render(
       <BidEdit
-        user={user}
-        bidId="bid-1"
-        propertyId="property-1"
-        jobId="job-1"
-        isOnline
+        isNewBid={isNewBid}
+        property={fullProperty}
+        job={openImprovementJob}
+        bid={mockBids[0]}
+        otherBids={mockBids.splice(1)}
+        isOnline={IS_ONLINE}
       />,
       {
         contextWidth: breakpoints.tablet.maxWidth
@@ -356,9 +302,7 @@ describe('Integration | Features | Bid Edit', () => {
     );
 
     sinon.stub(storageApi, 'deleteFile').resolves(true);
-    sinon
-      .stub(bidsApi, 'removeBidAttachment')
-      .rejects(Error('oops'));
+    sinon.stub(bidsApi, 'removeBidAttachment').rejects(Error('oops'));
     const sendReport = sinon.stub(errorReports, 'send').resolves(true);
 
     await act(async () => {

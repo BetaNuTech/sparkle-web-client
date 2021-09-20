@@ -40,11 +40,13 @@ const MobileLayout: FunctionComponent<Props> = ({
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <Link href={newBidLink}>
-        <a className={clsx(headStyle.header__button)}>
-          <AddIcon />
-        </a>
-      </Link>
+      {['open', 'complete'].includes(job.state) ? null : (
+        <Link href={newBidLink}>
+          <a className={clsx(headStyle.header__button)}>
+            <AddIcon />
+          </a>
+        </Link>
+      )}
     </>
   );
   return (
