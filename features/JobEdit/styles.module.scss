@@ -90,6 +90,11 @@
     span {
       @extend %gridHeaderButtonIcon;
     }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
   }
 
   &__fullwidth {

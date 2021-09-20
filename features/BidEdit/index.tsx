@@ -1,30 +1,26 @@
-import { ChangeEvent, FunctionComponent, useState } from 'react';
 import { useFirestore } from 'reactfire';
-import Router from 'next/router';
-import LoadingHud from '../../common/LoadingHud';
-import useProperty from '../../common/hooks/useProperty';
-import useJob from '../../common/hooks/useJob';
-import useStorage, { StorageResult } from '../../common/hooks/useStorage';
-import useJobBids from '../../common/hooks/useJobBids';
-import userModel from '../../common/models/user';
+import { ChangeEvent, FunctionComponent, useState } from 'react';
+import propertyModel from '../../common/models/property';
+import jobModel from '../../common/models/job';
 import bidModel from '../../common/models/bid';
+import useStorage, { StorageResult } from '../../common/hooks/useStorage';
 import bidAttachmentModel from '../../common/models/bidAttachment';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
-import notifications from '../../common/services/notifications'; // eslint-disable-line
+import notifications from '../../common/services/notifications';
 import errorReports from '../../common/services/api/errorReports';
 import bidsDb from '../../common/services/firestore/bids';
 import storage from '../../common/services/storage';
 import useBidForm from './hooks/useBidForm';
-import useBidStatus from './hooks/useBidStatus';
 import uploadAttachmentService from './services/uploadAttachment';
 import useDeleteAttachment from './hooks/useDeleteAttachment';
 import BidForm from './Form';
 
 interface Props {
-  user: userModel;
-  propertyId: string;
-  jobId: string;
-  bidId: string;
+  isNewBid: boolean;
+  property: propertyModel;
+  job: jobModel;
+  bid: bidModel;
+  otherBids: Array<bidModel>;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
@@ -34,45 +30,28 @@ interface Props {
 const PREFIX = 'feature: BidEdit:';
 
 const BidEdit: FunctionComponent<Props> = ({
-  propertyId,
-  jobId,
-  bidId,
+  isNewBid,
+  property,
+  job,
+  otherBids,
+  bid,
   isOnline,
   isStaging,
   toggleNavOpen
 }) => {
-  const firestore = useFirestore();
-  const isNewBid = bidId === 'new';
+  const bidId = bid.id;
+  const propertyId = property.id;
+  const jobId = job.id;
+  const db = useFirestore();
 
-  /* eslint-disable */
+  // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
-  /* eslint-enable */
-
-  // Fetch the data of property profile
-  const { data: property } = useProperty(firestore, propertyId);
-  // Fetch the data of job
-  const { data: job } = useJob(firestore, jobId);
-  // Fetch the data of bid
-  const { data: bids, status: bidApiStatus } = useJobBids(firestore, jobId);
 
   // Get current bid from bids array
-  const selectedBid = bids.filter((b) => b.id === bidId);
-  const bid = selectedBid.length > 0 ? selectedBid[0] : ({} as bidModel);
-
-  // Get all other bids
-  const otherBids = bids.filter((b) => b.id !== bidId);
-
-  // We are checking that when we have success from bids api
-  // then if we have bid then means we have bid otherwise it is error
-  const bidStatus =
-    // eslint-disable-next-line no-nested-ternary
-    bidApiStatus === 'success'
-      ? Object.keys(bid).length > 0
-        ? 'success'
-        : 'error'
-      : 'loading';
-
-  const { apiState, postBidCreate, putBidUpdate } = useBidForm(bid);
+  const { apiState, postBidCreate, putBidUpdate } = useBidForm(
+    bid,
+    sendNotification
+  );
   const { uploadFileToStorage } = useStorage();
 
   const [uploadState, setUploadState] = useState(false);
@@ -117,16 +96,11 @@ const BidEdit: FunctionComponent<Props> = ({
 
     // Perform the updation on bid record for new attachment uploaded
     try {
-      await uploadAttachmentService.updateBidAttachment(
-        firestore,
-        bid,
-        file,
-        result
-      );
+      await uploadAttachmentService.updateBidAttachment(db, bid, file, result);
     } catch (err) {
       // Handle error
       const wrappedErr = Error(
-        `${PREFIX} onFileChange: failed to update firestore attachment: ${err}`
+        `${PREFIX} onFileChange: failed to update bid attachment: ${err}`
       );
       sendNotification('Upload failed, could not update attachment record', {
         type: 'error'
@@ -155,11 +129,11 @@ const BidEdit: FunctionComponent<Props> = ({
     }
 
     try {
-      await bidsDb.removeBidAttachment(firestore, bidId, attachment);
+      await bidsDb.removeBidAttachment(db, bidId, attachment);
     } catch (err) {
       // Handle error
       const wrappedErr = Error(
-        `${PREFIX} confirmAttachmentDelete: failed to update firestore bid: ${err}`
+        `${PREFIX} confirmAttachmentDelete: failed to update bid: ${err}`
       );
       sendNotification(
         'Attachment removed, but an unexpected error occurred.  Our team has been notified of this issue.',
@@ -172,23 +146,6 @@ const BidEdit: FunctionComponent<Props> = ({
 
     setDeleteAtachmentLoading(false);
   };
-
-  // Show job error status
-  // NOTE: contains side effects: redirects, notifications, and error reporting
-  // TODO: refactor away from hook to more appropriate abstraction
-  useBidStatus(apiState, bidId, jobId, propertyId, sendNotification);
-
-  // Loading State
-  const isLoadingBid = bidId !== 'new' && Object.keys(bid).length === 0;
-  if (!property || !job || isLoadingBid) {
-    return <LoadingHud title="Loading Bid" />;
-  }
-
-  // Redirect user requesting non-existent job
-  if (bidId !== 'new' && bidStatus === 'error') {
-    sendNotification('Bid could not be found', { type: 'error' });
-    Router.push(`/properties/${propertyId}/jobs/${jobId}/bids`);
-  }
 
   return (
     <BidForm
@@ -215,6 +172,11 @@ const BidEdit: FunctionComponent<Props> = ({
   );
 };
 
-BidEdit.defaultProps = {};
+BidEdit.defaultProps = {
+  isOnline: false,
+  isStaging: false,
+  isNavOpen: false,
+  toggleNavOpen: () => {} // eslint-disable-line
+};
 
 export default BidEdit;

@@ -8,7 +8,7 @@
   &__bottom {
     padding-top: 0;
   }
-  
+
   &__backButton {
     @extend %gridHeaderBackButton;
     margin-top: 0.3em;
@@ -36,5 +36,9 @@
     @extend %gridHeaderControls;
     padding-top: 0.3em;
     align-items: flex-start;
+
+    > a {
+      text-decoration: underline;
+    }
   }
 }

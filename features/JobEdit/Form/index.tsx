@@ -456,22 +456,45 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     <div
                       className={clsx(styles.button__group, '-mt', '-mr-none')}
                     >
-                      <Link
-                        href={`/properties/${propertyId}/jobs/${job.id}/bids/new`}
-                      >
-                        <a
-                          className={clsx(
-                            styles.button__submit,
-                            isMobile && styles.button__fullwidth
-                          )}
-                          data-testid="add-bid-card-btn"
+                      {job.state === 'open' ? (
+                        <>
+                          <button
+                            className={clsx(
+                              styles.button__submit,
+                              isMobile && styles.button__fullwidth
+                            )}
+                            type="button"
+                            disabled
+                            data-testid="add-bid-card-btn-disabled"
+                          >
+                            Add First Bid{' '}
+                            <span>
+                              <AddIcon />
+                            </span>
+                          </button>
+                          <br />
+                          <p className="-mb-none -c-gray-light">
+                            Job must be approved before creating bids
+                          </p>
+                        </>
+                      ) : (
+                        <Link
+                          href={`/properties/${propertyId}/jobs/${job.id}/bids/new`}
                         >
-                          Add First Bid{' '}
-                          <span>
-                            <AddIcon />
-                          </span>
-                        </a>
-                      </Link>
+                          <a
+                            className={clsx(
+                              styles.button__submit,
+                              isMobile && styles.button__fullwidth
+                            )}
+                            data-testid="add-bid-card-btn"
+                          >
+                            Add First Bid{' '}
+                            <span>
+                              <AddIcon />
+                            </span>
+                          </a>
+                        </Link>
+                      )}
                     </div>
                   )}
                 </div>

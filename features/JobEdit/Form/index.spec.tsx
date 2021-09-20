@@ -996,4 +996,45 @@ describe('Unit | Features | Job Edit | Form', () => {
     expect(elAddBidCard).toBeNull();
     expect(elEditBidCard.length).toEqual(bids.length);
   });
+
+  it('for open jobs bids button has to be disabled', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids: [],
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const elAddBidCard = screen.queryByTestId('add-bid-card-btn');
+    const elAddBidCardDisabled = screen.queryByTestId(
+      'add-bid-card-btn-disabled'
+    );
+    expect(elAddBidCard).toBeNull();
+    expect(elAddBidCardDisabled).toBeTruthy();
+  });
 });

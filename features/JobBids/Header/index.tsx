@@ -176,6 +176,7 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
   changeFilterState
 }) => {
   const backLink = `/properties/${property.id}/jobs`;
+  const jobEditLink = `/properties/${property.id}/jobs/edit/${job.id}/`;
   return (
     <DesktopHeader
       backLink={backLink}
@@ -204,19 +205,25 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
         />
       }
       nextLineRight={
-        <div className={styles.header__item}>
-          <Link href={`/properties/${property.id}/jobs/${job.id}/bids/new`}>
-            <a
-              className={clsx(styles.header__item__createButton)}
-              data-testid="job-bid-create"
-            >
-              Create New Bid
-              <span className="iconAddButton">
-                <AddIcon />
-              </span>
-            </a>
+        job.state === 'open' ? (
+          <Link href={jobEditLink}>
+            <a data-testid="job-bid-create-msg">Approve Job to Create Bids</a>
           </Link>
-        </div>
+        ) : (
+          <div className={styles.header__item}>
+            <Link href={`/properties/${property.id}/jobs/${job.id}/bids/new`}>
+              <a
+                className={clsx(styles.header__item__createButton)}
+                data-testid="job-bid-create"
+              >
+                Create New Bid
+                <span className="iconAddButton">
+                  <AddIcon />
+                </span>
+              </a>
+            </Link>
+          </div>
+        )
       }
     />
   );

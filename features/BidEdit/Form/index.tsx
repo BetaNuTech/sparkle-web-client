@@ -787,14 +787,12 @@ const BidForm: FunctionComponent<Props> = ({
         break;
     }
 
-    // Check if we have bid data
-    // Means it is an edit form
-    if (Object.keys(bid).length > 0) {
-      // Update request
-      putBidUpdate(property.id, job.id, bid.id, formBid);
-    } else {
-      // Save request
+    if (isNewBid) {
+      // Create bid request
       postBidCreate(property.id, job.id, formBid);
+    } else {
+      // Update existing bid
+      putBidUpdate(property.id, job.id, bid.id, formBid);
     }
   };
 
