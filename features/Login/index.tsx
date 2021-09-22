@@ -1,20 +1,17 @@
-import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useAuth } from '../../common/Auth/Provider';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import styles from './styles.module.scss';
+import regexPattern from '../../common/utils/regexPattern';
 
-const validationSchema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Wrong email fromat')
-    .required('Please enter an email address'),
-  password: yup.string().min(6, 'Minimum password length is 6').required()
-});
+
+type FormInputs = {
+  email: string;
+  password: string;
+};
 
 export const LoginForm = () => {
   const { signInWithEmail } = useAuth();
@@ -23,9 +20,7 @@ export const LoginForm = () => {
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
 
-  const { register, handleSubmit } = useForm({
-    resolver: yupResolver(validationSchema)
-  });
+  const { register, handleSubmit } = useForm<FormInputs>();
 
   const onSubmit = (data) => {
     signInWithEmail(data.email, data.password).catch((error) => {
@@ -50,9 +45,14 @@ export const LoginForm = () => {
                 name="email"
                 className={styles.loginForm__field}
                 id="email"
-                label="E-Mail"
                 placeholder="Email"
-                {...register('email')}
+                {...register('email', {
+                  required: 'Please enter an email address',
+                  pattern: {
+                    value: regexPattern.email,
+                    message: 'Wrong email format'
+                  }
+                })}
               />
               {/* {!!errors.email && <p>{errors.email?.message}</p>} */}
               <input
@@ -60,9 +60,14 @@ export const LoginForm = () => {
                 name="password"
                 className={styles.loginForm__field}
                 id="password"
-                label="Password"
                 placeholder="Password"
-                {...register('password')}
+                {...register('password', {
+                  required: 'Please enter password',
+                  minLength: {
+                    value: 6,
+                    message: 'Minimum password length is 6'
+                  }
+                })}
               />
               {/* {!!errors.password && <p>{errors.password?.message}</p>} */}
 

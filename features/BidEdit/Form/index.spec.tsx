@@ -136,6 +136,9 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // Set empty value
       await fireEvent.change(formCostMin, { target: { value: '3000' } });
       await fireEvent.change(formCostMax, { target: { value: '2000' } });
+
+      const [submit] = await screen.findAllByTestId('bid-form-submit');
+      await userEvent.click(submit);
     });
 
     const errorCostMin = screen.queryByTestId('error-label-costMin');

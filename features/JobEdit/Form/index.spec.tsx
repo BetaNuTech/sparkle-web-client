@@ -572,6 +572,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
+      uploadState: false,
+      jobAttachment: photoAttachment,
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      isDeleteTrelloCardPromptVisible: false,
+      onFileChange: () => {},
       user,
       bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -600,6 +610,9 @@ describe('Unit | Features | Job Edit | Form', () => {
 
       // Set empty value for scope
       await fireEvent.change(formScope, { target: { value: '' } });
+
+      const [submit] = await screen.findAllByTestId('job-form-submit');
+      await userEvent.click(submit);
     });
 
     const errorTitle = screen.queryByTestId('error-label-title');
