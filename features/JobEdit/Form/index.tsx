@@ -6,8 +6,6 @@ import {
   FormState,
   UseFormSetValue
 } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { diff } from 'deep-object-diff';
@@ -171,6 +169,16 @@ const Layout: FunctionComponent<LayoutProps> = ({
     }
   };
 
+  const needValidationOptions: any = {};
+  const sowValidationOptions: any = {};
+  if (isApprovedOrAuthorized) {
+    // Add need validation if job is in approve or authorized state
+    needValidationOptions.required = formErrors.descriptionRequired;
+
+    // Add scope of work validation if job is in approve or authorized state
+    sowValidationOptions.required = formErrors.scopeRequired;
+  }
+
   return (
     <>
       {!isNewJob && isMobile && (
@@ -239,7 +247,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     className={styles.jobNew__input}
                     defaultValue={job.title}
                     data-testid="job-form-title"
-                    {...register('title')}
+                    {...register('title', {
+                      required: formErrors.titleRequired
+                    })}
                     disabled={apiState.isLoading || isJobComplete}
                   />
                   <ErrorLabel formName="title" errors={formState.errors} />
@@ -262,7 +272,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     name="need"
                     defaultValue={job.need}
                     data-testid="job-form-description"
-                    {...register('need')}
+                    {...register('need', needValidationOptions)}
                     disabled={apiState.isLoading || isJobComplete}
                   ></textarea>
                   <ErrorLabel formName="need" errors={formState.errors} />
@@ -331,7 +341,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     name="scopeOfWork"
                     defaultValue={job.scopeOfWork}
                     data-testid="job-form-scope"
-                    {...register('scopeOfWork')}
+                    {...register('scopeOfWork', sowValidationOptions)}
                     disabled={apiState.isLoading || isJobComplete}
                   ></textarea>
                   <ErrorLabel
@@ -663,12 +673,6 @@ const JobForm: FunctionComponent<Props> = ({
     }
   };
 
-  const validationShape = {
-    title: yup.string().required(formErrors.titleRequired),
-    need: yup.string(),
-    scopeOfWork: yup.string()
-  };
-
   const isApprovedOrAuthorized =
     !isNewJob && ['approved', 'authorized'].includes(job.state);
   const isJobComplete = !isNewJob && job.state === 'complete';
@@ -694,21 +698,6 @@ const JobForm: FunctionComponent<Props> = ({
     user.admin &&
     job.authorizedRules !== 'expedite';
 
-  if (isApprovedOrAuthorized) {
-    // Add need validation if job is in approve or authorized state
-    validationShape.need = yup
-      .string()
-      .required(formErrors.descriptionRequired);
-
-    // Add need validation if job is in approve or authorized state
-    validationShape.scopeOfWork = yup
-      .string()
-      .required(formErrors.scopeRequired);
-  }
-
-  // Setup form validations
-  const validationSchema = yup.object().shape(validationShape);
-
   // Setup form submissions
   const {
     register,
@@ -717,8 +706,7 @@ const JobForm: FunctionComponent<Props> = ({
     formState,
     setValue
   } = useForm<Inputs>({
-    mode: 'all',
-    resolver: yupResolver(validationSchema)
+    mode: 'all'
   });
 
   const apiJob = (({ title, need, type, scopeOfWork, trelloCardURL }) => ({

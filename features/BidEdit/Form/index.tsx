@@ -7,8 +7,6 @@ import {
   useWatch,
   UseFormSetValue
 } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import clsx from 'clsx';
 import Link from 'next/link';
 import moment from 'moment';
@@ -111,6 +109,56 @@ interface LayoutProps {
   queueAttachmentForDelete(attachment: bidAttachmentModel): any;
 }
 
+// Cost min validator to check it should be less than max cost
+const costMinValidator = (value) => {
+  let isValid = true;
+  const costMax: HTMLInputElement = document.getElementById(
+    'costMax'
+  ) as HTMLInputElement;
+  if (value && costMax) {
+    isValid = Number(costMax.value) >= Number(value);
+  }
+  return isValid || formErrors.costMinMaxGreater;
+};
+
+// Cost max validator to check it should be more than min cost
+const costMaxValidator = (value) => {
+  let isValid = true;
+  const costMin: HTMLInputElement = document.getElementById(
+    'costMin'
+  ) as HTMLInputElement;
+  if (value && costMin) {
+    isValid = Number(costMin.value) <= Number(value);
+  }
+  return isValid || formErrors.costMaxMinGreater;
+};
+
+// Start at validator to check it should be less than completion date
+const startDateValidator = (value) => {
+  let isValid = true;
+  const bidCompleteAt: HTMLInputElement = document.getElementById(
+    'bidCompleteAt'
+  ) as HTMLInputElement;
+  // Should not check for less value if it doesn't have value
+  if (value && bidCompleteAt && bidCompleteAt.value) {
+    isValid = moment(bidCompleteAt.value).unix() >= moment(value).unix();
+  }
+  return isValid || formErrors.startAtLess;
+};
+
+// Complete at validator to check it should be more than start date
+const completeDateValidator = (value) => {
+  let isValid = true;
+  const bidStartAt: HTMLInputElement = document.getElementById(
+    'bidStartAt'
+  ) as HTMLInputElement;
+  // Should not check for less value if it doesn't have value
+  if (value && bidStartAt && bidStartAt.value) {
+    isValid = moment(bidStartAt.value).unix() <= moment(value).unix();
+  }
+  return isValid || formErrors.completeAtLess;
+};
+
 const Layout: FunctionComponent<LayoutProps> = ({
   propertyId,
   isMobile,
@@ -172,6 +220,22 @@ const Layout: FunctionComponent<LayoutProps> = ({
       : otherBids.length === 1
       ? '1 other bid'
       : `${otherBids.length} other bids`;
+
+  // Cost min validations
+  const costMinValidateOptions: any = { validate: costMinValidator };
+  // Cost max validations
+  const costMaxValidateOptions: any = { validate: costMaxValidator };
+  // Start at validations
+  const startAtValidateOptions: any = { validate: startDateValidator };
+  // Complete at validations
+  const completeAtValidateOptions: any = { validate: completeDateValidator };
+  if (isApprovedOrComplete) {
+    costMinValidateOptions.required = formErrors.costRequired;
+    costMaxValidateOptions.required =
+      !isFixedCostType && formErrors.costRequired;
+    startAtValidateOptions.required = formErrors.startAtRequired;
+    completeAtValidateOptions.required = formErrors.completeAtRequired;
+  }
 
   return (
     <>
@@ -243,7 +307,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     className={styles.form__input}
                     defaultValue={bid.vendor}
                     data-testid="bid-form-vendor"
-                    {...register('vendor')}
+                    {...register('vendor', {
+                      required: formErrors.vendorRequired
+                    })}
                     disabled={apiState.isLoading || isBidComplete}
                   />
                   <ErrorLabel formName="vendor" errors={formState.errors} />
@@ -292,7 +358,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         placeholder={isFixedCostType ? '' : 'Minimum'}
                         defaultValue={bid.costMin}
                         data-testid="bid-form-cost-min"
-                        {...register('costMin')}
+                        {...register('costMin', costMinValidateOptions)}
                         disabled={apiState.isLoading || isBidComplete}
                       />
                       <ErrorLabel
@@ -314,7 +380,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                           placeholder="Maximum"
                           defaultValue={bid.costMax}
                           data-testid="bid-form-cost-max"
-                          {...register('costMax')}
+                          {...register('costMax', costMaxValidateOptions)}
                           disabled={apiState.isLoading || isBidComplete}
                         />
                         <ErrorLabel
@@ -391,7 +457,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         className={styles.form__input}
                         defaultValue={startAtProcessed}
                         data-testid="bid-form-start-at"
-                        {...register('startAt')}
+                        {...register('startAt', startAtValidateOptions)}
                         disabled={apiState.isLoading || isBidComplete}
                       />
                       <ErrorLabel
@@ -419,7 +485,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         className={styles.form__input}
                         defaultValue={completeAtProcessed}
                         data-testid="bid-form-complete-at"
-                        {...register('completeAt')}
+                        {...register('completeAt', completeAtValidateOptions)}
                         disabled={apiState.isLoading || isBidComplete}
                       />
                       <ErrorLabel
@@ -698,72 +764,6 @@ const BidForm: FunctionComponent<Props> = ({
     attachments = bid.attachments ? bid.attachments : [];
   }
 
-  // Cost min validator to check it should be less than max cost
-  const costMinValidator = (value) => {
-    let isValid = true;
-    const costMax: HTMLInputElement = document.getElementById(
-      'costMax'
-    ) as HTMLInputElement;
-    if (value && costMax) {
-      isValid = Number(costMax.value) >= Number(value);
-    }
-    return isValid;
-  };
-  // Cost max validator to check it should be more than min cost
-  const costMaxValidator = (value) => {
-    let isValid = true;
-    const costMin: HTMLInputElement = document.getElementById(
-      'costMin'
-    ) as HTMLInputElement;
-    if (value && costMin) {
-      isValid = Number(costMin.value) <= Number(value);
-    }
-    return isValid;
-  };
-
-  // Start at validator to check it should be less than completion date
-  const startDateValidator = (value) => {
-    let isValid = true;
-    const bidCompleteAt: HTMLInputElement = document.getElementById(
-      'bidCompleteAt'
-    ) as HTMLInputElement;
-    // Should not check for less value if it doesn't have value
-    if (value && bidCompleteAt && bidCompleteAt.value) {
-      isValid = moment(bidCompleteAt.value).unix() >= moment(value).unix();
-    }
-    return isValid;
-  };
-
-  // Complete at validator to check it should be more than start date
-  const completeDateValidator = (value) => {
-    let isValid = true;
-    const bidStartAt: HTMLInputElement = document.getElementById(
-      'bidStartAt'
-    ) as HTMLInputElement;
-    // Should not check for less value if it doesn't have value
-    if (value && bidStartAt && bidStartAt.value) {
-      isValid = moment(bidStartAt.value).unix() <= moment(value).unix();
-    }
-    return isValid;
-  };
-
-  const validationShape = {
-    vendor: yup.string().required(formErrors.vendorRequired),
-    costMin: yup
-      .string()
-      .test('cost-min-max', formErrors.costMinMaxGreater, costMinValidator),
-    costMax: yup
-      .string()
-      .test('cost-max-min', formErrors.costMaxMinGreater, costMaxValidator),
-    startAt: yup
-      .string()
-      .test('start-date', formErrors.startAtLess, startDateValidator),
-    completeAt: yup
-      .string()
-      .test('complete-date', formErrors.completeAtLess, completeDateValidator),
-    vendorDetails: yup.string()
-  };
-
   const isApprovedOrComplete =
     !isNewBid && ['approved', 'complete'].includes(bid.state);
 
@@ -796,35 +796,6 @@ const BidForm: FunctionComponent<Props> = ({
     }
   };
 
-  if (isApprovedOrComplete) {
-    // Add need validation if bid is in approved or complete state
-    validationShape.startAt = yup
-      .string()
-      .required(formErrors.startAtRequired)
-      .test('start-date', formErrors.startAtLess, startDateValidator);
-
-    // Add need validation if bid is in approved or complete state
-    validationShape.completeAt = yup
-      .string()
-      .required(formErrors.completeAtRequired)
-      .test('complete-date', formErrors.completeAtLess, completeDateValidator);
-
-    validationShape.costMin = yup
-      .string()
-      .required(formErrors.costRequired)
-      .test('cost-min-max', formErrors.costMinMaxGreater, costMinValidator);
-    validationShape.costMax = yup
-      .string()
-      .test('cost-max-min', formErrors.costMaxMinGreater, costMaxValidator)
-      .when('costMaxRequired', {
-        is: !isFixedCostType,
-        then: yup.string().required(formErrors.costRequired)
-      });
-  }
-
-  // Setup form validations
-  const validationSchema = yup.object().shape(validationShape);
-
   const isBidComplete = !isNewBid && bid.state === 'complete';
 
   // Setup form submissions
@@ -836,8 +807,7 @@ const BidForm: FunctionComponent<Props> = ({
     formState,
     setValue
   } = useForm<Inputs>({
-    mode: 'all',
-    resolver: yupResolver(validationSchema)
+    mode: 'all'
   });
 
   const apiBid = (({

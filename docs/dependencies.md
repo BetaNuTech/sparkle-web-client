@@ -30,9 +30,7 @@ All 3rd party code used by this application.
 
 ## Forms & Validation
 
-- [React Hook Form](https://react-hook-form.com/) Form helpers and validation
-- [Yup](https://github.com/jquense/yup) simple schema validation.
-- [RHF](https://react-hook-form.com/) is a library that helps you validate forms in React.
+- [React Hook Form](https://react-hook-form.com/) is a library that helps you validate forms in React.
 
 ## Testing
 
