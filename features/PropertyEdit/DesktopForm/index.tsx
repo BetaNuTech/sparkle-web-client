@@ -20,6 +20,7 @@ interface Props {
   formErrors?: any;
   openUpdateTeamModal: (e) => void;
   openTemplatesEditModal: (e) => void;
+  openTrello: (any) => void;
   onSubmit: (action: any) => void;
   handleChange: (string) => void;
   removePropertyImage: () => void;
@@ -36,8 +37,10 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
   templateNames,
   apiState,
   formErrors,
+  property,
   openUpdateTeamModal,
   openTemplatesEditModal,
+  openTrello,
   handleChange,
   onSubmit,
   removePropertyImage,
@@ -154,7 +157,11 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               TEMPLATES
             </button>
             {/* Trello Button */}
-            <button className={styles.propertyEditDesktop__trelloButton}>
+            <button
+              disabled={!property.id}
+              onClick={(e) => openTrello(e)}
+              className={styles.propertyEditDesktop__trelloButton}
+            >
               TRELLO
             </button>
           </div>

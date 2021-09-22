@@ -294,8 +294,12 @@
   }
 
   &__trelloButton {
+    margin-top: $global-padding;
     border: solid 2px $gray-dark;
     color: $gray-dark;
-    margin-top: $global-padding;
+
+    &:disabled {
+      opacity: $button-opacity-disabled;
+    }
   }
 }

@@ -63,6 +63,7 @@
       @extend %inputSelect;
     }
   }
+
   &__teamButton {
     display: block;
     width: 100%;
@@ -99,5 +100,9 @@
 
   &__trelloButton {
     background: #a2c6f1;
+
+    &:disabled {
+      opacity: $button-opacity-disabled;
+    }
   }
 }

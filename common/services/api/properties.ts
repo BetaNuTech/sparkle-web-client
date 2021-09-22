@@ -1,7 +1,7 @@
 import currentUser from '../../utils/currentUser';
 import propertyModel from '../../models/property';
 
-const PREFIX = 'services: api: jobs:';
+const PREFIX = 'services: api: properties:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
 
 // POST a Property Request

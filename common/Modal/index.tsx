@@ -9,7 +9,7 @@ export interface Props {
 
 // Modal high level component
 /* eslint-disable */
-const ModalHOC = (Content, isPrompt = false) => {
+const ModalHOC = (Content, isPrompt = false, modalClass = '') => {
   const Modal: FunctionComponent<any> = (props) => {
     if (typeof props.isVisible !== 'boolean') {
       throw TypeError(`missing isVisible boolean got: ${props.isVisible}`);
@@ -28,7 +28,10 @@ const ModalHOC = (Content, isPrompt = false) => {
         ></div>
         {/* Modal */}
         <div
-          className={clsx(isPrompt ? styles.modalPrompt : styles.modal)}
+          className={clsx(
+            isPrompt ? styles.modalPrompt : styles.modal,
+            modalClass
+          )}
           data-testid="modal"
         >
           <Content {...props} />

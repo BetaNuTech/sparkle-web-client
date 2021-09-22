@@ -78,7 +78,6 @@
 
     &__input,
     &__input[type='search'] {
-      // label > &__input[type='search'] {
       @extend %searchInput;
       margin: 0;
       padding-bottom: 0;

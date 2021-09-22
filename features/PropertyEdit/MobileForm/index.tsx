@@ -14,6 +14,7 @@ interface Props {
   formState: propertyModel;
   formErrors?: any;
   openUpdateTeamModal: (any) => void;
+  openTrello: (any) => void;
   openTemplatesEditModal: (any) => void;
   handleChange: (string) => void;
 }
@@ -23,11 +24,13 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
   teams,
   selectedTeamId,
   properyImg,
+  property,
   logoImg,
   formState,
   formErrors,
   openUpdateTeamModal,
   openTemplatesEditModal,
+  openTrello,
   handleChange
 }) => (
   <>
@@ -295,7 +298,11 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
       {/* Trello Button */}
       <div className={styles.propertyEditMobile__formGroup}>
         <div className={styles.propertyEditMobile__formGroup__control}>
-          <button className={styles.propertyEditMobile__trelloButton}>
+          <button
+            disabled={!property.id}
+            onClick={(e) => openTrello(e)}
+            className={styles.propertyEditMobile__trelloButton}
+          >
             TRELLO
           </button>
         </div>
