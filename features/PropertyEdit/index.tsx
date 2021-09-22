@@ -9,11 +9,11 @@ import notifications from '../../common/services/notifications'; // eslint-disab
 import userModel from '../../common/models/user';
 import templateModel from '../../common/models/template';
 import breakpoints from '../../config/breakpoints';
-import PropertyMobileForm from './MobileForm/index';
-import PropertyDesktopForm from './DesktopForm/index';
-import MobileHeader from '../../common/MobileHeader/index';
-import UpdateTeamModal from './UpdateTeamModal/index';
-import TemplatesEditModal from './TemplatesEditModal/index';
+import PropertyMobileForm from './MobileForm';
+import PropertyDesktopForm from './DesktopForm';
+import MobileHeader from '../../common/MobileHeader';
+import UpdateTeamModal from './UpdateTeamModal';
+import TemplatesEditModal from './TemplatesEditModal';
 import LoadingHud from '../../common/LoadingHud';
 import styles from './styles.module.scss';
 import errors from './errors';
@@ -49,6 +49,12 @@ const PropertyEdit: FunctionComponent<Props> = ({
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
   /* eslint-enable */
+
+  // Redirect to Trello page
+  const openTrello = (e) => {
+    e.preventDefault();
+    Router.push(`/properties/edit/${property.id}/trello`);
+  };
 
   // Form submission hook
   const { apiState, createProperty, updateProperty } = usePropertyForm();
@@ -109,7 +115,6 @@ const PropertyEdit: FunctionComponent<Props> = ({
   );
 
   // Selected templates names
-
   const templateNames = selectedTemplates
     .map((id) => filteredTemplates.find((tmpl) => tmpl.id === id))
     .map((tmpl) => tmpl.name);
@@ -160,6 +165,20 @@ const PropertyEdit: FunctionComponent<Props> = ({
     if (hasErrors) return;
 
     let payload: any = {};
+
+    // Check state for updates and add to payload
+    Object.keys(formState).forEach((item) => {
+      if (JSON.stringify(formState[item]) !== JSON.stringify(property[item])) {
+        payload = {
+          ...payload,
+          [item]:
+            item === 'num_of_units' || item === 'year_built'
+              ? Number(formState[item])
+              : formState[item]
+        };
+      }
+    });
+
     const isCreatingProperty = !property.id;
 
     // Check state for updates and add to payload
@@ -288,6 +307,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
               logoImg={logoImg}
               formState={formState}
               formErrors={formErrors}
+              openTrello={openTrello}
             />
           </>
         ) : (
@@ -308,6 +328,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
             templateNames={templateNames}
             apiState={apiState}
             formErrors={formErrors}
+            openTrello={openTrello}
           />
         )}
         <UpdateTeamModal

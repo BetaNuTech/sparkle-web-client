@@ -130,9 +130,3 @@
     }
   }
 }
-
-@include media-query(desktop) {
-  .header {
-    display: none;
-  }
-}
