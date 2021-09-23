@@ -134,22 +134,42 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
     </>
   );
 
+  const propertyLink = `/properties/${property.id}/`;
+  const jobLink = `/properties/${property.id}/jobs/`;
+  const bidListLink = `/properties/${property.id}/jobs/${job.id}/bids/`;
+
   return (
     <DesktopHeader
-      backLink={bidLink}
+      isColumnTitle
       headerTestId="bidedit-header"
       title={
         <>
-          <span
-            className={styles.header__propertyName}
-          >{`${property.name}`}</span>
-          <span>&nbsp;/ Jobs</span>
-          <span className={styles.header__propertyName}>
-            &nbsp;/ {`${job.title}`}
-          </span>
-          <span data-testid="bidedit-header-name">
-            &nbsp;/ {isNewBid ? 'New' : 'Edit'}
-          </span>
+          <div className={styles.header__breadcrumb}>
+            <Link href={propertyLink}>
+              <a
+                className={styles.header__propertyName}
+              >{`${property.name}`}</a>
+            </Link>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={jobLink}>
+              <a className={styles.header__propertyName}>Jobs</a>
+            </Link>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={bidListLink}>
+              <a className={styles.header__propertyName}>Bids</a>
+            </Link>
+            {!isNewBid && (
+              <span className={styles.header__breadcrumb}>
+                &nbsp;&nbsp;/&nbsp;&nbsp;Edit
+              </span>
+            )}
+          </div>
+          <div
+            data-testid="bidedit-header-name"
+            className={styles.header__jobTitle}
+          >
+            {isNewBid ? 'New Bid' : job.title}
+          </div>
         </>
       }
       isOnline={isOnline}

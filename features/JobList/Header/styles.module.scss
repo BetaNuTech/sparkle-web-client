@@ -9,7 +9,7 @@
   }
 
   &__propertyName {
-    @extend %gridHeaderTitle--ellipsis;
+    @extend %gridHeaderLink;
   }
 
   &__item {

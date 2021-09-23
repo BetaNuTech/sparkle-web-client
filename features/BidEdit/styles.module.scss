@@ -20,16 +20,31 @@
   }
 
   &__aside {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-left: rem-calc(38);
+    @extend %gridMobileHeaderFooter;
   }
 }
 
 .bid__info {
   display: flex;
   justify-content: space-between;
+
+  &__header {
+    &__main {
+      @extend %gridMobileHeaderTopInfo;
+    }
+
+    &__breadcrumb {
+      @extend %gridHeaderLinkMain;
+
+      &__text {
+        @extend %gridHeaderLink;
+      }
+    }
+
+    &__title {
+      @extend %gridHeaderSmallTitle;
+    }
+  }
 
   &__box {
     width: 48%;

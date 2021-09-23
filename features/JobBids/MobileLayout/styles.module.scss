@@ -9,3 +9,23 @@
 .mobileTitle {
   @extend %gridMobileHeaderBackButton;
 }
+
+.header {
+  &__info {
+    &__main {
+      @extend %gridMobileHeaderTopInfo;
+    }
+
+    &__breadcrumb {
+      @extend %gridHeaderLinkMain;
+
+      &__text {
+        @extend %gridHeaderLink;
+      }
+    }
+
+    &__title {
+      @extend %gridHeaderSmallTitle;
+    }
+  }
+}

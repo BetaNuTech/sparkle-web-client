@@ -181,14 +181,6 @@ const Layout: FunctionComponent<LayoutProps> = ({
 
   return (
     <>
-      {!isNewJob && isMobile && (
-        <h1 data-testid="job-form-title-mobile" className={styles.mobileTitle}>
-          <Link href={jobLink}>
-            <a></a>
-          </Link>
-          {job.title}
-        </h1>
-      )}
       <div className={clsx(styles.form__grid)}>
         {!isNewJob && (
           <>
@@ -640,7 +632,8 @@ const JobForm: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-  const jobLink = `/properties/${property.id}/jobs`;
+  const propertyLink = `/properties/${property.id}/`;
+  const jobLink = `/properties/${property.id}/jobs/`;
 
   // Publish Job updates to API
   const onPublish = (data, action) => {
@@ -776,6 +769,37 @@ const JobForm: FunctionComponent<Props> = ({
             actions={mobileHeaderActions}
             className={styles.jobNew__header}
           />
+          <div
+            className={styles.job__info__header__main}
+            data-testid="job-form-title-mobile"
+          >
+            <div className={styles.job__info__header__breadcrumb}>
+              <Link href={propertyLink}>
+                <a
+                  className={styles.job__info__header__breadcrumb__text}
+                >{`${property.name}`}</a>
+              </Link>
+              <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+              <Link href={jobLink}>
+                <a className={styles.job__info__header__breadcrumb__text}>
+                  Jobs
+                </a>
+              </Link>
+              {!isNewJob && (
+                <span className={styles.job__info__header__breadcrumb}>
+                  &nbsp;&nbsp;/&nbsp;&nbsp;Edit
+                </span>
+              )}
+            </div>
+            <h1 className={styles.job__info__header__title}>
+              {isNewJob ? 'New Job' : job.title}
+              {!isNewJob && job.authorizedRules === 'expedite' && (
+                <div>
+                  <span className={styles.job__info__expedited}>Expedited</span>
+                </div>
+              )}
+            </h1>
+          </div>
           <Layout
             isMobile={isMobileorTablet}
             job={job || ({} as jobModel)}

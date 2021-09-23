@@ -175,23 +175,36 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
   isOnline,
   changeFilterState
 }) => {
-  const backLink = `/properties/${property.id}/jobs`;
+  const propertyLink = `/properties/${property.id}/`;
+  const jobListLink = `/properties/${property.id}/jobs/`;
   const jobEditLink = `/properties/${property.id}/jobs/edit/${job.id}/`;
   return (
     <DesktopHeader
-      backLink={backLink}
       headerTestId="bidlist-header"
+      isColumnTitle
       headerClass={styles.header__padding}
       title={
         <>
-          <span
-            className={styles.header__propertyName}
-          >{`${property.name}`}</span>
-          <span>&nbsp;/ Jobs</span>
-          <span className={styles.header__jobTitle}>
-            &nbsp;/{` ${job.title}`}
-          </span>
-          <span>&nbsp;/ Bids</span>
+          <div className={styles.header__breadcrumb}>
+            <Link href={propertyLink}>
+              <a
+                className={styles.header__propertyName}
+              >{`${property.name}`}</a>
+            </Link>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={jobListLink}>
+              <a className={styles.header__propertyName}>Jobs</a>
+            </Link>
+            <span className={styles.header__breadcrumb}>
+              &nbsp;&nbsp;/&nbsp;&nbsp;Bids
+            </span>
+          </div>
+          <div
+            data-testid="bidlist-header-name"
+            className={styles.header__jobTitle}
+          >
+            {job.title}
+          </div>
         </>
       }
       isOnline={isOnline}

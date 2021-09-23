@@ -139,7 +139,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   isOnline,
   changeJobFilterState
 }) => {
-  const backLink = `/properties/${property.id}/`;
+  const propertyLink = `/properties/${property.id}/`;
   const RightSide = () => (
     <div className={styles.header__item}>
       <Link href={`/properties/${property.id}/jobs/edit/new`}>
@@ -157,14 +157,14 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   );
   return (
     <DesktopHeader
-      backLink={backLink}
       headerTestId="joblist-header"
+      isColumnTitle
       title={
         <>
-          <span
-            className={styles.header__propertyName}
-          >{`${property.name}`}</span>
-          <span>&nbsp;/ Jobs</span>
+          <Link href={propertyLink}>
+            <a className={styles.header__propertyName}>{`${property.name}`}</a>
+          </Link>
+          <div>Jobs</div>
         </>
       }
       titleInfo={
