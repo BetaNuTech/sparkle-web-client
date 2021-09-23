@@ -27,12 +27,18 @@
   }
 }
 
-%gridMobileHeaderBackButton {
+%gridMobileHeaderTopInfo {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   background-color: $gray;
   padding: rem-calc(12);
   font-size: rem-calc(20);
+}
+
+%gridMobileHeaderBackButton {
+  @extend %gridMobileHeaderTopInfo;
+  flex-direction: row;
 
   // Left chevron
   a::before {
@@ -50,6 +56,13 @@
   }
 }
 
+%gridMobileHeaderFooter {
+  display: flex;
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: flex-end;
+}
+
 %gridHeaderMain {
   display: flex;
   align-items: center;
@@ -64,6 +77,22 @@
   color: $primary-xdark-color;
   display: flex;
   align-items: center;
+}
+
+%gridHeaderLinkMain {
+  font-size: rem-calc(16);
+  line-height: rem-calc(18);
+  font-weight: 400;
+  color: $gray-6;
+}
+
+%gridHeaderLink {
+  @extend %gridHeaderLinkMain;
+  text-decoration: underline;
+}
+
+%gridHeaderSmallTitle {
+  font-size: rem-calc(20);
 }
 
 %gridHeaderTitle--ellipsis {

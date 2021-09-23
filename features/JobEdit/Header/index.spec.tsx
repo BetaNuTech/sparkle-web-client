@@ -67,7 +67,7 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
     const desktopHeader = screen.queryByTestId('jobedit-header-name');
     const title = desktopHeader.textContent;
 
-    const actual = title.indexOf('Create New') >= 0;
+    const actual = title.indexOf('New Job') >= 0;
 
     expect(actual).toEqual(expected);
   });

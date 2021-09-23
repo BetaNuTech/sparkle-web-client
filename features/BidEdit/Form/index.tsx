@@ -76,7 +76,7 @@ type Inputs = {
 };
 
 interface LayoutProps {
-  propertyId: string;
+  property: propertyModel;
   isMobile: boolean;
   job: jobModel;
   bid: bidModel;
@@ -160,7 +160,7 @@ const completeDateValidator = (value) => {
 };
 
 const Layout: FunctionComponent<LayoutProps> = ({
-  propertyId,
+  property,
   isMobile,
   job,
   bid,
@@ -206,8 +206,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
     }
   };
 
-  const jobBidsLink = `/properties/${propertyId}/jobs/${job.id}/bids`;
-  const jobEditLink = `/properties/${propertyId}/jobs/edit/${job.id}`;
+  const jobEditLink = `/properties/${property.id}/jobs/edit/${job.id}`;
+  const jobLink = `/properties/${property.id}/jobs/`;
+  const propertyLink = `/properties/${property.id}/`;
   const openAttachmentDeletePrompt = (attachment: bidAttachmentModel) => {
     queueAttachmentForDelete(attachment);
     setDeleteAttachmentPromptVisible(true);
@@ -240,17 +241,30 @@ const Layout: FunctionComponent<LayoutProps> = ({
   return (
     <>
       {!isNewBid && isMobile && (
-        <header className={styles.form__extHeader}>
-          <h1
-            data-testid="bid-form-title-mobile"
-            className={styles.form__extHeader__title}
-          >
-            <Link href={jobBidsLink}>
-              <a></a>
+        <div className={styles.bid__info__header__main}>
+          <div className={styles.bid__info__header__breadcrumb}>
+            <Link href={propertyLink}>
+              <a
+                className={styles.bid__info__header__breadcrumb__text}
+              >{`${property.name}`}</a>
             </Link>
-            {job.title}
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={jobLink}>
+              <a className={styles.bid__info__header__breadcrumb__text}>Jobs</a>
+            </Link>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={bidLink}>
+              <a className={styles.bid__info__header__breadcrumb__text}>Bids</a>
+            </Link>
+            {!isNewBid && (
+              <span className={styles.bid__info__header__breadcrumb}>
+                &nbsp;&nbsp;/&nbsp;&nbsp;Edit
+              </span>
+            )}
+          </div>
+          <h1 className={styles.bid__info__header__title}>
+            {isNewBid ? 'New Bid' : job.title}
           </h1>
-
           <aside className={styles.form__extHeader__aside}>
             <span
               className={clsx(
@@ -265,7 +279,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
               <a className={styles.form__parentLink}>Edit Job</a>
             </Link>
           </aside>
-        </header>
+        </div>
       )}
       <div className={styles.form__grid}>
         {!isNewBid && (
@@ -941,7 +955,7 @@ const BidForm: FunctionComponent<Props> = ({
             className={styles.form__header}
           />
           <Layout
-            propertyId={property.id}
+            property={property}
             isMobile={isMobileorTablet}
             job={job}
             bid={bid || ({} as bidModel)}
@@ -1001,7 +1015,7 @@ const BidForm: FunctionComponent<Props> = ({
             canReopen={canReopen}
           />
           <Layout
-            propertyId={property.id}
+            property={property}
             isMobile={isMobileorTablet}
             job={job}
             bid={bid || ({} as bidModel)}

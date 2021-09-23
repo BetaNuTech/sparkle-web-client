@@ -1,9 +1,18 @@
 @import '../../../styles/index.scss';
 
 .header {
+  &__breadcrumb {
+    @extend %gridHeaderLinkMain;
+  }
+
   &__propertyName {
+    @extend %gridHeaderLink;
+    max-width: 25%;
+  }
+
+  &__jobTitle {
     @extend %gridHeaderTitle--ellipsis;
-    max-width: 7ch;
+    max-width: 100%;
   }
 
   &__controls {

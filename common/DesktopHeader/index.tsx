@@ -8,6 +8,7 @@ interface Props {
   backLink?: string;
   headerTestId?: string;
   headerClass?: string;
+  isColumnTitle?: boolean;
   title: JSX.Element;
   titleInfo?: JSX.Element;
   isOnline: boolean;
@@ -20,6 +21,7 @@ const DesktopHeader: FunctionComponent<Props> = ({
   backLink,
   headerTestId,
   headerClass,
+  isColumnTitle,
   title,
   titleInfo,
   isOnline,
@@ -40,7 +42,14 @@ const DesktopHeader: FunctionComponent<Props> = ({
             </Link>
           )}
 
-          <h1 className={styles.header__content__main__title}>{title}</h1>
+          <h1
+            className={clsx(
+              styles.header__content__main__title,
+              isColumnTitle && styles['header__content__main__title--column']
+            )}
+          >
+            {title}
+          </h1>
         </div>
         {titleInfo}
       </div>
@@ -60,7 +69,8 @@ const DesktopHeader: FunctionComponent<Props> = ({
 );
 
 DesktopHeader.defaultProps = {
-  headerTestId: 'desktop-header'
+  headerTestId: 'desktop-header',
+  isColumnTitle: false
 };
 
 export default DesktopHeader;

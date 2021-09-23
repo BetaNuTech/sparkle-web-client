@@ -33,7 +33,8 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   isOnline,
   onFormAction
 }) => {
-  const jobLink = `/properties/${property.id}/jobs`;
+  const propertyLink = `/properties/${property.id}/`;
+  const jobLink = `/properties/${property.id}/jobs/`;
 
   const RightSide = () => (
     <>
@@ -104,17 +105,32 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
 
   return (
     <DesktopHeader
-      backLink={jobLink}
       headerTestId="jobedit-header"
+      isColumnTitle
       title={
         <>
-          <span
-            className={styles.header__propertyName}
-          >{`${property.name}`}</span>
-          <span>&nbsp;/ Jobs</span>
-          <span data-testid="jobedit-header-name">
-            &nbsp;/ {isNewJob ? 'Create New' : job.title}
-          </span>
+          <div className={styles.header__breadcrumb}>
+            <Link href={propertyLink}>
+              <a
+                className={styles.header__propertyName}
+              >{`${property.name}`}</a>
+            </Link>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={jobLink}>
+              <a className={styles.header__propertyName}>Jobs</a>
+            </Link>
+            {!isNewJob && (
+              <span className={styles.header__breadcrumb}>
+                &nbsp;&nbsp;/&nbsp;&nbsp;Edit
+              </span>
+            )}
+          </div>
+          <div
+            data-testid="jobedit-header-name"
+            className={styles.header__jobTitle}
+          >
+            {isNewJob ? 'New Job' : job.title}
+          </div>
         </>
       }
       isOnline={isOnline}

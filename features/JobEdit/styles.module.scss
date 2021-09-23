@@ -16,12 +16,36 @@
   }
 }
 
-.mobileTitle {
-  @extend %gridMobileHeaderBackButton;
-}
-
 .job__info {
   display: flex;
+
+  &__expedited {
+    @extend %gridHeaderCreateButton;
+    display: inline-flex;
+
+    &--desktop {
+      background-color: transparent;
+      color: $primary-color;
+    }
+  }
+
+  &__header {
+    &__main {
+      @extend %gridMobileHeaderTopInfo;
+    }
+
+    &__breadcrumb {
+      @extend %gridHeaderLinkMain;
+
+      &__text {
+        @extend %gridHeaderLink;
+      }
+    }
+
+    &__title {
+      @extend %gridHeaderSmallTitle;
+    }
+  }
 
   &__mobile {
     justify-content: space-between;
