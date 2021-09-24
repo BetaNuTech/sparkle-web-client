@@ -12,13 +12,15 @@ export default {
     complete: ''
   },
   typeColors: {
-    'asset management project': 'info',
-    'property management project': 'info',
-    'hybrid capital project': 'info'
+    'small:pm': 'info',
+    'small:hybrid': 'info',
+    'large:am': 'info',
+    'large:sc': 'info'
   },
   types: {
-    'asset management project': 'Asset Management Project',
-    'property management project': 'Property Management Project',
-    'hybrid capital project': 'Hybrid Capital Project'
+    'small:pm': 'Property Management Project',
+    'small:hybrid': 'Hybrid Capital Project',
+    'large:am': 'Asset Management Project',
+    'large:sc': 'Structural Capital Projects'
   }
 };
