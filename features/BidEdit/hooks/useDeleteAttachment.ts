@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import bidAttachmentModel from '../../../common/models/bidAttachment';
+import attachmentModel from '../../../common/models/attachment';
 
 interface Returned {
-  queuedAttachmentForDeletion: bidAttachmentModel;
-  queueAttachmentForDelete: (attachment: bidAttachmentModel) => any;
+  queuedAttachmentForDeletion: attachmentModel;
+  queueAttachmentForDelete: (attachment: attachmentModel) => any;
 }
 
 // Query inspection to delete
@@ -16,7 +16,7 @@ const useDeleteAttachment = (): Returned => {
 
   // Set/unset the inspection
   // queued to be deleted
-  const queueAttachmentForDelete = (attachment: null | bidAttachmentModel) => {
+  const queueAttachmentForDelete = (attachment: null | attachmentModel) => {
     setQueueDeleteAttachment(attachment);
   };
 

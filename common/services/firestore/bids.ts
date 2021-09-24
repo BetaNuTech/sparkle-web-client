@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
 import bidModel from '../../models/bid';
-import bidAttachmentModel from '../../models/bidAttachment';
+import attachmentModel from '../../models/attachment';
 
 const PREFIX = 'services: api: firestore: bids';
 
@@ -89,8 +89,8 @@ export default {
   addBidAttachment(
     firestore: firebase.firestore.Firestore,
     id: string,
-    attachment: bidAttachmentModel
-  ): Promise<bidAttachmentModel> {
+    attachment: attachmentModel
+  ): Promise<attachmentModel> {
     // Update attachment record to firestore
     return firestore
       .collection(fbCollections.bids)
@@ -112,8 +112,8 @@ export default {
   removeBidAttachment(
     firestore: firebase.firestore.Firestore,
     id: string,
-    attachment: bidAttachmentModel
-  ): Promise<bidAttachmentModel> {
+    attachment: attachmentModel
+  ): Promise<attachmentModel> {
     // Update attachment record to firestore
     return firestore
       .collection(fbCollections.bids)

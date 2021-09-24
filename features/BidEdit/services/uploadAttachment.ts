@@ -1,11 +1,9 @@
 import firebase from 'firebase/app';
 import moment from 'moment';
 import bidsApi from '../../../common/services/firestore/bids';
-import utilApi from '../../../common/services/firestore/util';
 import bidModel from '../../../common/models/bid';
-import bidAttachmentModel from '../../../common/models/bidAttachment';
+import attachmentModel from '../../../common/models/attachment';
 import { StorageResult } from '../../../common/hooks/useStorage';
-import collections from '../../../config/collections';
 
 const PREFIX = 'features: bidEdit: services: uploadAttachment:';
 
@@ -17,9 +15,7 @@ const updateBidAttachment = async (
 ): Promise<any> => {
   try {
     // Create new document id
-    const docId = utilApi.createId(firestore, collections.bids);
-    const attachment: bidAttachmentModel = {
-      id: docId,
+    const attachment: attachmentModel = {
       name: file.name,
       type: file.type,
       size: file.size,

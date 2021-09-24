@@ -1,6 +1,7 @@
 import firebase from 'firebase/app';
 import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
+import attachmentModel from '../../models/attachment';
 import jobModel from '../../models/job';
 
 const PREFIX = 'services: api: firestore: jobs';
@@ -100,6 +101,52 @@ export default {
       .catch((err) => {
         const wrappedErr = Error(
           `${PREFIX} updateAttachmentRef: failed to update scope of work attachment: ${err}`
+        );
+
+        return Promise.reject(wrappedErr);
+      });
+  },
+  // Add attachment record to job document
+  addSOWAttachment(
+    firestore: firebase.firestore.Firestore,
+    id: string,
+    attachment: attachmentModel
+  ): Promise<attachmentModel> {
+    // Update attachment record to firestore
+    return firestore
+      .collection(fbCollections.jobs)
+      .doc(id)
+      .update({
+        scopeOfWorkAttachments:
+          firebase.firestore.FieldValue.arrayUnion(attachment)
+      })
+      .then(() => attachment)
+      .catch((err) => {
+        const wrappedErr = Error(
+          `${PREFIX} addSOWAttachments: failed to add SOW attachments: ${err}`
+        );
+
+        return Promise.reject(wrappedErr);
+      });
+  },
+  // Remove attachment record by attachment document id
+  removeSOWAttachment(
+    firestore: firebase.firestore.Firestore,
+    id: string,
+    attachment: attachmentModel
+  ): Promise<attachmentModel> {
+    // Update attachment record to firestore
+    return firestore
+      .collection(fbCollections.jobs)
+      .doc(id)
+      .update({
+        scopeOfWorkAttachments:
+          firebase.firestore.FieldValue.arrayRemove(attachment)
+      })
+      .then(() => attachment)
+      .catch((err) => {
+        const wrappedErr = Error(
+          `${PREFIX} removeSOWAttachment: failed to delete index from SOW attachment: ${err}`
         );
 
         return Promise.reject(wrappedErr);

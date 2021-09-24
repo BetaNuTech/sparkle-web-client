@@ -17,11 +17,13 @@
   &__content {
     flex-wrap: wrap;
     display: flex;
+    flex-grow: 1;
 
     &__main {
       @extend %gridHeaderMain;
       margin-right: $global-padding;
       align-items: flex-start;
+      flex-grow: 1;
 
       &__title {
         @extend %gridHeaderTitle;

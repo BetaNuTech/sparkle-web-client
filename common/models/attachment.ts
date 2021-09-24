@@ -1,5 +1,4 @@
-interface bidAttachment {
-  id: string;
+interface attachment {
   createdAt: number; // Unix timestamp
   name: string;
   type: string;
@@ -8,4 +7,4 @@ interface bidAttachment {
   size: number; // size in bytes
 }
 
-export default bidAttachment;
+export default attachment;

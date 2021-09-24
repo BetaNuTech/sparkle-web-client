@@ -15,11 +15,12 @@ import LoadingHud from '../../../common/LoadingHud';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
-import bidAttachmentModel from '../../../common/models/bidAttachment';
+import attachmentModel from '../../../common/models/attachment';
 import utilString from '../../../common/utils/string';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
 import MobileHeader from '../../../common/MobileHeader';
+import AttachmentList from '../../../common/AttachmentList';
 import breakpoints from '../../../config/breakpoints';
 import bidsConfig from '../../../config/bids';
 import jobsConfig from '../../../config/jobs';
@@ -30,7 +31,6 @@ import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import { BidApiResult } from '../hooks/useBidForm';
 import useProcessedForm from '../hooks/useProcessedForm';
 import DropdownHeader from '../DropdownHeader';
-import DropdownAttachment from '../DropdownAttachment';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import Header from '../Header';
 import styles from '../styles.module.scss';
@@ -58,9 +58,9 @@ interface Props {
   uploadState: boolean;
   setDeleteAttachmentPromptVisible(newState: boolean): void;
   isDeleteAttachmentPromptVisible: boolean;
-  confirmAttachmentDelete(bidAttachment: bidAttachmentModel): Promise<any>;
-  queueAttachmentForDelete(attachment: bidAttachmentModel): any;
-  queuedAttachmentForDeletion: bidAttachmentModel;
+  confirmAttachmentDelete(attachment: attachmentModel): Promise<any>;
+  queueAttachmentForDelete(attachment: attachmentModel): any;
+  queuedAttachmentForDeletion: attachmentModel;
   deleteAtachmentLoading: boolean;
 }
 
@@ -95,7 +95,7 @@ interface LayoutProps {
   showSaveButton: boolean;
   startAtProcessed: number;
   completeAtProcessed: number;
-  attachments: Array<bidAttachmentModel>;
+  attachments: Array<attachmentModel>;
   isApprovedOrComplete: boolean;
   canApprove: boolean;
   canApproveEnabled: boolean;
@@ -106,7 +106,7 @@ interface LayoutProps {
   onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
   isUploadingFile: boolean;
   setDeleteAttachmentPromptVisible(newState: boolean): void;
-  queueAttachmentForDelete(attachment: bidAttachmentModel): any;
+  queueAttachmentForDelete(attachment: attachmentModel): any;
 }
 
 // Cost min validator to check it should be less than max cost
@@ -209,7 +209,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   const jobEditLink = `/properties/${property.id}/jobs/edit/${job.id}`;
   const jobLink = `/properties/${property.id}/jobs/`;
   const propertyLink = `/properties/${property.id}/`;
-  const openAttachmentDeletePrompt = (attachment: bidAttachmentModel) => {
+  const openAttachmentDeletePrompt = (attachment: attachmentModel) => {
     queueAttachmentForDelete(attachment);
     setDeleteAttachmentPromptVisible(true);
   };
@@ -407,50 +407,46 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 )}
               </div>
               {/* Bid scope */}
-              {!isNewBid && (
-                <div className={styles.form__row}>
-                  <div className={clsx(styles.form__row__cell)}>
-                    <div className={styles.form__group}>
-                      <label htmlFor="bidStartAt">
-                        Scope <span>*</span>
+              <div className={styles.form__row}>
+                <div className={clsx(styles.form__row__cell)}>
+                  <div className={styles.form__group}>
+                    <label htmlFor="bidStartAt">
+                      Scope <span>*</span>
+                    </label>
+                    <div
+                      className={clsx(
+                        styles.form__group__control,
+                        styles['form__group__control--radio']
+                      )}
+                    >
+                      <label>
+                        <input
+                          type="radio"
+                          name="bidScope"
+                          className={styles.form__input}
+                          value="local"
+                          {...register('scope')}
+                          defaultChecked={
+                            (bid.scope && bid.scope === 'local') || !bid.scope
+                          }
+                        />
+                        Local
                       </label>
-                      <div
-                        className={clsx(
-                          styles.form__group__control,
-                          styles['form__group__control--radio']
-                        )}
-                      >
-                        <label>
-                          <input
-                            type="radio"
-                            name="bidScope"
-                            className={styles.form__input}
-                            value="local"
-                            {...register('scope')}
-                            defaultChecked={
-                              (bid.scope && bid.scope === 'local') || !bid.scope
-                            }
-                          />
-                          Local
-                        </label>
-                        <label>
-                          <input
-                            type="radio"
-                            name="bidScope"
-                            className={styles.form__input}
-                            value="national"
-                            {...register('scope')}
-                            defaultChecked={
-                              bid.scope && bid.scope === 'national'
-                            }
-                          />
-                          National
-                        </label>
-                      </div>
+                      <label>
+                        <input
+                          type="radio"
+                          name="bidScope"
+                          className={styles.form__input}
+                          value="national"
+                          {...register('scope')}
+                          defaultChecked={bid.scope && bid.scope === 'national'}
+                        />
+                        National
+                      </label>
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
 
               <div className={styles.form__row}>
                 <div
@@ -550,54 +546,35 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 </Link>
               </div>
 
-              <div className={clsx(styles.form__group, '-mt-lg')}>
-                <div className={styles.form__formSeparatedLabel}>
-                  <label htmlFor="bidVendorDetails">Attachments</label>
-                  <button
-                    type="button"
-                    className={styles.form__upload}
-                    onClick={onUploadClick}
-                    disabled={isUploadingFile}
-                  >
-                    Upload
-                    <span className={styles.form__upload__icon}>
-                      <AddIcon />
-                    </span>
-                    <input
-                      type="file"
-                      ref={inputFile}
-                      className={styles.form__formInput}
-                      onChange={onFileChange}
-                      data-testid="input-file-attachment"
-                    />
-                  </button>
+              {!isNewBid && (
+                <div className={clsx(styles.form__group, '-mt-lg')}>
+                  <div className={styles.form__formSeparatedLabel}>
+                    <label htmlFor="bidVendorDetails">Attachments</label>
+                    <button
+                      type="button"
+                      className={styles.form__upload}
+                      onClick={onUploadClick}
+                      disabled={isUploadingFile}
+                    >
+                      Upload
+                      <span className={styles.form__upload__icon}>
+                        <AddIcon />
+                      </span>
+                      <input
+                        type="file"
+                        ref={inputFile}
+                        className={styles.form__formInput}
+                        onChange={onFileChange}
+                        data-testid="input-file-attachment"
+                      />
+                    </button>
+                  </div>
+                  <AttachmentList
+                    attachments={attachments}
+                    onDelete={openAttachmentDeletePrompt}
+                  />
                 </div>
-                {attachments.length === 0 ? (
-                  <ul className={styles.form__attachmentList}>
-                    <li className={styles.form__attachmentList__item}>
-                      No Attachments
-                    </li>
-                  </ul>
-                ) : (
-                  <ul className={styles.form__attachmentList}>
-                    {attachments.map((ba) => (
-                      <li
-                        className={styles.form__attachmentList__item}
-                        key={ba.name}
-                      >
-                        {ba.name}
-                        <span className={styles['button--dropdown']}>
-                          <ActionsIcon />
-                          <DropdownAttachment
-                            fileUrl={ba.url}
-                            onDelete={() => openAttachmentDeletePrompt(ba)}
-                          />
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
+              )}
             </div>
           </div>
 
@@ -767,7 +744,7 @@ const BidForm: FunctionComponent<Props> = ({
   );
   let startAtProcessed = null;
   let completeAtProcessed = null;
-  let attachments: bidAttachmentModel[] = [];
+  let attachments: attachmentModel[] = [];
   if (!isNewBid) {
     startAtProcessed =
       bid.startAt &&

@@ -117,15 +117,6 @@
     width: 100%;
   }
 
-  &--dropdown {
-    @extend %gridHeaderCreateButton--dropdown;
-    position: relative;
-
-    &:focus,
-    &:hover {
-      background-color: rgba(145, 145, 145, 0.25);
-    }
-  }
 }
 
 .form {
@@ -294,21 +285,6 @@
 
     select {
       @extend %inputSelect;
-    }
-  }
-
-  &__attachmentList {
-    border: rem-calc(1) solid $gray-light;
-    border-radius: rem-calc(6);
-    list-style: none;
-    padding: rem-calc(12) rem-calc(16);
-    margin-top: rem-calc(8);
-
-    &__item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: rem-calc(8) 0;
     }
   }
 

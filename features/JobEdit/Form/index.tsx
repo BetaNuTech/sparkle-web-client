@@ -1,4 +1,4 @@
-import { useRef, FunctionComponent, ChangeEvent } from 'react';
+import { useRef, FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import {
   useForm,
@@ -14,7 +14,7 @@ import LoadingHud from '../../../common/LoadingHud';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
 import userModel from '../../../common/models/user';
-import attachmentModel from '../../../common/models/attachments';
+import attachmentModel from '../../../common/models/attachment';
 import MobileHeader from '../../../common/MobileHeader';
 import Dropdown, { DropdownButton } from '../../../common/Dropdown';
 import ErrorLabel from '../../../common/ErrorLabel';
@@ -28,13 +28,14 @@ import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import { JobApiResult } from '../hooks/useJobForm';
 import DropdownHeader from '../DropdownHeader';
-import DropdownAttachment from '../DropdownAttachment';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
 import { colors as bidColors } from '../../JobBids';
+import { FileChangeEvent } from '../hooks/useAttachmentChange';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
+import AttachmentList from '../../../common/AttachmentList';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -51,12 +52,13 @@ interface Props {
   isStaging?: boolean;
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
-  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
+  onFileChange(ev: FileChangeEvent): void;
   uploadState: boolean;
-  jobAttachment: attachmentModel;
   setDeleteAttachmentPromptVisible(newState: boolean): void;
+  onDeleteAttachment(attachment: attachmentModel): void;
   isDeleteAttachmentPromptVisible: boolean;
   confirmAttachmentDelete(): Promise<any>;
+  currentAttachment: attachmentModel;
   deleteAtachmentLoading: boolean;
   sendNotification: userNotifications;
   setDeleteTrelloCardPromptVisible(newState: boolean): void;
@@ -88,14 +90,29 @@ interface LayoutProps {
   onFormAction: (action: string) => void;
   register: UseFormRegister<Inputs>;
   formState: FormState<Inputs>;
-  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
+  onFileChange(ev: FileChangeEvent): void;
   isUploadingFile: boolean;
-  jobAttachment: attachmentModel;
+  jobAttachments: attachmentModel[];
   setDeleteAttachmentPromptVisible(newState: boolean): void;
+  onDeleteAttachment(attachment: attachmentModel): void;
   sendNotification?: userNotifications;
   setValue?: UseFormSetValue<Inputs>;
   setDeleteTrelloCardPromptVisible(newState: boolean): void;
 }
+
+// Cost min validator to check it should be less than max cost
+const sowValidator = (value) => {
+  let isValid = true;
+  if (!value) {
+    isValid = false;
+  }
+  // Check if we have attachment in SOW
+  const attachmentList = document.getElementById('sowAttachmentList');
+  if (!isValid && attachmentList) {
+    isValid = attachmentList.children.length > 0;
+  }
+  return isValid || formErrors.scopeRequired;
+};
 
 const Layout: FunctionComponent<LayoutProps> = ({
   isMobile,
@@ -115,8 +132,8 @@ const Layout: FunctionComponent<LayoutProps> = ({
   formState,
   onFileChange,
   isUploadingFile,
-  jobAttachment,
-  setDeleteAttachmentPromptVisible,
+  jobAttachments,
+  onDeleteAttachment,
   sendNotification,
   setValue,
   setDeleteTrelloCardPromptVisible
@@ -136,8 +153,8 @@ const Layout: FunctionComponent<LayoutProps> = ({
     }
   };
 
-  const openAttachmentDeletePrompt = () => {
-    setDeleteAttachmentPromptVisible(true);
+  const openAttachmentDeletePrompt = (attachment: attachmentModel) => {
+    onDeleteAttachment(attachment);
   };
 
   const openTrelloCardDeletePrompt = () => {
@@ -176,8 +193,22 @@ const Layout: FunctionComponent<LayoutProps> = ({
     needValidationOptions.required = formErrors.descriptionRequired;
 
     // Add scope of work validation if job is in approve or authorized state
-    sowValidationOptions.required = formErrors.scopeRequired;
+    sowValidationOptions.validate = sowValidator;
   }
+
+  const onInputFileChange = (ev) => {
+    const files = [];
+    // loop through files
+    for (let index = 0; index < ev.target.files.length; ) {
+      files.push(ev.target.files[index]);
+      index += 1;
+    }
+    onFileChange({
+      target: {
+        files
+      }
+    });
+  };
 
   return (
     <>
@@ -216,6 +247,18 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 >
                   <p>Requires{!isMobile && <> :&nbsp;</>}</p>
                   <h3 data-testid="job-form-edit-nextstatus">{nextState}</h3>
+                </div>
+              )}
+              {!isMobile && job.authorizedRules === 'expedite' && (
+                <div
+                  className={clsx(
+                    styles.job__info__box,
+                    styles.job__info__box__desktop
+                  )}
+                >
+                  <span className={styles['job__info__expedited--desktop']}>
+                    Expedited
+                  </span>
                 </div>
               )}
             </div>
@@ -292,43 +335,34 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   <label htmlFor="jobScope">
                     Scope of work {isApprovedOrAuthorized && <span>*</span>}
                   </label>
-                  {!isNewJob &&
-                    (job.scopeOfWorkAttachment && jobAttachment ? (
-                      <span className={styles['jobNew__formGroup--dropdown']}>
-                        Attachment
-                        <ActionsIcon />
-                        <DropdownAttachment
-                          fileUrl={jobAttachment.url}
-                          onDelete={() => openAttachmentDeletePrompt()}
-                        />
+                  {!isNewJob && (
+                    <button
+                      type="button"
+                      className={styles.jobNew__formGroup__upload}
+                      onClick={onUploadClick}
+                      disabled={isUploadingFile}
+                    >
+                      Upload
+                      <span className={styles.jobNew__formGroup__upload__icon}>
+                        <AddIcon />
                       </span>
-                    ) : (
-                      <button
-                        type="button"
-                        className={styles.jobNew__formGroup__upload}
-                        onClick={onUploadClick}
-                        disabled={isUploadingFile}
-                      >
-                        Upload
-                        <span
-                          className={styles.jobNew__formGroup__upload__icon}
-                        >
-                          <AddIcon />
-                        </span>
-                        <input
-                          type="file"
-                          ref={inputFile}
-                          className={styles.jobNew__formGroup__file}
-                          onChange={onFileChange}
-                          data-testid="input-file-attachment"
-                        />
-                      </button>
-                    ))}
+                      <input
+                        type="file"
+                        ref={inputFile}
+                        className={styles.jobNew__formGroup__file}
+                        onChange={onInputFileChange}
+                        data-testid="input-file-attachment"
+                      />
+                    </button>
+                  )}
                 </div>
                 <div className={styles.jobNew__formGroup__control}>
                   <textarea
                     id="jobScope"
-                    className="form-control"
+                    className={clsx(
+                      'form-control',
+                      styles.jobNew__formGroup__control__attachment
+                    )}
                     rows={6}
                     name="scopeOfWork"
                     defaultValue={job.scopeOfWork}
@@ -336,6 +370,15 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     {...register('scopeOfWork', sowValidationOptions)}
                     disabled={apiState.isLoading || isJobComplete}
                   ></textarea>
+                  {Array.isArray(jobAttachments) &&
+                    jobAttachments.length > 0 && (
+                      <AttachmentList
+                        attachments={jobAttachments}
+                        onDelete={openAttachmentDeletePrompt}
+                        className={styles.jobNew__attachmentList}
+                      />
+                    )}
+
                   <ErrorLabel
                     formName="scopeOfWork"
                     errors={formState.errors}
@@ -608,14 +651,15 @@ const JobForm: FunctionComponent<Props> = ({
   toggleNavOpen,
   onFileChange,
   uploadState,
-  jobAttachment,
   setDeleteAttachmentPromptVisible,
+  onDeleteAttachment,
   isDeleteAttachmentPromptVisible,
   confirmAttachmentDelete,
   deleteAtachmentLoading,
   sendNotification,
   setDeleteTrelloCardPromptVisible,
-  isDeleteTrelloCardPromptVisible
+  isDeleteTrelloCardPromptVisible,
+  currentAttachment
 }) => {
   const closeAttachmentDeletePrompt = () => {
     setDeleteAttachmentPromptVisible(false);
@@ -818,8 +862,9 @@ const JobForm: FunctionComponent<Props> = ({
             apiState={apiState}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
-            jobAttachment={jobAttachment}
+            jobAttachments={job.scopeOfWorkAttachments}
             setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
+            onDeleteAttachment={onDeleteAttachment}
             sendNotification={sendNotification}
             setValue={setValue}
             setDeleteTrelloCardPromptVisible={setDeleteTrelloCardPromptVisible}
@@ -865,8 +910,9 @@ const JobForm: FunctionComponent<Props> = ({
             apiState={apiState}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
-            jobAttachment={jobAttachment}
+            jobAttachments={job.scopeOfWorkAttachments}
             setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
+            onDeleteAttachment={onDeleteAttachment}
             sendNotification={sendNotification}
             setValue={setValue}
             setDeleteTrelloCardPromptVisible={setDeleteTrelloCardPromptVisible}
@@ -875,8 +921,9 @@ const JobForm: FunctionComponent<Props> = ({
       )}
 
       <DeleteAttachmentPrompt
-        fileName={jobAttachment && jobAttachment.name}
-        onConfirm={() => confirmAttachmentDelete()}
+        fileName={currentAttachment && currentAttachment.name}
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        onConfirm={confirmAttachmentDelete}
         isVisible={isDeleteAttachmentPromptVisible}
         onClose={closeAttachmentDeletePrompt}
       />
