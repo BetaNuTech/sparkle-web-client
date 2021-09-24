@@ -1,8 +1,8 @@
-import bidAttachmentModel from './bidAttachment';
+import attachmentModel from './attachment';
 
 interface bid {
   id: string;
-  attachments: Array<bidAttachmentModel>;
+  attachments: Array<attachmentModel>;
   completeAt?: number; // Unix timestamp
   costMax: number;
   costMin: number;

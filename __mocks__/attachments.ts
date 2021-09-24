@@ -1,7 +1,6 @@
-import attachmentModel from '../common/models/attachments';
+import attachmentModel from '../common/models/attachment';
 
 export const photoAttachment: attachmentModel = {
-  id: 'attach-1',
   createdAt: 1630089989,
   name: 'property-garden.jpg',
   type: 'image/jpeg',

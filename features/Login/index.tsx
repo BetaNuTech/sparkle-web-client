@@ -7,13 +7,12 @@ import notifications from '../../common/services/notifications'; // eslint-disab
 import styles from './styles.module.scss';
 import regexPattern from '../../common/utils/regexPattern';
 
-
 type FormInputs = {
   email: string;
   password: string;
 };
 
-export const LoginForm = () => {
+export const LoginForm = (): JSX.Element => {
   const { signInWithEmail } = useAuth();
 
   // User notifications setup

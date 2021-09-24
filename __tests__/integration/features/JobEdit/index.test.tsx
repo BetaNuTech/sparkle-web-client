@@ -13,7 +13,6 @@ import { ToastContainer } from 'react-toastify';
 import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import bids from '../../../../__mocks__/bids';
-import { photoAttachment } from '../../../../__mocks__/attachments';
 import {
   openImprovementJob,
   openMaintenanceJob
@@ -23,9 +22,6 @@ import JobErrors from '../../../../features/JobEdit/Form/errors';
 import propertiesApi, {
   propertyResult
 } from '../../../../common/services/firestore/properties';
-import attachmentDb, {
-  attachmentResult
-} from '../../../../common/services/firestore/attachments';
 import jobsStore, {
   jobResult
 } from '../../../../common/services/firestore/jobs';
@@ -47,13 +43,6 @@ function render(ui: any, options: any = {}) {
     data: options.property || (!options.propertyStatus && fullProperty)
   };
   sinon.stub(propertiesApi, 'findRecord').returns(propertyPayload);
-
-  const attachmentPayload: attachmentResult = {
-    status: options.attachmentStatus || 'success',
-    error: options.attachmentError || null,
-    data: options.attachment || photoAttachment
-  };
-  sinon.stub(attachmentDb, 'findRecord').returns(attachmentPayload);
 
   // Stub job details
   const jobPayload: jobResult = {
@@ -256,58 +245,4 @@ describe('Integration | Features | Job Edit', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('Send error report when an attachment fails to be saved to job', async () => {
-    const expected = true;
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      job: openMaintenanceJob
-    });
-
-    sinon.stub(storageApi, 'createUploadTask').returns({
-      snapshot: { ref: 'test' },
-      on(evt, onStart, onError, onComplete) {
-        onComplete();
-      }
-    });
-    sinon.stub(storageApi, 'getFileUrl').resolves('/test.png');
-    sinon.stub(attachmentDb, 'saveRecord').resolves('attach-1');
-    sinon.stub(jobsStore, 'updateAttachmentRef').rejects(Error('oops'));
-    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
-
-    act(() => {
-      const attachmentInput = screen.getByTestId('input-file-attachment');
-      fireEvent.change(attachmentInput, {
-        target: {
-          files: [new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })]
-        }
-      });
-    });
-
-    await waitFor(() => sendReport.called);
-
-    const actual = sendReport.called;
-    expect(actual).toEqual(expected);
-  });
-
-  it('Send error report when an attachment fails to delete from storage', async () => {
-    const expected = true;
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
-
-    sinon.stub(storageApi, 'deleteFile').throws(Error('fail'));
-    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
-
-    await act(async () => {
-      const [btnDelete] = screen.getAllByTestId('button-delete-attachment');
-      await userEvent.click(btnDelete);
-      const btnConfirm = screen.getByTestId('btn-confirm-delete-attachment');
-      await userEvent.click(btnConfirm);
-    });
-
-    await waitFor(() => sendReport.called);
-
-    const actual = sendReport.called;
-    expect(actual).toEqual(expected);
-  });
 });

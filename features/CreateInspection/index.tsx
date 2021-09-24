@@ -25,11 +25,9 @@ interface CreateInspectionProps {
 }
 
 const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
-  user,
   propertyId,
   isOnline,
-  isStaging,
-  toggleNavOpen
+  isStaging
 }) => {
   const firestore = useFirestore();
   const [apiState, setApiState] = useState(false);
@@ -39,6 +37,7 @@ const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
   /* eslint-enable */
 
   // Fetch the data of property profile
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: property } = useProperty(firestore, propertyId);
 
   // Fetch the list of all templates against property

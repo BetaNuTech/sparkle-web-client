@@ -4,7 +4,7 @@ import propertyModel from '../../common/models/property';
 import jobModel from '../../common/models/job';
 import bidModel from '../../common/models/bid';
 import useStorage, { StorageResult } from '../../common/hooks/useStorage';
-import bidAttachmentModel from '../../common/models/bidAttachment';
+import attachmentModel from '../../common/models/attachment';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications';
 import errorReports from '../../common/services/api/errorReports';
@@ -111,7 +111,7 @@ const BidEdit: FunctionComponent<Props> = ({
     setUploadState(false);
   };
 
-  const onConfirmAttachmentDelete = async (attachment: bidAttachmentModel) => {
+  const onConfirmAttachmentDelete = async (attachment: attachmentModel) => {
     setDeleteAtachmentLoading(true);
 
     try {

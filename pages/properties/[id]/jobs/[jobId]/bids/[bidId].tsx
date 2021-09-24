@@ -46,20 +46,19 @@ const Page: React.FC = (): ReactElement => {
   const { data: job } = useJob(firestore, jobId);
 
   // Fetch the data of bid
-  const { data: bids, status: bidApiStatus } = useJobBids(firestore, jobId);
-  const bid = (bids.filter((b) => b.id === bidId)[0] || {}) as bidModel;
+  const { data: bids /* , status: bidApiStatus */ } = useJobBids(
+    firestore,
+    jobId
+  );
   const otherBids = bids.filter((b) => b.id !== bidId); // Job's other bids
   const isNewBid = bidId === 'new';
 
-  // We are checking that when we have success from bids api
-  // then if we have bid then means we have bid otherwise it is error
-  const bidStatus =
-    // eslint-disable-next-line no-nested-ternary
-    bidApiStatus === 'success'
-      ? Object.keys(bid).length > 0
-        ? 'success'
-        : 'error'
-      : 'loading';
+  let bid = null as bidModel;
+  if (isNewBid) {
+    bid = {} as bidModel;
+  } else {
+    bid = (bids.filter((b) => b.id === bidId)[0] || null) as bidModel;
+  }
 
   // Redirect user requesting open job
   if (job && job.state === 'open') {
@@ -69,14 +68,16 @@ const Page: React.FC = (): ReactElement => {
     Router.push(bidListUrl);
   }
 
-  // Redirect user requesting non-existent job
-  if (bidId !== 'new' && bidStatus === 'error') {
-    sendNotification('Bid could not be found', { type: 'error' });
-    Router.push(bidListUrl);
-  }
+  // Redirect user requesting non-existent bid
+  // NOTE: Disabled due to issue with reactfire caching old bids
+  //       and returning them immediately, instead of requesting fresh data
+  // if (bidApiStatus === 'success' && !isNewBid && !bid) {
+  //   sendNotification('Bid could not be found', { type: 'error' });
+  //   Router.push(bidListUrl);
+  // }
 
   let isLoaded = false;
-  if (user && property && job && bidApiStatus === 'success') {
+  if (user && property && job && bid) {
     isLoaded = true;
   }
 
