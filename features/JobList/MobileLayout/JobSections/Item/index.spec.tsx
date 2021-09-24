@@ -74,7 +74,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
     expect(jobUpdatedEl.textContent).toEqual(expected);
   });
 
-  it('should have correct inspection color for asset management project job type', () => {
+  it('should have correct inspection color for property management project job type', () => {
     const props = {
       job: deepClone(openImprovementJob),
       propertyId: 'property-1',
@@ -83,8 +83,8 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
         ...configJobs,
         ...{
           typeColors: {
-            'asset management project': 'alert',
-            'property management project': 'info'
+            'small:pm': 'alert',
+            'small:hybrid': 'info'
           }
         }
       }),
@@ -98,7 +98,7 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
     expect(jobTypeTextEl.classList.contains(colors.alert)).toEqual(true);
   });
 
-  it('should have correct maintenance color for property management project job type', () => {
+  it('should have correct maintenance color for hybrid capital project job type', () => {
     const props = {
       job: deepClone(authorizedImprovementJob),
       propertyId: 'property-1',
@@ -107,8 +107,8 @@ describe('Unit | Features | Job List | Mobile Layout | Job Sections | Item', () 
         ...configJobs,
         ...{
           typeColors: {
-            'asset management project': 'info',
-            'property management project': 'orange'
+            'small:pm': 'info',
+            'small:hybrid': 'orange'
           }
         }
       }),

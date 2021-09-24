@@ -75,7 +75,7 @@ describe('Unit | Features | Job List | Grid | Item', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should have correct color for asset management project job type', () => {
+  it('should have correct color for property management project job type', () => {
     const expected = true;
     const props = {
       job: deepClone(openImprovementJob),
@@ -85,8 +85,8 @@ describe('Unit | Features | Job List | Grid | Item', () => {
         ...configJobs,
         ...{
           typeColors: {
-            'asset management project': 'alert',
-            'property management project': 'info'
+            'small:pm': 'alert',
+            'small:hybrid': 'info'
           }
         }
       }),
@@ -100,7 +100,7 @@ describe('Unit | Features | Job List | Grid | Item', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should have correct color for property management project job type', () => {
+  it('should have correct color for hybrid capital project job type', () => {
     const expected = true;
     const props = {
       job: deepClone(authorizedImprovementJob),
@@ -110,8 +110,8 @@ describe('Unit | Features | Job List | Grid | Item', () => {
         ...configJobs,
         ...{
           typeColors: {
-            'asset management project': 'info',
-            'property management project': 'orange'
+            'small:pm': 'info',
+            'small:hybrid': 'orange'
           }
         }
       }),

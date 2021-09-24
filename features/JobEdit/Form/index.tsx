@@ -314,7 +314,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 </div>
               </div>
               <div className={styles.jobNew__formGroup}>
-                <label htmlFor="jobType">Job Type</label>
+                <label htmlFor="jobType">Estimated Cost <span>*</span></label>
                 <select
                   name="type"
                   id="jobType"
