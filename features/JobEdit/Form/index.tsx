@@ -92,6 +92,7 @@ interface LayoutProps {
   formState: FormState<Inputs>;
   onFileChange(ev: FileChangeEvent): void;
   isUploadingFile: boolean;
+  bidsRequired: number;
   jobAttachments: attachmentModel[];
   setDeleteAttachmentPromptVisible(newState: boolean): void;
   onDeleteAttachment(attachment: attachmentModel): void;
@@ -133,6 +134,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   onFileChange,
   isUploadingFile,
   jobAttachments,
+  bidsRequired,
   onDeleteAttachment,
   sendNotification,
   setValue,
@@ -144,6 +146,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
       : [];
 
   const nextState = !isNewJob && jobsConfig.nextState[job.state];
+  const bidsLink = `/properties/${propertyId}/jobs/${job.id}/bids/`;
 
   const inputFile = useRef(null);
 
@@ -314,7 +317,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 </div>
               </div>
               <div className={styles.jobNew__formGroup}>
-                <label htmlFor="jobType">Estimated Cost <span>*</span></label>
+                <label htmlFor="jobType">
+                  Estimated Cost <span>*</span>
+                </label>
                 <select
                   name="type"
                   id="jobType"
@@ -460,7 +465,38 @@ const Layout: FunctionComponent<LayoutProps> = ({
               {!isNewJob && (
                 <div className={clsx(styles.jobNew__card, '-mt')}>
                   <div className={styles.jobNew__card__pill__action}>
-                    <h4 className={styles.jobNew__card__title}>Bids</h4>
+                    <h4 className={styles.jobNew__card__title}>
+                      Bids
+                      {bidsRequired > 0 ? (
+                        <span
+                          className={styles.job__info__bidsRequired}
+                          data-testid="bids-required"
+                        >
+                          (
+                          {`+${bidsRequired} bid${
+                            bidsRequired > 1 ? 's' : ''
+                          } required`}
+                          )
+                        </span>
+                      ) : (
+                        <span
+                          className={clsx(
+                            styles.job__info__bidsRequired,
+                            styles['job__info__bidsRequired--met']
+                          )}
+                          data-testid="bids-requirement-met"
+                        >
+                          (Bid requirements met)
+                        </span>
+                      )}
+                    </h4>
+                    {job.state !== 'open' && (
+                      <Link href={bidsLink}>
+                        <a className={styles.jobNew__card__titleLink}>
+                          View All
+                        </a>
+                      </Link>
+                    )}
                   </div>
                   {bids.length > 0 ? (
                     bids.map((b) => (
@@ -715,6 +751,7 @@ const JobForm: FunctionComponent<Props> = ({
   const isJobComplete = !isNewJob && job.state === 'complete';
   const canApprove = !isNewJob && job.state === 'open';
   const hasApprovedBid = bids.filter((b) => b.state === 'approved').length > 0;
+  const bidsRequired = job.minBids - bids.length;
 
   // If job is in approved state
   // And if job is expedited then have 1 approved bid
@@ -817,23 +854,47 @@ const JobForm: FunctionComponent<Props> = ({
             className={styles.job__info__header__main}
             data-testid="job-form-title-mobile"
           >
-            <div className={styles.job__info__header__breadcrumb}>
-              <Link href={propertyLink}>
-                <a
-                  className={styles.job__info__header__breadcrumb__text}
-                >{`${property.name}`}</a>
-              </Link>
-              <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
-              <Link href={jobLink}>
-                <a className={styles.job__info__header__breadcrumb__text}>
-                  Jobs
-                </a>
-              </Link>
-              {!isNewJob && (
-                <span className={styles.job__info__header__breadcrumb}>
-                  &nbsp;&nbsp;/&nbsp;&nbsp;Edit
-                </span>
-              )}
+            <div className={styles.job__info__header__separated}>
+              <div className={styles.job__info__header__breadcrumb}>
+                <Link href={propertyLink}>
+                  <a
+                    className={styles.job__info__header__breadcrumb__text}
+                  >{`${property.name}`}</a>
+                </Link>
+                <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+                <Link href={jobLink}>
+                  <a className={styles.job__info__header__breadcrumb__text}>
+                    Jobs
+                  </a>
+                </Link>
+                {!isNewJob && (
+                  <span className={styles.job__info__header__breadcrumb}>
+                    &nbsp;&nbsp;/&nbsp;&nbsp;Edit
+                  </span>
+                )}
+              </div>
+              <div>
+                {bidsRequired > 0 ? (
+                  <span
+                    className={styles.job__info__bidsRequired}
+                    data-testid="bids-required"
+                  >
+                    {`+${bidsRequired} bid${
+                      bidsRequired > 1 ? 's' : ''
+                    } required`}
+                  </span>
+                ) : (
+                  <span
+                    className={clsx(
+                      styles.job__info__bidsRequired,
+                      styles['job__info__bidsRequired--met']
+                    )}
+                    data-testid="bids-requirement-met"
+                  >
+                    Bid requirements met
+                  </span>
+                )}
+              </div>
             </div>
             <h1 className={styles.job__info__header__title}>
               {isNewJob ? 'New Job' : job.title}
@@ -862,6 +923,7 @@ const JobForm: FunctionComponent<Props> = ({
             apiState={apiState}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
+            bidsRequired={bidsRequired}
             jobAttachments={job.scopeOfWorkAttachments}
             setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
             onDeleteAttachment={onDeleteAttachment}
@@ -910,6 +972,7 @@ const JobForm: FunctionComponent<Props> = ({
             apiState={apiState}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
+            bidsRequired={bidsRequired}
             jobAttachments={job.scopeOfWorkAttachments}
             setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
             onDeleteAttachment={onDeleteAttachment}

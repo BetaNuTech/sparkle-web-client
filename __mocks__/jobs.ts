@@ -1,4 +1,5 @@
 import jobModel from '../common/models/job';
+import { photoAttachment } from './attachments';
 
 export const openImprovementJob: jobModel = {
   id: 'job-1',
@@ -6,7 +7,8 @@ export const openImprovementJob: jobModel = {
   need: 'for kids play zone',
   authorizedRules: 'default',
   scopeOfWork: 'install equipments in garden area',
-  scopeOfWorkAttachment: '/attachments/attach-1',
+  scopeOfWorkAttachments: [photoAttachment],
+  minBids: 2,
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1483209000,

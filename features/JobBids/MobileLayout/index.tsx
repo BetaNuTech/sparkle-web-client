@@ -20,6 +20,7 @@ interface Props {
   colors: Record<string, string>;
   configBids: Record<string, Record<string, string>>;
   forceVisible?: boolean;
+  bidsRequired?: number;
 }
 
 // Mobile layout
@@ -33,7 +34,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   propertyId,
   colors,
   configBids,
-  forceVisible
+  forceVisible,
+  bidsRequired
 }) => {
   const newBidLink = `/properties/${propertyId}/jobs/${job.id}/bids/new`;
   const jobListLink = `/properties/${propertyId}/jobs/`;
@@ -62,19 +64,39 @@ const MobileLayout: FunctionComponent<Props> = ({
         testid="mobile-bidlist-header"
       />
       <div className={styles.header__info__main}>
-        <div className={styles.header__info__breadcrumb}>
-          <Link href={propertyLink}>
-            <a
-              className={styles.header__info__breadcrumb__text}
-            >{`${property.name}`}</a>
-          </Link>
-          <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
-          <Link href={jobListLink}>
-            <a className={styles.header__info__breadcrumb__text}>Jobs</a>
-          </Link>
-          <span className={styles.header__info__breadcrumb}>
-            &nbsp;&nbsp;/&nbsp;&nbsp;Bids
-          </span>
+        <div className={styles.header__info__main__top}>
+          <nav className={styles.header__info__breadcrumb}>
+            <Link href={propertyLink}>
+              <a
+                className={styles.header__info__breadcrumb__text}
+              >{`${property.name}`}</a>
+            </Link>
+            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+            <Link href={jobListLink}>
+              <a className={styles.header__info__breadcrumb__text}>Jobs</a>
+            </Link>
+            <span className={styles.header__info__breadcrumb}>
+              &nbsp;&nbsp;/&nbsp;&nbsp;Bids
+            </span>
+          </nav>
+          {bidsRequired > 0 ? (
+            <span
+              className={styles.header__sideMeta}
+              data-testid="bids-required"
+            >
+              {`+${bidsRequired} bid${bidsRequired > 1 ? 's' : ''} required`}
+            </span>
+          ) : (
+            <span
+              className={clsx(
+                styles.header__sideMeta,
+                styles['header__sideMeta--satisfied']
+              )}
+              data-testid="bids-requirement-met"
+            >
+              (Bid requirements met)
+            </span>
+          )}
         </div>
         <h1 className={styles.header__info__title}>{job.title}</h1>
       </div>
