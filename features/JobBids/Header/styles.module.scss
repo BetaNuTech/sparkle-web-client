@@ -31,10 +31,6 @@
   }
 
   &__item {
-    &:first-child {
-      margin-right: $global-padding;
-    }
-
     &__createButton {
       @extend %gridHeaderCreateButton;
       display: inline-flex;

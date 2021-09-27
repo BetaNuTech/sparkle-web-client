@@ -8,6 +8,7 @@ import bidModel from '../../../common/models/bid';
 import configBids from '../../../config/bids';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import styles from './styles.module.scss';
+import desktopHeaderStyles from '../../../common/DesktopHeader/styles.module.scss';
 
 interface BidsHeaderModel {
   job: jobModel;
@@ -18,6 +19,7 @@ interface BidsHeaderModel {
   filterState?: string;
   isOnline: boolean;
   changeFilterState?(state: string): void;
+  bidsRequired?: number;
 }
 
 const MetaData: FunctionComponent<{
@@ -173,7 +175,8 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
   colors,
   filterState,
   isOnline,
-  changeFilterState
+  changeFilterState,
+  bidsRequired
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const jobListLink = `/properties/${property.id}/jobs/`;
@@ -218,25 +221,53 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
         />
       }
       nextLineRight={
-        job.state === 'open' ? (
-          <Link href={jobEditLink}>
-            <a data-testid="job-bid-create-msg">Approve Job to Create Bids</a>
-          </Link>
-        ) : (
-          <div className={styles.header__item}>
-            <Link href={`/properties/${property.id}/jobs/${job.id}/bids/new`}>
-              <a
-                className={clsx(styles.header__item__createButton)}
-                data-testid="job-bid-create"
-              >
-                Create New Bid
-                <span className="iconAddButton">
-                  <AddIcon />
-                </span>
-              </a>
+        <div className={desktopHeaderStyles.header__controls__column}>
+          {job.state === 'open' ? (
+            <Link href={jobEditLink}>
+              <a data-testid="job-bid-create-msg">Approve Job to Create Bids</a>
             </Link>
-          </div>
-        )
+          ) : (
+            <>
+              <div className={styles.header__item}>
+                <Link
+                  href={`/properties/${property.id}/jobs/${job.id}/bids/new`}
+                >
+                  <a
+                    className={clsx(styles.header__item__createButton)}
+                    data-testid="job-bid-create"
+                  >
+                    Create New Bid
+                    <span className="iconAddButton">
+                      <AddIcon />
+                    </span>
+                  </a>
+                </Link>
+              </div>
+              {bidsRequired > 0 ? (
+                <span
+                  className={desktopHeaderStyles.header__controls__instructions}
+                  data-testid="bids-required"
+                >
+                  {`+${bidsRequired} bid${
+                    bidsRequired > 1 ? 's' : ''
+                  } required`}
+                </span>
+              ) : (
+                <span
+                  className={clsx(
+                    desktopHeaderStyles.header__controls__instructions,
+                    desktopHeaderStyles[
+                      'header__controls__instructions--satisfied'
+                    ]
+                  )}
+                  data-testid="bids-requirement-met"
+                >
+                  (Bid requirements met)
+                </span>
+              )}
+            </>
+          )}
+        </div>
       }
     />
   );

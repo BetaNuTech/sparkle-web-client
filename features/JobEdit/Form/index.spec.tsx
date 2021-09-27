@@ -17,7 +17,7 @@ import {
 } from '../../../__mocks__/jobs';
 import { photoAttachment } from '../../../__mocks__/attachments';
 import { fullProperty } from '../../../__mocks__/properties';
-import bids, { approvedBid } from '../../../__mocks__/bids';
+import bids, { approvedBid, openBid } from '../../../__mocks__/bids';
 import { admin as user, noAccess } from '../../../__mocks__/users';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
@@ -1049,5 +1049,101 @@ describe('Unit | Features | Job Edit | Form', () => {
     );
     expect(elAddBidCard).toBeNull();
     expect(elAddBidCardDisabled).toBeTruthy();
+  });
+
+  it('should show bid required text if min bids requirement not met', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids: [approvedBid],
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachments: [photoAttachment],
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      onDeleteAttachment: () => {},
+      currentAttachment: null,
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const expected = '(+1 bid required)';
+
+    const elBidRequired = screen.queryByTestId('bids-required');
+    const elBidRequirementMet = screen.queryByTestId('bids-requirement-met');
+
+    const actual = elBidRequired.textContent;
+
+    expect(elBidRequirementMet).toBeNull();
+    expect(elBidRequired).toBeTruthy();
+    expect(actual).toEqual(expected);
+  });
+
+  it('should show bid requirement met text if min bids requirement met', async () => {
+    const putReq = sinon.spy();
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids: [approvedBid, openBid],
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: putReq,
+      onFileChange: () => {},
+      uploadState: false,
+      jobAttachments: [photoAttachment],
+      setDeleteAttachmentPromptVisible: () => {},
+      isDeleteAttachmentPromptVisible: false,
+      confirmAttachmentDelete: () => Promise.resolve(),
+      deleteAtachmentLoading: false,
+      sendNotification: () => {},
+      setDeleteTrelloCardPromptVisible: () => {},
+      onDeleteAttachment: () => {},
+      currentAttachment: null,
+      isDeleteTrelloCardPromptVisible: false
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const expected = 'Bid requirements met';
+
+    const elBidRequired = screen.queryByTestId('bids-required');
+    const [elBidRequirementMet] = screen.queryAllByTestId(
+      'bids-requirement-met'
+    );
+
+    const actual = elBidRequirementMet.textContent;
+
+    expect(elBidRequired).toBeNull();
+    expect(elBidRequirementMet).toBeTruthy();
+    expect(actual).toEqual(expected);
   });
 });

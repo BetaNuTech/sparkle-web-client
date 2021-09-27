@@ -77,6 +77,8 @@ const JobBids: FunctionComponent<Props> = ({
     return <LoadingHud title="Loading Bids" />;
   }
 
+  const bidsRequired = job.minBids - bids.length;
+
   return (
     <>
       {isMobileorTablet && (
@@ -91,6 +93,7 @@ const JobBids: FunctionComponent<Props> = ({
           colors={colors}
           configBids={configBids}
           forceVisible={forceVisible}
+          bidsRequired={bidsRequired}
         />
       )}
 
@@ -106,6 +109,7 @@ const JobBids: FunctionComponent<Props> = ({
             colors={colors}
             changeFilterState={changeFilterState}
             isOnline={isOnline}
+            bidsRequired={bidsRequired}
           />
           <Grid
             job={job}
