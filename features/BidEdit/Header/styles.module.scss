@@ -16,8 +16,7 @@
   }
 
   &__controls {
-    @extend %gridHeaderControls;
-    padding-top: 0.3em;
-    align-items: flex-start;
+    align-items: flex-end;
+    padding-bottom: rem-calc(9);
   }
 }

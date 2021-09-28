@@ -15,7 +15,7 @@
   }
 
   &__controls {
-    @extend %gridHeaderControls;
-    margin-bottom: $global-padding;
+    align-items: flex-end;
+    padding-bottom: rem-calc(9);
   }
 }

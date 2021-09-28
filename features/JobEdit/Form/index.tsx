@@ -115,6 +115,86 @@ const sowValidator = (value) => {
   return isValid || formErrors.scopeRequired;
 };
 
+const formActionButtons = (
+  canApprove: boolean,
+  canAuthorize: boolean,
+  canExpedite: boolean,
+  isJobComplete: boolean,
+  isMobile: boolean,
+  apiState: JobApiResult,
+  onFormAction: (action: string) => void
+) => (
+  <>
+    {canApprove && (
+      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+        <button
+          type="button"
+          data-testid="job-form-approve"
+          disabled={apiState.isLoading}
+          className={clsx(
+            styles.button__submit,
+            isMobile && styles.button__fullwidth
+          )}
+          onClick={() => onFormAction('approved')}
+        >
+          Approve
+        </button>
+      </div>
+    )}
+    {canAuthorize && (
+      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+        <button
+          type="button"
+          data-testid="job-form-authorize"
+          disabled={apiState.isLoading}
+          className={clsx(
+            styles.button__submit,
+            isMobile && styles.button__fullwidth
+          )}
+          data-value="authorized"
+          onClick={() => onFormAction('authorized')}
+        >
+          Authorize
+        </button>
+      </div>
+    )}
+    {canExpedite && (
+      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+        <button
+          type="button"
+          data-testid="job-form-expedite"
+          disabled={apiState.isLoading}
+          className={clsx(
+            styles.button__submit,
+            isMobile && styles.button__fullwidth
+          )}
+          data-value="expedite"
+          onClick={() => onFormAction('expedite')}
+        >
+          Expedite
+        </button>
+      </div>
+    )}
+
+    {!isJobComplete && (
+      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
+        <button
+          type="button"
+          data-testid="job-form-submit"
+          disabled={apiState.isLoading}
+          className={clsx(
+            styles.button__submit,
+            isMobile && styles.button__fullwidth
+          )}
+          onClick={() => onFormAction('save')}
+        >
+          Save
+        </button>
+      </div>
+    )}
+  </>
+);
+
 const Layout: FunctionComponent<LayoutProps> = ({
   isMobile,
   job,
@@ -375,21 +455,32 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     {...register('scopeOfWork', sowValidationOptions)}
                     disabled={apiState.isLoading || isJobComplete}
                   ></textarea>
-                  {Array.isArray(jobAttachments) &&
-                    jobAttachments.length > 0 && (
-                      <AttachmentList
-                        attachments={jobAttachments}
-                        onDelete={openAttachmentDeletePrompt}
-                        className={styles.jobNew__attachmentList}
-                      />
-                    )}
-
+                  <div className={styles.jobNew__attachmentList}>
+                    {Array.isArray(jobAttachments) &&
+                      jobAttachments.length > 0 && (
+                        <AttachmentList
+                          id="sowAttachmentList"
+                          attachments={jobAttachments}
+                          onDelete={openAttachmentDeletePrompt}
+                        />
+                      )}
+                  </div>
                   <ErrorLabel
                     formName="scopeOfWork"
                     errors={formState.errors}
                   />
                 </div>
               </div>
+              {!isMobile &&
+                formActionButtons(
+                  canApprove,
+                  canAuthorize,
+                  canExpedite,
+                  isJobComplete,
+                  isMobile,
+                  apiState,
+                  onFormAction
+                )}
             </div>
             <div>
               {/** Trello card */}
@@ -583,73 +674,16 @@ const Layout: FunctionComponent<LayoutProps> = ({
             </div>
           </div>
 
-          {canApprove && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="job-form-approve"
-                disabled={apiState.isLoading}
-                className={clsx(
-                  styles.button__submit,
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onFormAction('approved')}
-              >
-                Approve
-              </button>
-            </div>
-          )}
-          {canAuthorize && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="job-form-authorize"
-                disabled={apiState.isLoading}
-                className={clsx(
-                  styles.button__submit,
-                  isMobile && styles.button__fullwidth
-                )}
-                data-value="authorized"
-                onClick={() => onFormAction('authorized')}
-              >
-                Authorize
-              </button>
-            </div>
-          )}
-          {canExpedite && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="job-form-expedite"
-                disabled={apiState.isLoading}
-                className={clsx(
-                  styles.button__submit,
-                  isMobile && styles.button__fullwidth
-                )}
-                data-value="expedite"
-                onClick={() => onFormAction('expedite')}
-              >
-                Expedite
-              </button>
-            </div>
-          )}
-
-          {!isJobComplete && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="job-form-submit"
-                disabled={apiState.isLoading}
-                className={clsx(
-                  styles.button__submit,
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onFormAction('save')}
-              >
-                Save
-              </button>
-            </div>
-          )}
+          {isMobile &&
+            formActionButtons(
+              canApprove,
+              canAuthorize,
+              canExpedite,
+              isJobComplete,
+              isMobile,
+              apiState,
+              onFormAction
+            )}
 
           {isMobile && (
             <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
