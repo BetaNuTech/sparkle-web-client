@@ -1,4 +1,6 @@
 import userModel from '../models/user';
+import jobModel from '../models/job';
+import bidModel from '../models/bid';
 
 // Create flat array of all user's
 // property's that they are team lead of.
@@ -127,3 +129,34 @@ export const canAccessJobs = (user: userModel, propertyId: string): boolean =>
 // Checks user has permission to view property jobs bids
 export const canAccessBids = (user: userModel, propertyId: string): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
+
+// Checks user can authorize the job
+export const canAuthorizeJob = (
+  jobId: string,
+  user: userModel,
+  job: jobModel,
+  bids: bidModel[]
+): boolean => {
+  if (jobId === 'new' || job.state !== 'approved') {
+    return false;
+  }
+
+  const minBids = job.minBids || Infinity;
+  const hasApprovedBid = bids.filter((b) => b.state === 'approved').length > 0;
+  const hasEnoughBids = bids.length >= minBids;
+
+  return hasApprovedBid && hasEnoughBids;
+};
+
+// Checks user can expedite the job
+// If job is in approved state
+// And user is admin and job is not already expedited
+export const canExpediteJob = (
+  jobId: string,
+  user: userModel,
+  job: jobModel
+): boolean =>
+  jobId !== 'new' &&
+  job.state === 'approved' &&
+  user.admin &&
+  job.authorizedRules !== 'expedite';

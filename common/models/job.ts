@@ -4,7 +4,7 @@ interface job {
   id: string;
   title: string;
   need: string;
-  authorizedRules?: 'default' | 'expedite';
+  authorizedRules?: string;
   scopeOfWorkAttachments?: Array<attachmentModel>;
   scopeOfWork?: string;
   trelloCardURL?: string;

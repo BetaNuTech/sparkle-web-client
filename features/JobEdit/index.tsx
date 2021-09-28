@@ -92,6 +92,7 @@ const JobNew: FunctionComponent<Props> = ({
       isStaging={isStaging}
       toggleNavOpen={toggleNavOpen}
       job={jobData}
+      jobId={jobId}
       bids={bids}
       isNewJob={isNewJob}
       apiState={apiState}

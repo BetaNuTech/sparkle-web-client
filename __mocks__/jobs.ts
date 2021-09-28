@@ -8,13 +8,13 @@ export const openImprovementJob: jobModel = {
   authorizedRules: 'default',
   scopeOfWork: 'install equipments in garden area',
   scopeOfWorkAttachments: [photoAttachment],
-  minBids: 2,
   trelloCardURL: '',
   property: 'property-1',
   createdAt: 1483209000,
   updatedAt: 1485887400,
   state: 'open',
-  type: 'small:pm'
+  type: 'small:pm',
+  minBids: 2
 };
 
 export const openMaintenanceJob: jobModel = {
@@ -28,7 +28,8 @@ export const openMaintenanceJob: jobModel = {
   createdAt: 1488306600,
   updatedAt: 1490985000,
   state: 'open',
-  type: 'small:pm'
+  type: 'small:pm',
+  minBids: 2
 };
 
 export const openMaintenanceExpeditedJob: jobModel = {
@@ -42,7 +43,8 @@ export const openMaintenanceExpeditedJob: jobModel = {
   createdAt: 1493577000,
   updatedAt: 1496255400,
   state: 'open',
-  type: 'small:pm'
+  type: 'small:pm',
+  minBids: 1
 };
 
 export const approvedImprovementJob: jobModel = {
@@ -56,7 +58,23 @@ export const approvedImprovementJob: jobModel = {
   createdAt: 1498847400,
   updatedAt: 1501525800,
   state: 'approved',
-  type: 'small:pm'
+  type: 'small:pm',
+  minBids: 2
+};
+
+export const approvedImprovementHybridJob: jobModel = {
+  id: 'job-31',
+  title: 'Replace leasing office tiling',
+  need: 'office tiles needs to be replaced',
+  authorizedRules: 'default',
+  scopeOfWork: 'Replace floor tiles',
+  trelloCardURL: '',
+  property: 'property-1',
+  createdAt: 1498847400,
+  updatedAt: 1501525800,
+  state: 'approved',
+  type: 'small:hybrid',
+  minBids: 2
 };
 
 export const approvedMaintenanceJob: jobModel = {
@@ -70,7 +88,38 @@ export const approvedMaintenanceJob: jobModel = {
   createdAt: 1504204200,
   updatedAt: 1506796200,
   state: 'approved',
-  type: 'small:pm'
+  type: 'small:pm',
+  minBids: 2
+};
+
+export const approvedExpeditedMaintenanceJob: jobModel = {
+  id: 'job-41',
+  title: 'Solar roof fitting',
+  need: '',
+  authorizedRules: 'expedite',
+  scopeOfWork: '',
+  trelloCardURL: 'https://trello.com/c/lxfZsLN4',
+  property: 'property-2',
+  createdAt: 1504204200,
+  updatedAt: 1506796200,
+  state: 'approved',
+  type: 'small:pm',
+  minBids: 1
+};
+
+export const approvedLargeJob: jobModel = {
+  id: 'job-41',
+  title: 'Solar roof fitting',
+  need: '',
+  authorizedRules: 'large',
+  scopeOfWork: '',
+  trelloCardURL: 'https://trello.com/c/lxfZsLN4',
+  property: 'property-2',
+  createdAt: 1504204200,
+  updatedAt: 1506796200,
+  state: 'approved',
+  type: 'large:am',
+  minBids: 3
 };
 
 export const authorizedImprovementJob: jobModel = {
@@ -84,7 +133,8 @@ export const authorizedImprovementJob: jobModel = {
   createdAt: 1509474600,
   updatedAt: 1512066600,
   state: 'authorized',
-  type: 'small:hybrid'
+  type: 'small:hybrid',
+  minBids: 1
 };
 
 export const authorizedMaintenanceJob: jobModel = {
@@ -98,7 +148,8 @@ export const authorizedMaintenanceJob: jobModel = {
   createdAt: 1514745000,
   updatedAt: 1517423400,
   state: 'authorized',
-  type: 'small:hybrid'
+  type: 'small:hybrid',
+  minBids: 2
 };
 
 export const completeImprovementJob: jobModel = {
@@ -112,7 +163,8 @@ export const completeImprovementJob: jobModel = {
   createdAt: 1519842600,
   updatedAt: 1522521000,
   state: 'complete',
-  type: 'small:hybrid'
+  type: 'small:hybrid',
+  minBids: 2
 };
 
 export const completeMaintenanceJob: jobModel = {
@@ -126,7 +178,8 @@ export const completeMaintenanceJob: jobModel = {
   createdAt: 1525113000,
   updatedAt: 1527791400,
   state: 'complete',
-  type: 'small:hybrid'
+  type: 'small:hybrid',
+  minBids: 2
 };
 
 export default [
@@ -135,6 +188,8 @@ export default [
   openMaintenanceExpeditedJob,
   approvedImprovementJob,
   approvedMaintenanceJob,
+  approvedImprovementHybridJob,
+  approvedExpeditedMaintenanceJob,
   authorizedImprovementJob,
   authorizedMaintenanceJob,
   completeImprovementJob,

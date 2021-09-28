@@ -7,7 +7,15 @@ import {
   propertyMember,
   noAccess
 } from '../../__mocks__/users';
+import {
+  openImprovementJob,
+  approvedImprovementJob,
+  approvedExpeditedMaintenanceJob,
+  approvedLargeJob
+} from '../../__mocks__/jobs';
 import deepClone from '../../__tests__/helpers/deepClone';
+import jobModel from '../models/job';
+import bidModel from '../models/bid';
 import * as util from './userPermissions';
 
 describe('Unit | Common | Utils | User Permissions', () => {
@@ -265,5 +273,141 @@ describe('Unit | Common | Utils | User Permissions', () => {
         .join(', ');
       expect(actual).toEqual(expected);
     });
+  });
+
+  test('it should only allow authorizing job when necessary conditions are met', () => {
+    const data = [
+      {
+        jobId: 'new',
+        user: admin,
+        job: {} as jobModel,
+        bids: [{} as bidModel],
+        expected: false,
+        msg: 'does not allow admin to authorize new job'
+      },
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedImprovementJob,
+        bids: [{} as bidModel],
+        expected: false,
+        msg: 'does not allow team member to authorize job without qualifying bids'
+      },
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: openImprovementJob,
+        bids: [{ state: 'open' } as bidModel],
+        expected: false,
+        msg: 'rejects team member from authorizing job with single open bid'
+      },
+      {
+        args: [],
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedExpeditedMaintenanceJob,
+        bids: [{ state: 'approved' } as bidModel],
+        expected: true,
+        msg: 'allows team member to authorize expedited job with single approved bid'
+      },
+
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedImprovementJob,
+        bids: [{ state: 'approved' } as bidModel],
+        expected: false,
+        msg: 'rejects team member from authorizing small job with single approved bid'
+      },
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedImprovementJob,
+        bids: [
+          { state: 'approved' } as bidModel,
+          { state: 'open' } as bidModel
+        ],
+        expected: true,
+        msg: 'allows team member to authorize small job when enough bids exist and one is approved'
+      },
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedLargeJob,
+        bids: [
+          { state: 'approved' } as bidModel,
+          { state: 'open' } as bidModel,
+          { state: 'open' } as bidModel
+        ],
+        expected: true,
+        msg: 'allows team member to authorize large job when enough bids exist and one is approved'
+      }
+    ];
+
+    for (let i = 0; i < data.length; i += 1) {
+      const { jobId, user, job, bids, expected, msg } = data[i];
+      const actual = util.canAuthorizeJob(jobId, user, job, bids);
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
+  test('it should allow admin to expedite job when job is approved', () => {
+    const data = [
+      {
+        jobId: 'new',
+        user: admin,
+        job: {} as jobModel,
+        expected: false,
+        msg: 'does not allow admin to expedite new job'
+      },
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedImprovementJob,
+        expected: false,
+        msg: 'does not allow team member to expedite job'
+      },
+      {
+        jobId: 'job-1',
+        user: admin,
+        job: openImprovementJob,
+        expected: false,
+        msg: 'does not allow admin to expedite open job'
+      },
+      {
+        jobId: 'job-1',
+        user: admin,
+        job: approvedExpeditedMaintenanceJob,
+        expected: false,
+        msg: 'does not allow admin to expedite, previously expedited, job'
+      },
+      {
+        jobId: 'job-1',
+        user: teamLead,
+        job: approvedExpeditedMaintenanceJob,
+        expected: false,
+        msg: 'does not allow team lead to expedite, previously expedited, job'
+      },
+      {
+        jobId: 'job-1',
+        user: teamMember,
+        job: approvedExpeditedMaintenanceJob,
+        expected: false,
+        msg: 'does not allow team member to expedite, previously expedited, job'
+      },
+      {
+        jobId: 'job-1',
+        user: admin,
+        job: approvedImprovementJob,
+        expected: true,
+        msg: 'allow admin to expedite approved job'
+      }
+    ];
+
+    for (let i = 0; i < data.length; i += 1) {
+      const { jobId, user, job, expected, msg } = data[i];
+      const actual = util.canExpediteJob(jobId, user, job);
+      expect(actual, msg).toEqual(expected);
+    }
   });
 });

@@ -19,7 +19,8 @@ import mockJobs, {
   authorizedImprovementJob,
   authorizedMaintenanceJob,
   completeImprovementJob,
-  completeMaintenanceJob
+  completeMaintenanceJob,
+  approvedImprovementHybridJob
 } from '../../../../__mocks__/jobs';
 import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import JobList from '../../../../features/JobList';
@@ -132,7 +133,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on desktop', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Replace leasing office tiling,Solar roof fitting,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(
       <JobList
         user={user}
@@ -495,7 +496,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort type by asc on desktop', async () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
-      `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
+      `Approved: ${utilString.titleize(approvedImprovementHybridJob.type)}`,
       `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
@@ -548,7 +549,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on mobile', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Replace leasing office tiling,Solar roof fitting,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(
       <JobList
         user={user}
@@ -727,7 +728,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort by type in asc on mobile', async () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
-      `Approved: ${utilString.titleize(approvedImprovementJob.type)}`,
+      `Approved: ${utilString.titleize(approvedImprovementHybridJob.type)}`,
       `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
@@ -738,7 +739,13 @@ describe('Integration | Features | Job List', () => {
         forceVisible={FORCE_VISIBLE}
       />,
       {
-        contextWidth: breakpoints.tablet.maxWidth
+        contextWidth: breakpoints.tablet.maxWidth,
+        jobs: [
+          openImprovementJob,
+          approvedImprovementHybridJob,
+          authorizedImprovementJob,
+          completeMaintenanceJob
+        ]
       }
     );
 
