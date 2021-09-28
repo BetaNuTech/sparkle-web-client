@@ -49,9 +49,11 @@ export default {
     let error = null;
     let data = [];
 
+    const dbIds = ids.length > 0 ? ids : ['undefined'];
+
     const query = firestore
       .collection(fbCollections.properties)
-      .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
+      .where(firebase.firestore.FieldPath.documentId(), 'in', dbIds);
 
     const {
       status: queryStatus,

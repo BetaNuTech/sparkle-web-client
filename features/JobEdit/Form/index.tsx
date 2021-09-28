@@ -36,6 +36,10 @@ import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
 import AttachmentList from '../../../common/AttachmentList';
+import {
+  canAuthorizeJob,
+  canExpediteJob
+} from '../../../common/utils/userPermissions';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -43,6 +47,7 @@ interface Props {
   user: userModel;
   property: propertyModel;
   job: jobModel;
+  jobId: string;
   bids: Array<bidModel>;
   isNewJob: boolean;
   apiState: JobApiResult;
@@ -86,6 +91,7 @@ interface LayoutProps {
   canApprove: boolean;
   canAuthorize: boolean;
   canExpedite: boolean;
+  user: userModel;
   apiState: JobApiResult;
   onFormAction: (action: string) => void;
   register: UseFormRegister<Inputs>;
@@ -711,6 +717,7 @@ const JobForm: FunctionComponent<Props> = ({
   user,
   property,
   job,
+  jobId,
   bids,
   isNewJob,
   isOnline,
@@ -784,27 +791,11 @@ const JobForm: FunctionComponent<Props> = ({
     !isNewJob && ['approved', 'authorized'].includes(job.state);
   const isJobComplete = !isNewJob && job.state === 'complete';
   const canApprove = !isNewJob && job.state === 'open';
-  const hasApprovedBid = bids.filter((b) => b.state === 'approved').length > 0;
   const bidsRequired = job.minBids - bids.length;
 
-  // If job is in approved state
-  // And if job is expedited then have 1 approved bid
-  // OR if job is not expedited then have 1 approved bid and more than 3 bids
-  const canAuthorize =
-    !isNewJob &&
-    job.state === 'approved' &&
-    ((job.authorizedRules === 'expedite' && hasApprovedBid) ||
-      (job.authorizedRules !== 'expedite' &&
-        hasApprovedBid &&
-        bids.length >= 3));
+  const canAuthorize = canAuthorizeJob(jobId, user, job, bids);
 
-  // If job is in approved state
-  // And user is admin and job is not already expedited
-  const canExpedite =
-    !isNewJob &&
-    job.state === 'approved' &&
-    user.admin &&
-    job.authorizedRules !== 'expedite';
+  const canExpedite = canExpediteJob(jobId, user, job);
 
   // Setup form submissions
   const {
@@ -950,6 +941,7 @@ const JobForm: FunctionComponent<Props> = ({
             canApprove={canApprove}
             canAuthorize={canAuthorize}
             canExpedite={canExpedite}
+            user={user}
             jobLink={jobLink}
             onFormAction={onSubmit}
             register={register}
@@ -999,6 +991,7 @@ const JobForm: FunctionComponent<Props> = ({
             canApprove={canApprove}
             canAuthorize={canAuthorize}
             canExpedite={canExpedite}
+            user={user}
             jobLink={jobLink}
             onFormAction={onSubmit}
             register={register}

@@ -51,7 +51,7 @@ describe('Integration | Features | Job List | Header', () => {
     const jobProgress = screen.queryByTestId('job-progress-text');
 
     expect(jobOpen.textContent).toEqual('3Open');
-    expect(jobActions.textContent).toEqual('1Approved');
+    expect(jobActions.textContent).toEqual('2Approved');
     expect(jobProgress.textContent).toEqual('2Authorized');
   });
 

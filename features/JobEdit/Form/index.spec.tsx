@@ -13,7 +13,8 @@ import {
   approvedImprovementJob,
   authorizedImprovementJob,
   completeImprovementJob,
-  approvedMaintenanceJob
+  approvedMaintenanceJob,
+  approvedExpeditedMaintenanceJob
 } from '../../../__mocks__/jobs';
 import { photoAttachment } from '../../../__mocks__/attachments';
 import { fullProperty } from '../../../__mocks__/properties';
@@ -654,10 +655,8 @@ describe('Unit | Features | Job Edit | Form', () => {
   });
 
   it('should show authorize button when expedited job is approved and has only bid that is approved', () => {
-    const approvedExpeditedJob = { ...approvedImprovementJob };
-    approvedExpeditedJob.authorizedRules = 'expedite';
     const props = {
-      job: approvedExpeditedJob,
+      job: approvedExpeditedMaintenanceJob,
       property: fullProperty,
       apiState,
       isOnline: true,
