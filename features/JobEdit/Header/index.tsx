@@ -135,6 +135,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
       }
       isOnline={isOnline}
       right={<RightSide />}
+      rightClass={styles.header__controls}
     />
   );
 };

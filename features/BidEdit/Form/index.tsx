@@ -191,10 +191,32 @@ const Layout: FunctionComponent<LayoutProps> = ({
   queueAttachmentForDelete,
   setDeleteAttachmentPromptVisible
 }) => {
+  // Keys which can come from api
+  const formInputs = ['vendor', 'costMin', 'costMax', 'startAt', 'completeAt'];
+  // Error object which can be there after submitting form
+  const apiFormErrors = {
+    vendor: '',
+    costMin: '',
+    costMax: '',
+    startAt: '',
+    completeAt: ''
+  };
+  const filteredApiErrors = [];
+  // Check if we have error then find all defined keys in @formInput variable
+  // Otherwise push in @filteredApiErrors to show them in list of errors
+  if ([400, 409].includes(apiState.statusCode) && apiState.response.errors) {
+    apiState.response.errors.forEach((ae) => {
+      if (ae.source && formInputs.includes(ae.source.pointer)) {
+        apiFormErrors[ae.source.pointer] = ae.detail;
+      } else {
+        filteredApiErrors.push(ae);
+      }
+    });
+  }
+  // Extract the message
   const apiErrors =
-    apiState.statusCode === 400 && apiState.response.errors
-      ? apiState.response.errors.map((e) => e.detail)
-      : [];
+    filteredApiErrors.length > 0 ? filteredApiErrors.map((e) => e.detail) : [];
+
   const bidState = !isNewBid && bid.state ? bid.state : 'open';
   const nextState = !isNewBid && bidsConfig.nextState[bidState];
 
@@ -326,7 +348,11 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     })}
                     disabled={apiState.isLoading || isBidComplete}
                   />
-                  <ErrorLabel formName="vendor" errors={formState.errors} />
+                  <ErrorLabel
+                    formName="vendor"
+                    errors={formState.errors}
+                    message={apiFormErrors.vendor}
+                  />
                 </div>
               </div>
               <div className={styles.form__formCost}>
@@ -378,6 +404,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       <ErrorLabel
                         formName="costMin"
                         errors={formState.errors}
+                        message={apiFormErrors.costMin}
                       />
                     </div>
                   </div>
@@ -400,6 +427,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         <ErrorLabel
                           formName="costMax"
                           errors={formState.errors}
+                          message={apiFormErrors.costMax}
                         />
                       </div>
                     </div>
@@ -473,6 +501,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       <ErrorLabel
                         formName="startAt"
                         errors={formState.errors}
+                        message={apiFormErrors.startAt}
                       />
                     </div>
                   </div>
@@ -501,6 +530,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       <ErrorLabel
                         formName="completeAt"
                         errors={formState.errors}
+                        message={apiFormErrors.completeAt}
                       />
                     </div>
                   </div>

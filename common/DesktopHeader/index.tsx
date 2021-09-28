@@ -13,6 +13,7 @@ interface Props {
   titleInfo?: JSX.Element;
   isOnline: boolean;
   right?: JSX.Element;
+  rightClass?: string;
   nextLine?: JSX.Element;
   nextLineRight?: JSX.Element;
 }
@@ -26,6 +27,7 @@ const DesktopHeader: FunctionComponent<Props> = ({
   titleInfo,
   isOnline,
   right,
+  rightClass,
   nextLine,
   nextLineRight
 }) => (
@@ -54,7 +56,7 @@ const DesktopHeader: FunctionComponent<Props> = ({
         {titleInfo}
       </div>
       {right && (
-        <aside className={styles.header__controls}>
+        <aside className={clsx(styles.header__controls, rightClass)}>
           {isOnline ? right : <OfflineDesktop />}
         </aside>
       )}

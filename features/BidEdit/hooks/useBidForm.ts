@@ -189,7 +189,7 @@ export default function useBidForm(
 
   if (
     !apiState.isLoading &&
-    apiState.statusCode !== 400 &&
+    ![400, 409].includes(apiState.statusCode) &&
     apiState.bid !== JSON.stringify(bidApi)
   ) {
     setApiState({

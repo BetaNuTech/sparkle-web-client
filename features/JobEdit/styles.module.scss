@@ -125,6 +125,8 @@
 
   &__submit {
     @extend %gridHeaderCreateButton;
+    display: inline-flex;
+    justify-content: center;
     border: rem-calc(1) solid $primary-color;
 
     // Icon of Add button
@@ -139,7 +141,6 @@
   }
 
   &__fullwidth {
-    display: block;
     width: 100%;
   }
 
@@ -166,7 +167,7 @@
     }
   }
 
-  &__attachmentList {
+  &__attachmentList ul {
     border: rem-calc(1) solid $gray-light-5;
     border-radius: rem-calc(3);
     border-top-left-radius: 0;
@@ -215,6 +216,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
+        height: rem-calc(43);
 
         &__menu {
           display: block;

@@ -9,6 +9,8 @@ interface Props {
   attachments?: Array<attachmentModel>;
   onDelete?: (attachment: attachmentModel) => void;
   className?: string;
+  // All other props
+  [x: string]: any;
 }
 
 interface DropdownProps {
@@ -37,17 +39,18 @@ const DropdownAttachment: FunctionComponent<DropdownProps> = ({
 const AttachmentList: FunctionComponent<Props> = ({
   attachments,
   onDelete,
-  className
+  className,
+  ...props
 }) => {
   if (attachments.length === 0) {
     return (
-      <ul className={clsx(styles.attachment, className)}>
+      <ul className={clsx(styles.attachment, className)} {...props}>
         <li className={styles.attachment__item}>No Attachments</li>
       </ul>
     );
   }
   return (
-    <ul className={clsx(styles.attachment, className)}>
+    <ul className={clsx(styles.attachment, className)} {...props}>
       {attachments.map((ba) => (
         <li className={styles.attachment__item} key={ba.name}>
           {ba.name}
