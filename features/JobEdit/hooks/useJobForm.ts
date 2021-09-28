@@ -57,7 +57,11 @@ export default function useJobForm(jobApi: jobModel): useJobFormResult {
     });
   };
 
-  const putJobUpdate = async (propertyId: string, jobId: string, job: jobModel) => {
+  const putJobUpdate = async (
+    propertyId: string,
+    jobId: string,
+    job: jobModel
+  ) => {
     setApiState({
       isLoading: true,
       statusCode: 0,
