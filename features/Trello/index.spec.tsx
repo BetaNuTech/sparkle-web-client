@@ -20,6 +20,10 @@ describe('Unit | Features | Trello | Trello Modal', () => {
         openList: '2',
         closedBoard: '3',
         closedList: '4'
+      },
+      trelloUser: {
+        trelloFullName: 'trelloFullName',
+        trelloUsername: 'trelloUsername'
       }
     };
     render(<TrelloModal {...props} />);

@@ -1,17 +1,28 @@
 import { FunctionComponent, useState } from 'react';
 import Router from 'next/router';
 import TrelloModal from './TrelloModal/index';
+import { trelloBoard } from '../../common/services/api/trello';
+import trelloUserModel from '../../common/models/trelloUser';
+import trelloUserProperty from '../../common/models/trelloProperty';
 
 interface Props {
   property: any;
   isOnline?: boolean;
   isStaging?: boolean;
+  trelloUser: trelloUserModel;
+  trelloProperty: trelloUserProperty;
+  trelloBoards: trelloBoard;
+  hasUpdateCompanySettingsPermission: boolean;
 }
 
 const Trello: FunctionComponent<Props> = ({
   property,
   isOnline,
-  isStaging
+  isStaging,
+  trelloUser,
+  trelloProperty,
+  trelloBoards,
+  hasUpdateCompanySettingsPermission
 }) => {
   // Open & Close Trello Modal
   const [isTrelloModalVisible, setTrelloModalVisible] = useState(true);
@@ -25,13 +36,16 @@ const Trello: FunctionComponent<Props> = ({
     Router.push(`/properties/edit/${property.id}`);
   }
 
+  const { closedBoardName, closedListName, openBoardName, openListName } =
+    trelloProperty;
+
   // Selected Options State
   /* eslint-disable */
   const [selectedOptions, setselectedOptions] = useState({
-    openBoard: 'Not Set',
-    openList: 'Not Set',
-    closedBoard: 'Not Set',
-    closedList: 'Not Set'
+    openBoard: openBoardName || 'Not Set',
+    openList: openListName || 'Not Set',
+    closedBoard: closedBoardName || 'Not Set',
+    closedList: closedListName || 'Not Set'
   });
   /* eslint-enable */
 
@@ -44,6 +58,9 @@ const Trello: FunctionComponent<Props> = ({
         isStaging={isStaging}
         property={property}
         selectedOptions={selectedOptions}
+        trelloUser={trelloUser}
+        trelloBoards={trelloBoards}
+        hasUpdateCompanySettingsPermission={hasUpdateCompanySettingsPermission}
       />
     </>
   );

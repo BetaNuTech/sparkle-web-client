@@ -7,6 +7,19 @@
   background-color: $gray-light-3;
   overflow-x: hidden;
 
+  &__title {
+    margin-top: $global-padding;
+    text-align: center;
+  }
+
+  &__link {
+    margin-top: $global-padding;
+    display: flex;
+    justify-content: center;
+    color: $primary-color;
+    text-decoration: underline;
+  }
+
   &__saveButton {
     background: transparent;
     border-width: 0;

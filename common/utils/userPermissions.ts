@@ -130,6 +130,10 @@ export const canAccessJobs = (user: userModel, propertyId: string): boolean =>
 export const canAccessBids = (user: userModel, propertyId: string): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
 
+// Checks that the user can update company settings
+export const canUpdateCompanySettings = (user: userModel): boolean =>
+  user.admin;
+
 // Checks user can authorize the job
 export const canAuthorizeJob = (
   jobId: string,

@@ -76,6 +76,42 @@ describe('Unit | Common | Utils | User Permissions', () => {
     }
   });
 
+  test('it should only allow admins to update company settings', () => {
+    const data = [
+      {
+        user: admin,
+        expected: true,
+        msg: 'accepts admin user'
+      },
+      {
+        user: corporate,
+        expected: false,
+        msg: 'rejects corporate user'
+      },
+      {
+        user: teamLead,
+        expected: false,
+        msg: 'rejects team lead user'
+      },
+      {
+        user: propertyMember,
+        expected: false,
+        msg: 'rejects property memeber user'
+      },
+      {
+        user: noAccess,
+        expected: false,
+        msg: 'rejects no access user'
+      }
+    ];
+
+    for (let i = 0; i < data.length; i += 1) {
+      const { user, expected, msg } = data[i];
+      const actual = util.canUpdateCompanySettings(user);
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
   test('it should only allow admins to delete inspections', () => {
     const expected = [true, false, false, false, false];
 
