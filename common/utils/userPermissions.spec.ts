@@ -343,8 +343,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
         user: teamMember,
         job: approvedExpeditedMaintenanceJob,
         bids: [{ state: 'approved' } as bidModel],
-        expected: true,
-        msg: 'allows team member to authorize expedited job with single approved bid'
+        expected: false,
+        msg: 'rejects team member from authorize expedited job with single approved bid'
       },
 
       {
@@ -375,8 +375,20 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel,
           { state: 'open' } as bidModel
         ],
+        expected: false,
+        msg: 'rejects team member from authorize large job when enough bids exist and one is approved'
+      },
+      {
+        jobId: 'job-1',
+        user: admin,
+        job: approvedLargeJob,
+        bids: [
+          { state: 'approved' } as bidModel,
+          { state: 'open' } as bidModel,
+          { state: 'open' } as bidModel
+        ],
         expected: true,
-        msg: 'allows team member to authorize large job when enough bids exist and one is approved'
+        msg: 'allows admin to authorize large job when enough bids exist and one is approved'
       }
     ];
 

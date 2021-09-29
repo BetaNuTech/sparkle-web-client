@@ -146,10 +146,22 @@ export const canAuthorizeJob = (
   }
 
   const minBids = job.minBids || Infinity;
-  const hasApprovedBid = bids.filter((b) => b.state === 'approved').length > 0;
-  const hasEnoughBids = bids.length >= minBids;
+  const hasMetMinBidReq = bids.length >= minBids;
+  const hasMetApprovedBidReq =
+    bids.filter((bid) => bid.state === 'approved').length > 0;
 
-  return hasApprovedBid && hasEnoughBids;
+  // Expedited job
+  if (job.authorizedRules === 'expedite') {
+    return user.admin && hasMetMinBidReq && hasMetApprovedBidReq;
+  }
+
+  // Large job
+  if (job.authorizedRules === 'large') {
+    return user.admin && hasMetMinBidReq && hasMetApprovedBidReq;
+  }
+
+  // Default job
+  return hasMetApprovedBidReq && hasMetMinBidReq;
 };
 
 // Checks user can expedite the job
