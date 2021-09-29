@@ -1,9 +1,10 @@
-import { FunctionComponent, useRef } from 'react';
 import clsx from 'clsx';
-import Link from 'next/link';
+import { FunctionComponent, useRef } from 'react';
 import { Doughnut } from 'react-chartjs-2';
+import LinkFeature from '../../../../common/LinkFeature';
 import utilString from '../../../../common/utils/string';
 import utilDate from '../../../../common/utils/date';
+import features from '../../../../config/features';
 import hasInspectionUpdateActions from '../../utils/hasInspectionUpdateActions';
 import useVisibility from '../../../../common/hooks/useVisibility';
 import userModel from '../../../../common/models/user';
@@ -94,12 +95,13 @@ const ListItem: FunctionComponent<ListItemProps> = ({
     >
       {isVisible ? (
         <>
-          <Link href={inspectionUpdateUrl}>
-            <a
-              className={styles.propertyProfile__gridRow__column}
-              data-testid="inspection-grid-list-item-creator"
-            >
-              {/*
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            className={styles.propertyProfile__gridRow__column}
+            data-testid="inspection-grid-list-item-creator"
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+          >
+            {/*
             <span
             className={clsx(
               styles.propertyProfile__gridRow__avatar,
@@ -108,82 +110,80 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             )}
           ></span>
             */}
-
-              {creatorName}
-            </a>
-          </Link>
-          <Link href={inspectionUpdateUrl}>
-            <a
-              className={styles.propertyProfile__gridRow__column}
-              data-testid="inspection-grid-list-item-creation-date"
-              data-time={inspection.creationDate}
-            >
-              {inspection.creationDate ? (
-                <>
-                  {creationDate}
-                  <br />
-                  {creationTime}
-                </>
-              ) : (
-                '--'
-              )}
-            </a>
-          </Link>
-          <Link href={inspectionUpdateUrl}>
-            <a
-              className={styles.propertyProfile__gridRow__column}
-              data-testid="inspection-grid-list-item-update-date"
-            >
-              {inspection.updatedAt ? (
-                <>
-                  {updatedDate}
-                  <br />
-                  {updatedTime}
-                </>
-              ) : (
-                '--'
-              )}
-            </a>
-          </Link>
-          <Link href={inspectionUpdateUrl}>
-            <a
-              className={styles.propertyProfile__gridRow__column}
-              data-testid="inspection-grid-list-item-template"
-            >
-              {templateName}
-            </a>
-          </Link>
-          <Link href={inspectionUpdateUrl}>
-            <a
-              className={styles.propertyProfile__gridRow__column}
-              data-testid="inspection-grid-list-item-template-cat"
-            >
-              {templateCategory}
-            </a>
-          </Link>
-          <Link href={inspectionUpdateUrl}>
-            <a
-              className={clsx(
-                styles.propertyProfile__gridRow__column,
-                inspection.deficienciesExist ? '-c-red' : '-c-blue'
-              )}
-              data-testid="inspection-grid-list-item-score"
-            >
-              {inspection.inspectionCompleted ? (
-                `${scoreDisplay}%`
-              ) : (
-                <Doughnut
-                  type="doughnut"
-                  className={propertyProfileStyles.__progressChart} // eslint-disable-line
-                  data={chartData}
-                  options={chartOptions}
-                  plugins={[labelPlugin]}
-                  width={50}
-                  height={50}
-                />
-              )}
-            </a>
-          </Link>
+            {creatorName}
+          </LinkFeature>
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            className={styles.propertyProfile__gridRow__column}
+            data-testid="inspection-grid-list-item-creation-date"
+            data-time={inspection.creationDate}
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+          >
+            {inspection.creationDate ? (
+              <>
+                {creationDate}
+                <br />
+                {creationTime}
+              </>
+            ) : (
+              '--'
+            )}
+          </LinkFeature>
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            className={styles.propertyProfile__gridRow__column}
+            data-testid="inspection-grid-list-item-update-date"
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+          >
+            {inspection.updatedAt ? (
+              <>
+                {updatedDate}
+                <br />
+                {updatedTime}
+              </>
+            ) : (
+              '--'
+            )}
+          </LinkFeature>
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            className={styles.propertyProfile__gridRow__column}
+            data-testid="inspection-grid-list-item-template"
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+          >
+            {templateName}
+          </LinkFeature>
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            className={styles.propertyProfile__gridRow__column}
+            data-testid="inspection-grid-list-item-template-cat"
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+          >
+            {templateCategory}
+          </LinkFeature>
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            className={clsx(
+              styles.propertyProfile__gridRow__column,
+              inspection.deficienciesExist ? '-c-red' : '-c-blue'
+            )}
+            data-testid="inspection-grid-list-item-score"
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+          >
+            {inspection.inspectionCompleted ? (
+              `${scoreDisplay}%`
+            ) : (
+              <Doughnut
+                type="doughnut"
+                className={propertyProfileStyles.__progressChart} // eslint-disable-line
+                data={chartData}
+                options={chartOptions}
+                plugins={[labelPlugin]}
+                width={50}
+                height={50}
+              />
+            )}
+          </LinkFeature>
           {hasActionColumn ? (
             <div
               className={styles.propertyProfile__gridRow__column}

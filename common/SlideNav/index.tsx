@@ -83,7 +83,7 @@ const SlideNav: FunctionComponent<Props> = ({
             <div className={styles.slideNav__links__link}>
               <LinkFeature
                 featureEnabled={features.supportBetaUsers}
-                href="/users"
+                href="/admin"
               >
                 Users
               </LinkFeature>

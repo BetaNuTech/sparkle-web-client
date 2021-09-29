@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useState, useEffect, useRef, FunctionComponent } from 'react';
+import { useState, useRef, FunctionComponent } from 'react';
 import propertyModel from '../../../../common/models/property';
 import TeamValues from '../../../../common/TeamValues';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
@@ -110,32 +110,37 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
                     )}
                   </div>
                 </div>
-                {/* Metadata */}
-                <div className={parentStyles.itemResult__metadata}>
-                  Deficient Items
-                  <TeamValues
-                    numOfDeficientItems={property.numOfDeficientItems}
-                    numOfFollowUpActionsForDeficientItems={
-                      property.numOfFollowUpActionsForDeficientItems
-                    }
-                    numOfRequiredActionsForDeficientItems={
-                      property.numOfRequiredActionsForDeficientItems
-                    }
-                    isNarrowField={false}
-                  />
-                </div>
-
-                {/* For Testing */}
-                <span className="-d-none" data-testid="property-score">
-                  {property.lastInspectionScore}
-                </span>
-                <span
-                  className="-d-none"
-                  data-testid="property-last-inspection-date"
-                >
-                  {property.lastInspectionDate}
-                </span>
               </LinkFeature>
+
+              {/* Metadata */}
+              <LinkFeature
+                href={`/properties/${property.id}/deficient-items`}
+                className={parentStyles.itemResult__metadata}
+                featureEnabled={features.supportBetaPropertyDeficient}
+              >
+                Deficient Itemsss
+                <TeamValues
+                  numOfDeficientItems={property.numOfDeficientItems}
+                  numOfFollowUpActionsForDeficientItems={
+                    property.numOfFollowUpActionsForDeficientItems
+                  }
+                  numOfRequiredActionsForDeficientItems={
+                    property.numOfRequiredActionsForDeficientItems
+                  }
+                  isNarrowField={false}
+                />
+              </LinkFeature>
+
+              {/* For Testing */}
+              <span className="-d-none" data-testid="property-score">
+                {property.lastInspectionScore}
+              </span>
+              <span
+                className="-d-none"
+                data-testid="property-last-inspection-date"
+              >
+                {property.lastInspectionDate}
+              </span>
             </div>
 
             {/* Swipe Reveal Actions */}
