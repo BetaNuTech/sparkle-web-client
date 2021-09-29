@@ -24,8 +24,9 @@ const getMobileExtra: FunctionComponent<Props> = ({
   activeInspectionSortFilter,
   sortBy
 }) => {
-
   const jobLink = `/properties/${property.id}/jobs`;
+  const residentsLink = `/properties/${property.id}/yardi-residents`;
+  const workOrdersLink = `/properties/${property.id}/yardi-work-orders`;
 
   if (isMobile) {
     return (
@@ -37,18 +38,22 @@ const getMobileExtra: FunctionComponent<Props> = ({
               {isYardiConfigured && (
                 <>
                   <li data-testid="property-profile-yardi-button">
-                    <Link href="/properties">
-                      <a>
-                        Residents <ChevronIcon />
-                      </a>
-                    </Link>
+                    <LinkFeature
+                      href={residentsLink}
+                      featureEnabled={features.supportBetaPropertyYardiResident}
+                    >
+                      Residents <ChevronIcon />
+                    </LinkFeature>
                   </li>
                   <li>
-                    <Link href="/properties">
-                      <a>
-                        Open WOs <ChevronIcon />
-                      </a>
-                    </Link>
+                    <LinkFeature
+                      href={workOrdersLink}
+                      featureEnabled={
+                        features.supportBetaPropertyYardiWorkOrder
+                      }
+                    >
+                      Open WOs <ChevronIcon />
+                    </LinkFeature>
                   </li>
                 </>
               )}
@@ -77,7 +82,9 @@ const getMobileExtra: FunctionComponent<Props> = ({
                   '-bgc-black'
                 )}
               >
-                {property.numOfDeficientItems}
+                {property.id && !property.numOfDeficientItems
+                  ? 0
+                  : property.numOfDeficientItems}
               </span>
               {` Deficient Item${property.numOfDeficientItems > 1 ? 's' : ''}`}
             </li>
@@ -88,7 +95,9 @@ const getMobileExtra: FunctionComponent<Props> = ({
                   '-bgc-alert-secondary'
                 )}
               >
-                {property.numOfRequiredActionsForDeficientItems}
+                {property.id && !property.numOfRequiredActionsForDeficientItems
+                  ? 0
+                  : property.numOfRequiredActionsForDeficientItems}
               </span>
               {` Action${
                 property.numOfRequiredActionsForDeficientItems > 1 ? 's' : ''
@@ -101,7 +110,9 @@ const getMobileExtra: FunctionComponent<Props> = ({
                   '-bgc-quaternary'
                 )}
               >
-                {property.numOfFollowUpActionsForDeficientItems}
+                {property.id && !property.numOfFollowUpActionsForDeficientItems
+                  ? 0
+                  : property.numOfFollowUpActionsForDeficientItems}
               </span>
               {` Follow Up${
                 property.numOfFollowUpActionsForDeficientItems > 1 ? 's' : ''

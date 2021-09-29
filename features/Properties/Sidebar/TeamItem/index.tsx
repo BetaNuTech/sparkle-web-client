@@ -1,9 +1,12 @@
-import Link from 'next/link';
 import { FunctionComponent } from 'react';
+import clsx from 'clsx';
 import styles from './styles.module.scss';
 import teamModel from '../../../../common/models/team';
 import TeamValues from '../../../../common/TeamValues';
 import ActionsIcon from '../../../../public/icons/ios/actions.svg';
+import LinkFeature from '../../../../common/LinkFeature';
+import features from '../../../../config/features';
+import DropdownTeam from '../../DropdownTeam';
 
 interface summaryPropertyCalcValues {
   totalNumOfDeficientItems: number;
@@ -14,30 +17,51 @@ interface summaryPropertyCalcValues {
 interface Props {
   team: teamModel;
   teamCalculatedValues: summaryPropertyCalcValues;
+  openTeamDeletePrompt: (team: teamModel) => void;
 }
 
-const TeamItem: FunctionComponent<Props> = ({ team, teamCalculatedValues }) => (
+const TeamItem: FunctionComponent<Props> = ({
+  team,
+  teamCalculatedValues,
+  openTeamDeletePrompt
+}) => (
   <li className={styles.teamItem} data-testid="team-item" data-team={team.id}>
     {/* Team Name */}
-    <Link href="/teams">
-      <a className={styles.teamItem__name}>{team.name}</a>
-    </Link>
+    <LinkFeature
+      featureEnabled={features.supportBetaTeamView}
+      href={`/teams/${team.id}`}
+      className={styles.teamItem__name}
+    >
+      {team.name}
+    </LinkFeature>
 
-    <button aria-label="Open menu" className={styles.teamItem__menuButton}>
+    <div
+      aria-label="Open menu"
+      className={clsx(
+        styles.teamItem__menuButton,
+        styles['teamItem__menuButton--dropdown']
+      )}
+    >
       <ActionsIcon />
-    </button>
+      <DropdownTeam team={team} onDelete={() => openTeamDeletePrompt(team)} />
+    </div>
 
     {/* Metadata */}
-    <TeamValues
-      numOfDeficientItems={teamCalculatedValues.totalNumOfDeficientItems}
-      numOfFollowUpActionsForDeficientItems={
-        teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
-      }
-      numOfRequiredActionsForDeficientItems={
-        teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
-      }
-      isNarrowField
-    />
+    <LinkFeature
+      featureEnabled={features.supportBetaTeamView}
+      href={`/teams/${team.id}`}
+    >
+      <TeamValues
+        numOfDeficientItems={teamCalculatedValues.totalNumOfDeficientItems}
+        numOfFollowUpActionsForDeficientItems={
+          teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
+        }
+        numOfRequiredActionsForDeficientItems={
+          teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
+        }
+        isNarrowField
+      />
+    </LinkFeature>
   </li>
 );
 

@@ -11,7 +11,6 @@ import Dropdown from '../DropdownAdd';
 import TeamItem from './TeamItem';
 import PropertyItem from './PropertyItem';
 import DeletePropertyPrompt from './DeletePropertyPrompt';
-import DeleteTeamPrompt from './DeleteTeamPrompt';
 import styles from './styles.module.scss';
 
 interface PropertiesMobileLayoutTeamWrapperModel {
@@ -28,10 +27,7 @@ interface PropertiesMobileLayoutModel {
   openPropertyDeletePrompt: (property: propertyModel) => void;
   closeDeletePropertyPrompt: () => void;
   confirmPropertyDelete: () => Promise<any>;
-  isDeleteTeamPromptVisible: boolean;
   openTeamDeletePrompt: (team: teamModel) => void;
-  closeDeleteTeamPrompt: () => void;
-  confirmTeamDelete: () => Promise<any>;
   isOnline?: boolean;
   isStaging?: boolean;
   canAddTeam: boolean;
@@ -69,10 +65,7 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
   openPropertyDeletePrompt,
   closeDeletePropertyPrompt,
   confirmPropertyDelete,
-  isDeleteTeamPromptVisible,
   openTeamDeletePrompt,
-  closeDeleteTeamPrompt,
-  confirmTeamDelete,
   isOnline,
   isStaging,
   canAddTeam,
@@ -166,12 +159,6 @@ const MobileLayout: FunctionComponent<PropertiesMobileLayoutModel> = ({
         isVisible={isDeletePropertyPromptVisible}
         onClose={closeDeletePropertyPrompt}
         onConfirm={confirmPropertyDelete}
-      />
-
-      <DeleteTeamPrompt
-        isVisible={isDeleteTeamPromptVisible}
-        onClose={closeDeleteTeamPrompt}
-        onConfirm={confirmTeamDelete}
       />
     </>
   );

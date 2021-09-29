@@ -24,7 +24,6 @@
   &__linkButton {
     @extend %button;
     text-decoration: underline;
-
   }
 
   &__logo {
@@ -74,16 +73,21 @@
       @extend %overviewDataLink;
       @extend %overviewDataLink--inline;
     }
+
     &__metadata {
       @extend %overviewDataLink--metadata;
       @extend %overviewDataLink--metadataInline;
     }
+
     &__label {
       @extend %overviewDataLink--labelListItem;
       @extend %overviewDataLink--label;
     }
+
     &__labelSub {
       @extend %overviewDataLink--labelSub;
+      line-height: rem-calc(14);
+      transform: translateY(-1px);
     }
   }
 

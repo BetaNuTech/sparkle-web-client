@@ -17,6 +17,7 @@ interface ListItemProps {
   propertyId: string;
   inspection: inspectionModel;
   templateCategories: Array<templateCategoryModel>;
+  openInspectionDeletePrompt: (inspection: inspectionModel) => void;
   forceVisible?: boolean;
 }
 
@@ -24,6 +25,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   propertyId,
   inspection,
   templateCategories,
+  openInspectionDeletePrompt,
   forceVisible
 }) => {
   // State
@@ -76,16 +78,16 @@ const ListItem: FunctionComponent<ListItemProps> = ({
       data-testid="property-profile-inspection-list-item"
     >
       {isVisible ? (
-        <LinkFeature
-          href={`/properties/${propertyId}/update-inspection/${inspection.id}`}
-          featureEnabled={features.supportBetaPropertyInspectionUpdate}
+        <div
+          className={clsx(
+            styles.propertyProfile__inspectionsList__swipe,
+            isSwipeOpen &&
+              styles.propertyProfile__inspectionsList__swipe__revealed
+          )}
         >
-          <div
-            className={clsx(
-              styles.propertyProfile__inspectionsList__swipe,
-              isSwipeOpen &&
-                styles.propertyProfile__inspectionsList__swipe__revealed
-            )}
+          <LinkFeature
+            href={`/properties/${propertyId}/update-inspection/${inspection.id}`}
+            featureEnabled={features.supportBetaPropertyInspectionUpdate}
           >
             <div
               className={clsx(
@@ -219,32 +221,33 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                 }
               ></span>
             </div>
+          </LinkFeature>
 
-            {/* Swipe Revealed Buttons */}
-            <div
-              className={styles.propertyProfile__inspectionsList__swipe__hidden}
+          {/* Swipe Revealed Buttons */}
+          <div
+            className={styles.propertyProfile__inspectionsList__swipe__hidden}
+          >
+            <button
+              className={clsx(
+                styles.propertyProfile__inspectionsList__revealButton,
+                '-bgc-alert'
+              )}
+              onClick={() => openInspectionDeletePrompt(inspection)}
             >
-              <button
-                className={clsx(
-                  styles.propertyProfile__inspectionsList__revealButton,
-                  '-bgc-alert'
-                )}
-                disabled
-              >
-                Delete
-              </button>
-              <button
-                className={clsx(
-                  styles.propertyProfile__inspectionsList__revealButton,
-                  '-bgc-orange'
-                )}
-                disabled
-              >
-                Move
-              </button>
-            </div>
+              Delete
+            </button>
+            <LinkFeature
+              href={`/properties/${propertyId}/reassign-inspection/${inspection.id}`}
+              featureEnabled={features.supportBetaPropertyInspectionMove}
+              className={clsx(
+                styles.propertyProfile__inspectionsList__revealButton,
+                '-bgc-orange'
+              )}
+            >
+              Move
+            </LinkFeature>
           </div>
-        </LinkFeature>
+        </div>
       ) : null}
     </li>
   );

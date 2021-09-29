@@ -180,28 +180,6 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     expect(actual).toBeNull();
   });
 
-  it('does not show last inspection entry if property has no inspections', () => {
-    const properties = deepClone(mockPropertes);
-    properties[0].numOfInspections = 0;
-    const { container } = render(
-      <PropertiesMobileLayout
-        properties={properties}
-        teams={mockTeams}
-        teamCalculatedValues={defaultPropertyMeta}
-        isDeletePropertyPromptVisible={false}
-        activePropertiesSortFilter={() => ''}
-        forceVisible={FORCE_VISIBLE}
-      />
-    );
-    const propertyList = container.querySelectorAll(
-      '[data-testid=property-item]'
-    );
-    const actual = propertyList[0].querySelector(
-      '[data-testid=property-last-inspection-entry]'
-    );
-    expect(actual).toBeNull();
-  });
-
   it('sort function should be called from mobile header', () => {
     const onClickSpy = sinon.spy();
     render(

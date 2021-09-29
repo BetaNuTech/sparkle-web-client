@@ -10,7 +10,7 @@ describe('Spec | Properties | Utils | Calculate Last Inspections', () => {
   test('it should return empty for no inspection at property', () => {
     const property = deepClone(fullProperty);
     property.numOfInspections = 0;
-    const expected = '';
+    const expected = 'No Inspections';
 
     const actual = getLastInspectionEntry(property);
     expect(actual).toEqual(expected);

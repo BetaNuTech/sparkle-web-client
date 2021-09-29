@@ -28,6 +28,7 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import ProfileList from './ProfileList';
 import MobileLayout from './MobileLayout';
+import DeleteTeamPrompt from './DeleteTeamPrompt';
 
 interface PropertiesModel {
   user: userModel;
@@ -182,10 +183,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           confirmPropertyDelete={confirmPropertyDelete}
           openPropertyDeletePrompt={openPropertyDeletePrompt}
           closeDeletePropertyPrompt={closeDeletePropertyPrompt}
-          isDeleteTeamPromptVisible={isDeleteTeamPromptVisible}
-          confirmTeamDelete={confirmTeamDelete}
           openTeamDeletePrompt={openTeamDeletePrompt}
-          closeDeleteTeamPrompt={closeDeleteTeamPrompt}
           isOnline={isOnline}
           isStaging={isStaging}
           canAddTeam={hasCreateTeamPermission}
@@ -219,11 +217,18 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           <aside>
             <Sidebar
               teams={teams}
+              openTeamDeletePrompt={openTeamDeletePrompt}
               teamCalculatedValues={teamCalculatedValues}
             />
           </aside>
         </div>
       )}
+
+      <DeleteTeamPrompt
+        isVisible={isDeleteTeamPromptVisible}
+        onClose={closeDeleteTeamPrompt}
+        onConfirm={confirmTeamDelete}
+      />
     </>
   );
 };

@@ -23,7 +23,11 @@ const DropdownAdd: FunctionComponent<Props> = ({
     )}
     {canAddProperty && (
       <DropdownLink
-        href="/properties/edit/new"
+        href={
+          features.supportBetaPropertyCreate
+            ? '/properties/edit/new'
+            : '/properties/update/new'
+        }
         featureEnabled={features.supportBetaPropertyCreate}
         testid="dropdown-add-property"
       >
