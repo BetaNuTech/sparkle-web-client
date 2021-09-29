@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import Link from 'next/link';
 import { useState, useRef, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 import parentStyles from '../styles.module.scss';
@@ -8,6 +7,8 @@ import TeamValues from '../../../../common/TeamValues';
 import propertyMetaData from '../../../../common/models/propertyMetaData';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
+import LinkFeature from '../../../../common/LinkFeature';
+import features from '../../../../config/features';
 
 interface MobileLayoutTeamItemModel {
   team: teamModel;
@@ -42,37 +43,39 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             : parentStyles.itemResult__content
         }
       >
-        <Link href="/">
-          <a className={parentStyles.itemResult__link}>
-            {/* Toggle Button */}
-            <span className={parentStyles.itemResult__toggle}>
-              <ChevronIcon />
-            </span>
-            {/* Team Name */}
-            <div className={styles.teamItem__name}>
-              <strong>{team.name}</strong>
-            </div>
-            {/* Metadata */}
-            <div
-              className={parentStyles.itemResult__metadata}
-              data-testid="team-property-meta"
-            >
-              Deficient Items
-              <TeamValues
-                numOfDeficientItems={
-                  teamCalculatedValues.totalNumOfDeficientItems
-                }
-                numOfFollowUpActionsForDeficientItems={
-                  teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
-                }
-                numOfRequiredActionsForDeficientItems={
-                  teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
-                }
-                isNarrowField={false}
-              />
-            </div>
-          </a>
-        </Link>
+        <LinkFeature
+          featureEnabled={features.supportBetaTeamView}
+          href={`/teams/${team.id}`}
+          className={parentStyles.itemResult__link}
+        >
+          {/* Toggle Button */}
+          <span className={parentStyles.itemResult__toggle}>
+            <ChevronIcon />
+          </span>
+          {/* Team Name */}
+          <div className={styles.teamItem__name}>
+            <strong>{team.name}</strong>
+          </div>
+          {/* Metadata */}
+          <div
+            className={parentStyles.itemResult__metadata}
+            data-testid="team-property-meta"
+          >
+            Deficient Items
+            <TeamValues
+              numOfDeficientItems={
+                teamCalculatedValues.totalNumOfDeficientItems
+              }
+              numOfFollowUpActionsForDeficientItems={
+                teamCalculatedValues.totalNumOfFollowUpActionsForDeficientItems
+              }
+              numOfRequiredActionsForDeficientItems={
+                teamCalculatedValues.totalNumOfRequiredActionsForDeficientItems
+              }
+              isNarrowField={false}
+            />
+          </div>
+        </LinkFeature>
       </div>
 
       {/* Swipe Reveal Actions */}
@@ -82,7 +85,13 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
           isSwipeOpen && parentStyles.swipeReveal__reveal
         )}
       >
-        <button className={parentStyles.swipeReveal__editButton}>Edit</button>
+        <LinkFeature
+          featureEnabled={features.supportBetaTeamView}
+          href={`/teams/${team.id}/edit`}
+          className={parentStyles.swipeReveal__editButton}
+        >
+          Edit
+        </LinkFeature>
         <button
           className={parentStyles.swipeReveal__deleteButton}
           onClick={() => onQueueTeamDelete(team)}

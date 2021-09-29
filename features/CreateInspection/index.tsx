@@ -14,6 +14,7 @@ import usePropertyTemplates from './hooks/usePropertyTemplates';
 import useCategorizedTemplates from './hooks/useCategorizedTemplates';
 import CategoryItem from './CategoryItem';
 import styles from './styles.module.scss';
+import features from '../../config/features';
 
 interface CreateInspectionProps {
   user: userModel;
@@ -66,9 +67,13 @@ const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
     inspectionService
       .createRecord(template, propertyId, sendNotification)
       .then((inspectionId) => {
-        Router.push(
-          `/properties/${propertyId}/update-inspection/${inspectionId}/`
-        );
+        if (features.supportBetaPropertyInspectionUpdate) {
+          Router.push(
+            `/properties/${propertyId}/update-inspection/${inspectionId}/`
+          );
+        } else {
+          window.location.href = `/properties/${propertyId}/update-inspection/${inspectionId}/`;
+        }
       })
       .finally(() => {
         // Update api loading state to false

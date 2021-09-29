@@ -189,6 +189,7 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
               ) : (
                 <Inspection
                   inspections={sortedInspections}
+                  openInspectionDeletePrompt={openInspectionDeletePrompt}
                   templateCategories={templateCategories}
                   propertyId={id}
                   forceVisible={forceVisible}

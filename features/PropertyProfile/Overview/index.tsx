@@ -58,7 +58,9 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
       <span
         className={clsx(styles.propertyProfile__overview__deficient__label)}
       >
-        {property.numOfDeficientItems}
+        {property.id && !property.numOfDeficientItems
+          ? 0
+          : property.numOfDeficientItems}
       </span>
       {`Deficient Item${property.numOfDeficientItems > 1 ? 's' : ''}`}
     </li>
@@ -69,7 +71,9 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
           '-bgc-alert-secondary'
         )}
       >
-        {property.numOfRequiredActionsForDeficientItems}
+        {property.id && !property.numOfRequiredActionsForDeficientItems
+          ? 0
+          : property.numOfRequiredActionsForDeficientItems}
       </span>
       <div>
         {`Action${
@@ -91,7 +95,9 @@ const DeficiencienItemsLink: FunctionComponent<{ property: propertyModel }> = ({
           '-bgc-quaternary'
         )}
       >
-        {property.numOfFollowUpActionsForDeficientItems}
+        {property.id && !property.numOfFollowUpActionsForDeficientItems
+          ? 0
+          : property.numOfFollowUpActionsForDeficientItems}
       </span>
       {`Follow Up${
         property.numOfFollowUpActionsForDeficientItems > 1 ? 's' : ''

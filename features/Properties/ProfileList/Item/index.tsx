@@ -105,7 +105,11 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
             </LinkFeature>
 
             <LinkFeature
-              href={`/properties/edit/${property.id}`}
+              href={
+                features.supportBetaPropertyUpdate
+                  ? `/properties/edit/${property.id}`
+                  : `/properties/update/${property.id}`
+              }
               className={styles.item__editButton}
               featureEnabled={features.supportBetaPropertyUpdate}
             >

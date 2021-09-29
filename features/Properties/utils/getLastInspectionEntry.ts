@@ -4,7 +4,7 @@ import propertyModel from '../../../common/models/property';
 // property meta data values
 const calculateLastInspection = (property: propertyModel): string => {
   if (!property.numOfInspections) {
-    return '';
+    return 'No Inspections';
   }
 
   const lastScore = (property.lastInspectionScore || 0).toFixed(0);

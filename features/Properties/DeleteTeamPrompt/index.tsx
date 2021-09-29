@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
-import Modal, { Props as ModalProps } from '../../../../common/Modal';
-import styles from '../../../../common/Modal/styles.module.scss';
-import WarningIcon from '../../../../public/icons/sparkle/warning.svg';
+import Modal, { Props as ModalProps } from '../../../common/Modal';
+import styles from '../../../common/Modal/styles.module.scss';
+import WarningIcon from '../../../public/icons/sparkle/warning.svg';
 
 interface Props extends ModalProps {
   onConfirm: () => any;
@@ -29,7 +29,8 @@ const DeleteTeamPrompt: FunctionComponent<Props> = (props) => {
       <div className={styles.modalPrompt__main}>
         <div className={styles.modalPrompt__main__content}>
           <p className={styles.modal__description}>
-            NOTE: This action will also delete all entries associated with this team.
+            NOTE: This action will also delete all entries associated with this
+            team.
           </p>
         </div>
 
