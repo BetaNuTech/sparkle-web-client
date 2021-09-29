@@ -49,14 +49,20 @@ describe('Unit | Features | Properties | Hooks | Use Properties', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('should not request all properties for corporate team leads', () => {
-    const expected = false;
-    const findAll = sinon
-      .stub(propertiesApi, 'findAll')
+  test('should request leadership & membership properties for corporate team leads', () => {
+    const user = JSON.parse(JSON.stringify(teamLead));
+    user.properties = { memberProp: true };
+    const expected = [
+      ...userUtils.getLeadershipProperties(user.teams),
+      'memberProp'
+    ];
+    const queryRecords = sinon
+      .stub(propertiesApi, 'queryRecords')
       .returns(emptyCollectionResult);
-    renderHook(() => useProperties({}, teamLead));
+    renderHook(() => useProperties({}, user));
 
-    const actual = findAll.called;
+    const result = queryRecords.firstCall || { args: [] };
+    const actual = result.args[1];
     expect(actual).toEqual(expected);
   });
 
@@ -71,18 +77,6 @@ describe('Unit | Features | Properties | Hooks | Use Properties', () => {
     renderHook(() => useProperties({}, noAccess));
 
     const actual = [findAll.called, queryRecords.called];
-    expect(actual).toEqual(expected);
-  });
-
-  test('should request assigned properties for team lead user', () => {
-    const expected = userUtils.getProperties(teamLead.properties); // eslint-disable-line
-    const queryRecords = sinon
-      .stub(propertiesApi, 'queryRecords')
-      .callThrough();
-    renderHook(() => useProperties({}, teamLead));
-
-    const result = queryRecords.firstCall || { args: [] };
-    const actual = result.args[1];
     expect(actual).toEqual(expected);
   });
 

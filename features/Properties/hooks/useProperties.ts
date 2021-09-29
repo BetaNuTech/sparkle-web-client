@@ -3,7 +3,8 @@ import errorReports from '../../../common/services/api/errorReports';
 import userModel from '../../../common/models/user';
 import {
   getLevelName,
-  getProperties
+  getProperties,
+  getLeadershipProperties
 } from '../../../common/utils/userPermissions';
 import propertiesApi, {
   propertiesCollectionResult
@@ -41,7 +42,18 @@ export default function useProperties(
     Object.assign(payload, result, { handlers });
   } else if (['teamLead', 'propertyMember'].includes(permissionLevel)) {
     // Get the properties of user
-    const propertyIds = getProperties(user.properties);
+    const isTeamLead = permissionLevel === 'teamLead';
+    const teamProperties = isTeamLead
+      ? getLeadershipProperties(user.teams)
+      : [];
+
+    // Collect all unique property id's from
+    // both users leadership teams and property
+    // memberships, filter for unique
+    const propertyIds = [
+      ...teamProperties,
+      ...getProperties(user.properties)
+    ].filter((id, i, arr) => arr.indexOf(id) === i);
 
     if (propertyIds.length > 10) {
       propertyIds.splice(10);
