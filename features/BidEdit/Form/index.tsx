@@ -202,17 +202,19 @@ const Layout: FunctionComponent<LayoutProps> = ({
     completeAt: ''
   };
   const filteredApiErrors = [];
+
   // Check if we have error then find all defined keys in @formInput variable
   // Otherwise push in @filteredApiErrors to show them in list of errors
   if ([400, 409].includes(apiState.statusCode) && apiState.response.errors) {
-    apiState.response.errors.forEach((ae) => {
-      if (ae.source && formInputs.includes(ae.source.pointer)) {
-        apiFormErrors[ae.source.pointer] = ae.detail;
+    apiState.response.errors.forEach((errData) => {
+      if (errData.source && formInputs.includes(errData.source.pointer)) {
+        apiFormErrors[errData.source.pointer] = errData.detail;
       } else {
-        filteredApiErrors.push(ae);
+        filteredApiErrors.push(errData);
       }
     });
   }
+
   // Extract the message
   const apiErrors =
     filteredApiErrors.length > 0 ? filteredApiErrors.map((e) => e.detail) : [];
@@ -394,6 +396,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         type="number"
                         id="costMin"
                         name="costMin"
+                        min="0"
                         className={styles.form__input}
                         placeholder={isFixedCostType ? '' : 'Minimum'}
                         defaultValue={bid.costMin}
@@ -417,6 +420,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                           type="number"
                           id="costMax"
                           name="costMax"
+                          min="0"
                           className={styles.form__input}
                           placeholder="Maximum"
                           defaultValue={bid.costMax}
@@ -789,6 +793,7 @@ const BidForm: FunctionComponent<Props> = ({
     !isNewBid && ['approved', 'complete'].includes(bid.state);
 
   // Publish bid updates to API
+  // TODO: refactor to promises
   const onPublish = (data, action) => {
     const formBid = {
       ...data

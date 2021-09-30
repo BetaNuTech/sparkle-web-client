@@ -107,7 +107,7 @@ interface LayoutProps {
   setDeleteTrelloCardPromptVisible(newState: boolean): void;
 }
 
-// Cost min validator to check it should be less than max cost
+// Validate if job meets scope of work requirements
 const sowValidator = (value) => {
   let isValid = true;
   if (!value) {
@@ -421,12 +421,12 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   ))}
                 </select>
               </div>
-              <div className={styles.jobNew__formGroup}>
-                <div className={styles.jobNew__formSeparatedLabel}>
-                  <label htmlFor="jobScope">
-                    Scope of work {isApprovedOrAuthorized && <span>*</span>}
-                  </label>
-                  {!isNewJob && (
+              {!isNewJob && (
+                <div className={styles.jobNew__formGroup}>
+                  <div className={styles.jobNew__formSeparatedLabel}>
+                    <label htmlFor="jobScope">
+                      Scope of work <span>*</span>
+                    </label>
                     <button
                       type="button"
                       className={styles.jobNew__formGroup__upload}
@@ -445,38 +445,37 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         data-testid="input-file-attachment"
                       />
                     </button>
-                  )}
-                </div>
-                <div className={styles.jobNew__formGroup__control}>
-                  <textarea
-                    id="jobScope"
-                    className={clsx(
-                      'form-control',
-                      styles.jobNew__formGroup__control__attachment
-                    )}
-                    rows={6}
-                    name="scopeOfWork"
-                    defaultValue={job.scopeOfWork}
-                    data-testid="job-form-scope"
-                    {...register('scopeOfWork', sowValidationOptions)}
-                    disabled={apiState.isLoading || isJobComplete}
-                  ></textarea>
-                  <div className={styles.jobNew__attachmentList}>
-                    {Array.isArray(jobAttachments) &&
-                      jobAttachments.length > 0 && (
+                  </div>
+                  <div className={styles.jobNew__formGroup__control}>
+                    <textarea
+                      id="jobScope"
+                      className={clsx(
+                        'form-control',
+                        styles.jobNew__formGroup__control__attachment
+                      )}
+                      rows={6}
+                      name="scopeOfWork"
+                      defaultValue={job.scopeOfWork}
+                      data-testid="job-form-scope"
+                      {...register('scopeOfWork', sowValidationOptions)}
+                      disabled={apiState.isLoading || isJobComplete}
+                    ></textarea>
+                    <div className={styles.jobNew__attachmentList}>
+                      {(jobAttachments || []).length > 0 && (
                         <AttachmentList
                           id="sowAttachmentList"
                           attachments={jobAttachments}
                           onDelete={openAttachmentDeletePrompt}
                         />
                       )}
+                    </div>
+                    <ErrorLabel
+                      formName="scopeOfWork"
+                      errors={formState.errors}
+                    />
                   </div>
-                  <ErrorLabel
-                    formName="scopeOfWork"
-                    errors={formState.errors}
-                  />
                 </div>
-              </div>
+              )}
               {!isMobile &&
                 formActionButtons(
                   canApprove,
@@ -790,7 +789,9 @@ const JobForm: FunctionComponent<Props> = ({
   const isApprovedOrAuthorized =
     !isNewJob && ['approved', 'authorized'].includes(job.state);
   const isJobComplete = !isNewJob && job.state === 'complete';
-  const canApprove = !isNewJob && job.state === 'open';
+  const hasMetSowReq =
+    Boolean(job.scopeOfWork) || (job.scopeOfWorkAttachments || []).length > 0;
+  const canApprove = !isNewJob && job.state === 'open' && hasMetSowReq;
   const bidsRequired = job.minBids - bids.length;
 
   const canAuthorize = canAuthorizeJob(jobId, user, job, bids);

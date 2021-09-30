@@ -43,23 +43,23 @@ const Item: FunctionComponent<ItemProps> = ({
               </h3>
               {bid.startAt > 0 && (
                 <div>
-                  <strong className="-c-black">Started:</strong>{' '}
+                  <strong className="-c-black">Start:</strong>{' '}
                   <span
                     className="-c-gray-light"
                     data-testid="mobile-row-bid-starat"
                   >
-                    {utilDate.toUserDateTimeDisplay(bid.startAt)}
+                    {utilDate.toUserDateDisplay(bid.startAt)}
                   </span>
                 </div>
               )}
               {bid.completeAt > 0 && (
                 <div data-testid="bid-completed-time">
-                  <strong className="-c-black">Completed:</strong>{' '}
+                  <strong className="-c-black">Complete:</strong>{' '}
                   <span
                     className="-c-gray-light"
                     data-testid="mobile-row-bid-completeat"
                   >
-                    {utilDate.toUserDateTimeDisplay(bid.completeAt)}
+                    {utilDate.toUserDateDisplay(bid.completeAt)}
                   </span>
                 </div>
               )}
