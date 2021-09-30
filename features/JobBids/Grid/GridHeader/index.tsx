@@ -49,7 +49,7 @@ const GridHeader: FunctionComponent<Props> = ({
         data-testid="grid-head-bid-started"
         onClick={() => onSortChange('startAt')}
       >
-        Started
+        Start
         <span
           className={parentStyles.propertyJobBids__gridHeader__direction}
         ></span>
@@ -67,7 +67,7 @@ const GridHeader: FunctionComponent<Props> = ({
         data-testid="grid-head-bid-completed"
         onClick={() => onSortChange('completeAt')}
       >
-        Completed
+        Complete
         <span
           className={parentStyles.propertyJobBids__gridHeader__direction}
         ></span>

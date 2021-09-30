@@ -626,9 +626,10 @@ describe('Unit | Features | Job Edit | Form', () => {
     expect(errorScope).toBeTruthy();
   });
 
-  it('should show approve button when job is in open state', () => {
+  it('should show approve button when job is in open state and scope of work provided', () => {
+    const job = JSON.parse(JSON.stringify(openImprovementJob));
     const props = {
-      job: openImprovementJob,
+      job,
       property: fullProperty,
       apiState,
       isOnline: true,

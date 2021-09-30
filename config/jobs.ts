@@ -21,6 +21,6 @@ export default {
     'small:pm': 'Property Management Project',
     'small:hybrid': 'Hybrid Capital Project',
     'large:am': 'Asset Management Project',
-    'large:sc': 'Structural Capital Projects'
+    'large:sc': 'Structural Capital Project'
   }
 };

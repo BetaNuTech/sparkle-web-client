@@ -44,14 +44,14 @@ const ListItem: FunctionComponent<ListItemProps> = ({
               className={parentStyles.propertyJobBids__gridRow__column}
               data-testid="grid-row-bid-starat"
             >
-              {bid.startAt ? utilDate.toUserDateTimeDisplay(bid.startAt) : '-'}
+              {bid.startAt ? utilDate.toUserDateDisplay(bid.startAt) : '-'}
             </div>
             <div
               className={parentStyles.propertyJobBids__gridRow__column}
               data-testid="grid-row-bid-completeat"
             >
               {bid.completeAt
-                ? utilDate.toUserDateTimeDisplay(bid.completeAt)
+                ? utilDate.toUserDateDisplay(bid.completeAt)
                 : '-'}
             </div>
             <div
