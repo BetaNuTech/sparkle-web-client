@@ -41,6 +41,20 @@
     }
   }
 
+  &__back {
+    @extend %headerButton;
+
+    > svg {
+      width: rem-calc(8);
+      transform: rotate(180deg);
+      margin-right: rem-calc(8);
+
+      path {
+        fill: $white;
+      }
+    }
+  }
+
   // Centeral content
   &__main {
     grid-area: center;

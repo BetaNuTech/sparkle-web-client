@@ -1,1 +1,17 @@
-@import '../../../styles/index.scss';
+@import '../../styles/index.scss';
+.header {
+  @extend %gridHeader;
+
+  &__title {
+    @extend %gridHeaderTitle;
+  }
+
+  &__pdfReport {
+    text-align: center;
+    color: $white;
+    background-color: $black;
+    padding: rem-calc(4) 0;
+    font-size: rem-calc(14);
+    margin: 0;
+  }
+}
