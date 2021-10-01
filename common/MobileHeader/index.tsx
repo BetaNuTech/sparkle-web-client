@@ -12,6 +12,7 @@ interface Props {
   isStaging?: boolean;
   isOnline?: boolean;
   actions?(any): React.ReactNode | React.ReactNodeArray;
+  left?(any): React.ReactNode | React.ReactNodeArray;
   className?: any;
 }
 
@@ -21,6 +22,7 @@ const MobileHeader: FunctionComponent<Props> = ({
   isStaging,
   isOnline,
   actions,
+  left,
   className,
   testid
 }) => {
@@ -45,6 +47,7 @@ const MobileHeader: FunctionComponent<Props> = ({
             <HamburgerIcon />
           </button>
         )}
+        {typeof left === 'function' && left(styles)}
       </aside>
 
       {/* Page Name */}
