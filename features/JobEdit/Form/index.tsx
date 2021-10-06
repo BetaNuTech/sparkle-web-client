@@ -402,24 +402,43 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   <ErrorLabel formName="need" errors={formState.errors} />
                 </div>
               </div>
-              <div className={styles.jobNew__formGroup}>
+              <div
+                className={styles.jobNew__formGroup}
+                data-testid="job-form-type"
+              >
                 <label htmlFor="jobType">
-                  Estimated Cost <span>*</span>
+                  Project Type <span>*</span>
                 </label>
-                <select
-                  name="type"
-                  id="jobType"
-                  data-testid="job-form-type"
-                  defaultValue={job.type}
-                  {...register('type')}
-                  disabled={apiState.isLoading || isJobComplete}
-                >
-                  {Object.keys(jobsConfig.types).map((t) => (
-                    <option key={t} value={t}>
-                      {jobsConfig.types[t]}
-                    </option>
-                  ))}
-                </select>
+                {Object.keys(jobsConfig.types).map((t) => (
+                  <label
+                    key={t}
+                    className={styles.jobNew__formGroup__radioList}
+                  >
+                    <input
+                      type="radio"
+                      name="type"
+                      value={t}
+                      {...register('type')}
+                      defaultChecked={job.type && job.type === t}
+                      data-testid="job-form-type-radio"
+                      disabled={apiState.isLoading || isJobComplete}
+                    />
+                    <div className={styles.jobNew__formGroup__radioText}>
+                      <span
+                        className={styles.jobNew__formGroup__radioText__heading}
+                        data-testid="job-form-type-text"
+                      >
+                        {jobsConfig.types[t].title}
+                      </span>
+                      <span
+                        className={styles.jobNew__formGroup__radioText__desc}
+                        data-testid="job-form-type-desc"
+                      >
+                        {jobsConfig.types[t].description}
+                      </span>
+                    </div>
+                  </label>
+                ))}
               </div>
               {!isNewJob && (
                 <div className={styles.jobNew__formGroup}>

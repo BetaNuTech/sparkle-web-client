@@ -253,7 +253,7 @@ describe('Unit | Features | Job Edit | Form', () => {
 
   it('should allow all job type options to be selected', () => {
     const expected = Object.keys(jobsConfig.types)
-      .map((jt) => jobsConfig.types[jt])
+      .map((jt) => jobsConfig.types[jt].title)
       .join(' | ');
     const props = {
       job: openImprovementJob,
@@ -277,14 +277,14 @@ describe('Unit | Features | Job Edit | Form', () => {
     });
 
     const selectJobType = screen.queryByTestId('job-form-type');
-    const jobTypeOptions = selectJobType.querySelectorAll('option');
-    const textContentList = [];
+    const jobTypeOptions = selectJobType.querySelectorAll(
+      '[data-testid="job-form-type-text"]'
+    );
 
     // Push text content of options
-    jobTypeOptions.forEach((o) => textContentList.push(o.textContent));
-
-    const actual = textContentList.join(' | ');
-
+    const actual = Array.from(jobTypeOptions)
+      .map(({ textContent }) => textContent || '')
+      .join(' | ');
     expect(actual).toEqual(expected);
   });
 
@@ -555,13 +555,13 @@ describe('Unit | Features | Job Edit | Form', () => {
 
     const formTitle = screen.queryByTestId('job-form-title');
     const formDescription = screen.queryByTestId('job-form-description');
-    const formType = screen.queryByTestId('job-form-type');
+    const formType = screen.queryAllByTestId('job-form-type-radio');
     const formScope = screen.queryByTestId('job-form-scope');
 
     // It should be disabled when job is complete
     expect(formTitle.hasAttribute('disabled')).toBe(true);
     expect(formDescription.hasAttribute('disabled')).toBe(true);
-    expect(formType.hasAttribute('disabled')).toBe(true);
+    formType.forEach((el) => expect(el.hasAttribute('disabled')).toBe(true));
     expect(formScope.hasAttribute('disabled')).toBe(true);
   });
 

@@ -119,17 +119,22 @@ describe('Integration | Features | Job Edit', () => {
 
   it('renders and fill the form with required values', () => {
     const mockJob = { ...openMaintenanceJob };
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      job: mockJob
-    });
+    const { container } = render(
+      <JobEdit user={user} propertyId="property-1" jobId="job-1" />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth,
+        job: mockJob
+      }
+    );
     const formTitle = screen.queryByTestId(
       'job-form-title'
     ) as HTMLInputElement;
     const formDescription = screen.queryByTestId(
       'job-form-description'
     ) as HTMLTextAreaElement;
-    const formType = screen.queryByTestId('job-form-type') as HTMLSelectElement;
+    const formType = container.querySelector(
+      'input[name="type"]:checked'
+    ) as HTMLInputElement;
     const formScope = screen.queryByTestId(
       'job-form-scope'
     ) as HTMLTextAreaElement;
@@ -244,5 +249,4 @@ describe('Integration | Features | Job Edit', () => {
     const actual = sendReport.called;
     expect(actual).toEqual(expected);
   });
-
 });

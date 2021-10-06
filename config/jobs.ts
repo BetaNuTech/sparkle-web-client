@@ -18,9 +18,25 @@ export default {
     'large:sc': 'info'
   },
   types: {
-    'small:pm': 'Property Management Project',
-    'small:hybrid': 'Hybrid Capital Project',
-    'large:am': 'Asset Management Project',
-    'large:sc': 'Structural Capital Project'
+    'small:pm': {
+      title: 'Property Management Project',
+      description:
+        'PMT will collect a minimum of 2 competitive bids from national and/or local vendors. (3+ bids recommended)'
+    },
+    'small:hybrid': {
+      title: 'Hybrid Capital Project',
+      description:
+        'PMT will collect a minimum of 2 competitive bids from national and/or local vendors. (3+ bids recommended)'
+    },
+    'large:am': {
+      title: 'Asset Management Project',
+      description:
+        'Collect a minimum of 3 competitive bids from national and/or local vendors'
+    },
+    'large:sc': {
+      title: 'Structural Capital Project',
+      description:
+        'Collect a minimum of 3 competitive bids from national and/or local vendors.'
+    }
   }
 };
