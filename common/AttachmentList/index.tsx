@@ -53,7 +53,9 @@ const AttachmentList: FunctionComponent<Props> = ({
     <ul className={clsx(styles.attachment, className)} {...props}>
       {attachments.map((ba) => (
         <li className={styles.attachment__item} key={ba.name}>
-          {ba.name}
+          <a href={ba.url} target="_blank" rel="noreferrer">
+            {ba.name}
+          </a>
           <span className={styles.attachment__dropdown}>
             <ActionsIcon />
             <DropdownAttachment
