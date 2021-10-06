@@ -290,6 +290,35 @@
       opacity: 0;
     }
 
+    &__radioList {
+      display: flex;
+      gap: $global-sm-padding;
+      margin-bottom: $global-md-padding;
+      color: $black-1;
+      cursor: pointer;
+
+      > input[type='radio'] {
+        margin: rem-calc(2) 0 0;
+        min-width: 1rem;
+        cursor: pointer;
+      }
+    }
+
+    &__radioText {
+      display: inline-block;
+      font-weight: normal;
+
+      &__heading {
+        display: block;
+        margin-bottom: rem-calc(4);
+      }
+
+      &__desc {
+        display: block;
+        color: $gray-3;
+      }
+    }
+
     &__upload {
       color: $primary-color;
       cursor: pointer;

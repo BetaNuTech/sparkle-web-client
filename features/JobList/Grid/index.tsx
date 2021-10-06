@@ -9,7 +9,7 @@ interface Props {
   jobs: Array<jobModel>;
   propertyId: string;
   colors: Record<string, string>;
-  configJobs: Record<string, Record<string, string>>;
+  configJobs: Record<string, Record<string, string>| any>;
   onSortChange?(sortKey: string): void;
   onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
   sortBy?: string;
