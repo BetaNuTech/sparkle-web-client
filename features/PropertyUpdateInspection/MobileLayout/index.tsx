@@ -6,10 +6,15 @@ import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import parentStyles from '../styles.module.scss';
+import Sections from './Sections';
+import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 
 interface Props {
   property: propertyModel;
   inspection: inspectionModel;
+  templateSections: Array<inspectionTemplateSectionModel>;
+  collapsedSections: Array<string>;
+  onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onShareAction(): void;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -20,6 +25,9 @@ const MobileLayout: FunctionComponent<Props> = ({
   property,
   inspection,
   onShareAction,
+  templateSections,
+  collapsedSections,
+  onSectionCollapseToggle,
   isOnline,
   isStaging
 }) => {
@@ -79,11 +87,12 @@ const MobileLayout: FunctionComponent<Props> = ({
           PDF Report is available
         </p>
       )}
-      <header className={parentStyles.header}>
-        <h1 className={parentStyles.header__title}>
-          {inspection.templateName}
-        </h1>
-      </header>
+      <Sections
+        propertyId={property.id}
+        sections={templateSections}
+        collapsedSections={collapsedSections}
+        onSectionCollapseToggle={onSectionCollapseToggle}
+      />
     </>
   );
 };

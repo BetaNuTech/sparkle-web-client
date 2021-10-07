@@ -172,6 +172,15 @@
   color: $gray-dark;
 }
 
+%gridTableSectionTitle--padded {
+  @extend %gridTableSectionTitle;
+  border: 0;
+  padding: rem-calc(16) rem-calc(32);
+  background-color: $gray;
+  font-weight: normal;
+  color: $gray-dark;
+}
+
 %gridTableSectionBorder {
   position: absolute;
   bottom: 0;

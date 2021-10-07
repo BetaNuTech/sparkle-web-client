@@ -1,3 +1,5 @@
+import inspectionTemplate from './inspectionTemplate';
+
 interface inspection {
   id: string;
   creationDate: number;
@@ -15,11 +17,10 @@ interface inspection {
   inspectionReportUpdateLastDate?: string;
 
   // Relationships
-  template?: any;
+  template?: inspectionTemplate;
   templateCategory?: string;
   property: string;
   inspector: string;
-
 
   templateId?: string;
   templateName?: string;
