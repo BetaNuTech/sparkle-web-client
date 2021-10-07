@@ -7,8 +7,9 @@ import userModel from '../../common/models/user';
 import copyTextToClipboard from '../../common/utils/copyTextToClipboard';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
-import Header from './Header';
 import MobileLayout from './MobileLayout';
+import useInspectionSectionSort from './hooks/useInspectionSections';
+import DesktopLayout from './DesktopLayout';
 
 interface Props {
   user: userModel;
@@ -32,11 +33,14 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const sendNotification = notifications.createPublisher(useNotifications());
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
-    maxWidth: breakpoints.tablet.maxWidth
+    maxWidth: breakpoints.mobile.maxWidth
   });
   const isDesktop = useMediaQuery({
-    minWidth: breakpoints.desktop.minWidth
+    minWidth: breakpoints.tablet.minWidth
   });
+
+  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
+    useInspectionSectionSort(inspection.template.sections);
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
@@ -52,16 +56,23 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             isOnline={isOnline}
             isStaging={isStaging}
             inspection={inspection}
+            templateSections={sortedTemplateSections}
+            collapsedSections={collapsedSections}
+            onSectionCollapseToggle={onSectionCollapseToggle}
             onShareAction={onShareAction}
           />
         </>
       )}
       {isDesktop && (
         <>
-          <Header
+          <DesktopLayout
             property={property}
-            inspection={inspection}
             isOnline={isOnline}
+            isStaging={isStaging}
+            inspection={inspection}
+            templateSections={sortedTemplateSections}
+            collapsedSections={collapsedSections}
+            onSectionCollapseToggle={onSectionCollapseToggle}
             onShareAction={onShareAction}
           />
         </>

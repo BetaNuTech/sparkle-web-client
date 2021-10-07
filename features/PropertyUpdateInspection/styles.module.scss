@@ -15,3 +15,117 @@
     margin: 0;
   }
 }
+
+.main {
+  padding: $global-lg-padding $global-padding $global-padding;
+}
+
+.section {
+  &__list {
+    @extend %list;
+    @extend %stickyBoundingBox;
+    padding: 0;
+    flex-wrap: nowrap;
+    align-items: stretch;
+
+    &__item {
+      @extend %stickyBoundingBox--listItem;
+      text-align: left;
+
+      &--grid {
+        @extend %gridTableSection;
+      }
+
+      &__header {
+        @extend %stickyBoundingBox--header;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        background-color: $gray-dark;
+        cursor: pointer;
+
+        &--grid {
+          @extend %gridTableSectionTitle--padded;
+          position: sticky;
+          z-index: 12;
+          cursor: pointer;
+
+          svg {
+            width: rem-calc(16);
+            height: rem-calc(16);
+            transform: rotate(90deg);
+
+            path {
+              fill: #000;
+            }
+          }
+        }
+
+        &--collapsed {
+          svg {
+            transform: rotate(-90deg);
+          }
+        }
+
+        svg {
+          width: rem-calc(15);
+          height: rem-calc(15);
+          path {
+            fill: $white;
+          }
+        }
+
+        &__content {
+          display: flex;
+          justify-content: space-between;
+          gap: rem-calc(16);
+        }
+      }
+
+      &__button {
+        @extend %actionButton;
+
+        &--line {
+          @extend %actionButton--line;
+          text-transform: capitalize;
+        }
+
+        &--red {
+          @extend %actionButton--red;
+
+          &Outline {
+            @extend %actionButton--redLine;
+            text-transform: capitalize;
+          }
+        }
+      }
+
+      &__footer {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      &__action {
+        display: flex;
+        gap: rem-calc(12);
+      }
+    }
+  }
+
+  @include media-query(tablet) {
+    &__header__content {
+      font-size: rem-calc(22);
+      line-height: rem-calc(30);
+    }
+
+    &__item__footer {
+      align-items: center;
+      gap: rem-calc(12);
+
+      span {
+        display: inline-flex;
+        justify-content: center;
+      }
+    }
+  }
+}

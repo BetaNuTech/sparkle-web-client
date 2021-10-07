@@ -70,6 +70,38 @@
   }
 }
 
+%actionButton {
+  @extend %baseButton;
+  color: $success-color;
+  background: $gray-light;
+  border: 0;
+  padding: rem-calc(5.4) rem-calc(16) rem-calc(3.6);
+  text-transform: uppercase;
+
+  > svg path {
+    fill: $white;
+  }
+}
+
+%actionButton--line {
+  @extend %actionButton;
+  background: transparent;
+  border: rem-calc(1) solid $success-color;
+  border-radius: rem-calc(3);
+}
+
+%actionButton--red {
+  @extend %actionButton;
+  color: $alert-color;
+}
+
+%actionButton--redLine {
+  @extend %actionButton--red;
+  background: transparent;
+  border: rem-calc(1) solid $alert-color;
+  border-radius: rem-calc(3);
+}
+
 %baseButton__chevron {
   display: inline-block;
   width: rem-calc(6);
