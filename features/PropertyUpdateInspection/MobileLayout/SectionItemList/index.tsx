@@ -10,7 +10,11 @@ interface Props {
 const SectionItemList: FunctionComponent<Props> = ({ item }) => (
   <li className={styles.section__list__item__row}>
     <div>{item.itemType === 'signature' ? 'Signature' : item.title}</div>
-    <InspectionItemControls inputType={item.mainInputType} />
+    <InspectionItemControls
+      inputType={item.mainInputType}
+      selected={item.mainInputSelected}
+      selectedValue={item.mainInputSelection}
+    />
   </li>
 );
 

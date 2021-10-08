@@ -17,6 +17,7 @@
     border-left-width: 1px;
     background-color: $gray-4;
     max-width: rem-calc(85);
+    cursor: pointer;
 
     &:first-child {
       border-top-left-radius: rem-calc(24);
@@ -39,6 +40,42 @@
       circle {
         fill: $gray-med-dark;
         stroke: $gray-med-dark;
+      }
+    }
+
+    &--selected {
+      background-color: $primary-dark-color;
+      svg {
+        g,
+        path,
+        circle {
+          fill: $white;
+          stroke: $white;
+        }
+      }
+
+      &Error {
+        background-color: $alert-light-color;
+        svg {
+          g,
+          path,
+          circle {
+            fill: $alert-secondary-color;
+            stroke: $alert-secondary-color;
+          }
+        }
+      }
+
+      &Ok {
+        background-color: $black;
+        svg {
+          g,
+          path,
+          circle {
+            fill: $white;
+            stroke: $white;
+          }
+        }
       }
     }
   }

@@ -8,25 +8,52 @@ import OneActionNotes from './OneActionNotes';
 
 interface Props {
   inputType: string;
+  selected?: boolean;
+  selectedValue?: number;
 }
 
-const InspectionItemControls: FunctionComponent<Props> = ({ inputType }) => {
+const InspectionItemControls: FunctionComponent<Props> = ({
+  inputType,
+  selected,
+  selectedValue
+}) => {
   switch (inputType) {
     case 'twoactions_checkmarkx':
-      return <TwoActionCheck />;
+      return (
+        <TwoActionCheck selected={selected} selectedValue={selectedValue} />
+      );
     case 'twoactions_thumbs':
-      return <TwoActionThumb />;
+      return (
+        <TwoActionThumb selected={selected} selectedValue={selectedValue} />
+      );
     case 'threeactions_checkmarkexclamationx':
-      return <ThreeActionCheckExclamation />;
+      return (
+        <ThreeActionCheckExclamation
+          selected={selected}
+          selectedValue={selectedValue}
+        />
+      );
     case 'threeactions_abc':
-      return <ThreeActionAbc />;
+      return (
+        <ThreeActionAbc selected={selected} selectedValue={selectedValue} />
+      );
     case 'fiveactions_onetofive':
-      return <FiveActionOneToFive />;
+      return (
+        <FiveActionOneToFive
+          selected={selected}
+          selectedValue={selectedValue}
+        />
+      );
     case 'oneaction_notes':
       return <OneActionNotes />;
     default:
       return <div></div>;
   }
+};
+
+InspectionItemControls.defaultProps = {
+  selected: false,
+  selectedValue: 0
 };
 
 export default InspectionItemControls;

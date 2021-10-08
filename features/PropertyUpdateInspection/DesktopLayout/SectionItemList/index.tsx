@@ -17,7 +17,11 @@ const SectionItemList: FunctionComponent<Props> = ({ item }) => (
     )}
   >
     <div>{item.itemType === 'signature' ? 'Signature' : item.title}</div>
-    <InspectionItemControls inputType={item.mainInputType} />
+    <InspectionItemControls
+      inputType={item.mainInputType}
+      selected={item.mainInputSelected}
+      selectedValue={item.mainInputSelection}
+    />
     <div className={clsx(styles['section__list__item__row--gridAction'])}>
       <ActionsIcon />
     </div>

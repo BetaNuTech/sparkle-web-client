@@ -1,22 +1,42 @@
 import { FunctionComponent } from 'react';
+import clsx from 'clsx';
 import CheckmarkSimpleIcon from '../../../public/icons/sparkle/checkmark-simple.svg';
 import CancelSimpleIcon from '../../../public/icons/sparkle/cancel-simple.svg';
 import styles from '../styles.module.scss';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props {}
+interface Props {
+  selected?: boolean;
+  selectedValue?: number;
+}
 
-const TwoActionCheck: FunctionComponent<Props> = () => (
-  <>
-    <ul className={styles.inspection}>
-      <li className={styles.inspection__input}>
-        <CheckmarkSimpleIcon />
-      </li>
-      <li className={styles.inspection__input}>
-        <CancelSimpleIcon />
-      </li>
-    </ul>
-  </>
+const TwoActionCheck: FunctionComponent<Props> = ({
+  selected,
+  selectedValue
+}) => (
+  <ul className={styles.inspection}>
+    <li
+      className={clsx(
+        styles.inspection__input,
+        selected && selectedValue === 0 && styles['inspection__input--selected']
+      )}
+      data-testid="control-checkmark"
+      data-test={selected && selectedValue === 0 ? 'selected' : ''}
+    >
+      <CheckmarkSimpleIcon />
+    </li>
+    <li
+      className={clsx(
+        styles.inspection__input,
+        selected &&
+          selectedValue === 1 &&
+          styles['inspection__input--selectedError']
+      )}
+      data-testid="control-cancel"
+      data-test={selected && selectedValue === 1 ? 'selected' : ''}
+    >
+      <CancelSimpleIcon />
+    </li>
+  </ul>
 );
 
 TwoActionCheck.defaultProps = {};
