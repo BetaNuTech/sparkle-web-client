@@ -6,8 +6,9 @@ import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import parentStyles from '../styles.module.scss';
-import Sections from './Sections';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
+import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import Sections from './Sections';
 
 interface Props {
   property: propertyModel;
@@ -15,6 +16,7 @@ interface Props {
   templateSections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
+  sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onShareAction(): void;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -28,6 +30,7 @@ const MobileLayout: FunctionComponent<Props> = ({
   templateSections,
   collapsedSections,
   onSectionCollapseToggle,
+  sectionItems,
   isOnline,
   isStaging
 }) => {
@@ -92,6 +95,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         sections={templateSections}
         collapsedSections={collapsedSections}
         onSectionCollapseToggle={onSectionCollapseToggle}
+        sectionItems={sectionItems}
       />
     </>
   );

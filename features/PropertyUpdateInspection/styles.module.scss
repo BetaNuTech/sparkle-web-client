@@ -50,11 +50,11 @@
           z-index: 12;
           cursor: pointer;
 
+          // Collapse Chevron
           svg {
             width: rem-calc(16);
             height: rem-calc(16);
             transform: rotate(90deg);
-
             path {
               fill: #000;
             }
@@ -62,11 +62,13 @@
         }
 
         &--collapsed {
+          // Collapse Chevron
           svg {
             transform: rotate(-90deg);
           }
         }
 
+        // Single/Multi-Section icons
         svg {
           width: rem-calc(15);
           height: rem-calc(15);
@@ -109,16 +111,45 @@
         display: flex;
         gap: rem-calc(12);
       }
+
+      &__row {
+        display: grid;
+        position: relative;
+        padding: $global-sm-padding $global-padding;
+        border-bottom: rem-calc(1) solid $gray-lighter;
+
+        &--grid {
+          padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
+          grid-template-columns: 0.6fr 1fr auto;
+
+          &Action {
+            display: flex;
+            align-items: center;
+            padding: 0 $global-padding;
+            cursor: pointer;
+
+            &:hover {
+              background-color: rgba(0, 0, 0, 0.2);
+            }
+
+            // Dropdown icon
+            > svg {
+              max-width: rem-calc(22);
+              max-height: rem-calc(22);
+            }
+          }
+        }
+      }
     }
   }
 
   @include media-query(tablet) {
-    &__header__content {
+    &__list__item__header__content {
       font-size: rem-calc(22);
       line-height: rem-calc(30);
     }
 
-    &__item__footer {
+    &__list__item__footer {
       align-items: center;
       gap: rem-calc(12);
 

@@ -46,6 +46,17 @@ export default {
     // Cast firestore data into property records
     data = queryData as inspectionModel;
 
+    // Convert the data for template item mainInputType to lowercase
+    if (data && data.template && data.template.items) {
+      const keys = Object.keys(data.template.items);
+      keys.forEach((key) => {
+        if (data.template.items[key].mainInputType) {
+          data.template.items[key].mainInputType =
+            data.template.items[key].mainInputType.toLowerCase();
+        }
+      });
+    }
+
     // Result
     return { status, error, data };
   },
