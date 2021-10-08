@@ -6,13 +6,11 @@ import styles from '../styles.module.scss';
 interface Props {}
 
 const OneActionNotes: FunctionComponent<Props> = () => (
-  <>
-    <ul className={styles.inspection}>
-      <li className={styles.inspection__input}>
-        <NoteSimpleIcon />
-      </li>
-    </ul>
-  </>
+  <ul className={styles.inspection}>
+    <li className={styles.inspection__input}>
+      <NoteSimpleIcon />
+    </li>
+  </ul>
 );
 
 OneActionNotes.defaultProps = {};

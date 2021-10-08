@@ -19,6 +19,7 @@ interface inspectionTemplateItem {
   signatureDownloadURL?: string;
   signatureTimestampKey?: string;
   mainInputSelected?: boolean;
+  mainInputSelection?: number;
   version?: number;
 }
 
