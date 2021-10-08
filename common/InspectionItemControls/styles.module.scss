@@ -1,0 +1,45 @@
+@import '../../styles/index.scss';
+
+.inspection {
+  display: flex;
+  flex-wrap: nowrap;
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+
+  &__input {
+    display: flex;
+    flex: 1 1 33%;
+    align-items: center;
+    justify-content: center;
+    height: rem-calc(48);
+    border-left: 1px solid $white;
+    border-left-width: 1px;
+    background-color: $gray-4;
+    max-width: rem-calc(85);
+
+    &:first-child {
+      border-top-left-radius: rem-calc(24);
+      border-bottom-left-radius: rem-calc(24);
+      border-left-width: 0;
+    }
+
+    &:last-child {
+      border-top-right-radius: rem-calc(24);
+      border-bottom-right-radius: rem-calc(24);
+      border-right-width: 0;
+    }
+
+    svg {
+      width: rem-calc(17);
+      height: rem-calc(17);
+
+      g,
+      path,
+      circle {
+        fill: $gray-med-dark;
+        stroke: $gray-med-dark;
+      }
+    }
+  }
+}

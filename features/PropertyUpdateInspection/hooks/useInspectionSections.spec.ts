@@ -1,7 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
-import { fullInspection } from '../../../__mocks__/inspections';
-import deepClone from '../../../__tests__/helpers/deepClone';
 import useInspectionSections from './useInspectionSections';
 
 // Declared this as changing mock should not fail the test cases

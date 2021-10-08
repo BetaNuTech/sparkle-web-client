@@ -1,4 +1,5 @@
 import inspectionTemplateSectionModel from './inspectionTemplateSection';
+import inspectionTemplateItemModel from './inspectionTemplateItem';
 
 interface inspectionTemplate {
   name: string;
@@ -6,7 +7,7 @@ interface inspectionTemplate {
   description?: string;
   requireDeficientItemNoteAndPhoto: boolean;
   trackDeficientItems: boolean;
-
+  items?: Record<string, inspectionTemplateItemModel>;
   // Sections
   sections?: Record<string, inspectionTemplateSectionModel>;
 }

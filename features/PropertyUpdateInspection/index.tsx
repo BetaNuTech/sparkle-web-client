@@ -10,6 +10,7 @@ import notifications from '../../common/services/notifications'; // eslint-disab
 import MobileLayout from './MobileLayout';
 import useInspectionSectionSort from './hooks/useInspectionSections';
 import DesktopLayout from './DesktopLayout';
+import useInspectionItems from './hooks/useInspectionItems';
 
 interface Props {
   user: userModel;
@@ -42,6 +43,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
     useInspectionSectionSort(inspection.template.sections);
 
+  const { sectionItems } = useInspectionItems(inspection.template.items);
+
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
     sendNotification('Copied to clipboard.', { type: 'success' });
@@ -60,6 +63,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
             onShareAction={onShareAction}
+            sectionItems={sectionItems}
           />
         </>
       )}
@@ -74,6 +78,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
             onShareAction={onShareAction}
+            sectionItems={sectionItems}
           />
         </>
       )}

@@ -1,12 +1,14 @@
 import { FunctionComponent } from 'react';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
-import SectionTitle from '../SectionTitle';
+import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import SectionItem from '../SectionItem';
 
 interface Props {
   propertyId: string;
   sections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
+  sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
 }
 
@@ -15,13 +17,14 @@ const Sections: FunctionComponent<Props> = ({
   sections,
   collapsedSections,
   onSectionCollapseToggle,
-  forceVisible
+  forceVisible,
+  sectionItems
 }) => {
   if (sections && sections.length > 0) {
     return (
       <ul data-testid="inspection-section">
         {sections.map((sectionItem, idx) => (
-          <SectionTitle
+          <SectionItem
             propertyId={propertyId}
             key={sectionItem.id}
             section={sectionItem}
@@ -29,6 +32,7 @@ const Sections: FunctionComponent<Props> = ({
             forceVisible={forceVisible}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
+            sectionItems={sectionItems}
           />
         ))}
       </ul>
