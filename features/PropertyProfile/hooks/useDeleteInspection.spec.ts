@@ -6,6 +6,7 @@ import errorReports from '../../../common/services/api/errorReports';
 import globalNotification from '../../../common/services/firestore/notifications';
 import inspections from '../../../__mocks__/inspections';
 import { admin } from '../../../__mocks__/users';
+import stubFirestore from '../../../__tests__/helpers/stubFirestore';
 
 describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', () => {
   afterEach(() => sinon.restore());
@@ -132,16 +133,3 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
     expect(actual).toEqual(expected);
   });
 });
-
-function stubFirestore(success = true, err = Error()): any {
-  return {
-    collection: () => ({
-      add: (notification) => {
-        if (success) {
-          return Promise.resolve(notification);
-        }
-        return Promise.reject(err);
-      }
-    })
-  };
-}

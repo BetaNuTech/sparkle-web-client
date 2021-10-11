@@ -1,6 +1,6 @@
-import integrationApi, {
+import integrationDb, {
   yardiIntegrationResult
-} from '../../../common/services/integrations';
+} from '../../../common/services/firestore/integrations';
 
 interface useYardiIntegrationResult extends yardiIntegrationResult {
   handlers: any;
@@ -22,7 +22,7 @@ export default function useYardiIntegration(
   };
 
   // Check if we have yardi integration document
-  const result = integrationApi.queryYardiRecord(firestore);
+  const result = integrationDb.queryYardi(firestore);
   Object.assign(payload, result, { handlers });
 
   return payload;

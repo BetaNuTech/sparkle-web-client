@@ -5,9 +5,10 @@ import Router, { useRouter } from 'next/router';
 import useNotifications from '../../../../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../../../../common/services/notifications';
 import useProperty from '../../../../../common/hooks/useProperty';
+import propertyModel from '../../../../../common/models/property';
 import useTrelloBoards from '../../../../../features/Trello/hooks/useTrelloBoards';
 import useTrelloUser from '../../../../../features/Trello/hooks/useTrelloUser';
-import userTrelloProperty from '../../../../../features/Trello/hooks/useTrelloProperty';
+import useTrelloProperty from '../../../../../features/Trello/hooks/useTrelloProperty';
 import { canUpdateCompanySettings } from '../../../../../common/utils/userPermissions';
 import { MainLayout } from '../../../../../common/MainLayout/index';
 import Trello from '../../../../../features/Trello/index';
@@ -33,8 +34,11 @@ const Page: FunctionComponent = () => {
   const id = typeof propertyId === 'string' ? propertyId : propertyId[0];
 
   // Load Property
-  let property = {};
-  const { data, status: propertyStatus } = useProperty(firestore, id);
+  let property = { name: 'loading' };
+  const { data: propertyData, status: propertyStatus } = useProperty(
+    firestore,
+    id
+  );
 
   // Load Trello user
   const { data: trelloUser, status: trelloUserStatus } =
@@ -42,7 +46,7 @@ const Page: FunctionComponent = () => {
 
   // Load Trello data for property
   const { data: trelloProperty, status: trelloPropertyStatus } =
-    userTrelloProperty(firestore, id);
+    useTrelloProperty(firestore, id);
 
   // Load Boards
   const {
@@ -51,9 +55,13 @@ const Page: FunctionComponent = () => {
     error: boardsError
   } = useTrelloBoards();
 
+  const redirectToProperty = () => {
+    Router.push(`/properties/edit/${id}`);
+  };
+
   // Redirect to properties if property doesn't exist
   if (id !== 'new') {
-    property = { ...data, id };
+    property = { ...propertyData, id } as propertyModel;
   } else {
     sendNotification('Property does not exist', {
       type: 'error'
@@ -68,7 +76,7 @@ const Page: FunctionComponent = () => {
         type: 'error'
       }
     );
-    Router.push(`/properties/edit/${id}`);
+    redirectToProperty();
   }
 
   // Page loading
@@ -94,6 +102,7 @@ const Page: FunctionComponent = () => {
             hasUpdateCompanySettingsPermission
           }
           trelloBoards={trelloBoards}
+          redirectToProperty={redirectToProperty}
         />
       ) : (
         <LoadingHud />

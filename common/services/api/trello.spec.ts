@@ -1,7 +1,11 @@
 import sinon from 'sinon';
 import trelloApi from './trello';
 import currentUser from '../../utils/currentUser';
-import { trelloOrg, trelloBoardWithOrg } from '../../../__mocks__/trello';
+import {
+  trelloOrg,
+  trelloBoardWithOrg,
+  openList
+} from '../../../__mocks__/trello';
 
 const API_TELLO_BOARDS_RESULT = {
   data: [
@@ -32,6 +36,18 @@ const API_TELLO_BOARDS_RESULT = {
   ]
 };
 
+const API_TELLO_LISTS_RESULT = {
+  data: [
+    {
+      id: openList.id,
+      type: 'trello-list',
+      attributes: {
+        name: openList.name
+      }
+    }
+  ]
+};
+
 const jsonOK = (body) => {
   const mockResponse = new Response(JSON.stringify(body), {
     status: 200,
@@ -46,13 +62,24 @@ const jsonOK = (body) => {
 describe('Unit | Services | API | Trello', () => {
   afterEach(() => sinon.restore());
 
-  test('builds a correct data on success', async () => {
+  test('it resolves trello boards', async () => {
     const expected = [trelloBoardWithOrg];
 
     sinon.stub(window, 'fetch').resolves(jsonOK(API_TELLO_BOARDS_RESULT));
     sinon.stub(currentUser, 'getIdToken').resolves('token');
 
     const actual = await trelloApi.findAllBoards();
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves trello lists', async () => {
+    const expected = [openList];
+
+    sinon.stub(window, 'fetch').resolves(jsonOK(API_TELLO_LISTS_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    const actual = await trelloApi.findAllBoardLists('board-1');
 
     expect(actual).toEqual(expected);
   });

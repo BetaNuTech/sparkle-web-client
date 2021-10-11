@@ -6,6 +6,7 @@ import errorReports from '../../../common/services/api/errorReports';
 import jobDb from '../../../common/services/firestore/jobs';
 import storageApi from '../../../common/services/storage';
 import useAttachmentDelete from './useAttachmentDelete';
+import stubFirestore from '../../../__tests__/helpers/stubFirestore';
 
 describe('Unit | Features | Job Edit | Hooks | Use Attachment Delete', () => {
   afterEach(() => sinon.restore());
@@ -81,16 +82,3 @@ describe('Unit | Features | Job Edit | Hooks | Use Attachment Delete', () => {
     expect(actualNotification).toEqual(expectedNotification);
   });
 });
-
-function stubFirestore(success = true, err = Error()): any {
-  return {
-    collection: () => ({
-      add: (notification) => {
-        if (success) {
-          return Promise.resolve(notification);
-        }
-        return Promise.reject(err);
-      }
-    })
-  };
-}

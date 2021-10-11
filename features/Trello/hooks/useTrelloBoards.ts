@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import trelloApi from '../../../common/services/api/trello';
+import trelloApi, { trelloBoard } from '../../../common/services/api/trello';
 
 const PREFIX = 'Features: Trello: hooks: useTrelloBoards';
 
 interface useBoardsResult {
   status: string;
   error?: Error;
-  data: any;
+  data: Array<trelloBoard>;
 }
 
 // Hooks for loading job record by job id

@@ -6,6 +6,7 @@ import errorReports from '../../../common/services/api/errorReports';
 import globalNotification from '../../../common/services/firestore/notifications';
 import properties from '../../../__mocks__/properties';
 import { admin } from '../../../__mocks__/users';
+import stubFirestore from '../../../__tests__/helpers/stubFirestore';
 
 describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
   afterEach(() => sinon.restore());
@@ -163,16 +164,3 @@ describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
     expect(actual).toEqual(expected);
   });
 });
-
-function stubFirestore(success = true, err = Error()): any {
-  return {
-    collection: () => ({
-      add: (notification) => {
-        if (success) {
-          return Promise.resolve(notification);
-        }
-        return Promise.reject(err);
-      }
-    })
-  };
-}

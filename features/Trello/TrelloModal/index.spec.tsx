@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import TrelloModal from './TrelloModal';
+import TrelloModal from './index';
 
 describe('Unit | Features | Trello | Trello Modal', () => {
   afterEach(() => sinon.restore());
@@ -12,9 +12,12 @@ describe('Unit | Features | Trello | Trello Modal', () => {
     const props = {
       isVisible: true,
       onClose,
+      onSave: () => Promise.resolve(true),
+      onReset: () => Promise.resolve(true),
+      isLoading: false,
+      isSaving: false,
       isOnline: true,
-      isStaging: true,
-      property: {},
+      property: { name: 'test' },
       selectedOptions: {
         openBoard: '1',
         openList: '2',
@@ -24,7 +27,9 @@ describe('Unit | Features | Trello | Trello Modal', () => {
       trelloUser: {
         trelloFullName: 'trelloFullName',
         trelloUsername: 'trelloUsername'
-      }
+      },
+      isOpenListsLoading: false,
+      isClosedListsLoading: false
     };
     render(<TrelloModal {...props} />);
 

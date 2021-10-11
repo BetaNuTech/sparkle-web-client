@@ -4,7 +4,7 @@ interface calculateTeamValuesReference {
 }
 
 interface calculateTeamValuesPropertyMeta {
-  id: string;
+  id?: string;
   numOfDeficientItems?: number;
   numOfFollowUpActionsForDeficientItems?: number;
   numOfRequiredActionsForDeficientItems?: number;
