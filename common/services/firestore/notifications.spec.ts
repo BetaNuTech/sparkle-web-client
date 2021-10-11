@@ -1,6 +1,7 @@
 import sinon from 'sinon';
 import currentUser from '../../utils/currentUser';
 import notifications from './notifications';
+import stubFirestore from '../../../__tests__/helpers/stubFirestore';
 /* eslint-enable */
 
 describe('Unit | Services | global notifications', () => {
@@ -472,16 +473,3 @@ describe('Unit | Services | global notifications', () => {
     }
   });
 });
-
-function stubFirestore(success = true, err = Error()): any {
-  return {
-    collection: () => ({
-      add: (notification) => {
-        if (success) {
-          return Promise.resolve(notification);
-        }
-        return Promise.reject(err);
-      }
-    })
-  };
-}

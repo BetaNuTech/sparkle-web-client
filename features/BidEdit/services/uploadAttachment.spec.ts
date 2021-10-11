@@ -3,6 +3,7 @@ import bidsApi from '../../../common/services/firestore/bids';
 import utilApi from '../../../common/services/firestore/util';
 import { openBid } from '../../../__mocks__/bids';
 import uploadAttachment from './uploadAttachment';
+import stubFirestore from '../../../__tests__/helpers/stubFirestore';
 
 describe('Unit | Features | Property Profile | Services | Upload Attachment', () => {
   afterEach(() => sinon.restore());
@@ -23,16 +24,3 @@ describe('Unit | Features | Property Profile | Services | Upload Attachment', ()
     ).rejects.toThrowError(Error);
   });
 });
-
-function stubFirestore(success = true, err = Error()): any {
-  return {
-    collection: () => ({
-      doc: () => {
-        if (success) {
-          return Promise.resolve();
-        }
-        return Promise.reject(err);
-      }
-    })
-  };
-}

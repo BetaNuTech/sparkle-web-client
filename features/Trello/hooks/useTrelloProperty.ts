@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import trelloIntegrationDb, {
   trelloIntegrationResult
 } from '../../../common/services/firestore/trello';
-import trelloPropertyModel from '../../../common/models/trelloProperty';
+import propertyTrelloIntegrationModel from '../../../common/models/propertyTrelloIntegration';
 
 interface useTrelloIntegrationResult extends trelloIntegrationResult {
   memo: string;
@@ -22,7 +22,7 @@ export default function useTrelloProperty(
   const payload = {
     status: 'loading',
     error: null,
-    data: {} as trelloPropertyModel,
+    data: {} as propertyTrelloIntegrationModel,
     handlers,
     memo
   };

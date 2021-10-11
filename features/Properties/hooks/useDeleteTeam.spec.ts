@@ -5,6 +5,7 @@ import teamsApi from '../../../common/services/firestore/teams';
 import errorReports from '../../../common/services/api/errorReports';
 import teams from '../../../__mocks__/teams';
 import { admin } from '../../../__mocks__/users';
+import stubFirestore from '../../../__tests__/helpers/stubFirestore';
 
 describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
   afterEach(() => sinon.restore());
@@ -119,16 +120,3 @@ describe('Unit | Features | Properties | Hooks | Use Delete Team', () => {
     expect(actual).toEqual(expected);
   });
 });
-
-function stubFirestore(success = true, err = Error()): any {
-  return {
-    collection: () => ({
-      add: (notification) => {
-        if (success) {
-          return Promise.resolve(notification);
-        }
-        return Promise.reject(err);
-      }
-    })
-  };
-}

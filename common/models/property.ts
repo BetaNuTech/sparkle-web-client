@@ -1,5 +1,5 @@
 interface property {
-  id: string;
+  id?: string;
   name: string;
   addr1?: string;
   addr2?: string;

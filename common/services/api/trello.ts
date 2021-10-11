@@ -23,13 +23,11 @@ export interface trelloBoard {
 export interface trelloList {
   id: string;
   name: string;
-  board: string;
+  board?: string;
 }
 
 // Request all Trello user's boards
-const getBoardsRequest = async (
-  authToken: string
-): Promise<Array<trelloBoard>> => {
+const getBoardsRequest = async (authToken: string): Promise<trelloBoard[]> => {
   let res;
   try {
     res = await window.fetch(
@@ -57,7 +55,7 @@ const getBoardsRequest = async (
   // Flatten board data append
   // any organization to the booard
   return payload.data.map((board) => {
-    const record = { id: board.id, ...board.attributes };
+    const record = { id: board.id, ...board.attributes } as trelloBoard;
 
     if (board.relationships && board.relationships.trelloOrganization) {
       const trelloOrgData = board.relationships.trelloOrganization.data || {};
@@ -80,11 +78,11 @@ const getBoardsRequest = async (
 const getBoardListRequest = async (
   authToken: string,
   boardId: string
-): Promise<trelloList> => {
+): Promise<trelloList[]> => {
   let res;
   try {
-    res = await window.fetch(
-      `${API_DOMAIN}/api/v0/integrations/boards/${boardId}/lists`,
+    res = await fetch(
+      `${API_DOMAIN}/api/v0/integrations/trello/boards/${boardId}/lists`,
       {
         method: 'GET',
         headers: {
@@ -103,15 +101,21 @@ const getBoardListRequest = async (
     throw Error(`${PREFIX} getBoardListRequest: failed to parse JSON: ${err}`);
   }
 
-  // TODO munge
-
-  return payload;
+  // Convert payload to Trello Boards
+  return payload.data.map(
+    (list) =>
+      ({
+        id: list.id,
+        ...list.attributes,
+        board: boardId
+      } as trelloList)
+  );
 };
 
 // Request Boards for previously
 // authorized Trello user
 export default {
-  async findAllBoards(): Promise<any> {
+  async findAllBoards(): Promise<trelloBoard[]> {
     let authToken = '';
     try {
       authToken = await currentUser.getIdToken();
@@ -125,7 +129,7 @@ export default {
   },
 
   // GET all lists belonging to a trello board
-  async findAllBoardLists(boardId: string): Promise<any> {
+  async findAllBoardLists(boardId: string): Promise<trelloList[]> {
     let authToken = '';
     try {
       authToken = await currentUser.getIdToken();

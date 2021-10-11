@@ -1,20 +1,28 @@
 import firebase from 'firebase/app';
 import { useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
+import trelloUserModel from '../../models/trelloUser';
+import propertyTrelloIntegrationModel from '../../models/propertyTrelloIntegration';
 
 // Result of template single document
+export interface trelloUserResult {
+  status: string;
+  error?: Error;
+  data: trelloUserModel;
+}
+
 export interface trelloIntegrationResult {
   status: string;
   error?: Error;
-  data: any;
+  data: propertyTrelloIntegrationModel;
 }
 
 export default {
   // Get Trello user
-  getUser(firestore: firebase.firestore.Firestore): trelloIntegrationResult {
+  getUser(firestore: firebase.firestore.Firestore): trelloUserResult {
     let status = 'success';
     let error = null;
-    let data = {} as any;
+    let data = {} as trelloUserModel;
 
     const docRef = firestore
       .collection(fbCollections.integrations)
@@ -30,7 +38,7 @@ export default {
 
     status = queryStatus;
     error = queryError;
-    data = queryData as any;
+    data = queryData as trelloUserModel;
 
     // Result
     return { status, error, data };
@@ -43,7 +51,7 @@ export default {
   ): trelloIntegrationResult {
     let status = 'success';
     let error = null;
-    let data = {} as any;
+    let data = {} as propertyTrelloIntegrationModel;
 
     const docRef = firestore
       .collection(fbCollections.integrations)
@@ -59,7 +67,7 @@ export default {
 
     status = queryStatus;
     error = queryError;
-    data = queryData as any;
+    data = queryData as propertyTrelloIntegrationModel;
 
     // Result
     return { status, error, data };

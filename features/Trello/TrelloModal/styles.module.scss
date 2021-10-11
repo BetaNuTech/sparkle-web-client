@@ -24,6 +24,9 @@
     background: transparent;
     border-width: 0;
     padding: $global-padding;
+    &:disabled {
+      opacity: $button-opacity-disabled;
+    }
   }
 
   &__dropdownGroup {
@@ -53,6 +56,11 @@
         font-size: $paragraph-font-size;
         text-align: left;
         line-height: $global-md-padding;
+      }
+
+      &--disabled {
+        opacity: $button-opacity-disabled;
+        pointer-events: none;
       }
     }
   }

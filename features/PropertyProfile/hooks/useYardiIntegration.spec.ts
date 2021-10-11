@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useYardiIntegration from './useYardiIntegration';
-import integrationsApi from '../../../common/services/integrations';
+import integrationsDb from '../../../common/services/firestore/integrations';
 
 const emptyCollectionResult = {
   status: 'success',
@@ -15,13 +15,13 @@ describe('Unit | Features | Property Profile | Hooks | Use Yardi Integration', (
   test('should request property yardi authorizer configuration for property', () => {
     const expected = true;
 
-    const queryYardiRecord = sinon
-      .stub(integrationsApi, 'queryYardiRecord')
+    const queryYardi = sinon
+      .stub(integrationsDb, 'queryYardi')
       .returns(emptyCollectionResult);
 
     renderHook(() => useYardiIntegration({}));
 
-    const actual = queryYardiRecord.called;
+    const actual = queryYardi.called;
 
     expect(actual).toEqual(expected);
   });

@@ -8,14 +8,14 @@ import headerStyles from '../../../common/MobileHeader/styles.module.scss';
 import MobileHeader from '../../../common/MobileHeader';
 import DropdownGroup from './dropdownGroup';
 import propertyModel from '../../../common/models/property';
-import { trelloBoard } from '../../../common/services/api/trello';
+import { trelloBoard, trelloResult } from '../../../common/services/api/trello';
 import trelloUserModel from '../../../common/models/trelloUser';
 
-interface Options {
-  openBoard: string;
-  openList: string;
-  closedBoard: string;
-  closedList: string;
+export interface Selection {
+  openBoard: { name: string; id: string };
+  openList: { name: string; id: string };
+  closeBoard: { name: string; id: string };
+  closeList: { name: string; id: string };
 }
 
 interface Props extends ModalProps {
@@ -23,10 +23,17 @@ interface Props extends ModalProps {
   isOnline?: boolean;
   isStaging?: boolean;
   property: propertyModel;
-  selectedOptions: Options;
+  selectedOptions: Selection;
   trelloUser: trelloUserModel;
   hasUpdateCompanySettingsPermission: boolean;
   trelloBoards: trelloBoard;
+  openSelectionModal: () => void;
+  onSave: () => Promise<any>;
+  onReset: () => Promise<any>;
+  hasSelectionChange: trelloResult;
+  isLoadingLists: boolean;
+  isOpenListsLoading: boolean;
+  isClosedListsLoading: boolean;
 }
 
 const TrelloModal: FunctionComponent<Props> = ({
@@ -36,16 +43,18 @@ const TrelloModal: FunctionComponent<Props> = ({
   selectedOptions,
   hasUpdateCompanySettingsPermission,
   trelloUser,
-  property
+  property,
+  openSelectionModal,
+  hasSelectionChange,
+  isOpenListsLoading,
+  isClosedListsLoading,
+  onSave,
+  onReset
 }) => {
-  const closeModal = () => {
-    onClose();
-  };
-
   const headerActions = () => (
     <>
       <button
-        onClick={closeModal}
+        onClick={onClose}
         className={clsx(
           modalStyles.modal__closeButton,
           modalStyles['-topLeft']
@@ -55,16 +64,17 @@ const TrelloModal: FunctionComponent<Props> = ({
         ×
       </button>
       <button
-        data-testid="save-button-mobile"
+        data-testid="save-button"
         className={styles.trelloModal__saveButton}
+        disabled={!hasSelectionChange}
+        onClick={onSave}
       >
         Save
       </button>
     </>
   );
 
-  const { openBoard, openList, closedBoard, closedList } = selectedOptions;
-
+  const { openBoard, openList, closeBoard, closeList } = selectedOptions;
   const { trelloFullName, trelloUsername } = trelloUser;
 
   return (
@@ -75,6 +85,7 @@ const TrelloModal: FunctionComponent<Props> = ({
         isStaging={isStaging}
         title="TRELLO"
         className={clsx(headerStyles['header--displayOnDesktop'])}
+        data-testid="trello-modal"
       />
       {trelloUser ? (
         <>
@@ -84,13 +95,19 @@ const TrelloModal: FunctionComponent<Props> = ({
             >{`${trelloFullName} (${trelloUsername})`}</h5>
             <DropdownGroup
               title="Deficient Item - OPEN"
-              board={closedBoard}
-              list={closedList}
+              board={openBoard}
+              list={openList}
+              status="open"
+              openSelectionModal={openSelectionModal}
+              isLoadingLists={isOpenListsLoading}
             />
             <DropdownGroup
               title="Deficient Item - CLOSED"
-              board={openBoard}
-              list={openList}
+              board={closeBoard}
+              list={closeList}
+              status="close"
+              openSelectionModal={openSelectionModal}
+              isLoadingLists={isClosedListsLoading}
             />
           </div>
           <footer
@@ -100,7 +117,9 @@ const TrelloModal: FunctionComponent<Props> = ({
               '-bgc-white'
             )}
           >
-            <button className={styles.trelloModal__resetBtn}>RESET</button>
+            <button onClick={onReset} className={styles.trelloModal__resetBtn}>
+              RESET
+            </button>
           </footer>
         </>
       ) : (
