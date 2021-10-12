@@ -129,6 +129,16 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
           </label>
         </div>
         <div className={styles.propertyEditDesktop__container__templates}>
+          <div className={styles.propertyEditDesktop__buttonContainer}>
+            <button
+              onClick={(e) => onSubmit(e)}
+              className={styles.propertyEditDesktop__topSaveButton}
+              data-testid="top-save-button-desktop"
+              disabled={apiState.isLoading}
+            >
+              Save
+            </button>
+          </div>
           <div className={styles.propertyEditDesktop__templates__title}>
             TEMPLATES ({templateNames.length})
           </div>

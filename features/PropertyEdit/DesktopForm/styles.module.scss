@@ -235,7 +235,11 @@
   }
 
   &__saveButton {
-    @extend .propertyEditDesktop__teamButton;
+    line-height: $global-lg-padding;
+    width: 100%;
+    font-weight: bold;
+    font-size: $medium-font-size;
+    text-transform: uppercase;
     background: $primary-color;
     color: $white;
     border: 1px $primary-color solid;
@@ -243,6 +247,18 @@
 
   &__spacer {
     height: $global-padding;
+  }
+
+  &__buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    background-color: $gray-light-6;
+  }
+
+  &__topSaveButton {
+    @extend .propertyEditDesktop__saveButton;
+    width: rem-calc(120);
+    height: $global-llg-padding;
   }
 
   &__templates__title {
@@ -253,7 +269,7 @@
     font-weight: bold;
     font-size: $medium-font-size;
     text-transform: uppercase;
-    background-color: #eaeaea;
+    background-color: $white-dark;
     border-bottom: 1px solid $gray-lighter;
   }
 
