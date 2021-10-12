@@ -18,7 +18,7 @@ import mockTeams from '../../../../__mocks__/teams';
 import PropertyEdit from '../../../../features/PropertyEdit';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
-import propertiesAPI from '../../../../common/services/api/properties';
+import propertiesApi from '../../../../common/services/api/properties';
 import deepClone from '../../../helpers/deepClone';
 
 function render(ui: any, options: any = {}) {
@@ -51,9 +51,18 @@ describe('Integration | Features | Property Edit', () => {
       'template-2': true
     };
     const [template] = mockTemplates;
-    const onSave = sinon
-      .stub(propertiesAPI, 'updateRecord')
-      .resolves(fullProperty);
+    // TODO fix updateRecord to resolve property
+    const onSave = sinon.stub(propertiesApi, 'updateRecord').resolves({
+      status: 201,
+      json: () =>
+        Promise.resolve({
+          data: {
+            id: fullProperty.id,
+            type: 'property',
+            attributes: fullProperty
+          }
+        })
+    });
     const props = {
       isOnline: true,
       user,
@@ -93,7 +102,7 @@ describe('Integration | Features | Property Edit', () => {
     const property = deepClone(fullProperty);
     (property.templates || {})[template.id] = true; // add template to property
     const onSave = sinon
-      .stub(propertiesAPI, 'updateRecord')
+      .stub(propertiesApi, 'updateRecord')
       .resolves(fullProperty);
     const props = {
       isOnline: true,
@@ -126,7 +135,7 @@ describe('Integration | Features | Property Edit', () => {
   it('should allow users to unselect team and submit', async () => {
     const expected = '';
     const onSave = sinon
-      .stub(propertiesAPI, 'updateRecord')
+      .stub(propertiesApi, 'updateRecord')
       .resolves(fullProperty);
     const props = {
       isOnline: true,
@@ -158,7 +167,7 @@ describe('Integration | Features | Property Edit', () => {
   it('should allow users to select team and submit', async () => {
     const expected = 'team-2';
     const onSave = sinon
-      .stub(propertiesAPI, 'updateRecord')
+      .stub(propertiesApi, 'updateRecord')
       .resolves(fullProperty);
     const props = {
       isOnline: true,
@@ -200,7 +209,7 @@ describe('Integration | Features | Property Edit', () => {
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    const postReq = sinon.stub(propertiesAPI, 'createRecord').resolves({});
+    const postReq = sinon.stub(propertiesApi, 'createRecord').resolves({});
 
     await act(async () => {
       const [save] = await screen.findAllByTestId('save-button-desktop');
@@ -227,7 +236,7 @@ describe('Integration | Features | Property Edit', () => {
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    const putReq = sinon.stub(propertiesAPI, 'updateRecord').resolves({});
+    const putReq = sinon.stub(propertiesApi, 'updateRecord').resolves({});
 
     await act(async () => {
       const [save] = await screen.findAllByTestId('save-button-desktop');
