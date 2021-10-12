@@ -1,16 +1,14 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useFirestore } from 'reactfire';
 import styles from './styles.module.scss';
 import LoadingHud from '../../common/LoadingHud';
-import useProperty from '../../common/hooks/useProperty';
 import userModel from '../../common/models/user';
+import propertyModel from '../../common/models/property';
 import jobModel from '../../common/models/job';
 import useSearching from '../../common/hooks/useSearching';
 import useFilterState from '../../common/hooks/useFilterState';
 import configJobs from '../../config/jobs';
 import breakpoints from '../../config/breakpoints';
-import usePropertyJobs from './hooks/usePropertyJobs';
 import useJobSorting from './hooks/useJobSorting';
 import Header from './Header';
 import MobileLayout from './MobileLayout';
@@ -18,7 +16,9 @@ import Grid from './Grid';
 
 interface Props {
   user: userModel;
-  propertyId: string;
+  property: propertyModel;
+  jobs: Array<jobModel>;
+  jobStatus: string;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
@@ -38,23 +38,14 @@ const colors = {
 };
 
 const JobList: FunctionComponent<Props> = ({
-  propertyId,
+  property,
+  jobs,
+  jobStatus,
   isOnline,
   isStaging,
   toggleNavOpen,
   forceVisible
 }) => {
-  const firestore = useFirestore();
-
-  // Fetch the data of property profile
-  const { data: property } = useProperty(firestore, propertyId);
-
-  // Fetch all jobs for property
-  const { status: jobStatus, data: jobs } = usePropertyJobs(
-    firestore,
-    propertyId
-  );
-
   // Job filter by state
   const { stateItems, filterState, changeFilterState } = useFilterState(jobs);
 
@@ -91,7 +82,7 @@ const JobList: FunctionComponent<Props> = ({
           toggleNavOpen={toggleNavOpen}
           property={property}
           jobs={sortedJobs}
-          propertyId={propertyId}
+          propertyId={property.id}
           colors={colors}
           configJobs={configJobs}
           onSortChange={onMobileSortChange}
@@ -116,7 +107,7 @@ const JobList: FunctionComponent<Props> = ({
           />
           <Grid
             jobs={sortedJobs}
-            propertyId={propertyId}
+            propertyId={property.id}
             onSortChange={onSortChange}
             sortBy={sortBy}
             sortDir={sortDir}

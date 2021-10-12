@@ -8,8 +8,8 @@ import PropertyUpdateInspection from '../../../../../features/PropertyUpdateInsp
 import { MainLayout } from '../../../../../common/MainLayout';
 import useFirestoreUser from '../../../../../common/hooks/useFirestoreUser';
 import LoadingHud from '../../../../../common/LoadingHud';
-import useNotifications from '../../../../../common/hooks/useNotifications'; // eslint-disable-line
-import notifications from '../../../../../common/services/notifications'; // eslint-disable-line
+import useNotifications from '../../../../../common/hooks/useNotifications';
+import notifications from '../../../../../common/services/notifications';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
