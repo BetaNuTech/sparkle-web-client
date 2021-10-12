@@ -1,13 +1,11 @@
 import { FunctionComponent } from 'react';
-import { useFirestore } from 'reactfire';
 import { useMediaQuery } from 'react-responsive';
-import LoadingHud from '../../common/LoadingHud';
-import useProperty from '../../common/hooks/useProperty';
-import useJob from '../../common/hooks/useJob';
-import useJobBids from '../../common/hooks/useJobBids';
 import useFilterState from '../../common/hooks/useFilterState';
 import configBids from '../../config/bids';
 import userModel from '../../common/models/user';
+import propertyModel from '../../common/models/property';
+import jobModel from '../../common/models/job';
+import bidModel from '../../common/models/bid';
 import breakpoints from '../../config/breakpoints';
 import useBidSorting from './hooks/useBidSorting';
 import MobileLayout from './MobileLayout';
@@ -16,8 +14,10 @@ import Grid from './Grid';
 
 interface Props {
   user: userModel;
-  propertyId: string;
-  jobId: string;
+  property: propertyModel;
+  job: jobModel;
+  bids: Array<bidModel>;
+  bidStatus: string;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
@@ -36,25 +36,15 @@ const colors = {
 };
 
 const JobBids: FunctionComponent<Props> = ({
-  propertyId,
-  jobId,
+  property,
+  job,
+  bids,
+  bidStatus,
   isOnline,
   isStaging,
   toggleNavOpen,
   forceVisible
 }) => {
-  const firestore = useFirestore();
-
-  // Fetch the data of property profile
-  const { data: property } = useProperty(firestore, propertyId);
-
-  // Fetch the data of job
-  const { data: job } = useJob(firestore, jobId);
-
-  // Fetch all jobs for property
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { status: bidStatus, data: bids } = useJobBids(firestore, jobId);
-
   // Bid filter by state
   const { stateItems, filterState, changeFilterState } = useFilterState(bids);
 
@@ -72,11 +62,6 @@ const JobBids: FunctionComponent<Props> = ({
     isMobileorTablet
   );
 
-  // Loading State
-  if (!property || !job) {
-    return <LoadingHud title="Loading Bids" />;
-  }
-
   const bidsRequired = job.minBids - bids.length;
 
   return (
@@ -89,7 +74,7 @@ const JobBids: FunctionComponent<Props> = ({
           property={property}
           job={job}
           bids={sortedBids}
-          propertyId={propertyId}
+          propertyId={property.id}
           colors={colors}
           configBids={configBids}
           forceVisible={forceVisible}
@@ -117,7 +102,7 @@ const JobBids: FunctionComponent<Props> = ({
             onSortChange={onSortChange}
             sortBy={sortBy}
             sortDir={sortDir}
-            propertyId={propertyId}
+            propertyId={property.id}
             colors={colors}
             configBids={configBids}
             filterState={filterState}

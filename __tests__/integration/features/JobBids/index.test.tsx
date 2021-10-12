@@ -10,42 +10,12 @@ import { openImprovementJob } from '../../../../__mocks__/jobs';
 import mockBids from '../../../../__mocks__/bids';
 import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import JobBids from '../../../../features/JobBids';
-import propertiesApi, {
-  propertyResult
-} from '../../../../common/services/firestore/properties';
-import jobsApi, { jobResult } from '../../../../common/services/firestore/jobs';
-import bidsApi, {
-  bidsCollectionResult
-} from '../../../../common/services/firestore/bids';
 
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
-  // Stub all properties requests
-  const propertyPayload: propertyResult = {
-    status: options.propertyStatus || 'success',
-    error: options.propertyError || null,
-    data: options.property || (!options.propertyStatus && fullProperty)
-  };
-  sinon.stub(propertiesApi, 'findRecord').returns(propertyPayload);
-
-  // Stub one job to the view
-  const jobPayload: jobResult = {
-    status: options.jobStatus || 'success',
-    error: options.jobError || null,
-    data: options.job || (!options.jobStatus && openImprovementJob)
-  };
-  sinon.stub(jobsApi, 'findRecord').returns(jobPayload);
-
-  // Stub all job bids
-  const bidsPayload: bidsCollectionResult = {
-    status: options.bidsStatus || 'success',
-    error: options.bidsError || null,
-    data: options.bids || mockBids
-  };
-  sinon.stub(bidsApi, 'queryByJob').returns(bidsPayload);
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
@@ -73,36 +43,19 @@ const FORCE_VISIBLE = true;
 describe('Integration | Features | Job Bids', () => {
   beforeEach(() => stubIntersectionObserver());
 
-  it('shows loading text until the property is loaded', () => {
-    const expected = 'Loading Bids';
-
-    render(<JobBids user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      propertyStatus: 'loading'
-    });
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeTruthy();
-    expect(loaderText.textContent).toEqual(expected);
-  });
-
-  it('shows loading text until the job is loaded', () => {
-    const expected = 'Loading Bids';
-
-    render(<JobBids user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      jobStatus: 'loading'
-    });
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeTruthy();
-    expect(loaderText.textContent).toEqual(expected);
-  });
-
   it('should not show loading text after property and job have loaded', () => {
-    render(<JobBids user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobBids
+        user={user}
+        property={fullProperty}
+        job={openImprovementJob}
+        bids={mockBids}
+        bidStatus="success"
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
     const loaderText = screen.queryByTestId('api-loader-text');
 
     expect(loaderText).toBeNull();
@@ -116,8 +69,10 @@ describe('Integration | Features | Job Bids', () => {
     const { container } = render(
       <JobBids
         user={user}
-        propertyId="property-1"
-        jobId="job-1"
+        property={fullProperty}
+        job={openImprovementJob}
+        bids={mockBids}
+        bidStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
