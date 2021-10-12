@@ -7,6 +7,6 @@ type toastInstance = {
 // Create toast notification instance
 // allows replacing toast in the future
 // and stubbing toasts for test suite
-export const useNotifications = (): toastInstance => toast;
+const useNotifications = (): toastInstance => toast;
 
 export default useNotifications;

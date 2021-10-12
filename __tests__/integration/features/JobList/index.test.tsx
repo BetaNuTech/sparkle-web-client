@@ -25,12 +25,6 @@ import mockJobs, {
 import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import JobList from '../../../../features/JobList';
 import { activeJobSortFilter } from '../../../../features/JobList/utils/jobSorting';
-import propertiesApi, {
-  propertyResult
-} from '../../../../common/services/firestore/properties';
-import jobsApi, {
-  jobCollectionResult
-} from '../../../../common/services/firestore/jobs';
 
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
@@ -41,21 +35,7 @@ const FORCE_VISIBLE = true;
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
-  // Stub all properties requests
-  const propertyPayload: propertyResult = {
-    status: options.propertyStatus || 'success',
-    error: options.propertyError || null,
-    data: options.property || fullProperty
-  };
-  sinon.stub(propertiesApi, 'findRecord').returns(propertyPayload);
 
-  // Stub all property jobs
-  const jobsPayload: jobCollectionResult = {
-    status: options.jobsStatus || 'success',
-    error: options.jobsError || null,
-    data: options.jobs || mockJobs
-  };
-  sinon.stub(jobsApi, 'queryByProperty').returns(jobsPayload);
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
@@ -85,7 +65,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -109,7 +91,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -137,7 +121,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -175,7 +161,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -232,7 +220,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -287,7 +277,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -346,7 +338,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -401,7 +395,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -452,7 +448,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -503,7 +501,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -553,7 +553,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -609,7 +611,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -675,7 +679,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -735,7 +741,9 @@ describe('Integration | Features | Job List', () => {
     render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -801,7 +809,9 @@ describe('Integration | Features | Job List', () => {
     const { container } = render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
@@ -855,7 +865,9 @@ describe('Integration | Features | Job List', () => {
     const { container } = render(
       <JobList
         user={user}
-        propertyId="property-1"
+        property={fullProperty}
+        jobs={mockJobs}
+        jobStatus="success"
         forceVisible={FORCE_VISIBLE}
       />,
       {
