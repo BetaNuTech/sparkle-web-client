@@ -220,55 +220,65 @@ const Header: FunctionComponent<BidsHeaderModel> = ({
           changeFilterState={changeFilterState}
         />
       }
-      nextLineRight={
-        <div className={desktopHeaderStyles.header__controls__column}>
+      right={
+        <div className={desktopHeaderStyles.header__controls}>
           {job.state === 'open' ? (
             <Link href={jobEditLink}>
               <a data-testid="job-bid-create-msg">Approve Job to Create Bids</a>
             </Link>
           ) : (
             <>
-              <div className={styles.header__item}>
-                <Link
-                  href={`/properties/${property.id}/jobs/${job.id}/bids/new`}
-                >
-                  <a
-                    className={clsx(styles.header__item__createButton)}
-                    data-testid="job-bid-create"
+              <Link href={jobEditLink}>
+                <a className={clsx(styles['header__controls--link'])}>
+                  View Job
+                </a>
+              </Link>
+              <div>
+                <div className={styles.header__item}>
+                  <Link
+                    href={`/properties/${property.id}/jobs/${job.id}/bids/new`}
                   >
-                    Create New Bid
-                    <span className="iconAddButton">
-                      <AddIcon />
-                    </span>
-                  </a>
-                </Link>
+                    <a
+                      className={clsx(styles.header__item__createButton)}
+                      data-testid="job-bid-create"
+                    >
+                      Create New Bid
+                      <span className="iconAddButton">
+                        <AddIcon />
+                      </span>
+                    </a>
+                  </Link>
+                </div>
+                {bidsRequired > 0 ? (
+                  <span
+                    className={
+                      desktopHeaderStyles.header__controls__instructions
+                    }
+                    data-testid="bids-required"
+                  >
+                    {`+${bidsRequired} bid${
+                      bidsRequired > 1 ? 's' : ''
+                    } required`}
+                  </span>
+                ) : (
+                  <span
+                    className={clsx(
+                      desktopHeaderStyles.header__controls__instructions,
+                      desktopHeaderStyles[
+                        'header__controls__instructions--satisfied'
+                      ]
+                    )}
+                    data-testid="bids-requirement-met"
+                  >
+                    (Bid requirements met)
+                  </span>
+                )}
               </div>
-              {bidsRequired > 0 ? (
-                <span
-                  className={desktopHeaderStyles.header__controls__instructions}
-                  data-testid="bids-required"
-                >
-                  {`+${bidsRequired} bid${
-                    bidsRequired > 1 ? 's' : ''
-                  } required`}
-                </span>
-              ) : (
-                <span
-                  className={clsx(
-                    desktopHeaderStyles.header__controls__instructions,
-                    desktopHeaderStyles[
-                      'header__controls__instructions--satisfied'
-                    ]
-                  )}
-                  data-testid="bids-requirement-met"
-                >
-                  (Bid requirements met)
-                </span>
-              )}
             </>
           )}
         </div>
       }
+      rightClass={styles.header__controls}
     />
   );
 };

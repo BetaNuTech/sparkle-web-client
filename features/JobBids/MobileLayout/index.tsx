@@ -39,6 +39,7 @@ const MobileLayout: FunctionComponent<Props> = ({
 }) => {
   const newBidLink = `/properties/${propertyId}/jobs/${job.id}/bids/new`;
   const jobListLink = `/properties/${propertyId}/jobs/`;
+  const jobEditLink = `/properties/${propertyId}/jobs/edit/${job.id}/`;
   const propertyLink = `/properties/${propertyId}/`;
 
   // Mobile Header actions buttons
@@ -98,7 +99,12 @@ const MobileLayout: FunctionComponent<Props> = ({
             </span>
           )}
         </div>
-        <h1 className={styles.header__info__title}>{job.title}</h1>
+        <div className={clsx(styles.header__info__main__top, styles['header__info__main__top--verticalAlign'])}>
+          <h1 className={styles.header__info__title}>{job.title}</h1>
+          <Link href={jobEditLink}>
+            <a className={styles.header__info__link}>View Job</a>
+          </Link>
+        </div>
       </div>
       <BidSections
         job={job}

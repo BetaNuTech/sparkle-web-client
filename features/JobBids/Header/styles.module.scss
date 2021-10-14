@@ -67,4 +67,14 @@
       @extend %overviewDataLink--labelSub;
     }
   }
+
+  &__controls {
+    padding-bottom: rem-calc(9);
+
+    &--link {
+      align-self: flex-start;
+      margin-top: rem-calc(9);
+      margin-right: $global-padding;
+    }
+  }
 }
