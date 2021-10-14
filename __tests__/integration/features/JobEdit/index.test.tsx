@@ -19,46 +19,15 @@ import {
 } from '../../../../__mocks__/jobs';
 import JobEdit from '../../../../features/JobEdit';
 import JobErrors from '../../../../features/JobEdit/Form/errors';
-import propertiesApi, {
-  propertyResult
-} from '../../../../common/services/firestore/properties';
-import jobsStore, {
-  jobResult
-} from '../../../../common/services/firestore/jobs';
-import bidsApi, {
-  bidsCollectionResult
-} from '../../../../common/services/firestore/bids';
 import jobsApi from '../../../../common/services/api/jobs';
 import storageApi from '../../../../common/services/storage';
 import errorReports from '../../../../common/services/api/errorReports';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
+import jobModel from '../../../../common/models/job';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
-  // Stub all properties requests
-  const propertyPayload: propertyResult = {
-    status: options.propertyStatus || 'success',
-    error: options.propertyError || null,
-    data: options.property || (!options.propertyStatus && fullProperty)
-  };
-  sinon.stub(propertiesApi, 'findRecord').returns(propertyPayload);
-
-  // Stub job details
-  const jobPayload: jobResult = {
-    status: options.jobStatus || 'success',
-    error: options.jobError || null,
-    data: options.job || (!options.jobStatus && openImprovementJob)
-  };
-  sinon.stub(jobsStore, 'findRecord').returns(jobPayload);
-
-  // Stub job bids
-  const bidsPayload: bidsCollectionResult = {
-    status: options.bidsStatus || 'success',
-    error: options.bidsError || null,
-    data: options.bids || bids
-  };
-  sinon.stub(bidsApi, 'queryByJob').returns(bidsPayload);
 
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
@@ -81,49 +50,25 @@ function render(ui: any, options: any = {}) {
   );
 }
 
+const STUBBED_NOTIFICATIONS = (message: string, options?: any) => [
+  message,
+  options
+];
+
 describe('Integration | Features | Job Edit', () => {
-  it('shows loading text until the property is loaded', () => {
-    const expected = 'Loading Job';
-
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      propertyStatus: 'loading'
-    });
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeTruthy();
-    expect(loaderText.textContent).toEqual(expected);
-  });
-
-  it('shows loading text until the job is loaded', () => {
-    const expected = 'Loading Job';
-
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      jobStatus: 'loading'
-    });
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeTruthy();
-    expect(loaderText.textContent).toEqual(expected);
-  });
-
-  it('should not show loading text after property and job have loaded', () => {
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
-    const loaderText = screen.queryByTestId('api-loader-text');
-
-    expect(loaderText).toBeNull();
-  });
-
   it('renders and fill the form with required values', () => {
     const mockJob = { ...openMaintenanceJob };
     const { container } = render(
-      <JobEdit user={user} propertyId="property-1" jobId="job-1" />,
+      <JobEdit
+        user={user}
+        property={fullProperty}
+        job={mockJob}
+        bids={bids}
+        sendNotification={STUBBED_NOTIFICATIONS}
+        jobId="job-1"
+      />,
       {
-        contextWidth: breakpoints.tablet.maxWidth,
-        job: mockJob
+        contextWidth: breakpoints.tablet.maxWidth
       }
     );
     const formTitle = screen.queryByTestId(
@@ -163,9 +108,19 @@ describe('Integration | Features | Job Edit', () => {
   });
 
   it('checks that form validation is showing errors', async () => {
-    render(<JobEdit user={user} propertyId="property-1" jobId="new" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobEdit
+        user={user}
+        property={fullProperty}
+        job={{} as jobModel}
+        bids={bids}
+        sendNotification={STUBBED_NOTIFICATIONS}
+        jobId="new"
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     await act(async () => {
       // Form submit button
@@ -189,9 +144,19 @@ describe('Integration | Features | Job Edit', () => {
 
   it('Publishes a new job when it does not exist yet', async () => {
     const expected = true;
-    render(<JobEdit user={user} propertyId="property-1" jobId="new" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobEdit
+        user={user}
+        property={fullProperty}
+        job={{} as jobModel}
+        bids={bids}
+        sendNotification={STUBBED_NOTIFICATIONS}
+        jobId="new"
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     const postReq = sinon.stub(jobsApi, 'createNewJob').resolves({});
 
@@ -208,9 +173,19 @@ describe('Integration | Features | Job Edit', () => {
 
   it('Updates a new job when it already exists', async () => {
     const expected = true;
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(
+      <JobEdit
+        user={user}
+        property={fullProperty}
+        job={openImprovementJob}
+        bids={bids}
+        sendNotification={STUBBED_NOTIFICATIONS}
+        jobId="job-1"
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
 
     const putReq = sinon.stub(jobsApi, 'updateJob').resolves({});
 
@@ -227,10 +202,20 @@ describe('Integration | Features | Job Edit', () => {
 
   it('Send error report when an attachment fails to upload', async () => {
     const expected = true;
-    render(<JobEdit user={user} propertyId="property-1" jobId="job-1" />, {
-      contextWidth: breakpoints.tablet.maxWidth,
-      job: openMaintenanceJob
-    });
+    render(
+      <JobEdit
+        user={user}
+        property={fullProperty}
+        job={openImprovementJob}
+        bids={bids}
+        sendNotification={STUBBED_NOTIFICATIONS}
+        jobId="job-1"
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth,
+        job: openMaintenanceJob
+      }
+    );
 
     sinon.stub(storageApi, 'createUploadTask').throws(Error('fail'));
     const sendReport = sinon.stub(errorReports, 'send').resolves(true);

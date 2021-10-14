@@ -4,13 +4,12 @@ import Link from 'next/link';
 import DesktopHeader from '../../../common/DesktopHeader';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
-import { JobApiResult } from '../hooks/useJobForm';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 
 interface JobsHeaderModel {
   property: propertyModel;
-  apiState: JobApiResult;
+  isLoading: boolean;
   job: jobModel;
   isOnline: boolean;
   isNewJob: boolean;
@@ -23,7 +22,7 @@ interface JobsHeaderModel {
 
 const Header: FunctionComponent<JobsHeaderModel> = ({
   property,
-  apiState,
+  isLoading,
   job,
   isNewJob,
   isJobComplete,
@@ -53,7 +52,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading}
+            disabled={isLoading}
             data-testid="jobedit-header-submit"
             onClick={() => onFormAction('save')}
           >
@@ -66,7 +65,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading}
+            disabled={isLoading}
             data-testid="jobedit-header-approve"
             onClick={() => onFormAction('approved')}
           >
@@ -79,7 +78,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading}
+            disabled={isLoading}
             data-testid="jobedit-header-authorize"
             onClick={() => onFormAction('authorized')}
           >
@@ -92,7 +91,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading}
+            disabled={isLoading}
             data-testid="jobedit-header-expedite"
             onClick={() => onFormAction('expedite')}
           >

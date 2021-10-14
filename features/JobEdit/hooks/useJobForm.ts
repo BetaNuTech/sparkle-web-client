@@ -1,59 +1,99 @@
 import { useState } from 'react';
+import Router from 'next/router';
 import jobsApi from '../../../common/services/api/jobs';
 import jobModel from '../../../common/models/job';
+import errorReports from '../../../common/services/api/errorReports';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
 
 const PREFIX = 'features: EditJob: hooks: useJobForm:';
-export interface JobApiResult {
-  isLoading: boolean;
-  statusCode: number;
-  response: any;
-}
-
 interface useJobFormResult {
-  apiState: JobApiResult;
+  isLoading: boolean;
+  job?: jobModel;
   postJobCreate(propertyId: string, job: jobModel): void;
   putJobUpdate(propertyId: string, jobId: string, job: jobModel): void;
-  error: Error;
+  error: ErrorBadRequest;
 }
 
-export default function useJobForm(jobApi: jobModel): useJobFormResult {
-  const [apiState, setApiState] = useState({
+type userNotifications = (message: string, options?: any) => any;
+
+export default function useJobForm(
+  sendNotification: userNotifications
+): useJobFormResult {
+  const [formState, setFormState] = useState({
     isLoading: false,
-    statusCode: 0,
-    response: null,
-    job: JSON.stringify(jobApi)
+    job: null
   });
 
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<ErrorBadRequest>(null);
+
+  const handleSuccessResponse = (
+    jobId: string,
+    propertyId: string,
+    job: jobModel
+  ) => {
+    // Show success notification for creting or updating a property
+    sendNotification(
+      jobId === 'new'
+        ? 'Create the job successfully'
+        : `${job.title} successfully updated`,
+      {
+        type: 'success'
+      }
+    );
+    if (jobId === 'new' && job) {
+      Router.push(`/properties/${propertyId}/jobs/edit/${job.id}/`);
+    }
+  };
+
+  const handleErrorResponse = (apiError: Error, jobId: string) => {
+    if (apiError instanceof ErrorForbidden) {
+      // User not allowed to create or update job
+      sendNotification(
+        `You are not allowed to ${
+          jobId === 'new' ? 'create' : 'update'
+        } this job.`,
+        { type: 'error' }
+      );
+    } else if (apiError instanceof ErrorServerInternal) {
+      // User not allowed to create or update job
+      sendNotification('Please try again, or contact an admin.', {
+        type: 'error'
+      });
+      // Log issue and send error report
+      // of user's missing properties
+      // eslint-disable-next-line no-case-declarations
+      const wrappedErr = Error(
+        `${PREFIX} Could not complete job create/update operation`
+      );
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+  };
 
   const postJobCreate = async (propertyId: string, job: jobModel) => {
-    setApiState({
+    setFormState({
       isLoading: true,
-      statusCode: 0,
-      response: null,
-      job: JSON.stringify(job)
+      job: null
     });
 
-    let res = null;
+    let jobCreate: jobModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      res = await jobsApi.createNewJob(propertyId, job);
+      jobCreate = await jobsApi.createNewJob(propertyId, job);
+
+      handleSuccessResponse('new', propertyId, jobCreate);
     } catch (err) {
-      setError(Error(`${PREFIX} postJobCreate: request failed: ${err}`));
+      handleErrorResponse(err, 'new');
+      if (err instanceof ErrorBadRequest) {
+        setError(err);
+      }
     }
 
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (err) {
-      setError(Error(`${PREFIX} postJobCreate: failed to parse JSON: ${err}`));
-    }
-
-    setApiState({
+    setFormState({
       isLoading: false,
-      statusCode: res ? res.status : 0,
-      response: json,
-      job: JSON.stringify(job)
+      job: jobCreate
     });
   };
 
@@ -62,48 +102,35 @@ export default function useJobForm(jobApi: jobModel): useJobFormResult {
     jobId: string,
     job: jobModel
   ) => {
-    setApiState({
+    setFormState({
       isLoading: true,
-      statusCode: 0,
-      response: null,
-      job: JSON.stringify(job)
+      job: null
     });
 
-    let res = null;
+    let jobUpdate: jobModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      res = await jobsApi.updateJob(propertyId, jobId, job);
+      jobUpdate = await jobsApi.updateJob(propertyId, jobId, job);
+
+      handleSuccessResponse(jobId, propertyId, jobUpdate);
     } catch (err) {
-      setError(Error(`${PREFIX} putJobUpdate: request failed: ${err}`));
+      handleErrorResponse(err, 'new');
+      if (err instanceof ErrorBadRequest) {
+        setError(err);
+      }
     }
 
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (err) {
-      setError(Error(`${PREFIX} putJobUpdate: failed to parse JSON: ${err}`));
-    }
-
-    setApiState({
+    setFormState({
       isLoading: false,
-      statusCode: res ? res.status : 0,
-      response: json,
-      job: JSON.stringify(job)
+      job: jobUpdate
     });
   };
 
-  if (
-    !apiState.isLoading &&
-    apiState.statusCode !== 400 &&
-    apiState.job !== JSON.stringify(jobApi)
-  ) {
-    setApiState({
-      isLoading: false,
-      statusCode: 0,
-      response: null,
-      job: JSON.stringify(jobApi)
-    });
-  }
-
-  return { apiState, postJobCreate, putJobUpdate, error };
+  return {
+    isLoading: formState.isLoading,
+    job: formState.job,
+    postJobCreate,
+    putJobUpdate,
+    error
+  };
 }
