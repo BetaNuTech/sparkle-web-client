@@ -3,11 +3,10 @@ import Dropdown, {
   DropdownLink,
   DropdownButton
 } from '../../../common/Dropdown';
-import { JobApiResult } from '../hooks/useJobForm';
 
 interface Props {
   jobLink: string;
-  apiState: JobApiResult;
+  isLoading: boolean;
   isJobComplete: boolean;
   canApprove: boolean;
   canAuthorize: boolean;
@@ -17,7 +16,7 @@ interface Props {
 
 const DropdownAdd: FunctionComponent<Props> = ({
   jobLink,
-  apiState,
+  isLoading,
   isJobComplete,
   canApprove,
   canAuthorize,
@@ -27,7 +26,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
   <Dropdown isOnRight>
     {!isJobComplete && (
       <DropdownButton
-        disabled={apiState.isLoading}
+        disabled={isLoading}
         onClick={() => onFormAction('save')}
         testid="jobedit-mobile-header-submit"
       >
@@ -36,7 +35,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
     )}
     {canApprove && (
       <DropdownButton
-        disabled={apiState.isLoading}
+        disabled={isLoading}
         onClick={() => onFormAction('approved')}
         testid="jobedit-mobile-header-approve"
       >
@@ -45,7 +44,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
     )}
     {canAuthorize && (
       <DropdownButton
-        disabled={apiState.isLoading}
+        disabled={isLoading}
         onClick={() => onFormAction('authorized')}
         testid="jobedit-mobile-header-authorize"
       >
@@ -54,7 +53,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
     )}
     {canExpedite && (
       <DropdownButton
-        disabled={apiState.isLoading}
+        disabled={isLoading}
         onClick={() => onFormAction('expedite')}
         testid="jobedit-mobile-header-expedite"
       >

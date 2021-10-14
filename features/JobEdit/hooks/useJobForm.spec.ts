@@ -6,6 +6,11 @@ import jobModel from '../../../common/models/job';
 import currentUser from '../../../common/utils/currentUser';
 import useJobForm from './useJobForm';
 
+const STUBBED_NOTIFICATIONS = (message: string, options?: any) => [
+  message,
+  options
+];
+
 describe('Unit | Features | Job Edit | Hooks | Use Job Form', () => {
   afterEach(() => sinon.restore());
 
@@ -18,7 +23,7 @@ describe('Unit | Features | Job Edit | Hooks | Use Job Form', () => {
     const spyFunc = sinon.spy(jobsApi, 'createNewJob');
 
     await act(async () => {
-      const { result } = renderHook(() => useJobForm());
+      const { result } = renderHook(() => useJobForm(STUBBED_NOTIFICATIONS));
       result.current.postJobCreate('property-1', {} as jobModel);
     });
 
@@ -35,8 +40,8 @@ describe('Unit | Features | Job Edit | Hooks | Use Job Form', () => {
     const spyFunc = sinon.spy(jobsApi, 'updateJob');
 
     await act(async () => {
-      const { result } = renderHook(() => useJobForm());
-      result.current.putJobUpdate('property-1', {} as jobModel);
+      const { result } = renderHook(() => useJobForm(STUBBED_NOTIFICATIONS));
+      result.current.putJobUpdate('property-1', 'job-1', {} as jobModel);
     });
 
     const actual = spyFunc.called;

@@ -26,7 +26,6 @@ import bidsConfig from '../../../config/bids';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
-import { JobApiResult } from '../hooks/useJobForm';
 import DropdownHeader from '../DropdownHeader';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
@@ -40,6 +39,7 @@ import {
   canAuthorizeJob,
   canExpediteJob
 } from '../../../common/utils/userPermissions';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -50,7 +50,8 @@ interface Props {
   jobId: string;
   bids: Array<bidModel>;
   isNewJob: boolean;
-  apiState: JobApiResult;
+  isLoading: boolean;
+  error: ErrorBadRequest;
   postJobCreate(propertyId: string, job: jobModel): void;
   putJobUpdate(propertyId: string, jobId: string, job: jobModel): void;
   isOnline?: boolean;
@@ -92,7 +93,8 @@ interface LayoutProps {
   canAuthorize: boolean;
   canExpedite: boolean;
   user: userModel;
-  apiState: JobApiResult;
+  isLoading: boolean;
+  error: ErrorBadRequest;
   onFormAction: (action: string) => void;
   register: UseFormRegister<Inputs>;
   formState: FormState<Inputs>;
@@ -127,7 +129,7 @@ const formActionButtons = (
   canExpedite: boolean,
   isJobComplete: boolean,
   isMobile: boolean,
-  apiState: JobApiResult,
+  isLoading: boolean,
   onFormAction: (action: string) => void
 ) => (
   <>
@@ -136,7 +138,7 @@ const formActionButtons = (
         <button
           type="button"
           data-testid="job-form-approve"
-          disabled={apiState.isLoading}
+          disabled={isLoading}
           className={clsx(
             styles.button__submit,
             isMobile && styles.button__fullwidth
@@ -152,7 +154,7 @@ const formActionButtons = (
         <button
           type="button"
           data-testid="job-form-authorize"
-          disabled={apiState.isLoading}
+          disabled={isLoading}
           className={clsx(
             styles.button__submit,
             isMobile && styles.button__fullwidth
@@ -169,7 +171,7 @@ const formActionButtons = (
         <button
           type="button"
           data-testid="job-form-expedite"
-          disabled={apiState.isLoading}
+          disabled={isLoading}
           className={clsx(
             styles.button__submit,
             isMobile && styles.button__fullwidth
@@ -187,7 +189,7 @@ const formActionButtons = (
         <button
           type="button"
           data-testid="job-form-submit"
-          disabled={apiState.isLoading}
+          disabled={isLoading}
           className={clsx(
             styles.button__submit,
             isMobile && styles.button__fullwidth
@@ -213,7 +215,8 @@ const Layout: FunctionComponent<LayoutProps> = ({
   canAuthorize,
   canExpedite,
   jobLink,
-  apiState,
+  isLoading,
+  error,
   onFormAction,
   register,
   formState,
@@ -227,9 +230,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   setDeleteTrelloCardPromptVisible
 }) => {
   const apiErrors =
-    apiState.statusCode === 400 && apiState.response.errors
-      ? apiState.response.errors.map((e) => e.detail)
-      : [];
+    error && error.errors ? error.errors.map((e) => e.detail) : [];
 
   const nextState = !isNewJob && jobsConfig.nextState[job.state];
   const bidsLink = `/properties/${propertyId}/jobs/${job.id}/bids/`;
@@ -374,7 +375,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     {...register('title', {
                       required: formErrors.titleRequired
                     })}
-                    disabled={apiState.isLoading || isJobComplete}
+                    disabled={isLoading || isJobComplete}
                   />
                   <ErrorLabel formName="title" errors={formState.errors} />
                 </div>
@@ -397,7 +398,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     defaultValue={job.need}
                     data-testid="job-form-description"
                     {...register('need', needValidationOptions)}
-                    disabled={apiState.isLoading || isJobComplete}
+                    disabled={isLoading || isJobComplete}
                   ></textarea>
                   <ErrorLabel formName="need" errors={formState.errors} />
                 </div>
@@ -421,7 +422,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       {...register('type')}
                       defaultChecked={job.type && job.type === t}
                       data-testid="job-form-type-radio"
-                      disabled={apiState.isLoading || isJobComplete}
+                      disabled={isLoading || isJobComplete}
                     />
                     <div className={styles.jobNew__formGroup__radioText}>
                       <span
@@ -477,7 +478,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       defaultValue={job.scopeOfWork}
                       data-testid="job-form-scope"
                       {...register('scopeOfWork', sowValidationOptions)}
-                      disabled={apiState.isLoading || isJobComplete}
+                      disabled={isLoading || isJobComplete}
                     ></textarea>
                     <div className={styles.jobNew__attachmentList}>
                       {(jobAttachments || []).length > 0 && (
@@ -502,7 +503,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   canExpedite,
                   isJobComplete,
                   isMobile,
-                  apiState,
+                  isLoading,
                   onFormAction
                 )}
             </div>
@@ -518,7 +519,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         <Dropdown>
                           <DropdownButton
                             type="button"
-                            disabled={apiState.isLoading}
+                            disabled={isLoading}
                             onClick={() =>
                               openTrelloCardInputPrompt(job.trelloCardURL)
                             }
@@ -527,7 +528,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                           </DropdownButton>
                           <DropdownButton
                             type="button"
-                            disabled={apiState.isLoading}
+                            disabled={isLoading}
                             onClick={() => openTrelloCardDeletePrompt()}
                           >
                             Delete
@@ -559,7 +560,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                     >
                       <button
                         type="button"
-                        disabled={apiState.isLoading}
+                        disabled={isLoading}
                         className={clsx(
                           styles.button__submit,
                           isMobile && styles.button__fullwidth
@@ -705,7 +706,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
               canExpedite,
               isJobComplete,
               isMobile,
-              apiState,
+              isLoading,
               onFormAction
             )}
 
@@ -740,7 +741,8 @@ const JobForm: FunctionComponent<Props> = ({
   isNewJob,
   isOnline,
   isStaging,
-  apiState,
+  isLoading,
+  error,
   postJobCreate,
   putJobUpdate,
   toggleNavOpen,
@@ -859,7 +861,7 @@ const JobForm: FunctionComponent<Props> = ({
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      {apiState.isLoading && <LoadingHud title="Saving..." />}
+      {isLoading && <LoadingHud title="Saving..." />}
       {uploadState && <LoadingHud title="Uploading..." />}
       {deleteAtachmentLoading && <LoadingHud title="Remove Attachment..." />}
       <div
@@ -875,7 +877,7 @@ const JobForm: FunctionComponent<Props> = ({
           canApprove={canApprove}
           canAuthorize={canAuthorize}
           canExpedite={canExpedite}
-          apiState={apiState}
+          isLoading={isLoading}
           isJobComplete={isJobComplete}
           onFormAction={onSubmit}
         />
@@ -966,7 +968,8 @@ const JobForm: FunctionComponent<Props> = ({
             onFormAction={onSubmit}
             register={register}
             formState={formState}
-            apiState={apiState}
+            isLoading={isLoading}
+            error={error}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
             bidsRequired={bidsRequired}
@@ -983,14 +986,14 @@ const JobForm: FunctionComponent<Props> = ({
       {/* Desktop Header & Content */}
       {isDesktop && (
         <div data-testid="desktop-form">
-          {apiState.isLoading && <LoadingHud title="Saving..." />}
+          {isLoading && <LoadingHud title="Saving..." />}
           {uploadState && <LoadingHud title="Uploading..." />}
           {deleteAtachmentLoading && (
             <LoadingHud title="Remove Attachment..." />
           )}
           <Header
             property={property}
-            apiState={apiState}
+            isLoading={isLoading}
             job={job}
             isNewJob={isNewJob}
             isOnline={isOnline}
@@ -1016,7 +1019,8 @@ const JobForm: FunctionComponent<Props> = ({
             onFormAction={onSubmit}
             register={register}
             formState={formState}
-            apiState={apiState}
+            isLoading={isLoading}
+            error={error}
             onFileChange={onFileChange}
             isUploadingFile={uploadState}
             bidsRequired={bidsRequired}

@@ -1,23 +1,23 @@
 import { FunctionComponent, useState } from 'react';
 import { useFirestore } from 'reactfire';
-import Router from 'next/router';
-import LoadingHud from '../../common/LoadingHud';
-import useProperty from '../../common/hooks/useProperty';
 import userModel from '../../common/models/user';
-import useJob from '../../common/hooks/useJob';
-import useJobBids from '../../common/hooks/useJobBids';
-import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
-import notifications from '../../common/services/notifications'; // eslint-disable-line
+import propertyModel from '../../common/models/property';
+import jobModel from '../../common/models/job';
+import bidModel from '../../common/models/bid';
 import useJobForm from './hooks/useJobForm';
-import useJobStatus from './hooks/useJobStatus';
 import useAttachmentChange from './hooks/useAttachmentChange';
 import useAttachmentDelete from './hooks/useAttachmentDelete';
 import JobForm from './Form';
 
+type userNotifications = (message: string, options?: any) => any;
+
 interface Props {
   user: userModel;
-  propertyId: string;
+  property: propertyModel;
+  job: jobModel;
   jobId: string;
+  bids: Array<bidModel>;
+  sendNotification: userNotifications;
   isOnline?: boolean;
   isStaging?: boolean;
   isNavOpen?: boolean;
@@ -26,8 +26,11 @@ interface Props {
 
 const JobNew: FunctionComponent<Props> = ({
   user,
-  propertyId,
+  property,
+  job,
+  bids,
   jobId,
+  sendNotification,
   isOnline,
   isStaging,
   toggleNavOpen
@@ -38,26 +41,12 @@ const JobNew: FunctionComponent<Props> = ({
   const [isDeleteTrelloCardPromptVisible, setDeleteTrelloCardPromptVisible] =
     useState(false);
 
-  /* eslint-disable */
-  const sendNotification = notifications.createPublisher(useNotifications());
-  /* eslint-enable */
-
-  // Fetch the data of property profile
-  const { data: property } = useProperty(firestore, propertyId);
-
-  // Fetch the data of job
-  const { data: job, status: jobStatus } = useJob(firestore, jobId);
-
-  const { apiState, postJobCreate, putJobUpdate } = useJobForm(job);
-  // Show job error status
-  useJobStatus(apiState, jobId, propertyId, sendNotification);
-
-  // Fetch bids related to jobs
-  const { data: bids } = useJobBids(firestore, jobId);
+  const { isLoading, error, postJobCreate, putJobUpdate } =
+    useJobForm(sendNotification);
 
   const { uploadState, onFileChange } = useAttachmentChange(
     firestore,
-    propertyId,
+    property.id,
     jobId,
     sendNotification
   );
@@ -70,17 +59,6 @@ const JobNew: FunctionComponent<Props> = ({
     onConfirmAttachmentDelete,
     setDeleteAttachmentPromptVisible
   } = useAttachmentDelete(firestore, jobId, sendNotification);
-
-  // Loading State
-  if (!property || (jobId !== 'new' && !job)) {
-    return <LoadingHud title="Loading Job" />;
-  }
-
-  // Redirect user requesting non-existent job
-  if (jobId !== 'new' && jobStatus === 'error') {
-    sendNotification('Job could not be found', { type: 'error' });
-    Router.push(`/properties/${propertyId}/jobs`);
-  }
 
   const jobData = job && { ...job };
 
@@ -95,7 +73,8 @@ const JobNew: FunctionComponent<Props> = ({
       jobId={jobId}
       bids={bids}
       isNewJob={isNewJob}
-      apiState={apiState}
+      isLoading={isLoading}
+      error={error}
       postJobCreate={postJobCreate}
       putJobUpdate={putJobUpdate}
       onFileChange={onFileChange}
