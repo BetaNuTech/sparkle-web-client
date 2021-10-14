@@ -19,6 +19,10 @@
         display: flex;
         justify-content: space-between;
         width: 100%;
+
+        &--verticalAlign {
+          align-items: center
+        }
       }
     }
 
@@ -32,6 +36,11 @@
 
     &__title {
       @extend %gridHeaderSmallTitle;
+    }
+
+    &__link {
+      font-size: rem-calc(16);
+      text-decoration: underline;
     }
   }
 
