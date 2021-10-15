@@ -34,7 +34,7 @@ The Firebase SDK manages the store (Firestore) for us. We only interact with Fir
 
 ## Action Hooks
 
-Are responsible for responding to user input, either updating local state, or updating the store. (ie [useDeleteProperty](/blob/develop/features/Properties/hooks/useDeleteProperty.ts))
+Are responsible for responding to user input, either updating local state, or updating the store. (ie [useDeleteProperty](/blob/develop/common/hooks/useDeleteProperty.ts))
 
 Data flows from users like so:
 

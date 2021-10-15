@@ -17,6 +17,7 @@ interface Props {
   openTrello: (any) => void;
   openTemplatesEditModal: (any) => void;
   handleChange: (string) => void;
+  onQueuePropertyDelete: (e, property: propertyModel) => void;
 }
 
 const PropertyMobileForm: FunctionComponent<Props> = ({
@@ -31,7 +32,8 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
   openUpdateTeamModal,
   openTemplatesEditModal,
   openTrello,
-  handleChange
+  handleChange,
+  onQueuePropertyDelete
 }) => (
   <>
     <form className={styles.propertyEditMobile__form}>
@@ -307,6 +309,14 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
           </button>
         </div>
       </div>
+      {property.id !== 'new' && (
+        <button
+          onClick={(e) => onQueuePropertyDelete(e, property)}
+          className={styles.propertyEditDesktop__deleteButton}
+        >
+          Delete Property
+        </button>
+      )}
     </form>
   </>
 );

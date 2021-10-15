@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Prompt from './index';
 
-describe('Unit | Features | Properties | Delete Property Prompt', () => {
+describe('Unit | Common | Prompts | Delete Property Prompt', () => {
   afterEach(() => sinon.restore());
 
   it('invokes on confirm action with property on confirm clicked', () => {

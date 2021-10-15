@@ -25,6 +25,7 @@ interface Props {
   handleChange: (string) => void;
   removePropertyImage: () => void;
   removeLogo: () => void;
+  onQueuePropertyDelete: (e, property: propertyModel) => void;
 }
 
 const PropertyDesktopForm: FunctionComponent<Props> = ({
@@ -44,7 +45,8 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
   handleChange,
   onSubmit,
   removePropertyImage,
-  removeLogo
+  removeLogo,
+  onQueuePropertyDelete
 }) => {
   const router = useRouter();
 
@@ -422,7 +424,14 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             >
               Save
             </button>
-            <div className={styles.propertyEditDesktop__spacer}></div>
+            {property.id && (
+              <button
+                onClick={(e) => onQueuePropertyDelete(e, property)}
+                className={styles.propertyEditDesktop__deleteButton}
+              >
+                Delete Property
+              </button>
+            )}
           </div>
         </div>
       </form>

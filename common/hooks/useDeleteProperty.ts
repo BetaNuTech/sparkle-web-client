@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import propertiesApi from '../../../common/services/firestore/properties';
-import propertyModel from '../../../common/models/property';
-import errorReports from '../../../common/services/api/errorReports';
-import globalNotification from '../../../common/services/firestore/notifications';
-import userModel from '../../../common/models/user';
-import { getUserFullname } from '../../../common/utils/user';
+import propertiesApi from '../services/firestore/properties';
+import propertyModel from '../models/property';
+import errorReports from '../services/api/errorReports';
+import globalNotification from '../services/firestore/notifications';
+import userModel from '../models/user';
+import { getUserFullname } from '../utils/user';
 
 const PREFIX = 'features: properties: hooks: useDeleteProperty:';
 interface Returned {
@@ -45,7 +45,7 @@ const useDeleteProperty = (
         { type: 'error' }
       );
       errorReports.send(wrappedErr); // eslint-disable-line
-      return wrappedErr;
+      throw wrappedErr;
     }
 
     const { name } = queuedPropertyForDeletion;

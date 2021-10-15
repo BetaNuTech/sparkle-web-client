@@ -1,14 +1,14 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useDeleteProperties from './useDeleteProperty';
-import propertiesApi from '../../../common/services/firestore/properties';
-import errorReports from '../../../common/services/api/errorReports';
-import globalNotification from '../../../common/services/firestore/notifications';
-import properties from '../../../__mocks__/properties';
-import { admin } from '../../../__mocks__/users';
-import stubFirestore from '../../../__tests__/helpers/stubFirestore';
+import propertiesApi from '../services/firestore/properties';
+import errorReports from '../services/api/errorReports';
+import globalNotification from '../services/firestore/notifications';
+import properties from '../../__mocks__/properties';
+import { admin } from '../../__mocks__/users';
+import stubFirestore from '../../__tests__/helpers/stubFirestore';
 
-describe('Unit | Features | Properties | Hooks | Use Delete Property', () => {
+describe('Unit | Common | Hooks | Use Delete Property', () => {
   afterEach(() => sinon.restore());
 
   test('it sends queued property to be deleted', async () => {
