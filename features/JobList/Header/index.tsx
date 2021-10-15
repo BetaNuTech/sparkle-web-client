@@ -28,6 +28,7 @@ const MetaData: FunctionComponent<{
   const openJobs = jobs.filter((j) => j.state === 'open').length;
   const approvedJobs = jobs.filter((j) => j.state === 'approved').length;
   const authorizedJobs = jobs.filter((j) => j.state === 'authorized').length;
+  const completedJobs = jobs.filter((j) => j.state === 'complete').length;
   return (
     <ul className={clsx(styles.header__overview__metadata, '-p-none')}>
       <li
@@ -119,6 +120,38 @@ const MetaData: FunctionComponent<{
               <small
                 className={styles.header__overview__labelSub}
                 data-testid="job-progress-loading"
+              >
+                loading...
+              </small>
+            )}
+          </div>
+        </button>
+      </li>
+      <li
+        data-testid="job-complete-text"
+        className={clsx(
+          filterState && filterState !== 'complete' && styles['-inactive']
+        )}
+      >
+        <button
+          className={clsx(styles.header__filterButton)}
+          onClick={() => changeJobFilterState('complete')}
+        >
+          <span
+            className={clsx(
+              styles.header__overview__label,
+              colors[configJobs.stateColors.complete]
+            )}
+            data-testid="job-complete"
+          >
+            {completedJobs}
+          </span>
+          <div>
+            Completed
+            {jobStatus === 'loading' && (
+              <small
+                className={styles.header__overview__labelSub}
+                data-testid="job-complete-loading"
               >
                 loading...
               </small>

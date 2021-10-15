@@ -8,6 +8,12 @@ import ErrorBadRequest, { ErrorItem } from '../../models/errors/badRequest';
 const PREFIX = 'services: api: jobs:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
 
+export type serviceResponse = {
+  statusCode: number;
+  body?: any;
+  job?: jobModel;
+};
+
 // POST an Job Request
 const postRequest = (
   authToken: string,

@@ -9,7 +9,7 @@ interface Props {
   jobs: Array<jobModel>;
   propertyId: string;
   colors: Record<string, string>;
-  configJobs: Record<string, Record<string, string>| any>;
+  configJobs: Record<string, Record<string, string> | any>;
   onSortChange?(sortKey: string): void;
   onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
   sortBy?: string;
@@ -39,11 +39,10 @@ const Grid: FunctionComponent<Props> = ({
     <div className={styles.propertyJobs__grid} data-testid="joblist-grid-main">
       {hasNoJobs && !searchParam ? (
         <h3 className="-c-gray-light" data-testid="job-sections-no-jobs">
-          Property has no open jobs
+          Property has no jobs
         </h3>
       ) : (
         <>
-          {' '}
           <GridHeader
             onSortChange={onSortChange}
             sortBy={sortBy}

@@ -65,7 +65,7 @@ const Page: React.FC = (): ReactElement => {
           jobStatus={jobStatus}
         />
       ) : (
-        <LoadingHud />
+        <LoadingHud title="Loading Jobs" />
       )}
     </MainLayout>
   );
