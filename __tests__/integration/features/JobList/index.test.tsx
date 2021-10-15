@@ -117,7 +117,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on desktop', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Replace leasing office tiling,Solar roof fitting,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Replace leasing office tiling,Solar roof fitting,Solar roof fitting | Authorized: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(
       <JobList
         user={user}
@@ -157,7 +157,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort title by descending on desktop', async () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Swimming pool cleaning | Approved: Solar roof fitting | Under Contract: Water Tank cleaning | Completed: Wifi Installation';
+      'Open: Swimming pool cleaning | Approved: Solar roof fitting | Authorized: Water Tank cleaning | Completed: Wifi Installation';
     render(
       <JobList
         user={user}
@@ -210,7 +210,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.createdAt
       )}`,
-      `Under Contract: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -267,7 +267,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedImprovementJob.createdAt
       )}`,
-      `Under Contract: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedImprovementJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -328,7 +328,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.updatedAt
       )}`,
-      `Under Contract: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -385,7 +385,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedImprovementJob.updatedAt
       )}`,
-      `Under Contract: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedImprovementJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -442,7 +442,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openMaintenanceExpeditedJob.type)}`,
       `Approved: ${utilString.titleize(approvedMaintenanceJob.type)}`,
-      `Under Contract: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
+      `Authorized: ${utilString.titleize(authorizedMaintenanceJob.type)}`,
       `Completed: ${utilString.titleize(authorizedImprovementJob.type)}`
     ].join(' | ');
     render(
@@ -495,7 +495,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementHybridJob.type)}`,
-      `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
+      `Authorized: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
     render(
@@ -549,7 +549,7 @@ describe('Integration | Features | Job List', () => {
   it('should sort default by title on mobile', () => {
     const expected =
       // eslint-disable-next-line max-len
-      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Replace leasing office tiling,Solar roof fitting,Solar roof fitting | Under Contract: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
+      'Open: Install Playground Equipement,Sidewalk repair,Swimming pool cleaning | Approved: Replace leasing office tiling,Replace leasing office tiling,Solar roof fitting,Solar roof fitting | Authorized: Security camera installation,Water Tank cleaning | Completed: Electrical checkup,Wifi Installation';
     render(
       <JobList
         user={user}
@@ -601,7 +601,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.updatedAt
       )}`,
-      `Under Contract: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.updatedAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -669,7 +669,7 @@ describe('Integration | Features | Job List', () => {
       `Approved: ${utilDate.toUserDateTimeDisplay(
         approvedMaintenanceJob.createdAt
       )}`,
-      `Under Contract: ${utilDate.toUserDateTimeDisplay(
+      `Authorized: ${utilDate.toUserDateTimeDisplay(
         authorizedMaintenanceJob.createdAt
       )}`,
       `Completed: ${utilDate.toUserDateTimeDisplay(
@@ -735,7 +735,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       `Open: ${utilString.titleize(openImprovementJob.type)}`,
       `Approved: ${utilString.titleize(approvedImprovementHybridJob.type)}`,
-      `Under Contract: ${utilString.titleize(authorizedImprovementJob.type)}`,
+      `Authorized: ${utilString.titleize(authorizedImprovementJob.type)}`,
       `Completed: ${utilString.titleize(completeMaintenanceJob.type)}`
     ].join(' | ');
     render(
@@ -802,7 +802,7 @@ describe('Integration | Features | Job List', () => {
     const expected = [
       'Open: ',
       'Approved: ',
-      `Under Contract: ${authorizedImprovementJob.title}`,
+      `Authorized: ${authorizedImprovementJob.title}`,
       `Completed: ${completeImprovementJob.title}`
     ].join(' | ');
 

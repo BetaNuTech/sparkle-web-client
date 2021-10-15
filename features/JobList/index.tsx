@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styles from './styles.module.scss';
-import LoadingHud from '../../common/LoadingHud';
 import userModel from '../../common/models/user';
 import propertyModel from '../../common/models/property';
 import jobModel from '../../common/models/job';
@@ -67,11 +66,6 @@ const JobList: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
-
-  // Loading State
-  if (!property) {
-    return <LoadingHud title="Loading Jobs" />;
-  }
 
   return (
     <>
