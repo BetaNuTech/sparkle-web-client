@@ -110,13 +110,16 @@
     span {
       @extend %gridHeaderButtonIcon;
     }
+
+    &:disabled {
+      opacity: 0.35;
+    }
   }
 
   &__fullwidth {
     display: block;
     width: 100%;
   }
-
 }
 
 .form {
@@ -146,6 +149,10 @@
 
       &__title {
         @extend %card__pill__title;
+      }
+
+      a {
+        text-decoration: underline;
       }
     }
   }
@@ -305,6 +312,9 @@
 // Parent Job UI Elements
 .form__parentStatusLabel {
   @extend %gridHeaderCreateButton;
+  background-color: transparent;
+  padding: 0;
+  font-weight: 700;
   cursor: default;
 }
 

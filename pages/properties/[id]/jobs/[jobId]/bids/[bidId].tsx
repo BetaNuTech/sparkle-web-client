@@ -85,6 +85,7 @@ const Page: React.FC = (): ReactElement => {
     <MainLayout>
       {isLoaded ? (
         <BidEdit
+          user={user}
           isNewBid={isNewBid}
           property={property}
           job={job}

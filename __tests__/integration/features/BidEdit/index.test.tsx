@@ -24,6 +24,7 @@ import errorReports from '../../../../common/services/api/errorReports';
 import uploadAttachmentService from '../../../../features/BidEdit/services/uploadAttachment';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
+import { admin } from '../../../../__mocks__/users';
 
 const IS_ONLINE = true;
 
@@ -60,6 +61,7 @@ describe('Integration | Features | Bid Edit', () => {
       <BidEdit
         isNewBid={isNewBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         bid={newBid}
         otherBids={mockBids}
@@ -101,6 +103,7 @@ describe('Integration | Features | Bid Edit', () => {
         isNewBid={isNewBid}
         bid={newBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         otherBids={mockBids}
         isOnline={IS_ONLINE}
@@ -143,6 +146,7 @@ describe('Integration | Features | Bid Edit', () => {
       <BidEdit
         isNewBid={isNewBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         bid={mockBids[0]}
         otherBids={mockBids.splice(1)}
@@ -176,6 +180,7 @@ describe('Integration | Features | Bid Edit', () => {
       <BidEdit
         isNewBid={isNewBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         bid={mockBids[0]}
         otherBids={mockBids.splice(1)}
@@ -212,6 +217,7 @@ describe('Integration | Features | Bid Edit', () => {
       <BidEdit
         isNewBid={isNewBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         bid={mockBids[0]}
         otherBids={mockBids.splice(1)}
@@ -257,6 +263,7 @@ describe('Integration | Features | Bid Edit', () => {
       <BidEdit
         isNewBid={isNewBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         bid={mockBids[0]}
         otherBids={mockBids.splice(1)}
@@ -291,6 +298,7 @@ describe('Integration | Features | Bid Edit', () => {
       <BidEdit
         isNewBid={isNewBid}
         property={fullProperty}
+        user={admin}
         job={openImprovementJob}
         bid={mockBids[0]}
         otherBids={mockBids.splice(1)}

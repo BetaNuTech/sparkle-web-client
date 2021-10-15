@@ -176,3 +176,29 @@ export const canExpediteJob = (
   job.state === 'approved' &&
   user.admin &&
   job.authorizedRules !== 'expedite';
+
+// Checks user can approve the bid
+export const canApproveBid = (
+  isNewBid: boolean,
+  user: userModel,
+  propertyId: string,
+  job: jobModel,
+  bid: bidModel
+): boolean => {
+  // For admin user and open state bid
+  let canApprove = !isNewBid && user.admin && bid.state === 'open';
+
+  if (user.corporate) {
+    // If user is corporate and has small keyword in job type
+    canApprove = job.type.indexOf('small') !== -1;
+  }
+
+  if (!user.corporate && !user.admin && hasPropertyAccess(user, propertyId)) {
+    // If user is not corporate nor admin and has poperty access
+    // and has small:pm keyword in job type
+    canApprove = job.type.indexOf('small:pm') !== -1;
+  }
+
+  // Default job
+  return canApprove;
+};

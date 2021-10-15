@@ -26,6 +26,16 @@ interface Props {
 }
 
 const colors = {
+  primary: '-bgc-primary',
+  secondary: '-bgc-secondary',
+  gray: '-bgc-gray-light',
+  info: '-bgc-info',
+  alert: '-bgc-alert',
+  orange: '-bgc-orange',
+  purple: '-bgc-quaternary'
+};
+
+const textColors = {
   primary: '-c-primary',
   secondary: '-c-secondary',
   gray: '-c-gray-light',
@@ -118,5 +128,5 @@ JobBids.defaultProps = {
   forceVisible: false
 };
 
-export { colors };
+export { colors, textColors };
 export default JobBids;
