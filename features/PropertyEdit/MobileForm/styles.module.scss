@@ -105,4 +105,11 @@
       opacity: $button-opacity-disabled;
     }
   }
+
+  &__deleteButton {
+    @extend %textDeleteButton;
+    display: block;
+    margin: $global-xxlg-padding auto 0;
+    align-self: center;
+  }
 }

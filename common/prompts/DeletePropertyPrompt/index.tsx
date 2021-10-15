@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
-import Modal, { Props as ModalProps } from '../../../../common/Modal';
-import styles from '../../../../common/Modal/styles.module.scss';
-import WarningIcon from '../../../../public/icons/sparkle/warning.svg';
+import Modal, { Props as ModalProps } from '../../Modal/index';
+import styles from '../../Modal/styles.module.scss';
+import WarningIcon from '../../../public/icons/sparkle/warning.svg';
 
 interface Props extends ModalProps {
   onConfirm: () => any;

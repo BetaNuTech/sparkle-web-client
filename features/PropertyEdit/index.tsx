@@ -1,6 +1,7 @@
 import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import Router from 'next/router';
+import { useFirestore } from 'reactfire';
 import useSearching from '../../common/hooks/useSearching';
 import useCategorizedTemplates from '../CreateInspection/hooks/useCategorizedTemplates';
 import usePropertyForm from './hooks/usePropertyForm';
@@ -18,6 +19,10 @@ import LoadingHud from '../../common/LoadingHud';
 import styles from './styles.module.scss';
 import errors from './errors';
 import errorReports from '../../common/services/api/errorReports';
+import propertyModel from '../../common/models/property';
+import teamModel from '../../common/models/team';
+import DeletePropertyPrompt from '../../common/prompts/DeletePropertyPrompt';
+import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 
 interface Props {
   isNavOpen?: boolean;
@@ -26,8 +31,8 @@ interface Props {
   isStaging?: boolean;
   user: userModel;
   property: any;
-  teams: Array<any>;
-  templates: Array<any>;
+  teams: Array<teamModel>;
+  templates: Array<templateModel>;
   templateCategories: Array<any>;
 }
 
@@ -41,6 +46,8 @@ const PropertyEdit: FunctionComponent<Props> = ({
   templates,
   templateCategories
 }) => {
+  const firestore = useFirestore();
+
   // Form state
   const [formState, setFormState] = useState<any>({
     ...property
@@ -265,6 +272,40 @@ const PropertyEdit: FunctionComponent<Props> = ({
     }
   };
 
+  // Queue and Delete Property
+  const { queuePropertyForDelete, confirmPropertyDelete } = useDeleteProperty(
+    firestore,
+    sendNotification,
+    user
+  );
+
+  // Confirm property delete and redirect
+  // on success to the properties list
+  const confirmPropertyDeleteAndRedirect = () =>
+    confirmPropertyDelete().then(() => Router.push('/properties'));
+  const [isDeletingProperty, setIsDeletingProperty] = useState(false);
+
+  const toggleDeletingProperty = () => {
+    setIsDeletingProperty(!isDeletingProperty);
+  };
+
+  const [isDeletePropertyPromptVisible, setDeletePropertyPromptVisible] =
+    useState(false);
+  const openPropertyDeletePrompt = (
+    e,
+    propertyForDeleletion: propertyModel
+  ) => {
+    e.preventDefault();
+    queuePropertyForDelete(propertyForDeleletion);
+    setDeletePropertyPromptVisible(true);
+  };
+  const closeDeletePropertyPrompt = () => {
+    toggleDeletingProperty();
+    setDeletePropertyPromptVisible(false);
+    queuePropertyForDelete(null);
+    toggleDeletingProperty();
+  };
+
   //   Mobile header save button
   const mobileHeaderActions = () => (
     <button
@@ -308,6 +349,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
               formState={formState}
               formErrors={formErrors}
               openTrello={openTrello}
+              onQueuePropertyDelete={openPropertyDeletePrompt}
             />
           </>
         ) : (
@@ -329,6 +371,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
             apiState={apiState}
             formErrors={formErrors}
             openTrello={openTrello}
+            onQueuePropertyDelete={openPropertyDeletePrompt}
           />
         )}
         <UpdateTeamModal
@@ -346,6 +389,11 @@ const PropertyEdit: FunctionComponent<Props> = ({
           updateTempatesList={updateTempatesList}
           onSearchKeyDown={onSearchKeyDown}
           searchParam={searchParam}
+        />
+        <DeletePropertyPrompt
+          isVisible={isDeletePropertyPromptVisible}
+          onClose={closeDeletePropertyPrompt}
+          onConfirm={confirmPropertyDeleteAndRedirect}
         />
       </>
     )

@@ -37,6 +37,7 @@
     &__fields {
       grid-area: fields;
       display: flex;
+      align-items: flex-start;
       border: 1px solid $gray-lighter;
       border-top: none;
       padding: $global-padding;
@@ -245,10 +246,6 @@
     border: 1px $primary-color solid;
   }
 
-  &__spacer {
-    height: $global-padding;
-  }
-
   &__buttonContainer {
     display: flex;
     justify-content: flex-end;
@@ -277,6 +274,7 @@
     height: 65%;
     background-color: $white-dark;
     overflow: auto;
+
     &__item {
       height: rem-calc(45);
       display: flex;
@@ -317,5 +315,12 @@
     &:disabled {
       opacity: $button-opacity-disabled;
     }
+  }
+
+  &__deleteButton {
+    @extend %textDeleteButton;
+    display: block;
+    margin: $global-xxlg-padding auto 0;
+    align-self: center;
   }
 }

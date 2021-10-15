@@ -10,7 +10,7 @@ import {
 import { useSortBy, useSortDir } from './hooks/sorting';
 import useTeams from './hooks/useTeams';
 import useProperties from './hooks/useProperties';
-import useDeleteProperty from './hooks/useDeleteProperty';
+import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 import useDeleteTeam from './hooks/useDeleteTeam';
 import {
   canCreateTeam,

@@ -10,7 +10,7 @@ import FolderIcon from '../../../public/icons/ios/folder.svg';
 import Dropdown from '../DropdownAdd';
 import TeamItem from './TeamItem';
 import PropertyItem from './PropertyItem';
-import DeletePropertyPrompt from './DeletePropertyPrompt';
+import DeletePropertyPrompt from '../../../common/prompts/DeletePropertyPrompt';
 import styles from './styles.module.scss';
 
 interface PropertiesMobileLayoutTeamWrapperModel {
