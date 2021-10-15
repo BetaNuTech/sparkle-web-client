@@ -73,3 +73,10 @@
     fill: $gray-light !important;
   }
 }
+
+.-c-quaternary {
+  color: $quaternary-color !important;
+  path, line, circle {
+    fill: $quaternary-color !important;
+  }
+}

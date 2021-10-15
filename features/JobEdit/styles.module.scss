@@ -185,6 +185,10 @@
 
     &__status {
       @extend %gridHeaderCreateButton;
+      background-color: transparent;
+      padding-left: 0;
+      padding-right: 0;
+      font-weight: 700;
     }
 
     &__link {
