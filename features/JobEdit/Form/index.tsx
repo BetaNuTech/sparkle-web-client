@@ -410,7 +410,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 <label htmlFor="jobType">
                   Project Type <span>*</span>
                 </label>
-                {Object.keys(jobsConfig.types).map((t) => (
+                {Object.keys(jobsConfig.types).map((t, idx) => (
                   <label
                     key={t}
                     className={styles.jobNew__formGroup__radioList}
@@ -420,7 +420,9 @@ const Layout: FunctionComponent<LayoutProps> = ({
                       name="type"
                       value={t}
                       {...register('type')}
-                      defaultChecked={job.type && job.type === t}
+                      defaultChecked={
+                        (job.type && job.type === t) || (!job.type && idx === 0)
+                      }
                       data-testid="job-form-type-radio"
                       disabled={isLoading || isJobComplete}
                     />

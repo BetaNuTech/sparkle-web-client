@@ -26,13 +26,13 @@ interface Props {
 }
 
 const colors = {
-  primary: '-bgc-primary',
-  secondary: '-bgc-secondary',
-  gray: '-bgc-gray-light',
-  info: '-bgc-info',
-  alert: '-bgc-alert',
-  orange: '-bgc-orange',
-  purple: '-bgc-quaternary'
+  primary: '-c-primary',
+  secondary: '-c-secondary',
+  gray: '-c-gray-light',
+  info: '-c-info',
+  alert: '-c-alert',
+  orange: '-c-orange',
+  purple: '-c-quaternary'
 };
 
 const JobBids: FunctionComponent<Props> = ({
