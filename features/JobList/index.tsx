@@ -36,6 +36,17 @@ const colors = {
   purple: '-bgc-quaternary'
 };
 
+const textColors = {
+  primary: '-c-primary',
+  secondary: '-c-secondary',
+  gray: '-c-gray-light',
+  green: '-c-sea-green',
+  info: '-c-info',
+  alert: '-c-alert',
+  orange: '-c-orange',
+  purple: '-c-quaternary'
+};
+
 const JobList: FunctionComponent<Props> = ({
   property,
   jobs,
@@ -126,5 +137,5 @@ JobList.defaultProps = {
   forceVisible: false
 };
 
-export { colors };
+export { colors, textColors };
 export default JobList;

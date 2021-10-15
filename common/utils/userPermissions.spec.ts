@@ -458,4 +458,105 @@ describe('Unit | Common | Utils | User Permissions', () => {
       expect(actual, msg).toEqual(expected);
     }
   });
+
+  test('it should check for apporve bid conditions for different user role', () => {
+    const data = [
+      {
+        isNewBid: true,
+        propertyId: 'property-1',
+        user: admin,
+        job: { type: 'small:pm' } as jobModel,
+        bid: {} as bidModel,
+        expected: false,
+        msg: 'does not allow admin to approve new bid'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: admin,
+        job: { type: 'small:pm' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: true,
+        msg: 'allow admin to approve open bid'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: admin,
+        job: { type: 'large:am' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: true,
+        msg: 'allow admin to approve open bid for large as well'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: admin,
+        job: { type: 'large:am' } as jobModel,
+        bid: { state: 'approved' } as bidModel,
+        expected: false,
+        msg: 'does not allow admin to approve approved bid'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: propertyMember,
+        job: { type: 'small:pm' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: true,
+        msg: 'allow property user to approve open bid for small:pm job'
+      },
+      {
+        isNewBid: true,
+        propertyId: 'property-1',
+        user: propertyMember,
+        job: { type: 'large:am' } as jobModel,
+        bid: {} as bidModel,
+        expected: false,
+        msg: 'does not allow property user to approve new bid'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: propertyMember,
+        job: { type: 'large:am' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: false,
+        msg: 'does not allow property user to approve open bid for large:am job'
+      },
+      {
+        isNewBid: true,
+        propertyId: 'property-1',
+        user: corporate,
+        job: { type: 'large:am' } as jobModel,
+        bid: {} as bidModel,
+        expected: false,
+        msg: 'does not allow corporate user to approve new bid'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: corporate,
+        job: { type: 'small:pm' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: true,
+        msg: 'allow corporate user to approve open bid for small job'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: corporate,
+        job: { type: 'large:am' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: false,
+        msg: 'does not allow corporate user to approve open bid for large job'
+      }
+    ];
+
+    for (let i = 0; i < data.length; i += 1) {
+      const { isNewBid, user, job, propertyId, bid, expected, msg } = data[i];
+      const actual = util.canApproveBid(isNewBid, user, propertyId, job, bid);
+      expect(actual, msg).toEqual(expected);
+    }
+  });
 });

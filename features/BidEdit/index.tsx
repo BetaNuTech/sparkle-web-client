@@ -1,6 +1,7 @@
 import { useFirestore } from 'reactfire';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
 import propertyModel from '../../common/models/property';
+import userModel from '../../common/models/user';
 import jobModel from '../../common/models/job';
 import bidModel from '../../common/models/bid';
 import useStorage, { StorageResult } from '../../common/hooks/useStorage';
@@ -17,6 +18,7 @@ import BidForm from './Form';
 
 interface Props {
   isNewBid: boolean;
+  user: userModel;
   property: propertyModel;
   job: jobModel;
   bid: bidModel;
@@ -30,6 +32,7 @@ interface Props {
 const PREFIX = 'feature: BidEdit:';
 
 const BidEdit: FunctionComponent<Props> = ({
+  user,
   isNewBid,
   property,
   job,
@@ -149,6 +152,7 @@ const BidEdit: FunctionComponent<Props> = ({
 
   return (
     <BidForm
+      user={user}
       property={property}
       isOnline={isOnline}
       isStaging={isStaging}

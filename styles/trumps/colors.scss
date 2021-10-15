@@ -5,7 +5,9 @@
 .-c-secondary {
   color: $secondary-color !important;
 
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $secondary-color !important;
   }
 }
@@ -13,7 +15,9 @@
 .-c-primary-dark {
   color: $primary-dark-color !important;
 
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $primary-dark-color !important;
   }
 }
@@ -21,7 +25,9 @@
 .-c-white {
   color: $white !important;
 
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $white !important;
   }
 }
@@ -29,7 +35,9 @@
 .-c-alert {
   color: $alert-color !important;
 
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $alert-color !important;
   }
 }
@@ -45,7 +53,9 @@
 .-c-warning {
   color: $warning-color !important;
 
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $warning-color !important;
   }
 }
@@ -69,14 +79,38 @@
 .-c-gray-light {
   color: $gray-light !important;
 
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $gray-light !important;
   }
 }
 
 .-c-quaternary {
   color: $quaternary-color !important;
-  path, line, circle {
+  path,
+  line,
+  circle {
     fill: $quaternary-color !important;
+  }
+}
+
+.-c-sea-green {
+  color: $sea-green-color !important;
+
+  path,
+  line,
+  circle {
+    fill: $sea-green-color !important;
+  }
+}
+
+.-c-orange {
+  color: $orange-color !important;
+
+  path,
+  line,
+  circle {
+    fill: $orange-color !important;
   }
 }

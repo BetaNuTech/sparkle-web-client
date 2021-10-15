@@ -29,7 +29,7 @@ import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import DropdownHeader from '../DropdownHeader';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
-import { colors as bidColors } from '../../JobBids';
+import { colors as bidColors, textColors } from '../../JobBids';
 import { FileChangeEvent } from '../hooks/useAttachmentChange';
 import Header from '../Header';
 import styles from '../styles.module.scss';
@@ -638,7 +638,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                               <span
                                 className={clsx(
                                   styles.jobNew__bid__status,
-                                  bidColors[bidsConfig.stateColors[b.state]]
+                                  textColors[bidsConfig.stateColors[b.state]]
                                 )}
                               >
                                 {utilString.titleize(b.state)}

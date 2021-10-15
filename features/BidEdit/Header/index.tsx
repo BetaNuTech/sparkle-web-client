@@ -34,8 +34,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   apiState,
   showSaveButton,
   onSubmit,
-  canApprove,
-  // canApproveEnabled,
+  canApproveEnabled,
   canReject,
   canMarkIncomplete,
   canMarkComplete,
@@ -53,12 +52,12 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           </a>
         </Link>
       </div>
-      {canApprove && (
+      {!isNewBid && (
         <div className={parentStyles.button__group}>
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading || !isOnline}
+            disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
             data-testid="bidedit-header-approve"
             onClick={() => onSubmit('approved')}
           >
@@ -66,6 +65,7 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           </button>
         </div>
       )}
+
       {canMarkComplete && (
         <div className={parentStyles.button__group}>
           <button

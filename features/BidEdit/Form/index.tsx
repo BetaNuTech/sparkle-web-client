@@ -5,7 +5,8 @@ import {
   UseFormRegister,
   FormState,
   useWatch,
-  UseFormSetValue
+  UseFormSetValue,
+  UseFormTrigger
 } from 'react-hook-form';
 import clsx from 'clsx';
 import Link from 'next/link';
@@ -16,6 +17,7 @@ import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
 import attachmentModel from '../../../common/models/attachment';
+import userModel from '../../../common/models/user';
 import utilString from '../../../common/utils/string';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
@@ -25,9 +27,10 @@ import breakpoints from '../../../config/breakpoints';
 import bidsConfig from '../../../config/bids';
 import jobsConfig from '../../../config/jobs';
 import formats from '../../../config/formats';
-import { colors as jobColors } from '../../JobList';
+import { colors as jobColors, textColors } from '../../JobList';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
+import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import { BidApiResult } from '../hooks/useBidForm';
 import useProcessedForm from '../hooks/useProcessedForm';
 import DropdownHeader from '../DropdownHeader';
@@ -35,8 +38,10 @@ import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
+import { canApproveBid } from '../../../common/utils/userPermissions';
 
 interface Props {
+  user: userModel;
   property: propertyModel;
   job: jobModel;
   bid: bidModel;
@@ -88,6 +93,7 @@ interface LayoutProps {
   apiState: BidApiResult;
   onSubmit: (action: string) => void;
   register: UseFormRegister<Inputs>;
+  triggerFormValidation: UseFormTrigger<Inputs>;
   formState: FormState<Inputs>;
   setValue: UseFormSetValue<Inputs>;
   onCostTypeChange: (type: 'fixed' | 'range') => void;
@@ -115,7 +121,7 @@ const costMinValidator = (value) => {
   const costMax: HTMLInputElement = document.getElementById(
     'costMax'
   ) as HTMLInputElement;
-  if (value && costMax) {
+  if (value && costMax && costMax.value) {
     isValid = Number(costMax.value) >= Number(value);
   }
   return isValid || formErrors.costMinMaxGreater;
@@ -127,7 +133,7 @@ const costMaxValidator = (value) => {
   const costMin: HTMLInputElement = document.getElementById(
     'costMin'
   ) as HTMLInputElement;
-  if (value && costMin) {
+  if (value && costMin && costMin.value) {
     isValid = Number(costMin.value) <= Number(value);
   }
   return isValid || formErrors.costMaxMinGreater;
@@ -169,6 +175,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   isNewBid,
   onSubmit,
   register,
+  triggerFormValidation,
   apiState,
   isBidComplete,
   isOnline,
@@ -220,7 +227,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
     filteredApiErrors.length > 0 ? filteredApiErrors.map((e) => e.detail) : [];
 
   const bidState = !isNewBid && bid.state ? bid.state : 'open';
-  const nextState = !isNewBid && bidsConfig.nextState[bidState];
+  const nextState =
+    !isNewBid && bidState === 'approved' && job.state !== 'authorized'
+      ? bidsConfig.nextState.authorizedJob
+      : bidsConfig.nextState[bidState];
 
   const inputFile = useRef(null);
 
@@ -247,9 +257,19 @@ const Layout: FunctionComponent<LayoutProps> = ({
       : `${otherBids.length} other bids`;
 
   // Cost min validations
-  const costMinValidateOptions: any = { validate: costMinValidator };
+  const costMinValidateOptions: any = {
+    validate: costMinValidator
+  };
   // Cost max validations
-  const costMaxValidateOptions: any = { validate: costMaxValidator };
+  const costMaxValidateOptions: any = {
+    validate: (value) => {
+      const validateResult = costMaxValidator(value);
+      if (validateResult && typeof validateResult === 'boolean') {
+        triggerFormValidation('costMin');
+      }
+      return validateResult;
+    }
+  };
   // Start at validations
   const startAtValidateOptions: any = { validate: startDateValidator };
   // Complete at validations
@@ -293,7 +313,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
             <span
               className={clsx(
                 styles.form__parentStatusLabel,
-                jobColors[jobsConfig.stateColors[job.state]]
+                textColors[jobsConfig.stateColors[job.state]]
               )}
             >
               {utilString.titleize(job.state)}
@@ -563,11 +583,11 @@ const Layout: FunctionComponent<LayoutProps> = ({
               <div className={clsx(styles.form__group)}>
                 <label>Job Info</label>
               </div>
-              <div className={clsx(styles.form__card__pill, '-mt')}>
+              <div className={clsx(styles.form__card__pill)}>
                 <span
                   className={clsx(
                     styles.form__parentStatusLabel,
-                    jobColors[jobsConfig.stateColors[job.state]]
+                    textColors[jobsConfig.stateColors[job.state]]
                   )}
                 >
                   {utilString.titleize(job.state)}
@@ -579,6 +599,30 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   <a className={styles.form__parentLink}>Edit Job</a>
                 </Link>
               </div>
+
+              {job.trelloCardURL && (
+                <>
+                  <div className={clsx(styles.form__group, '-mt-lg')}>
+                    <label>Trello Card</label>
+                  </div>
+                  <div
+                    className={clsx(styles.form__card__pill, '-mt')}
+                    data-testid="trello-card-pill"
+                  >
+                    <h5 className={styles.form__card__pill__title}>
+                      <AlbumIcon />
+                      Trello Card #1
+                    </h5>
+                    <a
+                      href={job.trelloCardURL}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      View Card
+                    </a>
+                  </div>
+                </>
+              )}
 
               {!isNewBid && (
                 <div className={clsx(styles.form__group, '-mt-lg')}>
@@ -611,8 +655,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
               )}
             </div>
           </div>
-
-          {canApprove && (
+          {!isNewBid && (
             <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
               <button
                 type="button"
@@ -626,6 +669,11 @@ const Layout: FunctionComponent<LayoutProps> = ({
               >
                 Approve Bid
               </button>
+              {!canApprove && (
+                <p className={clsx('-c-gray-light', '-mb-none')}>
+                  You do not have permission to approve this bid
+                </p>
+              )}
             </div>
           )}
 
@@ -740,6 +788,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
 };
 
 const BidForm: FunctionComponent<Props> = ({
+  user,
   property,
   job,
   bid,
@@ -891,7 +940,7 @@ const BidForm: FunctionComponent<Props> = ({
     }
   });
 
-  const canApprove = !isNewBid && bid.state === 'open';
+  const canApprove = canApproveBid(isNewBid, user, property.id, job, bid);
   const canApproveEnabled =
     canApprove && Object.keys(formState.errors).length === 0;
   const canReject = !isNewBid && bid.state === 'approved';
@@ -975,6 +1024,7 @@ const BidForm: FunctionComponent<Props> = ({
             isNewBid={isNewBid}
             bidLink={bidLink}
             register={register}
+            triggerFormValidation={triggerFormValidation}
             formState={formState}
             apiState={apiState}
             isOnline={isOnline}
@@ -1035,6 +1085,7 @@ const BidForm: FunctionComponent<Props> = ({
             isNewBid={isNewBid}
             bidLink={bidLink}
             register={register}
+            triggerFormValidation={triggerFormValidation}
             formState={formState}
             apiState={apiState}
             isOnline={isOnline}

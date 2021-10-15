@@ -11,6 +11,7 @@ export default {
     approved: 'Completion',
     rejected: 'Reopening',
     incomplete: 'Reopening',
+    authorizedJob: 'Authorized Job',
     complete: ''
   }
 };
