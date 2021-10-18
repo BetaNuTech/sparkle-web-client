@@ -3,7 +3,7 @@ import jobModel from '../../models/job';
 import ErrorServerInternal from '../../models/errors/serverInternal';
 import ErrorForbidden from '../../models/errors/forbidden';
 import ErrorNotFound from '../../models/errors/notFound';
-import ErrorBadRequest, { ErrorItem } from '../../models/errors/badRequest';
+import ErrorBadRequest from '../../models/errors/badRequest';
 
 const PREFIX = 'services: api: jobs:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
@@ -82,18 +82,12 @@ export const createNewJob = async (
   }
 
   if (response.status === 400) {
-    const errSrvr = new ErrorBadRequest(`${PREFIX} createNewJob: fix errors`);
-    errSrvr.errors = responseJson
-      ? Array.isArray(responseJson.errors) &&
-        responseJson.errors.map(
-          (err) =>
-            ({
-              name: err.source && err.source.pointer,
-              detail: err.detail
-            } as ErrorItem)
-        )
-      : [];
-    throw errSrvr;
+    const errorsResponse = responseJson ? responseJson.errors : [];
+    const badRequest = new ErrorBadRequest(
+      `${PREFIX} createNewJob: fix errors`
+    );
+    badRequest.addErrors(errorsResponse);
+    throw badRequest;
   }
 
   if (response.status === 201) {
@@ -140,18 +134,10 @@ export const updateJob = async (
   }
 
   if (response.status === 400) {
-    const errSrvr = new ErrorBadRequest(`${PREFIX} updateJob: fix errors`);
-    errSrvr.errors = responseJson
-      ? Array.isArray(responseJson.errors) &&
-        responseJson.errors.map(
-          (err) =>
-            ({
-              name: err.source && err.source.pointer,
-              detail: err.detail
-            } as ErrorItem)
-        )
-      : [];
-    throw errSrvr;
+    const errorsResponse = responseJson ? responseJson.errors : [];
+    const badRequest = new ErrorBadRequest(`${PREFIX} updateJob: fix errors`);
+    badRequest.addErrors(errorsResponse);
+    throw badRequest;
   }
 
   if (response.status === 201) {

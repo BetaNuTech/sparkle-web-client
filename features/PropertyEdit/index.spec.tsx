@@ -46,7 +46,7 @@ describe('Unit | Features | Property Edit', () => {
         removeLogo={() => false}
         formState={{ name: '', id: '' }}
         templateNames={[]}
-        apiState={{ isLoading: false, statusCode: 0, response: '' }}
+        isLoading={false}
         formErrors={{}}
       />
     );

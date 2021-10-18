@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState, ChangeEvent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import Router from 'next/router';
 import { useFirestore } from 'reactfire';
@@ -9,6 +9,7 @@ import useNotifications from '../../common/hooks/useNotifications'; // eslint-di
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
 import templateModel from '../../common/models/template';
+import templateCategoryModel from '../../common/models/templateCategory';
 import breakpoints from '../../config/breakpoints';
 import PropertyMobileForm from './MobileForm';
 import PropertyDesktopForm from './DesktopForm';
@@ -18,7 +19,6 @@ import TemplatesEditModal from './TemplatesEditModal';
 import LoadingHud from '../../common/LoadingHud';
 import styles from './styles.module.scss';
 import errors from './errors';
-import errorReports from '../../common/services/api/errorReports';
 import propertyModel from '../../common/models/property';
 import teamModel from '../../common/models/team';
 import DeletePropertyPrompt from '../../common/prompts/DeletePropertyPrompt';
@@ -30,10 +30,10 @@ interface Props {
   toggleNavOpen?(): void;
   isStaging?: boolean;
   user: userModel;
-  property: any;
-  teams: Array<teamModel>;
-  templates: Array<templateModel>;
-  templateCategories: Array<any>;
+  property: propertyModel;
+  teams: teamModel[];
+  templates: templateModel[];
+  templateCategories: templateCategoryModel[];
 }
 
 const PropertyEdit: FunctionComponent<Props> = ({
@@ -64,7 +64,13 @@ const PropertyEdit: FunctionComponent<Props> = ({
   };
 
   // Form submission hook
-  const { apiState, createProperty, updateProperty } = usePropertyForm();
+  const {
+    isLoading,
+    propertyCreate,
+    propertyUpdate,
+    errors: requesErrors
+  } = usePropertyForm(sendNotification);
+  const userRequestErrors = requesErrors.map((e) => e.detail);
 
   // Open & Close Team Modal
   const [isUpdateTeamModalVisible, setUpdateTeamModalVisible] = useState(false);
@@ -127,18 +133,19 @@ const PropertyEdit: FunctionComponent<Props> = ({
     .map((tmpl) => tmpl.name);
 
   // Form Images
-  const [properyImg, setProperyImg] = useState<string>(formState.photoURL);
-  const [logoImg, setLogoImg] = useState<string>(formState.logoURL);
+  const [properyImg, setProperyImg] = useState(formState.photoURL);
+  const [logoImg, setLogoImg] = useState(formState.logoURL);
   const removePropertyImage = () => {
-    setProperyImg('');
+    setProperyImg(null);
   };
   const removeLogo = () => {
-    setLogoImg('');
+    setLogoImg(null);
   };
 
   // Handle onChange input event
+  const [logoFile, setLogoFile] = useState(null);
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldName = e.target.name;
     const fleldVal = e.target.value;
     if (fieldName === 'photoURL') {
@@ -146,6 +153,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
     }
     if (fieldName === 'logoURL') {
       setLogoImg(URL.createObjectURL(e.target.files[0]));
+      setLogoFile(e.target.files[0]);
     }
     setFormState({ ...formState, [fieldName]: fleldVal });
   };
@@ -164,8 +172,9 @@ const PropertyEdit: FunctionComponent<Props> = ({
   // Form submit handler
   // convert form state into
   // API friendly JSON and publish
-  const onSubmit = async (e) => {
-    e.preventDefault();
+  // TODO: Move on Submit Login to a hook
+  const onSubmit = (evt) => {
+    evt.preventDefault();
     formValidation();
 
     const hasErrors = Boolean(Object.keys(error).length);
@@ -188,19 +197,6 @@ const PropertyEdit: FunctionComponent<Props> = ({
 
     const isCreatingProperty = !property.id;
 
-    // Check state for updates and add to payload
-    Object.keys(formState).forEach((item) => {
-      if (JSON.stringify(formState[item]) !== JSON.stringify(property[item])) {
-        payload = {
-          ...payload,
-          [item]:
-            item === 'num_of_units' || item === 'year_built'
-              ? Number(formState[item])
-              : formState[item]
-        };
-      }
-    });
-
     // Add any user template updates
     // TODO: do not include templates
     //       unless user updated them
@@ -211,64 +207,20 @@ const PropertyEdit: FunctionComponent<Props> = ({
       }, {});
     }
 
-    let statusCode = 0;
-    let response = null;
-    try {
-      const request = isCreatingProperty
-        ? createProperty(payload)
-        : updateProperty(property.id, payload);
-      const result = await request;
-      statusCode = result.statusCode;
-      response = result.response;
+    const filePayload = {
+      isUploadingLogo: false,
+      logoFile: null
+    };
 
-      // Fail for bad request
-      if (statusCode >= 300) throw Error('Request failed');
-
-      // Fail for bad response
-      if (
-        !response ||
-        !response.data ||
-        !response.data.attributes ||
-        !response.data.id
-      ) {
-        throw Error('Unexpected payload');
-      }
-    } catch (err) {
-      // Create or update property failure
-      sendNotification(
-        `Failed to ${
-          isCreatingProperty ? 'create' : 'update'
-        } property, please try again.`,
-        {
-          type: 'error'
-        }
-      );
-      // Log issue and send error report
-      // eslint-disable-next-line no-case-declarations
-      const wrappedErr = Error(
-        `features: PropertyEdit: property ${
-          isCreatingProperty ? 'create' : 'update'
-        } operation failed: ${err}`
-      );
-      // eslint-disable-next-line import/no-named-as-default-member
-      errorReports.send(wrappedErr);
-      return;
+    if (logoImg !== property.logoURL) {
+      filePayload.isUploadingLogo = true;
+      filePayload.logoFile = logoFile;
     }
 
-    // Show success notification
-    const latestPropertyName = response.data.attributes.name || property.name;
-    sendNotification(
-      isCreatingProperty
-        ? 'Property successfully created'
-        : `${latestPropertyName} successfully updated`,
-      {
-        type: 'success'
-      }
-    );
-
-    // Transition to successfully created property
     if (isCreatingProperty) {
-      Router.push(`/properties/${response.data.id}/`);
+      propertyCreate(payload, filePayload);
+    } else {
+      propertyUpdate(property.id, payload, filePayload);
     }
   };
 
@@ -312,7 +264,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
       data-testid="save-button-mobile"
       className={styles.saveButton}
       onClick={(e) => onSubmit(e)}
-      disabled={apiState.isLoading}
+      disabled={isLoading}
     >
       Save
     </button>
@@ -324,7 +276,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
   return (
     user && (
       <>
-        {apiState.isLoading && <LoadingHud title="Saving..." />}
+        {isLoading && <LoadingHud title="Saving..." />}
         {isMobileorTablet ? (
           <>
             <MobileHeader
@@ -349,6 +301,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
               formState={formState}
               formErrors={formErrors}
               openTrello={openTrello}
+              userRequestErrors={userRequestErrors}
               onQueuePropertyDelete={openPropertyDeletePrompt}
             />
           </>
@@ -368,9 +321,10 @@ const PropertyEdit: FunctionComponent<Props> = ({
             removeLogo={removeLogo}
             formState={formState}
             templateNames={templateNames}
-            apiState={apiState}
+            isLoading={isLoading}
             formErrors={formErrors}
             openTrello={openTrello}
+            userRequestErrors={userRequestErrors}
             onQueuePropertyDelete={openPropertyDeletePrompt}
           />
         )}

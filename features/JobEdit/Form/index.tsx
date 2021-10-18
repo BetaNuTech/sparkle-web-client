@@ -29,7 +29,7 @@ import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import DropdownHeader from '../DropdownHeader';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
-import { colors as bidColors, textColors } from '../../JobBids';
+import { textColors } from '../../JobBids';
 import { FileChangeEvent } from '../hooks/useAttachmentChange';
 import Header from '../Header';
 import styles from '../styles.module.scss';

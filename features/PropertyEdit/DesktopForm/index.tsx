@@ -1,28 +1,30 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { FunctionComponent } from 'react';
-import { PropertyApiResult } from '../hooks/usePropertyForm';
+import { FunctionComponent, ChangeEvent } from 'react';
 import styles from './styles.module.scss';
 import propertyModel from '../../../common/models/property';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
+import teamModel from '../../../common/models/team';
+import ErrorList from '../../../common/ErrorList';
 
 interface Props {
   isOnline?: boolean;
-  teams: Array<any>;
+  teams: teamModel[];
   selectedTeamId: string;
-  property?: any;
+  property?: propertyModel;
   properyImg: string;
   logoImg: string;
   formState: propertyModel;
-  templateNames: Array<string>;
-  apiState: PropertyApiResult;
+  templateNames: string[];
+  isLoading: boolean;
   formErrors?: any;
+  userRequestErrors: string[];
   openUpdateTeamModal: (e) => void;
   openTemplatesEditModal: (e) => void;
-  openTrello: (any) => void;
+  openTrello: (e) => void;
   onSubmit: (action: any) => void;
-  handleChange: (string) => void;
+  handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   removePropertyImage: () => void;
   removeLogo: () => void;
   onQueuePropertyDelete: (e, property: propertyModel) => void;
@@ -36,9 +38,10 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
   logoImg,
   formState,
   templateNames,
-  apiState,
+  isLoading,
   formErrors,
   property,
+  userRequestErrors,
   openUpdateTeamModal,
   openTemplatesEditModal,
   openTrello,
@@ -57,6 +60,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
 
   return (
     <div className={styles.propertyEditDesktop__mainContainer}>
+      <ErrorList errors={userRequestErrors} />
       <form className={styles.propertyEditDesktop__form}>
         <div className={styles.propertyEditDesktop__container__image}>
           {/* Cancel Button */}
@@ -136,7 +140,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               onClick={(e) => onSubmit(e)}
               className={styles.propertyEditDesktop__topSaveButton}
               data-testid="top-save-button-desktop"
-              disabled={apiState.isLoading}
+              disabled={isLoading}
             >
               Save
             </button>
@@ -420,7 +424,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               onClick={(e) => onSubmit(e)}
               className={styles.propertyEditDesktop__saveButton}
               data-testid="save-button-desktop"
-              disabled={apiState.isLoading}
+              disabled={isLoading}
             >
               Save
             </button>

@@ -1,4 +1,5 @@
 import sinon from 'sinon';
+import Router from 'next/router';
 import {
   render as rtlRender,
   screen,
@@ -51,18 +52,10 @@ describe('Integration | Features | Property Edit', () => {
       'template-2': true
     };
     const [template] = mockTemplates;
-    // TODO fix updateRecord to resolve property
-    const onSave = sinon.stub(propertiesApi, 'updateRecord').resolves({
-      status: 201,
-      json: () =>
-        Promise.resolve({
-          data: {
-            id: fullProperty.id,
-            type: 'property',
-            attributes: fullProperty
-          }
-        })
-    });
+
+    const onSave = sinon
+      .stub(propertiesApi, 'updateProperty')
+      .resolves(fullProperty);
     const props = {
       isOnline: true,
       user,
@@ -102,7 +95,7 @@ describe('Integration | Features | Property Edit', () => {
     const property = deepClone(fullProperty);
     (property.templates || {})[template.id] = true; // add template to property
     const onSave = sinon
-      .stub(propertiesApi, 'updateRecord')
+      .stub(propertiesApi, 'updateProperty')
       .resolves(fullProperty);
     const props = {
       isOnline: true,
@@ -135,7 +128,7 @@ describe('Integration | Features | Property Edit', () => {
   it('should allow users to unselect team and submit', async () => {
     const expected = '';
     const onSave = sinon
-      .stub(propertiesApi, 'updateRecord')
+      .stub(propertiesApi, 'updateProperty')
       .resolves(fullProperty);
     const props = {
       isOnline: true,
@@ -167,7 +160,7 @@ describe('Integration | Features | Property Edit', () => {
   it('should allow users to select team and submit', async () => {
     const expected = 'team-2';
     const onSave = sinon
-      .stub(propertiesApi, 'updateRecord')
+      .stub(propertiesApi, 'updateProperty')
       .resolves(fullProperty);
     const props = {
       isOnline: true,
@@ -195,12 +188,12 @@ describe('Integration | Features | Property Edit', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('Publishes a new property when it does not exist yet', async () => {
+  it('publishes a new property when it does not exist yet', async () => {
     const expected = true;
     const props = {
       isOnline: true,
       user,
-      property: {},
+      property: { name: '' },
       teams: mockTeams,
       templates: mockTemplates,
       templateCategories: mockTemplateCategories
@@ -209,7 +202,8 @@ describe('Integration | Features | Property Edit', () => {
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    const postReq = sinon.stub(propertiesApi, 'createRecord').resolves({});
+    const postReq = sinon.stub(propertiesApi, 'createProperty').resolves({});
+    sinon.stub(Router, 'push').returns();
 
     await act(async () => {
       const [save] = await screen.findAllByTestId('save-button-desktop');
@@ -222,7 +216,7 @@ describe('Integration | Features | Property Edit', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('Updates a property when it already exists', async () => {
+  it('updates a property when it already exists', async () => {
     const expected = true;
     const props = {
       isOnline: true,
@@ -236,16 +230,55 @@ describe('Integration | Features | Property Edit', () => {
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    const putReq = sinon.stub(propertiesApi, 'updateRecord').resolves({});
+    const putReq = sinon.stub(propertiesApi, 'updateProperty').resolves({});
 
     await act(async () => {
       const [save] = await screen.findAllByTestId('save-button-desktop');
       const nameInput = await screen.findByTestId('property-form-name');
-      await fireEvent.change(nameInput, { target: { value: 'New Property' } });
+      await fireEvent.change(nameInput, { target: { value: 'Update' } });
       await userEvent.click(save);
     });
 
     const actual = putReq.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('publishes an updated logo to property, along with other updates', async () => {
+    const expected = [true, true];
+    const props = {
+      isOnline: true,
+      user,
+      property: fullProperty,
+      teams: mockTeams,
+      templates: mockTemplates,
+      templateCategories: mockTemplateCategories
+    };
+    render(<PropertyEdit {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const putReq = sinon.stub(propertiesApi, 'updateProperty').resolves({});
+    const postImage = sinon.stub(propertiesApi, 'uploadImage').resolves({
+      id: fullProperty.id,
+      name: fullProperty.name,
+      logoName: 'test.png',
+      logoURL: 'a.co/test.png'
+    });
+
+    await act(async () => {
+      const [save] = await screen.findAllByTestId('save-button-desktop');
+      const nameInput = screen.getByTestId('property-form-name');
+      const logoInput = screen.getByTestId('property-form-add-logo');
+      fireEvent.change(nameInput, { target: { value: 'Update' } });
+      fireEvent.change(logoInput, {
+        target: {
+          files: [new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })]
+        }
+      });
+      userEvent.click(save);
+    });
+
+    const actual = [putReq.called, postImage.called];
     expect(actual).toEqual(expected);
   });
 });
