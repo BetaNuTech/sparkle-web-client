@@ -1,100 +1,210 @@
 import { useState } from 'react';
+import Router from 'next/router';
 import propertiesApi from '../../../common/services/api/properties';
 import propertyModel from '../../../common/models/property';
+import errorReports from '../../../common/services/api/errorReports';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import ErrorBadRequest, {
+  BadRequestItem
+} from '../../../common/models/errors/badRequest';
 
 const PREFIX = 'features: EditProperty: hooks: usePropertyForm:';
-export interface PropertyApiResult {
-  isLoading: boolean;
-  statusCode: number;
-  response: any;
-}
 
+type userNotifications = (message: string, options?: any) => any;
 interface usePropertyFormResult {
-  apiState: PropertyApiResult;
-  createProperty(property: propertyModel): Promise<PropertyApiResult>;
-  updateProperty(
+  isLoading: boolean;
+  property?: propertyModel;
+  propertyCreate(property: propertyModel, filePayload: any): void;
+  propertyUpdate(
     propertyId: string,
-    property: propertyModel
-  ): Promise<PropertyApiResult>;
-  error: Error;
+    property: propertyModel,
+    filePayload: any
+  ): void;
+  errors: BadRequestItem[];
 }
 
-export default function usePropertyForm(): usePropertyFormResult {
-  const [apiState, setApiState] = useState({
-    isLoading: false,
-    statusCode: 0,
-    response: null
-  });
-  const [error, setError] = useState(null);
+export default function usePropertyForm(
+  sendNotification: userNotifications
+): usePropertyFormResult {
+  const [isLoading, setIsLoading] = useState(false);
+  const [property, setProperty] = useState(null);
+  const [errors, setErrors] = useState<BadRequestItem[]>([]);
 
-  const createProperty = async (
-    property: propertyModel
-  ): Promise<PropertyApiResult> => {
-    setApiState({
-      isLoading: true,
-      statusCode: 0,
-      response: null
-    });
-
-    let res = null;
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      res = await propertiesApi.createRecord(property);
-    } catch (err) {
-      setError(Error(`${PREFIX} createProperty: request failed: ${err}`));
-    }
-
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (err) {
-      setError(Error(`${PREFIX} createProperty: failed to parse JSON: ${err}`));
-    }
-
-    // API State does not sync right away
-    const result = {
-      isLoading: false,
-      statusCode: res ? res.status : 0,
-      response: json
-    };
-    setApiState(result);
-    return result;
-  };
-
-  const updateProperty = async (
+  const handleSuccessResponse = (
     propertyId: string,
-    property: propertyModel
-  ): Promise<PropertyApiResult> => {
-    setApiState({
-      isLoading: true,
-      statusCode: 0,
-      response: null
-    });
+    latestProperty: propertyModel
+  ) => {
+    setProperty(latestProperty);
 
-    let res = null;
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      res = await propertiesApi.updateRecord(propertyId, property);
-    } catch (err) {
-      setError(Error(`${PREFIX} updateProperty: request failed: ${err}`));
+    // Show success notification for creting or updating a property
+    sendNotification(
+      propertyId === 'new'
+        ? 'Property successfully created'
+        : `${property.name} successfully updated`,
+      {
+        type: 'success'
+      }
+    );
+    if (propertyId === 'new' && latestProperty) {
+      Router.push(`/properties/${latestProperty.id}`);
     }
-
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (err) {
-      setError(Error(`${PREFIX} updateProperty: failed to parse JSON: ${err}`));
-    }
-
-    // API State does not sync right away
-    const result = {
-      isLoading: false,
-      statusCode: res ? res.status : 0,
-      response: json
-    };
-    setApiState(result);
-    return result;
   };
 
-  return { apiState, createProperty, updateProperty, error };
+  const handleErrorResponse = (apiError: Error, propertyId: string) => {
+    if (apiError instanceof ErrorForbidden) {
+      // User not allowed to create or update job
+      sendNotification(
+        `You are not allowed to ${
+          propertyId === 'new' ? 'create' : 'update'
+        } this property.`,
+        { type: 'error' }
+      );
+    } else if (apiError instanceof ErrorBadRequest) {
+      setErrors(apiError.errors);
+    } else if (apiError instanceof ErrorServerInternal) {
+      // User not allowed to create or update job
+      sendNotification('Please try again, or contact an admin.', {
+        type: 'error'
+      });
+      // Log issue and send error report
+      // of user's missing properties
+      // eslint-disable-next-line no-case-declarations
+      const wrappedErr = Error(
+        `${PREFIX} Could not complete property create/update operation`
+      );
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+  };
+
+  const postUploadFile = (
+    payload: propertyModel,
+    propertyId: string,
+    target: string,
+    file: File
+  ): Promise<propertyModel> => {
+    // Image validation
+    if (!/\.(jpe?g|png)$/i.test(file.name)) {
+      sendNotification('Image format not valid', {
+        type: 'error'
+      });
+      return Promise.resolve({} as propertyModel);
+    }
+
+    /* eslint-disable import/no-named-as-default-member */
+    return propertiesApi
+      .uploadImage(payload, propertyId, target, file)
+      .catch((err) => {
+        if (err instanceof ErrorBadRequest) {
+          const firstError = (err.errors && err.errors[0]) || null;
+          const firstErrorTitle = firstError ? firstError.title : '';
+          sendNotification(
+            `Failed to upload image${
+              firstErrorTitle ? ': ' : ''
+            } ${firstErrorTitle}`,
+            {
+              type: 'error'
+            }
+          );
+        } else {
+          sendNotification('Failed to upload image, please try again.', {
+            type: 'error'
+          });
+
+          const wrappedErr = Error(`${PREFIX} uploadFile: ${err}`);
+          errorReports.send(wrappedErr);
+        }
+
+        // Do not throw, allow other requests to
+        // complete successfully, by returning empty result
+        return {} as propertyModel;
+      });
+    /* eslint-enable import/no-named-as-default-member */
+  };
+
+  const propertyUpdate = (
+    propertyId: string,
+    payload: any,
+    filePayload: any
+  ) => {
+    const requests = [];
+    const hasNonFileUpdates = payload && Object.keys(payload).length > 0;
+    setIsLoading(true);
+
+    // Upload logo
+    if (filePayload && filePayload.isUploadingLogo) {
+      requests.push(
+        postUploadFile(payload, propertyId, 'logo', filePayload.logoFile)
+      );
+    }
+
+    // TODO push profile request here
+
+    if (hasNonFileUpdates) {
+      // eslint-disable-next-line import/no-named-as-default-member
+      requests.push(propertiesApi.updateProperty(propertyId, payload));
+    }
+
+    return Promise.all(requests)
+      .then((allPropertyResults) => {
+        const mergedProperty = allPropertyResults.reduce(
+          (acc, propertyResult) => {
+            Object.assign(acc, propertyResult); // Merge in single request results
+            return acc;
+          },
+          { id: propertyId, name: '' }
+        ) as propertyModel;
+        handleSuccessResponse(propertyId, mergedProperty);
+      })
+      .catch((err) => {
+        handleErrorResponse(err, propertyId);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  const propertyCreate = async (payload: propertyModel, filePayload: any) => {
+    setIsLoading(true);
+
+    let isPropertyCreated = false;
+    let newProperty = {} as propertyModel;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      newProperty = await propertiesApi.createProperty(payload);
+      isPropertyCreated = true;
+    } catch (err) {
+      handleErrorResponse(err, 'new');
+    }
+
+    if (isPropertyCreated && filePayload && filePayload.isUploadingLogo) {
+      let updatedProperty = {} as propertyModel;
+
+      // Upload new property's logo
+      try {
+        updatedProperty = await postUploadFile(
+          property,
+          newProperty.id,
+          'logo',
+          filePayload.logoFile
+        );
+        Object.assign(newProperty, updatedProperty);
+        // fail silently
+      } catch (err) {} // eslint-disable-line
+    }
+
+    // TODO upload property profile here
+
+    handleSuccessResponse('new', newProperty);
+    setIsLoading(false);
+  };
+
+  return {
+    isLoading,
+    property,
+    propertyCreate,
+    propertyUpdate,
+    errors
+  };
 }

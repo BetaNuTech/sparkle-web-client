@@ -27,7 +27,7 @@ import breakpoints from '../../../config/breakpoints';
 import bidsConfig from '../../../config/bids';
 import jobsConfig from '../../../config/jobs';
 import formats from '../../../config/formats';
-import { colors as jobColors, textColors } from '../../JobList';
+import { textColors } from '../../JobList';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import AlbumIcon from '../../../public/icons/sparkle/album.svg';

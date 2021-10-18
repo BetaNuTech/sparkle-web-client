@@ -36,7 +36,7 @@ const Page: FunctionComponent = () => {
   const { data: templateCategories, status: tamplateCatStatus } =
     useTemplateCategories(firestore);
 
-  let property = {};
+  let property = { name: '' };
   if (!isCreatingProperty) {
     property = data;
   }

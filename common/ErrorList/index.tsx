@@ -30,7 +30,9 @@ const ErrorList: FunctionComponent<Props> = ({ title, errors }) => {
       {errors && errors.length > 0 && (
         <ul className={styles.error__list}>
           {errors.map((e) => (
-            <li data-testid="error-list-errortext" key={`${e}`}>{e}</li>
+            <li data-testid="error-list-errortext" key={`${e}`}>
+              {e}
+            </li>
           ))}
         </ul>
       )}
@@ -39,7 +41,8 @@ const ErrorList: FunctionComponent<Props> = ({ title, errors }) => {
 };
 
 ErrorList.defaultProps = {
-  title: 'Please fix following errors'
+  title: 'Please fix following errors',
+  errors: []
 };
 
 export default ErrorList;
