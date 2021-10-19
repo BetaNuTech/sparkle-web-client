@@ -144,12 +144,14 @@ const PropertyEdit: FunctionComponent<Props> = ({
 
   // Handle onChange input event
   const [logoFile, setLogoFile] = useState(null);
+  const [profileFile, setProfileFile] = useState(null);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldName = e.target.name;
     const fleldVal = e.target.value;
     if (fieldName === 'photoURL') {
       setProperyImg(URL.createObjectURL(e.target.files[0]));
+      setProfileFile(e.target.files[0]);
     }
     if (fieldName === 'logoURL') {
       setLogoImg(URL.createObjectURL(e.target.files[0]));
@@ -209,13 +211,22 @@ const PropertyEdit: FunctionComponent<Props> = ({
 
     const filePayload = {
       isUploadingLogo: false,
-      logoFile: null
+      logoFile: null,
+      isUploadingProfile: false,
+      profileFile: null
     };
 
     if (logoImg !== property.logoURL) {
       filePayload.isUploadingLogo = true;
       filePayload.logoFile = logoFile;
     }
+
+
+    if (profileFile !== property.photoURL) {
+      filePayload.isUploadingProfile = true;
+      filePayload.profileFile = profileFile;
+    }
+
 
     if (isCreatingProperty) {
       propertyCreate(payload, filePayload);
