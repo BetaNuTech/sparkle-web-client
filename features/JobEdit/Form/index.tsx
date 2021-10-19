@@ -410,19 +410,25 @@ const Layout: FunctionComponent<LayoutProps> = ({
                 <label htmlFor="jobType">
                   Project Type <span>*</span>
                 </label>
-                {Object.keys(jobsConfig.types).map((t, idx) => (
+                {Object.keys(jobsConfig.types).map((jobType, index) => (
                   <label
-                    key={t}
+                    key={jobType}
                     className={styles.jobNew__formGroup__radioList}
                   >
                     <input
                       type="radio"
                       name="type"
-                      value={t}
+                      value={jobType}
                       {...register('type')}
-                      defaultChecked={
-                        (job.type && job.type === t) || (!job.type && idx === 0)
-                      }
+                      {...(isJobComplete
+                        ? {
+                            checked: job.type && job.type === jobType
+                          }
+                        : {
+                            defaultChecked:
+                              (job.type && job.type === jobType) ||
+                              (!job.type && index === 0)
+                          })}
                       data-testid="job-form-type-radio"
                       disabled={isLoading || isJobComplete}
                     />
@@ -431,13 +437,13 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         className={styles.jobNew__formGroup__radioText__heading}
                         data-testid="job-form-type-text"
                       >
-                        {jobsConfig.types[t].title}
+                        {jobsConfig.types[jobType].title}
                       </span>
                       <span
                         className={styles.jobNew__formGroup__radioText__desc}
                         data-testid="job-form-type-desc"
                       >
-                        {jobsConfig.types[t].description}
+                        {jobsConfig.types[jobType].description}
                       </span>
                     </div>
                   </label>
@@ -792,6 +798,7 @@ const JobForm: FunctionComponent<Props> = ({
         formJob.state = 'authorized';
         break;
       case 'expedite':
+        formJob.state = 'authorized';
         formJob.authorizedRules = 'expedite';
         break;
       default:
