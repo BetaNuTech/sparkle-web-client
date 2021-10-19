@@ -281,4 +281,43 @@ describe('Integration | Features | Property Edit', () => {
     const actual = [putReq.called, postImage.called];
     expect(actual).toEqual(expected);
   });
+
+  it('publishes an updated profile image to property, along with other updates', async () => {
+    const expected = [true, true];
+    const props = {
+      isOnline: true,
+      user,
+      property: fullProperty,
+      teams: mockTeams,
+      templates: mockTemplates,
+      templateCategories: mockTemplateCategories
+    };
+    render(<PropertyEdit {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const putReq = sinon.stub(propertiesApi, 'updateProperty').resolves({});
+    const postImage = sinon.stub(propertiesApi, 'uploadImage').resolves({
+      id: fullProperty.id,
+      name: fullProperty.name,
+      photoName: 'test.png',
+      photoURL: 'a.co/test.png'
+    });
+
+    await act(async () => {
+      const [save] = await screen.findAllByTestId('save-button-desktop');
+      const nameInput = screen.getByTestId('property-form-name');
+      const profileImgInput = screen.getByTestId('property-form-add-image');
+      fireEvent.change(nameInput, { target: { value: 'Update' } });
+      fireEvent.change(profileImgInput, {
+        target: {
+          files: [new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })]
+        }
+      });
+      userEvent.click(save);
+    });
+
+    const actual = [putReq.called, postImage.called];
+    expect(actual).toEqual(expected);
+  });
 });

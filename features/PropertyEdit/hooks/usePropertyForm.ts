@@ -84,8 +84,10 @@ export default function usePropertyForm(
     target: string,
     file: File
   ): Promise<propertyModel> => {
-    // Image validation
-    if (!/\.(jpe?g|png)$/i.test(file.name)) {
+    const isValidFile =
+      file && file instanceof File ? /\.(jpe?g|png)$/i.test(file.name) : false;
+
+    if (!isValidFile) {
       sendNotification('Image format not valid', {
         type: 'error'
       });
@@ -139,7 +141,12 @@ export default function usePropertyForm(
       );
     }
 
-    // TODO push profile request here
+    // Upload profile image
+    if (filePayload && filePayload.isUploadingProfile) {
+      requests.push(
+        postUploadFile(payload, propertyId, 'profile', filePayload.profileFile)
+      );
+    }
 
     if (hasNonFileUpdates) {
       // eslint-disable-next-line import/no-named-as-default-member
@@ -178,6 +185,8 @@ export default function usePropertyForm(
       handleErrorResponse(err, 'new');
     }
 
+    // NOTE: Property must be created before
+    //       uploading images to it
     if (isPropertyCreated && filePayload && filePayload.isUploadingLogo) {
       let updatedProperty = {} as propertyModel;
 
@@ -194,7 +203,21 @@ export default function usePropertyForm(
       } catch (err) {} // eslint-disable-line
     }
 
-    // TODO upload property profile here
+    if (isPropertyCreated && filePayload && filePayload.isUploadingProfile) {
+      let updatedProperty = {} as propertyModel;
+
+      // Upload new property's profile image
+      try {
+        updatedProperty = await postUploadFile(
+          property,
+          newProperty.id,
+          'profile',
+          filePayload.profileFile
+        );
+        Object.assign(newProperty, updatedProperty);
+        // fail silently
+      } catch (err) {} // eslint-disable-line
+    }
 
     handleSuccessResponse('new', newProperty);
     setIsLoading(false);
