@@ -36,6 +36,7 @@ import styles from '../styles.module.scss';
 import formErrors from './errors';
 import AttachmentList from '../../../common/AttachmentList';
 import {
+  canApproveJob,
   canAuthorizeJob,
   canExpediteJob
 } from '../../../common/utils/userPermissions';
@@ -78,6 +79,7 @@ type Inputs = {
   type: string;
   action: string;
   trelloCardURL: string;
+  expediteReason: string;
 };
 
 interface LayoutProps {
@@ -124,6 +126,7 @@ const sowValidator = (value) => {
 };
 
 const formActionButtons = (
+  job: jobModel,
   canApprove: boolean,
   canAuthorize: boolean,
   canExpedite: boolean,
@@ -133,12 +136,12 @@ const formActionButtons = (
   onFormAction: (action: string) => void
 ) => (
   <>
-    {canApprove && (
+    {job.state === 'open' && (
       <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
         <button
           type="button"
           data-testid="job-form-approve"
-          disabled={isLoading}
+          disabled={isLoading || !canApprove}
           className={clsx(
             styles.button__submit,
             isMobile && styles.button__fullwidth
@@ -147,14 +150,19 @@ const formActionButtons = (
         >
           Approve
         </button>
+        {!canApprove && (
+          <p className={clsx('-c-gray-light', '-mb-none')}>
+            You do not have permission to approve this job
+          </p>
+        )}
       </div>
     )}
-    {canAuthorize && (
+    {job.state === 'approved' && (
       <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
         <button
           type="button"
           data-testid="job-form-authorize"
-          disabled={isLoading}
+          disabled={isLoading || !canAuthorize}
           className={clsx(
             styles.button__submit,
             isMobile && styles.button__fullwidth
@@ -164,6 +172,11 @@ const formActionButtons = (
         >
           Authorize
         </button>
+        {!canAuthorize && (
+          <p className={clsx('-c-gray-light', '-mb-none')}>
+            You do not have permission to authorize this job
+          </p>
+        )}
       </div>
     )}
     {canExpedite && (
@@ -277,6 +290,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   };
 
   const needValidationOptions: any = {};
+  const expediteReasonValidation: any = {};
   const sowValidationOptions: any = {};
   if (isApprovedOrAuthorized) {
     // Add need validation if job is in approve or authorized state
@@ -284,6 +298,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
 
     // Add scope of work validation if job is in approve or authorized state
     sowValidationOptions.validate = sowValidator;
+  }
+  if (job.expediteReason) {
+    // Add expedite reason required if it is present
+    expediteReasonValidation.required = formErrors.expediteReasonRequired;
   }
 
   const onInputFileChange = (ev) => {
@@ -403,6 +421,29 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   <ErrorLabel formName="need" errors={formState.errors} />
                 </div>
               </div>
+              {job.expediteReason && (
+                <div className={styles.jobNew__formGroup}>
+                  <label htmlFor="jobExpediteReason">
+                    Expedite Reason <span>*</span>
+                  </label>
+                  <div className={styles.jobNew__formGroup__control}>
+                    <textarea
+                      id="jobExpediteReason"
+                      className="form-control"
+                      rows={3}
+                      name="expediteReason"
+                      defaultValue={job.expediteReason}
+                      data-testid="job-form-expedite-reason"
+                      {...register('expediteReason', expediteReasonValidation)}
+                      disabled={isLoading || isJobComplete}
+                    ></textarea>
+                    <ErrorLabel
+                      formName="expediteReason"
+                      errors={formState.errors}
+                    />
+                  </div>
+                </div>
+              )}
               <div
                 className={styles.jobNew__formGroup}
                 data-testid="job-form-type"
@@ -506,6 +547,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
               )}
               {!isMobile &&
                 formActionButtons(
+                  job,
                   canApprove,
                   canAuthorize,
                   canExpedite,
@@ -709,6 +751,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
 
           {isMobile &&
             formActionButtons(
+              job,
               canApprove,
               canAuthorize,
               canExpedite,
@@ -821,10 +864,11 @@ const JobForm: FunctionComponent<Props> = ({
   const isJobComplete = !isNewJob && job.state === 'complete';
   const hasMetSowReq =
     Boolean(job.scopeOfWork) || (job.scopeOfWorkAttachments || []).length > 0;
-  const canApprove = !isNewJob && job.state === 'open' && hasMetSowReq;
+  const canApprove =
+    hasMetSowReq && canApproveJob(isNewJob, user, property.id, job);
   const bidsRequired = job.minBids - bids.length;
 
-  const canAuthorize = canAuthorizeJob(jobId, user, job, bids);
+  const canAuthorize = canAuthorizeJob(jobId, user, property.id, job, bids);
 
   const canExpedite = canExpediteJob(jobId, user, job);
 
@@ -855,7 +899,19 @@ const JobForm: FunctionComponent<Props> = ({
     if (hasErrors) return;
 
     const formData = getFormValues();
-    const difference = diff(apiJob, formData);
+    const difference: jobModel = diff(apiJob, formData) as jobModel;
+
+    // Check if it is an expedite request
+    if (action === 'expedite') {
+      // eslint-disable-next-line no-alert
+      const expediteReason = window.prompt('Expedite Reason');
+
+      if (!expediteReason) {
+        return;
+      }
+      difference.expediteReason = expediteReason;
+    }
+
     // Make request to api call
     onPublish(difference, action);
   };

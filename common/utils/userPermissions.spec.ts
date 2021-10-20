@@ -344,9 +344,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedExpeditedMaintenanceJob,
         bids: [{ state: 'approved' } as bidModel],
         expected: false,
-        msg: 'rejects team member from authorize expedited job with single approved bid'
+        msg: 'rejects team member from authorizing expedited job with single approved bid'
       },
-
       {
         jobId: 'job-1',
         user: teamMember,
@@ -388,13 +387,47 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: true,
-        msg: 'allows admin to authorize large job when enough bids exist and one is approved'
+        msg: 'allows admin to authorize large job that meets all authorize conditions'
+      },
+      {
+        jobId: 'job-1',
+        user: corporate,
+        job: approvedLargeJob,
+        bids: [
+          { state: 'approved' } as bidModel,
+          { state: 'open' } as bidModel,
+          { state: 'open' } as bidModel
+        ],
+        expected: false,
+        msg: 'does not allow corporate to authorize large job that meets all authorize conditions'
+      },
+      {
+        jobId: 'job-1',
+        user: corporate,
+        job: { type: 'small:hybrid', minBids: 2 } as jobModel,
+        bids: [
+          { state: 'approved' } as bidModel,
+          { state: 'open' } as bidModel
+        ],
+        expected: false,
+        msg: 'allows corporate to authorize small job that meets all authorize conditions'
+      },
+      {
+        jobId: 'job-1',
+        user: propertyMember,
+        job: { type: 'small:pm', minBids: 2 } as jobModel,
+        bids: [
+          { state: 'approved' } as bidModel,
+          { state: 'open' } as bidModel
+        ],
+        expected: false,
+        msg: 'allows property level user to authorize small pm job that meets all authorize conditions'
       }
     ];
 
     for (let i = 0; i < data.length; i += 1) {
       const { jobId, user, job, bids, expected, msg } = data[i];
-      const actual = util.canAuthorizeJob(jobId, user, job, bids);
+      const actual = util.canAuthorizeJob(jobId, user, 'property-1', job, bids);
       expect(actual, msg).toEqual(expected);
     }
   });
@@ -459,7 +492,95 @@ describe('Unit | Common | Utils | User Permissions', () => {
     }
   });
 
-  test('it should check for apporve bid conditions for different user role', () => {
+  test('it should only allow approving jobs for certain conditions and user permissions', () => {
+    const data = [
+      {
+        isNewJob: true,
+        user: admin,
+        job: { type: 'small:pm' } as jobModel,
+        expected: false,
+        msg: 'does not allow admin to approve new job'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: { type: 'small:pm', state: 'open' } as jobModel,
+        expected: true,
+        msg: 'allows admin to approve open job'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: { type: 'large:am', state: 'open' } as jobModel,
+        expected: true,
+        msg: 'allows admin to approve, large, open job'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: { type: 'large:am', state: 'approved' } as jobModel,
+        expected: false,
+        msg: 'does not allow admin to approve approved job'
+      },
+      {
+        isNewJob: false,
+        user: propertyMember,
+        job: { type: 'small:pm', state: 'open' } as jobModel,
+        expected: true,
+        msg: 'allows property level user to approve small:pm type jobs'
+      },
+      {
+        isNewJob: true,
+        user: propertyMember,
+        job: { type: 'large:am' } as jobModel,
+        expected: false,
+        msg: 'does not allow property level user to approve new job'
+      },
+      {
+        isNewJob: false,
+        user: propertyMember,
+        job: { type: 'large:am', state: 'open' } as jobModel,
+        expected: false,
+        msg: 'does not allow property level user to approve large jobs'
+      },
+      {
+        isNewJob: true,
+        user: corporate,
+        job: { type: 'small:pm' } as jobModel,
+        expected: false,
+        msg: 'does not allow corporate user to approve a new job'
+      },
+      {
+        isNewJob: false,
+        user: corporate,
+        job: { type: 'small:hybrid', state: 'open' } as jobModel,
+        expected: true,
+        msg: 'allow corporate user to approve open, small hybird, job'
+      },
+      {
+        isNewJob: false,
+        user: corporate,
+        job: { type: 'small:pm', state: 'open' } as jobModel,
+        expected: true,
+        msg: 'allow corporate user to approve open, small pm, job'
+      },
+      {
+        isNewJob: false,
+        user: corporate,
+        job: { type: 'large:am', state: 'open' } as jobModel,
+        expected: false,
+        msg: 'does not allow corporate user to approve large job'
+      }
+    ];
+
+    for (let i = 0; i < data.length; i += 1) {
+      const { isNewJob, user, job, expected, msg } = data[i];
+      const actual = util.canApproveJob(isNewJob, user, 'property-1', job);
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
+  test('it should only allow approving bids for certain conditions and user permissions', () => {
     const data = [
       {
         isNewBid: true,
@@ -486,7 +607,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: { type: 'large:am' } as jobModel,
         bid: { state: 'open' } as bidModel,
         expected: true,
-        msg: 'allow admin to approve open bid for large as well'
+        msg: 'allow admin to approve bid for large job'
       },
       {
         isNewBid: false,
@@ -504,16 +625,16 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: { type: 'small:pm' } as jobModel,
         bid: { state: 'open' } as bidModel,
         expected: true,
-        msg: 'allow property user to approve open bid for small:pm job'
+        msg: 'allows property level user to approve open bid for small:pm job'
       },
       {
         isNewBid: true,
         propertyId: 'property-1',
         user: propertyMember,
-        job: { type: 'large:am' } as jobModel,
-        bid: {} as bidModel,
+        job: { type: 'small:pm' } as jobModel,
+        bid: { state: 'open' } as bidModel,
         expected: false,
-        msg: 'does not allow property user to approve new bid'
+        msg: 'does not allow property level user to approve new bid'
       },
       {
         isNewBid: false,
@@ -529,7 +650,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         propertyId: 'property-1',
         user: corporate,
         job: { type: 'large:am' } as jobModel,
-        bid: {} as bidModel,
+        bid: { state: 'open' } as bidModel,
         expected: false,
         msg: 'does not allow corporate user to approve new bid'
       },
@@ -540,7 +661,16 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: { type: 'small:pm' } as jobModel,
         bid: { state: 'open' } as bidModel,
         expected: true,
-        msg: 'allow corporate user to approve open bid for small job'
+        msg: 'allows corporate user to approve open bid for small pm job'
+      },
+      {
+        isNewBid: false,
+        propertyId: 'property-1',
+        user: corporate,
+        job: { type: 'small:hybrid' } as jobModel,
+        bid: { state: 'open' } as bidModel,
+        expected: true,
+        msg: 'allows corporate user to approve open bid for small, hybrid, job'
       },
       {
         isNewBid: false,

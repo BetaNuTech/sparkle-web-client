@@ -138,11 +138,12 @@ export const canUpdateCompanySettings = (user: userModel): boolean =>
 export const canAuthorizeJob = (
   jobId: string,
   user: userModel,
+  propertyId: string,
   job: jobModel,
   bids: bidModel[]
 ): boolean => {
   if (jobId === 'new' || job.state !== 'approved') {
-    return false;
+    return false; // Cannot authorize new/unapproved jobs
   }
 
   const minBids = job.minBids || Infinity;
@@ -150,18 +151,65 @@ export const canAuthorizeJob = (
   const hasMetApprovedBidReq =
     bids.filter((bid) => bid.state === 'approved').length > 0;
 
-  // Expedited job
+  // Only allow admins to authorize, qualified, expedited jobs
   if (job.authorizedRules === 'expedite') {
     return user.admin && hasMetMinBidReq && hasMetApprovedBidReq;
   }
 
-  // Large job
+  // Only allow admins to authorize, qualified, large jobs
   if (job.authorizedRules === 'large') {
     return user.admin && hasMetMinBidReq && hasMetApprovedBidReq;
   }
 
-  // Default job
-  return hasMetApprovedBidReq && hasMetMinBidReq;
+  // Allow admins to authorize all qualifying jobs
+  if (user.admin) {
+    return hasMetMinBidReq && hasMetApprovedBidReq;
+  }
+
+  // Allow corporates to authorize any small job
+  if (user.corporate) {
+    return (
+      job.type.search(/^small/i) === 0 &&
+      hasMetMinBidReq &&
+      hasMetApprovedBidReq
+    );
+  }
+
+  // Allow property level users to authorize small pm jobs
+  if (!user.corporate && !user.admin && hasPropertyAccess(user, propertyId)) {
+    return job.type === 'small:pm' && hasMetMinBidReq && hasMetApprovedBidReq;
+  }
+
+  return false;
+};
+
+// User can transition job to approved state
+export const canApproveJob = (
+  isNewJob: boolean,
+  user: userModel,
+  propertyId: string,
+  job: jobModel
+): boolean => {
+  if (isNewJob || job.state !== 'open') {
+    return false; // cannot approve new/non-open jobs
+  }
+
+  // Allow admins to approve all open jobs
+  if (user.admin) {
+    return true;
+  }
+
+  // Allow corporate users to approve any small job
+  if (user.corporate) {
+    return job.type.search(/^small/i) === 0;
+  }
+
+  // Allow property managers to approve small property management jobs
+  if (!user.corporate && !user.admin && hasPropertyAccess(user, propertyId)) {
+    return job.type === 'small:pm';
+  }
+
+  return false;
 };
 
 // Checks user can expedite the job
@@ -185,20 +233,24 @@ export const canApproveBid = (
   job: jobModel,
   bid: bidModel
 ): boolean => {
-  // For admin user and open state bid
-  let canApprove = !isNewBid && user.admin && bid.state === 'open';
+  if (isNewBid || bid.state !== 'open') {
+    return false; // cannot approve new/non-open bids
+  }
 
+  // Allow admins to approve all
+  if (user.admin) {
+    return true;
+  }
+
+  // Allow corporate users to approve any small job
   if (user.corporate) {
-    // If user is corporate and has small keyword in job type
-    canApprove = job.type.indexOf('small') !== -1;
+    return job.type.search(/^small/i) === 0;
   }
 
+  // Allow property managers to approve small property management jobs
   if (!user.corporate && !user.admin && hasPropertyAccess(user, propertyId)) {
-    // If user is not corporate nor admin and has poperty access
-    // and has small:pm keyword in job type
-    canApprove = job.type.indexOf('small:pm') !== -1;
+    return job.type === 'small:pm';
   }
 
-  // Default job
-  return canApprove;
+  return false;
 };

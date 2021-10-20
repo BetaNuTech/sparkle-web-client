@@ -8,6 +8,7 @@ interface job {
   scopeOfWorkAttachments?: Array<attachmentModel>;
   scopeOfWork?: string;
   trelloCardURL?: string;
+  expediteReason?: string;
   property: string;
   createdAt?: number;
   updatedAt?: number;
