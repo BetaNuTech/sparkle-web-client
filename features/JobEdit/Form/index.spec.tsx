@@ -4,7 +4,8 @@ import {
   render as rtlRender,
   screen,
   fireEvent,
-  act
+  act,
+  waitFor
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
@@ -749,7 +750,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       isOnline: true,
       isStaging: true,
       isNewJob: false,
-      user: { ...noAccess },
+      user: { ...user },
       bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
@@ -775,16 +776,17 @@ describe('Unit | Features | Job Edit | Form', () => {
   });
 
   it('should request to transition job to authorized when authorize button selected', async () => {
-    const putReq = sinon.spy();
+    const putReq = sinon.stub();
     const expected = 'authorized';
     const props = {
+      jobId: approvedImprovementJob.id,
       job: approvedImprovementJob,
       property: fullProperty,
       apiState,
       isOnline: true,
       isStaging: true,
       isNewJob: false,
-      user: { ...noAccess },
+      user: { ...user },
       bids,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
@@ -798,13 +800,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    await act(async () => {
-      const btnAuthorize = screen.queryByTestId('job-form-authorize');
-      await userEvent.click(btnAuthorize);
+    act(() => {
+      const btnAuthorize = screen.getByTestId('job-form-authorize');
+      userEvent.click(btnAuthorize);
     });
 
+    await waitFor(() => putReq.called);
+
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[2] : {};
+    const result = putReq.getCall(0).args[2];
     const actual = result.state || '';
     expect(actual).toEqual(expected);
   });
@@ -813,6 +817,7 @@ describe('Unit | Features | Job Edit | Form', () => {
     const putReq = sinon.spy();
     const expected = 'expedite';
     const props = {
+      jobId: approvedImprovementJob.id,
       job: approvedImprovementJob,
       property: fullProperty,
       apiState,
@@ -839,18 +844,26 @@ describe('Unit | Features | Job Edit | Form', () => {
       isDeleteTrelloCardPromptVisible: false
     };
 
+    let promptCalled = false;
+    window.prompt = jest.fn().mockImplementation(() => {
+      promptCalled = true;
+      return true;
+    });
+
     render(<JobForm {...props} />, {
       contextWidth: breakpoints.desktop.minWidth
     });
 
     await act(async () => {
-      const btnExpedite = screen.queryByTestId('job-form-expedite');
-      await userEvent.click(btnExpedite);
+      const btnExpedite = screen.getByTestId('job-form-expedite');
+      userEvent.click(btnExpedite);
+      await waitFor(() => promptCalled); // eslint-disable-line
     });
 
     // Send update request
     const result = putReq.called ? putReq.getCall(0).args[2] : {};
     const actual = result.authorizedRules || '';
+    expect(window.prompt).toHaveBeenCalled();
     expect(actual).toEqual(expected);
   });
 
