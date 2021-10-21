@@ -101,13 +101,11 @@ export default function useTrelloLists(
   }, [openBoardId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Inital load of closed boards lists
-  // NOTE: avoids requesing if closed board
-  //       is the same as the open board
   useEffect(() => {
-    if (closedBoardId && closedBoardId !== openBoardId) {
+    if (closedBoardId) {
       findLists(closedBoardId, false);
     }
-  }, [openBoardId, closedBoardId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [closedBoardId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { isOpenLoading, isClosedLoading, findLists, openLists, closeLists };
 }

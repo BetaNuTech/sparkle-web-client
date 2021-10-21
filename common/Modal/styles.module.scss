@@ -131,7 +131,7 @@
   }
 
   &.-topLeft {
-    top: $global-sm-padding;
+    top: rem-calc(15);
     left: $global-sm-padding;
     right: auto;
   }

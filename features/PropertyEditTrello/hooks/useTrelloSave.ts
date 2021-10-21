@@ -66,7 +66,7 @@ export default function useTrelloSave(
       payload.openListName = selections.openList.name;
     }
 
-    return IntegrationsDb.updatePropertyTrelloRecord(
+    return IntegrationsDb.upsertPropertyTrelloRecord(
       firestore,
       propertyId,
       payload

@@ -19,7 +19,7 @@ describe('Unit | Features | Trello | Hooks | Use Trello Save', () => {
 
     // Stubs
     const onUpdate = sinon
-      .stub(integrationsDb, 'updatePropertyTrelloRecord')
+      .stub(integrationsDb, 'upsertPropertyTrelloRecord')
       .resolves({} as propertyTrelloIntegration);
     const sendNotification = sinon.spy();
     sinon.stub(Router, 'push').returns();
@@ -47,7 +47,7 @@ describe('Unit | Features | Trello | Hooks | Use Trello Save', () => {
 
     // Stubs
     sinon
-      .stub(integrationsDb, 'updatePropertyTrelloRecord')
+      .stub(integrationsDb, 'upsertPropertyTrelloRecord')
       .rejects(Error('fail'));
     const sendErrorReport = sinon
       .stub(errorReports, 'send')
@@ -79,7 +79,7 @@ describe('Unit | Features | Trello | Hooks | Use Trello Save', () => {
 
     // Stubs
     sinon
-      .stub(integrationsDb, 'updatePropertyTrelloRecord')
+      .stub(integrationsDb, 'upsertPropertyTrelloRecord')
       .resolves({} as propertyTrelloIntegration);
     const sendNotification = sinon.spy();
     const redirect = sinon.stub(Router, 'push').returns();
