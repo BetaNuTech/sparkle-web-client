@@ -7,6 +7,18 @@
   background-color: $gray-light-3;
   overflow-x: hidden;
 
+  &__backIcon {
+    svg {
+      width: rem-calc(18);
+      height: rem-calc(23);
+      padding-bottom: rem-calc(6);
+    }
+  }
+
+  &__emptyHeading {
+    padding: $global-padding $global-lg-padding;
+  }
+
   &__items {
     list-style-type: none;
     border-bottom: 1px solid $gray-light-3;

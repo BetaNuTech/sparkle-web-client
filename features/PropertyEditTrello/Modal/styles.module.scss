@@ -31,7 +31,8 @@
 
   &__dropdownGroup {
     margin: $global-xsm-padding;
-    width: 98%;
+    margin-left: $global-mlg-padding;
+    margin-right: $global-mlg-padding;
     text-align: center;
 
     &__title {

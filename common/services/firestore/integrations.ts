@@ -33,8 +33,9 @@ export default {
     return { status, error, data: docData };
   },
 
-  // Update a Property's Trello integration in Firestore
-  updatePropertyTrelloRecord(
+  // Set a Property's Trello integration in Firestore
+  // creates record if non-existent, otherwise updates it
+  upsertPropertyTrelloRecord(
     firestore: firebase.firestore.Firestore,
     propertyId: string,
     payload: propertyTrelloIntegrationModel
@@ -42,12 +43,12 @@ export default {
     return firestore
       .collection(fbCollections.integrations)
       .doc(`trello-${propertyId}`)
-      .update(payload)
+      .set(payload, { merge: true })
       .then(() => payload as propertyTrelloIntegrationModel)
       .catch((err) =>
         Promise.reject(
           Error(
-            `services: firestore: integrations: updatePropertyTrelloRecord: failed: ${err}`
+            `services: firestore: integrations: upsertPropertyTrelloRecord: failed: ${err}`
           )
         )
       );

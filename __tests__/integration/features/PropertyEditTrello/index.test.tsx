@@ -17,7 +17,7 @@ import {
   propertyTrelloIntegration
 } from '../../../../__mocks__/trello';
 import { fullProperty } from '../../../../__mocks__/properties';
-import Trello from '../../../../features/Trello';
+import PropertyEditTrello from '../../../../features/PropertyEditTrello';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 import trelloApi from '../../../../common/services/api/trello';
@@ -45,15 +45,59 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-describe('Integration | Features | Trello', () => {
+describe('Integration | Features | Property Edit Trello', () => {
   afterEach(() => sinon.restore());
+
+  it('renders all a trello boards lists in selection modal', async () => {
+    const expected = [trelloLists[0].id, trelloLists[1].id].join(' | ');
+
+    // Stubs
+    sinon.stub(trelloApi, 'findAllBoardLists').resolves(trelloLists);
+
+    const props = {
+      property: fullProperty,
+      isOnline: true,
+      trelloUser,
+      trelloProperty: propertyTrelloIntegration,
+      trelloBoards,
+      hasUpdateCompanySettingsPermission: true,
+      redirectToProperty: () => true
+    };
+    render(<PropertyEditTrello {...props} />);
+
+    const results = [];
+    await act(async () => {
+      await waitFor(() => screen.queryByTestId('trello-modal'));
+      await waitFor(() => {
+        const listPill = screen.getByTestId('open-lists-pill');
+        const content = (listPill && listPill.textContent) || '';
+        return content.search(/loading/i) > -1;
+      });
+
+      const listsPill = screen.getByTestId('open-lists-pill');
+      await userEvent.click(listsPill);
+      await waitFor(() => screen.queryByTestId('selection-modal'));
+
+      const list1 = screen.getByTestId(
+        `checkbox-item-${trelloLists[0].id}`
+      ) as HTMLInputElement;
+      results.push(list1 ? list1.value : '');
+      const list2 = screen.getByTestId(
+        `checkbox-item-${trelloLists[1].id}`
+      ) as HTMLInputElement;
+      results.push(list2 ? list2.value : '');
+    });
+
+    const actual = results.join(' | ');
+    expect(actual).toEqual(expected);
+  });
 
   it('submits user property trello selections to be saved', async () => {
     const expected = true;
 
     // Stubs
     const putReq = sinon
-      .stub(integrationsDb, 'updatePropertyTrelloRecord')
+      .stub(integrationsDb, 'upsertPropertyTrelloRecord')
       .resolves(propertyTrelloIntegration);
     sinon.stub(Router, 'push').returns();
     sinon.stub(trelloApi, 'findAllBoardLists').resolves(trelloLists);
@@ -67,7 +111,7 @@ describe('Integration | Features | Trello', () => {
       hasUpdateCompanySettingsPermission: true,
       redirectToProperty: () => true
     };
-    render(<Trello {...props} />);
+    render(<PropertyEditTrello {...props} />);
 
     await act(async () => {
       await waitFor(() => screen.queryByTestId('trello-modal'));
@@ -104,7 +148,7 @@ describe('Integration | Features | Trello', () => {
       hasUpdateCompanySettingsPermission: true,
       redirectToProperty: () => true
     };
-    render(<Trello {...props} />);
+    render(<PropertyEditTrello {...props} />);
 
     const results = [];
     await act(async () => {
@@ -122,50 +166,6 @@ describe('Integration | Features | Trello', () => {
         `checkbox-item-${trelloBoards[1].id}`
       ) as HTMLInputElement;
       results.push(board2 ? board2.value : '');
-    });
-
-    const actual = results.join(' | ');
-    expect(actual).toEqual(expected);
-  });
-
-  it('renders all a trello boards lists in selection modal', async () => {
-    const expected = [trelloLists[0].id, trelloLists[1].id].join(' | ');
-
-    // Stubs
-    sinon.stub(trelloApi, 'findAllBoardLists').resolves(trelloLists);
-
-    const props = {
-      property: fullProperty,
-      isOnline: true,
-      trelloUser,
-      trelloProperty: propertyTrelloIntegration,
-      trelloBoards,
-      hasUpdateCompanySettingsPermission: true,
-      redirectToProperty: () => true
-    };
-    render(<Trello {...props} />);
-
-    const results = [];
-    await act(async () => {
-      await waitFor(() => screen.queryByTestId('trello-modal'));
-      await waitFor(() => {
-        const listPill = screen.getByTestId('open-lists-pill');
-        const content = (listPill && listPill.textContent) || '';
-        return content.search(/loading/i) > -1;
-      });
-
-      const listsPill = screen.getByTestId('open-lists-pill');
-      await userEvent.click(listsPill);
-      await waitFor(() => screen.queryByTestId('selection-modal'));
-
-      const list1 = screen.getByTestId(
-        `checkbox-item-${trelloLists[0].id}`
-      ) as HTMLInputElement;
-      results.push(list1 ? list1.value : '');
-      const list2 = screen.getByTestId(
-        `checkbox-item-${trelloLists[1].id}`
-      ) as HTMLInputElement;
-      results.push(list2 ? list2.value : '');
     });
 
     const actual = results.join(' | ');
