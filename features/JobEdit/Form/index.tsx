@@ -841,7 +841,6 @@ const JobForm: FunctionComponent<Props> = ({
         formJob.state = 'authorized';
         break;
       case 'expedite':
-        formJob.state = 'authorized';
         formJob.authorizedRules = 'expedite';
         break;
       default:
