@@ -114,16 +114,16 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
         <div className={styles.propertyEditMobile__formGroup}>
           <div className={styles.propertyEditMobile__formGroup__control}>
             <label htmlFor="name">Name</label>
-            <ErrorLabel formName="nameRequired" errors={formErrors} />
             <input
               id="name"
               type="text"
               name="name"
-              className={styles.propertyEditMobile__input}
+              className={clsx(formErrors.nameRequired ? '-mb-none' : '')}
               data-testid="property-name"
               onChange={handleChange}
               value={formState.name || ''}
             />
+            <ErrorLabel formName="nameRequired" errors={formErrors} />
           </div>
         </div>
         {/* Team */}
@@ -153,7 +153,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               id="code"
               type="text"
               name="code"
-              className={styles.propertyEditMobile__input}
               data-testid="cobalt-code"
               onChange={handleChange}
               value={formState.code || ''}
@@ -169,7 +168,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               placeholder="Address 1"
               type="text"
               name="addr1"
-              className={styles.propertyEditMobile__input}
               data-testid="address-1"
               onChange={handleChange}
               value={formState.addr1 || ''}
@@ -179,7 +177,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               placeholder="Address 2"
               type="text"
               name="addr2"
-              className={styles.propertyEditMobile__input}
               data-testid="address-2"
               onChange={handleChange}
               value={formState.addr2 || ''}
@@ -189,7 +186,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               placeholder="City"
               type="text"
               name="city"
-              className={styles.propertyEditMobile__input}
               data-testid="city"
               onChange={handleChange}
               value={formState.city || ''}
@@ -199,7 +195,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               placeholder="State"
               type="text"
               name="state"
-              className={styles.propertyEditMobile__input}
               data-testid="state"
               onChange={handleChange}
               value={formState.state || ''}
@@ -209,7 +204,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               placeholder="Postal Code"
               type="text"
               name="zip"
-              className={styles.propertyEditMobile__input}
               data-testid="zip"
               onChange={handleChange}
               value={formState.zip || ''}
@@ -224,7 +218,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               id="year_built"
               type="number"
               name="year_built"
-              className={styles.propertyEditMobile__input}
               data-testid="year-built"
               onChange={handleChange}
               value={formState.year_built || ''}
@@ -239,7 +232,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               id="num_of_units"
               type="number"
               name="num_of_units"
-              className={styles.propertyEditMobile__input}
               data-testid="number-of-units"
               onChange={handleChange}
               value={formState.num_of_units || ''}
@@ -254,7 +246,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               id="manager_name"
               type="text"
               name="manager_name"
-              className={styles.propertyEditMobile__input}
               data-testid="manager-name"
               onChange={handleChange}
               value={formState.manager_name || ''}
@@ -269,7 +260,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               id="maint_super_name"
               type="text"
               name="maint_super_name"
-              className={styles.propertyEditMobile__input}
               data-testid="super-name"
               onChange={handleChange}
               value={formState.maint_super_name || ''}
@@ -284,7 +274,6 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
               id="loan_type"
               type="text"
               name="loan_type"
-              className={styles.propertyEditMobile__input}
               data-testid="loan-type"
               onChange={handleChange}
               value={formState.loan_type || ''}
@@ -318,7 +307,7 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
       {property.id !== 'new' && (
         <button
           onClick={(e) => onQueuePropertyDelete(e, property)}
-          className={styles.propertyEditDesktop__deleteButton}
+          className={styles.propertyEditMobile__deleteButton}
         >
           Delete Property
         </button>

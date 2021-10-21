@@ -32,6 +32,7 @@
       grid-area: img;
       border: 1px solid $gray-lighter;
       padding: 0;
+      position: relative;
     }
 
     &__fields {
@@ -82,21 +83,20 @@
     }
   }
 
-  &__removePropertyImageButton,
-  &__removeLogoButton {
-    position: absolute;
-    top: 54.3%;
-    left: 46%;
+  &__optionsButton {
+    position: relative;
+    margin-bottom: 0;
+    padding: rem-calc(1) rem-calc(6);
     background-color: transparent;
     text-decoration: underline;
+    font-size: $medium-small-font-size;
     color: $primary-dark-color;
     border: none;
-    z-index: 150;
-    margin-top: $global-padding;
-    font-size: $medium-font-size;
+    cursor: pointer;
   }
 
   &__removeLogoButton {
+    @extend .propertyEditDesktop__optionsButton;
     top: 80.5%;
     left: 9%;
   }
@@ -120,36 +120,47 @@
     text-align: center;
     z-index: 100;
     background-color: transparent;
+  }
 
-    .propertyEditDesktop__options {
-      height: $global-mlg-padding;
-      width: rem-calc(288);
-      position: absolute;
-      top: 94%;
-      left: 34%;
+  &__options {
+    height: $global-mlg-padding;
+    width: rem-calc(288);
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(242, 242, 242, 0.75);
+    font-size: $medium-small-font-size;
+    padding: $global-sm-padding;
+    z-index: 150;
+    border: 1px solid $gray-lighter;
+
+    &--bottomRight {
+      border-bottom-width: 0;
+      border-right-width: 0;
+    }
+
+    &__title {
+      margin: 0;
+      font-size: $medium-small-font-size;
+      color: #1d1e20;
+      cursor: pointer;
+    }
+  }
+
+  &__logoOptions {
+    @extend .propertyEditDesktop__options;
+    position: relative;
+    width: rem-calc(145);
+    left: 0%;
+    margin-top: rem-calc(-30);
+    &__optionsContainer {
+      width: 70%;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      text-align: center;
-      background-color: rgba(242, 242, 242, 0.75);
-      font-size: $medium-font-size;
-      padding: $global-md-padding;
-      z-index: 150;
-      border: 1px solid $gray-lighter;
-
-      &__title {
-        margin: 0;
-        font-size: $medium-font-size;
-        color: #1d1e20;
-        cursor: pointer;
-      }
-
-      &__option {
-        margin: 0;
-        text-decoration: underline;
-        font-size: $medium-font-size;
-        color: $primary-dark-color;
-      }
     }
   }
 

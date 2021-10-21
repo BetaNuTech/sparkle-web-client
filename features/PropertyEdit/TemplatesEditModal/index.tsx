@@ -51,7 +51,7 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
       <header
         className={clsx(styles.modal__header, '-mb-sm', '-br-bottom-none')}
       >
-        <h5 className={styles.modal__heading}>Templates Select</h5>
+        <h5 className={styles.modal__heading}>Select Templates</h5>
       </header>
 
       <label className={styles.templatesEditModal__search}>

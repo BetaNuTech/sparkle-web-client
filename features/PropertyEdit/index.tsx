@@ -18,7 +18,6 @@ import UpdateTeamModal from './UpdateTeamModal';
 import TemplatesEditModal from './TemplatesEditModal';
 import LoadingHud from '../../common/LoadingHud';
 import styles from './styles.module.scss';
-import errors from './errors';
 import propertyModel from '../../common/models/property';
 import teamModel from '../../common/models/team';
 import DeletePropertyPrompt from '../../common/prompts/DeletePropertyPrompt';
@@ -66,11 +65,11 @@ const PropertyEdit: FunctionComponent<Props> = ({
   // Form submission hook
   const {
     isLoading,
-    propertyCreate,
-    propertyUpdate,
-    errors: requesErrors
+    onSubmit,
+    errors: requestErrors,
+    formErrors
   } = usePropertyForm(sendNotification);
-  const userRequestErrors = requesErrors.map((e) => e.detail);
+  const userRequestErrors = requestErrors.map((e) => e.detail);
 
   // Open & Close Team Modal
   const [isUpdateTeamModalVisible, setUpdateTeamModalVisible] = useState(false);
@@ -103,6 +102,8 @@ const PropertyEdit: FunctionComponent<Props> = ({
   const [selectedTemplates, setSelectedTemplates] = useState<any>(
     Object.keys(property.templates || {})
   );
+  const [areTemplatesUpdated, setAreTemplatesUpdated] =
+    useState<boolean>(false);
   const updateTempatesList = (selectedId: string) => {
     const isRemoving = selectedTemplates.includes(selectedId);
     if (isRemoving) {
@@ -113,6 +114,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
     setSelectedTemplates([...selectedTemplates]);
     formState.templates = selectedTemplates;
     setFormState(formState);
+    setAreTemplatesUpdated(true);
   };
 
   // Templates search setup
@@ -130,6 +132,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
   // Selected templates names
   const templateNames = selectedTemplates
     .map((id) => filteredTemplates.find((tmpl) => tmpl.id === id))
+    .filter(Boolean)
     .map((tmpl) => tmpl.name);
 
   // Form Images
@@ -160,79 +163,20 @@ const PropertyEdit: FunctionComponent<Props> = ({
     setFormState({ ...formState, [fieldName]: fleldVal });
   };
 
-  // Form Validation
-  const [formErrors, setFormErrors] = useState<any>({});
-  let error;
-  const formValidation = () => {
-    error = {};
-    if (!property.id && !formState.name) {
-      error.nameRequired = { message: errors.nameRequired };
-    }
-    setFormErrors({ ...error });
-  };
-
   // Form submit handler
-  // convert form state into
-  // API friendly JSON and publish
-  // TODO: Move on Submit Login to a hook
-  const onSubmit = (evt) => {
+  const submitHandler = (evt) => {
     evt.preventDefault();
-    formValidation();
 
-    const hasErrors = Boolean(Object.keys(error).length);
-    if (hasErrors) return;
-
-    let payload: any = {};
-
-    // Check state for updates and add to payload
-    Object.keys(formState).forEach((item) => {
-      if (JSON.stringify(formState[item]) !== JSON.stringify(property[item])) {
-        payload = {
-          ...payload,
-          [item]:
-            item === 'num_of_units' || item === 'year_built'
-              ? Number(formState[item])
-              : formState[item]
-        };
-      }
-    });
-
-    const isCreatingProperty = !property.id;
-
-    // Add any user template updates
-    // TODO: do not include templates
-    //       unless user updated them
-    if (formState.templates) {
-      payload.templates = selectedTemplates.reduce((acc, templateId) => {
-        acc[templateId] = true;
-        return acc;
-      }, {});
-    }
-
-    const filePayload = {
-      isUploadingLogo: false,
-      logoFile: null,
-      isUploadingProfile: false,
-      profileFile: null
-    };
-
-    if (logoImg !== property.logoURL) {
-      filePayload.isUploadingLogo = true;
-      filePayload.logoFile = logoFile;
-    }
-
-
-    if (profileFile !== property.photoURL) {
-      filePayload.isUploadingProfile = true;
-      filePayload.profileFile = profileFile;
-    }
-
-
-    if (isCreatingProperty) {
-      propertyCreate(payload, filePayload);
-    } else {
-      propertyUpdate(property.id, payload, filePayload);
-    }
+    onSubmit(
+      formState,
+      areTemplatesUpdated,
+      selectedTemplates,
+      logoImg,
+      logoFile,
+      properyImg,
+      profileFile,
+      property
+    );
   };
 
   // Queue and Delete Property
@@ -274,7 +218,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
     <button
       data-testid="save-button-mobile"
       className={styles.saveButton}
-      onClick={(e) => onSubmit(e)}
+      onClick={(e) => submitHandler(e)}
       disabled={isLoading}
     >
       Save
@@ -324,7 +268,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
             openTemplatesEditModal={openTemplatesEditModal}
             property={property}
             selectedTeamId={selectedTeamId}
-            onSubmit={(e) => onSubmit(e)}
+            onSubmit={(e) => submitHandler(e)}
             handleChange={handleChange}
             properyImg={properyImg}
             logoImg={logoImg}

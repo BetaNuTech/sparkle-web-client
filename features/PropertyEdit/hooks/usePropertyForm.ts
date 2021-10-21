@@ -8,6 +8,7 @@ import ErrorServerInternal from '../../../common/models/errors/serverInternal';
 import ErrorBadRequest, {
   BadRequestItem
 } from '../../../common/models/errors/badRequest';
+import formValidationErrors from '../errors';
 
 const PREFIX = 'features: EditProperty: hooks: usePropertyForm:';
 
@@ -15,6 +16,16 @@ type userNotifications = (message: string, options?: any) => any;
 interface usePropertyFormResult {
   isLoading: boolean;
   property?: propertyModel;
+  onSubmit(
+    formState: propertyModel,
+    areTemplatesUpdated: boolean,
+    selectedTemplates: string[],
+    logoImg: string,
+    logoFile: File,
+    properyImg: string,
+    profileFile: File,
+    editingProperty: propertyModel
+  ): void;
   propertyCreate(property: propertyModel, filePayload: any): void;
   propertyUpdate(
     propertyId: string,
@@ -22,6 +33,7 @@ interface usePropertyFormResult {
     filePayload: any
   ): void;
   errors: BadRequestItem[];
+  formErrors: any;
 }
 
 export default function usePropertyForm(
@@ -30,6 +42,7 @@ export default function usePropertyForm(
   const [isLoading, setIsLoading] = useState(false);
   const [property, setProperty] = useState(null);
   const [errors, setErrors] = useState<BadRequestItem[]>([]);
+  const [formErrors, setFormErrors] = useState({});
 
   const handleSuccessResponse = (
     propertyId: string,
@@ -46,6 +59,7 @@ export default function usePropertyForm(
         type: 'success'
       }
     );
+
     if (propertyId === 'new' && latestProperty) {
       Router.push(`/properties/${latestProperty.id}`);
     }
@@ -223,11 +237,94 @@ export default function usePropertyForm(
     setIsLoading(false);
   };
 
+  const onSubmit = (
+    formState: propertyModel,
+    areTemplatesUpdated: boolean,
+    selectedTemplates: string[],
+    logoImg: string,
+    logoFile: File,
+    properyImg: string,
+    profileFile: File,
+    editingProperty: propertyModel
+  ) => {
+    // Form Validation
+    // TODO replce with yup validation on form change event
+    const validationErrors: any = {};
+    if (!formState.name) {
+      validationErrors.nameRequired = {
+        message: formValidationErrors.nameRequired
+      };
+    }
+
+    const hasErrors =
+      validationErrors && Boolean(Object.keys(validationErrors).length);
+    if (hasErrors) {
+      setFormErrors(validationErrors);
+      return;
+    }
+
+    // Reset all errors
+    setFormErrors({});
+
+    let payload: any = {};
+
+    // Check state for updates and add to payload
+    Object.keys(formState).forEach((item) => {
+      if (
+        JSON.stringify(formState[item]) !==
+        JSON.stringify(editingProperty[item])
+      ) {
+        payload = {
+          ...payload,
+          [item]:
+            item === 'num_of_units' || item === 'year_built'
+              ? Number(formState[item])
+              : formState[item]
+        };
+      }
+    });
+
+    const isCreatingProperty = !editingProperty.id;
+
+    // Add any user template updates
+    if (formState.templates && areTemplatesUpdated) {
+      payload.templates = selectedTemplates.reduce((acc, templateId) => {
+        acc[templateId] = true;
+        return acc;
+      }, {});
+    }
+
+    const filePayload = {
+      isUploadingLogo: false,
+      logoFile: null,
+      isUploadingProfile: false,
+      profileFile: null
+    };
+
+    if (logoImg !== editingProperty.logoURL) {
+      filePayload.isUploadingLogo = true;
+      filePayload.logoFile = logoFile;
+    }
+
+    if (properyImg !== editingProperty.photoURL) {
+      filePayload.isUploadingProfile = true;
+      filePayload.profileFile = profileFile;
+    }
+
+    if (isCreatingProperty) {
+      propertyCreate(payload, filePayload);
+    } else {
+      propertyUpdate(editingProperty.id, payload, filePayload);
+    }
+  };
+
   return {
     isLoading,
     property,
+    onSubmit,
     propertyCreate,
     propertyUpdate,
-    errors
+    errors,
+    formErrors
   };
 }

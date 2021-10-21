@@ -77,24 +77,7 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             </span>{' '}
             Cancel
           </button>
-          {/* Remove Property Image Button */}
-          {properyImg && (
-            <button
-              className={styles.propertyEditDesktop__removePropertyImageButton}
-              onClick={removePropertyImage}
-            >
-              Remove
-            </button>
-          )}
-          {/* Remove Logo Button */}
-          {logoImg && (
-            <button
-              className={styles.propertyEditDesktop__removeLogoButton}
-              onClick={removeLogo}
-            >
-              Remove
-            </button>
-          )}
+
           {/* Property Image */}
           <input
             id="photoURL"
@@ -118,22 +101,48 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             ) : (
               'Add Image'
             )}
-            <div className={styles.propertyEditDesktop__options}>
-              <p className={styles.propertyEditDesktop__options__title}>
-                Property Image
-              </p>
+          </label>
+          <div
+            className={clsx(
+              styles.propertyEditDesktop__options,
+              styles['propertyEditDesktop__options--bottomRight']
+            )}
+          >
+            <div className={styles.propertyEditDesktop__options__title}>
+              Property Image
+            </div>
+            <div className={clsx('-d-flex')}>
               {properyImg ? (
-                <p className={styles.propertyEditDesktop__options__option}>
-                  Edit
-                </p>
+                <div className={clsx('-d-flex')}>
+                  <label
+                    className={styles.propertyEditDesktop__optionsButton}
+                    htmlFor="photoURL"
+                  >
+                    Edit
+                  </label>
+                  <div>|</div>
+                </div>
               ) : (
-                <p className={styles.propertyEditDesktop__options__option}>
+                <label
+                  className={styles.propertyEditDesktop__optionsButton}
+                  htmlFor="photoURL"
+                >
                   Add
-                </p>
+                </label>
+              )}
+              {/* Remove Property Image Button */}
+              {properyImg && (
+                <button
+                  className={styles.propertyEditDesktop__optionsButton}
+                  onClick={removePropertyImage}
+                >
+                  Remove
+                </button>
               )}
             </div>
-          </label>
+          </div>
         </div>
+
         <div className={styles.propertyEditDesktop__container__templates}>
           <div className={styles.propertyEditDesktop__buttonContainer}>
             <button
@@ -217,22 +226,48 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                       Add Logo
                     </div>
                   )}
-                  <div className={styles.propertyEditDesktop__options}>
+                </label>
+                <div className={styles.propertyEditDesktop__logoOptions}>
+                  <div
+                    className={
+                      styles.propertyEditDesktop__logoOptions__optionsContainer
+                    }
+                  >
                     {logoImg ? (
-                      <p
-                        className={styles.propertyEditDesktop__options__option}
-                      >
-                        Edit
-                      </p>
+                      <div className={clsx('-d-flex')}>
+                        <label
+                          className={clsx(
+                            styles.propertyEditDesktop__optionsButton,
+                            '-fw-normal'
+                          )}
+                          htmlFor="logoURL"
+                        >
+                          Edit
+                        </label>
+                        <div>|</div>
+                      </div>
                     ) : (
-                      <p
-                        className={styles.propertyEditDesktop__options__option}
+                      <label
+                        className={clsx(
+                          styles.propertyEditDesktop__optionsButton,
+                          ['-fw-thin']
+                        )}
+                        htmlFor="logoURL"
                       >
                         Add
-                      </p>
+                      </label>
+                    )}
+                    {/* Remove Logo Button */}
+                    {logoImg && (
+                      <button
+                        className={styles.propertyEditDesktop__optionsButton}
+                        onClick={removeLogo}
+                      >
+                        Remove
+                      </button>
                     )}
                   </div>
-                </label>
+                </div>
               </div>
             </div>
           </div>
@@ -241,16 +276,16 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
                 <label htmlFor="name">Name</label>
-                <ErrorLabel formName="nameRequired" errors={formErrors} />
                 <input
                   id="name"
                   type="text"
                   name="name"
-                  className={styles.propertyEditDesktop__input}
+                  className={clsx(formErrors.nameRequired ? '-mb-none' : '')}
                   data-testid="property-form-name"
                   onChange={handleChange}
                   value={formState.name || ''}
                 />
+                <ErrorLabel formName="nameRequired" errors={formErrors} />
               </div>
             </div>
             {/* Team */}
@@ -281,7 +316,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   id="code"
                   type="text"
                   name="code"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="cobalt-code"
                   onChange={handleChange}
                   value={formState.code || ''}
@@ -297,7 +331,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   placeholder="Address 1"
                   type="text"
                   name="addr1"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="address-1"
                   onChange={handleChange}
                   value={formState.addr1 || ''}
@@ -307,7 +340,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   placeholder="Address 2"
                   type="text"
                   name="addr2"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="address-2"
                   onChange={handleChange}
                   value={formState.addr2 || ''}
@@ -317,7 +349,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   placeholder="City"
                   type="text"
                   name="city"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="city"
                   onChange={handleChange}
                   value={formState.city || ''}
@@ -327,7 +358,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   placeholder="State"
                   type="text"
                   name="state"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="state"
                   onChange={handleChange}
                   value={formState.state || ''}
@@ -337,7 +367,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   placeholder="Postal Code"
                   type="text"
                   name="zip"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="zip"
                   onChange={handleChange}
                   value={formState.zip || ''}
@@ -352,7 +381,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   id="year_built"
                   type="number"
                   name="year_built"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="year-built"
                   onChange={handleChange}
                   value={formState.year_built || ''}
@@ -367,7 +395,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   id="num_of_units"
                   type="number"
                   name="num_of_units"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="number-of-units"
                   onChange={handleChange}
                   value={formState.num_of_units || ''}
@@ -382,7 +409,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   id="manager_name"
                   type="text"
                   name="manager_name"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="manager-name"
                   onChange={handleChange}
                   value={formState.manager_name || ''}
@@ -397,7 +423,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   id="maint_super_name"
                   type="text"
                   name="maint_super_name"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="super-name"
                   onChange={handleChange}
                   value={formState.maint_super_name || ''}
@@ -412,7 +437,6 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                   id="loan_type"
                   type="text"
                   name="loan_type"
-                  className={styles.propertyEditDesktop__input}
                   data-testid="loan-type"
                   onChange={handleChange}
                   value={formState.loan_type || ''}

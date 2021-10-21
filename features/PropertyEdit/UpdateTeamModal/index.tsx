@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import teamModel from '../../../common/models/team';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
@@ -41,7 +42,7 @@ const UpdateTeamModal: FunctionComponent<Props> = (props) => {
         <h5 className={styles.modal__heading}>Teams</h5>
       </header>
 
-      <div className={styles.modal__main__content}>
+      <div className={clsx(styles.modal__main__content, '-pb')}>
         <ul>
           {teams.length &&
             teams.map((team) => (
