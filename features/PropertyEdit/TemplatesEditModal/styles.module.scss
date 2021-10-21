@@ -80,7 +80,6 @@
     &__input[type='search'] {
       @extend %searchInput;
       margin: 0;
-      padding-bottom: 0;
       border-radius: $global-radius;
       background-color: $white;
       color: $body-font-color;

@@ -21,6 +21,7 @@ import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 import propertiesApi from '../../../../common/services/api/properties';
 import deepClone from '../../../helpers/deepClone';
+import propertyFormErrors from '../../../../features/PropertyEdit/errors';
 
 function render(ui: any, options: any = {}) {
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
@@ -318,6 +319,35 @@ describe('Integration | Features | Property Edit', () => {
     });
 
     const actual = [putReq.called, postImage.called];
+    expect(actual).toEqual(expected);
+  });
+
+  it('shows form name error label when empty while creating a new property', async () => {
+    const expected = propertyFormErrors.nameRequired;
+    const props = {
+      isOnline: true,
+      user,
+      property: { name: '' },
+      teams: mockTeams,
+      templates: mockTemplates,
+      templateCategories: mockTemplateCategories
+    };
+    render(<PropertyEdit {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    await act(async () => {
+      const [save] = await screen.findAllByTestId('save-button-desktop');
+      await userEvent.click(save);
+    });
+
+    const formErrorNameRequired = screen.queryByTestId(
+      'error-label-nameRequired'
+    ) as HTMLElement;
+
+    const actual = formErrorNameRequired
+      ? formErrorNameRequired.textContent
+      : '';
     expect(actual).toEqual(expected);
   });
 });

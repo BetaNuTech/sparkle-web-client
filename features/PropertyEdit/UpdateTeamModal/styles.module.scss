@@ -2,11 +2,13 @@
 @import '../../../common/Modal/styles.module.scss';
 
 .updateTeamModal {
-  padding: $global-md-padding;
-
   &__items {
     list-style-type: none;
     border-bottom: 1px solid $gray-light-3;
+
+    &:last-child {
+      border-bottom-width: 0;
+    }
 
     &__input {
       display: none;

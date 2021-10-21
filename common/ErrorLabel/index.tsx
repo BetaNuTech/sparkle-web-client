@@ -30,7 +30,10 @@ const ErrorLabel: FunctionComponent<Props> = ({
   }, [errors]);
 
   return errorMessage && isVisible ? (
-    <p className={clsx(styles.error, message ? styles.error__form : '')} data-testid={`error-label-${formName}`}>
+    <p
+      className={clsx(styles.error, message ? styles.error__form : '')}
+      data-testid={`error-label-${formName}`}
+    >
       <span data-testid={`error-message-${formName}`}>{errorMessage}</span>
       <span className={styles.error__icon} onClick={hideError}>
         <CloseIcon />
