@@ -6,12 +6,12 @@ import useNotifications from '../../../../../common/hooks/useNotifications'; // 
 import notifications from '../../../../../common/services/notifications';
 import useProperty from '../../../../../common/hooks/useProperty';
 import propertyModel from '../../../../../common/models/property';
-import useTrelloBoards from '../../../../../features/Trello/hooks/useTrelloBoards';
-import useTrelloUser from '../../../../../features/Trello/hooks/useTrelloUser';
-import useTrelloProperty from '../../../../../features/Trello/hooks/useTrelloProperty';
+import useTrelloBoards from '../../../../../features/PropertyEditTrello/hooks/useTrelloBoards';
+import useTrelloUser from '../../../../../features/PropertyEditTrello/hooks/useTrelloUser';
+import useTrelloProperty from '../../../../../features/PropertyEditTrello/hooks/useTrelloProperty';
 import { canUpdateCompanySettings } from '../../../../../common/utils/userPermissions';
 import { MainLayout } from '../../../../../common/MainLayout/index';
-import Trello from '../../../../../features/Trello/index';
+import PropertyEditTrello from '../../../../../features/PropertyEditTrello/index';
 import LoadingHud from '../../../../../common/LoadingHud';
 import useFirestoreUser from '../../../../../common/hooks/useFirestoreUser';
 
@@ -94,7 +94,7 @@ const Page: FunctionComponent = () => {
   return (
     <MainLayout>
       {isLoaded ? (
-        <Trello
+        <PropertyEditTrello
           property={property}
           trelloUser={trelloUser}
           trelloProperty={trelloProperty}

@@ -7,6 +7,7 @@ import headerStyles from '../../../common/MobileHeader/styles.module.scss';
 import MobileHeader from '../../../common/MobileHeader';
 import CheckedIcon from '../../../public/icons/sparkle/checked.svg';
 import NotCheckedIcon from '../../../public/icons/sparkle/not-checked.svg';
+import ChevronIcon from '../../../public/icons/ios/chevron-left.svg';
 import useSearching from '../../../common/hooks/useSearching';
 
 interface Options {
@@ -23,7 +24,7 @@ interface Props extends ModalProps {
   selectedOptions: Options;
   options: any;
   onSelect: (any) => void;
-  isSelecting: string;
+  activeSelection: string;
 }
 
 const SelectionModal: FunctionComponent<Props> = ({
@@ -33,7 +34,7 @@ const SelectionModal: FunctionComponent<Props> = ({
   selectedOptions,
   options,
   onSelect,
-  isSelecting
+  activeSelection
 }) => {
   const headerActions = () => (
     <>
@@ -45,21 +46,43 @@ const SelectionModal: FunctionComponent<Props> = ({
         )}
         data-testid="close-selection"
       >
-        ×
+        <span className={styles.trelloSelectionModal__backIcon}>
+          <ChevronIcon />
+        </span>
       </button>
     </>
   );
 
   // Checks for single selected option
-  const selectedOption = selectedOptions[isSelecting.slice(0, -1)];
+  const singularizedActiveSelection = activeSelection.replace(/s$/, '');
+  const selectedOption = selectedOptions[singularizedActiveSelection];
 
   // Checks for options list to show
-  const optionsToSelect = options[isSelecting];
+  const optionsToSelect = options[activeSelection];
   // Options search setup
   const { onSearchKeyDown, filteredItems, searchParam } = useSearching(
     optionsToSelect,
     ['name']
   );
+
+  let modalTitle = '';
+
+  switch (activeSelection) {
+    case 'openBoards':
+      modalTitle = 'Select Open Trello Board';
+      break;
+    case 'openLists':
+      modalTitle = 'Select Open Trello List';
+      break;
+    case 'closeBoards':
+      modalTitle = 'Select Closed Trello Board';
+      break;
+    case 'closeLists':
+      modalTitle = 'Select Closed Trello List';
+      break;
+    default:
+      modalTitle = 'Trello';
+  }
 
   return (
     <>
@@ -67,7 +90,7 @@ const SelectionModal: FunctionComponent<Props> = ({
         isOnline={isOnline}
         actions={headerActions}
         isStaging={isStaging}
-        title="Trello Setup"
+        title={modalTitle}
         className={clsx(headerStyles['header--displayOnDesktop'])}
         data-testid="selection-modal"
       />
@@ -83,7 +106,7 @@ const SelectionModal: FunctionComponent<Props> = ({
       </label>
 
       <ul>
-        {filteredItems &&
+        {filteredItems.length ? (
           filteredItems.map((item) => (
             <li className={styles.trelloSelectionModal__items} key={item.id}>
               <input
@@ -115,7 +138,15 @@ const SelectionModal: FunctionComponent<Props> = ({
                 )}
               </label>
             </li>
-          ))}
+          ))
+        ) : (
+          <h5
+            data-testid="no-templates"
+            className={styles.trelloSelectionModal__emptyHeading}
+          >
+            No search results
+          </h5>
+        )}
       </ul>
     </>
   );
