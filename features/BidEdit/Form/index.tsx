@@ -39,6 +39,7 @@ import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
 import { canApproveBid } from '../../../common/utils/userPermissions';
+import useBidApprovedCompleted from '../../../common/hooks/useBidApprovedCompleted';
 
 interface Props {
   user: userModel;
@@ -78,6 +79,9 @@ type Inputs = {
   cost: string;
   scope: string;
   vendorDetails: string;
+  vendorW9: boolean;
+  vendorInsurance: boolean;
+  vendorLicense: boolean;
 };
 
 interface LayoutProps {
@@ -86,6 +90,7 @@ interface LayoutProps {
   job: jobModel;
   bid: bidModel;
   otherBids: bidModel[];
+  approvedCompletedBid: bidModel;
   bidLink: string;
   isNewBid: boolean;
   isBidComplete: boolean;
@@ -171,6 +176,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
   job,
   bid,
   otherBids,
+  approvedCompletedBid,
   bidLink,
   isNewBid,
   onSubmit,
@@ -199,14 +205,26 @@ const Layout: FunctionComponent<LayoutProps> = ({
   setDeleteAttachmentPromptVisible
 }) => {
   // Keys which can come from api
-  const formInputs = ['vendor', 'costMin', 'costMax', 'startAt', 'completeAt'];
+  const formInputs = [
+    'vendor',
+    'costMin',
+    'costMax',
+    'startAt',
+    'completeAt',
+    'vendorW9',
+    'vendorInsurance',
+    'vendorLicense'
+  ];
   // Error object which can be there after submitting form
   const apiFormErrors = {
     vendor: '',
     costMin: '',
     costMax: '',
     startAt: '',
-    completeAt: ''
+    completeAt: '',
+    vendorW9: '',
+    vendorInsurance: '',
+    vendorLicense: ''
   };
   const filteredApiErrors = [];
 
@@ -281,6 +299,10 @@ const Layout: FunctionComponent<LayoutProps> = ({
     startAtValidateOptions.required = formErrors.startAtRequired;
     completeAtValidateOptions.required = formErrors.completeAtRequired;
   }
+
+  const approvedBidLink =
+    approvedCompletedBid &&
+    `/properties/${property.id}/jobs/${job.id}/bids/${approvedCompletedBid.id}/`;
 
   return (
     <>
@@ -471,7 +493,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         styles['form__group__control--radio']
                       )}
                     >
-                      <label>
+                      <label className={styles.form__group__labelAlign}>
                         <input
                           type="radio"
                           name="bidScope"
@@ -484,7 +506,7 @@ const Layout: FunctionComponent<LayoutProps> = ({
                         />
                         Local
                       </label>
-                      <label>
+                      <label className={styles.form__group__labelAlign}>
                         <input
                           type="radio"
                           name="bidScope"
@@ -577,6 +599,63 @@ const Layout: FunctionComponent<LayoutProps> = ({
                   <ErrorLabel formName="need" errors={formState.errors} />
                 </div>
               </div>
+
+              <div className={styles.form__group}>
+                <label className={styles.form__group__labelAlign}>
+                  <input
+                    type="checkbox"
+                    name="vendorW9"
+                    defaultChecked={bid.vendorW9}
+                    {...register('vendorW9')}
+                  />
+                  Vendor Has W9
+                </label>
+                <div className={styles.form__group__control}>
+                  <ErrorLabel
+                    formName="vendorW9"
+                    errors={formState.errors}
+                    message={apiFormErrors.vendorW9}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.form__group}>
+                <label className={styles.form__group__labelAlign}>
+                  <input
+                    type="checkbox"
+                    name="vendorInsurance"
+                    defaultChecked={bid.vendorInsurance}
+                    {...register('vendorInsurance')}
+                  />
+                  Vendor Has Insurance
+                </label>
+                <div className={styles.form__group__control}>
+                  <ErrorLabel
+                    formName="vendorInsurance"
+                    errors={formState.errors}
+                    message={apiFormErrors.vendorInsurance}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.form__group}>
+                <label className={styles.form__group__labelAlign}>
+                  <input
+                    type="checkbox"
+                    name="vendorLicense"
+                    defaultChecked={bid.vendorLicense}
+                    {...register('vendorLicense')}
+                  />
+                  Vendor has License
+                </label>
+                <div className={styles.form__group__control}>
+                  <ErrorLabel
+                    formName="vendorLicense"
+                    errors={formState.errors}
+                    message={apiFormErrors.vendorLicense}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className={styles.form__fields__rightColumn}>
@@ -657,21 +736,48 @@ const Layout: FunctionComponent<LayoutProps> = ({
           </div>
           {!isNewBid && (
             <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="bid-form-approve"
-                disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
-                className={clsx(
-                  styles.button__submit,
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onSubmit('approved')}
-              >
-                Approve Bid
-              </button>
-              {!canApprove && (
+              {!approvedCompletedBid && !isApprovedOrComplete && (
+                <button
+                  type="button"
+                  data-testid="bid-form-approve"
+                  disabled={
+                    !canApprove ||
+                    apiState.isLoading ||
+                    !isOnline ||
+                    !canApproveEnabled
+                  }
+                  className={clsx(
+                    styles.button__submit,
+                    isMobile && styles.button__fullwidth
+                  )}
+                  onClick={() => onSubmit('approved')}
+                >
+                  Approve Bid
+                </button>
+              )}
+
+              {!canApprove && !approvedCompletedBid && !isApprovedOrComplete && (
                 <p className={clsx('-c-gray-light', '-mb-none')}>
-                  You do not have permission to approve this bid
+                  <span data-testid="bid-approve-permisson">
+                    You do not have permission to approve this bid.
+                  </span>
+                </p>
+              )}
+
+              {approvedCompletedBid && (
+                <p className={clsx('-c-gray-light', '-mb-none')}>
+                  <span data-testid="bid-approved-msg">
+                    {' '}
+                    Job already has an{' '}
+                    <a
+                      href={approvedBidLink}
+                      target="_blank"
+                      className="-td-underline"
+                      rel="noreferrer"
+                    >
+                      {approvedCompletedBid.state} bid
+                    </a>
+                  </span>
                 </p>
               )}
             </div>
@@ -892,7 +998,10 @@ const BidForm: FunctionComponent<Props> = ({
     startAt,
     scope,
     completeAt,
-    vendorDetails
+    vendorDetails,
+    vendorW9,
+    vendorInsurance,
+    vendorLicense
   }) => ({
     vendor,
     costMin,
@@ -900,7 +1009,10 @@ const BidForm: FunctionComponent<Props> = ({
     startAt,
     completeAt,
     scope,
-    vendorDetails
+    vendorDetails,
+    vendorW9,
+    vendorInsurance,
+    vendorLicense
   }))(bid);
 
   // Handle form submissions
@@ -916,7 +1028,7 @@ const BidForm: FunctionComponent<Props> = ({
       formData,
       formData.cost === 'fixed'
     ) as bidModel;
-    const difference = diff(apiBid, formBidProcessed);
+    const difference = diff(apiBid, formBidProcessed) as bidModel;
     onPublish(difference, action);
   };
 
@@ -941,6 +1053,8 @@ const BidForm: FunctionComponent<Props> = ({
   });
 
   const canApprove = canApproveBid(isNewBid, user, property.id, job, bid);
+
+  const { approvedCompletedBid } = useBidApprovedCompleted(otherBids);
   const canApproveEnabled =
     canApprove && Object.keys(formState.errors).length === 0;
   const canReject = !isNewBid && bid.state === 'approved';
@@ -957,7 +1071,10 @@ const BidForm: FunctionComponent<Props> = ({
     scope,
     startAt,
     completeAt,
-    vendorDetails
+    vendorDetails,
+    vendorW9,
+    vendorInsurance,
+    vendorLicense
   }) => ({
     vendor,
     costMin,
@@ -965,7 +1082,10 @@ const BidForm: FunctionComponent<Props> = ({
     startAt,
     scope,
     completeAt,
-    vendorDetails
+    vendorDetails,
+    vendorW9,
+    vendorInsurance,
+    vendorLicense
   }))(formData);
 
   // process form data for number and unix timestamp
@@ -1021,6 +1141,7 @@ const BidForm: FunctionComponent<Props> = ({
             job={job}
             bid={bid || ({} as bidModel)}
             otherBids={otherBids}
+            approvedCompletedBid={approvedCompletedBid}
             isNewBid={isNewBid}
             bidLink={bidLink}
             register={register}
@@ -1065,6 +1186,7 @@ const BidForm: FunctionComponent<Props> = ({
             property={property}
             job={job}
             isNewBid={isNewBid}
+            approvedCompletedBid={approvedCompletedBid}
             bidLink={bidLink}
             apiState={apiState}
             showSaveButton={showSaveButton}
@@ -1082,6 +1204,7 @@ const BidForm: FunctionComponent<Props> = ({
             job={job}
             bid={bid || ({} as bidModel)}
             otherBids={otherBids}
+            approvedCompletedBid={approvedCompletedBid}
             isNewBid={isNewBid}
             bidLink={bidLink}
             register={register}

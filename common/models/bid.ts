@@ -14,6 +14,9 @@ interface bid {
   updatedAt: number; // Unix timestamp
   vendor: string;
   vendorDetails?: string;
+  vendorW9?: boolean;
+  vendorInsurance?: boolean;
+  vendorLicense?: boolean;
 }
 
 export default bid;

@@ -3,16 +3,19 @@ import clsx from 'clsx';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
+import bidModel from '../../../common/models/bid';
 import DesktopHeader from '../../../common/DesktopHeader';
 import { BidApiResult } from '../hooks/useBidForm';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 
-interface JobsHeaderModel {
+interface Props {
   property: propertyModel;
   apiState: BidApiResult;
   job: jobModel;
   isNewBid: boolean;
+  approvedCompletedBid: bidModel;
+  isApprovedOrComplete?: boolean;
   bidLink: string;
   isOnline?: boolean;
   showSaveButton: boolean;
@@ -25,7 +28,7 @@ interface JobsHeaderModel {
   canReopen: boolean;
 }
 
-const Header: FunctionComponent<JobsHeaderModel> = ({
+const Header: FunctionComponent<Props> = ({
   property,
   job,
   isNewBid,
@@ -33,7 +36,10 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   isOnline,
   apiState,
   showSaveButton,
+  approvedCompletedBid,
+  isApprovedOrComplete,
   onSubmit,
+  canApprove,
   canApproveEnabled,
   canReject,
   canMarkIncomplete,
@@ -52,19 +58,22 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
           </a>
         </Link>
       </div>
-      {!isNewBid && (
-        <div className={parentStyles.button__group}>
-          <button
-            type="button"
-            className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
-            data-testid="bidedit-header-approve"
-            onClick={() => onSubmit('approved')}
-          >
-            Approve Bid
-          </button>
-        </div>
-      )}
+      {!isNewBid &&
+        canApprove &&
+        !approvedCompletedBid &&
+        !isApprovedOrComplete && (
+          <div className={parentStyles.button__group}>
+            <button
+              type="button"
+              className={clsx(parentStyles.button__submit)}
+              disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
+              data-testid="bidedit-header-approve"
+              onClick={() => onSubmit('approved')}
+            >
+              Approve Bid
+            </button>
+          </div>
+        )}
 
       {canMarkComplete && (
         <div className={parentStyles.button__group}>
@@ -179,6 +188,8 @@ const Header: FunctionComponent<JobsHeaderModel> = ({
   );
 };
 
-Header.defaultProps = {};
+Header.defaultProps = {
+  isApprovedOrComplete: false
+};
 
 export default Header;
