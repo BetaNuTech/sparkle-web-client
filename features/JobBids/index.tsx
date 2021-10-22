@@ -102,6 +102,7 @@ const JobBids: FunctionComponent<Props> = ({
             job={job}
             filterState={filterState}
             colors={colors}
+            textColors={textColors}
             changeFilterState={changeFilterState}
             isOnline={isOnline}
             bidsRequired={bidsRequired}

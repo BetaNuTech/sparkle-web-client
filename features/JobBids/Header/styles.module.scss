@@ -43,6 +43,7 @@
   }
 
   &__overview {
+    padding: 0 $global-padding;
     &__link {
       @extend %overviewDataLink;
       @extend %overviewDataLink--inline;
@@ -64,6 +65,102 @@
 
     &__labelSub {
       @extend %overviewDataLink--labelSub;
+    }
+
+    &__bid {
+      border: rem-calc(1) solid $gray-light-2;
+      border-radius: rem-calc(11);
+      margin-bottom: rem-calc(40);
+
+      &__header {
+        background: $gray-light-3;
+        padding: rem-calc(20) $global-mlg-padding;
+        display: flex;
+        justify-content: space-between;
+        border-top-left-radius: rem-calc(11);
+        border-top-right-radius: rem-calc(11);
+
+        &--left {
+          display: flex;
+          align-items: center;
+        }
+        &--status {
+          display: flex;
+        }
+        &--title {
+          font-weight: 700;
+          font-size: rem-calc(24);
+          margin: 0;
+        }
+        &--complaince {
+          display: flex;
+          column-gap: $global-lg-padding;
+          margin-left: $global-llg-padding;
+
+          label {
+            display: flex;
+            gap: $global-sm-padding;
+            margin: 0;
+          }
+
+          svg {
+            max-width: rem-calc(16);
+            max-height: rem-calc(16);
+            g > g {
+              fill: $sea-green-color;
+            }
+          }
+          span {
+            color: $gray-light-2;
+          }
+        }
+
+        > a {
+          text-decoration: underline;
+          line-height: rem-calc(28);
+        }
+      }
+
+      &__border {
+        height: rem-calc(10);
+      }
+
+      &__info {
+        padding: $global-padding $global-mlg-padding $global-mlg-padding;
+        font-size: rem-calc(18);
+
+        > span {
+          color: $gray-light-2;
+          font-size: rem-calc(16);
+        }
+
+        &--vendor {
+          font-size: 1rem;
+        }
+
+        &--detail {
+          display: flex;
+          margin-top: $global-padding;
+          gap: $global-lg-padding;
+        }
+
+        &__box {
+          border: rem-calc(1) solid $gray-light-2;
+          border-radius: rem-calc(5);
+          padding: $global-mlg-padding;
+
+          label {
+            color: $gray-light-2;
+            margin-bottom: rem-calc(5);
+            font-size: 1rem;
+          }
+          span {
+            color: $black-1;
+            font-weight: bold;
+            margin-bottom: rem-calc(5);
+          }
+        }
+      }
     }
   }
 

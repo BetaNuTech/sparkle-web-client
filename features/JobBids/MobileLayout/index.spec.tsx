@@ -3,10 +3,12 @@ import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
 import bidModel from '../../../common/models/bid';
+import configBids from '../../../config/bids';
 import { openImprovementJob } from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
+import stubIntersectionObserver from '../../../__tests__/helpers/stubIntersectionObserver';
 import breakpoints from '../../../config/breakpoints';
-import JobBidsHeader from './index';
+import MobileLayout from './index';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
@@ -20,57 +22,26 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-describe('Unit | Features | Job Bids | Header', () => {
-  it('should show message when job is in open state', () => {
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      bids: [],
-      bidStatus: 'success',
-      colors: {
-        primary: '-bgc-primary'
-      },
-      textColors: {
-        primary: '-c-primary'
-      },
-      filterState: '',
-      isOnline: true,
-      changeFilterState: (state: string) => {
-        props.isOnline = Boolean(state); // fix for linting
-      }
-    };
-
-    render(<JobBidsHeader {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
-
-    const bidCreateMsg = screen.queryByTestId('job-bid-create-msg');
-    const bidCreateBtn = screen.queryByTestId('job-bid-create');
-
-    expect(bidCreateBtn).toBeNull();
-    expect(bidCreateMsg).toBeTruthy();
-  });
+describe('Unit | Features | Job Bids | Mobile Layout', () => {
+  beforeEach(() => stubIntersectionObserver());
 
   it('show approved bid ui on top', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
+      propertyId: fullProperty.id,
       bids: [{ state: 'open' } as bidModel, { state: 'approved' } as bidModel],
-      bidStatus: 'success',
       colors: {
         primary: '-bgc-primary'
       },
       textColors: {
         primary: '-c-primary'
       },
-      filterState: '',
-      isOnline: true,
-      changeFilterState: (state: string) => {
-        props.isOnline = Boolean(state); // fix for linting
-      }
+      configBids,
+      isOnline: true
     };
 
-    render(<JobBidsHeader {...props} />, {
+    render(<MobileLayout {...props} />, {
       contextWidth: breakpoints.tablet.maxWidth
     });
 
@@ -78,7 +49,7 @@ describe('Unit | Features | Job Bids | Header', () => {
     const bidApprovedTitle = screen.queryByTestId(
       'bid-approved-completed-title'
     );
-    const expected = 'Approved';
+    const expected = 'approved';
     const actual = bidApprovedTitle.textContent;
 
     expect(bidApprovedEl).toBeTruthy();
@@ -89,6 +60,7 @@ describe('Unit | Features | Job Bids | Header', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
+      propertyId: fullProperty.id,
       bids: [
         { state: 'open' } as bidModel,
         { state: 'approved' } as bidModel,
@@ -103,12 +75,13 @@ describe('Unit | Features | Job Bids | Header', () => {
       },
       filterState: '',
       isOnline: true,
+      configBids,
       changeFilterState: (state: string) => {
         props.isOnline = Boolean(state); // fix for linting
       }
     };
 
-    render(<JobBidsHeader {...props} />, {
+    render(<MobileLayout {...props} />, {
       contextWidth: breakpoints.tablet.maxWidth
     });
 
@@ -116,7 +89,7 @@ describe('Unit | Features | Job Bids | Header', () => {
     const bidCompleteTitle = screen.queryByTestId(
       'bid-approved-completed-title'
     );
-    const expected = 'Complete';
+    const expected = 'complete';
     const actual = bidCompleteTitle.textContent;
 
     expect(bidCompleteEl).toBeTruthy();
@@ -127,6 +100,7 @@ describe('Unit | Features | Job Bids | Header', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
+      propertyId: fullProperty.id,
       bids: [{ state: 'open' } as bidModel],
       bidStatus: 'success',
       colors: {
@@ -137,12 +111,10 @@ describe('Unit | Features | Job Bids | Header', () => {
       },
       filterState: '',
       isOnline: true,
-      changeFilterState: (state: string) => {
-        props.isOnline = Boolean(state); // fix for linting
-      }
+      configBids
     };
 
-    render(<JobBidsHeader {...props} />, {
+    render(<MobileLayout {...props} />, {
       contextWidth: breakpoints.tablet.maxWidth
     });
 
@@ -155,6 +127,7 @@ describe('Unit | Features | Job Bids | Header', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
+      propertyId: fullProperty.id,
       bids: [
         { state: 'open' } as bidModel,
         { state: 'approved' } as bidModel,
@@ -167,19 +140,18 @@ describe('Unit | Features | Job Bids | Header', () => {
       textColors: {
         primary: '-c-primary'
       },
-      filterState: '',
-      isOnline: true,
-      changeFilterState: (state: string) => {
-        props.isOnline = Boolean(state); // fix for linting
-      }
+      configBids,
+      isOnline: true
     };
 
-    render(<JobBidsHeader {...props} />, {
+    render(<MobileLayout {...props} />, {
       contextWidth: breakpoints.tablet.maxWidth
     });
 
     const bidCompleteEl = screen.queryByTestId('bid-approved-completed');
-    const bidComplainceW9El = screen.queryByTestId('bid-complaince-w9-approved');
+    const bidComplainceW9El = screen.queryByTestId(
+      'bid-complaince-w9-approved'
+    );
 
     expect(bidCompleteEl).toBeTruthy();
     expect(bidComplainceW9El).toBeTruthy();

@@ -22,7 +22,7 @@ describe('Unit | Features | Job Bid List | Grid', () => {
 
     const bidSection = screen.queryAllByTestId('bid-section-title');
 
-    expect(bidSection.length).toEqual(5);
+    expect(bidSection.length).toEqual(3);
   });
 
   it('should add bids with different states in different sections', () => {
@@ -37,7 +37,7 @@ describe('Unit | Features | Job Bid List | Grid', () => {
 
     const bidRecord = screen.queryAllByTestId('bid-item-record');
 
-    expect(bidRecord.length).toEqual(5);
+    expect(bidRecord.length).toEqual(3);
   });
 
   it('should have no bids message present for states that contains no bids', () => {
@@ -52,7 +52,7 @@ describe('Unit | Features | Job Bid List | Grid', () => {
 
     const bidNoTitle = screen.queryAllByTestId('bid-section-no-bids');
 
-    expect(bidNoTitle.length).toEqual(3);
+    expect(bidNoTitle.length).toEqual(2);
   });
 
   it('should show no bids message for job if no bids exist for job', () => {
@@ -100,9 +100,7 @@ describe('Unit | Features | Job Bid List | Grid', () => {
     }));
 
     expect(titleClasses[0].Open).toContain(colors.secondary);
-    expect(titleClasses[1].Approved).toContain(colors.gray);
-    expect(titleClasses[2].Rejected).toContain(colors.alert);
-    expect(titleClasses[3].Incomplete).toContain(colors.primary);
-    expect(titleClasses[4].Complete).toContain(colors.orange);
+    expect(titleClasses[1].Rejected).toContain(colors.alert);
+    expect(titleClasses[2].Incomplete).toContain(colors.primary);
   });
 });
