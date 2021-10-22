@@ -25,11 +25,6 @@ export default function useBidSections(
       bids: <bidModel[]>[]
     },
     {
-      title: 'Approved',
-      state: 'approved',
-      bids: <bidModel[]>[]
-    },
-    {
       title: 'Rejected',
       state: 'rejected',
       bids: <bidModel[]>[]
@@ -37,11 +32,6 @@ export default function useBidSections(
     {
       title: 'Incomplete',
       state: 'incomplete',
-      bids: <bidModel[]>[]
-    },
-    {
-      title: 'Complete',
-      state: 'complete',
       bids: <bidModel[]>[]
     }
   ].filter((s) => (filterState ? s.state === filterState : true));

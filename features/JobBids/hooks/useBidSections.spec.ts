@@ -13,9 +13,9 @@ describe('Unit | Features | Job Bids | Hooks | Sections', () => {
   afterEach(() => sinon.restore());
 
   test('should return all sections', () => {
-    const expected = 5;
+    const expected = 3;
 
-    const { result } = renderHook(() => useBidSections([openBid]));
+    const { result } = renderHook(() => useBidSections([openBid], ''));
 
     const actual = result.current.sections.length;
 
@@ -23,17 +23,13 @@ describe('Unit | Features | Job Bids | Hooks | Sections', () => {
   });
 
   test('should show bids inside their respective sections', () => {
-    const expected =
-      'open:bid-1 | approved:bid-2 | rejected:bid-3 | incomplete:bid-4 | complete:bid-5';
+    const expected = 'open:bid-1 | rejected:bid-3 | incomplete:bid-4';
 
     const { result } = renderHook(() =>
-      useBidSections([
-        openBid,
-        approvedBid,
-        rejectedBid,
-        incompleteBid,
-        completeBid
-      ])
+      useBidSections(
+        [openBid, approvedBid, rejectedBid, incompleteBid, completeBid],
+        ''
+      )
     );
 
     const sections = result.current.sections.map((s) =>
@@ -45,11 +41,10 @@ describe('Unit | Features | Job Bids | Hooks | Sections', () => {
   });
 
   test('should empty state for sections that contain no bids', () => {
-    const expected =
-      'open: | approved:bid-2 | rejected:bid-3 | incomplete:bid-4 | complete:bid-5';
+    const expected = 'open: | rejected:bid-3 | incomplete:bid-4';
 
     const { result } = renderHook(() =>
-      useBidSections([approvedBid, rejectedBid, incompleteBid, completeBid])
+      useBidSections([approvedBid, rejectedBid, incompleteBid, completeBid], '')
     );
 
     const sections = result.current.sections.map((s) =>
