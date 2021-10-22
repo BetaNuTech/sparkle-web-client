@@ -25,7 +25,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   const ref = useRef(null);
 
   const { isVisible } = useVisibility(ref, {}, forceVisible);
-  const jobType = utilString.titleize(job.type);
+  const jobType = job.type && utilString.titleize(job.type);
   const viewBidLink = `/properties/${propertyId}/jobs/${job.id}/bids`;
   return (
     <li

@@ -325,4 +325,60 @@ describe('Integration | Features | Bid Edit', () => {
     const actual = sendReport.called;
     expect(actual).toEqual(expected);
   });
+
+  it('Show error message for vendor W9 and vendor insurance if tried to approve bid', async () => {
+    const expected = true;
+    const isNewBid = false;
+
+    render(
+      <BidEdit
+        isNewBid={isNewBid}
+        property={fullProperty}
+        user={admin}
+        job={openImprovementJob}
+        bid={mockBids[0]}
+        otherBids={mockBids.splice(1)}
+        isOnline={IS_ONLINE}
+      />,
+      {
+        contextWidth: breakpoints.tablet.maxWidth
+      }
+    );
+
+    const btnApprove = screen.queryByTestId('bid-form-approve');
+
+    const postReq = sinon.stub(bidServiceApi, 'updateBid').resolves({
+      status: 400,
+      json: () =>
+        Promise.resolve({
+          errors: [
+            {
+              title: 'bid requires approval of vendor W9',
+              detail: 'Requires Vendor W to approve bid',
+              source: { pointer: 'vendorW9' }
+            },
+            {
+              title: 'bid requires approval of vendor insurance',
+              detail: 'Requires Vendor Insurance to approve bid',
+              source: { pointer: 'vendorInsurance' }
+            }
+          ]
+        })
+    });
+
+    act(() => {
+      userEvent.click(btnApprove);
+    });
+
+    await waitFor(() => postReq.called);
+
+    const errMsgVendorW9 = screen.queryByTestId('error-message-vendorW9');
+    const errMsgVendorInsurance = screen.queryByTestId(
+      'error-message-vendorInsurance'
+    );
+    const actual = postReq.called;
+    expect(actual).toEqual(expected);
+    expect(errMsgVendorW9).toBeTruthy();
+    expect(errMsgVendorInsurance).toBeTruthy();
+  });
 });

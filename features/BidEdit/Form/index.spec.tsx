@@ -7,7 +7,10 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { authorizedImprovementJob, openImprovementJob } from '../../../__mocks__/jobs';
+import {
+  authorizedImprovementJob,
+  openImprovementJob
+} from '../../../__mocks__/jobs';
 import { fullProperty } from '../../../__mocks__/properties';
 import { approvedBid, openBid, rejectedBid } from '../../../__mocks__/bids';
 import { admin as user } from '../../../__mocks__/users';
@@ -500,5 +503,65 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const btnComplete = screen.queryByTestId('bid-form-complete-bid');
 
     expect(btnComplete).toBeNull();
+  });
+
+  it('should show approved bid message and should hide approve button', async () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: openBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: () => {},
+      otherBids: [approvedBid]
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const spanApprovedMsg = screen.queryByTestId('bid-approved-msg');
+    const btnApprove = screen.queryByTestId('bid-form-approve');
+
+    expect(btnApprove).toBeNull();
+    expect(spanApprovedMsg).toBeTruthy();
+  });
+
+  it('should not show approved bid message and should enable approve button', async () => {
+    const props = {
+      job: openImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewBid: false,
+      user,
+      bid: openBid,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postBidCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putBidUpdate: () => {},
+      otherBids: []
+    };
+
+    render(<BidEditForm {...props} />, {
+      contextWidth: breakpoints.tablet.maxWidth
+    });
+
+    const spanApprovedMsg = screen.queryByTestId('bid-approved-msg');
+    const btnApprove = screen.queryByTestId('bid-form-approve');
+
+    expect(btnApprove).not.toHaveAttribute('disabled');
+    expect(spanApprovedMsg).toBeNull();
   });
 });

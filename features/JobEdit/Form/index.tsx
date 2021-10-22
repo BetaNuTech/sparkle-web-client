@@ -174,7 +174,7 @@ const formActionButtons = (
         </button>
         {!canAuthorize && (
           <p className={clsx('-c-gray-light', '-mb-none')}>
-            You do not have permission to authorize this job
+            You cannot authorize this job
           </p>
         )}
       </div>
