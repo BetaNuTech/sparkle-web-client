@@ -689,4 +689,30 @@ describe('Unit | Common | Utils | User Permissions', () => {
       expect(actual, msg).toEqual(expected);
     }
   });
+
+  test('it should only allow admins to create new team', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canAccessCreateTeam(admin),
+      util.canAccessCreateTeam(corporate),
+      util.canAccessCreateTeam(teamLead),
+      util.canAccessCreateTeam(propertyMember),
+      util.canAccessCreateTeam(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users and team leads to update a team', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canAccessUpdateTeam(admin),
+      util.canAccessUpdateTeam(corporate),
+      util.canAccessUpdateTeam(teamLead),
+      util.canAccessUpdateTeam(propertyMember),
+      util.canAccessUpdateTeam(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
 });

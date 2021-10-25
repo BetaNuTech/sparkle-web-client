@@ -254,3 +254,10 @@ export const canApproveBid = (
 
   return false;
 };
+
+// Checks that the user can create new team
+export const canAccessCreateTeam = (user: userModel): boolean => user.admin;
+
+// Checks that the user can update a team
+export const canAccessUpdateTeam = (user: userModel): boolean =>
+  user.admin || user.corporate;

@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { useFirestoreCollectionData } from 'reactfire';
+import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
 import teamModel from '../../models/team';
 
@@ -10,6 +10,12 @@ export interface teamsCollectionResult {
   status: string;
   error?: Error;
   data: Array<teamModel>;
+}
+
+export interface teamResult {
+  status: string;
+  error?: Error;
+  data: teamModel;
 }
 
 export default {
@@ -59,9 +65,35 @@ export default {
       status = queryStatus;
       error = queryError;
 
-      // Cast firestore data into property records
+      // Cast firestore data into team records
       data = queryData.map((itemData: any) => itemData as teamModel);
     }
+
+    // Result
+    return { status, error, data };
+  },
+
+  // Lookup team by it's id
+  findRecord(firestore: firebase.firestore.Firestore, id: string): teamResult {
+    let status = 'success';
+    let error = null;
+    let data = {} as teamModel;
+
+    const docRef = firestore.collection(fbCollections.teams).doc(id);
+
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData
+    } = useFirestoreDocData(docRef, {
+      idField: 'id'
+    });
+
+    status = queryStatus;
+    error = queryError;
+
+    // Cast firestore data into team records
+    data = queryData as teamModel;
 
     // Result
     return { status, error, data };
