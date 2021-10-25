@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import styles from './styles.module.scss';
 import modalStyles from '../../../common/Modal/styles.module.scss';
-import headerStyles from '../../../common/MobileHeader/styles.module.scss';
 import MobileHeader from '../../../common/MobileHeader';
 import CheckedIcon from '../../../public/icons/sparkle/checked.svg';
 import NotCheckedIcon from '../../../public/icons/sparkle/not-checked.svg';
@@ -91,7 +90,6 @@ const SelectionModal: FunctionComponent<Props> = ({
         actions={headerActions}
         isStaging={isStaging}
         title={modalTitle}
-        className={clsx(headerStyles['header--displayOnDesktop'])}
         data-testid="selection-modal"
       />
       <label className={styles.trelloSelectionModal__search}>

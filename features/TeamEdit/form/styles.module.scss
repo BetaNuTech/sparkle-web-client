@@ -1,0 +1,25 @@
+@import '../../../styles/index.scss';
+
+.teamEditForm {
+  &__form {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: auto;
+    padding: 0 $global-lg-padding $global-lg-padding;
+  }
+
+  &__formGroup {
+    width: rem-calc(550);
+    margin-top: $global-lg-padding;
+    &__label {
+      font-weight: 600;
+      color: $primary-dark-color;
+    }
+
+    &__input {
+      @extend %inputText;
+      margin: 0 0 $global-xsm-padding 0;
+    }
+  }
+}

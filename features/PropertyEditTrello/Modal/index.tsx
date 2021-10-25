@@ -4,7 +4,6 @@ import clsx from 'clsx';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import styles from './styles.module.scss';
 import modalStyles from '../../../common/Modal/styles.module.scss';
-import headerStyles from '../../../common/MobileHeader/styles.module.scss';
 import MobileHeader from '../../../common/MobileHeader';
 import DropdownGroup from './dropdownGroup';
 import propertyModel from '../../../common/models/property';
@@ -84,7 +83,6 @@ const TrelloModal: FunctionComponent<Props> = ({
         actions={headerActions}
         isStaging={isStaging}
         title="TRELLO"
-        className={clsx(headerStyles['header--displayOnDesktop'])}
         data-testid="trello-modal"
       />
       {trelloUser ? (
