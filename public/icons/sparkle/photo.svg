@@ -1,0 +1,10 @@
+<svg width="28px" height="23px" viewBox="0 0 28 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g transform="translate(1.000000, 1.000000)" stroke="#FFFFFF" stroke-width="2">
+      <path d="M21.38,3.289 L21.38,2.467 C21.3761549,1.10610941 20.2738906,0.00384512256 18.913,-7.10542736e-15 L2.467,-7.10542736e-15 C1.10610941,0.00384512256 0.00384512256,1.10610941 0,2.467 L0,15.624 C0.00384512256,16.9848906 1.10610941,18.0871549 2.467,18.091 L3.289,18.091" stroke-linejoin="round"></path>
+      <rect stroke-linejoin="round" x="3.28" y="4.69" width="22" height="16" rx="2"></rect>
+      <ellipse cx="18.343" cy="8.821" rx="1.581" ry="1.57"></ellipse>
+      <path d="M17.281,15.97 L12.281,12.22 C11.6867678,11.6331615 10.7397981,11.6060802 10.113,12.158 L4.113,17.458 M13.329,20.693 L18.905,15.332 C19.4848518,14.75773 20.404918,14.7145547 21.036,15.232 L24.671,18.239" stroke-linecap="round" stroke-linejoin="round"></path>
+    </g>
+  </g>
+</svg>

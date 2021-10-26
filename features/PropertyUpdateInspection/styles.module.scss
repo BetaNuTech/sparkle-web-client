@@ -118,6 +118,23 @@
         padding: $global-sm-padding $global-padding;
         border-bottom: rem-calc(1) solid $gray-lighter;
 
+        &--mainInput {
+          display: flex;
+          flex: 1 1 auto;
+          gap: $global-mlg-padding;
+          flex-direction: row-reverse;
+
+          &Grid {
+            flex-direction: row;
+          }
+
+          // Expand main input items
+          // to fill available space
+          ul:nth-child(2) {
+            flex: 1 1 auto;
+          }
+        }
+
         &--grid {
           padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
           grid-template-columns: 0.6fr 1fr auto;
