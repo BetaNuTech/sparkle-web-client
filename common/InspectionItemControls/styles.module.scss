@@ -79,4 +79,34 @@
       }
     }
   }
+
+  &__attachment {
+    display: flex;
+    gap: $global-sm-padding;
+
+    &__item {
+      background-color: $gray-4;
+      width: rem-calc(46);
+      height: rem-calc(46);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      cursor: pointer;
+
+      &--disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+    }
+
+    svg {
+      width: rem-calc(20);
+      height: rem-calc(20);
+
+      g {
+        stroke: $gray-med-dark;
+      }
+    }
+  }
 }

@@ -5,6 +5,7 @@ import ThreeActionCheckExclamation from './ThreeActionCheckExclamation';
 import ThreeActionAbc from './ThreeActionAbc';
 import FiveActionOneToFive from './FiveActionOneToFive';
 import OneActionNotes from './OneActionNotes';
+import Attachment from './Attachment';
 
 interface Props {
   inputType: string;
@@ -55,5 +56,7 @@ InspectionItemControls.defaultProps = {
   selected: false,
   selectedValue: 0
 };
+
+export { Attachment };
 
 export default InspectionItemControls;
