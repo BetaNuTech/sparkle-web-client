@@ -7,19 +7,14 @@ import features from '../../config/features';
 import LinkFeature from '../../common/LinkFeature';
 import MobileHeader from '../../common/MobileHeader';
 import LoadingHud from '../../common/LoadingHud';
-import useProperty from '../../common/hooks/useProperty';
 import { canAccessJobs } from '../../common/utils/userPermissions';
-import usePropertyInspections from './hooks/usePropertyInspections';
 import useInspectionSorting from './hooks/useInspectionSorting';
-import useYardiIntegration from './hooks/useYardiIntegration';
 import useInspectionFilter from './hooks/useInspectionFilter';
 import { activeInspectionSortFilter } from './utils/inspectionSorting';
-import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import useDeleteInspection from './hooks/useDeleteInspection';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
-import inspectionModel from '../../common/models/inspection';
 import breakpoints from '../../config/breakpoints';
 import SortIcon from '../../public/icons/sparkle/sort.svg';
 import AddIcon from '../../public/icons/ios/add.svg';
@@ -35,6 +30,9 @@ import Overview from './Overview';
 import Grid from './Grid';
 import DeleteInspectionPropmpt from './DeleteInspectionPrompt';
 import styles from './styles.module.scss';
+import propertyModel from '../../common/models/property';
+import templateCategoryModel from '../../common/models/templateCategory';
+import inspectionModel from '../../common/models/inspection';
 
 interface PropertiesModel {
   user: userModel;
@@ -44,6 +42,10 @@ interface PropertiesModel {
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
   forceVisible?: boolean;
+  property: propertyModel;
+  templateCategories: templateCategoryModel[];
+  inspections: inspectionModel[];
+  yardiAuthorizer: any;
 }
 
 const PropertyProfile: FunctionComponent<PropertiesModel> = ({
@@ -52,7 +54,11 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   isOnline,
   isStaging,
   toggleNavOpen,
-  forceVisible
+  forceVisible,
+  property,
+  templateCategories,
+  inspections,
+  yardiAuthorizer
 }) => {
   const firestore = useFirestore();
   const [inspectionFilter, setInspectionFilter] = useState('');
@@ -61,18 +67,6 @@ const PropertyProfile: FunctionComponent<PropertiesModel> = ({
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
   /* eslint-enable */
-
-  // Fetch the data of property profile
-  const { data: property } = useProperty(firestore, id);
-
-  // Fetch all data in template categories
-  const { data: templateCategories } = useTemplateCategories(firestore);
-
-  // Query property inspection records
-  const { data: inspections } = usePropertyInspections(firestore, id);
-
-  // Query property inspection records
-  const { data: yardiAuthorizer } = useYardiIntegration(firestore);
 
   // Inspection filtration on based of applied filter
   const { filteredInspections } = useInspectionFilter(
