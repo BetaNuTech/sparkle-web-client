@@ -1,17 +1,26 @@
-@import '../../../styles/index.scss';
+@import '../../styles/index.scss';
 
-.teamEditForm {
+.teamEdit {
+  &__sendButton {
+    background: transparent;
+    border-width: 0;
+    padding: $global-padding;
+    &:disabled {
+      opacity: $button-opacity-disabled;
+    }
+  }
+
   &__form {
     height: 100%;
-    display: flex;
-    justify-content: center;
-    overflow: auto;
+    width: rem-calc(550);
     padding: 0 $global-lg-padding $global-lg-padding;
+    margin: 0 auto;
+    overflow: auto;
   }
 
   &__formGroup {
-    width: rem-calc(550);
     margin-top: $global-lg-padding;
+
     &__label {
       font-weight: 600;
       color: $primary-dark-color;
