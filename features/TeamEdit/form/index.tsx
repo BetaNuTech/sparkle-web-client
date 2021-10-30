@@ -1,17 +1,23 @@
 import { FunctionComponent } from 'react';
-import styles from './styles.module.scss';
+import styles from '../styles.module.scss';
+import ErrorList from '../../../common/ErrorList';
 
 interface Props {
   teamName?: string;
   handleChange: (e) => void;
+  error?: string[];
 }
 
-const TeamForm: FunctionComponent<Props> = ({ teamName, handleChange }) => (
+const TeamForm: FunctionComponent<Props> = ({
+  teamName,
+  handleChange,
+  error
+}) => (
   <>
-    <form className={styles.teamEditForm__form}>
+    <form className={styles.teamEdit__form}>
       {/* Name */}
-      <div className={styles.teamEditForm__formGroup}>
-        <label htmlFor="name" className={styles.teamEditForm__formGroup__label}>
+      <div className={styles.teamEdit__formGroup}>
+        <label htmlFor="name" className={styles.teamEdit__formGroup__label}>
           Team Name
         </label>
         <input
@@ -21,8 +27,12 @@ const TeamForm: FunctionComponent<Props> = ({ teamName, handleChange }) => (
           data-testid="team-name"
           onChange={(e) => handleChange(e.target.value)}
           value={teamName || ''}
-          className={styles.teamEditForm__formGroup__input}
+          className={styles.teamEdit__formGroup__input}
         />
+      </div>
+
+      <div className={styles.teamEdit__formGroup}>
+        <ErrorList errors={error} />
       </div>
     </form>
   </>
