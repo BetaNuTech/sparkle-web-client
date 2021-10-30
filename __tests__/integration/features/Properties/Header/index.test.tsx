@@ -1,6 +1,6 @@
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import PropertiesHeader from '../../../../../features/Properties/Header';
+import PropertiesHeader from '../../../../../common/Properties/Header';
 import breakpoints from '../../../../../config/breakpoints';
 
 function render(ui: any, options = {}) {

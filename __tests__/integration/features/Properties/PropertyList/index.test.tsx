@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import mockTeams from '../../../../../__mocks__/teams';
 import mockPropertes from '../../../../../__mocks__/properties';
-import PropertiesMobileLayout from '../../../../../features/Properties/MobileLayout';
+import PropertyList from '../../../../../common/Properties/List';
 import breakpoints from '../../../../../config/breakpoints';
 import stubIntersectionObserver from '../../../../helpers/stubIntersectionObserver';
 import { shuffle } from '../../../../helpers/array';
@@ -33,12 +33,13 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
   it('renders all teams', () => {
     const expected = mockTeams.length;
     render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         activePropertiesSortFilter={() => ''}
         forceVisible={FORCE_VISIBLE}
+        isDeletePropertyPromptVisible={false}
       />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('team-item');
@@ -50,12 +51,13 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
   it('renders all properties', () => {
     const expected = mockPropertes.length;
     render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         activePropertiesSortFilter={() => ''}
         forceVisible={FORCE_VISIBLE}
+        isDeletePropertyPromptVisible={false}
       />
     );
     const items: Array<HTMLElement> = screen.queryAllByTestId('property-item');
@@ -71,12 +73,13 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     );
     const expected = `${teamsPropMetaData.totalNumOfDeficientItems} | ${teamsPropMetaData.totalNumOfRequiredActionsForDeficientItems} | ${teamsPropMetaData.totalNumOfFollowUpActionsForDeficientItems}`; // eslint-disable-line
     const { container } = render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         activePropertiesSortFilter={() => ''}
         forceVisible={FORCE_VISIBLE}
+        isDeletePropertyPromptVisible={false}
       />
     );
 
@@ -100,7 +103,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const properties = deepClone(mockPropertes);
     properties[0].addr1 = '';
     const { container } = render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={properties}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
@@ -122,7 +125,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const properties = deepClone(mockPropertes);
     properties[0].city = '';
     const { container } = render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={properties}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
@@ -142,7 +145,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const properties = deepClone(mockPropertes);
     properties[0].state = '';
     const { container } = render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={properties}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
@@ -164,7 +167,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
     const properties = deepClone(mockPropertes);
     properties[0].zip = '';
     const { container } = render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={properties}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
@@ -183,7 +186,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
   it('sort function should be called from mobile header', () => {
     const onClickSpy = sinon.spy();
     render(
-      <PropertiesMobileLayout
+      <PropertyList
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
@@ -212,7 +215,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
       activePropertiesSortFilter: () => '',
       forceVisible: FORCE_VISIBLE
     };
-    render(<PropertiesMobileLayout {...props} />);
+    render(<PropertyList {...props} />);
 
     const actual = Boolean(screen.queryByTestId('property-list-create'));
     expect(actual).toEqual(expected);
@@ -230,7 +233,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
       activePropertiesSortFilter: () => '',
       forceVisible: FORCE_VISIBLE
     };
-    render(<PropertiesMobileLayout {...props} />);
+    render(<PropertyList {...props} />);
 
     const actual = Boolean(screen.queryByTestId('property-list-create'));
     expect(actual).toEqual(expected);

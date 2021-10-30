@@ -59,54 +59,7 @@
 
     // Sort direction, selector
     &__sortDirButton {
-      width: rem-calc(30);
-      height: rem-calc(30);
-      display: inline-flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      outline-width: 0;
-      border-width: 0;
-      background: transparent;
-      transform: translateY(rem-calc(-3));
-
-      // Toggle sort arrows
-      &::before,
-      &::after {
-        height: rem-calc(10);
-        display: block;
-        color: $gray-dark;
-      }
-
-      &::before {
-        content: '\25BF';
-        transform: rotate(180deg) translateY(rem-calc(-3));
-      }
-
-      &::after {
-        content: '\25BF';
-        transform: translateY(rem-calc(-4));
-      }
-
-      // Set bottom arrow
-      &.-desc {
-        &::before {
-          display: block;
-        }
-        &::after {
-          content: '\25BE';
-        }
-      }
-
-      // Set top arrow
-      &.-asc {
-        &::after {
-          display: block;
-        }
-        &::before {
-          content: '\25BE';
-        }
-      }
+      @extend %sortDirButton;
     }
   }
 }

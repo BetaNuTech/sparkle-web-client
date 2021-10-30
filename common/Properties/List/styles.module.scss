@@ -1,6 +1,6 @@
 @import '../../../styles/index.scss';
 
-.mobileProperties {
+.propertyList {
   @extend %list;
   @extend %stickyBoundingBox;
   padding: 0;

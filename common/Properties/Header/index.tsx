@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
-import Dropdown from '../DropdownAdd';
+import Dropdown from '../../../features/Properties/DropdownAdd';
 
 interface PropertiesHeaderModel {
   sortBy: string;
@@ -10,6 +10,7 @@ interface PropertiesHeaderModel {
   onSortChange: any;
   canAddTeam: boolean;
   canAddProperty: boolean;
+  headerTitle?: string;
 }
 
 const Header: FunctionComponent<PropertiesHeaderModel> = ({
@@ -17,11 +18,14 @@ const Header: FunctionComponent<PropertiesHeaderModel> = ({
   sortDir,
   onSortChange,
   canAddTeam,
-  canAddProperty
+  canAddProperty,
+  headerTitle
 }) => (
   <header className={styles.header} data-testid="properties-header">
     {/* Title And Create Button */}
-    <h1 className={styles.header__title}>Properties</h1>
+    <h1 className={styles.header__title}>
+      {!headerTitle ? 'Properties' : headerTitle}
+    </h1>
 
     <aside className={styles.header__controls}>
       {(canAddTeam || canAddProperty) && (

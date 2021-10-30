@@ -1,12 +1,12 @@
 /* eslint-disable no-unused-vars */
 import { FunctionComponent, useRef } from 'react';
 import styles from './styles.module.scss';
-import useVisibility from '../../../../common/hooks/useVisibility';
-import propertyModel from '../../../../common/models/property';
-import LinkFeature from '../../../../common/LinkFeature';
-import TeamValues from '../../../../common/TeamValues';
+import useVisibility from '../../../hooks/useVisibility';
+import propertyModel from '../../../models/property';
+import LinkFeature from '../../../LinkFeature';
+import TeamValues from '../../../TeamValues';
 import features from '../../../../config/features';
-import getLastInspectionEntry from '../../utils/getLastInspectionEntry';
+import getLastInspectionEntry from '../../../../features/Properties/utils/getLastInspectionEntry';
 
 interface Props {
   property: propertyModel;
