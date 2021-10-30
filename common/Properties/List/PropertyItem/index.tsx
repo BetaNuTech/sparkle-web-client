@@ -1,13 +1,13 @@
 import clsx from 'clsx';
 import { useState, useRef, FunctionComponent } from 'react';
-import propertyModel from '../../../../common/models/property';
-import TeamValues from '../../../../common/TeamValues';
-import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
-import LinkFeature from '../../../../common/LinkFeature';
-import useVisibility from '../../../../common/hooks/useVisibility';
+import propertyModel from '../../../models/property';
+import TeamValues from '../../../TeamValues';
+import useSwipeReveal from '../../../hooks/useSwipeReveal';
+import LinkFeature from '../../../LinkFeature';
+import useVisibility from '../../../hooks/useVisibility';
 import features from '../../../../config/features';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
-import getLastInspectionEntry from '../../utils/getLastInspectionEntry';
+import getLastInspectionEntry from '../../../../features/Properties/utils/getLastInspectionEntry';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 

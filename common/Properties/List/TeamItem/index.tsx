@@ -2,12 +2,12 @@ import clsx from 'clsx';
 import { useState, useRef, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 import parentStyles from '../styles.module.scss';
-import teamModel from '../../../../common/models/team';
-import TeamValues from '../../../../common/TeamValues';
-import propertyMetaData from '../../../../common/models/propertyMetaData';
-import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
+import teamModel from '../../../models/team';
+import TeamValues from '../../../TeamValues';
+import propertyMetaData from '../../../models/propertyMetaData';
+import useSwipeReveal from '../../../hooks/useSwipeReveal';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
-import LinkFeature from '../../../../common/LinkFeature';
+import LinkFeature from '../../../LinkFeature';
 import features from '../../../../config/features';
 
 interface MobileLayoutTeamItemModel {

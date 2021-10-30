@@ -23,12 +23,12 @@ import teamModel from '../../common/models/team';
 import notifications from '../../common/services/notifications';
 import globalEvents from '../../common/utils/globalEvents';
 import breakpoints from '../../config/breakpoints';
-import styles from './styles.module.scss';
-import Header from './Header';
+import Container from '../../common/Properties/Container';
+import Header from '../../common/Properties/Header';
 import Sidebar from './Sidebar';
-import ProfileList from './ProfileList';
-import MobileLayout from './MobileLayout';
 import DeleteTeamPrompt from './DeleteTeamPrompt';
+import PropertyList from '../../common/Properties/List';
+import PropertyGrid from '../../common/Properties/Grid';
 
 interface PropertiesModel {
   user: userModel;
@@ -172,10 +172,32 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     globalEvents.trigger('visibilityForceCheck');
   };
 
+  const header = (
+    <Header
+      sortBy={sortBy}
+      sortDir={sortDir}
+      onSortChange={onSortChange}
+      canAddTeam={hasCreateTeamPermission}
+      canAddProperty={hasCreatePropertyPermission}
+    />
+  );
+
+  const grid = (
+    <PropertyGrid properties={sortedProperties} forceVisible={forceVisible} />
+  );
+
+  const sidebar = (
+    <Sidebar
+      teams={teams}
+      openTeamDeletePrompt={openTeamDeletePrompt}
+      teamCalculatedValues={teamCalculatedValues}
+    />
+  );
+
   return (
     <>
       {isMobileorTablet && (
-        <MobileLayout
+        <PropertyList
           properties={sortedProperties}
           teams={teams}
           teamCalculatedValues={teamCalculatedValues}
@@ -197,32 +219,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
       )}
 
       {/* Desktop Header & Content */}
-      {isDesktop && (
-        <div className={styles.properties__container}>
-          <Header
-            sortBy={sortBy}
-            sortDir={sortDir}
-            onSortChange={onSortChange}
-            canAddTeam={hasCreateTeamPermission}
-            canAddProperty={hasCreatePropertyPermission}
-          />
-
-          <div className={styles.properties__main}>
-            <ProfileList
-              properties={sortedProperties}
-              forceVisible={forceVisible}
-            />
-          </div>
-
-          <aside>
-            <Sidebar
-              teams={teams}
-              openTeamDeletePrompt={openTeamDeletePrompt}
-              teamCalculatedValues={teamCalculatedValues}
-            />
-          </aside>
-        </div>
-      )}
+      {isDesktop && <Container header={header} grid={grid} sidebar={sidebar} />}
 
       <DeleteTeamPrompt
         isVisible={isDeleteTeamPromptVisible}
