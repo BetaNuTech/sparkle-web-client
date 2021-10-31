@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import OneSimpleIcon from '../../../public/icons/sparkle/one-simple.svg';
@@ -10,6 +11,10 @@ import styles from '../styles.module.scss';
 interface Props {
   selected?: boolean;
   selectedValue?: number;
+  onMainInputChange?(
+    event: React.MouseEvent<HTMLLIElement>,
+    selectionIndex: number
+  ): void;
 }
 
 const canAddClass = (
@@ -51,7 +56,8 @@ const getSelectionStyle = (
 
 const FiveActionOneToFive: FunctionComponent<Props> = ({
   selected,
-  selectedValue
+  selectedValue,
+  onMainInputChange
 }) => (
   <ul className={styles.inspection}>
     <li
@@ -59,6 +65,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         styles.inspection__input,
         getSelectionStyle(selected, selectedValue, 0)
       )}
+      onClick={(event) => onMainInputChange(event, 0)}
     >
       <OneSimpleIcon />
     </li>
@@ -67,6 +74,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         styles.inspection__input,
         getSelectionStyle(selected, selectedValue, 1)
       )}
+      onClick={(event) => onMainInputChange(event, 1)}
     >
       <TwoSimpleIcon />
     </li>
@@ -75,6 +83,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         styles.inspection__input,
         getSelectionStyle(selected, selectedValue, 2)
       )}
+      onClick={(event) => onMainInputChange(event, 2)}
     >
       <ThreeSimpleIcon />
     </li>
@@ -83,6 +92,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         styles.inspection__input,
         getSelectionStyle(selected, selectedValue, 3)
       )}
+      onClick={(event) => onMainInputChange(event, 3)}
     >
       <FourSimpleIcon />
     </li>
@@ -91,6 +101,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         styles.inspection__input,
         getSelectionStyle(selected, selectedValue, 4)
       )}
+      onClick={(event) => onMainInputChange(event, 4)}
     >
       <FiveSimpleIcon />
     </li>

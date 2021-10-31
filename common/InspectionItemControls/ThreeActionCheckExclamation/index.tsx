@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import CheckmarkSimpleIcon from '../../../public/icons/sparkle/checkmark-simple.svg';
@@ -8,11 +9,16 @@ import styles from '../styles.module.scss';
 interface Props {
   selected?: boolean;
   selectedValue?: number;
+  onMainInputChange?(
+    event: React.MouseEvent<HTMLLIElement>,
+    selectionIndex: number
+  ): void;
 }
 
 const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
   selected,
-  selectedValue
+  selectedValue,
+  onMainInputChange
 }) => (
   <>
     <ul className={styles.inspection}>
@@ -25,6 +31,7 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
         )}
         data-testid="control-icon-checkmark"
         data-test={selected && selectedValue === 0 ? 'selected' : ''}
+        onClick={(event) => onMainInputChange(event, 0)}
       >
         <CheckmarkSimpleIcon />
       </li>
@@ -37,6 +44,7 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
         )}
         data-testid="control-icon-caution"
         data-test={selected && selectedValue === 1 ? 'selected' : ''}
+        onClick={(event) => onMainInputChange(event, 1)}
       >
         <CautionSimpleIcon />
       </li>
@@ -49,6 +57,7 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
         )}
         data-testid="control-icon-cancel"
         data-test={selected && selectedValue === 2 ? 'selected' : ''}
+        onClick={(event) => onMainInputChange(event, 2)}
       >
         <CancelSimpleIcon />
       </li>

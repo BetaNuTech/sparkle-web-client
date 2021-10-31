@@ -16,6 +16,11 @@ interface Props {
   nextSectionTitle: string;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
+  onMainInputChange(
+    event: React.MouseEvent<HTMLLIElement>,
+    item: inspectionTemplateItemModel,
+    selectionIndex: number
+  ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
 }
@@ -25,15 +30,20 @@ const SectionItem: FunctionComponent<Props> = ({
   nextSectionTitle,
   collapsedSections,
   onSectionCollapseToggle,
+  onMainInputChange,
   sectionItems
 }) => {
   const listItems = sectionItems.get(section.id);
+  const onListHeaderClick = (event) => {
+    event.preventDefault();
+    const target = event.target as HTMLElement;
+    if (target.closest('li') === event.currentTarget) {
+      onSectionCollapseToggle(section);
+    }
+  };
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <li
-      className={styles.section__list__item}
-      onClick={() => onSectionCollapseToggle(section)}
-    >
+    <li className={styles.section__list__item} onClick={onListHeaderClick}>
       <header
         className={clsx(
           styles.section__list__item__header,
@@ -64,7 +74,11 @@ const SectionItem: FunctionComponent<Props> = ({
       </header>
       <ul className={clsx(collapsedSections.includes(section.id) && '-d-none')}>
         {listItems.map((item) => (
-          <SectionItemList key={item.id} item={item} />
+          <SectionItemList
+            key={item.id}
+            item={item}
+            onMainInputChange={onMainInputChange}
+          />
         ))}
       </ul>
     </li>
