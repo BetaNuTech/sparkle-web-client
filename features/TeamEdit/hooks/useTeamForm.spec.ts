@@ -25,7 +25,7 @@ describe('Unit | Features | Team Edit | Hooks | Use Team Form', () => {
 
     await act(async () => {
       const { result } = renderHook(() => useTeamForm(sendNotification));
-      result.current.teamCreate({ name: 'test' } as teamModel);
+      await result.current.teamCreate({ name: 'test' } as teamModel);
     });
 
     const actual = spyFunc.called;
@@ -43,7 +43,7 @@ describe('Unit | Features | Team Edit | Hooks | Use Team Form', () => {
 
     await act(async () => {
       const { result } = renderHook(() => useTeamForm(sendNotification));
-      result.current.teamUpdate('team-1', {
+      await result.current.teamUpdate('team-1', {
         name: 'test'
       } as teamModel);
     });
@@ -68,9 +68,9 @@ describe('Unit | Features | Team Edit | Hooks | Use Team Form', () => {
         })
     });
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() => useTeamForm(sendNotification));
-      result.current.teamUpdate('team-1', {
+      await result.current.teamUpdate('team-1', {
         name: 'test'
       } as teamModel);
     });

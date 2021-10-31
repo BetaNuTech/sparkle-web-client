@@ -39,6 +39,16 @@ const patchRequest = (
     })
   });
 
+// DELETE Team Request
+const deleteRequest = (authToken: string, teamId: string): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/teams/${teamId}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
 export const createTeam = async (team: teamModel): Promise<teamModel | any> => {
   let authToken = '';
 
@@ -156,4 +166,37 @@ export const updateTeam = async (
   } as teamModel;
 };
 
-export default { createTeam, updateTeam };
+export const deleteTeam = async (teamId: string): Promise<string> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} updateTeam: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+  let response = null;
+  try {
+    response = await deleteRequest(authToken, teamId);
+  } catch (err) {
+    throw Error(`${PREFIX} updateTeam: DELETE request failed: ${err}`);
+  }
+
+  if (response.status === 401) {
+    throw new ErrorForbidden(`${PREFIX} updateTeam: user lacks permission`);
+  }
+
+  if (response.status === 404) {
+    throw new ErrorNotFound(`${PREFIX} updateTeam: record not found`);
+  }
+
+  if (response.status === 500) {
+    throw new ErrorServerInternal(`${PREFIX} updateTeam: system failure`);
+  }
+
+  // 201 success
+  return teamId;
+};
+
+export default { createTeam, updateTeam, deleteTeam };

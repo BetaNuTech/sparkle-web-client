@@ -29,7 +29,7 @@ export default function useTeamForm(
   const handleSuccessResponse = (teamId: string, latestTeam: teamModel) => {
     setTeam(latestTeam);
 
-    // Show success notification for creting or updating a property
+    // Show success notification for creting or updating a team
     sendNotification(
       teamId === 'new'
         ? 'Team successfully created'
@@ -77,7 +77,7 @@ export default function useTeamForm(
     }
   };
 
-  const teamCreate = (payload: any) => {
+  const teamCreate = (payload: any): Promise<void> => {
     setIsLoading(true);
 
     /* eslint-disable import/no-named-as-default-member */
@@ -94,7 +94,7 @@ export default function useTeamForm(
       });
   };
 
-  const teamUpdate = (teamId: string, payload: any) => {
+  const teamUpdate = (teamId: string, payload: any): Promise<void> => {
     setIsLoading(true);
 
     /* eslint-disable import/no-named-as-default-member */

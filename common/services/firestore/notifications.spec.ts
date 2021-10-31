@@ -112,64 +112,6 @@ describe('Unit | Services | global notifications', () => {
   test('it compiles all templates including all possible values', () => {
     const tests = [
       {
-        template: 'property-creation-summary',
-        values: ['name', 'authorName']
-      },
-      {
-        template: 'property-creation-markdown-body',
-        values: [
-          'name',
-          'addr1',
-          'addr2',
-          'city',
-          'state',
-          'zip',
-          'teamName',
-          'code',
-          'slackChannel',
-          'templateNames',
-          'bannerPhotoURL',
-          'photoURL',
-          'authorName',
-          'authorEmail'
-        ]
-      },
-      {
-        template: 'property-update-summary',
-        values: ['name', 'authorName']
-      },
-      {
-        template: 'property-update-markdown-body',
-        values: [
-          'previousName',
-          'previousAddr1',
-          'previousAddr2',
-          'previousCity',
-          'previousState',
-          'previousZip',
-          'previousTeamName',
-          'previousCode',
-          'previousSlackChannel',
-          'previousTemplateNames',
-          'previousBannerPhotoURL',
-          'previousPhotoURL',
-          'currentName',
-          'currentAddr1',
-          'currentAddr2',
-          'currentCity',
-          'currentState',
-          'currentZip',
-          'currentTeamName',
-          'currentCode',
-          'currentSlackChannel',
-          'currentTemplateNames',
-          'currentBannerPhotoURL',
-          'currentPhotoURL',
-          'authorName',
-          'authorEmail'
-        ]
-      },
-      {
         template: 'property-delete-summary',
         values: ['name', 'authorName']
       },
@@ -352,66 +294,12 @@ describe('Unit | Services | global notifications', () => {
         values: ['name', 'authorName', 'authorEmail']
       },
       {
-        template: 'team-created-summary',
-        values: ['name', 'authorName']
-      },
-      {
-        template: 'team-created-markdown-body',
-        values: ['name', 'authorName', 'authorEmail']
-      },
-      {
-        template: 'team-update-summary',
-        values: ['previousName', 'name', 'authorName']
-      },
-      {
-        template: 'team-update-markdown-body',
-        values: ['previousName', 'name', 'authorName', 'authorEmail']
-      },
-      {
-        template: 'team-delete-summary',
-        values: ['name', 'authorName']
-      },
-      {
-        template: 'team-delete-markdown-body',
-        values: ['name', 'authorName', 'authorEmail']
-      },
-      {
-        template: 'inspection-completion-summary',
-        values: ['completionDate', 'authorName', 'authorEmail', 'templateName']
-      },
-      {
-        template: 'inspection-completion-markdown-body',
-        values: [
-          'templateName',
-          'startDate',
-          'score',
-          'deficientItemCount',
-          'url',
-          'authorName',
-          'authorEmail'
-        ]
-      },
-      {
         template: 'inspection-delete-summary',
         values: ['currentDate', 'authorName']
       },
       {
         template: 'inspection-delete-markdown-body',
         values: ['templateName', 'startDate', 'authorName', 'authorEmail']
-      },
-      {
-        template: 'inspection-reassign-summary',
-        values: ['currentDate', 'authorName']
-      },
-      {
-        template: 'inspection-reassign-markdown-body',
-        values: [
-          'templateName',
-          'startDate',
-          'propertyName',
-          'authorName',
-          'authorEmail'
-        ]
       },
       {
         template: 'user-disabled-summary',
