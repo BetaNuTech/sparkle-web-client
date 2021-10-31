@@ -2,16 +2,10 @@ import { FunctionComponent, useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useFirestore } from 'reactfire';
 import calculateTeamValues from './utils/calculateTeamValues';
-import {
-  sorts,
-  activePropertiesSortFilter,
-  sortProperties
-} from './utils/propertiesSorting';
-import { useSortBy, useSortDir } from './hooks/sorting';
-import useTeams from './hooks/useTeams';
-import useProperties from './hooks/useProperties';
+import { activePropertiesSortFilter } from './utils/propertiesSorting';
 import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 import useDeleteTeam from './hooks/useDeleteTeam';
+import usePropertiesSorting from '../../common/Properties/hooks/usePropertiesSorting';
 import {
   canCreateTeam,
   canCreateProperty
@@ -21,7 +15,6 @@ import userModel from '../../common/models/user';
 import propertyModel from '../../common/models/property';
 import teamModel from '../../common/models/team';
 import notifications from '../../common/services/notifications';
-import globalEvents from '../../common/utils/globalEvents';
 import breakpoints from '../../config/breakpoints';
 import Container from '../../common/Properties/Container';
 import Header from '../../common/Properties/Header';
@@ -37,6 +30,10 @@ interface PropertiesModel {
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
   forceVisible?: boolean;
+  properties: propertyModel[];
+  propertiesMemo: string;
+  teams: teamModel[];
+  teamsMemo: string;
 }
 
 const Properties: FunctionComponent<PropertiesModel> = ({
@@ -44,22 +41,14 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   isOnline,
   isStaging,
   toggleNavOpen,
-  forceVisible
+  forceVisible,
+  properties,
+  propertiesMemo,
+  teams,
+  teamsMemo
 }) => {
   const firestore = useFirestore();
   const [teamCalculatedValues, setTeamCalculatedValues] = useState([]);
-  const [sortBy, setSortBy] = useSortBy();
-  const [sortDir, setSortDir] = useSortDir();
-  const { data: properties, memo: propertiesMemo } = useProperties(
-    firestore,
-    user
-  );
-  const {
-    status: teamsStatus,
-    data: teams,
-    memo: teamsMemo
-  } = useTeams(firestore, user);
-  const [sortedProperties, setSortedProperties] = useState([]);
 
   // Lookup user permissions
   const hasCreateTeamPermission = canCreateTeam(user);
@@ -87,6 +76,15 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     queuePropertyForDelete(null);
   };
 
+  // Sort properties
+  const {
+    sortedProperties,
+    sortDir,
+    sortBy,
+    nextPropertiesSort,
+    onSortChange
+  } = usePropertiesSorting(properties, propertiesMemo);
+
   // Queue and Delete Team
   const [isDeleteTeamPromptVisible, setDeleteTeamPromptVisible] =
     useState(false);
@@ -112,65 +110,14 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
-  // Apply properties sort order
-  const applyPropertiesSort = () =>
-    [...properties].sort(sortProperties(sortBy, sortDir));
-
   // Update team calculated values
   useEffect(() => {
     function recalcTeamComputedValues() {
-      if (teamsStatus === 'success') {
-        setTeamCalculatedValues(calculateTeamValues(teams, properties));
-      }
+      setTeamCalculatedValues(calculateTeamValues(teams, properties));
     }
 
     recalcTeamComputedValues();
-  }, [teamsStatus, teamsMemo, propertiesMemo]); // eslint-disable-line
-
-  useEffect(() => {
-    function resortProperties() {
-      setSortedProperties(applyPropertiesSort());
-    }
-
-    resortProperties();
-  }, [propertiesMemo, sortBy, sortDir]); // eslint-disable-line
-
-  // Loop through property
-  // sorting options
-  const nextPropertiesSort = () => {
-    const activeSortValue = sorts[sorts.indexOf(sortBy) + 1] || sorts[0]; // Get next or first
-    const descOrderKeys = ['lastInspectionDate', 'lastInspectionScore'];
-    const isDescOrderValue = descOrderKeys.includes(activeSortValue);
-
-    // Check if sort direction is asc then
-    // change to desc if it is either lastInspectionDate or lastInspectionScore
-    if (isDescOrderValue && sortDir === 'asc') {
-      setSortDir('desc');
-    } else if (!isDescOrderValue && sortDir === 'desc') {
-      // If sort desc and it is other than values
-      // in `descOrderKeys` then change to asc
-      setSortDir('asc');
-    }
-    // Update Property sort
-    setSortBy(activeSortValue);
-    globalEvents.trigger('visibilityForceCheck');
-  };
-
-  // Set sort attribute & direction
-  const onSortChange = (key: string) => (evt: { target: HTMLInputElement }) => {
-    const {
-      target: { value }
-    } = evt;
-
-    // Update sort direction
-    if (key === 'sortDir') {
-      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortBy(value); // Update sort by
-    }
-
-    globalEvents.trigger('visibilityForceCheck');
-  };
+  }, [teamsMemo, propertiesMemo]); // eslint-disable-line
 
   const header = (
     <Header

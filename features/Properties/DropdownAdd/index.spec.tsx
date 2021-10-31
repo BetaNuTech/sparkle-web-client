@@ -2,15 +2,6 @@ import { render } from '@testing-library/react';
 import DropdownAdd from './index';
 
 describe('Unit | Common | Dropdown | Link', () => {
-  it('matches prior snapshot', () => {
-    const props = {
-      canAddTeam: false,
-      canAddProperty: true
-    };
-    const { container } = render(<DropdownAdd {...props} />);
-    expect(container).toMatchSnapshot();
-  });
-
   it('should have links for add team and property for admin', () => {
     const props = {
       canAddTeam: true,
