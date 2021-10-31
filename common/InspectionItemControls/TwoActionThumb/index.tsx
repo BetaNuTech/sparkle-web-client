@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import ThumbsUpSimpleIcon from '../../../public/icons/sparkle/thumbs-up-simple.svg';
@@ -7,11 +8,16 @@ import styles from '../styles.module.scss';
 interface Props {
   selected?: boolean;
   selectedValue?: number;
+  onMainInputChange?(
+    event: React.MouseEvent<HTMLLIElement>,
+    selectionIndex: number
+  ): void;
 }
 
 const TwoActionThumb: FunctionComponent<Props> = ({
   selected,
-  selectedValue
+  selectedValue,
+  onMainInputChange
 }) => (
   <ul className={styles.inspection}>
     <li
@@ -21,6 +27,7 @@ const TwoActionThumb: FunctionComponent<Props> = ({
       )}
       data-testid="control-thumbs-up"
       data-test={selected && selectedValue === 0 ? 'selected' : ''}
+      onClick={(event) => onMainInputChange(event, 0)}
     >
       <ThumbsUpSimpleIcon />
     </li>
@@ -33,6 +40,7 @@ const TwoActionThumb: FunctionComponent<Props> = ({
       )}
       data-testid="control-thumbs-down"
       data-test={selected && selectedValue === 1 ? 'selected' : ''}
+      onClick={(event) => onMainInputChange(event, 1)}
     >
       <ThumbsDownSimpleIcon />
     </li>

@@ -1,4 +1,5 @@
 import inspectionModel from '../common/models/inspection';
+import inspectionTemplateItemModel from '../common/models/inspectionTemplateItem';
 
 export const fullInspection: inspectionModel = {
   id: 'inspection-1',
@@ -13,7 +14,7 @@ export const fullInspection: inspectionModel = {
   inspector: 'ZmsDbQZP6kTVDsF2xmChK3l3V273',
   templateName: 'Kitchen Sink',
   templateCategory: 'rDJx8PqjTKUMr2a4hPHd',
-  updatedAt: 1622676604,
+  updatedAt: 1622676604
 };
 
 export const inspectionA: inspectionModel = {
@@ -29,7 +30,7 @@ export const inspectionA: inspectionModel = {
   inspector: 'ZmsDbQZP6kTVDsF2xmChK3l3V273',
   templateName: 'Kitchen Sink',
   templateCategory: 'category-2',
-  updatedAt: 1622469870,
+  updatedAt: 1622469870
 };
 
 export const inspectionB: inspectionModel = {
@@ -45,8 +46,138 @@ export const inspectionB: inspectionModel = {
   inspector: 'noMMrCMEAQUrvfebtIvi9bbaMVt2',
   templateName: 'Kitchen Sink',
   templateCategory: 'category-3',
-  updatedAt: 1622714485,
+  updatedAt: 1622714485
 };
 
+export const unselectedCheckmarkItem: inspectionTemplateItemModel = {
+  id: 'item-1',
+  deficient: false,
+  isItemNA: false,
+  isTextInputItem: false,
+  index: 3,
+  itemType: 'main',
+  title: 'Four',
+  sectionId: 'section-1',
+  mainInputType: 'twoactions_checkmarkx',
+  mainInputSelected: false,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  notes: true,
+  photos: true
+};
+
+export const selectedCheckmarkItem: inspectionTemplateItemModel = {
+  id: 'item-2',
+  deficient: false,
+  index: 0,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'One',
+  sectionId: 'section-1',
+  mainInputType: 'twoactions_checkmarkx',
+  mainInputSelected: true,
+  mainInputSelection: 0,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  notes: true,
+  photos: true
+};
+
+export const unselectedThumbsItem: inspectionTemplateItemModel = {
+  id: 'item-3',
+  deficient: false,
+  index: 1,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Two',
+  sectionId: 'section-1',
+  mainInputType: 'twoactions_thumbs',
+  mainInputSelected: false,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  notes: true,
+  photos: true
+};
+
+export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
+  id: 'item-4',
+  deficient: false,
+  index: 5,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Six',
+  sectionId: 'section-1',
+  mainInputType: 'threeactions_checkmarkexclamationx',
+  mainInputSelected: true,
+  mainInputSelection: 1,
+  mainInputFourValue: 0,
+  mainInputOneValue: 3,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 5,
+  notes: true,
+  photos: true
+};
+
+export const unselectedAbcItem: inspectionTemplateItemModel = {
+  id: 'item-5',
+  deficient: false,
+  index: 2,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Two',
+  sectionId: 'section-1',
+  mainInputType: 'threeactions_abc',
+  mainInputSelected: false,
+  mainInputFourValue: 0,
+  mainInputOneValue: 1,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  notes: true,
+  photos: true
+};
+
+export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
+  id: 'item-6',
+  deficient: false,
+  index: 4,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Five',
+  sectionId: 'section-1',
+  mainInputType: 'fiveactions_onetofive',
+  mainInputSelected: false,
+  mainInputFourValue: 5,
+  mainInputOneValue: 2,
+  mainInputThreeValue: 4,
+  mainInputTwoValue: 3,
+  mainInputZeroValue: 1,
+  notes: true,
+  photos: true
+};
+
+export const inspectionItems = [
+  unselectedCheckmarkItem,
+  selectedCheckmarkItem,
+  unselectedThumbsItem,
+  selectedCheckedExclaimItem,
+  unselectedAbcItem,
+  unselectedOneToFiveItem
+];
 
 export default [fullInspection, inspectionA, inspectionB];

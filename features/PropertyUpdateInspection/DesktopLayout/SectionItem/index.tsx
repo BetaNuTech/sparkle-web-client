@@ -12,6 +12,11 @@ interface MobileLayoutTeamItemModel {
   nextSectionTitle: string;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
+  onMainInputChange(
+    event: React.MouseEvent<HTMLLIElement>,
+    item: inspectionTemplateItemModel,
+    selectionIndex: number
+  ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
 }
@@ -21,7 +26,8 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   nextSectionTitle,
   collapsedSections,
   sectionItems,
-  onSectionCollapseToggle
+  onSectionCollapseToggle,
+  onMainInputChange
 }) => {
   const listItems = sectionItems.get(section.id);
   return (
@@ -66,7 +72,11 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
       </header>
       <ul className={clsx(collapsedSections.includes(section.id) && '-d-none')}>
         {listItems.map((item) => (
-          <SectionItemList key={item.id} item={item} />
+          <SectionItemList
+            key={item.id}
+            item={item}
+            onMainInputChange={onMainInputChange}
+          />
         ))}
       </ul>
     </li>

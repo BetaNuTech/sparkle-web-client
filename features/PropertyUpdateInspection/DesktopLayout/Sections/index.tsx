@@ -8,6 +8,11 @@ interface Props {
   sections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
+  onMainInputChange(
+    event: React.MouseEvent<HTMLLIElement>,
+    item: inspectionTemplateItemModel,
+    selectionIndex: number
+  ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
 }
@@ -17,6 +22,7 @@ const Sections: FunctionComponent<Props> = ({
   sections,
   collapsedSections,
   onSectionCollapseToggle,
+  onMainInputChange,
   forceVisible,
   sectionItems
 }) => {
@@ -32,6 +38,7 @@ const Sections: FunctionComponent<Props> = ({
             forceVisible={forceVisible}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
+            onMainInputChange={onMainInputChange}
             sectionItems={sectionItems}
           />
         ))}
