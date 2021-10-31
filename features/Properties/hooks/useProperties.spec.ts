@@ -67,7 +67,7 @@ describe('Unit | Features | Properties | Hooks | Use Properties', () => {
   });
 
   test('should not request any properties for users without access', () => {
-    const expected = [false, false];
+    const expected = [];
     const findAll = sinon
       .stub(propertiesApi, 'findAll')
       .returns(emptyCollectionResult);
@@ -76,8 +76,10 @@ describe('Unit | Features | Properties | Hooks | Use Properties', () => {
       .returns(emptyCollectionResult);
     renderHook(() => useProperties({}, noAccess));
 
-    const actual = [findAll.called, queryRecords.called];
-    expect(actual).toEqual(expected);
+    const result = queryRecords.firstCall || { args: [] };
+    const actual = result.args[1];
+    expect(findAll.called, 'find all not called').toEqual(false);
+    expect(actual, 'called query all with empty array').toEqual(expected);
   });
 
   test('should request assigned properties for property user', () => {

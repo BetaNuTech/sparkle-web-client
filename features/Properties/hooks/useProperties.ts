@@ -22,7 +22,7 @@ const handlers = {};
 // Hooks for all user's properties based on roll
 export default function useProperties(
   firestore: any, // eslint-disable-line
-  user: userModel
+  user?: userModel
 ): usePropertiesResult {
   const [memo, setMemo] = useState('[]');
   const permissionLevel = getLevelName(user);
@@ -36,15 +36,15 @@ export default function useProperties(
     memo
   };
 
+  let result = null;
   // Load all properties for admin & corporate
   if (['admin', 'corporate'].includes(permissionLevel)) {
-    const result = propertiesApi.findAll(firestore);
-    Object.assign(payload, result, { handlers });
+    result = propertiesApi.findAll(firestore);
   } else if (['teamLead', 'propertyMember'].includes(permissionLevel)) {
     // Get the properties of user
     const isTeamLead = permissionLevel === 'teamLead';
     const teamProperties = isTeamLead
-      ? getLeadershipProperties(user.teams)
+      ? getLeadershipProperties(user && user.teams)
       : [];
 
     // Collect all unique property id's from
@@ -68,9 +68,14 @@ export default function useProperties(
       errorReports.send(wrappedErr); // eslint-disable-line
     }
 
-    const result = propertiesApi.queryRecords(firestore, propertyIds);
-    Object.assign(payload, result, { handlers });
+    result = propertiesApi.queryRecords(firestore, propertyIds);
+  } else {
+    // Fix for requiring all hooks to call
+    // on every render
+    result = propertiesApi.queryRecords(firestore, []);
   }
+
+  Object.assign(payload, result, { handlers });
 
   // Notify of updates
   // by updating memo
