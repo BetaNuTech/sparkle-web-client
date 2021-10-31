@@ -88,11 +88,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   // Queue and Delete Team
   const [isDeleteTeamPromptVisible, setDeleteTeamPromptVisible] =
     useState(false);
-  const { queueTeamForDelete, confirmTeamDelete } = useDeleteTeam(
-    firestore,
-    sendNotification,
-    user
-  );
+  const { queueTeamForDelete, confirmTeamDelete } =
+    useDeleteTeam(sendNotification);
   const openTeamDeletePrompt = (team: teamModel) => {
     queueTeamForDelete(team);
     setDeleteTeamPromptVisible(true);

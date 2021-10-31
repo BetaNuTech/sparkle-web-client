@@ -3,7 +3,7 @@ import { useFirestoreCollectionData, useFirestoreDocData } from 'reactfire';
 import fbCollections from '../../../config/collections';
 import teamModel from '../../models/team';
 
-const PREFIX = `common: services: firestore: ${fbCollections.teams}:`;
+// const PREFIX = `common: services: firestore: ${fbCollections.teams}:`;
 
 // Result of teams collection query
 export interface teamsCollectionResult {
@@ -97,17 +97,5 @@ export default {
 
     // Result
     return { status, error, data };
-  },
-
-  // Remove a team record
-  deleteRecord(
-    firestore: firebase.firestore.Firestore,
-    teamId: string
-  ): Promise<void> {
-    return firestore
-      .collection(fbCollections.teams)
-      .doc(teamId)
-      .delete()
-      .catch((err) => Promise.reject(Error(`${PREFIX} deleteRecord: ${err}`))); // wrap error
   }
 };

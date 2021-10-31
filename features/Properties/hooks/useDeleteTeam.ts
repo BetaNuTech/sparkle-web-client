@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import teamsApi from '../../../common/services/firestore/teams';
+import teamsApi from '../../../common/services/api/teams';
 import teamModel from '../../../common/models/team';
 import errorReports from '../../../common/services/api/errorReports';
-import globalNotification from '../../../common/services/firestore/notifications';
-import userModel from '../../../common/models/user';
-import { getUserFullname } from '../../../common/utils/user';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorNotFound from '../../../common/models/errors/notFound';
 
 const PREFIX = 'features: properties: hooks: useDeleteTeam:';
 interface Returned {
@@ -17,13 +16,46 @@ type userNotifications = (message: string, options?: any) => any;
 // Query team to delete
 // and send delete confirmation
 /* eslint-disable */
-const useDeleteTeam = (
-  firestore: any,
-  sendNotification: userNotifications,
-  user: userModel
-): Returned => {
+const useDeleteTeam = (sendNotification: userNotifications): Returned => {
   /* eslint-enable */
   const [queuedTeamForDeletion, setQueueDeleteTeam] = useState(null);
+
+  const handleSuccessResponse = () => {
+    // Show success notification for deleting a team
+    sendNotification('Team deleted successfully.', {
+      type: 'success'
+    });
+  };
+
+  const handleErrorResponse = (apiError: Error) => {
+    if (apiError instanceof ErrorForbidden) {
+      // User not allowed to delete team
+      sendNotification('You are not allowed to delete this team.', {
+        type: 'error'
+      });
+    } else if (apiError instanceof ErrorNotFound) {
+      // Team not found or already deleted
+      sendNotification(
+        'Team to delete could not be found. Please ensure team exists.',
+        {
+          type: 'error'
+        }
+      );
+    } else {
+      // User not allowed to deletee team
+      sendNotification('Please try again, or contact an admin.', {
+        type: 'error'
+      });
+      // Log issue and send error report
+      // of user's missing properties
+      // eslint-disable-next-line no-case-declarations
+      const wrappedErr = Error(
+        `${PREFIX} Could not complete team create/update operation`
+      );
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+  };
 
   // Set/unset the team
   // queued to be deleted
@@ -32,52 +64,14 @@ const useDeleteTeam = (
   };
 
   // Request to delete the queued team
-  const confirmTeamDelete = async (): Promise<any> => {
-    try {
-      await teamsApi.deleteRecord(firestore, queuedTeamForDeletion.id);
-    } catch (err) {
-      // Handle error
-      const wrappedErr = Error(`${PREFIX} confirmTeamDelete: ${err}`);
-      sendNotification(
-        `Failed to delete team: ${
-          queuedTeamForDeletion ? queuedTeamForDeletion.name : 'Unknown'
-        }`,
-        { type: 'error' }
-      );
-      errorReports.send(wrappedErr); // eslint-disable-line
-      return wrappedErr;
-    }
-
-    const name = queuedTeamForDeletion.name || 'Unknown';
-    const authorName = getUserFullname(user);
-    const authorEmail = user.email;
-
-    // Send global notification for team delete
-    // eslint-disable-next-line import/no-named-as-default-member
-    globalNotification.send(firestore, {
-      creator: user.id,
-      title: 'Team Deletion',
-      // eslint-disable-next-line import/no-named-as-default-member
-      summary: globalNotification.compileTemplate('team-delete-summary', {
-        name,
-        authorName
-      }),
-      // eslint-disable-next-line import/no-named-as-default-member
-      markdownBody: globalNotification.compileTemplate(
-        'team-delete-markdown-body',
-        {
-          name,
-          authorName,
-          authorEmail
-        }
-      )
-    });
-
-    // Send success
-    sendNotification('Team deleted successfully.', {
-      type: 'success'
-    });
-  };
+  const confirmTeamDelete = () =>
+    /* eslint-disable import/no-named-as-default-member */
+    teamsApi
+      .deleteTeam(queuedTeamForDeletion.id)
+      .then(handleSuccessResponse)
+      .catch((err) => {
+        handleErrorResponse(err);
+      });
 
   return {
     queuedTeamForDeletion,
