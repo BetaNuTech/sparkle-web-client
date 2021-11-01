@@ -13,6 +13,11 @@ interface Props {
   templateSections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
+  onMainInputChange(
+    event: React.MouseEvent<HTMLLIElement>,
+    item: inspectionTemplateItemModel,
+    selectionIndex: number
+  ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onShareAction(): void;
   isOnline?: boolean;
@@ -26,6 +31,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
   templateSections,
   collapsedSections,
   onSectionCollapseToggle,
+  onMainInputChange,
   sectionItems,
   isOnline
 }) => (
@@ -42,6 +48,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         sections={templateSections}
         collapsedSections={collapsedSections}
         onSectionCollapseToggle={onSectionCollapseToggle}
+        onMainInputChange={onMainInputChange}
         sectionItems={sectionItems}
       />
     </div>

@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import deepmerge from '../../common/utils/deepmerge';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import inspectionModel from '../../common/models/inspection';
@@ -11,6 +12,8 @@ import MobileLayout from './MobileLayout';
 import useInspectionSectionSort from './hooks/useInspectionSections';
 import DesktopLayout from './DesktopLayout';
 import useInspectionItems from './hooks/useInspectionItems';
+import inspectionTemplateItemModel from '../../common/models/inspectionTemplateItem';
+import useItemUpdate from './hooks/useItemUpdate';
 
 interface Props {
   user: userModel;
@@ -29,6 +32,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   property,
   inspection
 }) => {
+  const { inspectionUpdates, updateMainInputSelection } = useItemUpdate();
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
@@ -40,10 +44,24 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     minWidth: breakpoints.tablet.minWidth
   });
 
+  const onMainInputChange = (
+    event: React.MouseEvent<HTMLLIElement>,
+    item: inspectionTemplateItemModel,
+    selectionIndex: number
+  ) => {
+    updateMainInputSelection(
+      item,
+      inspection.template.items[item.id],
+      selectionIndex
+    );
+  };
+
   const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
     useInspectionSectionSort(inspection.template.sections);
 
-  const { sectionItems } = useInspectionItems(inspection.template.items);
+  const { sectionItems } = useInspectionItems(
+    deepmerge(inspection.template.items, inspectionUpdates)
+  );
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
@@ -62,6 +80,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
+            onMainInputChange={onMainInputChange}
             onShareAction={onShareAction}
             sectionItems={sectionItems}
           />
@@ -77,6 +96,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
+            onMainInputChange={onMainInputChange}
             onShareAction={onShareAction}
             sectionItems={sectionItems}
           />

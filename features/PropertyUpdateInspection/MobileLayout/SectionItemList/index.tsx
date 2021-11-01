@@ -7,9 +7,17 @@ import styles from '../../styles.module.scss';
 
 interface Props {
   item: inspectionTemplateItemModel;
+  onMainInputChange(
+    event: React.MouseEvent<HTMLLIElement>,
+    item: inspectionTemplateItemModel,
+    selectionIndex: number
+  ): void;
 }
 
-const SectionItemList: FunctionComponent<Props> = ({ item }) => {
+const SectionItemList: FunctionComponent<Props> = ({
+  item,
+  onMainInputChange
+}) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   return (
     <li className={styles.section__list__item__row}>
@@ -22,6 +30,9 @@ const SectionItemList: FunctionComponent<Props> = ({ item }) => {
           inputType={item.mainInputType}
           selected={item.mainInputSelected}
           selectedValue={item.mainInputSelection}
+          onMainInputChange={(event, selectionIndex) =>
+            onMainInputChange(event, item, selectionIndex)
+          }
         />
       </div>
     </li>
