@@ -103,6 +103,7 @@ const Page: FunctionComponent = () => {
           }
           trelloBoards={trelloBoards}
           redirectToProperty={redirectToProperty}
+          user={user}
         />
       ) : (
         <LoadingHud />
