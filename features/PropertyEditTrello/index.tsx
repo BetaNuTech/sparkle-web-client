@@ -11,6 +11,7 @@ import usePropertyTrelloSelection from './hooks/usePropertyTrelloSelection';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import propertyModel from '../../common/models/property';
+import userModel from '../../common/models/user';
 import LoadingHud from '../../common/LoadingHud';
 
 interface Props {
@@ -22,6 +23,7 @@ interface Props {
   trelloBoards: trelloBoard[];
   hasUpdateCompanySettingsPermission: boolean;
   redirectToProperty: () => void;
+  user: userModel;
 }
 
 const PropertyEditTrello: FunctionComponent<Props> = ({
@@ -32,6 +34,7 @@ const PropertyEditTrello: FunctionComponent<Props> = ({
   trelloProperty,
   trelloBoards,
   hasUpdateCompanySettingsPermission,
+  user,
   redirectToProperty
 }) => {
   const firestore = useFirestore();
@@ -40,7 +43,8 @@ const PropertyEditTrello: FunctionComponent<Props> = ({
   /* eslint-enable */
   const { isLoading: isSaving, updateTrelloIntegration } = useTrelloSave(
     firestore,
-    sendNotification
+    sendNotification,
+    user
   );
 
   // Load Lists
@@ -100,17 +104,22 @@ const PropertyEditTrello: FunctionComponent<Props> = ({
 
   // Persist updates to Property's
   // trello integration
-  const onSave = () => updateTrelloIntegration(property.id, selectedOptions);
+  const onSave = () =>
+    updateTrelloIntegration(property.id, selectedOptions, trelloProperty);
 
   // Remove all Property's
   // trello integration details
   const onReset = () =>
-    updateTrelloIntegration(property.id, {
-      openBoard: { name: '', id: '' },
-      openList: { name: '', id: '' },
-      closeBoard: { name: '', id: '' },
-      closeList: { name: '', id: '' }
-    });
+    updateTrelloIntegration(
+      property.id,
+      {
+        openBoard: { name: '', id: '' },
+        openList: { name: '', id: '' },
+        closeBoard: { name: '', id: '' },
+        closeList: { name: '', id: '' }
+      },
+      trelloProperty
+    );
 
   return isSaving ? (
     <LoadingHud />
