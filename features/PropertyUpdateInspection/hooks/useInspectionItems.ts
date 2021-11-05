@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import deepmerge from '../../../common/utils/deepmerge';
+import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import utilArray from '../../../common/utils/array';
 
@@ -8,8 +10,14 @@ interface useInspectionItemsResult {
 
 // Hooks for filtering inspections list
 export default function useInspectionItems(
-  items: Record<string, inspectionTemplateItemModel>
+  updatedTemplate: inspectionTemplateModel,
+  currentTemplate: inspectionTemplateModel
 ): useInspectionItemsResult {
+  // Merge current items state with local updates
+  const items = deepmerge(
+    currentTemplate.items || {},
+    updatedTemplate.items || {}
+  );
   const [memo, setMemo] = useState('[]');
 
   const itemsList = Object.keys(items).map((id) => ({

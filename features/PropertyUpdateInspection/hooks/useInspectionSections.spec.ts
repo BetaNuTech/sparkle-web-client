@@ -1,37 +1,27 @@
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
 import useInspectionSections from './useInspectionSections';
+import {
+  singleSection,
+  originalMultiSection,
+  addedMultiSecton
+} from '../../../__mocks__/inspections';
 
-// Declared this as changing mock should not fail the test cases
-const sections = {
-  'section-1': {
-    id: 'section-1',
-    added_multi_section: false,
-    index: 1,
-    section_type: 'single',
-    title: 'A'
-  },
-  'section-2': {
-    id: 'section-2',
-    added_multi_section: true,
+const SECTIONS = Object.freeze({
+  [singleSection.id]: { ...singleSection, index: 1, title: 'two' },
+  [originalMultiSection.id]: {
+    ...originalMultiSection,
     index: 0,
-    section_type: 'multi',
-    title: 'B'
+    title: 'one'
   },
-  'section-3': {
-    id: 'section-3',
-    added_multi_section: false,
-    index: 2,
-    section_type: 'single',
-    title: 'C'
-  }
-};
+  [addedMultiSecton.id]: { ...addedMultiSecton, index: 2, title: 'three' }
+});
 
 describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection Sections', () => {
-  test('should return section in sorted fashion', () => {
-    const expected = 'B | A | C';
+  test('should sort sections by index', () => {
+    const expected = 'one | two | three';
 
-    const { result } = renderHook(() => useInspectionSections(sections));
+    const { result } = renderHook(() => useInspectionSections(SECTIONS));
     const { sortedTemplateSections } = result.current;
 
     const actual = sortedTemplateSections.map((s) => s.title).join(' | ');
@@ -39,19 +29,17 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
   });
 
   test('should hide sections when collapsed', async () => {
-    const expected = 'section-3 | section-1';
-
-    const { result } = renderHook(() => useInspectionSections(sections));
+    const expected = `${addedMultiSecton.id} | ${singleSection.id}`;
+    const { result } = renderHook(() => useInspectionSections(SECTIONS));
 
     act(() => {
-      result.current.onSectionCollapseToggle(sections['section-3']);
+      result.current.onSectionCollapseToggle(SECTIONS[addedMultiSecton.id]);
     });
     act(() => {
-      result.current.onSectionCollapseToggle(sections['section-1']);
+      result.current.onSectionCollapseToggle(SECTIONS[singleSection.id]);
     });
 
     const actual = result.current.collapsedSections.join(' | ');
-
     expect(actual).toEqual(expected);
   });
 });

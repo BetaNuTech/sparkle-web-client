@@ -1,6 +1,5 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import deepmerge from '../../common/utils/deepmerge';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import inspectionModel from '../../common/models/inspection';
@@ -13,11 +12,14 @@ import useInspectionSectionSort from './hooks/useInspectionSections';
 import DesktopLayout from './DesktopLayout';
 import useInspectionItems from './hooks/useInspectionItems';
 import inspectionTemplateItemModel from '../../common/models/inspectionTemplateItem';
-import useItemUpdate from './hooks/useItemUpdate';
+import inspectionTemplateModel from '../../common/models/inspectionTemplate';
+import useUpdateTemplate from './hooks/useUpdateTemplate';
+import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates';
 
 interface Props {
   user: userModel;
   inspection: inspectionModel;
+  unpublishedTemplateUpdates: inspectionTemplateModel;
   property: propertyModel;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -30,9 +32,17 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   property,
-  inspection
+  inspection,
+  unpublishedTemplateUpdates
 }) => {
-  const { inspectionUpdates, updateMainInputSelection } = useItemUpdate();
+  const { updateMainInputSelection } = useUpdateTemplate(
+    unpublishedTemplateUpdates,
+    inspection.template
+  );
+  const { setLatestTemplateUpdates } = useUnpublishedTemplateUpdates(
+    unpublishedTemplateUpdates
+  );
+
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
@@ -44,23 +54,22 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     minWidth: breakpoints.tablet.minWidth
   });
 
+  // User selects new main input option
   const onMainInputChange = (
     event: React.MouseEvent<HTMLLIElement>,
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ) => {
-    updateMainInputSelection(
-      item,
-      inspection.template.items[item.id],
-      selectionIndex
-    );
+    setLatestTemplateUpdates(updateMainInputSelection(item.id, selectionIndex));
   };
 
   const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
     useInspectionSectionSort(inspection.template.sections);
 
+  // Items grouped by their section
   const { sectionItems } = useInspectionItems(
-    deepmerge(inspection.template.items, inspectionUpdates)
+    unpublishedTemplateUpdates,
+    inspection.template
   );
 
   const onShareAction = () => {

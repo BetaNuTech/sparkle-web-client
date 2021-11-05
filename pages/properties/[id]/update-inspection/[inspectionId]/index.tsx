@@ -10,6 +10,8 @@ import useFirestoreUser from '../../../../../common/hooks/useFirestoreUser';
 import LoadingHud from '../../../../../common/LoadingHud';
 import useNotifications from '../../../../../common/hooks/useNotifications';
 import notifications from '../../../../../common/services/notifications';
+// eslint-disable-next-line max-len
+import useUnpublishedTemplateUpdates from '../../../../../features/PropertyUpdateInspection/hooks/useUnpublishedTemplateUpdates';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
@@ -39,12 +41,18 @@ const Page: React.FC = (): ReactElement => {
     inspectionIdFinal
   );
 
+  // Locally stored user updates to inspection
+  // NOTE: users can only update an inspection's template
+  const { data: updatedTemplate, status: updatedTemplateStatus } =
+    useUnpublishedTemplateUpdates();
+
   // Loading State
   let isLoaded = false;
   if (
     userStatus === 'success' &&
     propertyStatus === 'success' &&
-    inspectionStatus === 'success'
+    inspectionStatus === 'success' &&
+    updatedTemplateStatus === 'success'
   ) {
     isLoaded = true;
   }
@@ -91,6 +99,7 @@ const Page: React.FC = (): ReactElement => {
           user={user}
           property={property}
           inspection={inspection}
+          unpublishedTemplateUpdates={updatedTemplate}
         />
       ) : (
         <LoadingHud />
