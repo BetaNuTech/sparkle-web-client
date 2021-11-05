@@ -8,7 +8,6 @@ interface inspectionTemplate {
   requireDeficientItemNoteAndPhoto: boolean;
   trackDeficientItems: boolean;
   items?: Record<string, inspectionTemplateItemModel>;
-  // Sections
   sections?: Record<string, inspectionTemplateSectionModel>;
 }
 

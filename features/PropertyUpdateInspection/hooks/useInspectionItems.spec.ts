@@ -1,63 +1,58 @@
 import { renderHook } from '@testing-library/react-hooks';
+import deepClone from '../../../__tests__/helpers/deepClone';
 import useInspectionItems from './useInspectionItems';
-import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
+import {
+  unselectedCheckmarkItem,
+  selectedCheckmarkItem,
+  unselectedThumbsItem,
+  selectedCheckedExclaimItem,
+  unselectedAbcItem
+} from '../../../__mocks__/inspections';
 
-// Declared this as changing mock should not fail the test cases
-const items: Record<string, inspectionTemplateItemModel> = {
-  'item-1': {
-    deficient: false,
+const ITEMS = Object.freeze({
+  [unselectedCheckmarkItem.id]: {
+    ...unselectedCheckmarkItem,
     index: 1,
-    itemType: 'main',
-    title: 'B',
-    mainInputType: 'threeactions_abc',
-    sectionId: 'section-1',
-    version: 0
+    title: 'two'
   },
-  'item-2': {
-    deficient: false,
+  [selectedCheckmarkItem.id]: {
+    ...selectedCheckmarkItem,
     index: 2,
-    itemType: 'main',
-    title: 'C',
-    mainInputType: 'threeactions_abc',
-    sectionId: 'section-1',
-    version: 0
+    title: 'three'
   },
-  'item-3': {
-    deficient: false,
+  [unselectedThumbsItem.id]: {
+    ...unselectedThumbsItem,
     index: 0,
-    itemType: 'main',
-    title: 'A',
-    mainInputType: 'threeactions_abc',
-    sectionId: 'section-1',
-    version: 0
+    title: 'one'
   },
-  'item-4': {
-    deficient: false,
+  [selectedCheckedExclaimItem.id]: {
+    ...selectedCheckedExclaimItem,
+    sectionId: 'section-2',
     index: 1,
-    itemType: 'main',
-    title: 'B',
-    mainInputType: 'threeactions_abc',
-    sectionId: 'section-2',
-    version: 0
+    title: 'two'
   },
-  'item-5': {
-    deficient: false,
-    index: 0,
-    itemType: 'main',
-    title: 'A',
-    mainInputType: 'threeactions_abc',
+  [unselectedAbcItem.id]: {
+    ...unselectedAbcItem,
     sectionId: 'section-2',
-    version: 0
+    index: 0,
+    title: 'one'
   }
-};
+});
 
-describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection Sections', () => {
+describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection Items', () => {
   test('should return items in each sections', () => {
     const expectedCount = 2;
     const expectedSectionOneCount = 3;
     const expectedSectionTwoCount = 2;
 
-    const { result } = renderHook(() => useInspectionItems(items));
+    const updatedTemplate = {} as inspectionTemplateModel;
+    const currentTemplate = {
+      items: deepClone(ITEMS)
+    } as inspectionTemplateModel;
+    const { result } = renderHook(() =>
+      useInspectionItems(updatedTemplate, currentTemplate)
+    );
     const { sectionItems } = result.current;
 
     const actualCount = sectionItems.size;
@@ -70,14 +65,26 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
   });
 
   test('should return items in each sections in sorted order', () => {
-    const expectedSectionOneTitle = 'A | B | C';
-    const expectedSectionTwoTitle = 'A | B';
+    const expectedSectionOneTitle = 'one | two | three';
+    const expectedSectionTwoTitle = 'one | two';
 
-    const { result } = renderHook(() => useInspectionItems(items));
+    const updatedTemplate = {} as inspectionTemplateModel;
+    const currentTemplate = {
+      items: deepClone(ITEMS)
+    } as inspectionTemplateModel;
+    const { result } = renderHook(() =>
+      useInspectionItems(updatedTemplate, currentTemplate)
+    );
     const { sectionItems } = result.current;
 
-    const actualSectionOneTitle = sectionItems.get('section-1').map(item => item.title).join(' | ');
-    const actualSectionTwoTitle = sectionItems.get('section-2').map(item => item.title).join(' | ');
+    const actualSectionOneTitle = sectionItems
+      .get('section-1')
+      .map((item) => item.title)
+      .join(' | ');
+    const actualSectionTwoTitle = sectionItems
+      .get('section-2')
+      .map((item) => item.title)
+      .join(' | ');
 
     expect(actualSectionOneTitle).toEqual(expectedSectionOneTitle);
     expect(actualSectionTwoTitle).toEqual(expectedSectionTwoTitle);

@@ -1,4 +1,5 @@
 import inspectionModel from '../common/models/inspection';
+import inspectionTemplateSectionModel from '../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../common/models/inspectionTemplateItem';
 
 export const fullInspection: inspectionModel = {
@@ -49,6 +50,30 @@ export const inspectionB: inspectionModel = {
   updatedAt: 1622714485
 };
 
+export const singleSection: inspectionTemplateSectionModel = {
+  id: 'section-1',
+  added_multi_section: false,
+  index: 1,
+  section_type: 'single',
+  title: 'one'
+};
+
+export const originalMultiSection: inspectionTemplateSectionModel = {
+  id: 'section-2',
+  added_multi_section: false,
+  index: 2,
+  section_type: 'multi',
+  title: 'three'
+};
+
+export const addedMultiSecton: inspectionTemplateSectionModel = {
+  id: 'section-3',
+  added_multi_section: true,
+  index: 0,
+  section_type: 'multi',
+  title: 'two'
+};
+
 export const unselectedCheckmarkItem: inspectionTemplateItemModel = {
   id: 'item-1',
   deficient: false,
@@ -60,6 +85,7 @@ export const unselectedCheckmarkItem: inspectionTemplateItemModel = {
   sectionId: 'section-1',
   mainInputType: 'twoactions_checkmarkx',
   mainInputSelected: false,
+  mainInputSelection: -1,
   mainInputFourValue: 0,
   mainInputOneValue: 0,
   mainInputThreeValue: 0,
@@ -101,6 +127,7 @@ export const unselectedThumbsItem: inspectionTemplateItemModel = {
   sectionId: 'section-1',
   mainInputType: 'twoactions_thumbs',
   mainInputSelected: false,
+  mainInputSelection: -1,
   mainInputFourValue: 0,
   mainInputOneValue: 0,
   mainInputThreeValue: 0,
@@ -110,8 +137,29 @@ export const unselectedThumbsItem: inspectionTemplateItemModel = {
   photos: true
 };
 
-export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
+export const unselectedCheckedExclaimItem: inspectionTemplateItemModel = {
   id: 'item-4',
+  deficient: false,
+  index: 5,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Six',
+  sectionId: 'section-1',
+  mainInputType: 'threeactions_checkmarkexclamationx',
+  mainInputSelected: false,
+  mainInputSelection: -1,
+  mainInputFourValue: 0,
+  mainInputOneValue: 3,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 5,
+  notes: true,
+  photos: true
+};
+
+export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
+  id: 'item-5',
   deficient: false,
   index: 5,
   isItemNA: false,
@@ -132,7 +180,7 @@ export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
 };
 
 export const unselectedAbcItem: inspectionTemplateItemModel = {
-  id: 'item-5',
+  id: 'item-6',
   deficient: false,
   index: 2,
   isItemNA: false,
@@ -142,6 +190,7 @@ export const unselectedAbcItem: inspectionTemplateItemModel = {
   sectionId: 'section-1',
   mainInputType: 'threeactions_abc',
   mainInputSelected: false,
+  mainInputSelection: -1,
   mainInputFourValue: 0,
   mainInputOneValue: 1,
   mainInputThreeValue: 0,
@@ -152,7 +201,7 @@ export const unselectedAbcItem: inspectionTemplateItemModel = {
 };
 
 export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
-  id: 'item-6',
+  id: 'item-7',
   deficient: false,
   index: 4,
   isItemNA: false,
@@ -162,6 +211,7 @@ export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
   sectionId: 'section-1',
   mainInputType: 'fiveactions_onetofive',
   mainInputSelected: false,
+  mainInputSelection: -1,
   mainInputFourValue: 5,
   mainInputOneValue: 2,
   mainInputThreeValue: 4,
@@ -171,10 +221,13 @@ export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
   photos: true
 };
 
+export const sections = [singleSection, originalMultiSection, addedMultiSecton];
+
 export const inspectionItems = [
   unselectedCheckmarkItem,
   selectedCheckmarkItem,
   unselectedThumbsItem,
+  unselectedCheckedExclaimItem,
   selectedCheckedExclaimItem,
   unselectedAbcItem,
   unselectedOneToFiveItem
