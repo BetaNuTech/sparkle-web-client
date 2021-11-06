@@ -73,7 +73,10 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
 
                   {/* Profile Description */}
                   <div className={styles.propertyItem__description}>
-                    <h6 className={styles.propertyItem__name}>
+                    <h6
+                      className={styles.propertyItem__name}
+                      data-testid="property-name"
+                    >
                       {property.name}
                     </h6>
                     {/* Do not show addr1 if not present */}

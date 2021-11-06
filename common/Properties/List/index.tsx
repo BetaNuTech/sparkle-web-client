@@ -33,8 +33,7 @@ interface PropertyListModel {
   canAddProperty?: boolean;
   toggleNavOpen?(): void;
   nextPropertiesSort?(): void;
-  sortBy?: string;
-  activePropertiesSortFilter?(string): string;
+  userFacingSortBy?: string;
   forceVisible?: boolean;
   headerTitle?: string;
 }
@@ -72,8 +71,7 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
   canAddProperty,
   toggleNavOpen,
   nextPropertiesSort,
-  sortBy,
-  activePropertiesSortFilter,
+  userFacingSortBy,
   forceVisible,
   headerTitle
 }) => {
@@ -95,7 +93,7 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
 
       <button
         className={headStyle.header__button}
-        onClick={nextPropertiesSort}
+        onClick={() => nextPropertiesSort()}
         data-testid="mobile-properties-sort-by"
       >
         <FolderIcon />
@@ -118,7 +116,7 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
         className={styles.propertyList__sortInfoLine}
         data-testid="properties-active-sort-by"
       >
-        {`Sorted by ${activePropertiesSortFilter(sortBy)}`}
+        {`Sorted by ${userFacingSortBy}`}
       </div>
       <ul className={styles.propertyList} data-testid="mobile-properties-list">
         {teams && teams.length > 0 && (

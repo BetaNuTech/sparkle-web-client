@@ -37,7 +37,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
         isDeletePropertyPromptVisible={false}
       />
@@ -55,7 +55,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
         isDeletePropertyPromptVisible={false}
       />
@@ -77,7 +77,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         properties={mockPropertes}
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
         isDeletePropertyPromptVisible={false}
       />
@@ -108,7 +108,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
       />
     );
@@ -130,7 +130,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
       />
     );
@@ -150,7 +150,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
       />
     );
@@ -172,7 +172,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         forceVisible={FORCE_VISIBLE}
       />
     );
@@ -191,7 +191,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
         teams={mockTeams}
         teamCalculatedValues={defaultPropertyMeta}
         isDeletePropertyPromptVisible={false}
-        activePropertiesSortFilter={() => ''}
+        userFacingSortBy="Name"
         nextPropertiesSort={onClickSpy}
         forceVisible={FORCE_VISIBLE}
       />
@@ -212,7 +212,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
       teams: mockTeams,
       teamCalculatedValues: defaultPropertyMeta,
       isDeletePropertyPromptVisible: false,
-      activePropertiesSortFilter: () => '',
+      userFacingSortBy: 'Name',
       forceVisible: FORCE_VISIBLE
     };
     render(<PropertyList {...props} />);
@@ -230,7 +230,7 @@ describe('Integration | Features | Properties | Mobile Layout', () => {
       teams: mockTeams,
       teamCalculatedValues: defaultPropertyMeta,
       isDeletePropertyPromptVisible: false,
-      activePropertiesSortFilter: () => '',
+      userFacingSortBy: 'Name',
       forceVisible: FORCE_VISIBLE
     };
     render(<PropertyList {...props} />);
