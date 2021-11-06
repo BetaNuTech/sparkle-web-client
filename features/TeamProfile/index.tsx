@@ -9,8 +9,7 @@ import teamModel from '../../common/models/team';
 import notifications from '../../common/services/notifications';
 import breakpoints from '../../config/breakpoints';
 import Header from '../../common/Properties/Header';
-import useTeamSorting from './hooks/useTeamSorting';
-import { activePropertiesSortFilter } from '../Properties/utils/propertiesSorting';
+import usePropertiesSorting from '../../common/hooks/properties/useSorting';
 import PropertyList from '../../common/Properties/List';
 import PropertyGrid from '../../common/Properties/Grid';
 import Container from '../../common/Properties/Container';
@@ -44,9 +43,10 @@ const TeamProfile: FunctionComponent<Props> = ({
     sortedProperties,
     sortDir,
     sortBy,
+    userFacingSortBy,
     nextPropertiesSort,
     onSortChange
-  } = useTeamSorting(properties, propertiesMemo);
+  } = usePropertiesSorting(properties, propertiesMemo);
 
   // User notifications setup
   /* eslint-disable */
@@ -106,8 +106,7 @@ const TeamProfile: FunctionComponent<Props> = ({
           isStaging={isStaging}
           toggleNavOpen={toggleNavOpen}
           nextPropertiesSort={nextPropertiesSort}
-          sortBy={sortBy}
-          activePropertiesSortFilter={activePropertiesSortFilter}
+          userFacingSortBy={userFacingSortBy}
           forceVisible={forceVisible}
           headerTitle={team.name}
         />

@@ -1,5 +1,5 @@
 interface calculateTeamValuesReference {
-  id: string;
+  id?: string;
   properties?: any;
 }
 

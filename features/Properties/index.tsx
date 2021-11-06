@@ -2,10 +2,9 @@ import { FunctionComponent, useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useFirestore } from 'reactfire';
 import calculateTeamValues from './utils/calculateTeamValues';
-import { activePropertiesSortFilter } from './utils/propertiesSorting';
 import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 import useDeleteTeam from './hooks/useDeleteTeam';
-import usePropertiesSorting from '../../common/Properties/hooks/usePropertiesSorting';
+import usePropertiesSorting from '../../common/hooks/properties/useSorting';
 import {
   canCreateTeam,
   canCreateProperty
@@ -81,6 +80,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     sortedProperties,
     sortDir,
     sortBy,
+    userFacingSortBy,
     nextPropertiesSort,
     onSortChange
   } = usePropertiesSorting(properties, propertiesMemo);
@@ -156,8 +156,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           canAddProperty={hasCreatePropertyPermission}
           toggleNavOpen={toggleNavOpen}
           nextPropertiesSort={nextPropertiesSort}
-          sortBy={sortBy}
-          activePropertiesSortFilter={activePropertiesSortFilter}
+          userFacingSortBy={userFacingSortBy}
           forceVisible={forceVisible}
         />
       )}
