@@ -140,7 +140,7 @@ export const unselectedThumbsItem: inspectionTemplateItemModel = {
 export const unselectedCheckedExclaimItem: inspectionTemplateItemModel = {
   id: 'item-4',
   deficient: false,
-  index: 5,
+  index: 6,
   isItemNA: false,
   isTextInputItem: false,
   itemType: 'main',
@@ -221,6 +221,47 @@ export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
   photos: true
 };
 
+export const unselectedOneActionNote: inspectionTemplateItemModel = {
+  id: 'item-8',
+  deficient: false,
+  index: 5,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Six',
+  sectionId: 'section-1',
+  mainInputType: 'OneAction_notes',
+  mainInputNotes: '',
+  mainInputSelected: false,
+  mainInputFourValue: 0,
+  mainInputZeroValue: 0,
+  mainInputOneValue: 0,
+  mainInputTwoValue: 0,
+  mainInputThreeValue: 0,
+  notes: true,
+  photos: true
+};
+
+export const emptyTextInputItem: inspectionTemplateItemModel = {
+  id: 'item-8',
+  deficient: false,
+  index: 7,
+  isItemNA: false,
+  isTextInputItem: true,
+  itemType: 'text_input',
+  title: 'eight',
+  sectionId: 'section-1',
+  mainInputSelected: false,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  signatureDownloadURL: '',
+  signatureTimestampKey: '',
+  textInputValue: ''
+};
+
 export const sections = [singleSection, originalMultiSection, addedMultiSecton];
 
 export const inspectionItems = [
@@ -230,7 +271,9 @@ export const inspectionItems = [
   unselectedCheckedExclaimItem,
   selectedCheckedExclaimItem,
   unselectedAbcItem,
-  unselectedOneToFiveItem
+  unselectedOneToFiveItem,
+  unselectedOneActionNote,
+  emptyTextInputItem
 ];
 
 export default [fullInspection, inspectionA, inspectionB];
