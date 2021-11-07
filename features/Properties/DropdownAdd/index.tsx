@@ -14,7 +14,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
   <Dropdown>
     {canAddTeam && (
       <DropdownLink
-        href="/teams/create/"
+        href="/teams/edit/new"
         featureEnabled={features.supportBetaTeamCreate}
         testid="dropdown-add-team"
       >

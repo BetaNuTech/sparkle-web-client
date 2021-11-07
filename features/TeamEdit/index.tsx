@@ -1,5 +1,7 @@
 import { FunctionComponent, useState } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import MobileHeader from '../../common/MobileHeader';
+import breakpoints from '../../config/breakpoints';
 import TeamForm from './Form';
 import teamModel from '../../common/models/team';
 import useTeamForm from './hooks/useTeamForm';
@@ -11,10 +13,16 @@ import notifications from '../../common/services/notifications'; // eslint-disab
 interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
+  toggleNavOpen?(): void;
   team: teamModel;
 }
 
-const TeamEdit: FunctionComponent<Props> = ({ isOnline, isStaging, team }) => {
+const TeamEdit: FunctionComponent<Props> = ({
+  isOnline,
+  isStaging,
+  toggleNavOpen,
+  team
+}) => {
   const [teamName, setTeamName] = useState<string>(team && team.name);
 
   /* eslint-disable */
@@ -24,6 +32,10 @@ const TeamEdit: FunctionComponent<Props> = ({ isOnline, isStaging, team }) => {
 
   // Enable send button
   const sendEnabled = teamName !== team.name && Boolean(teamName);
+
+  const isMobileorTablet = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
 
   const handleChange = (formData) => {
     setTeamName(formData);
@@ -52,6 +64,7 @@ const TeamEdit: FunctionComponent<Props> = ({ isOnline, isStaging, team }) => {
       <MobileHeader
         isOnline={isOnline}
         isStaging={isStaging}
+        toggleNavOpen={isMobileorTablet ? toggleNavOpen : undefined}
         actions={headerActions}
         title="Team"
         data-testid="teams-header"

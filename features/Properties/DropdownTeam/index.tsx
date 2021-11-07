@@ -15,7 +15,7 @@ interface Props {
 const DropdownTeam: FunctionComponent<Props> = ({ team, onDelete }) => (
   <Dropdown>
     <DropdownLink
-      href={`/teams/${team.id}/edit`}
+      href={`/teams/edit/${team.id}`}
       featureEnabled={features.supportBetaTeamCreate}
       testid="dropdown-add-team"
     >

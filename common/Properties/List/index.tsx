@@ -138,14 +138,18 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
             properties
           </header>
 
-          {properties.map((property) => (
-            <PropertyItem
-              key={property.id}
-              property={property}
-              onQueuePropertyDelete={openPropertyDeletePrompt}
-              forceVisible={forceVisible}
-            />
-          ))}
+          {properties.length ? (
+            properties.map((property) => (
+              <PropertyItem
+                key={property.id}
+                property={property}
+                onQueuePropertyDelete={openPropertyDeletePrompt}
+                forceVisible={forceVisible}
+              />
+            ))
+          ) : (
+            <h5 className={clsx('-pt', '-pl')}>Team has no properties</h5>
+          )}
         </li>
       </ul>
 
