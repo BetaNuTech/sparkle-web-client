@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "npx next build",
-    "export": "npx next export -o dist",
+    "export": "npx next export -o dist && chmod g+w,o+w ./dist && touch ./dist/hash.txt && chmod g+w,o+w ./dist/hash.txt",
     "start": "next start",
     "test": "npx jest",
     "lint": "npx eslint --ext js,jsx,ts,tsx .",
