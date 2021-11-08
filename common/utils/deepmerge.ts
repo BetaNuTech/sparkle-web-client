@@ -50,7 +50,7 @@ function getMergeFunction(key, options) {
   return typeof customMerge === 'function' ? customMerge : deepmerge;
 }
 
-function getEnumerableOwnPropertySymbols(target) {
+function getEnumerableOwnPropertySymbols(target: any): any[] {
   return Object.getOwnPropertySymbols
     ? Object.getOwnPropertySymbols(target).filter(function (symbol) {
         return target.propertyIsEnumerable(symbol);
@@ -58,7 +58,7 @@ function getEnumerableOwnPropertySymbols(target) {
     : [];
 }
 
-function getKeys(target) {
+function getKeys(target: any) {
   return Object.keys(target).concat(getEnumerableOwnPropertySymbols(target));
 }
 
@@ -81,7 +81,7 @@ function propertyIsUnsafe(target, key) {
   ); // and also unsafe if they're nonenumerable.
 }
 
-function mergeObject(target, source, options) {
+function mergeObject(target: any, source: any, options?: any) {
   var destination = {};
   if (options.isMergeableObject(target)) {
     getKeys(target).forEach(function (key) {

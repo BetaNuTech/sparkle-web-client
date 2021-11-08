@@ -34,7 +34,7 @@ import propertyModel from '../../common/models/property';
 import templateCategoryModel from '../../common/models/templateCategory';
 import inspectionModel from '../../common/models/inspection';
 
-interface PropertiesModel {
+interface Props {
   user: userModel;
   id: string;
   isOnline?: boolean;
@@ -48,7 +48,7 @@ interface PropertiesModel {
   yardiAuthorizer: any;
 }
 
-const PropertyProfile: FunctionComponent<PropertiesModel> = ({
+const PropertyProfile: FunctionComponent<Props> = ({
   user,
   id,
   isOnline,
