@@ -1,15 +1,13 @@
 import updateItem, { userUpdate as userItemUpdate } from './updateTemplateItem';
+import updateSection, {
+  userUpdate as userSectionUpdate
+} from './updateTemplateSection';
 import inspectionTemplateModel from '../../models/inspectionTemplate';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
 
-// TODO relocate to section update util
-interface sectionUpdate {
-  cloneOf: string;
-}
-
 export interface userUpdate {
   items?: Record<string, userItemUpdate>;
-  sections?: Record<string, sectionUpdate>;
+  sections?: Record<string, userSectionUpdate>;
 }
 
 interface updateOptions {
@@ -28,7 +26,7 @@ export default function inspectionUpdate(
   userChanges: userUpdate,
   userChangeOptions?: updateOptions
 ): inspectionTemplateModel {
-  const result = JSON.parse(
+  let result = JSON.parse(
     JSON.stringify(updatedTemplate)
   ) as inspectionTemplateModel;
   const options = {
@@ -49,17 +47,24 @@ export default function inspectionUpdate(
     throw Error(`${PREFIX} requires at least one section or item change`);
   }
 
-  if (isItemUpdate && !targetId) {
+  if (!targetId) {
     throw Error(
-      `${PREFIX} an item update must reference an item by an identifier`
+      `${PREFIX} an ${
+        isItemUpdate ? 'item' : 'section'
+      } update must reference an ${
+        isItemUpdate ? 'item' : 'section'
+      } by an identifier`
     );
   }
 
   if (isItemUpdate) {
     const updatedItem =
       getItem(updatedTemplate, targetId) || ({} as inspectionTemplateItemModel);
-    const currentItem = getItem(currentTemplate, targetId);
-    const itemChanges = (userChanges.items || {})[targetId];
+    const currentItem =
+      getItem(currentTemplate, targetId) ||
+      getItem(updatedTemplate, targetId) || // for unpublished multi-section item
+      null;
+    const changes = (userChanges.items || {})[targetId];
 
     // Setup any missing items hash
     result.items = result.items || {};
@@ -68,7 +73,7 @@ export default function inspectionUpdate(
     result.items[targetId] = updateItem(
       updatedItem,
       currentItem,
-      itemChanges,
+      changes,
       options
     );
 
@@ -76,9 +81,13 @@ export default function inspectionUpdate(
     if (!result.items[targetId]) delete result.items[targetId];
   } else {
     // Setup section update
-    // TODO handle section updates
-    // const sectionChanges =
-    //   !isItemUpdate && targetId ? (userChanges.sections || {})[targetId] : null;
+    const changes = (userChanges.sections || {})[targetId];
+    changes.id = targetId;
+
+    // Apply user's section changes
+    // Sectional changes can affect
+    // both items and sections
+    result = updateSection(updatedTemplate, currentTemplate, changes);
   }
 
   // Remove empty items hash from updates

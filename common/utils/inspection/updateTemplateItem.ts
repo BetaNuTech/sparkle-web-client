@@ -25,8 +25,8 @@ const DEFAULT_OPTIONS = Object.freeze({
   adminEdit: false
 } as updateOptions);
 
-// Manage local updates to inspection
-export default function inspectionUpdateTemplateUpdate(
+// Manage local updates to inspection item
+export default function updateTemplateItem(
   updatedItem: inspectionTemplateItemModel,
   currentItem: inspectionTemplateItemModel,
   userChanges: userUpdate,
@@ -36,6 +36,7 @@ export default function inspectionUpdateTemplateUpdate(
     ...DEFAULT_OPTIONS,
     ...(userChangeOptions || {})
   } as updateOptions;
+  // so users can add item's from multi-sections
   const isPopulatedCurrentItem = Object.keys(currentItem).length > 0;
   const changeCount = Object.keys(userChanges).length;
 

@@ -1,9 +1,13 @@
 import updateTemplate, { userUpdate } from './updateTemplate';
 import deepClone from '../../../__tests__/helpers/deepClone';
-import { selectedCheckmarkItem } from '../../../__mocks__/inspections';
+import {
+  selectedCheckmarkItem,
+  originalMultiSection
+} from '../../../__mocks__/inspections';
 import { templateA } from '../../../__mocks__/templates';
 import inspectionTemplateModel from '../../models/inspectionTemplate';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
+import inspectionTemplateSectionModel from '../../models/inspectionTemplateSection';
 
 describe('Unit | Common | Utils | Inspection | Update Template', () => {
   test('it does not modify arguments', () => {
@@ -73,5 +77,64 @@ describe('Unit | Common | Utils | Inspection | Update Template', () => {
         ).toEqual(undefined);
       }
     }
+  });
+
+  // TODO
+  // test('it removes added section updates once they no longer differ from the current state', () => {});
+
+  test('it updates a locally added multi-section item as normal', () => {
+    const expected = { mainInputSelection: 0, mainInputSelected: true };
+    let updatedTemplate = {} as inspectionTemplateModel;
+    const currentTemplate = deepClone(templateA) as inspectionTemplateModel;
+    const sectionOne = deepClone(
+      originalMultiSection
+    ) as inspectionTemplateSectionModel;
+    const itemOne = deepClone(
+      selectedCheckmarkItem
+    ) as inspectionTemplateItemModel;
+    const itemTwo = deepClone(
+      selectedCheckmarkItem
+    ) as inspectionTemplateItemModel;
+    const addMultiSection = {
+      sections: { new: { cloneOf: 'one' } }
+    } as userUpdate;
+
+    sectionOne.id = 'one';
+    itemOne.id = 'item-one';
+    itemTwo.id = 'item-two';
+    itemOne.sectionId = 'one';
+    itemTwo.sectionId = 'one';
+    currentTemplate.items = { itemOne, itemTwo };
+    currentTemplate.sections = { one: sectionOne };
+
+    // Add cloned items
+    updatedTemplate = updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      addMultiSection
+    );
+
+    const [newItemId] = Object.entries(updatedTemplate.items || {})
+      .filter(([id]) => id.search('item') !== 0)
+      .map(([id]) => id);
+    const changeNewItemSelection = {
+      items: { [newItemId]: { mainInputSelection: 0 } }
+    };
+
+    // Update cloned item
+    updatedTemplate = updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      changeNewItemSelection
+    );
+
+    const result =
+      (updatedTemplate.items || {})[newItemId] ||
+      ({} as inspectionTemplateItemModel);
+    const actual = {
+      mainInputSelection: result.mainInputSelection,
+      mainInputSelected: result.mainInputSelected
+    };
+    expect(actual).toEqual(expected);
   });
 });

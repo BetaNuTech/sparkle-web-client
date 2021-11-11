@@ -1,3 +1,6 @@
+import adminEditModel from './inspectionTemplateItemAdminEdit';
+import photoDataModel from './inspectionTemplateItemPhotoData';
+
 /* eslint-disable camelcase */
 interface inspectionTemplateItem {
   id?: string;
@@ -23,6 +26,8 @@ interface inspectionTemplateItem {
   signatureTimestampKey?: string;
   mainInputSelected?: boolean;
   mainInputSelection?: number;
+  adminEdits?: Record<string, adminEditModel>;
+  photosData?: Record<string, photoDataModel>;
   version?: number;
 }
 

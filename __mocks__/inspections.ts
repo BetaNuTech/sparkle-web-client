@@ -262,6 +262,47 @@ export const emptyTextInputItem: inspectionTemplateItemModel = {
   textInputValue: ''
 };
 
+export const answeredTextInputItem: inspectionTemplateItemModel = {
+  id: 'item-9',
+  deficient: false,
+  index: 8,
+  itemType: 'text_input',
+  title: 'nine',
+  sectionId: 'section-1',
+  isItemNA: false,
+  isTextInputItem: true,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputSelected: false,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  notes: false,
+  photos: false,
+  textInputValue: 'test'
+};
+
+export const unselectedSignatureInputItem: inspectionTemplateItemModel = {
+  id: 'item-10',
+  deficient: false,
+  index: 9,
+  isItemNA: false,
+  itemType: 'signature',
+  title: 'ten',
+  sectionId: 'section-1',
+  isTextInputItem: false,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputSelected: false,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  signatureDownloadURL: '',
+  signatureTimestampKey: '',
+  notes: false,
+  photos: false
+};
+
 export const sections = [singleSection, originalMultiSection, addedMultiSecton];
 
 export const inspectionItems = [
@@ -273,7 +314,9 @@ export const inspectionItems = [
   unselectedAbcItem,
   unselectedOneToFiveItem,
   unselectedOneActionNote,
-  emptyTextInputItem
+  emptyTextInputItem,
+  answeredTextInputItem,
+  unselectedSignatureInputItem
 ];
 
 export default [fullInspection, inspectionA, inspectionB];
