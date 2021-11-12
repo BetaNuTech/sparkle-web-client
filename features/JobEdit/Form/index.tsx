@@ -16,31 +16,33 @@ import bidModel from '../../../common/models/bid';
 import userModel from '../../../common/models/user';
 import attachmentModel from '../../../common/models/attachment';
 import MobileHeader from '../../../common/MobileHeader';
-import Dropdown, { DropdownButton } from '../../../common/Dropdown';
-import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
 import utilString from '../../../common/utils/string';
 import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
-import bidsConfig from '../../../config/bids';
-import AddIcon from '../../../public/icons/ios/add.svg';
-import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
 import DropdownHeader from '../DropdownHeader';
 import DeleteAttachmentPrompt from '../DeleteAttachmentPrompt';
 import DeleteTrelloCardPrompt from '../DeleteTrelloCardPrompt';
-import { textColors } from '../../JobBids';
 import { FileChangeEvent } from '../hooks/useAttachmentChange';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import formErrors from './errors';
-import AttachmentList from '../../../common/AttachmentList';
 import {
   canApproveJob,
   canAuthorizeJob,
   canExpediteJob
 } from '../../../common/utils/userPermissions';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import JobNeed from './Fields/Need';
+import JobExpedite from './Fields/Expedite';
+import JobType from './Fields/Type';
+import FormInputs from './FormInputs';
+import JobTitle from './Fields/Title';
+import JobTrelloCard from './Fields/TrelloCard';
+import JobBidCard from './Fields/BidCard';
+import JobActionButtons from './Fields/ActionButtons';
+import JobScope from './Fields/Scope';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -72,16 +74,6 @@ interface Props {
   isDeleteTrelloCardPromptVisible: boolean;
 }
 
-type Inputs = {
-  title: string;
-  need: string;
-  scopeOfWork: string;
-  type: string;
-  action: string;
-  trelloCardURL: string;
-  expediteReason: string;
-};
-
 interface LayoutProps {
   isMobile: boolean;
   jobLink: string;
@@ -98,8 +90,8 @@ interface LayoutProps {
   isLoading: boolean;
   error: ErrorBadRequest;
   onFormAction: (action: string) => void;
-  register: UseFormRegister<Inputs>;
-  formState: FormState<Inputs>;
+  register: UseFormRegister<FormInputs>;
+  formState: FormState<FormInputs>;
   onFileChange(ev: FileChangeEvent): void;
   isUploadingFile: boolean;
   bidsRequired: number;
@@ -107,7 +99,7 @@ interface LayoutProps {
   setDeleteAttachmentPromptVisible(newState: boolean): void;
   onDeleteAttachment(attachment: attachmentModel): void;
   sendNotification?: userNotifications;
-  setValue?: UseFormSetValue<Inputs>;
+  setValue?: UseFormSetValue<FormInputs>;
   setDeleteTrelloCardPromptVisible(newState: boolean): void;
 }
 
@@ -124,97 +116,6 @@ const sowValidator = (value) => {
   }
   return isValid || formErrors.scopeRequired;
 };
-
-const formActionButtons = (
-  job: jobModel,
-  canApprove: boolean,
-  canAuthorize: boolean,
-  canExpedite: boolean,
-  isJobComplete: boolean,
-  isMobile: boolean,
-  isLoading: boolean,
-  onFormAction: (action: string) => void
-) => (
-  <>
-    {job.state === 'open' && (
-      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-        <button
-          type="button"
-          data-testid="job-form-approve"
-          disabled={isLoading || !canApprove}
-          className={clsx(
-            styles.button__submit,
-            isMobile && styles.button__fullwidth
-          )}
-          onClick={() => onFormAction('approved')}
-        >
-          Approve
-        </button>
-        {!canApprove && (
-          <p className={clsx('-c-gray-light', '-mb-none')}>
-            You do not have permission to approve this job
-          </p>
-        )}
-      </div>
-    )}
-    {job.state === 'approved' && (
-      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-        <button
-          type="button"
-          data-testid="job-form-authorize"
-          disabled={isLoading || !canAuthorize}
-          className={clsx(
-            styles.button__submit,
-            isMobile && styles.button__fullwidth
-          )}
-          data-value="authorized"
-          onClick={() => onFormAction('authorized')}
-        >
-          Authorize
-        </button>
-        {!canAuthorize && (
-          <p className={clsx('-c-gray-light', '-mb-none')}>
-            You cannot authorize this job
-          </p>
-        )}
-      </div>
-    )}
-    {canExpedite && (
-      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-        <button
-          type="button"
-          data-testid="job-form-expedite"
-          disabled={isLoading}
-          className={clsx(
-            styles.button__submit,
-            isMobile && styles.button__fullwidth
-          )}
-          data-value="expedite"
-          onClick={() => onFormAction('expedite')}
-        >
-          Expedite
-        </button>
-      </div>
-    )}
-
-    {!isJobComplete && (
-      <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-        <button
-          type="button"
-          data-testid="job-form-submit"
-          disabled={isLoading}
-          className={clsx(
-            styles.button__submit,
-            isMobile && styles.button__fullwidth
-          )}
-          onClick={() => onFormAction('save')}
-        >
-          Save
-        </button>
-      </div>
-    )}
-  </>
-);
 
 const Layout: FunctionComponent<LayoutProps> = ({
   isMobile,
@@ -246,7 +147,6 @@ const Layout: FunctionComponent<LayoutProps> = ({
     error && error.errors ? error.errors.map((e) => e.detail) : [];
 
   const nextState = !isNewJob && jobsConfig.nextState[job.state];
-  const bidsLink = `/properties/${propertyId}/jobs/${job.id}/bids/`;
 
   const inputFile = useRef(null);
 
@@ -378,405 +278,103 @@ const Layout: FunctionComponent<LayoutProps> = ({
         <form>
           <div className={styles.form__grid__fields}>
             <div>
-              <div className={styles.jobNew__formGroup}>
-                <label htmlFor="jobTitle">
-                  Title <span>*</span>
-                </label>
-                <div className={styles.jobNew__formGroup__control}>
-                  <input
-                    id="jobTitle"
-                    type="text"
-                    name="title"
-                    className={styles.jobNew__input}
-                    defaultValue={job.title}
-                    data-testid="job-form-title"
-                    {...register('title', {
-                      required: formErrors.titleRequired
-                    })}
-                    disabled={isLoading || isJobComplete}
-                  />
-                  <ErrorLabel formName="title" errors={formState.errors} />
-                </div>
-              </div>
+              <JobTitle
+                defaultValue={job.title}
+                isLoading={isLoading}
+                isJobComplete={isJobComplete}
+                formState={formState}
+                {...register('title', {
+                  required: formErrors.titleRequired
+                })}
+              />
               <input
                 type="hidden"
                 defaultValue={job.trelloCardURL}
                 {...register('trelloCardURL')}
               />
-              <div className={styles.jobNew__formGroup}>
-                <label htmlFor="jobDescription">
-                  Need {isApprovedOrAuthorized && <span>*</span>}
-                </label>
-                <div className={styles.jobNew__formGroup__control}>
-                  <textarea
-                    id="jobDescription"
-                    className="form-control"
-                    rows={4}
-                    name="need"
-                    defaultValue={job.need}
-                    data-testid="job-form-description"
-                    {...register('need', needValidationOptions)}
-                    disabled={isLoading || isJobComplete}
-                  ></textarea>
-                  <ErrorLabel formName="need" errors={formState.errors} />
-                </div>
-              </div>
-              {job.expediteReason && (
-                <div className={styles.jobNew__formGroup}>
-                  <label htmlFor="jobExpediteReason">
-                    Expedite Reason <span>*</span>
-                  </label>
-                  <div className={styles.jobNew__formGroup__control}>
-                    <textarea
-                      id="jobExpediteReason"
-                      className="form-control"
-                      rows={3}
-                      name="expediteReason"
-                      defaultValue={job.expediteReason}
-                      data-testid="job-form-expedite-reason"
-                      {...register('expediteReason', expediteReasonValidation)}
-                      disabled={isLoading || isJobComplete}
-                    ></textarea>
-                    <ErrorLabel
-                      formName="expediteReason"
-                      errors={formState.errors}
-                    />
-                  </div>
-                </div>
-              )}
-              <div
-                className={styles.jobNew__formGroup}
-                data-testid="job-form-type"
-              >
-                <label htmlFor="jobType">
-                  Project Type <span>*</span>
-                </label>
-                {Object.keys(jobsConfig.types).map((jobType, index) => (
-                  <label
-                    key={jobType}
-                    className={styles.jobNew__formGroup__radioList}
-                  >
-                    <input
-                      type="radio"
-                      name="type"
-                      value={jobType}
-                      {...register('type')}
-                      {...(isJobComplete
-                        ? {
-                            checked: job.type && job.type === jobType
-                          }
-                        : {
-                            defaultChecked:
-                              (job.type && job.type === jobType) ||
-                              (!job.type && index === 0)
-                          })}
-                      data-testid="job-form-type-radio"
-                      disabled={isLoading || isJobComplete}
-                    />
-                    <div className={styles.jobNew__formGroup__radioText}>
-                      <span
-                        className={styles.jobNew__formGroup__radioText__heading}
-                        data-testid="job-form-type-text"
-                      >
-                        {jobsConfig.types[jobType].title}
-                      </span>
-                      <span
-                        className={styles.jobNew__formGroup__radioText__desc}
-                        data-testid="job-form-type-desc"
-                      >
-                        {jobsConfig.types[jobType].description}
-                      </span>
-                    </div>
-                  </label>
-                ))}
-              </div>
-              {!isNewJob && (
-                <div className={styles.jobNew__formGroup}>
-                  <div className={styles.jobNew__formSeparatedLabel}>
-                    <label htmlFor="jobScope">
-                      Scope of work <span>*</span>
-                    </label>
-                    <button
-                      type="button"
-                      className={styles.jobNew__formGroup__upload}
-                      onClick={onUploadClick}
-                      disabled={isUploadingFile}
-                    >
-                      Upload
-                      <span className={styles.jobNew__formGroup__upload__icon}>
-                        <AddIcon />
-                      </span>
-                      <input
-                        type="file"
-                        ref={inputFile}
-                        className={styles.jobNew__formGroup__file}
-                        onChange={onInputFileChange}
-                        data-testid="input-file-attachment"
-                      />
-                    </button>
-                  </div>
-                  <div className={styles.jobNew__formGroup__control}>
-                    <textarea
-                      id="jobScope"
-                      className={clsx(
-                        'form-control',
-                        styles.jobNew__formGroup__control__attachment
-                      )}
-                      rows={6}
-                      name="scopeOfWork"
-                      defaultValue={job.scopeOfWork}
-                      data-testid="job-form-scope"
-                      {...register('scopeOfWork', sowValidationOptions)}
-                      disabled={isLoading || isJobComplete}
-                    ></textarea>
-                    <div className={styles.jobNew__attachmentList}>
-                      {(jobAttachments || []).length > 0 && (
-                        <AttachmentList
-                          id="sowAttachmentList"
-                          attachments={jobAttachments}
-                          onDelete={openAttachmentDeletePrompt}
-                        />
-                      )}
-                    </div>
-                    <ErrorLabel
-                      formName="scopeOfWork"
-                      errors={formState.errors}
-                    />
-                  </div>
-                </div>
-              )}
-              {!isMobile &&
-                formActionButtons(
-                  job,
-                  canApprove,
-                  canAuthorize,
-                  canExpedite,
-                  isJobComplete,
-                  isMobile,
-                  isLoading,
-                  onFormAction
-                )}
+              <JobNeed
+                defaultValue={job.need}
+                isLoading={isLoading}
+                isJobComplete={isJobComplete}
+                formState={formState}
+                isApprovedOrAuthorized={isApprovedOrAuthorized}
+                {...register('need', needValidationOptions)}
+              />
+              <JobExpedite
+                defaultValue={job.expediteReason}
+                isLoading={isLoading}
+                isJobComplete={isJobComplete}
+                formState={formState}
+                expediteReason={job.expediteReason}
+                {...register('expediteReason', expediteReasonValidation)}
+              />
+              <JobType
+                jobType={job.type}
+                isLoading={isLoading}
+                isJobComplete={isJobComplete}
+                {...register('type')}
+              />
+              <JobScope
+                isNewJob={isNewJob}
+                isUploadingFile={isUploadingFile}
+                isLoading={isLoading}
+                isJobComplete={isJobComplete}
+                scopeOfWork={job.scopeOfWork}
+                formState={formState}
+                onUploadClick={onUploadClick}
+                openAttachmentDeletePrompt={openAttachmentDeletePrompt}
+                inputFile={inputFile}
+                onInputFileChange={onInputFileChange}
+                jobAttachments={jobAttachments}
+                {...register('scopeOfWork', sowValidationOptions)}
+              />
+              <JobActionButtons
+                jobState={job.state}
+                canApprove={canApprove}
+                canAuthorize={canAuthorize}
+                jobLink={jobLink}
+                canExpedite={canExpedite}
+                isJobComplete={isJobComplete}
+                isMobile={isMobile}
+                isLoading={isLoading}
+                onFormAction={onFormAction}
+                showAction={!isMobile}
+              />
             </div>
             <div>
-              {/** Trello card */}
-              {!isNewJob && (
-                <div className={styles.jobNew__card}>
-                  <div className={styles.jobNew__card__pill__action}>
-                    <h4 className={styles.jobNew__card__title}>Trello Card</h4>
-                    {job.trelloCardURL && (
-                      <span className={styles.jobNew__card__pill__action__menu}>
-                        <ActionsIcon />
-                        <Dropdown>
-                          <DropdownButton
-                            type="button"
-                            disabled={isLoading}
-                            onClick={() =>
-                              openTrelloCardInputPrompt(job.trelloCardURL)
-                            }
-                          >
-                            Update
-                          </DropdownButton>
-                          <DropdownButton
-                            type="button"
-                            disabled={isLoading}
-                            onClick={() => openTrelloCardDeletePrompt()}
-                          >
-                            Delete
-                          </DropdownButton>
-                        </Dropdown>
-                      </span>
-                    )}
-                  </div>
-                  {job.trelloCardURL ? (
-                    <div
-                      className={clsx(styles.jobNew__card__pill, '-mt')}
-                      data-testid="trello-card-pill"
-                    >
-                      <h5 className={styles.jobNew__card__pill__title}>
-                        <AlbumIcon />
-                        Trello Card #1
-                      </h5>
-                      <a
-                        href={job.trelloCardURL}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        View Card
-                      </a>
-                    </div>
-                  ) : (
-                    <div
-                      className={clsx(styles.button__group, '-mt', '-mr-none')}
-                    >
-                      <button
-                        type="button"
-                        disabled={isLoading}
-                        className={clsx(
-                          styles.button__submit,
-                          isMobile && styles.button__fullwidth
-                        )}
-                        onClick={() => openTrelloCardInputPrompt()}
-                        data-testid="add-trello-card-btn"
-                      >
-                        Add Trello Card{' '}
-                        <span>
-                          <AddIcon />
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-              {/** Add Bid card */}
-              {!isNewJob && (
-                <div className={clsx(styles.jobNew__card, '-mt')}>
-                  <div className={styles.jobNew__card__pill__action}>
-                    <h4 className={styles.jobNew__card__title}>
-                      Bids
-                      {bidsRequired > 0 ? (
-                        <span
-                          className={styles.job__info__bidsRequired}
-                          data-testid="bids-required"
-                        >
-                          (
-                          {`+${bidsRequired} bid${
-                            bidsRequired > 1 ? 's' : ''
-                          } required`}
-                          )
-                        </span>
-                      ) : (
-                        <span
-                          className={clsx(
-                            styles.job__info__bidsRequired,
-                            styles['job__info__bidsRequired--met']
-                          )}
-                          data-testid="bids-requirement-met"
-                        >
-                          (Bid requirements met)
-                        </span>
-                      )}
-                    </h4>
-                    {job.state !== 'open' && (
-                      <Link href={bidsLink}>
-                        <a className={styles.jobNew__card__titleLink}>
-                          View All
-                        </a>
-                      </Link>
-                    )}
-                  </div>
-                  {bids.length > 0 ? (
-                    bids.map((b) => (
-                      <Link
-                        href={`/properties/${propertyId}/jobs/${job.id}/bids/${b.id}`}
-                        key={b.id}
-                      >
-                        <a>
-                          <div
-                            className={clsx(
-                              styles.jobNew__card__pill,
-                              styles.jobNew__bid,
-                              '-mt'
-                            )}
-                            data-testid="bid-edit-card-pill"
-                          >
-                            <div className={styles.jobNew__bid__title}>
-                              <h5 className={styles.jobNew__card__pill__title}>
-                                {b.vendor}
-                              </h5>
-                              <span
-                                className={clsx(
-                                  styles.jobNew__bid__status,
-                                  textColors[bidsConfig.stateColors[b.state]]
-                                )}
-                              >
-                                {utilString.titleize(b.state)}
-                              </span>
-                            </div>
-                            <span className={styles.jobNew__bid__link}>
-                              View Bid
-                            </span>
-                          </div>
-                        </a>
-                      </Link>
-                    ))
-                  ) : (
-                    <div
-                      className={clsx(styles.button__group, '-mt', '-mr-none')}
-                    >
-                      {job.state === 'open' ? (
-                        <>
-                          <button
-                            className={clsx(
-                              styles.button__submit,
-                              isMobile && styles.button__fullwidth
-                            )}
-                            type="button"
-                            disabled
-                            data-testid="add-bid-card-btn-disabled"
-                          >
-                            Add First Bid{' '}
-                            <span>
-                              <AddIcon />
-                            </span>
-                          </button>
-                          <br />
-                          <p className="-mb-none -c-gray-light">
-                            Job must be approved before creating bids
-                          </p>
-                        </>
-                      ) : (
-                        <Link
-                          href={`/properties/${propertyId}/jobs/${job.id}/bids/new`}
-                        >
-                          <a
-                            className={clsx(
-                              styles.button__submit,
-                              isMobile && styles.button__fullwidth
-                            )}
-                            data-testid="add-bid-card-btn"
-                          >
-                            Add First Bid{' '}
-                            <span>
-                              <AddIcon />
-                            </span>
-                          </a>
-                        </Link>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
+              <JobTrelloCard
+                trelloCardURL={job.trelloCardURL}
+                isLoading={isLoading}
+                isJobComplete={isJobComplete}
+                isMobile={isMobile}
+                isNewJob={isNewJob}
+                openTrelloCardDeletePrompt={openTrelloCardDeletePrompt}
+                openTrelloCardInputPrompt={openTrelloCardInputPrompt}
+              />
+              <JobBidCard
+                bids={bids}
+                isMobile={isMobile}
+                isNewJob={isNewJob}
+                bidsRequired={bidsRequired}
+                propertyId={propertyId}
+                jobId={job.id}
+                jobState={job.state}
+              />
             </div>
           </div>
 
-          {isMobile &&
-            formActionButtons(
-              job,
-              canApprove,
-              canAuthorize,
-              canExpedite,
-              isJobComplete,
-              isMobile,
-              isLoading,
-              onFormAction
-            )}
-
-          {isMobile && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <Link href={jobLink}>
-                <a
-                  className={clsx(
-                    styles.button__cancel,
-                    styles.button__fullwidth,
-                    '-ta-center'
-                  )}
-                  data-testid="mobile-form-cancel"
-                >
-                  Cancel
-                </a>
-              </Link>
-            </div>
-          )}
+          <JobActionButtons
+            jobState={job.state}
+            jobLink={jobLink}
+            canApprove={canApprove}
+            canAuthorize={canAuthorize}
+            canExpedite={canExpedite}
+            isJobComplete={isJobComplete}
+            isMobile={isMobile}
+            isLoading={isLoading}
+            onFormAction={onFormAction}
+            showAction={isMobile}
+          />
         </form>
       </div>
     </>
@@ -878,7 +476,7 @@ const JobForm: FunctionComponent<Props> = ({
     trigger: triggerFormValidation,
     formState,
     setValue
-  } = useForm<Inputs>({
+  } = useForm<FormInputs>({
     mode: 'all'
   });
 
