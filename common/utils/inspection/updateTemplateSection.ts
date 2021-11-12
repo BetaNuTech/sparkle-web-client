@@ -5,14 +5,14 @@ import inspectionTemplateSectionModel from '../../models/inspectionTemplateSecti
 import uuid from '../uuidv4'; // eslint-disable-line
 
 export interface userUpdate {
-  id?: string;
-  cloneOf?: string;
+  cloneOf: string;
 }
 
 interface composableSettings {
   updatedTemplate: inspectionTemplateModel | null;
   currentTemplate: inspectionTemplateModel | null;
   userChanges: userUpdate;
+  targetId: string;
 }
 
 const PREFIX = 'utils: inspection: updateTemplateSection:';
@@ -21,25 +21,27 @@ const PREFIX = 'utils: inspection: updateTemplateSection:';
 export default function updateTemplateSection(
   updatedTemplate: inspectionTemplateModel | null,
   currentTemplate: inspectionTemplateModel | null,
-  userChanges: userUpdate | null
+  userChanges: userUpdate | null,
+  targetId: string
 ): inspectionTemplateModel {
-  const changeCount = Object.keys(userChanges).length;
+  const changeCount = Object.keys(userChanges || {}).length;
 
-  if (changeCount < 1) {
+  if (userChanges && changeCount < 1) {
     throw Error(`${PREFIX} only one change can be provided`);
   }
 
   // Apply user changes
   return pipe(
     mergePreviousUpdates,
-    setAddedMultiSection
-    // setRemovedMultiSection,
+    setAddedMultiSection,
+    setRemovedMultiSection
   )(
     {} as inspectionTemplateModel, // result
     {
       updatedTemplate,
       currentTemplate,
-      userChanges
+      userChanges,
+      targetId
     } as composableSettings
   );
 }
@@ -133,6 +135,66 @@ function setAddedMultiSection(
     result.items[newItemId] = clonedItems[id];
     delete result.items[newItemId].id;
   });
+
+  return result;
+}
+
+function setRemovedMultiSection(
+  result: inspectionTemplateModel,
+  settings: composableSettings
+): inspectionTemplateModel {
+  const { currentTemplate, updatedTemplate, userChanges, targetId } = settings;
+  const isRemovingSection = !userChanges;
+  const currentSections = currentTemplate.sections || {};
+  const sections = {
+    ...currentSections,
+    ...(updatedTemplate.sections || {})
+  };
+  const sectionToRemove =
+    (updatedTemplate.sections || {})[targetId] ||
+    (currentTemplate.sections || {})[targetId] ||
+    null;
+
+  if (!isRemovingSection) {
+    return result;
+  }
+
+  if (!sectionToRemove) {
+    throw Error(`${PREFIX} invalid section removal ID provided: "${targetId}"`);
+  }
+
+  // Setup section updates
+  result.sections = result.sections || {};
+
+  // Decrement section indexes
+  const updatedSections = updateSectionIndexes(sections, sectionToRemove.index);
+
+  // Merge section index updates into results
+  Object.keys(updatedSections).forEach((id) => {
+    result.sections[id] =
+      result.sections[id] || ({} as inspectionTemplateSectionModel); // setup
+    const section = result.sections[id];
+    const updatedSection = updatedSections[id];
+
+    if (section.index !== updatedSection.index) {
+      result.sections[id].index = updatedSection.index;
+    }
+  });
+
+  // Add delete section update
+  if (currentSections[targetId]) {
+    result.sections[targetId] = null; // publish removal
+  } else {
+    delete result.sections[targetId]; // ignore update
+  }
+
+  // Delete any removed section items
+  // from resulting local updates
+  Object.keys(result.items || {})
+    .filter((itemId) => result.items[itemId].sectionId === targetId)
+    .forEach((itemId) => {
+      delete result.items[itemId];
+    });
 
   return result;
 }

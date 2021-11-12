@@ -37,8 +37,9 @@ export default function updateTemplateItem(
     ...(userChangeOptions || {})
   } as updateOptions;
   // so users can add item's from multi-sections
-  const isPopulatedCurrentItem = Object.keys(currentItem).length > 0;
-  const changeCount = Object.keys(userChanges).length;
+  const isPopulatedCurrentItem =
+    currentItem && Object.keys(currentItem).length > 0;
+  const changeCount = userChanges ? Object.keys(userChanges).length : 0;
 
   if (!isPopulatedCurrentItem) {
     throw Error(`${PREFIX} current item must be a valid inspection item`);
