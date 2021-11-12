@@ -1,5 +1,7 @@
 import attachmentModel from './attachment';
 
+type JobState = 'open' | 'approved' | 'authorized' | 'complete';
+
 interface job {
   id: string;
   title: string;
@@ -12,9 +14,10 @@ interface job {
   property: string;
   createdAt?: number;
   updatedAt?: number;
-  state?: 'open' | 'approved' | 'authorized' | 'complete';
+  state?: JobState;
   type: string;
   minBids?: number;
 }
 
+export type { JobState };
 export default job;
