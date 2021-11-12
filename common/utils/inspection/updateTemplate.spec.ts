@@ -79,8 +79,54 @@ describe('Unit | Common | Utils | Inspection | Update Template', () => {
     }
   });
 
-  // TODO
-  // test('it removes added section updates once they no longer differ from the current state', () => {});
+  test('it removes added section and item updates once they no longer differ from the current state', () => {
+    const expected = 0;
+    let updatedTemplate = {} as inspectionTemplateModel;
+    const currentTemplate = deepClone(templateA) as inspectionTemplateModel;
+    const sectionOne = deepClone(
+      originalMultiSection
+    ) as inspectionTemplateSectionModel;
+    const itemOne = deepClone(
+      selectedCheckmarkItem
+    ) as inspectionTemplateItemModel;
+    const itemTwo = deepClone(
+      selectedCheckmarkItem
+    ) as inspectionTemplateItemModel;
+    const addMultiSection = {
+      sections: { new: { cloneOf: 'one' } }
+    } as userUpdate;
+
+    itemOne.sectionId = 'one';
+    itemTwo.sectionId = 'one';
+    currentTemplate.items = { itemOne, itemTwo };
+    currentTemplate.sections = { one: sectionOne };
+
+    // Add cloned items
+    updatedTemplate = updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      addMultiSection
+    );
+
+    const [newSectionId] = Object.entries(updatedTemplate.sections || {})
+      .filter(([id]) => id.search('item') !== 0)
+      .map(([id]) => id);
+    const removeAddedMultiSection = {
+      sections: { [newSectionId]: null }
+    };
+
+    // Update cloned item
+    updatedTemplate = updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      removeAddedMultiSection
+    );
+
+    const actual =
+      Object.keys(updatedTemplate.sections || {}).length +
+      Object.keys(updatedTemplate.items || {}).length;
+    expect(actual).toEqual(expected);
+  });
 
   test('it updates a locally added multi-section item as normal', () => {
     const expected = { mainInputSelection: 0, mainInputSelected: true };

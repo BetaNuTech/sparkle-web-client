@@ -64,7 +64,7 @@ export default function inspectionUpdate(
       getItem(currentTemplate, targetId) ||
       getItem(updatedTemplate, targetId) || // for unpublished multi-section item
       null;
-    const changes = (userChanges.items || {})[targetId];
+    const changes = (userChanges.items || {})[targetId] || null;
 
     // Setup any missing items hash
     result.items = result.items || {};
@@ -81,13 +81,12 @@ export default function inspectionUpdate(
     if (!result.items[targetId]) delete result.items[targetId];
   } else {
     // Setup section update
-    const changes = (userChanges.sections || {})[targetId];
-    changes.id = targetId;
+    const changes = (userChanges.sections || {})[targetId] || null;
 
     // Apply user's section changes
     // Sectional changes can affect
     // both items and sections
-    result = updateSection(updatedTemplate, currentTemplate, changes);
+    result = updateSection(updatedTemplate, currentTemplate, changes, targetId);
   }
 
   // Remove empty items hash from updates
