@@ -57,6 +57,7 @@ export default function updateTemplateItem(
     setItemsInspectorNote,
     setMainInputItemSelected,
     setOneActionNoteItemSelected,
+    setIsItemNA,
     setUnupdatedItem
   )(
     {} as inspectionTemplateItemModel, // result
@@ -281,6 +282,40 @@ const setOneActionNoteItemSelected = (
   if (isNowAnswered && !currentItem.mainInputSelected) {
     result.mainInputSelected = true;
   }
+
+  return result;
+};
+
+// Toggle an item as not/applicable
+const setIsItemNA = (
+  result: inspectionTemplateItemModel,
+  settings: composableSettings
+): inspectionTemplateItemModel => {
+  const { userChanges, currentItem, updatedItem } = settings;
+  // const isNowUnapplicable = result.isItemNA === false;
+  // const isNowApplicable =
+  //   typeof result.isItemNA === 'boolean'
+  //     ? Boolean(result.isItemNA)
+  //     : false;
+  const isChanging = typeof userChanges.isItemNA === 'boolean';
+  const hasPreviousUpdate = typeof updatedItem.isItemNA === 'boolean';
+
+  // Provide previous update
+  if (!isChanging && hasPreviousUpdate) {
+    result.isItemNA = updatedItem.isItemNA;
+  }
+
+  // Add user unselected change to updates
+  if (isChanging && userChanges.isItemNA !== currentItem.isItemNA) {
+    result.isItemNA = userChanges.isItemNA;
+  } else if (isChanging) {
+    delete result.isItemNA;
+  }
+
+  // Add user selected change to updates
+  // if (isNowApplicable && !currentItem.mainInputSelected) {
+  //   result.mainInputSelected = true;
+  // }
 
   return result;
 };

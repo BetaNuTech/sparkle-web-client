@@ -396,6 +396,66 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
     }
   });
 
+  test('it sets an items to applicable and not-applicable', () => {
+    const tests = [
+      {
+        expected: undefined,
+        item: unselectedCheckmarkItem,
+        change: { mainInputSelection: 1 },
+        msg: 'ignores unrelated update'
+      },
+      {
+        expected: undefined,
+        item: { ...unselectedCheckmarkItem, isItemNA: false },
+        change: { isItemNA: false },
+        msg: 'ignores changing an applicable item to applicable'
+      },
+      {
+        expected: undefined,
+        item: { ...unselectedCheckmarkItem, isItemNA: true },
+        change: { isItemNA: true },
+        msg: 'ignores changing an inapplicable item to inapplicable'
+      },
+      {
+        expected: true,
+        item: unselectedCheckmarkItem,
+        previous: { isItemNA: true },
+        change: { mainInputSelection: 1 },
+        msg: 'uses previous update when no user changes apply'
+      },
+      {
+        expected: true,
+        item: unselectedCheckmarkItem,
+        change: { isItemNA: true },
+        msg: 'sets an applicable item to inapplicable'
+      },
+      {
+        expected: undefined,
+        item: unselectedCheckmarkItem,
+        previous: { isItemNA: true },
+        change: { isItemNA: false },
+        msg: 'updates over previously updated item applicability'
+      },
+      {
+        expected: undefined,
+        item: { ...unselectedCheckmarkItem, isItemNA: true },
+        previous: { isItemNA: false },
+        change: { isItemNA: true },
+        msg: 'removes previously updated item applicability back to original state'
+      }
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, item, previous = {}, change, msg } = tests[i];
+      const currentItem = deepClone(item) as inspectionTemplateItemModel;
+      const updatedItem = previous as inspectionTemplateItemModel;
+      const userChanges = change as userUpdate;
+      const result = update(updatedItem, currentItem, userChanges);
+      const actual = result ? result.isItemNA : undefined;
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
   test('it removes new item updates once they no longer differ from the current state', () => {
     const tests = [
       {
