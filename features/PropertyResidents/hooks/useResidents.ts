@@ -1,32 +1,38 @@
 import { useState, useEffect } from 'react';
 import Router from 'next/router';
 import yardiApi from '../../../common/services/api/yardi';
-import workOrderModel from '../../../common/models/yardi/workOrder';
+import yardiResidentModel from '../../../common/models/yardi/resident';
+import yardiOccupantModel from '../../../common/models/yardi/occupant';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorNotFound from '../../../common/models/errors/notFound';
 import ErrorProxyForbidden from '../../../common/models/errors/proxyForbidden';
 
-const PREFIX = 'features: PropertyWorkOrders: hooks: useWorkOrders:';
+const PREFIX = 'features: PropertyResidents: hooks: useResidents:';
 
 type userNotifications = (message: string, options?: any) => any;
 
-interface useWorkOrdersResult {
+type Data = {
+  residents: yardiResidentModel[];
+  occupants: yardiOccupantModel[];
+};
+
+interface Result {
   status: string;
-  data: workOrderModel[];
+  data: Data;
 }
 
 export default function useWorkOrders(
   sendNotification: userNotifications,
   propertyId: string
-): useWorkOrdersResult {
-  const [data, setData] = useState([]);
+): Result {
+  const [data, setData] = useState({});
   const [status, setStatus] = useState('loading');
 
   const handleErrorResponse = (apiError: Error) => {
     if (apiError instanceof ErrorForbidden) {
       sendNotification(
-        'You do not have permission to request work orders for this property',
+        'You do not have permission to request residents for this property',
         { type: 'error' }
       );
     } else if (apiError instanceof ErrorProxyForbidden) {
@@ -36,7 +42,7 @@ export default function useWorkOrders(
       );
     } else if (apiError instanceof ErrorNotFound) {
       sendNotification(
-        'The work orders requested belong to an unknown property',
+        'The residents requested belong to an unknown property',
         { type: 'error' }
       );
     } else {
@@ -49,7 +55,7 @@ export default function useWorkOrders(
       // Log issue and send error report
       // eslint-disable-next-line import/no-named-as-default-member
       errorReports.send(
-        Error(`${PREFIX} Could not complete work order load operation`)
+        Error(`${PREFIX} Could not complete resident load operation`)
       );
     }
 
@@ -64,7 +70,7 @@ export default function useWorkOrders(
 
   useEffect(() => {
     yardiApi
-      .getWorkOrdersRequest(propertyId)
+      .getResidentsRequest(propertyId)
       .then((result) => {
         setData(result);
         setStatus('success');
@@ -73,5 +79,5 @@ export default function useWorkOrders(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyId]);
 
-  return payload;
+  return payload as Result;
 }
