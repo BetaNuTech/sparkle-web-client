@@ -36,7 +36,7 @@ export default function normalizeJsonApiDoc(data: JsonApiDoc): any {
         result[relationship] = relData
           .filter((rel) => Boolean(rel.id))
           .map(({ id }) => `${id}`);
-      } else if (relData.id) {
+      } else if (relData && relData.id) {
         result[relationship] = `${relData.id}`;
       }
     });
