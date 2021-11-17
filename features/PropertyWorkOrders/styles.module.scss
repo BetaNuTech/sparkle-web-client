@@ -1,0 +1,8 @@
+@import '../../styles/index.scss';
+
+.header {
+  @extend %gridHeader;
+  &__title {
+    @extend %gridHeaderTitle;
+  }
+}

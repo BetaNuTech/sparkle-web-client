@@ -22,4 +22,18 @@ export const yardiWorkOrderOne: yardiWorkOrder = {
   resident: 'yardi-resident-1'
 };
 
-export default [yardiWorkOrderOne];
+export const yardiWorkOrderTwo: yardiWorkOrder = {
+  id: 'yardi-work-order-1',
+  createdAt: 1633974809,
+  description: 'There are tons of spider webs',
+  origin: 'OL',
+  priority: 'top',
+  problemNotes: 'There are tons of spider webs hanging around',
+  requestDate: '2021-10-11',
+  tenantCaused: false,
+  unit: '1724',
+  updatedAt: 1633974809,
+  resident: 'yardi-resident-1'
+};
+
+export default [yardiWorkOrderOne, yardiWorkOrderTwo];
