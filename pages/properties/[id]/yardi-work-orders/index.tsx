@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { MainLayout } from '../../../../common/MainLayout';
 import LoadingHud from '../../../../common/LoadingHud';
 import useWorkOrders from '../../../../features/PropertyWorkOrders/hooks/useWorkOrders';
+import PropertyWorkOrders from '../../../../features/PropertyWorkOrders';
 import useNotifications from '../../../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../../../common/services/notifications'; // eslint-disable-line
 
@@ -27,15 +28,7 @@ const Page: React.FC = (): ReactElement => {
   return (
     <MainLayout>
       {isLoaded ? (
-        <>
-          {/* temporary loaded data render */}
-          <h5> Data Loaded - Work Orders:</h5>
-          <ul>
-            {workOrders.map((wo) => (
-              <li key={wo.id}>{wo.id}</li>
-            ))}
-          </ul>
-        </>
+        <PropertyWorkOrders workOrders={workOrders} />
       ) : (
         <LoadingHud />
       )}
