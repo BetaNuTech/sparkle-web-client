@@ -8,6 +8,7 @@ export interface userUpdate {
   textInputValue?: string;
   mainInputNotes?: string;
   inspectorNotes?: string;
+  signatureDownloadURL?: string;
   photosData?: Record<string, inspectionTemplateItemPhotoDataModel>;
 }
 
@@ -67,6 +68,7 @@ export default function updateTemplateItem(
     setMainInputItemSelected,
     setOneActionNoteItemSelected,
     setIsItemNA,
+    setSignature,
     mergeExistingPhotoData,
     addPhotoData,
     removePhotoData,
@@ -317,6 +319,41 @@ const setIsItemNA = (
     result.isItemNA = userChanges.isItemNA;
   } else if (isChanging) {
     delete result.isItemNA;
+  }
+
+  return result;
+};
+
+// Add/remove a signature to/from an item
+const setSignature = (
+  result: inspectionTemplateItemModel,
+  settings: composableSettings
+): inspectionTemplateItemModel => {
+  const { userChanges, currentItem, updatedItem } = settings;
+  const isChanging = typeof userChanges.signatureDownloadURL === 'string';
+  const hasPreviousUpdate =
+    typeof updatedItem.signatureDownloadURL === 'string';
+
+  // Provide previous update
+  if (!isChanging && hasPreviousUpdate) {
+    result.signatureDownloadURL = updatedItem.signatureDownloadURL;
+
+    // Also add any timestamp key
+    if (updatedItem.signatureTimestampKey) {
+      result.signatureTimestampKey = updatedItem.signatureTimestampKey;
+    }
+  }
+
+  // Add user unselected change to updates
+  if (
+    isChanging &&
+    userChanges.signatureDownloadURL !== currentItem.signatureDownloadURL
+  ) {
+    result.signatureDownloadURL = userChanges.signatureDownloadURL;
+    result.signatureTimestampKey = `${Math.round(Date.now() / 1000)}`;
+  } else if (isChanging) {
+    delete result.signatureDownloadURL;
+    delete result.signatureTimestampKey;
   }
 
   return result;
