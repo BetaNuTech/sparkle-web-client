@@ -457,6 +457,96 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
     }
   });
 
+  test('it adds and removes signature updates', () => {
+    const tests = [
+      {
+        expected: {
+          signatureDownloadURL: undefined,
+          signatureTimestampKey: undefined
+        },
+        item: { ...unselectedCheckmarkItem },
+        change: { isItemNA: true },
+        msg: 'ignores unrelated update'
+      },
+      {
+        expected: {
+          signatureDownloadURL: undefined,
+          signatureTimestampKey: undefined
+        },
+        item: { ...unselectedCheckmarkItem, signatureDownloadURL: 'test.jpg' },
+        change: { signatureDownloadURL: 'test.jpg' },
+        msg: 'ignores updating a signature to its remote state'
+      },
+      {
+        expected: {
+          signatureDownloadURL: 'test.jpg',
+          signatureTimestampKey: '123'
+        },
+        item: { ...unselectedCheckmarkItem },
+        previous: {
+          signatureDownloadURL: 'test.jpg',
+          signatureTimestampKey: '123'
+        },
+        change: { isItemNA: 1 },
+        msg: 'uses previous update when no user changes apply'
+      },
+      {
+        expected: {
+          signatureDownloadURL: 'test.jpg',
+          signatureTimestampKey: true
+        },
+        item: { ...unselectedCheckmarkItem },
+        change: { signatureDownloadURL: 'test.jpg' },
+        msg: 'sets a new signature and timestamp key'
+      },
+      {
+        expected: {
+          signatureDownloadURL: 'test-2.jpg',
+          signatureTimestampKey: true
+        },
+        item: {
+          ...unselectedCheckmarkItem,
+          signatureDownloadURL: 'test.jpg',
+          signatureTimestampKey: '123'
+        },
+        change: { signatureDownloadURL: 'test-2.jpg' },
+        msg: 'replaces a remote published signature'
+      },
+      {
+        expected: {
+          signatureDownloadURL: 'test-2.jpg',
+          signatureTimestampKey: true
+        },
+        item: { ...unselectedCheckmarkItem },
+        previous: {
+          signatureDownloadURL: 'test.jpg',
+          signatureTimestampKey: '123'
+        },
+        change: { signatureDownloadURL: 'test-2.jpg' },
+        msg: 'replaces a locally added signature'
+      }
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, item, previous = {}, change, msg } = tests[i];
+      const currentItem = deepClone(item) as inspectionTemplateItemModel;
+      const updatedItem = previous as inspectionTemplateItemModel;
+      const userChanges = change as userUpdate;
+      const result = update(updatedItem, currentItem, userChanges);
+      const actual = {
+        signatureDownloadURL: result ? result.signatureDownloadURL : undefined,
+        signatureTimestampKey: result ? result.signatureTimestampKey : undefined
+      };
+      // replace true timestamp with generated value
+      if (expected.signatureTimestampKey === true) {
+        expected.signatureTimestampKey = `${
+          actual.signatureTimestampKey || ''
+        }`;
+      }
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
   test('it adds a photo to an items photo data', () => {
     const imgOnlyAdd = {
       downloadURL: 'url.com/img.jpg'
