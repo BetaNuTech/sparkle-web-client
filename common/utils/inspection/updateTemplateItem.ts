@@ -1,5 +1,6 @@
 import pipe from '../pipe';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
+import inspectionTemplateItemPhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
 
 export interface userUpdate {
   mainInputSelection?: number;
@@ -7,6 +8,7 @@ export interface userUpdate {
   textInputValue?: string;
   mainInputNotes?: string;
   inspectorNotes?: string;
+  photosData?: Record<string, inspectionTemplateItemPhotoDataModel>;
 }
 
 interface updateOptions {
@@ -40,6 +42,9 @@ export default function updateTemplateItem(
   const isPopulatedCurrentItem =
     currentItem && Object.keys(currentItem).length > 0;
   const changeCount = userChanges ? Object.keys(userChanges).length : 0;
+  const photosChangeCount = userChanges
+    ? Object.keys(userChanges.photosData || {}).length
+    : 0;
 
   if (!isPopulatedCurrentItem) {
     throw Error(`${PREFIX} current item must be a valid inspection item`);
@@ -47,6 +52,10 @@ export default function updateTemplateItem(
 
   if (changeCount < 1) {
     throw Error(`${PREFIX} requires at least one change`);
+  }
+
+  if (photosChangeCount > 1) {
+    throw Error(`${PREFIX} max one photo data change at a time`);
   }
 
   // Apply user changes
@@ -58,6 +67,9 @@ export default function updateTemplateItem(
     setMainInputItemSelected,
     setOneActionNoteItemSelected,
     setIsItemNA,
+    mergeExistingPhotoData,
+    addPhotoData,
+    removePhotoData,
     setUnupdatedItem
   )(
     {} as inspectionTemplateItemModel, // result
@@ -292,11 +304,6 @@ const setIsItemNA = (
   settings: composableSettings
 ): inspectionTemplateItemModel => {
   const { userChanges, currentItem, updatedItem } = settings;
-  // const isNowUnapplicable = result.isItemNA === false;
-  // const isNowApplicable =
-  //   typeof result.isItemNA === 'boolean'
-  //     ? Boolean(result.isItemNA)
-  //     : false;
   const isChanging = typeof userChanges.isItemNA === 'boolean';
   const hasPreviousUpdate = typeof updatedItem.isItemNA === 'boolean';
 
@@ -312,10 +319,96 @@ const setIsItemNA = (
     delete result.isItemNA;
   }
 
-  // Add user selected change to updates
-  // if (isNowApplicable && !currentItem.mainInputSelected) {
-  //   result.mainInputSelected = true;
-  // }
+  return result;
+};
+
+// Add any previous photo data updates
+const mergeExistingPhotoData = (
+  result: inspectionTemplateItemModel,
+  settings: composableSettings
+): inspectionTemplateItemModel => {
+  const { updatedItem } = settings;
+  const hasPreviousUpdate = typeof updatedItem.photosData !== 'undefined';
+
+  if (hasPreviousUpdate) {
+    result.photosData = JSON.parse(JSON.stringify(updatedItem.photosData));
+    Object.keys(result.photosData).forEach((id) => {
+      result.photosData[id] = result.photosData[
+        id
+      ] as inspectionTemplateItemPhotoDataModel;
+    });
+  }
+
+  return result;
+};
+
+// Add photo data to an item
+const addPhotoData = (
+  result: inspectionTemplateItemModel,
+  settings: composableSettings
+): inspectionTemplateItemModel => {
+  const { userChanges, currentItem, updatedItem } = settings;
+  const hasPhotoDataUpdates = typeof userChanges.photosData !== 'undefined';
+  const photoDataUpdate = hasPhotoDataUpdates
+    ? (Object.entries(userChanges.photosData)[0] || [])[1]
+    : undefined;
+  const isAddingPhoto = Boolean(photoDataUpdate);
+
+  if (!isAddingPhoto) {
+    return result;
+  }
+
+  // Create new/unique timestamp photo data ID
+  let unixTimeId = Math.round(Date.now() / 1000);
+  const existingPhotoIds = [
+    ...Object.keys(updatedItem.photosData || {}),
+    ...Object.keys(currentItem.photosData || {})
+  ].map((id) => parseInt(id, 10));
+
+  while (existingPhotoIds.includes(unixTimeId)) {
+    unixTimeId += 1;
+  }
+
+  // Append update
+  result.photosData = result.photosData || {};
+  result.photosData[unixTimeId] = {
+    ...photoDataUpdate
+  } as inspectionTemplateItemPhotoDataModel;
+
+  return result;
+};
+
+// Remove an added photo data item
+const removePhotoData = (
+  result: inspectionTemplateItemModel,
+  settings: composableSettings
+): inspectionTemplateItemModel => {
+  const { userChanges, currentItem, updatedItem } = settings;
+  const hasPhotoDataUpdates = typeof userChanges.photosData !== 'undefined';
+  const [photoId, photoUpdate] = hasPhotoDataUpdates
+    ? Object.entries(userChanges.photosData)[0] || []
+    : [];
+  const isRemovingPhoto = Boolean(photoId && photoUpdate === null);
+
+  if (!isRemovingPhoto) {
+    return result;
+  }
+
+  const isCurrentlyAdded = Boolean((currentItem.photosData || {})[photoId]);
+  const isLocallyAdded = Boolean((updatedItem.photosData || {})[photoId]);
+
+  if (isCurrentlyAdded) {
+    // Set publishable removal of previously published item
+    result.photosData = result.photosData || {};
+    result.photosData[photoId] = null;
+  } else if (isLocallyAdded) {
+    delete result.photosData[photoId]; // remove publishable data
+  }
+
+  // Cleanup unnecessary photos data hash
+  if (Object.keys(result.photosData || {}).length === 0) {
+    delete result.photosData;
+  }
 
   return result;
 };

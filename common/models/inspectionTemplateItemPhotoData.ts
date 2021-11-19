@@ -1,7 +1,8 @@
 /* eslint-disable camelcase */
 interface inspectionTemplateItemPhotoData {
   id?: string;
-  // TODO
+  caption?: string;
+  downloadURL: string;
 }
 
 export default inspectionTemplateItemPhotoData;
