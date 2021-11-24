@@ -9,7 +9,7 @@ type config = {
 };
 const defaultConfig = {
   root: null,
-  threshold: 0.85, // 85% of element is visible
+  threshold: 0.5, // 50% of element is visible
   rootMargin: '0px'
 };
 
@@ -57,6 +57,7 @@ const useVisibility = (ref = null, options: config = {}, visible = false) => {
     }
   }, [visible]);
 
+  let isOnLoadCheckComplete = false;
   useEffect(() => {
     if (!element || !element.current) {
       return;
@@ -72,6 +73,16 @@ const useVisibility = (ref = null, options: config = {}, visible = false) => {
     // Subscribe to global visibility force check
     // eslint-disable-next-line
     unsubscribe = globalEvents.subscribe('visibilityForceCheck', forceCheck);
+
+    // On load post-render check
+    if (
+      typeof requestAnimationFrame === 'function' &&
+      !isVisible &&
+      !isOnLoadCheckComplete
+    ) {
+      requestAnimationFrame(forceCheck);
+    }
+    isOnLoadCheckComplete = true; // eslint-disable-line
 
     // Cleanup
     return () => {
