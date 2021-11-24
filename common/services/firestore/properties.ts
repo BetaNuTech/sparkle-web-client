@@ -45,15 +45,23 @@ export default {
     firestore: firebase.firestore.Firestore,
     ids: Array<string>
   ): propertiesCollectionResult {
+    let query = null;
     let status = 'success';
     let error = null;
     let data = [];
+    const dbIds = ids.length > 0 ? [...ids] : ['undefined'];
 
-    const dbIds = ids.length > 0 ? ids : ['undefined'];
-
-    const query = firestore
-      .collection(fbCollections.properties)
-      .where(firebase.firestore.FieldPath.documentId(), 'in', dbIds);
+    if (dbIds.length < 11) {
+      // Take advantage of more performant queries
+      // when requesting 10 or less records
+      query = firestore
+        .collection(fbCollections.properties)
+        .where(firebase.firestore.FieldPath.documentId(), 'in', dbIds);
+    } else {
+      // Load all properties to work around
+      // Firestore "in" query limit threshold
+      query = firestore.collection(fbCollections.properties);
+    }
 
     const {
       status: queryStatus,
@@ -67,7 +75,9 @@ export default {
     error = queryError;
 
     // Cast firestore data into property records
-    data = queryData.map((itemData: any) => itemData as propertyModel);
+    data = queryData
+      .filter((itemData) => dbIds.includes(`${itemData.id || ''}`)) // ignore unrelated properties
+      .map((itemData: any) => itemData as propertyModel);
 
     // Result
     return { status, error, data };
