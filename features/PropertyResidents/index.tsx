@@ -1,6 +1,8 @@
 import { FunctionComponent } from 'react';
 import residentModel from '../../common/models/yardi/resident';
 import occupantModel from '../../common/models/yardi/occupant';
+import ResidenceList from './List';
+import styles from './styles.module.scss';
 
 interface Props {
   isOnline?: boolean;
@@ -12,23 +14,12 @@ interface Props {
   occupants: occupantModel[];
 }
 
-const PropertyResidents: FunctionComponent<Props> = ({
-  residents,
-  occupants
-}) => (
+const PropertyResidents: FunctionComponent<Props> = ({ residents }) => (
   <>
-    <h5>Residents:</h5>
-    <ul>
-      {residents.map((resident) => (
-        <li key={resident.id}>{resident.id}</li>
-      ))}
-    </ul>
-    <h5>Occupants:</h5>
-    <ul>
-      {occupants.map((occupant) => (
-        <li key={occupant.id}>{occupant.id}</li>
-      ))}
-    </ul>
+    <header className={styles.header} data-testid="workorders-header">
+      <h1 className={styles.header__title}>Residents List</h1>
+    </header>
+    <ResidenceList residents={residents} />
   </>
 );
 

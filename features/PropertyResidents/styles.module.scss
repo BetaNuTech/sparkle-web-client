@@ -1,0 +1,63 @@
+@import '../../styles/index.scss';
+
+.header {
+  @extend %gridHeader;
+  &__title {
+    @extend %gridHeaderTitle;
+  }
+}
+
+.mainConatiner {
+  position: relative;
+  padding: 20px;
+  border-bottom: 1px solid;
+
+  .listConatiner {
+    display: flex;
+    flex-direction: row;
+
+    p {
+      color: $primary-dark-color;
+      padding: 0;
+      margin: 0 rem-calc(4) 0 0;
+      font-size: rem-calc(18);
+      font-weight: 700;
+    }
+
+    span {
+      font-size: rem-calc(18);
+      margin: 0 rem-calc(4) 0 0;
+    }
+  }
+
+  .badgeContainer {
+    flex-direction: row;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: rem-calc(10);
+
+    .leftBadge,
+    .redAlert,
+    .rightBadge {
+      padding: rem-calc(2) $global-sm-padding;
+      border-radius: rem-calc(5);
+      color: $white;
+    }
+
+    .leftBadge {
+      background-color: $gray-6;
+    }
+
+    .redAlert {
+      background-color: $alert-color;
+      position: absolute;
+      left: rem-calc(120);
+    }
+
+    .rightBadge {
+      background-color: $primary-color;
+      text-transform: capitalize;
+    }
+  }
+}
