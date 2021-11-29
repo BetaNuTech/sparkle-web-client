@@ -17,6 +17,7 @@ interface MobileLayoutTeamItemModel {
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ): void;
+  onClickOneActionNotes(item: inspectionTemplateItemModel):void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
 }
@@ -27,7 +28,8 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   collapsedSections,
   sectionItems,
   onSectionCollapseToggle,
-  onMainInputChange
+  onMainInputChange,
+  onClickOneActionNotes
 }) => {
   const listItems = sectionItems.get(section.id);
   return (
@@ -76,6 +78,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             key={item.id}
             item={item}
             onMainInputChange={onMainInputChange}
+            onClickOneActionNotes={onClickOneActionNotes}
           />
         ))}
       </ul>

@@ -28,4 +28,26 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
       .mainInputSelection;
     expect(actual).toEqual(expected);
   });
+
+  test('should update main input note value', () => {
+    const expected = 'this is the note';
+    const updatedTemplate = {} as inspectionTemplateModel;
+    const itemId = unselectedCheckmarkItem.id;
+    const currentTemplate = {
+      items: {
+        [itemId]: deepClone(
+          unselectedCheckmarkItem
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    const selectionResult = result.current.updateMainInputNotes(
+      itemId,
+      expected
+    );
+    const actual = ((selectionResult.items || {})[itemId] || {}).mainInputNotes;
+    expect(actual).toEqual(expected);
+  });
 });

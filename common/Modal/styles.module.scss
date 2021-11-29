@@ -76,12 +76,14 @@
   line-height: 1.25;
   color: $black;
 }
+
 .modal__subHeading {
   margin-bottom: $global-mlg-padding;
   font-size: $paragraph-font-size;
   line-height: 1.25;
   color: $gray-med-dark-2;
 }
+
 .modal__formLabel {
   margin: $global-padding 0 $global-sm-padding;
   font-size: $medium-font-size;
@@ -118,7 +120,7 @@
   position: absolute;
   color: $gray-light;
   top: $global-padding;
-  right: rem-calc(34);
+  right: $global-sm-padding;
   font-size: 2.5em;
   line-height: 0.5;
   background-color: transparent;

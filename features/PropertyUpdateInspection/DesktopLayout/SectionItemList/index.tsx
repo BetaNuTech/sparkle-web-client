@@ -14,11 +14,13 @@ interface Props {
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ): void;
+  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
   item,
-  onMainInputChange
+  onMainInputChange,
+  onClickOneActionNotes
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   return (
@@ -45,6 +47,7 @@ const SectionItemList: FunctionComponent<Props> = ({
           onMainInputChange={(event, selectionIndex) =>
             onMainInputChange(event, item, selectionIndex)
           }
+          onClickOneActionNotes={() => onClickOneActionNotes(item)}
         />
       </div>
       <div className={clsx(styles['section__list__item__row--gridAction'])}>

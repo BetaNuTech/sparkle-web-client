@@ -22,6 +22,7 @@ interface Props {
     selectionIndex: number
   ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
+  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   onShareAction(): void;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -36,6 +37,7 @@ const MobileLayout: FunctionComponent<Props> = ({
   collapsedSections,
   onSectionCollapseToggle,
   onMainInputChange,
+  onClickOneActionNotes,
   sectionItems,
   isOnline,
   isStaging
@@ -102,6 +104,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         collapsedSections={collapsedSections}
         onSectionCollapseToggle={onSectionCollapseToggle}
         onMainInputChange={onMainInputChange}
+        onClickOneActionNotes={onClickOneActionNotes}
         sectionItems={sectionItems}
       />
     </>
