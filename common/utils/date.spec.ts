@@ -49,4 +49,17 @@ describe('Unit | Common | Utils | Date', () => {
     const actual = sinonUnix.called;
     expect(actual).toEqual(expected);
   });
+
+  test('it creates a full month, partial day, full year date formatted time', () => {
+    const expected = true;
+    const result = date.toUserFullDateDisplay(1595350271);
+    const actual = /\w+\s\d{1,2},\s\d\d\d\d/.test(result);
+    expect(actual).toEqual(expected);
+  });
+
+  test('it converts a ISO date string to a unix timestamp', () => {
+    const expected = 1595350271;
+    const actual = date.isoToTimestamp('2020-07-21T16:51:11+00:00');
+    expect(actual).toEqual(expected);
+  });
 });
