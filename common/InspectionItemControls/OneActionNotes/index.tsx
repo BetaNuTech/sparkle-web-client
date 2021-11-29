@@ -1,13 +1,24 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import { FunctionComponent } from 'react';
+import clsx from 'clsx';
 import NoteSimpleIcon from '../../../public/icons/sparkle/note-simple.svg';
 import styles from '../styles.module.scss';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface Props {}
+interface Props {
+  onClickOneActionNotes?: (any) => any;
+  selected:boolean
+}
 
-const OneActionNotes: FunctionComponent<Props> = () => (
+const OneActionNotes: FunctionComponent<Props> = ({
+  onClickOneActionNotes,
+  selected
+}) => (
   <ul className={styles.inspection}>
-    <li className={styles.inspection__input}>
+    <li className={clsx(
+        styles.inspection__input,
+        selected && styles['inspection__input--selected']
+      )}
+      onClick={onClickOneActionNotes}>
       <NoteSimpleIcon />
     </li>
   </ul>

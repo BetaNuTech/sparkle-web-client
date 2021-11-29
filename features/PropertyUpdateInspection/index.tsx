@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -15,6 +15,7 @@ import inspectionTemplateItemModel from '../../common/models/inspectionTemplateI
 import inspectionTemplateModel from '../../common/models/inspectionTemplate';
 import useUpdateTemplate from './hooks/useUpdateTemplate';
 import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates';
+import OneActionNotesModal from './OneActionNotesModal';
 
 interface Props {
   user: userModel;
@@ -35,7 +36,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   inspection,
   unpublishedTemplateUpdates
 }) => {
-  const { updateMainInputSelection } = useUpdateTemplate(
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
+  const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
+  const { updateMainInputSelection, updateMainInputNotes } = useUpdateTemplate(
     unpublishedTemplateUpdates,
     inspection.template
   );
@@ -63,6 +67,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setLatestTemplateUpdates(updateMainInputSelection(item.id, selectionIndex));
   };
 
+  //update mainInputNotes in inspections item.
+  const onOneActionNotesChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setLatestTemplateUpdates(
+      updateMainInputNotes(selectedInspectionItem.id, event.target.value)
+    );
+  };
+
   const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
     useInspectionSectionSort(inspection.template.sections);
 
@@ -75,6 +88,18 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
     sendNotification('Copied to clipboard.', { type: 'success' });
+  };
+
+  //opens OneActionsNotes modal and also set selected inspection
+  const onClickOneActionNotes = (item: inspectionTemplateItemModel) => {
+    setIsVisibleOneActionNotesModal(true);
+    setSelectedInspectionItem(item);
+  };
+
+  //closes OneActionsNotes modal and also remove value for selected inspection item.
+  const closeOneActionNotesModal = () => {
+    setIsVisibleOneActionNotesModal(false);
+    setSelectedInspectionItem(null);
   };
 
   return (
@@ -92,6 +117,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onMainInputChange={onMainInputChange}
             onShareAction={onShareAction}
             sectionItems={sectionItems}
+            onClickOneActionNotes={onClickOneActionNotes}
           />
         </>
       )}
@@ -108,9 +134,16 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onMainInputChange={onMainInputChange}
             onShareAction={onShareAction}
             sectionItems={sectionItems}
+            onClickOneActionNotes={onClickOneActionNotes}
           />
         </>
       )}
+      <OneActionNotesModal
+        isVisible={isVisibleOneActionNotesModal}
+        onClose={closeOneActionNotesModal}
+        onChange={onOneActionNotesChange}
+        selectedInspectionItem={selectedInspectionItem}
+      />
     </>
   );
 };

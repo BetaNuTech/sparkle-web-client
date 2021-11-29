@@ -13,6 +13,7 @@ interface Props {
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ): void;
+  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
 }
@@ -23,6 +24,7 @@ const Sections: FunctionComponent<Props> = ({
   collapsedSections,
   onSectionCollapseToggle,
   onMainInputChange,
+  onClickOneActionNotes,
   forceVisible,
   sectionItems
 }) => {
@@ -40,6 +42,7 @@ const Sections: FunctionComponent<Props> = ({
             onSectionCollapseToggle={onSectionCollapseToggle}
             onMainInputChange={onMainInputChange}
             sectionItems={sectionItems}
+            onClickOneActionNotes={onClickOneActionNotes}
           />
         ))}
       </ul>

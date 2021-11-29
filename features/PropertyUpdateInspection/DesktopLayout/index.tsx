@@ -20,6 +20,7 @@ interface Props {
   ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onShareAction(): void;
+  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   isOnline?: boolean;
   isStaging?: boolean;
 }
@@ -32,6 +33,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
   collapsedSections,
   onSectionCollapseToggle,
   onMainInputChange,
+  onClickOneActionNotes,
   sectionItems,
   isOnline
 }) => (
@@ -50,6 +52,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         onSectionCollapseToggle={onSectionCollapseToggle}
         onMainInputChange={onMainInputChange}
         sectionItems={sectionItems}
+        onClickOneActionNotes={onClickOneActionNotes}
       />
     </div>
   </>

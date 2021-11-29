@@ -15,13 +15,15 @@ interface Props {
     event: React.MouseEvent<HTMLLIElement>,
     selectionIndex: number
   ): void;
+  onClickOneActionNotes(): void;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
   inputType,
   selected,
   selectedValue,
-  onMainInputChange
+  onMainInputChange,
+  onClickOneActionNotes
 }) => {
   switch (inputType) {
     case 'twoactions_checkmarkx':
@@ -65,9 +67,14 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         />
       );
     case 'oneaction_notes':
-      return <OneActionNotes />;
+      return (
+        <OneActionNotes
+          onClickOneActionNotes={onClickOneActionNotes}
+          selected={selected}
+        />
+      );
     default:
-      return <div></div>;
+      return <></>;
   }
 };
 
