@@ -6,14 +6,16 @@ import ThreeActionAbc from './ThreeActionAbc';
 import FiveActionOneToFive from './FiveActionOneToFive';
 import OneActionNotes from './OneActionNotes';
 import Attachment from './Attachment';
+import TextInput from './TextInput';
 
 interface Props {
   inputType: string;
   selected?: boolean;
   selectedValue?: number;
-  onMainInputChange?(
-    event: React.MouseEvent<HTMLLIElement>,
-    selectionIndex: number
+  textInputValue?:string;
+  onInputChange?(
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    value: string | number
   ): void;
   onClickOneActionNotes(): void;
 }
@@ -22,7 +24,8 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   inputType,
   selected,
   selectedValue,
-  onMainInputChange,
+  textInputValue,
+  onInputChange,
   onClickOneActionNotes
 }) => {
   switch (inputType) {
@@ -31,7 +34,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         <TwoActionCheck
           selected={selected}
           selectedValue={selectedValue}
-          onMainInputChange={onMainInputChange}
+          onMainInputChange={onInputChange}
         />
       );
     case 'twoactions_thumbs':
@@ -39,7 +42,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         <TwoActionThumb
           selected={selected}
           selectedValue={selectedValue}
-          onMainInputChange={onMainInputChange}
+          onMainInputChange={onInputChange}
         />
       );
     case 'threeactions_checkmarkexclamationx':
@@ -47,7 +50,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         <ThreeActionCheckExclamation
           selected={selected}
           selectedValue={selectedValue}
-          onMainInputChange={onMainInputChange}
+          onMainInputChange={onInputChange}
         />
       );
     case 'threeactions_abc':
@@ -55,7 +58,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         <ThreeActionAbc
           selected={selected}
           selectedValue={selectedValue}
-          onMainInputChange={onMainInputChange}
+          onMainInputChange={onInputChange}
         />
       );
     case 'fiveactions_onetofive':
@@ -63,7 +66,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         <FiveActionOneToFive
           selected={selected}
           selectedValue={selectedValue}
-          onMainInputChange={onMainInputChange}
+          onMainInputChange={onInputChange}
         />
       );
     case 'oneaction_notes':
@@ -73,6 +76,13 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
         />
       );
+    case 'text_input':
+      return (
+      <TextInput
+        selected={selected}
+        textInputValue={textInputValue}
+        onMainInputChange={onInputChange}
+      />);
     default:
       return <></>;
   }

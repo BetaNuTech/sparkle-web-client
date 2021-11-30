@@ -16,10 +16,10 @@ interface Props {
   templateSections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
-  onMainInputChange(
-    event: React.MouseEvent<HTMLLIElement>,
+  onInputChange(
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
-    selectionIndex: number
+    value: string | number
   ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
@@ -36,8 +36,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   templateSections,
   collapsedSections,
   onSectionCollapseToggle,
-  onMainInputChange,
   onClickOneActionNotes,
+  onInputChange,
   sectionItems,
   isOnline,
   isStaging
@@ -103,7 +103,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         sections={templateSections}
         collapsedSections={collapsedSections}
         onSectionCollapseToggle={onSectionCollapseToggle}
-        onMainInputChange={onMainInputChange}
+        onInputChange={onInputChange}
         onClickOneActionNotes={onClickOneActionNotes}
         sectionItems={sectionItems}
       />

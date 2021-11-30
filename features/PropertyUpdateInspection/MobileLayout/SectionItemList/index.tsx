@@ -7,17 +7,17 @@ import styles from '../../styles.module.scss';
 
 interface Props {
   item: inspectionTemplateItemModel;
-  onMainInputChange(
-    event: React.MouseEvent<HTMLLIElement>,
+  onInputChange(
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
-    selectionIndex: number
+    value: string | number
   ): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
   item,
-  onMainInputChange,
+  onInputChange,
   onClickOneActionNotes
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
@@ -29,11 +29,12 @@ const SectionItemList: FunctionComponent<Props> = ({
           <Attachment photos={item.photos} notes={item.notes} />
         )}
         <InspectionItemControls
-          inputType={item.mainInputType}
+          inputType={item.mainInputType || item.itemType}
           selected={item.mainInputSelected}
           selectedValue={item.mainInputSelection}
-          onMainInputChange={(event, selectionIndex) =>
-            onMainInputChange(event, item, selectionIndex)
+          textInputValue={item.textInputValue}
+          onInputChange={(event, selectionIndex) =>
+            onInputChange(event, item, selectionIndex)
           }
           onClickOneActionNotes={() => onClickOneActionNotes(item)}
         />

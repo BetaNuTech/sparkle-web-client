@@ -12,10 +12,10 @@ interface MobileLayoutTeamItemModel {
   nextSectionTitle: string;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
-  onMainInputChange(
-    event: React.MouseEvent<HTMLLIElement>,
+  onInputChange(
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
-    selectionIndex: number
+    value: string | number
   ): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel):void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
@@ -28,7 +28,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   collapsedSections,
   sectionItems,
   onSectionCollapseToggle,
-  onMainInputChange,
+  onInputChange,
   onClickOneActionNotes
 }) => {
   const listItems = sectionItems.get(section.id);
@@ -77,7 +77,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
           <SectionItemList
             key={item.id}
             item={item}
-            onMainInputChange={onMainInputChange}
+            onInputChange={onInputChange}
             onClickOneActionNotes={onClickOneActionNotes}
           />
         ))}

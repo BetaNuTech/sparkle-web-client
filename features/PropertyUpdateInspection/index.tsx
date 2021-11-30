@@ -36,13 +36,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   inspection,
   unpublishedTemplateUpdates
 }) => {
-  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
-    useState(false);
-  const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-  const { updateMainInputSelection, updateMainInputNotes } = useUpdateTemplate(
+
+
+  const { updateMainInputSelection, updateMainInputNotes, updateTextInputValue } = useUpdateTemplate(
     unpublishedTemplateUpdates,
     inspection.template
   );
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
+  const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
   const { setLatestTemplateUpdates } = useUnpublishedTemplateUpdates(
     unpublishedTemplateUpdates
   );
@@ -60,11 +62,31 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   // User selects new main input option
   const onMainInputChange = (
-    event: React.MouseEvent<HTMLLIElement>,
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ) => {
     setLatestTemplateUpdates(updateMainInputSelection(item.id, selectionIndex));
+  };
+  const onTextInputValueChange = (
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    item: inspectionTemplateItemModel,
+    textInputValue: string
+  ) => {
+    setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
+  };
+
+  const onInputChange = (
+    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    item: inspectionTemplateItemModel,
+    value: any
+  ) => {
+    if(item.itemType === 'text_input'){
+      onTextInputValueChange(event,item,value)
+    }
+    else{
+      onMainInputChange(event,item,value)
+    }
   };
 
   //update mainInputNotes in inspections item.
@@ -114,7 +136,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
-            onMainInputChange={onMainInputChange}
+            onInputChange={onInputChange}
             onShareAction={onShareAction}
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
@@ -131,7 +153,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
-            onMainInputChange={onMainInputChange}
+            onInputChange={onInputChange}
             onShareAction={onShareAction}
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
