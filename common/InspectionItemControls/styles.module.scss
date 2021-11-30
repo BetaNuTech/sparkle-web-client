@@ -6,6 +6,7 @@
   list-style: none;
   padding-left: 0;
   margin: 0;
+  flex: 1;
 
   &__input {
     display: flex;
@@ -78,6 +79,11 @@
         }
       }
     }
+  }
+
+  &__textInputItem {
+    width: 100%;
+    margin-bottom: $global-md-padding;
   }
 
   &__attachment {

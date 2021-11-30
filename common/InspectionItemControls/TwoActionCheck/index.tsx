@@ -10,7 +10,7 @@ interface Props {
   selectedValue?: number;
   onMainInputChange?(
     event: React.MouseEvent<HTMLLIElement>,
-    selectionIndex: number
+    value: string | number
   ): void;
 }
 

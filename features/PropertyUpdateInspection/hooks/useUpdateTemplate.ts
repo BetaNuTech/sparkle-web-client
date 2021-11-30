@@ -6,6 +6,11 @@ interface useItemUpdateResult {
     itemId: string,
     selectionIndex: number
   ): inspectionTemplateModel;
+
+  updateTextInputValue(
+    itemId: string,
+    textInputValue: string
+  ):inspectionTemplateModel
   updateMainInputNotes(
     itemId: string,
     notes: string
@@ -25,7 +30,15 @@ export default function useInspectionItemUpdate(
       items: { [itemId]: { mainInputSelection: selectionIndex } }
     });
 
-  const updateMainInputNotes = (
+  const updateTextInputValue = (
+    itemId: string,
+    textInputValue: string
+  ): inspectionTemplateModel =>
+    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
+      items: { [itemId]: { textInputValue } }
+    });
+
+    const updateMainInputNotes = (
       itemId: string,
       notes: string
     ): inspectionTemplateModel =>
@@ -35,6 +48,7 @@ export default function useInspectionItemUpdate(
 
   return {
     updateMainInputSelection,
-    updateMainInputNotes
+    updateMainInputNotes,
+    updateTextInputValue
   };
 }

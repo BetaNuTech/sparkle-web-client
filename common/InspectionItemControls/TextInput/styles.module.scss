@@ -1,0 +1,19 @@
+@import '../../../styles/index.scss';
+
+.input,
+.input[type='text'] {
+  height: rem-calc(34);
+  margin-bottom: 0;
+  color: $primary-color;
+  font-size: 1rem;
+  padding-left: $global-sm-padding;
+  padding-right: $global-sm-padding;
+  background-color: $gray-5;
+  border: 1px solid #cecece;
+  border-radius: $global-radius;
+
+  &:hover,
+  &:focus {
+    color: $primary-color;
+  }
+}
