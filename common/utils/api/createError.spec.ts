@@ -2,6 +2,7 @@ import create, { DEFAULT_ERROR_MESSAGES } from './createError';
 import ErrorBadRequest from '../../models/errors/badRequest';
 import ErrorConflictingRequest from '../../models/errors/conflictingRequest';
 import ErrorForbidden from '../../models/errors/forbidden';
+import ErrorUnauthorized from '../../models/errors/unauthorized';
 import ErrorNotFound from '../../models/errors/notFound';
 import ErrorProxyForbidden from '../../models/errors/proxyForbidden';
 import ErrorServerInternal from '../../models/errors/serverInternal';
@@ -20,6 +21,12 @@ describe('Unit | Common | Utils | API | Create Error', () => {
         errors: [GENERIC_JSON_ERROR],
         expected: ErrorBadRequest,
         msg: 'created bad request error'
+      },
+      {
+        status: 401,
+        errors: [GENERIC_JSON_ERROR],
+        expected: ErrorUnauthorized,
+        msg: 'created unauthorized request error'
       },
       {
         status: 403,

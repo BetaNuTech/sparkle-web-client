@@ -5,15 +5,17 @@ import {
   originalMultiSection
 } from '../../../__mocks__/inspections';
 import { templateA } from '../../../__mocks__/templates';
-import inspectionTemplateModel from '../../models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
 import inspectionTemplateSectionModel from '../../models/inspectionTemplateSection';
 
 describe('Unit | Common | Utils | Inspection | Update Template', () => {
   test('it does not modify arguments', () => {
-    const actual = {} as inspectionTemplateModel;
+    const actual = {} as inspectionTemplateUpdateModel;
     const expected = deepClone(actual);
-    const currentTemplate = deepClone(templateA) as inspectionTemplateModel;
+    const currentTemplate = deepClone(
+      templateA
+    ) as inspectionTemplateUpdateModel;
     currentTemplate.items = {
       one: deepClone(selectedCheckmarkItem) as inspectionTemplateItemModel
     };
@@ -52,13 +54,15 @@ describe('Unit | Common | Utils | Inspection | Update Template', () => {
       }
     ];
 
-    const currentTemplate = deepClone(templateA) as inspectionTemplateModel;
+    const currentTemplate = deepClone(
+      templateA
+    ) as inspectionTemplateUpdateModel;
     currentTemplate.items = {
       one: deepClone(selectedCheckmarkItem) as inspectionTemplateItemModel,
       two: deepClone(selectedCheckmarkItem) as inspectionTemplateItemModel
     };
 
-    let updatedTemplate = {} as inspectionTemplateModel;
+    let updatedTemplate = {} as inspectionTemplateUpdateModel;
     for (let i = 0; i < tests.length; i += 1) {
       const { expected, change, msg } = tests[i];
       const userChanges = { items: change } as userUpdate;
@@ -81,8 +85,10 @@ describe('Unit | Common | Utils | Inspection | Update Template', () => {
 
   test('it removes added section and item updates once they no longer differ from the current state', () => {
     const expected = 0;
-    let updatedTemplate = {} as inspectionTemplateModel;
-    const currentTemplate = deepClone(templateA) as inspectionTemplateModel;
+    let updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const currentTemplate = deepClone(
+      templateA
+    ) as inspectionTemplateUpdateModel;
     const sectionOne = deepClone(
       originalMultiSection
     ) as inspectionTemplateSectionModel;
@@ -130,8 +136,10 @@ describe('Unit | Common | Utils | Inspection | Update Template', () => {
 
   test('it updates a locally added multi-section item as normal', () => {
     const expected = { mainInputSelection: 0, mainInputSelected: true };
-    let updatedTemplate = {} as inspectionTemplateModel;
-    const currentTemplate = deepClone(templateA) as inspectionTemplateModel;
+    let updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const currentTemplate = deepClone(
+      templateA
+    ) as inspectionTemplateUpdateModel;
     const sectionOne = deepClone(
       originalMultiSection
     ) as inspectionTemplateSectionModel;

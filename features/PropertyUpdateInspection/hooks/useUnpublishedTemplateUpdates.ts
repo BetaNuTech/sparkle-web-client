@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import * as objectHelper from '../../../common/utils/object';
-import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 
 interface Result {
   status: string;
-  data: inspectionTemplateModel;
+  data: inspectionTemplateUpdateModel;
   hasUpdates: boolean;
   setLatestTemplateUpdates(
-    latestTemplate: inspectionTemplateModel
-  ): inspectionTemplateModel;
+    latestTemplate: inspectionTemplateUpdateModel
+  ): inspectionTemplateUpdateModel;
 }
 
 // Hooks finding unpublished inspection state
 // and updating that state
 export default function useUnpublishedTemplate(
-  srcUpdatedTemplate = {} as inspectionTemplateModel
+  srcUpdatedTemplate = {} as inspectionTemplateUpdateModel
 ): Result {
   // TODO lookup from local DB
   // and set if user has prior updates
@@ -25,7 +25,7 @@ export default function useUnpublishedTemplate(
 
   // Set if local state has diverged
   // from the original/remote state
-  function isInspectionTemplateUpdated(updated: inspectionTemplateModel) {
+  function isInspectionTemplateUpdated(updated: inspectionTemplateUpdateModel) {
     const hasItemUpdates = Boolean(updated.items);
     const hasSectionUpdates = Boolean(updated.sections);
     return Boolean(hasItemUpdates || hasSectionUpdates);
@@ -34,8 +34,8 @@ export default function useUnpublishedTemplate(
   // Set latest inpsection updates
   // TODO save to local database
   function setLatestTemplateUpdates(
-    latestTemplate: inspectionTemplateModel
-  ): inspectionTemplateModel {
+    latestTemplate: inspectionTemplateUpdateModel
+  ): inspectionTemplateUpdateModel {
     // Updated template has publishable state
     setHasUpdates(isInspectionTemplateUpdated(latestTemplate));
 

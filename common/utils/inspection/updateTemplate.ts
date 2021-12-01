@@ -2,7 +2,7 @@ import updateItem, { userUpdate as userItemUpdate } from './updateTemplateItem';
 import updateSection, {
   userUpdate as userSectionUpdate
 } from './updateTemplateSection';
-import inspectionTemplateModel from '../../models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
 
 export interface userUpdate {
@@ -21,14 +21,14 @@ const DEFAULT_OPTIONS = Object.freeze({
 
 // Manage local updates to an inspection's template
 export default function inspectionUpdate(
-  updatedTemplate: inspectionTemplateModel,
-  currentTemplate: inspectionTemplateModel,
+  updatedTemplate: inspectionTemplateUpdateModel,
+  currentTemplate: inspectionTemplateUpdateModel,
   userChanges: userUpdate,
   userChangeOptions?: updateOptions
-): inspectionTemplateModel {
+): inspectionTemplateUpdateModel {
   let result = JSON.parse(
     JSON.stringify(updatedTemplate)
-  ) as inspectionTemplateModel;
+  ) as inspectionTemplateUpdateModel;
   const options = {
     ...DEFAULT_OPTIONS,
     ...(userChangeOptions || {})
@@ -104,7 +104,7 @@ export default function inspectionUpdate(
 
 // Lookup template item by its' index
 function getItem(
-  template: inspectionTemplateModel,
+  template: inspectionTemplateUpdateModel,
   itemId: string
 ): inspectionTemplateItemModel | null {
   const items = (template || {}).items || {};

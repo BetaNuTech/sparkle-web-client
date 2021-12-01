@@ -1,31 +1,31 @@
-import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import inspUtil from '../../../common/utils/inspection';
 
 interface useItemUpdateResult {
   updateMainInputSelection(
     itemId: string,
     selectionIndex: number
-  ): inspectionTemplateModel;
+  ): inspectionTemplateUpdateModel;
 
   updateTextInputValue(
     itemId: string,
     textInputValue: string
-  ):inspectionTemplateModel
+  ): inspectionTemplateUpdateModel;
   updateMainInputNotes(
     itemId: string,
     notes: string
-  ): inspectionTemplateModel;
+  ): inspectionTemplateUpdateModel;
 }
 
 export default function useInspectionItemUpdate(
-  updatedTemplate: inspectionTemplateModel,
-  currentTemplate: inspectionTemplateModel
+  updatedTemplate: inspectionTemplateUpdateModel,
+  currentTemplate: inspectionTemplateUpdateModel
 ): useItemUpdateResult {
   // User selects new main input option
   const updateMainInputSelection = (
     itemId: string,
     selectionIndex: number
-  ): inspectionTemplateModel =>
+  ): inspectionTemplateUpdateModel =>
     inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
       items: { [itemId]: { mainInputSelection: selectionIndex } }
     });
@@ -33,18 +33,18 @@ export default function useInspectionItemUpdate(
   const updateTextInputValue = (
     itemId: string,
     textInputValue: string
-  ): inspectionTemplateModel =>
+  ): inspectionTemplateUpdateModel =>
     inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
       items: { [itemId]: { textInputValue } }
     });
 
-    const updateMainInputNotes = (
-      itemId: string,
-      notes: string
-    ): inspectionTemplateModel =>
-      inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
-        items: { [itemId]: { mainInputNotes: notes } }
-      });
+  const updateMainInputNotes = (
+    itemId: string,
+    notes: string
+  ): inspectionTemplateUpdateModel =>
+    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
+      items: { [itemId]: { mainInputNotes: notes } }
+    });
 
   return {
     updateMainInputSelection,

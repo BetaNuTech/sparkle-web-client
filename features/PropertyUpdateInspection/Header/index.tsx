@@ -11,14 +11,18 @@ interface HeaderModel {
   property: propertyModel;
   inspection: inspectionModel;
   isOnline: boolean;
+  hasUpdates: boolean;
   onShareAction(): void;
+  onSaveInspection(): void;
 }
 
 const Header: FunctionComponent<HeaderModel> = ({
   property,
   inspection,
   isOnline,
-  onShareAction
+  hasUpdates,
+  onShareAction,
+  onSaveInspection
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const RightSide = () => (
@@ -53,6 +57,15 @@ const Header: FunctionComponent<HeaderModel> = ({
         <span>
           <FileUploadIcon />
         </span>
+      </button>
+      <button
+        type="button"
+        className={clsx(styles.header__item__button)}
+        disabled={!(hasUpdates && isOnline)}
+        data-testid="header-save-button"
+        onClick={onSaveInspection}
+      >
+        Save
       </button>
     </div>
   );

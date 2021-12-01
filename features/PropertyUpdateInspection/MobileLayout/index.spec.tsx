@@ -54,4 +54,64 @@ describe('Unit | Features | Property Update Inspection | Mobile Layout', () => {
     expect(editButton).toBeTruthy();
     expect(completeButton).not.toBeDisabled();
   });
+
+  it('should disable save button if no updates to the inspection are publishable', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
+    };
+
+    render(<MobileLayout {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should disable save button if user is offline', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: false,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
+    };
+
+    render(<MobileLayout {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should enable save button if user is online and we have publishable updates', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
+    };
+
+    render(<MobileLayout {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).not.toBeDisabled();
+  });
 });

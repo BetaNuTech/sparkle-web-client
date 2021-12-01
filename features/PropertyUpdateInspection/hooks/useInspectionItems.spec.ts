@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks';
 import deepClone from '../../../__tests__/helpers/deepClone';
 import useInspectionItems from './useInspectionItems';
-import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import {
   unselectedCheckmarkItem,
   selectedCheckmarkItem,
@@ -46,10 +46,10 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
     const expectedSectionOneCount = 3;
     const expectedSectionTwoCount = 2;
 
-    const updatedTemplate = {} as inspectionTemplateModel;
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
     const currentTemplate = {
       items: deepClone(ITEMS)
-    } as inspectionTemplateModel;
+    } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
       useInspectionItems(updatedTemplate, currentTemplate)
     );
@@ -68,10 +68,10 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
     const expectedSectionOneTitle = 'one | two | three';
     const expectedSectionTwoTitle = 'one | two';
 
-    const updatedTemplate = {} as inspectionTemplateModel;
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
     const currentTemplate = {
       items: deepClone(ITEMS)
-    } as inspectionTemplateModel;
+    } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
       useInspectionItems(updatedTemplate, currentTemplate)
     );

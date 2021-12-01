@@ -1,5 +1,6 @@
 import ErrorBadRequest from '../../models/errors/badRequest';
 import ErrorConflictingRequest from '../../models/errors/conflictingRequest';
+import ErrorUnauthorized from '../../models/errors/unauthorized';
 import ErrorForbidden from '../../models/errors/forbidden';
 import ErrorNotFound from '../../models/errors/notFound';
 import ErrorProxyForbidden from '../../models/errors/proxyForbidden';
@@ -7,6 +8,7 @@ import ErrorServerInternal from '../../models/errors/serverInternal';
 
 export const DEFAULT_ERROR_MESSAGES = Object.freeze({
   400: 'fix request errors',
+  401: 'user authorization not accepted',
   403: 'user lacks permission',
   404: 'record not found',
   407: '3rd party service not authenticated',
@@ -34,6 +36,11 @@ const createError = (
       const badRequest = new ErrorBadRequest(`${prefix} ${errorMessages[400]}`);
       badRequest.addErrors(apiErrors);
       return badRequest;
+    }
+
+    // Unauthenticated / Unauthorized
+    if (responseStatus === 401) {
+      return new ErrorUnauthorized(`${prefix} ${errorMessages[401]}`);
     }
 
     // Unauthenticated / Forbidden
