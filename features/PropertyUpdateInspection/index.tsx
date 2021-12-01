@@ -3,6 +3,7 @@ import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import inspectionModel from '../../common/models/inspection';
+import inspectionTemplateUpdateModel from '../../common/models/inspections/templateUpdate';
 import userModel from '../../common/models/user';
 import copyTextToClipboard from '../../common/utils/copyTextToClipboard';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
@@ -12,15 +13,16 @@ import useInspectionSectionSort from './hooks/useInspectionSections';
 import DesktopLayout from './DesktopLayout';
 import useInspectionItems from './hooks/useInspectionItems';
 import inspectionTemplateItemModel from '../../common/models/inspectionTemplateItem';
-import inspectionTemplateModel from '../../common/models/inspectionTemplate';
 import useUpdateTemplate from './hooks/useUpdateTemplate';
 import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates';
+import usePublishUpdates from './hooks/usePublishUpdates';
 import OneActionNotesModal from './OneActionNotesModal';
+import LoadingHud from '../../common/LoadingHud';
 
 interface Props {
   user: userModel;
   inspection: inspectionModel;
-  unpublishedTemplateUpdates: inspectionTemplateModel;
+  unpublishedTemplateUpdates: inspectionTemplateUpdateModel;
   property: propertyModel;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -36,22 +38,23 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   inspection,
   unpublishedTemplateUpdates
 }) => {
-
-
-  const { updateMainInputSelection, updateMainInputNotes, updateTextInputValue } = useUpdateTemplate(
-    unpublishedTemplateUpdates,
-    inspection.template
-  );
+  const {
+    updateMainInputSelection,
+    updateMainInputNotes,
+    updateTextInputValue
+  } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
     useState(false);
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-  const { setLatestTemplateUpdates } = useUnpublishedTemplateUpdates(
-    unpublishedTemplateUpdates
-  );
+  const { setLatestTemplateUpdates, hasUpdates } =
+    useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
 
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
+  const { updateInspectionTemplate, isLoading } =
+    usePublishUpdates(sendNotification);
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.mobile.maxWidth
@@ -60,41 +63,59 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     minWidth: breakpoints.tablet.minWidth
   });
 
-  // User selects new main input option
+  // User updates main item selection
   const onMainInputChange = (
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ) => {
     setLatestTemplateUpdates(updateMainInputSelection(item.id, selectionIndex));
   };
+
+  // User updates text item value
   const onTextInputValueChange = (
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     textInputValue: string
   ) => {
     setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
   };
 
+  // Add main and text input updates
+  // to local, unpublished, changes
   const onInputChange = (
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: any
   ) => {
-    if(item.itemType === 'text_input'){
-      onTextInputValueChange(event,item,value)
-    }
-    else{
-      onMainInputChange(event,item,value)
+    if (item.itemType === 'text_input') {
+      onTextInputValueChange(event, item, value);
+    } else {
+      onMainInputChange(event, item, value);
     }
   };
 
-  //update mainInputNotes in inspections item.
+  // Add main input note updates to
+  // local, unpublised, changes
   const onOneActionNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
     setLatestTemplateUpdates(
       updateMainInputNotes(selectedInspectionItem.id, event.target.value)
+    );
+  };
+
+  // Publish local changes and on success
+  // clear all local changes
+  const onSaveInspection = () => {
+    updateInspectionTemplate(inspection.id, unpublishedTemplateUpdates).then(
+      () => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel)
     );
   };
 
@@ -124,6 +145,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setSelectedInspectionItem(null);
   };
 
+  if (isLoading) {
+    return <LoadingHud title="Saving Inspection" />;
+  }
+
   return (
     <>
       {isMobileorTablet && (
@@ -133,6 +158,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             isOnline={isOnline}
             isStaging={isStaging}
             inspection={inspection}
+            hasUpdates={hasUpdates}
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
@@ -140,6 +166,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onShareAction={onShareAction}
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
+            onSaveInspection={onSaveInspection}
           />
         </>
       )}
@@ -150,6 +177,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             isOnline={isOnline}
             isStaging={isStaging}
             inspection={inspection}
+            hasUpdates={hasUpdates}
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
@@ -157,6 +185,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onShareAction={onShareAction}
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
+            onSaveInspection={onSaveInspection}
           />
         </>
       )}

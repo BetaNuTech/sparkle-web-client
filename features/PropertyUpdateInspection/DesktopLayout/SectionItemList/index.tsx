@@ -10,7 +10,9 @@ import styles from '../../styles.module.scss';
 interface Props {
   item: inspectionTemplateItemModel;
   onInputChange(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
@@ -44,6 +46,7 @@ const SectionItemList: FunctionComponent<Props> = ({
           inputType={item.mainInputType || item.itemType}
           selected={item.mainInputSelected}
           selectedValue={item.mainInputSelection}
+          textInputValue={item.textInputValue}
           onInputChange={(event, selectionIndex) =>
             onInputChange(event, item, selectionIndex)
           }

@@ -1,5 +1,5 @@
 interface template {
-  id: string;
+  id?: string;
   name: string;
   description: string;
   category: string; // template category relationship

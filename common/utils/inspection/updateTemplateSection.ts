@@ -1,6 +1,6 @@
 import pipe from '../pipe';
 import copySectionsItems from './copySectionsItems';
-import inspectionTemplateModel from '../../models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 import inspectionTemplateSectionModel from '../../models/inspectionTemplateSection';
 import uuid from '../uuidv4'; // eslint-disable-line
 
@@ -9,8 +9,8 @@ export interface userUpdate {
 }
 
 interface composableSettings {
-  updatedTemplate: inspectionTemplateModel | null;
-  currentTemplate: inspectionTemplateModel | null;
+  updatedTemplate: inspectionTemplateUpdateModel | null;
+  currentTemplate: inspectionTemplateUpdateModel | null;
   userChanges: userUpdate;
   targetId: string;
 }
@@ -19,11 +19,11 @@ const PREFIX = 'utils: inspection: updateTemplateSection:';
 
 // Manage local updates to inspection section
 export default function updateTemplateSection(
-  updatedTemplate: inspectionTemplateModel | null,
-  currentTemplate: inspectionTemplateModel | null,
+  updatedTemplate: inspectionTemplateUpdateModel | null,
+  currentTemplate: inspectionTemplateUpdateModel | null,
   userChanges: userUpdate | null,
   targetId: string
-): inspectionTemplateModel {
+): inspectionTemplateUpdateModel {
   const changeCount = Object.keys(userChanges || {}).length;
 
   if (userChanges && changeCount < 1) {
@@ -36,7 +36,7 @@ export default function updateTemplateSection(
     setAddedMultiSection,
     setRemovedMultiSection
   )(
-    {} as inspectionTemplateModel, // result
+    {} as inspectionTemplateUpdateModel, // result
     {
       updatedTemplate,
       currentTemplate,
@@ -49,9 +49,9 @@ export default function updateTemplateSection(
 // Merge any prior updates
 // into the final results
 function mergePreviousUpdates(
-  result: inspectionTemplateModel,
+  result: inspectionTemplateUpdateModel,
   settings: composableSettings
-): inspectionTemplateModel {
+): inspectionTemplateUpdateModel {
   const { updatedTemplate } = settings;
   if (!updatedTemplate) return result;
 
@@ -68,9 +68,9 @@ function mergePreviousUpdates(
 
 // Clone an existing ecction
 function setAddedMultiSection(
-  result: inspectionTemplateModel,
+  result: inspectionTemplateUpdateModel,
   settings: composableSettings
-): inspectionTemplateModel {
+): inspectionTemplateUpdateModel {
   const { currentTemplate, updatedTemplate, userChanges } = settings;
   const isCloningSection = userChanges && Boolean(userChanges.cloneOf);
   const sections = currentTemplate.sections || {};
@@ -140,9 +140,9 @@ function setAddedMultiSection(
 }
 
 function setRemovedMultiSection(
-  result: inspectionTemplateModel,
+  result: inspectionTemplateUpdateModel,
   settings: composableSettings
-): inspectionTemplateModel {
+): inspectionTemplateUpdateModel {
   const { currentTemplate, updatedTemplate, userChanges, targetId } = settings;
   const isRemovingSection = !userChanges;
   const currentSections = currentTemplate.sections || {};

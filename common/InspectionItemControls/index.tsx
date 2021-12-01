@@ -12,9 +12,11 @@ interface Props {
   inputType: string;
   selected?: boolean;
   selectedValue?: number;
-  textInputValue?:string;
+  textInputValue?: string;
   onInputChange?(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     value: string | number
   ): void;
   onClickOneActionNotes(): void;
@@ -78,11 +80,12 @@ const InspectionItemControls: FunctionComponent<Props> = ({
       );
     case 'text_input':
       return (
-      <TextInput
-        selected={selected}
-        textInputValue={textInputValue}
-        onMainInputChange={onInputChange}
-      />);
+        <TextInput
+          selected={selected}
+          textInputValue={textInputValue}
+          onMainInputChange={onInputChange}
+        />
+      );
     default:
       return <></>;
   }

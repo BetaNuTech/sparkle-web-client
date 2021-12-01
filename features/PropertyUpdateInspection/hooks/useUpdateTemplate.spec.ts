@@ -1,14 +1,17 @@
 import { renderHook } from '@testing-library/react-hooks';
 import deepClone from '../../../__tests__/helpers/deepClone';
 import useUpdateTemplate from './useUpdateTemplate';
-import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
-import { unselectedCheckmarkItem, emptyTextInputItem } from '../../../__mocks__/inspections';
+import {
+  unselectedCheckmarkItem,
+  emptyTextInputItem
+} from '../../../__mocks__/inspections';
 
 describe('Unit | Features | Property Update Inspection | Hooks | Use Update Template', () => {
   test('should update main input item selection', () => {
     const expected = 1;
-    const updatedTemplate = {} as inspectionTemplateModel;
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
     const itemId = unselectedCheckmarkItem.id;
     const currentTemplate = {
       items: {
@@ -16,7 +19,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
           unselectedCheckmarkItem
         ) as inspectionTemplateItemModel
       }
-    } as inspectionTemplateModel;
+    } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
       useUpdateTemplate(updatedTemplate, currentTemplate)
     );
@@ -31,7 +34,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
 
   test('should update main input note value', () => {
     const expected = 'this is the note';
-    const updatedTemplate = {} as inspectionTemplateModel;
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
     const itemId = unselectedCheckmarkItem.id;
     const currentTemplate = {
       items: {
@@ -39,7 +42,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
           unselectedCheckmarkItem
         ) as inspectionTemplateItemModel
       }
-    } as inspectionTemplateModel;
+    } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
       useUpdateTemplate(updatedTemplate, currentTemplate)
     );
@@ -53,15 +56,13 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
 
   test('should update text input value', () => {
     const expected = 'this is text input value';
-    const updatedTemplate = {} as inspectionTemplateModel;
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
     const itemId = emptyTextInputItem.id;
     const currentTemplate = {
       items: {
-        [itemId]: deepClone(
-          emptyTextInputItem
-        ) as inspectionTemplateItemModel
+        [itemId]: deepClone(emptyTextInputItem) as inspectionTemplateItemModel
       }
-    } as inspectionTemplateModel;
+    } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
       useUpdateTemplate(updatedTemplate, currentTemplate)
     );

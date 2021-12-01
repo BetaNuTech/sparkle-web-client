@@ -25,7 +25,10 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       inspection: inspectionB,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onShareAction: () => {},
-      isOnline: true
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
     };
 
     render(<Header {...props} />, {
@@ -45,7 +48,10 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       inspection: fullInspection,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onShareAction: () => {},
-      isOnline: true
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
     };
 
     render(<Header {...props} />, {
@@ -57,5 +63,65 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
 
     expect(editButton).toBeTruthy();
     expect(completeButton).not.toBeDisabled();
+  });
+
+  it('should disable save button if no updates to the inspection are publishable', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).toBeDisabled();
+  });
+
+  it('should disable save button if user is offline', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: false,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).toBeNull();
+  });
+
+  it('should enable save button if user is online and we have publishable updates', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {}
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).not.toBeDisabled();
   });
 });

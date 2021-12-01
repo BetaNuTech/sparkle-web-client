@@ -14,15 +14,19 @@ interface Props {
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onInputChange(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onShareAction(): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
+  onSaveInspection(): void;
   isOnline?: boolean;
   isStaging?: boolean;
+  hasUpdates?: boolean;
 }
 
 const DesktopLayout: FunctionComponent<Props> = ({
@@ -34,15 +38,19 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onSectionCollapseToggle,
   onInputChange,
   onClickOneActionNotes,
+  onSaveInspection,
   sectionItems,
-  isOnline
+  isOnline,
+  hasUpdates
 }) => (
   <>
     <Header
       property={property}
       inspection={inspection}
       isOnline={isOnline}
+      hasUpdates={hasUpdates}
       onShareAction={onShareAction}
+      onSaveInspection={onSaveInspection}
     />
     <div className={styles.main}>
       <Sections

@@ -4,7 +4,7 @@ import {
   originalMultiSection,
   unselectedCheckmarkItem
 } from '../../../__mocks__/inspections';
-import inspectionTemplateModel from '../../models/inspectionTemplate';
+import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
 import inspectionTemplateSectionModel from '../../models/inspectionTemplateSection';
 
@@ -16,8 +16,8 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
       added_multi_section: true
     };
     delete expected.id;
-    const updated = {} as inspectionTemplateModel;
-    const current = {} as inspectionTemplateModel;
+    const updated = {} as inspectionTemplateUpdateModel;
+    const current = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one',
@@ -33,8 +33,8 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
   test('it should increment all section indexes for newly added section', () => {
     const expected = [1, 2];
-    const updated = {} as inspectionTemplateModel;
-    const current = {} as inspectionTemplateModel;
+    const updated = {} as inspectionTemplateUpdateModel;
+    const current = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one'
@@ -63,8 +63,8 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
     };
     delete expected.id;
     delete expected.sectionId;
-    const updated = {} as inspectionTemplateModel;
-    const current = {} as inspectionTemplateModel;
+    const updated = {} as inspectionTemplateUpdateModel;
+    const current = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one',
@@ -87,7 +87,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
   test('it should merge prior section updates into new updates', () => {
     const expected = 2;
-    const current = {} as inspectionTemplateModel;
+    const current = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one',
@@ -96,7 +96,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
     current.sections = { one: sectionOne };
     // Clone original
     let updated = update(
-      {} as inspectionTemplateModel,
+      {} as inspectionTemplateUpdateModel,
       current,
       {
         cloneOf: 'one'
@@ -114,7 +114,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
   test('it should merge prior item updates into new updates', () => {
     const expected = 4;
-    const current = {} as inspectionTemplateModel;
+    const current = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one',
@@ -134,7 +134,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
     current.sections = { one: sectionOne };
     // Clone original
     let updated = update(
-      {} as inspectionTemplateModel,
+      {} as inspectionTemplateUpdateModel,
       current,
       {
         cloneOf: 'one'
@@ -152,7 +152,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
   test('it should remove an added multi section', () => {
     const expected = null;
-    const current = {} as inspectionTemplateModel;
+    const current = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one',
@@ -168,15 +168,20 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
       one: sectionOne,
       two: sectionTwo
     };
-    const result = update({} as inspectionTemplateModel, current, null, 'two');
+    const result = update(
+      {} as inspectionTemplateUpdateModel,
+      current,
+      null,
+      'two'
+    );
     const actual = (result.sections || {}).two;
     expect(actual).toEqual(expected);
   });
 
   test('it should ignore a removed, previously locally added, multi section from updates', () => {
     const expected = undefined;
-    const current = {} as inspectionTemplateModel;
-    const localUpdates = {} as inspectionTemplateModel;
+    const current = {} as inspectionTemplateUpdateModel;
+    const localUpdates = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       index: 0
@@ -195,8 +200,8 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
   test('it should remove, a published, multi section from updates', () => {
     const expected = null;
-    const current = {} as inspectionTemplateModel;
-    const localUpdates = {} as inspectionTemplateModel;
+    const current = {} as inspectionTemplateUpdateModel;
+    const localUpdates = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       index: 0
@@ -214,8 +219,8 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
   test('it should remove locally added multi section items from updates', () => {
     const expected = undefined;
-    const current = {} as inspectionTemplateModel;
-    const updates = {} as inspectionTemplateModel;
+    const current = {} as inspectionTemplateUpdateModel;
+    const updates = {} as inspectionTemplateUpdateModel;
     const sectionOne = {
       ...originalMultiSection,
       id: 'one',

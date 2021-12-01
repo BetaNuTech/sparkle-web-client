@@ -17,15 +17,19 @@ interface Props {
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onInputChange(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   onShareAction(): void;
+  onSaveInspection(): void;
   isOnline?: boolean;
   isStaging?: boolean;
+  hasUpdates?: boolean;
 }
 
 // Mobile layout
@@ -38,9 +42,11 @@ const MobileLayout: FunctionComponent<Props> = ({
   onSectionCollapseToggle,
   onClickOneActionNotes,
   onInputChange,
+  onSaveInspection,
   sectionItems,
   isOnline,
-  isStaging
+  isStaging,
+  hasUpdates
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -81,6 +87,16 @@ const MobileLayout: FunctionComponent<Props> = ({
         data-testid="header-complete-button"
       >
         <FileUploadIcon />
+      </button>
+
+      <button
+        type="button"
+        className={headStyle.header__button}
+        disabled={!(hasUpdates && isOnline)}
+        data-testid="header-save-button"
+        onClick={onSaveInspection}
+      >
+        Save
       </button>
     </>
   );
