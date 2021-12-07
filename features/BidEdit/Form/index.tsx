@@ -1,15 +1,7 @@
 import { FunctionComponent, useState, useRef, ChangeEvent } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import {
-  useForm,
-  UseFormRegister,
-  FormState,
-  useWatch,
-  UseFormSetValue,
-  UseFormTrigger
-} from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import clsx from 'clsx';
-import Link from 'next/link';
 import moment from 'moment';
 import { diff } from 'deep-object-diff';
 import LoadingHud from '../../../common/LoadingHud';
@@ -18,19 +10,12 @@ import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
 import attachmentModel from '../../../common/models/attachment';
 import userModel from '../../../common/models/user';
-import utilString from '../../../common/utils/string';
-import ErrorLabel from '../../../common/ErrorLabel';
 import ErrorList from '../../../common/ErrorList';
 import MobileHeader from '../../../common/MobileHeader';
-import AttachmentList from '../../../common/AttachmentList';
 import breakpoints from '../../../config/breakpoints';
 import bidsConfig from '../../../config/bids';
-import jobsConfig from '../../../config/jobs';
 import formats from '../../../config/formats';
-import { textColors } from '../../JobList';
-import AddIcon from '../../../public/icons/ios/add.svg';
 import ActionsIcon from '../../../public/icons/ios/actions.svg';
-import AlbumIcon from '../../../public/icons/sparkle/album.svg';
 import { BidApiResult } from '../hooks/useBidForm';
 import useProcessedForm from '../hooks/useProcessedForm';
 import DropdownHeader from '../DropdownHeader';
@@ -40,6 +25,22 @@ import styles from '../styles.module.scss';
 import formErrors from './errors';
 import { canApproveBid } from '../../../common/utils/userPermissions';
 import useBidApprovedCompleted from '../../../common/hooks/useBidApprovedCompleted';
+import FormInputs from './FormInputs';
+import VendorInput from './Fields/VendorInput';
+import CostInput from './Fields/CostInput';
+import BidScope from './Fields/BidScope';
+import StartDateInput from './Fields/StartDateInput';
+import CompleteDateInput from './Fields/CompleteDateInput';
+import VendorDetailsInput from './Fields/VendorDetailsInput';
+import W9Checkbox from './Fields/W9Checkbox';
+import InsuranceCheckbox from './Fields/InsuranceCheckbox';
+import LicenseCheckbox from './Fields/LicenseCheckbox';
+import JobInfo from './Fields/JobInfo';
+import TrelloCard from './Fields/TrelloCard';
+import Attachments from './Fields/Attachments';
+import ActionButtons from './ActionButtons';
+import FormHeader from './FormHeader';
+import BidStatus from './BidStatus';
 
 interface Props {
   user: userModel;
@@ -68,56 +69,6 @@ interface Props {
   queueAttachmentForDelete(attachment: attachmentModel): any;
   queuedAttachmentForDeletion: attachmentModel;
   deleteAtachmentLoading: boolean;
-}
-
-type Inputs = {
-  vendor: string;
-  costMin: number;
-  costMax: number;
-  startAt: string;
-  completeAt: string;
-  cost: string;
-  scope: string;
-  vendorDetails: string;
-  vendorW9: boolean;
-  vendorInsurance: boolean;
-  vendorLicense: boolean;
-};
-
-interface LayoutProps {
-  property: propertyModel;
-  isMobile: boolean;
-  job: jobModel;
-  bid: bidModel;
-  otherBids: bidModel[];
-  approvedCompletedBid: bidModel;
-  bidLink: string;
-  isNewBid: boolean;
-  isBidComplete: boolean;
-  isOnline: boolean;
-  apiState: BidApiResult;
-  onSubmit: (action: string) => void;
-  register: UseFormRegister<Inputs>;
-  triggerFormValidation: UseFormTrigger<Inputs>;
-  formState: FormState<Inputs>;
-  setValue: UseFormSetValue<Inputs>;
-  onCostTypeChange: (type: 'fixed' | 'range') => void;
-  isFixedCostType: boolean;
-  showSaveButton: boolean;
-  startAtProcessed: number;
-  completeAtProcessed: number;
-  attachments: Array<attachmentModel>;
-  isApprovedOrComplete: boolean;
-  canApprove: boolean;
-  canApproveEnabled: boolean;
-  canReject: boolean;
-  canMarkIncomplete: boolean;
-  canMarkComplete: boolean;
-  canReopen: boolean;
-  onFileChange(ev: ChangeEvent<HTMLInputElement>): void;
-  isUploadingFile: boolean;
-  setDeleteAttachmentPromptVisible(newState: boolean): void;
-  queueAttachmentForDelete(attachment: attachmentModel): any;
 }
 
 // Cost min validator to check it should be less than max cost
@@ -168,729 +119,6 @@ const completeDateValidator = (value) => {
     isValid = moment(bidStartAt.value).unix() <= moment(value).unix();
   }
   return isValid || formErrors.completeAtLess;
-};
-
-const Layout: FunctionComponent<LayoutProps> = ({
-  property,
-  isMobile,
-  job,
-  bid,
-  otherBids,
-  approvedCompletedBid,
-  bidLink,
-  isNewBid,
-  onSubmit,
-  register,
-  triggerFormValidation,
-  apiState,
-  isBidComplete,
-  isOnline,
-  formState,
-  onCostTypeChange,
-  isFixedCostType,
-  showSaveButton,
-  startAtProcessed,
-  completeAtProcessed,
-  attachments,
-  isApprovedOrComplete,
-  canApprove,
-  canApproveEnabled,
-  canReject,
-  canMarkIncomplete,
-  canMarkComplete,
-  canReopen,
-  onFileChange,
-  isUploadingFile,
-  queueAttachmentForDelete,
-  setDeleteAttachmentPromptVisible
-}) => {
-  // Keys which can come from api
-  const formInputs = [
-    'vendor',
-    'costMin',
-    'costMax',
-    'startAt',
-    'completeAt',
-    'vendorW9',
-    'vendorInsurance',
-    'vendorLicense'
-  ];
-  // Error object which can be there after submitting form
-  const apiFormErrors = {
-    vendor: '',
-    costMin: '',
-    costMax: '',
-    startAt: '',
-    completeAt: '',
-    vendorW9: '',
-    vendorInsurance: '',
-    vendorLicense: ''
-  };
-  const filteredApiErrors = [];
-
-  // Check if we have error then find all defined keys in @formInput variable
-  // Otherwise push in @filteredApiErrors to show them in list of errors
-  if ([400, 409].includes(apiState.statusCode) && apiState.response.errors) {
-    apiState.response.errors.forEach((errData) => {
-      if (errData.source && formInputs.includes(errData.source.pointer)) {
-        apiFormErrors[errData.source.pointer] = errData.detail;
-      } else {
-        filteredApiErrors.push(errData);
-      }
-    });
-  }
-
-  // Extract the message
-  const apiErrors =
-    filteredApiErrors.length > 0 ? filteredApiErrors.map((e) => e.detail) : [];
-
-  const bidState = !isNewBid && bid.state ? bid.state : 'open';
-  const nextState =
-    !isNewBid && bidState === 'approved' && job.state !== 'authorized'
-      ? bidsConfig.nextState.authorizedJob
-      : bidsConfig.nextState[bidState];
-
-  const inputFile = useRef(null);
-
-  const onUploadClick = () => {
-    if (inputFile && inputFile.current) {
-      inputFile.current.click();
-    }
-  };
-
-  const jobEditLink = `/properties/${property.id}/jobs/edit/${job.id}`;
-  const jobLink = `/properties/${property.id}/jobs/`;
-  const propertyLink = `/properties/${property.id}/`;
-  const openAttachmentDeletePrompt = (attachment: attachmentModel) => {
-    queueAttachmentForDelete(attachment);
-    setDeleteAttachmentPromptVisible(true);
-  };
-
-  const otherBidsText =
-    // eslint-disable-next-line no-nested-ternary
-    otherBids.length === 0
-      ? 'No other bids'
-      : otherBids.length === 1
-      ? '1 other bid'
-      : `${otherBids.length} other bids`;
-
-  // Cost min validations
-  const costMinValidateOptions: any = {
-    validate: costMinValidator
-  };
-  // Cost max validations
-  const costMaxValidateOptions: any = {
-    validate: (value) => {
-      const validateResult = costMaxValidator(value);
-      if (validateResult && typeof validateResult === 'boolean') {
-        triggerFormValidation('costMin');
-      }
-      return validateResult;
-    }
-  };
-  // Start at validations
-  const startAtValidateOptions: any = { validate: startDateValidator };
-  // Complete at validations
-  const completeAtValidateOptions: any = { validate: completeDateValidator };
-  if (isApprovedOrComplete) {
-    costMinValidateOptions.required = formErrors.costRequired;
-    costMaxValidateOptions.required =
-      !isFixedCostType && formErrors.costRequired;
-    startAtValidateOptions.required = formErrors.startAtRequired;
-    completeAtValidateOptions.required = formErrors.completeAtRequired;
-  }
-
-  const approvedBidLink =
-    approvedCompletedBid &&
-    `/properties/${property.id}/jobs/${job.id}/bids/${approvedCompletedBid.id}/`;
-
-  return (
-    <>
-      {!isNewBid && isMobile && (
-        <div className={styles.bid__info__header__main}>
-          <div className={styles.bid__info__header__breadcrumb}>
-            <Link href={propertyLink}>
-              <a
-                className={styles.bid__info__header__breadcrumb__text}
-              >{`${property.name}`}</a>
-            </Link>
-            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
-            <Link href={jobLink}>
-              <a className={styles.bid__info__header__breadcrumb__text}>Jobs</a>
-            </Link>
-            <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
-            <Link href={bidLink}>
-              <a className={styles.bid__info__header__breadcrumb__text}>Bids</a>
-            </Link>
-            {!isNewBid && (
-              <span className={styles.bid__info__header__breadcrumb}>
-                &nbsp;&nbsp;/&nbsp;&nbsp;Edit
-              </span>
-            )}
-          </div>
-          <h1 className={styles.bid__info__header__title}>
-            {isNewBid ? 'New Bid' : job.title}
-          </h1>
-          <aside className={styles.form__extHeader__aside}>
-            <span
-              className={clsx(
-                styles.form__parentStatusLabel,
-                textColors[jobsConfig.stateColors[job.state]]
-              )}
-            >
-              {utilString.titleize(job.state)}
-            </span>
-            <span className={styles.form__parentDetail}>{otherBidsText}</span>
-            <Link href={jobEditLink}>
-              <a className={styles.form__parentLink}>Edit Job</a>
-            </Link>
-          </aside>
-        </div>
-      )}
-      <div className={styles.form__grid}>
-        {!isNewBid && (
-          <>
-            <div className={styles.form__grid__info}>
-              <div className={styles.bid__info}>
-                <div className={styles.bid__info__box}>
-                  <p>Bid Status{!isMobile && <> :&nbsp;</>}</p>
-                  <h3 data-testid="bid-form-edit-state">
-                    {utilString.titleize(bidState)}
-                  </h3>
-                </div>
-                {nextState && (
-                  <div className={styles.bid__info__box}>
-                    <p>Requires{!isMobile && <> :&nbsp;</>}</p>
-                    <h3 data-testid="bid-form-edit-nextstatus">{nextState}</h3>
-                  </div>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-
-        <div className={styles.form__fields}>
-          <ErrorList errors={apiErrors} />
-        </div>
-        <form>
-          <div className={styles.form__fields}>
-            <div className={styles.form__fields__leftColumn}>
-              <div className={styles.form__group}>
-                <label htmlFor="bidVendor">
-                  Vendor <span>*</span>
-                </label>
-                <div className={styles.form__group__control}>
-                  <input
-                    id="bidVendor"
-                    type="text"
-                    name="vendor"
-                    className={styles.form__input}
-                    defaultValue={bid.vendor}
-                    data-testid="bid-form-vendor"
-                    {...register('vendor', {
-                      required: formErrors.vendorRequired
-                    })}
-                    disabled={apiState.isLoading || isBidComplete}
-                  />
-                  <ErrorLabel
-                    formName="vendor"
-                    errors={formState.errors}
-                    message={apiFormErrors.vendor}
-                  />
-                </div>
-              </div>
-              <div className={styles.form__formCost}>
-                <label>Cost {isApprovedOrComplete && <span>*</span>}</label>
-                <div className={styles.form__formCost__select}>
-                  <button
-                    type="button"
-                    className={clsx(isFixedCostType && styles.active)}
-                    onClick={() => onCostTypeChange('fixed')}
-                  >
-                    Fixed Cost
-                  </button>
-                  <span className={styles.form__formCost__separator}></span>
-                  <button
-                    type="button"
-                    id="btnRange"
-                    className={clsx(!isFixedCostType && styles.active)}
-                    onClick={() => onCostTypeChange('range')}
-                  >
-                    Range
-                  </button>
-                </div>
-                <input
-                  type="hidden"
-                  defaultValue={isFixedCostType ? 'fixed' : 'range'}
-                  {...register('cost')}
-                />
-              </div>
-              <div className={styles.form__row}>
-                <div
-                  className={clsx(
-                    styles.form__row__cell,
-                    isFixedCostType ? styles['form__row__cell--fillRow'] : ''
-                  )}
-                >
-                  <div className={styles.form__group}>
-                    <div className={styles.form__group__control}>
-                      <input
-                        type="number"
-                        id="costMin"
-                        name="costMin"
-                        min="0"
-                        className={styles.form__input}
-                        placeholder={isFixedCostType ? '' : 'Minimum'}
-                        defaultValue={bid.costMin}
-                        data-testid="bid-form-cost-min"
-                        {...register('costMin', costMinValidateOptions)}
-                        disabled={apiState.isLoading || isBidComplete}
-                      />
-                      <ErrorLabel
-                        formName="costMin"
-                        errors={formState.errors}
-                        message={apiFormErrors.costMin}
-                      />
-                    </div>
-                  </div>
-                </div>
-                {!isFixedCostType && (
-                  <div className={styles.form__row__cell}>
-                    <div className={styles.form__group}>
-                      <div className={styles.form__group__control}>
-                        <input
-                          type="number"
-                          id="costMax"
-                          name="costMax"
-                          min="0"
-                          className={styles.form__input}
-                          placeholder="Maximum"
-                          defaultValue={bid.costMax}
-                          data-testid="bid-form-cost-max"
-                          {...register('costMax', costMaxValidateOptions)}
-                          disabled={apiState.isLoading || isBidComplete}
-                        />
-                        <ErrorLabel
-                          formName="costMax"
-                          errors={formState.errors}
-                          message={apiFormErrors.costMax}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-              {/* Bid scope */}
-              <div className={styles.form__row}>
-                <div className={clsx(styles.form__row__cell)}>
-                  <div className={styles.form__group}>
-                    <label htmlFor="bidStartAt">
-                      Scope <span>*</span>
-                    </label>
-                    <div
-                      className={clsx(
-                        styles.form__group__control,
-                        styles['form__group__control--radio']
-                      )}
-                    >
-                      <label className={styles.form__group__labelAlign}>
-                        <input
-                          type="radio"
-                          name="bidScope"
-                          className={styles.form__input}
-                          value="local"
-                          {...register('scope')}
-                          defaultChecked={
-                            (bid.scope && bid.scope === 'local') || !bid.scope
-                          }
-                        />
-                        Local
-                      </label>
-                      <label className={styles.form__group__labelAlign}>
-                        <input
-                          type="radio"
-                          name="bidScope"
-                          className={styles.form__input}
-                          value="national"
-                          {...register('scope')}
-                          defaultChecked={bid.scope && bid.scope === 'national'}
-                        />
-                        National
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.form__row}>
-                <div
-                  className={clsx(
-                    styles.form__row__cell,
-                    styles['form__row__cell--twoColumns']
-                  )}
-                >
-                  <div className={styles.form__group}>
-                    <label htmlFor="bidStartAt">
-                      Start Date {isApprovedOrComplete && <span>*</span>}
-                    </label>
-                    <div className={styles.form__group__control}>
-                      <input
-                        id="bidStartAt"
-                        type="date"
-                        name="startAt"
-                        className={styles.form__input}
-                        defaultValue={startAtProcessed}
-                        data-testid="bid-form-start-at"
-                        {...register('startAt', startAtValidateOptions)}
-                        disabled={apiState.isLoading || isBidComplete}
-                      />
-                      <ErrorLabel
-                        formName="startAt"
-                        errors={formState.errors}
-                        message={apiFormErrors.startAt}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  className={clsx(
-                    styles.form__row__cell,
-                    styles['form__row__cell--twoColumns']
-                  )}
-                >
-                  <div className={styles.form__group}>
-                    <label htmlFor="bidVendor">
-                      Complete Date {isApprovedOrComplete && <span>*</span>}
-                    </label>
-                    <div className={styles.form__group__control}>
-                      <input
-                        id="bidCompleteAt"
-                        type="date"
-                        name="vendor"
-                        className={styles.form__input}
-                        defaultValue={completeAtProcessed}
-                        data-testid="bid-form-complete-at"
-                        {...register('completeAt', completeAtValidateOptions)}
-                        disabled={apiState.isLoading || isBidComplete}
-                      />
-                      <ErrorLabel
-                        formName="completeAt"
-                        errors={formState.errors}
-                        message={apiFormErrors.completeAt}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.form__group}>
-                <label htmlFor="bidVendorDetails">Vendor Details</label>
-                <div className={styles.form__group__control}>
-                  <textarea
-                    id="bidVendorDetails"
-                    className="form-control"
-                    rows={7}
-                    name="vendorDetails"
-                    defaultValue={bid.vendorDetails}
-                    data-testid="bid-form-vendor-details"
-                    {...register('vendorDetails')}
-                    disabled={apiState.isLoading || isBidComplete}
-                  ></textarea>
-                  <ErrorLabel formName="need" errors={formState.errors} />
-                </div>
-              </div>
-
-              <div className={styles.form__group}>
-                <label className={styles.form__group__labelAlign}>
-                  <input
-                    type="checkbox"
-                    name="vendorW9"
-                    defaultChecked={bid.vendorW9}
-                    {...register('vendorW9')}
-                  />
-                  Vendor Has W9
-                </label>
-                <div className={styles.form__group__control}>
-                  <ErrorLabel
-                    formName="vendorW9"
-                    errors={formState.errors}
-                    message={apiFormErrors.vendorW9}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.form__group}>
-                <label className={styles.form__group__labelAlign}>
-                  <input
-                    type="checkbox"
-                    name="vendorInsurance"
-                    defaultChecked={bid.vendorInsurance}
-                    {...register('vendorInsurance')}
-                  />
-                  Vendor Has Insurance
-                </label>
-                <div className={styles.form__group__control}>
-                  <ErrorLabel
-                    formName="vendorInsurance"
-                    errors={formState.errors}
-                    message={apiFormErrors.vendorInsurance}
-                  />
-                </div>
-              </div>
-
-              <div className={styles.form__group}>
-                <label className={styles.form__group__labelAlign}>
-                  <input
-                    type="checkbox"
-                    name="vendorLicense"
-                    defaultChecked={bid.vendorLicense}
-                    {...register('vendorLicense')}
-                  />
-                  Vendor has License
-                </label>
-                <div className={styles.form__group__control}>
-                  <ErrorLabel
-                    formName="vendorLicense"
-                    errors={formState.errors}
-                    message={apiFormErrors.vendorLicense}
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.form__fields__rightColumn}>
-              <div className={clsx(styles.form__group)}>
-                <label>Job Info</label>
-              </div>
-              <div className={clsx(styles.form__card__pill)}>
-                <span
-                  className={clsx(
-                    styles.form__parentStatusLabel,
-                    textColors[jobsConfig.stateColors[job.state]]
-                  )}
-                >
-                  {utilString.titleize(job.state)}
-                </span>
-                <span className={styles.form__parentDetail}>
-                  {otherBidsText}
-                </span>
-                <Link href={jobEditLink}>
-                  <a className={styles.form__parentLink}>Edit Job</a>
-                </Link>
-              </div>
-
-              {job.trelloCardURL && (
-                <>
-                  <div className={clsx(styles.form__group, '-mt-lg')}>
-                    <label>Trello Card</label>
-                  </div>
-                  <div
-                    className={clsx(styles.form__card__pill, '-mt')}
-                    data-testid="trello-card-pill"
-                  >
-                    <h5 className={styles.form__card__pill__title}>
-                      <AlbumIcon />
-                      Trello Card #1
-                    </h5>
-                    <a
-                      href={job.trelloCardURL}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View Card
-                    </a>
-                  </div>
-                </>
-              )}
-
-              {!isNewBid && (
-                <div className={clsx(styles.form__group, '-mt-lg')}>
-                  <div className={styles.form__formSeparatedLabel}>
-                    <label htmlFor="bidVendorDetails">Attachments</label>
-                    <button
-                      type="button"
-                      className={styles.form__upload}
-                      onClick={onUploadClick}
-                      disabled={isUploadingFile}
-                    >
-                      Upload
-                      <span className={styles.form__upload__icon}>
-                        <AddIcon />
-                      </span>
-                      <input
-                        type="file"
-                        ref={inputFile}
-                        className={styles.form__formInput}
-                        onChange={onFileChange}
-                        data-testid="input-file-attachment"
-                      />
-                    </button>
-                  </div>
-                  <AttachmentList
-                    attachments={attachments}
-                    onDelete={openAttachmentDeletePrompt}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-          {!isNewBid && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              {!approvedCompletedBid && !isApprovedOrComplete && (
-                <button
-                  type="button"
-                  data-testid="bid-form-approve"
-                  disabled={
-                    !canApprove ||
-                    apiState.isLoading ||
-                    !isOnline ||
-                    !canApproveEnabled
-                  }
-                  className={clsx(
-                    styles.button__submit,
-                    isMobile && styles.button__fullwidth
-                  )}
-                  onClick={() => onSubmit('approved')}
-                >
-                  Approve Bid
-                </button>
-              )}
-
-              {!canApprove && !approvedCompletedBid && !isApprovedOrComplete && (
-                <p className={clsx('-c-gray-light', '-mb-none')}>
-                  <span data-testid="bid-approve-permisson">
-                    You do not have permission to approve this bid.
-                  </span>
-                </p>
-              )}
-
-              {approvedCompletedBid && (
-                <p className={clsx('-c-gray-light', '-mb-none')}>
-                  <span data-testid="bid-approved-msg">
-                    {' '}
-                    Job already has an{' '}
-                    <a
-                      href={approvedBidLink}
-                      target="_blank"
-                      className="-td-underline"
-                      rel="noreferrer"
-                    >
-                      {approvedCompletedBid.state} bid
-                    </a>
-                  </span>
-                </p>
-              )}
-            </div>
-          )}
-
-          {canMarkComplete && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="bid-form-complete-bid"
-                disabled={apiState.isLoading || !isOnline}
-                className={clsx(
-                  styles.button__cancel,
-                  '-c-info',
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onSubmit('complete')}
-              >
-                Complete
-              </button>
-            </div>
-          )}
-
-          {canMarkIncomplete && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="bid-form-incomplete-bid"
-                disabled={apiState.isLoading || !isOnline}
-                className={clsx(
-                  styles.button__cancel,
-                  '-c-warning',
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onSubmit('incomplete')}
-              >
-                Incomplete
-              </button>
-            </div>
-          )}
-
-          {canReject && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="bid-form-reject-bid"
-                disabled={apiState.isLoading || !isOnline}
-                className={clsx(
-                  styles.button__cancel,
-                  '-c-alert',
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onSubmit('rejected')}
-              >
-                Reject Bid
-              </button>
-            </div>
-          )}
-
-          {canReopen && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="bid-form-reopen-bid"
-                disabled={apiState.isLoading || !isOnline}
-                className={clsx(
-                  styles.button__cancel,
-                  '-c-info',
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onSubmit('reopen')}
-              >
-                Reopen
-              </button>
-            </div>
-          )}
-
-          {showSaveButton && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <button
-                type="button"
-                data-testid="bid-form-submit"
-                disabled={apiState.isLoading || !isOnline}
-                className={clsx(
-                  styles.button__submit,
-                  isMobile && styles.button__fullwidth
-                )}
-                onClick={() => onSubmit('save')}
-              >
-                Save
-              </button>
-            </div>
-          )}
-          {isMobile && (
-            <div className={clsx(styles.button__group, '-mt-lg', '-mr-none')}>
-              <Link href={bidLink}>
-                <a
-                  className={clsx(
-                    styles.button__cancel,
-                    styles.button__fullwidth,
-                    '-ta-center'
-                  )}
-                  data-testid="mobile-form-cancel"
-                >
-                  Cancel
-                </a>
-              </Link>
-            </div>
-          )}
-        </form>
-      </div>
-    </>
-  );
 };
 
 const BidForm: FunctionComponent<Props> = ({
@@ -987,7 +215,7 @@ const BidForm: FunctionComponent<Props> = ({
     trigger: triggerFormValidation,
     formState,
     setValue
-  } = useForm<Inputs>({
+  } = useForm<FormInputs>({
     mode: 'all'
   });
 
@@ -1098,6 +326,104 @@ const BidForm: FunctionComponent<Props> = ({
     showSaveButton =
       JSON.stringify(formBidProcessed) !== JSON.stringify(apiBid);
   }
+  const formInputs = [
+    'vendor',
+    'costMin',
+    'costMax',
+    'startAt',
+    'completeAt',
+    'vendorW9',
+    'vendorInsurance',
+    'vendorLicense'
+  ];
+  // Error object which can be there after submitting form
+  const apiFormErrors = {
+    vendor: '',
+    costMin: '',
+    costMax: '',
+    startAt: '',
+    completeAt: '',
+    vendorW9: '',
+    vendorInsurance: '',
+    vendorLicense: ''
+  };
+  const filteredApiErrors = [];
+
+  // Check if we have error then find all defined keys in @formInput variable
+  // Otherwise push in @filteredApiErrors to show them in list of errors
+  if ([400, 409].includes(apiState.statusCode) && apiState.response.errors) {
+    apiState.response.errors.forEach((errData) => {
+      if (errData.source && formInputs.includes(errData.source.pointer)) {
+        apiFormErrors[errData.source.pointer] = errData.detail;
+      } else {
+        filteredApiErrors.push(errData);
+      }
+    });
+  }
+
+  // Extract the message
+  const apiErrors =
+    filteredApiErrors.length > 0 ? filteredApiErrors.map((e) => e.detail) : [];
+
+  const bidState = !isNewBid && bid.state ? bid.state : 'open';
+  const nextState =
+    !isNewBid && bidState === 'approved' && job.state !== 'authorized'
+      ? bidsConfig.nextState.authorizedJob
+      : bidsConfig.nextState[bidState];
+
+  const inputFile = useRef(null);
+
+  const onUploadClick = () => {
+    if (inputFile && inputFile.current) {
+      inputFile.current.click();
+    }
+  };
+
+  const jobEditLink = `/properties/${property.id}/jobs/edit/${job.id}`;
+  const jobLink = `/properties/${property.id}/jobs/`;
+  const propertyLink = `/properties/${property.id}/`;
+  const openAttachmentDeletePrompt = (attachment: attachmentModel) => {
+    queueAttachmentForDelete(attachment);
+    setDeleteAttachmentPromptVisible(true);
+  };
+
+  const otherBidsText =
+    // eslint-disable-next-line no-nested-ternary
+    otherBids.length === 0
+      ? 'No other bids'
+      : otherBids.length === 1
+      ? '1 other bid'
+      : `${otherBids.length} other bids`;
+
+  // Cost min validations
+  const costMinValidateOptions: any = {
+    validate: costMinValidator
+  };
+  // Cost max validations
+  const costMaxValidateOptions: any = {
+    validate: (value) => {
+      const validateResult = costMaxValidator(value);
+      if (validateResult && typeof validateResult === 'boolean') {
+        triggerFormValidation('costMin');
+      }
+      return validateResult;
+    }
+  };
+  // Start at validations
+  const startAtValidateOptions: any = { validate: startDateValidator };
+  // Complete at validations
+  const completeAtValidateOptions: any = { validate: completeDateValidator };
+  if (isApprovedOrComplete) {
+    costMinValidateOptions.required = formErrors.costRequired;
+    costMaxValidateOptions.required =
+      !isFixedCostType && formErrors.costRequired;
+    startAtValidateOptions.required = formErrors.startAtRequired;
+    completeAtValidateOptions.required = formErrors.completeAtRequired;
+  }
+
+  const approvedBidLink =
+    approvedCompletedBid &&
+    `/properties/${property.id}/jobs/${job.id}/bids/${approvedCompletedBid.id}/`;
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -1126,54 +452,16 @@ const BidForm: FunctionComponent<Props> = ({
   return (
     <>
       {isMobileorTablet && (
-        <>
-          <MobileHeader
-            title={isNewBid ? 'Create New Bid' : `${property.name} Job Bid`}
-            toggleNavOpen={toggleNavOpen}
-            isOnline={isOnline}
-            isStaging={isStaging}
-            actions={mobileHeaderActions}
-            className={styles.form__header}
-          />
-          <Layout
-            property={property}
-            isMobile={isMobileorTablet}
-            job={job}
-            bid={bid || ({} as bidModel)}
-            otherBids={otherBids}
-            approvedCompletedBid={approvedCompletedBid}
-            isNewBid={isNewBid}
-            bidLink={bidLink}
-            register={register}
-            triggerFormValidation={triggerFormValidation}
-            formState={formState}
-            apiState={apiState}
-            isOnline={isOnline}
-            onSubmit={onSubmit}
-            setValue={setValue}
-            isBidComplete={isBidComplete}
-            onCostTypeChange={onCostTypeChange}
-            isFixedCostType={isFixedCostType}
-            showSaveButton={showSaveButton}
-            startAtProcessed={startAtProcessed}
-            completeAtProcessed={completeAtProcessed}
-            attachments={attachments}
-            isApprovedOrComplete={isApprovedOrComplete}
-            canApprove={canApprove}
-            canApproveEnabled={canApproveEnabled}
-            canReject={canReject}
-            canMarkIncomplete={canMarkIncomplete}
-            canMarkComplete={canMarkComplete}
-            canReopen={canReopen}
-            onFileChange={onFileChange}
-            isUploadingFile={uploadState}
-            queueAttachmentForDelete={queueAttachmentForDelete}
-            setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
-          />
-        </>
+        <MobileHeader
+          title={isNewBid ? 'Create New Bid' : `${property.name} Job Bid`}
+          toggleNavOpen={toggleNavOpen}
+          isOnline={isOnline}
+          isStaging={isStaging}
+          actions={mobileHeaderActions}
+          className={styles.form__header}
+        />
       )}
 
-      {/* Desktop Header & Content */}
       {isDesktop && (
         <div data-testid="desktop-form">
           {apiState.isLoading && <LoadingHud title="Saving Bid..." />}
@@ -1181,6 +469,7 @@ const BidForm: FunctionComponent<Props> = ({
           {deleteAtachmentLoading && (
             <LoadingHud title="Remove Attachment..." />
           )}
+
           <Header
             isOnline={isOnline}
             property={property}
@@ -1198,43 +487,150 @@ const BidForm: FunctionComponent<Props> = ({
             canMarkComplete={canMarkComplete}
             canReopen={canReopen}
           />
-          <Layout
-            property={property}
-            isMobile={isMobileorTablet}
-            job={job}
-            bid={bid || ({} as bidModel)}
-            otherBids={otherBids}
-            approvedCompletedBid={approvedCompletedBid}
-            isNewBid={isNewBid}
-            bidLink={bidLink}
-            register={register}
-            triggerFormValidation={triggerFormValidation}
-            formState={formState}
-            apiState={apiState}
-            isOnline={isOnline}
-            onSubmit={onSubmit}
-            setValue={setValue}
-            isBidComplete={isBidComplete}
-            onCostTypeChange={onCostTypeChange}
-            isFixedCostType={isFixedCostType}
-            showSaveButton={showSaveButton}
-            startAtProcessed={startAtProcessed}
-            completeAtProcessed={completeAtProcessed}
-            attachments={attachments}
-            isApprovedOrComplete={isApprovedOrComplete}
-            canApprove={canApprove}
-            canApproveEnabled={canApproveEnabled}
-            canReject={canReject}
-            canMarkIncomplete={canMarkIncomplete}
-            canMarkComplete={canMarkComplete}
-            canReopen={canReopen}
-            onFileChange={onFileChange}
-            isUploadingFile={uploadState}
-            queueAttachmentForDelete={queueAttachmentForDelete}
-            setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
-          />
         </div>
       )}
+
+      <>
+        <FormHeader
+          isNewBid={isNewBid}
+          isMobile={isMobileorTablet}
+          propertyLink={propertyLink}
+          property={property}
+          jobLink={jobLink}
+          bidLink={bidLink}
+          job={job}
+          otherBidsText={otherBidsText}
+          jobEditLink={jobEditLink}
+        />
+        <div className={styles.form__grid}>
+          <BidStatus
+            isNewBid={isNewBid}
+            isMobile={isMobileorTablet}
+            bidState={bidState}
+            nextState={nextState}
+          />
+
+          <div className={styles.form__fields}>
+            <ErrorList errors={apiErrors} />
+          </div>
+          <form>
+            <div className={styles.form__fields}>
+              <div className={styles.form__fields__leftColumn}>
+                <VendorInput
+                  defaultValue={bid.vendor}
+                  isBidComplete={isBidComplete}
+                  isLoading={apiState.isLoading}
+                  formState={formState}
+                  apiErrorVendor={apiFormErrors.vendor}
+                  {...register('vendor', {
+                    required: formErrors.vendorRequired
+                  })}
+                />
+                <CostInput
+                  costMin={bid.costMin}
+                  costMax={bid.costMax}
+                  isBidComplete={isBidComplete}
+                  isLoading={apiState.isLoading}
+                  formState={formState}
+                  isFixedCostType={isFixedCostType}
+                  isApprovedOrComplete={isApprovedOrComplete}
+                  onCostTypeChange={onCostTypeChange}
+                  costMinValidateOptions={costMinValidateOptions}
+                  costMaxValidateOptions={costMaxValidateOptions}
+                  apiErrorCostMin={apiFormErrors.costMin}
+                  apiErrorCostMax={apiFormErrors.costMax}
+                  register={register}
+                />
+
+                <BidScope scope={bid.scope} {...register('scope')} />
+
+                <div className={styles.form__row}>
+                  <StartDateInput
+                    defaultValue={startAtProcessed}
+                    isApprovedOrComplete={isApprovedOrComplete}
+                    isBidComplete={isBidComplete}
+                    isLoading={apiState.isLoading}
+                    formState={formState}
+                    apiErrorStartAt={apiFormErrors.startAt}
+                    {...register('startAt', startAtValidateOptions)}
+                  />
+                  <CompleteDateInput
+                    defaultValue={completeAtProcessed}
+                    isApprovedOrComplete={isApprovedOrComplete}
+                    isBidComplete={isBidComplete}
+                    isLoading={apiState.isLoading}
+                    formState={formState}
+                    apiErrorCompleteAt={apiFormErrors.completeAt}
+                    {...register('completeAt', completeAtValidateOptions)}
+                  />
+                </div>
+                <VendorDetailsInput
+                  defaultValue={bid.vendorDetails}
+                  isBidComplete={isBidComplete}
+                  isLoading={apiState.isLoading}
+                  formState={formState}
+                  {...register('vendorDetails')}
+                />
+                <W9Checkbox
+                  formState={formState}
+                  defaultChecked={bid.vendorW9}
+                  apiErrorVendorW9={apiFormErrors.vendorW9}
+                  {...register('vendorW9')}
+                />
+                <InsuranceCheckbox
+                  formState={formState}
+                  defaultChecked={bid.vendorInsurance}
+                  apiErrorVendorInsurance={apiFormErrors.vendorInsurance}
+                  {...register('vendorInsurance')}
+                />
+                <LicenseCheckbox
+                  formState={formState}
+                  defaultChecked={bid.vendorLicense}
+                  apiErrorVendorLicense={apiFormErrors.vendorLicense}
+                  {...register('vendorLicense')}
+                />
+              </div>
+
+              <div className={styles.form__fields__rightColumn}>
+                <JobInfo
+                  jobState={job.state}
+                  otherBidsText={otherBidsText}
+                  jobEditLink={jobEditLink}
+                />
+                <TrelloCard trelloCardURL={job.trelloCardURL} />
+
+                <Attachments
+                  onUploadClick={onUploadClick}
+                  isUploadingFile={uploadState}
+                  onFileChange={onFileChange}
+                  attachments={attachments}
+                  openAttachmentDeletePrompt={openAttachmentDeletePrompt}
+                  ref={inputFile}
+                  isNewBid={isNewBid}
+                />
+              </div>
+            </div>
+            <ActionButtons
+              isNewBid={isNewBid}
+              approvedCompletedBid={approvedCompletedBid}
+              isApprovedOrComplete={isApprovedOrComplete}
+              canApprove={canApprove}
+              isLoading={apiState.isLoading}
+              isOnline={isOnline}
+              canApproveEnabled={canApproveEnabled}
+              isMobile={isMobileorTablet}
+              onSubmit={onSubmit}
+              approvedBidLink={approvedBidLink}
+              canMarkComplete={canMarkComplete}
+              canMarkIncomplete={canMarkIncomplete}
+              canReject={canReject}
+              canReopen={canReopen}
+              showSaveButton={showSaveButton}
+              bidLink={bidLink}
+            />
+          </form>
+        </div>
+      </>
 
       <DeleteAttachmentPrompt
         fileName={
