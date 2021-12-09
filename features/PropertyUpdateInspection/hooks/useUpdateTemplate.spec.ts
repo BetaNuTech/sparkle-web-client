@@ -5,7 +5,8 @@ import inspectionTemplateUpdateModel from '../../../common/models/inspections/te
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import {
   unselectedCheckmarkItem,
-  emptyTextInputItem
+  emptyTextInputItem,
+  originalMultiSection
 } from '../../../__mocks__/inspections';
 
 describe('Unit | Features | Property Update Inspection | Hooks | Use Update Template', () => {
@@ -72,5 +73,29 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
     );
     const actual = ((selectionResult.items || {})[itemId] || {}).textInputValue;
     expect(actual).toEqual(expected);
+  });
+
+  test('should clone section of the template', () => {
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const sectionId = originalMultiSection.id;
+    const currentTemplate = {
+      sections: {
+        [sectionId]: deepClone(
+          originalMultiSection
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    const selectionResult = result.current.addSection(sectionId);
+    const clonedSection =
+      selectionResult.sections[Object.keys(selectionResult.sections)[0]];
+
+    expect(clonedSection.title).toEqual(originalMultiSection.title);
+    expect(clonedSection.section_type).toEqual(
+      originalMultiSection.section_type
+    );
+    expect(clonedSection.added_multi_section).toBeTruthy();
   });
 });

@@ -23,6 +23,7 @@ interface Props {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onShareAction(): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
+  onAddSection(sectionId: string): void;
   onSaveInspection(): void;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -41,7 +42,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onSaveInspection,
   sectionItems,
   isOnline,
-  hasUpdates
+  hasUpdates,
+  onAddSection
 }) => (
   <>
     <Header
@@ -61,6 +63,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         onInputChange={onInputChange}
         sectionItems={sectionItems}
         onClickOneActionNotes={onClickOneActionNotes}
+        onAddSection={onAddSection}
       />
     </div>
   </>

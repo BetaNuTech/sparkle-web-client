@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import deepmerge from '../../../common/utils/deepmerge';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
+import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 
 interface useInspectionSectionsResult {
   sortedTemplateSections: Array<inspectionTemplateSectionModel>;
@@ -9,16 +11,21 @@ interface useInspectionSectionsResult {
 
 // Hooks for filtering inspections list
 export default function useInspectionSections(
-  sections: Record<string, inspectionTemplateSectionModel>
+  sections: Record<string, inspectionTemplateSectionModel>,
+  updatedTemplate: inspectionTemplateUpdateModel
 ): useInspectionSectionsResult {
   const [memo, setMemo] = useState('[]');
 
-  const [collapsedSections, setCollapsedSections] = useState<string[]>([]);
+  const mergedSections = deepmerge(
+    sections || {},
+    updatedTemplate.sections || {}
+  );
 
-  const sortedTemplateSections = Object.keys(sections)
+  const [collapsedSections, setCollapsedSections] = useState<string[]>([]);
+  const sortedTemplateSections = Object.keys(mergedSections)
     .map((id) => ({
       id,
-      ...sections[id]
+      ...mergedSections[id]
     }))
     .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
 

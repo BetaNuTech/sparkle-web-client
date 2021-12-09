@@ -30,6 +30,7 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   hasUpdates?: boolean;
+  onAddSection(sectionId: string): void;
 }
 
 // Mobile layout
@@ -46,7 +47,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   sectionItems,
   isOnline,
   isStaging,
-  hasUpdates
+  hasUpdates,
+  onAddSection
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -122,6 +124,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onInputChange={onInputChange}
         onClickOneActionNotes={onClickOneActionNotes}
         sectionItems={sectionItems}
+        onAddSection={onAddSection}
       />
     </>
   );

@@ -41,7 +41,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const {
     updateMainInputSelection,
     updateMainInputNotes,
-    updateTextInputValue
+    updateTextInputValue,
+    addSection
   } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
     useState(false);
@@ -85,6 +86,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
   };
 
+  const onAddSection = (sectionId: string) => {
+    setLatestTemplateUpdates(addSection(sectionId));
+  };
+
   // Add main and text input updates
   // to local, unpublished, changes
   const onInputChange = (
@@ -120,7 +125,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   };
 
   const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
-    useInspectionSectionSort(inspection.template.sections);
+    useInspectionSectionSort(
+      inspection.template.sections,
+      unpublishedTemplateUpdates
+    );
 
   // Items grouped by their section
   const { sectionItems } = useInspectionItems(
@@ -148,7 +156,6 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
-
   return (
     <>
       {isMobileorTablet && (
@@ -167,6 +174,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
             onSaveInspection={onSaveInspection}
+            onAddSection={onAddSection}
           />
         </>
       )}
@@ -186,6 +194,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
             onSaveInspection={onSaveInspection}
+            onAddSection={onAddSection}
           />
         </>
       )}

@@ -13,13 +13,16 @@ interface MobileLayoutTeamItemModel {
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onInputChange(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
-  onClickOneActionNotes(item: inspectionTemplateItemModel):void;
+  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
+  onAddSection(sectionId: string): void;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -29,9 +32,20 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   sectionItems,
   onSectionCollapseToggle,
   onInputChange,
-  onClickOneActionNotes
+  onClickOneActionNotes,
+  onAddSection
 }) => {
   const listItems = sectionItems.get(section.id);
+
+  const onClickAdd = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddSection(sectionId);
+  };
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
@@ -54,16 +68,25 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         <div className={clsx(styles.section__list__item__header__content)}>
           {section.title}
           <div className={clsx(styles.section__list__item__footer)}>
-            {section.added_multi_section && section.title !== nextSectionTitle && (
+            {section.section_type === 'multi' && (
               <div className={styles.section__list__item__action}>
-                <button className={styles['section__list__item__button--line']}>
-                  Add
-                </button>
-                <button
-                  className={styles['section__list__item__button--redOutline']}
-                >
-                  Remove
-                </button>
+                {section.title !== nextSectionTitle && (
+                  <button
+                    className={styles['section__list__item__button--line']}
+                    onClick={(e) => onClickAdd(e, section.id)}
+                  >
+                    Add
+                  </button>
+                )}
+                {section.added_multi_section && (
+                  <button
+                    className={
+                      styles['section__list__item__button--redOutline']
+                    }
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             )}
             <span>
