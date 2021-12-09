@@ -15,6 +15,7 @@ interface useItemUpdateResult {
     itemId: string,
     notes: string
   ): inspectionTemplateUpdateModel;
+  addSection(sectionId: string): inspectionTemplateUpdateModel;
 }
 
 export default function useInspectionItemUpdate(
@@ -46,9 +47,15 @@ export default function useInspectionItemUpdate(
       items: { [itemId]: { mainInputNotes: notes } }
     });
 
+  const addSection = (sectionId: string): inspectionTemplateUpdateModel =>
+    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
+      sections: { new: { cloneOf: sectionId } }
+    });
+
   return {
     updateMainInputSelection,
     updateMainInputNotes,
-    updateTextInputValue
+    updateTextInputValue,
+    addSection
   };
 }

@@ -2,6 +2,7 @@ import pipe from '../pipe';
 import copySectionsItems from './copySectionsItems';
 import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 import inspectionTemplateSectionModel from '../../models/inspectionTemplateSection';
+import deepmerge from '../deepmerge';
 import uuid from '../uuidv4'; // eslint-disable-line
 
 export interface userUpdate {
@@ -105,7 +106,11 @@ function setAddedMultiSection(
   result.sections[newSectionId] = clonedSection; // Add a new section at random ID
 
   // Increment section indexes
-  const updatedSections = updateSectionIndexes(sections, clonedSection.index);
+  const mergedSections = deepmerge(sections, previousSections);
+  const updatedSections = updateSectionIndexes(
+    mergedSections,
+    clonedSection.index
+  );
 
   // Merge section index updates into results
   Object.keys(updatedSections).forEach((id) => {
@@ -167,6 +172,7 @@ function setRemovedMultiSection(
   result.sections = result.sections || {};
 
   // Decrement section indexes
+
   const updatedSections = updateSectionIndexes(sections, sectionToRemove.index);
 
   // Merge section index updates into results

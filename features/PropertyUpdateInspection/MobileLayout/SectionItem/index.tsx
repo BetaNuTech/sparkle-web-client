@@ -17,13 +17,16 @@ interface Props {
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onInputChange(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
+  onAddSection(sectionId: string): void;
 }
 
 const SectionItem: FunctionComponent<Props> = ({
@@ -33,7 +36,8 @@ const SectionItem: FunctionComponent<Props> = ({
   onSectionCollapseToggle,
   onInputChange,
   onClickOneActionNotes,
-  sectionItems
+  sectionItems,
+  onAddSection
 }) => {
   const listItems = sectionItems.get(section.id);
   const onListHeaderClick = (event) => {
@@ -43,6 +47,16 @@ const SectionItem: FunctionComponent<Props> = ({
       onSectionCollapseToggle(section);
     }
   };
+
+  const onClickAdd = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddSection(sectionId);
+  };
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li className={styles.section__list__item} onClick={onListHeaderClick}>
@@ -65,12 +79,21 @@ const SectionItem: FunctionComponent<Props> = ({
             )}
           </span>
         </div>
-        {section.added_multi_section && section.title !== nextSectionTitle && (
+        {section.section_type === 'multi' && (
           <footer className={styles.section__list__item__footer}>
-            <button className={styles.section__list__item__button}>Add</button>
-            <button className={styles['section__list__item__button--red']}>
-              Remove
-            </button>
+            {section.title !== nextSectionTitle && (
+              <button
+                className={styles.section__list__item__button}
+                onClick={(e) => onClickAdd(e, section.id)}
+              >
+                Add
+              </button>
+            )}
+            {section.added_multi_section && (
+              <button className={styles['section__list__item__button--red']}>
+                Remove
+              </button>
+            )}
           </footer>
         )}
       </header>

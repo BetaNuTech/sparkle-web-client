@@ -10,13 +10,16 @@ interface Props {
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onInputChange(
-    event: React.MouseEvent<HTMLLIElement> | React.ChangeEvent<HTMLInputElement>,
+    event:
+      | React.MouseEvent<HTMLLIElement>
+      | React.ChangeEvent<HTMLInputElement>,
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
+  onAddSection(sectionId: string): void;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -27,7 +30,8 @@ const Sections: FunctionComponent<Props> = ({
   onInputChange,
   onClickOneActionNotes,
   sectionItems,
-  forceVisible
+  forceVisible,
+  onAddSection
 }) => {
   if (!sections || !sections.length) {
     return null;
@@ -47,6 +51,7 @@ const Sections: FunctionComponent<Props> = ({
           onInputChange={onInputChange}
           onClickOneActionNotes={onClickOneActionNotes}
           sectionItems={sectionItems}
+          onAddSection={onAddSection}
         />
       ))}
     </ul>
