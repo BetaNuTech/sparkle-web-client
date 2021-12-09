@@ -467,7 +467,7 @@ const JobForm: FunctionComponent<Props> = ({
 
   const canAuthorize = canAuthorizeJob(jobId, user, property.id, job, bids);
 
-  const canExpedite = canExpediteJob(jobId, user, job);
+  const canExpedite = canExpediteJob(jobId, user, job, bidsRequired);
 
   // Setup form submissions
   const {

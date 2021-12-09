@@ -739,6 +739,33 @@ describe('Unit | Features | Job Edit | Form', () => {
     // Check if the button is not present
     expect(btnExpedite).toBeNull();
   });
+  it('should not show expedite button if bid requirements are met ', () => {
+    const props = {
+      job: approvedImprovementJob,
+      property: fullProperty,
+      apiState,
+      isOnline: true,
+      isStaging: true,
+      isNewJob: false,
+      user: { ...user },
+      bids,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      toggleNavOpen: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      postJobCreate: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      putJobUpdate: () => {}
+    };
+
+    render(<JobForm {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const btnExpedite = screen.queryByTestId('job-form-expedite');
+
+    // Check if the button is not present
+    expect(btnExpedite).toBeNull();
+  });
 
   it('should request to transition job to approved when approve button selected', async () => {
     const putReq = sinon.spy();
@@ -825,7 +852,7 @@ describe('Unit | Features | Job Edit | Form', () => {
       isStaging: true,
       isNewJob: false,
       user: { ...user },
-      bids,
+      bids: [{ ...approvedBid }],
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
