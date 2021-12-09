@@ -218,12 +218,14 @@ export const canApproveJob = (
 export const canExpediteJob = (
   jobId: string,
   user: userModel,
-  job: jobModel
+  job: jobModel,
+  bidsRequired: number
 ): boolean =>
   jobId !== 'new' &&
   job.state === 'approved' &&
   user.admin &&
-  job.authorizedRules !== 'expedite';
+  job.authorizedRules !== 'expedite' &&
+  bidsRequired > 0;
 
 // Checks user can approve the bid
 export const canApproveBid = (

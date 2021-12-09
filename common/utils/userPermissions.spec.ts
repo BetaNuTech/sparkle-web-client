@@ -327,7 +327,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedImprovementJob,
         bids: [{} as bidModel],
         expected: false,
-        msg: 'does not allow team member to authorize job without qualifying bids'
+        msg:
+          'does not allow team member to authorize job without qualifying bids'
       },
       {
         jobId: 'job-1',
@@ -344,7 +345,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedExpeditedMaintenanceJob,
         bids: [{ state: 'approved' } as bidModel],
         expected: false,
-        msg: 'rejects team member from authorizing expedited job with single approved bid'
+        msg:
+          'rejects team member from authorizing expedited job with single approved bid'
       },
       {
         jobId: 'job-1',
@@ -352,7 +354,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedImprovementJob,
         bids: [{ state: 'approved' } as bidModel],
         expected: false,
-        msg: 'rejects team member from authorizing small job with single approved bid'
+        msg:
+          'rejects team member from authorizing small job with single approved bid'
       },
       {
         jobId: 'job-1',
@@ -363,7 +366,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: true,
-        msg: 'allows team member to authorize small job when enough bids exist and one is approved'
+        msg:
+          'allows team member to authorize small job when enough bids exist and one is approved'
       },
       {
         jobId: 'job-1',
@@ -375,7 +379,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg: 'rejects team member from authorize large job when enough bids exist and one is approved'
+        msg:
+          'rejects team member from authorize large job when enough bids exist and one is approved'
       },
       {
         jobId: 'job-1',
@@ -387,7 +392,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: true,
-        msg: 'allows admin to authorize large job that meets all authorize conditions'
+        msg:
+          'allows admin to authorize large job that meets all authorize conditions'
       },
       {
         jobId: 'job-1',
@@ -399,7 +405,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg: 'does not allow corporate to authorize large job that meets all authorize conditions'
+        msg:
+          'does not allow corporate to authorize large job that meets all authorize conditions'
       },
       {
         jobId: 'job-1',
@@ -410,7 +417,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg: 'allows corporate to authorize small job that meets all authorize conditions'
+        msg:
+          'allows corporate to authorize small job that meets all authorize conditions'
       },
       {
         jobId: 'job-1',
@@ -421,7 +429,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg: 'allows property level user to authorize small pm job that meets all authorize conditions'
+        msg:
+          'allows property level user to authorize small pm job that meets all authorize conditions'
       }
     ];
 
@@ -439,6 +448,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         user: admin,
         job: {} as jobModel,
         expected: false,
+        bidsRequired: 0,
         msg: 'does not allow admin to expedite new job'
       },
       {
@@ -446,6 +456,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         user: teamMember,
         job: approvedImprovementJob,
         expected: false,
+        bidsRequired: 0,
         msg: 'does not allow team member to expedite job'
       },
       {
@@ -453,6 +464,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         user: admin,
         job: openImprovementJob,
         expected: false,
+        bidsRequired: 0,
         msg: 'does not allow admin to expedite open job'
       },
       {
@@ -460,6 +472,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         user: admin,
         job: approvedExpeditedMaintenanceJob,
         expected: false,
+        bidsRequired: 0,
         msg: 'does not allow admin to expedite, previously expedited, job'
       },
       {
@@ -467,12 +480,14 @@ describe('Unit | Common | Utils | User Permissions', () => {
         user: teamLead,
         job: approvedExpeditedMaintenanceJob,
         expected: false,
+        bidsRequired: 0,
         msg: 'does not allow team lead to expedite, previously expedited, job'
       },
       {
         jobId: 'job-1',
         user: teamMember,
         job: approvedExpeditedMaintenanceJob,
+        bidsRequired: 0,
         expected: false,
         msg: 'does not allow team member to expedite, previously expedited, job'
       },
@@ -480,14 +495,23 @@ describe('Unit | Common | Utils | User Permissions', () => {
         jobId: 'job-1',
         user: admin,
         job: approvedImprovementJob,
+        bidsRequired: 1,
         expected: true,
+        msg: 'allow admin to expedite approved job'
+      },
+      {
+        jobId: 'job-1',
+        user: admin,
+        job: approvedImprovementJob,
+        bidsRequired: 0,
+        expected: false,
         msg: 'allow admin to expedite approved job'
       }
     ];
 
     for (let i = 0; i < data.length; i += 1) {
-      const { jobId, user, job, expected, msg } = data[i];
-      const actual = util.canExpediteJob(jobId, user, job);
+      const { jobId, user, job, expected, msg, bidsRequired } = data[i];
+      const actual = util.canExpediteJob(jobId, user, job, bidsRequired);
       expect(actual, msg).toEqual(expected);
     }
   });
