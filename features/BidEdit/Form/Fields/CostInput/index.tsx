@@ -57,11 +57,6 @@ const CostInput: FunctionComponent<Props> = ({
           Range
         </button>
       </div>
-      <input
-        type="hidden"
-        defaultValue={isFixedCostType ? 'fixed' : 'range'}
-        {...register('cost')}
-      />
     </div>
 
     <div className={styles.form__row}>

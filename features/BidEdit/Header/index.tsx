@@ -5,13 +5,12 @@ import propertyModel from '../../../common/models/property';
 import jobModel from '../../../common/models/job';
 import bidModel from '../../../common/models/bid';
 import DesktopHeader from '../../../common/DesktopHeader';
-import { BidApiResult } from '../hooks/useBidForm';
 import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 
 interface Props {
   property: propertyModel;
-  apiState: BidApiResult;
+  isLoading: boolean;
   job: jobModel;
   isNewBid: boolean;
   approvedCompletedBid: bidModel;
@@ -34,7 +33,7 @@ const Header: FunctionComponent<Props> = ({
   isNewBid,
   bidLink,
   isOnline,
-  apiState,
+  isLoading,
   showSaveButton,
   approvedCompletedBid,
   isApprovedOrComplete,
@@ -66,7 +65,7 @@ const Header: FunctionComponent<Props> = ({
             <button
               type="button"
               className={clsx(parentStyles.button__submit)}
-              disabled={apiState.isLoading || !isOnline || !canApproveEnabled}
+              disabled={isLoading || !isOnline || !canApproveEnabled}
               data-testid="bidedit-header-approve"
               onClick={() => onSubmit('approved')}
             >
@@ -80,7 +79,7 @@ const Header: FunctionComponent<Props> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__cancel, '-c-info')}
-            disabled={apiState.isLoading || !isOnline}
+            disabled={isLoading || !isOnline}
             data-testid="bidedit-header-complete"
             onClick={() => onSubmit('complete')}
           >
@@ -93,7 +92,7 @@ const Header: FunctionComponent<Props> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__cancel, '-c-warning')}
-            disabled={apiState.isLoading || !isOnline}
+            disabled={isLoading || !isOnline}
             data-testid="bidedit-header-incomplete"
             onClick={() => onSubmit('incomplete')}
           >
@@ -106,7 +105,7 @@ const Header: FunctionComponent<Props> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__cancel, '-c-alert')}
-            disabled={apiState.isLoading || !isOnline}
+            disabled={isLoading || !isOnline}
             data-testid="bidedit-header-reject"
             onClick={() => onSubmit('rejected')}
           >
@@ -119,7 +118,7 @@ const Header: FunctionComponent<Props> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__cancel, '-c-info')}
-            disabled={apiState.isLoading || !isOnline}
+            disabled={isLoading || !isOnline}
             data-testid="bidedit-header-reopen"
             onClick={() => onSubmit('reopen')}
           >
@@ -132,7 +131,7 @@ const Header: FunctionComponent<Props> = ({
           <button
             type="button"
             className={clsx(parentStyles.button__submit)}
-            disabled={apiState.isLoading || !isOnline}
+            disabled={isLoading || !isOnline}
             data-testid="bidedit-header-submit"
             onClick={() => onSubmit('save')}
           >

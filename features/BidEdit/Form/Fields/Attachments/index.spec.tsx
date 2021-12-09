@@ -22,7 +22,6 @@ describe('Unit | Features | Bid Edit | Form | Attachments', () => {
     const onFileChange = jest.fn();
 
     const props = {
-      onUploadClick: jest.fn(),
       isUploadingFile: false,
       attachments: [],
       openAttachmentDeletePrompt: jest.fn(),
@@ -42,25 +41,4 @@ describe('Unit | Features | Bid Edit | Form | Attachments', () => {
     expect(onFileChange).toHaveBeenCalled();
   });
 
-  it('should invoke upload on change upload button click', async () => {
-    const onUploadClick = jest.fn();
-
-    const props = {
-      isUploadingFile: false,
-      onFileChange: jest.fn(),
-      attachments: [],
-      openAttachmentDeletePrompt: jest.fn(),
-      isNewBid: false,
-      onUploadClick
-    };
-
-    render(<Attachments {...props} />);
-
-    await act(async () => {
-      const btnUpload = screen.queryByTestId('input-file-attachment-upload');
-
-      await fireEvent.click(btnUpload);
-    });
-    expect(onUploadClick).toHaveBeenCalled();
-  });
 });

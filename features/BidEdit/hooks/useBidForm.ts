@@ -3,16 +3,15 @@ import Router from 'next/router';
 import bidsApi from '../../../common/services/api/bids';
 import bidModel from '../../../common/models/bid';
 import errorReports from '../../../common/services/api/errorReports';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+
+import ErrorBadRequest, {
+  BadRequestItem
+} from '../../../common/models/errors/badRequest';
 
 const PREFIX = 'features: EditBid: hooks: useBidForm:';
-export interface BidApiResult {
-  isLoading: boolean;
-  statusCode: number;
-  response: any;
-}
 
 interface useBidFormResult {
-  apiState: BidApiResult;
   postBidCreate(propertyId: string, jobId: string, bid: bidModel): void;
   putBidUpdate(
     propertyId: string,
@@ -20,7 +19,19 @@ interface useBidFormResult {
     bidId: string,
     bid: bidModel
   ): void;
-  error: Error;
+  onPublish(
+    data: bidModel,
+    propertyId: string,
+    jobId: string,
+    bidId: string,
+    action: string,
+    isNewBid: boolean
+  ): void;
+  errors: BadRequestItem[];
+  isLoading: boolean;
+  formFieldsError: Record<string, any>;
+  generalFormErrors: Array<string>;
+  bid: bidModel;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -29,80 +40,83 @@ export default function useBidForm(
   bidApi: bidModel,
   sendNotification: userNotifications
 ): useBidFormResult {
-  const [apiState, setApiState] = useState({
+  const [formState, setFormState] = useState({
     isLoading: false,
-    statusCode: 0,
-    response: null,
-    bid: JSON.stringify(bidApi)
+    bid: null
   });
 
-  const [error, setError] = useState(null);
+  const [errors, setErrors] = useState<BadRequestItem[]>([]);
+
+  const handleSuccessResponse = (
+    bidId: string,
+    propertyId: string,
+    jobId: string,
+    bid: bidModel
+  ) => {
+    // Show success notification for creating or updating a bid
+    sendNotification(
+      bidId === 'new'
+        ? 'Create the bid successfully'
+        : `${bid.vendor} successfully updated`,
+      {
+        type: 'success'
+      }
+    );
+    if (bidId === 'new' && bid) {
+      Router.push(`/properties/${propertyId}/jobs/${jobId}/bids/${bid.id}/`);
+    }
+  };
+
+  const handleErrorResponse = (apiError: Error, bidId: string) => {
+    if (apiError instanceof ErrorForbidden) {
+      // User not allowed to create or update job
+      sendNotification(
+        `You are not allowed to ${
+          bidId === 'new' ? 'create' : 'update'
+        } this bid.`,
+        { type: 'error' }
+      );
+    } else if (apiError instanceof ErrorBadRequest) {
+      setErrors(apiError.errors);
+    } else {
+      // User not allowed to create or update inspection
+      sendNotification(
+        'Unexpected error. Please try again, or contact an admin.',
+        {
+          type: 'error'
+        }
+      );
+      // Log issue and send error report
+      // of user's missing properties
+      // eslint-disable-next-line no-case-declarations
+      const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${apiError}`);
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+  };
 
   const postBidCreate = async (
     propertyId: string,
     jobId: string,
     bid: bidModel
   ) => {
-    setApiState({
+    setFormState({
       isLoading: true,
-      statusCode: 0,
-      response: null,
-      bid: JSON.stringify(bid)
+      bid: null
     });
+    setErrors([]);
 
-    let res = null;
-    let wrappedErr = null;
+    let bidCreate: bidModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      res = await bidsApi.createNewBid(propertyId, jobId, bid);
+      bidCreate = await bidsApi.createNewBid(propertyId, jobId, bid);
+      handleSuccessResponse('new', propertyId, jobId, bidCreate);
     } catch (err) {
-      wrappedErr = Error(`${PREFIX} postBidCreate: request failed: ${err}`);
-      setError(wrappedErr);
+      handleErrorResponse(err, 'new');
     }
-
-    const statusCode: number = res && res.status ? res.status : 0;
-
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (err) {
-      wrappedErr = Error(
-        `${PREFIX} postBidCreate: failed to parse JSON: ${err}`
-      );
-      setError(wrappedErr);
-    }
-
-    // Send success notification and redirect to update form
-    if (statusCode === 201 && json && json.data && json.data.id) {
-      sendNotification('Created the bid successfully', {
-        type: 'success'
-      });
-      Router.push(
-        `/properties/${propertyId}/jobs/${jobId}/bids/${json.data.id}/`
-      );
-    }
-
-    // Send permissions error notification
-    if (statusCode === 403) {
-      sendNotification('You are not allowed to create this bid.', {
-        type: 'error'
-      });
-    }
-
-    // Send server error notification & report
-    if (statusCode === 500) {
-      sendNotification('Please try again, or contact an admin.', {
-        type: 'error'
-      });
-      // eslint-disable-next-line
-      errorReports.send(wrappedErr);
-    }
-
-    setApiState({
-      statusCode,
+    setFormState({
       isLoading: false,
-      response: json,
-      bid: JSON.stringify(bid)
+      bid: bidCreate
     });
   };
 
@@ -112,93 +126,99 @@ export default function useBidForm(
     bidId: string,
     bid: bidModel
   ) => {
-    setApiState({
+    setFormState({
       isLoading: true,
-      statusCode: 0,
-      response: null,
-      bid: JSON.stringify(bid)
+      bid: null
     });
-
-    let res = null;
-    let wrappedErr = null;
+    setErrors([]);
+    let bidUpdate: bidModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      res = await bidsApi.updateBid(propertyId, jobId, bidId, bid);
+      bidUpdate = await bidsApi.updateBid(propertyId, jobId, bidId, bid);
+      handleSuccessResponse(bidId, propertyId, jobId, bidUpdate);
     } catch (err) {
-      wrappedErr = Error(`${PREFIX} putBidUpdate: request failed: ${err}`);
-      setError(wrappedErr);
+      handleErrorResponse(err, 'new');
     }
 
-    const statusCode: number = res && res.status ? res.status : 0;
-
-    let json = null;
-    try {
-      json = await res.json();
-    } catch (err) {
-      wrappedErr = Error(
-        `${PREFIX} putBidUpdate: failed to parse response JSON: ${err}`
-      );
-      setError(wrappedErr);
-    }
-
-    // Send success notification
-    if (statusCode === 201 && json && json.data && json.data.attributes) {
-      sendNotification(`${json.data.attributes.vendor} successfully updated`, {
-        type: 'success'
-      });
-    }
-
-    // Send unfound error and redirect
-    if (statusCode === 404) {
-      sendNotification('Bid does not exist.', {
-        type: 'error'
-      });
-      Router.push(`/properties/${propertyId}/jobs/${jobId}/bids/`);
-    }
-
-    // Send permissions error notification
-    if (statusCode === 403) {
-      sendNotification('You are not allowed to update this bid.', {
-        type: 'error'
-      });
-    }
-
-    // Send update conflict error notification
-    if (statusCode === 409) {
-      sendNotification('Could not update bid, please try again.', {
-        type: 'error'
-      });
-    }
-
-    // Send server error notification & report
-    if (statusCode === 500) {
-      sendNotification('Please try again, or contact an admin.', {
-        type: 'error'
-      });
-      // eslint-disable-next-line
-      errorReports.send(wrappedErr);
-    }
-
-    setApiState({
-      statusCode,
+    setFormState({
       isLoading: false,
-      response: json,
-      bid: JSON.stringify(bid)
+      bid: bidUpdate
     });
   };
 
-  if (
-    !apiState.isLoading &&
-    ![400, 409].includes(apiState.statusCode) &&
-    apiState.bid !== JSON.stringify(bidApi)
-  ) {
-    setApiState({
-      isLoading: false,
-      statusCode: 0,
-      response: null,
-      bid: JSON.stringify(bidApi)
+  const onPublish = (data, propertyId, jobId, bidId, action, isNewBid) => {
+    const formBid = {
+      ...data
+    } as bidModel;
+
+    switch (action) {
+      case 'approved':
+      case 'rejected':
+      case 'incomplete':
+      case 'complete':
+        formBid.state = action;
+        break;
+      case 'reopen':
+        formBid.state = 'open';
+        break;
+      default:
+        break;
+    }
+
+    if (isNewBid) {
+      // Create bid request
+      postBidCreate(propertyId, jobId, formBid);
+    } else {
+      // Update existing bid
+      putBidUpdate(propertyId, jobId, bidId, formBid);
+    }
+  };
+
+  const formInputs = [
+    'vendor',
+    'costMin',
+    'costMax',
+    'startAt',
+    'completeAt',
+    'vendorW9',
+    'vendorInsurance',
+    'vendorLicense'
+  ];
+  // Error object which can be there after submitting form
+  const formFieldsError = {
+    vendor: '',
+    costMin: '',
+    costMax: '',
+    startAt: '',
+    completeAt: '',
+    vendorW9: '',
+    vendorInsurance: '',
+    vendorLicense: ''
+  };
+
+  // Check if we have error then find all defined keys in @formInput variable
+  // Otherwise push in @filteredApiErrors to show them in list of errors
+  const filteredApiErrors = [];
+  if (errors) {
+    errors.forEach((errData) => {
+      if (errData.name && formInputs.includes(errData.name)) {
+        formFieldsError[errData.name] = errData.detail;
+      } else {
+        filteredApiErrors.push(errData);
+      }
     });
   }
-
-  return { apiState, postBidCreate, putBidUpdate, error };
+  // Extract the message
+  const generalFormErrors =
+    errors.length > 0 ? errors.map((e) => e.detail) : [];
+  return {
+    isLoading: formState.isLoading,
+    bid: formState.bid,
+    postBidCreate,
+    putBidUpdate,
+    onPublish,
+    errors,
+    formFieldsError,
+    generalFormErrors
+  };
 }
