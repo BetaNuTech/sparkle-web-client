@@ -25,6 +25,7 @@ import uploadAttachmentService from '../../../../features/BidEdit/services/uploa
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 import { admin } from '../../../../__mocks__/users';
+import ErrorBadRequest from '../../../../common/models/errors/badRequest';
 
 const IS_ONLINE = true;
 
@@ -113,13 +114,9 @@ describe('Integration | Features | Bid Edit', () => {
       }
     );
 
-    const postReq = sinon.stub(bidServiceApi, 'createNewBid').resolves({
-      status: 201,
-      json: () =>
-        Promise.resolve({
-          data: { id: 'test' }
-        })
-    });
+    const postReq = sinon
+      .stub(bidServiceApi, 'createNewBid')
+      .resolves({ id: 'test' });
     const redirected = sinon.stub(Router, 'push').returns();
 
     // Enter vendor name & submit
@@ -347,24 +344,23 @@ describe('Integration | Features | Bid Edit', () => {
 
     const btnApprove = screen.queryByTestId('bid-form-approve');
 
-    const postReq = sinon.stub(bidServiceApi, 'updateBid').resolves({
-      status: 400,
-      json: () =>
-        Promise.resolve({
-          errors: [
-            {
-              title: 'bid requires approval of vendor W9',
-              detail: 'Requires Vendor W to approve bid',
-              source: { pointer: 'vendorW9' }
-            },
-            {
-              title: 'bid requires approval of vendor insurance',
-              detail: 'Requires Vendor Insurance to approve bid',
-              source: { pointer: 'vendorInsurance' }
-            }
-          ]
-        })
-    });
+    const badRequest = new ErrorBadRequest(
+      'services: api: bids: fix request errors'
+    );
+    badRequest.addErrors([
+      {
+        title: 'bid requires approval of vendor W9',
+        detail: 'Requires Vendor W to approve bid',
+        source: { pointer: 'vendorW9' }
+      },
+      {
+        title: 'bid requires approval of vendor insurance',
+        detail: 'Requires Vendor Insurance to approve bid',
+        source: { pointer: 'vendorInsurance' }
+      }
+    ]);
+
+    const postReq = sinon.stub(bidServiceApi, 'updateBid').rejects(badRequest);
 
     act(() => {
       userEvent.click(btnApprove);

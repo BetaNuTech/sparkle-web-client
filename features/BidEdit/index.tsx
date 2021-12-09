@@ -1,20 +1,20 @@
-import { useFirestore } from 'reactfire';
 import { ChangeEvent, FunctionComponent, useState } from 'react';
+import { useFirestore } from 'reactfire';
 import propertyModel from '../../common/models/property';
 import userModel from '../../common/models/user';
 import jobModel from '../../common/models/job';
 import bidModel from '../../common/models/bid';
-import useStorage, { StorageResult } from '../../common/hooks/useStorage';
 import attachmentModel from '../../common/models/attachment';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications';
-import errorReports from '../../common/services/api/errorReports';
-import bidsDb from '../../common/services/firestore/bids';
-import storage from '../../common/services/storage';
+import useBidApprovedCompleted from '../../common/hooks/useBidApprovedCompleted';
+
+import { canApproveBid } from '../../common/utils/userPermissions';
 import useBidForm from './hooks/useBidForm';
-import uploadAttachmentService from './services/uploadAttachment';
 import useDeleteAttachment from './hooks/useDeleteAttachment';
+import useUploadAttachment from './hooks/useUploadAttachment';
 import BidForm from './Form';
+import DeleteAttachmentPrompt from './DeleteAttachmentPrompt';
 
 interface Props {
   isNewBid: boolean;
@@ -28,8 +28,6 @@ interface Props {
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
 }
-
-const PREFIX = 'feature: BidEdit:';
 
 const BidEdit: FunctionComponent<Props> = ({
   user,
@@ -45,134 +43,98 @@ const BidEdit: FunctionComponent<Props> = ({
   const bidId = bid.id;
   const propertyId = property.id;
   const jobId = job.id;
-  const db = useFirestore();
+
+  const fireStore = useFirestore();
 
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
 
   // Get current bid from bids array
-  const { apiState, postBidCreate, putBidUpdate } = useBidForm(
+  const { isLoading, onPublish, formFieldsError, generalFormErrors } =
+    useBidForm(bid, sendNotification);
+  const { isUploading, onUploadFile } = useUploadAttachment(
+    fireStore,
     bid,
     sendNotification
   );
-  const { uploadFileToStorage } = useStorage();
-
-  const [uploadState, setUploadState] = useState(false);
   const [isDeleteAttachmentPromptVisible, setDeleteAttachmentPromptVisible] =
     useState(false);
-  const [deleteAtachmentLoading, setDeleteAtachmentLoading] = useState(false);
 
-  const { queueAttachmentForDelete, queuedAttachmentForDeletion } =
-    useDeleteAttachment();
+  const {
+    queueAttachmentForDelete,
+    queuedAttachmentForDeletion,
+    onConfirmAttachmentDelete,
+    isDeleting
+  } = useDeleteAttachment(fireStore, sendNotification);
 
-  const onFileChange = async (ev: ChangeEvent<HTMLInputElement>) => {
-    const fileEl = ev.target;
-    if (!fileEl.files || fileEl.files.length === 0) {
-      return;
-    }
-    // Set loading state
-    setUploadState(true);
-
-    // Get the file from files array
-    const file = fileEl.files[0];
-    let result: StorageResult = null;
-    try {
-      // Upload file to the firebase storage
-      result = await uploadFileToStorage(
-        `/properties/${propertyId}/jobs/${jobId}/bids/${bidId}/attachments/${file.name}`,
-        file
-      );
-    } catch (err) {
-      const wrappedErr = Error(
-        `${PREFIX} onFileChange: failed to upload to storage: ${err}`
-      );
-      // Send notification if storage api fails
-      sendNotification(
-        'Upload failed, please try again or upload a different file',
-        { type: 'error' }
-      );
-      // Also send the error report to backend
-      // eslint-disable-next-line import/no-named-as-default-member
-      errorReports.send(wrappedErr);
-      return setUploadState(false);
-    }
-
-    // Perform the updation on bid record for new attachment uploaded
-    try {
-      await uploadAttachmentService.updateBidAttachment(db, bid, file, result);
-    } catch (err) {
-      // Handle error
-      const wrappedErr = Error(
-        `${PREFIX} onFileChange: failed to update bid attachment: ${err}`
-      );
-      sendNotification('Upload failed, could not update attachment record', {
-        type: 'error'
-      });
-      errorReports.send(wrappedErr); // eslint-disable-line
-    }
-    // Update loading state to false
-    setUploadState(false);
+  const onFileChange = (ev: ChangeEvent<HTMLInputElement>) => {
+    onUploadFile(ev, bidId, propertyId, jobId);
   };
 
-  const onConfirmAttachmentDelete = async (attachment: attachmentModel) => {
-    setDeleteAtachmentLoading(true);
-
-    try {
-      await storage.deleteFile(attachment.storageRef);
-    } catch (err) {
-      // Handle error
-      const wrappedErr = Error(
-        `${PREFIX} confirmAttachmentDelete: failed to remove file from storage: ${err}`
-      );
-      sendNotification('Failed to delete attachment, please try again', {
-        type: 'error'
-      });
-      errorReports.send(wrappedErr); // eslint-disable-line
-      return setDeleteAtachmentLoading(false);
-    }
-
-    try {
-      await bidsDb.removeBidAttachment(db, bidId, attachment);
-    } catch (err) {
-      // Handle error
-      const wrappedErr = Error(
-        `${PREFIX} confirmAttachmentDelete: failed to update bid: ${err}`
-      );
-      sendNotification(
-        'Attachment removed, but an unexpected error occurred.  Our team has been notified of this issue.',
-        {
-          type: 'error'
-        }
-      );
-      errorReports.send(wrappedErr); // eslint-disable-line
-    }
-
-    setDeleteAtachmentLoading(false);
+  const openAttachmentDeletePrompt = (attachment: attachmentModel) => {
+    queueAttachmentForDelete(attachment);
+    setDeleteAttachmentPromptVisible(true);
   };
+
+  const closeAttachmentDeletePrompt = () => {
+    setDeleteAttachmentPromptVisible(false);
+    queueAttachmentForDelete(null);
+  };
+
+  // Should not be able to mark complete if the job is not in authroized state
+  const canMarkComplete =
+    !isNewBid && bid.state === 'approved' && job.state === 'authorized';
+  const canReopen = !isNewBid && ['rejected', 'incomplete'].includes(bid.state);
+  const canReject = !isNewBid && bid.state === 'approved';
+  const canMarkIncomplete = !isNewBid && bid.state === 'approved';
+  const canApprove = canApproveBid(isNewBid, user, property.id, job, bid);
+
+  const { approvedCompletedBid } = useBidApprovedCompleted(otherBids);
+
+  const isApprovedOrComplete =
+    !isNewBid && ['approved', 'complete'].includes(bid.state);
+
+  const isBidComplete = !isNewBid && bid.state === 'complete';
 
   return (
-    <BidForm
-      user={user}
-      property={property}
-      isOnline={isOnline}
-      isStaging={isStaging}
-      toggleNavOpen={toggleNavOpen}
-      job={job}
-      bid={bid}
-      otherBids={otherBids}
-      isNewBid={isNewBid}
-      apiState={apiState}
-      postBidCreate={postBidCreate}
-      putBidUpdate={putBidUpdate}
-      onFileChange={onFileChange}
-      uploadState={uploadState}
-      setDeleteAttachmentPromptVisible={setDeleteAttachmentPromptVisible}
-      isDeleteAttachmentPromptVisible={isDeleteAttachmentPromptVisible}
-      queueAttachmentForDelete={queueAttachmentForDelete}
-      queuedAttachmentForDeletion={queuedAttachmentForDeletion}
-      confirmAttachmentDelete={onConfirmAttachmentDelete}
-      deleteAtachmentLoading={deleteAtachmentLoading}
-    />
+    <>
+      <BidForm
+        property={property}
+        isOnline={isOnline}
+        isStaging={isStaging}
+        toggleNavOpen={toggleNavOpen}
+        job={job}
+        bid={bid}
+        otherBids={otherBids}
+        isNewBid={isNewBid}
+        formFieldsError={formFieldsError}
+        generalFormErrors={generalFormErrors}
+        isLoading={isLoading}
+        onPublish={onPublish}
+        onFileChange={onFileChange}
+        uploadState={isUploading}
+        deleteAtachmentLoading={isDeleting}
+        canMarkComplete={canMarkComplete}
+        canReopen={canReopen}
+        canReject={canReject}
+        canMarkIncomplete={canMarkIncomplete}
+        approvedCompletedBid={approvedCompletedBid}
+        isApprovedOrComplete={isApprovedOrComplete}
+        isBidComplete={isBidComplete}
+        canApprove={canApprove}
+        openAttachmentDeletePrompt={openAttachmentDeletePrompt}
+      />
+      <DeleteAttachmentPrompt
+        fileName={
+          queuedAttachmentForDeletion && queuedAttachmentForDeletion.name
+        }
+        onConfirm={() =>
+          onConfirmAttachmentDelete(bid.id, queuedAttachmentForDeletion)
+        }
+        isVisible={isDeleteAttachmentPromptVisible}
+        onClose={closeAttachmentDeletePrompt}
+      />
+    </>
   );
 };
 

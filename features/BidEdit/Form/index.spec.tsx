@@ -29,10 +29,15 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-const apiState = {
-  isLoading: false,
-  statusCode: 0,
-  response: {}
+const formFieldsError = {
+  vendor: '',
+  costMin: '',
+  costMax: '',
+  startAt: '',
+  completeAt: '',
+  vendorW9: '',
+  vendorInsurance: '',
+  vendorLicense: ''
 };
 
 describe('Unit | Features | Bid Edit | Form', () => {
@@ -40,7 +45,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -49,9 +55,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -64,7 +68,15 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -99,7 +111,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -108,9 +121,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -123,7 +134,15 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     const { container } = render(<BidEditForm {...props} />, {
@@ -154,7 +173,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -163,9 +183,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -178,7 +196,15 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     const { container } = render(<BidEditForm {...props} />, {
@@ -206,7 +232,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -215,9 +242,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -230,7 +255,15 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -257,7 +290,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -266,9 +300,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -281,7 +313,15 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -308,7 +348,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -317,9 +358,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -332,7 +371,15 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: null,
+      isApprovedOrComplete: false,
+      isBidComplete: false,
+      canApprove: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -349,7 +396,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -358,9 +406,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -373,7 +419,14 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: true,
+      canMarkIncomplete: true,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -392,7 +445,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -401,9 +455,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
+      onPublish: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -416,7 +468,14 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: true,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -430,12 +489,13 @@ describe('Unit | Features | Bid Edit | Form', () => {
   });
 
   it('should request to transition bid to complete when complete button selected', async () => {
-    const putReq = sinon.spy();
+    const publishReq = sinon.spy();
     const expected = 'complete';
     const props = {
       job: authorizedImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -444,9 +504,9 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
+      onPublish: publishReq,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: putReq,
+
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onFileChange: () => {},
       storageState: {
@@ -459,7 +519,14 @@ describe('Unit | Features | Bid Edit | Form', () => {
         fileType: null
       },
       attachmentState: { isLoading: false, error: false },
-      otherBids: []
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: true,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -472,8 +539,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     });
 
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[3] : {};
-    const actual = result.state || '';
+    const result = publishReq.called ? publishReq.getCall(0).args[4] : {};
+    const actual = result || '';
     expect(actual).toEqual(expected);
   });
 
@@ -481,7 +548,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -490,10 +558,16 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
-      otherBids: []
+      onPublish: () => {},
+      otherBids: [],
+      canMarkComplete: false,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -509,7 +583,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -518,10 +593,16 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
-      otherBids: [approvedBid]
+      onPublish: () => {},
+      otherBids: [approvedBid],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: approvedBid,
+      isApprovedOrComplete: true,
+      isBidComplete: false,
+      canApprove: false
     };
 
     render(<BidEditForm {...props} />, {
@@ -539,7 +620,8 @@ describe('Unit | Features | Bid Edit | Form', () => {
     const props = {
       job: openImprovementJob,
       property: fullProperty,
-      apiState,
+      isLoading: false,
+      formFieldsError,
       isOnline: true,
       isStaging: true,
       isNewBid: false,
@@ -548,10 +630,16 @@ describe('Unit | Features | Bid Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postBidCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putBidUpdate: () => {},
-      otherBids: []
+      onPublish: () => {},
+      otherBids: [],
+      canMarkComplete: true,
+      canReopen: false,
+      canReject: false,
+      canMarkIncomplete: false,
+      approvedCompletedBid: null,
+      isApprovedOrComplete: false,
+      isBidComplete: false,
+      canApprove: true
     };
 
     render(<BidEditForm {...props} />, {

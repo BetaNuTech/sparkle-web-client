@@ -3,6 +3,8 @@ import Router from 'next/router';
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import errorReports from '../../../common/services/api/errorReports';
+import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
 import bidsApi from '../../../common/services/api/bids';
 import bidModel from '../../../common/models/bid';
 import { openBid } from '../../../__mocks__/bids';
@@ -36,11 +38,11 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
         })
     });
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() =>
         useBidForm(openBid, STUBBED_NOTIFICATIONS)
       );
-      result.current.postBidCreate('property-1', 'job-1', {} as bidModel);
+      await result.current.postBidCreate('property-1', 'job-1', {} as bidModel);
     });
 
     const actual = createBid.called;
@@ -65,11 +67,11 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
         })
     });
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() =>
         useBidForm(openBid, STUBBED_NOTIFICATIONS)
       );
-      result.current.putBidUpdate(
+      await result.current.putBidUpdate(
         'property-1',
         'job-1',
         'bid-1',
@@ -87,19 +89,15 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
     // Stub update response
-    sinon.stub(bidsApi, 'updateBid').resolves({
-      status: 403,
-      json: () =>
-        Promise.resolve({
-          errors: []
-        })
-    });
+    sinon
+      .stub(bidsApi, 'updateBid')
+      .rejects(new ErrorForbidden('user lacks permission'));
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() =>
         useBidForm(openBid, sendNotification)
       );
-      result.current.putBidUpdate(
+      await result.current.putBidUpdate(
         'property-1',
         'job-1',
         'bid-1',
@@ -128,11 +126,11 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
         })
     });
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() =>
         useBidForm(openBid, sendNotification)
       );
-      result.current.putBidUpdate(
+      await result.current.putBidUpdate(
         'property-1',
         'job-1',
         'bid-1',
@@ -151,19 +149,13 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
     // Stub update response
-    sinon.stub(bidsApi, 'updateBid').resolves({
-      status: 500,
-      json: () =>
-        Promise.resolve({
-          errors: []
-        })
-    });
+    sinon.stub(bidsApi, 'updateBid').rejects(new ErrorServerInternal());
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() =>
         useBidForm(openBid, sendNotification)
       );
-      result.current.putBidUpdate(
+      await result.current.putBidUpdate(
         'property-1',
         'job-1',
         'bid-1',
@@ -184,19 +176,13 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
       .callsFake(() => true);
 
     // Stub update response
-    sinon.stub(bidsApi, 'updateBid').resolves({
-      status: 500,
-      json: () =>
-        Promise.resolve({
-          errors: []
-        })
-    });
+    sinon.stub(bidsApi, 'updateBid').rejects(new ErrorServerInternal());
 
-    await act(() => {
+    await act(async () => {
       const { result } = renderHook(() =>
         useBidForm(openBid, sendNotification)
       );
-      result.current.putBidUpdate(
+      await result.current.putBidUpdate(
         'property-1',
         'job-1',
         'bid-1',
@@ -205,6 +191,58 @@ describe('Unit | Features | Bid Edit | Hooks | Use Bid Form', () => {
     });
 
     const actual = sendErrorReport.called;
+    expect(actual).toEqual(expected);
+  });
+
+  test('should request to create a new bids if bid does not exist', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    sinon.stub(errorReports, 'send').callsFake(() => true);
+
+    // Stub update response
+    const spyFunc = sinon.spy(bidsApi, 'createNewBid');
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useBidForm(openBid, sendNotification)
+      );
+      await result.current.onPublish(
+        {} as bidModel,
+        'property-1',
+        'job-1',
+        'bid-1',
+        'approved',
+        true
+      );
+    });
+
+    const actual = spyFunc.called;
+    expect(actual).toEqual(expected);
+  });
+
+  test('should request to update a bid if bid already exists', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    sinon.stub(errorReports, 'send').callsFake(() => true);
+
+    // Stub update response
+    const spyFunc = sinon.spy(bidsApi, 'updateBid');
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useBidForm(openBid, sendNotification)
+      );
+      await result.current.onPublish(
+        {} as bidModel,
+        'property-1',
+        'job-1',
+        'bid-1',
+        'approved',
+        false
+      );
+    });
+
+    const actual = spyFunc.called;
     expect(actual).toEqual(expected);
   });
 });
