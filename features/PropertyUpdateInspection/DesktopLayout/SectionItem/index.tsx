@@ -23,6 +23,7 @@ interface MobileLayoutTeamItemModel {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
   onAddSection(sectionId: string): void;
+  onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -33,7 +34,8 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onSectionCollapseToggle,
   onInputChange,
   onClickOneActionNotes,
-  onAddSection
+  onAddSection,
+  onItemIsNAChange
 }) => {
   const listItems = sectionItems.get(section.id);
 
@@ -102,6 +104,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             item={item}
             onInputChange={onInputChange}
             onClickOneActionNotes={onClickOneActionNotes}
+            onItemIsNAChange={onItemIsNAChange}
           />
         ))}
       </ul>

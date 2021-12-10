@@ -20,6 +20,7 @@ interface Props {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
   onAddSection(sectionId: string): void;
+  onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -31,7 +32,8 @@ const Sections: FunctionComponent<Props> = ({
   onClickOneActionNotes,
   sectionItems,
   forceVisible,
-  onAddSection
+  onAddSection,
+  onItemIsNAChange
 }) => {
   if (!sections || !sections.length) {
     return null;
@@ -52,6 +54,7 @@ const Sections: FunctionComponent<Props> = ({
           onClickOneActionNotes={onClickOneActionNotes}
           sectionItems={sectionItems}
           onAddSection={onAddSection}
+          onItemIsNAChange={onItemIsNAChange}
         />
       ))}
     </ul>

@@ -42,6 +42,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     updateMainInputSelection,
     updateMainInputNotes,
     updateTextInputValue,
+    setItemIsNA,
     addSection
   } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
@@ -104,6 +105,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     } else {
       onMainInputChange(event, item, value);
     }
+  };
+
+  const onItemIsNAChange = (itemId: string, itemIsNA: boolean) => {
+    setLatestTemplateUpdates(setItemIsNA(itemId, itemIsNA));
   };
 
   // Add main input note updates to
@@ -175,6 +180,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onClickOneActionNotes={onClickOneActionNotes}
             onSaveInspection={onSaveInspection}
             onAddSection={onAddSection}
+            onItemIsNAChange={onItemIsNAChange}
           />
         </>
       )}
@@ -195,6 +201,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onClickOneActionNotes={onClickOneActionNotes}
             onSaveInspection={onSaveInspection}
             onAddSection={onAddSection}
+            onItemIsNAChange={onItemIsNAChange}
           />
         </>
       )}
