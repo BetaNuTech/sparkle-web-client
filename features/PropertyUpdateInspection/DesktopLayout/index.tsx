@@ -28,6 +28,7 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   hasUpdates?: boolean;
+  onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
 const DesktopLayout: FunctionComponent<Props> = ({
@@ -43,7 +44,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
   sectionItems,
   isOnline,
   hasUpdates,
-  onAddSection
+  onAddSection,
+  onItemIsNAChange
 }) => (
   <>
     <Header
@@ -64,6 +66,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         sectionItems={sectionItems}
         onClickOneActionNotes={onClickOneActionNotes}
         onAddSection={onAddSection}
+        onItemIsNAChange={onItemIsNAChange}
       />
     </div>
   </>

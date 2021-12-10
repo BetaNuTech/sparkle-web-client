@@ -122,17 +122,20 @@
         &--mainInput {
           display: flex;
           flex: 1 1 auto;
-          gap: $global-mlg-padding;
-          flex-direction: row-reverse;
-
-          &Grid {
-            flex-direction: row;
-          }
+          gap: $global-md-padding;
 
           // Expand main input items
           // to fill available space
-          ul:nth-child(2) {
+          ul:nth-child(1) {
             flex: 1 1 auto;
+          }
+
+          &Grid {
+            gap: $global-mlg-padding;
+            flex-direction: row;
+            ul:nth-child(1) {
+              flex: none;
+            }
           }
         }
 
@@ -143,8 +146,10 @@
           &Action {
             display: flex;
             align-items: center;
-            padding: 0 $global-padding;
+            padding: 0 $global-sm-padding;
             cursor: pointer;
+            position: relative;
+            @extend %gridHeaderCreateButton--dropdown;
 
             &:hover {
               background-color: rgba(0, 0, 0, 0.2);
@@ -157,6 +162,23 @@
             }
           }
         }
+
+        &--notApplicable {
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          position: absolute;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: rgba($black, 0.38);
+
+          h3 {
+            color: $white;
+            font-weight: $font-weight-bold;
+          }
+        }
       }
     }
   }
@@ -165,6 +187,10 @@
     &__list__item__header__content {
       font-size: rem-calc(22);
       line-height: rem-calc(30);
+    }
+
+    &__list__item__row--gridAction {
+      padding: 0px $global-padding;
     }
 
     &__list__item__footer {
