@@ -1,4 +1,5 @@
-import updateItem, { userUpdate as userItemUpdate } from './updateTemplateItem';
+import updateItem from './updateTemplateItem';
+import userItemUpdate from './updateTemplateItem/userUpdate';
 import updateSection, {
   userUpdate as userSectionUpdate
 } from './updateTemplateSection';
@@ -12,6 +13,8 @@ export interface userUpdate {
 
 interface updateOptions {
   adminEdit?: boolean;
+  adminFullName?: string;
+  adminId?: string;
 }
 
 const PREFIX = 'utils: inspection: updateTemplate:';
@@ -55,6 +58,14 @@ export default function inspectionUpdate(
         isItemUpdate ? 'item' : 'section'
       } by an identifier`
     );
+  }
+
+  if (options.adminEdit && !options.adminFullName) {
+    throw Error(`${PREFIX} an admin full name is required in admin edit mode`);
+  }
+
+  if (options.adminEdit && !options.adminId) {
+    throw Error(`${PREFIX} an admin id is required in admin edit mode`);
   }
 
   if (isItemUpdate) {

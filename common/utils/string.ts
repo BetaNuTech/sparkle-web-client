@@ -22,5 +22,14 @@ export default {
       /(.)(?=(\d{3})+$)/g,
       '$1,'
     );
+  },
+
+  // Limite the length of string adding any delimiter
+  truncate(str: string, length: number, delimiter = ''): string {
+    if (str.length > length) {
+      return `${str.slice(0, length)}${delimiter}`;
+    }
+
+    return str;
   }
 };

@@ -53,4 +53,20 @@ describe('Unit | Common | Utils | String', () => {
       expect(actual).toEqual(expected);
     });
   });
+
+  test('it truncates a strings to a maximum length', () => {
+    [
+      {
+        data: 'small string',
+        expected: 'small string'
+      },
+      {
+        data: 'long string gets truncated',
+        expected: 'long string g...'
+      }
+    ].forEach(({ data, expected }) => {
+      const actual = utilString.truncate(data, 13, '...');
+      expect(actual).toEqual(expected);
+    });
+  });
 });
