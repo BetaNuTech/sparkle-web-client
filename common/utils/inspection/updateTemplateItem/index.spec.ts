@@ -1,5 +1,6 @@
-import update, { userUpdate } from './updateTemplateItem';
-import deepClone from '../../../__tests__/helpers/deepClone';
+import update from './index';
+import userUpdate from './userUpdate';
+import deepClone from '../../../../__tests__/helpers/deepClone';
 import {
   unselectedCheckmarkItem,
   selectedCheckmarkItem,
@@ -7,9 +8,9 @@ import {
   selectedCheckedExclaimItem,
   unselectedOneActionNote,
   emptyTextInputItem
-} from '../../../__mocks__/inspections';
-import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
-import inspectionTemplateItemPhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
+} from '../../../../__mocks__/inspections';
+import inspectionTemplateItemModel from '../../../models/inspectionTemplateItem';
+import inspectionTemplateItemPhotoDataModel from '../../../models/inspectionTemplateItemPhotoData';
 
 describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
   test('it does not modify arguments', () => {

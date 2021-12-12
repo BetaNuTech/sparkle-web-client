@@ -96,7 +96,7 @@ function setAddedMultiSection(
   result.sections = result.sections || {};
 
   // Clone seection
-  const newSectionId = uuid();
+  const newSectionId = uuid(20);
   const clonedSection = JSON.parse(
     JSON.stringify(sectionTarget)
   ) as inspectionTemplateSectionModel;

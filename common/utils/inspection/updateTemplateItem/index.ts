@@ -1,27 +1,10 @@
-import pipe from '../pipe';
-import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
-import inspectionTemplateItemPhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
-
-export interface userUpdate {
-  mainInputSelection?: number;
-  isItemNA?: boolean;
-  textInputValue?: string;
-  mainInputNotes?: string;
-  inspectorNotes?: string;
-  signatureDownloadURL?: string;
-  photosData?: Record<string, inspectionTemplateItemPhotoDataModel>;
-}
-
-interface updateOptions {
-  adminEdit?: boolean;
-}
-
-interface composableSettings {
-  updatedItem: inspectionTemplateItemModel;
-  currentItem: inspectionTemplateItemModel;
-  userChanges: userUpdate;
-  options: updateOptions;
-}
+import pipe from '../../pipe';
+import inspectionTemplateItemModel from '../../../models/inspectionTemplateItem';
+import inspectionTemplateItemPhotoDataModel from '../../../models/inspectionTemplateItemPhotoData';
+import userUpdate from './userUpdate';
+import updateOptions from './updateOptions';
+import composableSettings from './composableSettings';
+import setAdminEdits from './setAdminEdits';
 
 const PREFIX = 'utils: inspection: updateTemplateItem:';
 const DEFAULT_OPTIONS = Object.freeze({
@@ -72,6 +55,7 @@ export default function updateTemplateItem(
     mergeExistingPhotoData,
     addPhotoData,
     removePhotoData,
+    setAdminEdits,
     setUnupdatedItem
   )(
     {} as inspectionTemplateItemModel, // result
@@ -331,6 +315,8 @@ const setSignature = (
 ): inspectionTemplateItemModel => {
   const { userChanges, currentItem, updatedItem } = settings;
   const isChanging = typeof userChanges.signatureDownloadURL === 'string';
+  const isDifferentThanCurrent =
+    userChanges.signatureDownloadURL !== currentItem.signatureDownloadURL;
   const hasPreviousUpdate =
     typeof updatedItem.signatureDownloadURL === 'string';
 
@@ -345,10 +331,7 @@ const setSignature = (
   }
 
   // Add user unselected change to updates
-  if (
-    isChanging &&
-    userChanges.signatureDownloadURL !== currentItem.signatureDownloadURL
-  ) {
+  if (isChanging && isDifferentThanCurrent) {
     result.signatureDownloadURL = userChanges.signatureDownloadURL;
     result.signatureTimestampKey = `${Math.round(Date.now() / 1000)}`;
   } else if (isChanging) {

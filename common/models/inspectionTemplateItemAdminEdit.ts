@@ -1,7 +1,10 @@
 /* eslint-disable camelcase */
 interface inspectionTemplateItemAdminEdit {
   id?: string;
-  // TODO
+  action: string;
+  admin_name: string;
+  admin_uid: string;
+  edit_date: number;
 }
 
 export default inspectionTemplateItemAdminEdit;
