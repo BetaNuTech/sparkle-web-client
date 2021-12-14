@@ -1,9 +1,6 @@
 import currentUser from '../../utils/currentUser';
 import jobModel from '../../models/job';
-import ErrorServerInternal from '../../models/errors/serverInternal';
-import ErrorForbidden from '../../models/errors/forbidden';
-import ErrorNotFound from '../../models/errors/notFound';
-import ErrorBadRequest from '../../models/errors/badRequest';
+import createApiError from '../../utils/api/createError';
 
 const PREFIX = 'services: api: jobs:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
@@ -13,6 +10,9 @@ export type serviceResponse = {
   body?: any;
   job?: jobModel;
 };
+
+const jobCreateApiError = createApiError(`${PREFIX} createJob:`);
+const jobUpdateApiError = createApiError(`${PREFIX} updateJob:`);
 
 // POST an Job Request
 const postRequest = (
@@ -69,25 +69,9 @@ export const createNewJob = async (
     throw Error(`${PREFIX} createNewJob: failed to parse JSON: ${err}`);
   }
 
-  if (response.status === 500) {
-    throw new ErrorServerInternal(`${PREFIX} createNewJob: system failure`);
-  }
-
-  if (response.status === 403) {
-    throw new ErrorForbidden(`${PREFIX} createNewJob: user lacks permission`);
-  }
-
-  if (response.status === 404) {
-    throw new ErrorNotFound(`${PREFIX} createNewJob: record not found`);
-  }
-
-  if (response.status === 400) {
-    const errorsResponse = responseJson ? responseJson.errors : [];
-    const badRequest = new ErrorBadRequest(
-      `${PREFIX} createNewJob: fix errors`
-    );
-    badRequest.addErrors(errorsResponse);
-    throw badRequest;
+  const apiError: any = jobCreateApiError(response.status, responseJson.errors);
+  if (apiError) {
+    throw apiError;
   }
 
   if (response.status === 201) {
@@ -121,23 +105,9 @@ export const updateJob = async (
     throw Error(`${PREFIX} updateJob: failed to parse JSON: ${err}`);
   }
 
-  if (response.status === 500) {
-    throw new ErrorServerInternal(`${PREFIX} updateJob: system failure`);
-  }
-
-  if (response.status === 403) {
-    throw new ErrorForbidden(`${PREFIX} updateJob: user lacks permission`);
-  }
-
-  if (response.status === 404) {
-    throw new ErrorNotFound(`${PREFIX} updateJob: record not found`);
-  }
-
-  if (response.status === 400) {
-    const errorsResponse = responseJson ? responseJson.errors : [];
-    const badRequest = new ErrorBadRequest(`${PREFIX} updateJob: fix errors`);
-    badRequest.addErrors(errorsResponse);
-    throw badRequest;
+  const apiError: any = jobUpdateApiError(response.status, responseJson.errors);
+  if (apiError) {
+    throw apiError;
   }
 
   if (response.status === 201) {

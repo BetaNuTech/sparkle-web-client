@@ -5,7 +5,7 @@ import createApiError from '../../utils/api/createError';
 const PREFIX = 'services: api: bids:';
 
 const bidUpdateApiError = createApiError(`${PREFIX} updateBid:`);
-const bidCreateApiError = createApiError(`${PREFIX} updateBid:`);
+const bidCreateApiError = createApiError(`${PREFIX} createBid:`);
 
 // POST an Bid Request
 const postRequest = (

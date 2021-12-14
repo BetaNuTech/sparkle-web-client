@@ -47,7 +47,7 @@ const JobActionButtons: FunctionComponent<Props> = ({
           </button>
           {!canApprove && (
             <p className={clsx('-c-gray-light', '-mb-none')}>
-              You do not have permission to approve this job
+              You cannot approve this job
             </p>
           )}
         </div>
