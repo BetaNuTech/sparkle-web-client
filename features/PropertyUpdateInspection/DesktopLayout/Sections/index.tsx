@@ -19,6 +19,7 @@ interface Props {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
   onAddSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
@@ -32,6 +33,7 @@ const Sections: FunctionComponent<Props> = ({
   forceVisible,
   sectionItems,
   onAddSection,
+  onRemoveSection,
   onItemIsNAChange
 }) => {
   if (sections && sections.length > 0) {
@@ -50,6 +52,7 @@ const Sections: FunctionComponent<Props> = ({
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
             onAddSection={onAddSection}
+            onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
           />
         ))}

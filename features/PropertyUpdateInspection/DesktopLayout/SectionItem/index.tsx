@@ -23,6 +23,7 @@ interface MobileLayoutTeamItemModel {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
   onAddSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
@@ -35,6 +36,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onInputChange,
   onClickOneActionNotes,
   onAddSection,
+  onRemoveSection,
   onItemIsNAChange
 }) => {
   const listItems = sectionItems.get(section.id);
@@ -46,6 +48,15 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
     e.preventDefault();
     e.stopPropagation();
     onAddSection(sectionId);
+  };
+
+  const onClickRemove = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onRemoveSection(sectionId);
   };
 
   return (
@@ -85,6 +96,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
                     className={
                       styles['section__list__item__button--redOutline']
                     }
+                    onClick={(e) => onClickRemove(e, section.id)}
                   >
                     Remove
                   </button>

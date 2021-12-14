@@ -17,6 +17,7 @@ interface useItemUpdateResult {
   ): inspectionTemplateUpdateModel;
   setItemIsNA(itemId: string, isItemNA: boolean): inspectionTemplateUpdateModel;
   addSection(sectionId: string): inspectionTemplateUpdateModel;
+  removeSection(sectionId: string): inspectionTemplateUpdateModel;
 }
 
 export default function useInspectionItemUpdate(
@@ -61,11 +62,17 @@ export default function useInspectionItemUpdate(
       sections: { new: { cloneOf: sectionId } }
     });
 
+  const removeSection = (sectionId: string): inspectionTemplateUpdateModel =>
+    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
+      sections: { [sectionId]: null }
+    });
+
   return {
     updateMainInputSelection,
     updateMainInputNotes,
     updateTextInputValue,
     addSection,
+    removeSection,
     setItemIsNA
   };
 }

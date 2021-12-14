@@ -27,6 +27,7 @@ interface Props {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
   onAddSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
@@ -39,6 +40,7 @@ const SectionItem: FunctionComponent<Props> = ({
   onClickOneActionNotes,
   sectionItems,
   onAddSection,
+  onRemoveSection,
   onItemIsNAChange
 }) => {
   const listItems = sectionItems.get(section.id);
@@ -57,6 +59,14 @@ const SectionItem: FunctionComponent<Props> = ({
     e.preventDefault();
     e.stopPropagation();
     onAddSection(sectionId);
+  };
+  const onClickRemove = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onRemoveSection(sectionId);
   };
 
   return (
@@ -92,7 +102,10 @@ const SectionItem: FunctionComponent<Props> = ({
               </button>
             )}
             {section.added_multi_section && (
-              <button className={styles['section__list__item__button--red']}>
+              <button
+                className={styles['section__list__item__button--red']}
+                onClick={(e) => onClickRemove(e, section.id)}
+              >
                 Remove
               </button>
             )}

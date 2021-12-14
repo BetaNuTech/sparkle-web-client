@@ -24,6 +24,7 @@ interface Props {
   onShareAction(): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   onAddSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
   onSaveInspection(): void;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -45,6 +46,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
   isOnline,
   hasUpdates,
   onAddSection,
+  onRemoveSection,
   onItemIsNAChange
 }) => (
   <>
@@ -66,6 +68,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         sectionItems={sectionItems}
         onClickOneActionNotes={onClickOneActionNotes}
         onAddSection={onAddSection}
+        onRemoveSection={onRemoveSection}
         onItemIsNAChange={onItemIsNAChange}
       />
     </div>

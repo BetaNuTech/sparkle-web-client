@@ -172,8 +172,11 @@ function setRemovedMultiSection(
   result.sections = result.sections || {};
 
   // Decrement section indexes
-
-  const updatedSections = updateSectionIndexes(sections, sectionToRemove.index);
+  const updatedSections = updateSectionIndexes(
+    sections,
+    sectionToRemove.index,
+    -1
+  );
 
   // Merge section index updates into results
   Object.keys(updatedSections).forEach((id) => {
@@ -213,12 +216,11 @@ function updateSectionIndexes(
   incrementBy = 1
 ): Record<string, inspectionTemplateSectionModel> {
   const result = {};
-
   Object.keys(sections).forEach((id) => {
     const section = JSON.parse(
       JSON.stringify(sections[id])
     ) as inspectionTemplateSectionModel;
-    const { index } = section;
+    const { index = 0 } = section || {};
 
     // Update record index without creating negative index
     if (index >= startIndex && index + incrementBy > -1) {

@@ -42,8 +42,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     updateMainInputSelection,
     updateMainInputNotes,
     updateTextInputValue,
-    setItemIsNA,
-    addSection
+    addSection,
+    removeSection,
+    setItemIsNA
   } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
     useState(false);
@@ -89,6 +90,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   const onAddSection = (sectionId: string) => {
     setLatestTemplateUpdates(addSection(sectionId));
+  };
+  const onRemoveSection = (sectionId: string) => {
+    setLatestTemplateUpdates(removeSection(sectionId));
   };
 
   // Add main and text input updates
@@ -161,6 +165,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
+
   return (
     <>
       {isMobileorTablet && (
@@ -180,6 +185,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onClickOneActionNotes={onClickOneActionNotes}
             onSaveInspection={onSaveInspection}
             onAddSection={onAddSection}
+            onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
           />
         </>
@@ -201,6 +207,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onClickOneActionNotes={onClickOneActionNotes}
             onSaveInspection={onSaveInspection}
             onAddSection={onAddSection}
+            onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
           />
         </>
