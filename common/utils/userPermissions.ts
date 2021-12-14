@@ -190,6 +190,10 @@ export const canApproveJob = (
   propertyId: string,
   job: jobModel
 ): boolean => {
+  if (!job.scopeOfWork && (job.scopeOfWorkAttachments || []).length === 0) {
+    return false; // cannot approve if scope of work requirements are not met
+  }
+
   if (isNewJob || job.state !== 'open') {
     return false; // cannot approve new/non-open jobs
   }

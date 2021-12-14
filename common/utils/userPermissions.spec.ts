@@ -17,6 +17,7 @@ import deepClone from '../../__tests__/helpers/deepClone';
 import jobModel from '../models/job';
 import bidModel from '../models/bid';
 import * as util from './userPermissions';
+import attachments from '../../__mocks__/attachments';
 
 describe('Unit | Common | Utils | User Permissions', () => {
   afterEach(() => sinon.restore());
@@ -327,8 +328,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedImprovementJob,
         bids: [{} as bidModel],
         expected: false,
-        msg:
-          'does not allow team member to authorize job without qualifying bids'
+        msg: 'does not allow team member to authorize job without qualifying bids'
       },
       {
         jobId: 'job-1',
@@ -345,8 +345,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedExpeditedMaintenanceJob,
         bids: [{ state: 'approved' } as bidModel],
         expected: false,
-        msg:
-          'rejects team member from authorizing expedited job with single approved bid'
+        msg: 'rejects team member from authorizing expedited job with single approved bid'
       },
       {
         jobId: 'job-1',
@@ -354,8 +353,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
         job: approvedImprovementJob,
         bids: [{ state: 'approved' } as bidModel],
         expected: false,
-        msg:
-          'rejects team member from authorizing small job with single approved bid'
+        msg: 'rejects team member from authorizing small job with single approved bid'
       },
       {
         jobId: 'job-1',
@@ -366,8 +364,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: true,
-        msg:
-          'allows team member to authorize small job when enough bids exist and one is approved'
+        msg: 'allows team member to authorize small job when enough bids exist and one is approved'
       },
       {
         jobId: 'job-1',
@@ -379,8 +376,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg:
-          'rejects team member from authorize large job when enough bids exist and one is approved'
+        msg: 'rejects team member from authorize large job when enough bids exist and one is approved'
       },
       {
         jobId: 'job-1',
@@ -392,8 +388,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: true,
-        msg:
-          'allows admin to authorize large job that meets all authorize conditions'
+        msg: 'allows admin to authorize large job that meets all authorize conditions'
       },
       {
         jobId: 'job-1',
@@ -405,8 +400,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg:
-          'does not allow corporate to authorize large job that meets all authorize conditions'
+        msg: 'does not allow corporate to authorize large job that meets all authorize conditions'
       },
       {
         jobId: 'job-1',
@@ -417,8 +411,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg:
-          'allows corporate to authorize small job that meets all authorize conditions'
+        msg: 'allows corporate to authorize small job that meets all authorize conditions'
       },
       {
         jobId: 'job-1',
@@ -429,8 +422,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
           { state: 'open' } as bidModel
         ],
         expected: false,
-        msg:
-          'allows property level user to authorize small pm job that meets all authorize conditions'
+        msg: 'allows property level user to authorize small pm job that meets all authorize conditions'
       }
     ];
 
@@ -521,79 +513,174 @@ describe('Unit | Common | Utils | User Permissions', () => {
       {
         isNewJob: true,
         user: admin,
-        job: { type: 'small:pm' } as jobModel,
+        job: {
+          type: 'small:pm',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: false,
         msg: 'does not allow admin to approve new job'
       },
       {
         isNewJob: false,
         user: admin,
-        job: { type: 'small:pm', state: 'open' } as jobModel,
+        job: {
+          type: 'small:pm',
+          state: 'open',
+          scopeOfWork: '',
+          scopeOfWorkAttachments: []
+        } as jobModel,
+        expected: false,
+        msg: 'does not allow admin to approve job missing any SoW'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: {
+          type: 'small:pm',
+          state: 'open',
+          scopeOfWork: 'valid',
+          scopeOfWorkAttachments: []
+        } as jobModel,
+        expected: true,
+        msg: 'it allows admin to approve job with SoW text'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: {
+          type: 'small:pm',
+          state: 'open',
+          scopeOfWork: '',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
+        expected: true,
+        msg: 'it allows admin to approve job with SoW attachments'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: {
+          type: 'small:pm',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: true,
         msg: 'allows admin to approve open job'
       },
       {
         isNewJob: false,
         user: admin,
-        job: { type: 'large:am', state: 'open' } as jobModel,
+        job: {
+          type: 'large:am',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: true,
         msg: 'allows admin to approve, large, open job'
       },
       {
         isNewJob: false,
         user: admin,
-        job: { type: 'large:am', state: 'approved' } as jobModel,
+        job: {
+          type: 'large:am',
+          state: 'approved',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: false,
         msg: 'does not allow admin to approve approved job'
       },
       {
         isNewJob: false,
         user: propertyMember,
-        job: { type: 'small:pm', state: 'open' } as jobModel,
+        job: {
+          type: 'small:pm',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: true,
         msg: 'allows property level user to approve small:pm type jobs'
       },
       {
         isNewJob: true,
         user: propertyMember,
-        job: { type: 'large:am' } as jobModel,
+        job: {
+          type: 'large:am',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: false,
         msg: 'does not allow property level user to approve new job'
       },
       {
         isNewJob: false,
         user: propertyMember,
-        job: { type: 'large:am', state: 'open' } as jobModel,
+        job: {
+          type: 'large:am',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: false,
         msg: 'does not allow property level user to approve large jobs'
       },
       {
         isNewJob: true,
         user: corporate,
-        job: { type: 'small:pm' } as jobModel,
+        job: {
+          type: 'small:pm',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: false,
         msg: 'does not allow corporate user to approve a new job'
       },
       {
         isNewJob: false,
         user: corporate,
-        job: { type: 'small:hybrid', state: 'open' } as jobModel,
+        job: {
+          type: 'small:hybrid',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: true,
         msg: 'allow corporate user to approve open, small hybird, job'
       },
       {
         isNewJob: false,
         user: corporate,
-        job: { type: 'small:pm', state: 'open' } as jobModel,
+        job: {
+          type: 'small:pm',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: true,
         msg: 'allow corporate user to approve open, small pm, job'
       },
       {
         isNewJob: false,
         user: corporate,
-        job: { type: 'large:am', state: 'open' } as jobModel,
+        job: {
+          type: 'large:am',
+          state: 'open',
+          scopeOfWork: 'test scope',
+          scopeOfWorkAttachments: attachments
+        } as jobModel,
         expected: false,
         msg: 'does not allow corporate user to approve large job'
+      },
+      {
+        isNewJob: false,
+        user: admin,
+        job: { type: 'large:am', state: 'open' } as jobModel,
+        expected: false,
+        msg: 'does not allow user to approve job  if scope of work requirement are not met'
       }
     ];
 

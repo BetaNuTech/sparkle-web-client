@@ -1,14 +1,18 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import sinon from 'sinon';
 import {
-  render as rtlRender,
+  render,
   screen,
   fireEvent,
   act,
   waitFor
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Context as ResponsiveContext } from 'react-responsive';
+import { UseFormRegister, FormState } from 'react-hook-form';
+import { renderHook } from '@testing-library/react-hooks';
+import FormInputs from './FormInputs';
+import formErrors from './errors';
+
 import {
   openImprovementJob,
   approvedImprovementJob,
@@ -21,21 +25,9 @@ import { photoAttachment } from '../../../__mocks__/attachments';
 import { fullProperty } from '../../../__mocks__/properties';
 import bids, { approvedBid, openBid } from '../../../__mocks__/bids';
 import { admin as user, noAccess } from '../../../__mocks__/users';
-import breakpoints from '../../../config/breakpoints';
 import jobsConfig from '../../../config/jobs';
+import useValidateJobForm from '../hooks/useValidateJobForm';
 import JobForm from './index';
-
-function render(ui: any, options: any = {}) {
-  sinon.restore();
-
-  const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
-  return rtlRender(
-    <ResponsiveContext.Provider value={{ width: contextWidth }}>
-      {ui}
-    </ResponsiveContext.Provider>,
-    options
-  );
-}
 
 const apiState = {
   isLoading: false,
@@ -44,6 +36,24 @@ const apiState = {
 };
 
 describe('Unit | Features | Job Edit | Form', () => {
+  let register: UseFormRegister<FormInputs> = null;
+  let formState: FormState<FormInputs> = null;
+  let needValidationOptions: any = null;
+  let expediteReasonValidation: any = null;
+  let sowValidationOptions: any = null;
+
+  beforeEach(() => {
+    const { result } = renderHook(() =>
+      useValidateJobForm(authorizedImprovementJob, false)
+    );
+
+    register = result.current.register;
+    formState = result.current.formState;
+    expediteReasonValidation = result.current.expediteReasonValidation;
+    needValidationOptions = result.current.needValidationOptions;
+    sowValidationOptions = result.current.sowValidationOptions;
+  });
+
   it('renders only mobile content for mobile devices', () => {
     const props = {
       job: openImprovementJob,
@@ -57,14 +67,18 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: true,
+      isDesktop: true,
+      jobLink: ''
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const desktopHeader = screen.queryByTestId('jobedit-header');
     const desktopForm = screen.queryByTestId('desktop-form');
@@ -75,153 +89,6 @@ describe('Unit | Features | Job Edit | Form', () => {
     expect(desktopHeader).toBeNull();
     expect(desktopForm).toBeNull();
     expect(mobileFormCancel).toBeTruthy();
-  });
-
-  it('renders only desktop content for desktop devices', () => {
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user,
-      bids,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
-    };
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
-
-    const desktopHeader = screen.queryByTestId('jobedit-header');
-    const desktopForm = screen.queryByTestId('desktop-form');
-
-    const mobileFormCancel = screen.queryByTestId('mobile-form-cancel');
-
-    expect(mobileFormCancel).toBeNull();
-
-    // Desktop controls
-    expect(desktopHeader).toBeTruthy();
-    expect(desktopForm).toBeTruthy();
-  });
-
-  it('renders submit button in header for desktop', () => {
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user,
-      bids,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
-    };
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
-
-    const headerSubmitButton = screen.queryByTestId('jobedit-header-submit');
-
-    // Check link is correct
-    expect(headerSubmitButton).toBeTruthy();
-  });
-
-  it('renders cancel button that links to property jobs for desktop', () => {
-    const expected = `/properties/${fullProperty.id}/jobs`;
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user,
-      bids,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
-    };
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
-
-    const result = screen.queryByTestId('jobedit-header-cancel');
-    const actual = result && result.getAttribute('href');
-    expect(actual).toEqual(expected);
-  });
-
-  it('renders cancel button at bottom of form that links to property jobs for mobile', () => {
-    const expected = `/properties/${fullProperty.id}/jobs`;
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user,
-      bids,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
-    };
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
-
-    const result = screen.queryByTestId('mobile-form-cancel');
-    const actual = result && result.getAttribute('href');
-    expect(actual).toEqual(expected);
-  });
-
-  it('renders cancel button in header that links to property jobs for mobile', () => {
-    const expected = `/properties/${fullProperty.id}/jobs`;
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user,
-      bids,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
-    };
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
-
-    const result = screen.queryByTestId('dropdown-header-cancel');
-    const resultLink = result && result.querySelector('a');
-    const actual = resultLink && resultLink.getAttribute('href');
-    expect(actual).toEqual(expected);
   });
 
   it('renders submit button below form', () => {
@@ -237,17 +104,19 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: false
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const headerSubmitButton = screen.queryByTestId('job-form-submit');
-
     // Check link is correct
     expect(headerSubmitButton).toBeTruthy();
   });
@@ -268,14 +137,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const selectJobType = screen.queryByTestId('job-form-type');
     const jobTypeOptions = selectJobType.querySelectorAll(
@@ -287,33 +157,6 @@ describe('Unit | Features | Job Edit | Form', () => {
       .map(({ textContent }) => textContent || '')
       .join(' | ');
     expect(actual).toEqual(expected);
-  });
-
-  it('should show title on top of form on mobile', () => {
-    const props = {
-      job: openImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user,
-      bids,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
-    };
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
-
-    const mobileTitle = screen.queryByTestId('job-form-title-mobile');
-
-    expect(mobileTitle).toBeTruthy();
   });
 
   it('should not show state and next action on new form', () => {
@@ -329,14 +172,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formEditState = screen.queryByTestId('job-form-edit-state');
     const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
@@ -358,14 +202,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formEditState = screen.queryByTestId('job-form-edit-state');
     const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
@@ -398,14 +243,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formEditState = screen.queryByTestId('job-form-edit-state');
     const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
@@ -438,14 +284,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formEditState = screen.queryByTestId('job-form-edit-state');
     const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
@@ -478,14 +325,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formEditState = screen.queryByTestId('job-form-edit-state');
     const formEditNextStatus = screen.queryByTestId('job-form-edit-nextstatus');
@@ -517,14 +365,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isJobComplete: true
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formSubmitBtn = screen.queryByTestId('job-form-submit');
 
@@ -545,14 +395,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isJobComplete: true
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
     const formTitle = screen.queryByTestId('job-form-title');
     const formDescription = screen.queryByTestId('job-form-description');
@@ -589,16 +441,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      onSubmit: sinon.spy()
     };
-
     await act(async () => {
-      render(<JobForm {...props} />, {
-        contextWidth: breakpoints.tablet.maxWidth
-      });
-
+      render(<JobForm {...props} />);
       const formTitle = screen.queryByTestId('job-form-title');
       const formDescription = screen.queryByTestId(
         'job-form-description'
@@ -606,25 +457,18 @@ describe('Unit | Features | Job Edit | Form', () => {
       const formScope = screen.queryByTestId('job-form-scope');
       // Set empty value for need
       await fireEvent.change(formTitle, { target: { value: '' } });
-
       // Set empty value for need
       await fireEvent.change(formDescription, { target: { value: '' } });
-
       // Set empty value for scope
       await fireEvent.change(formScope, { target: { value: '' } });
-
       const [submit] = await screen.findAllByTestId('job-form-submit');
       await userEvent.click(submit);
     });
 
-    const errorTitle = screen.queryByTestId('error-label-title');
-    const errorNeed = screen.queryByTestId('error-label-need');
-    const errorScope = screen.queryByTestId('error-label-scopeOfWork');
-
     // It should be true because error message will come as they are required
-    expect(errorTitle).toBeTruthy();
-    expect(errorNeed).toBeTruthy();
-    expect(errorScope).toBeTruthy();
+    expect(formState.errors.title.message).toBe(formErrors.titleRequired);
+    expect(formState.errors.need.message).toBe(formErrors.descriptionRequired);
+    expect(formState.errors.scopeOfWork.message).toBe(formErrors.scopeRequired);
   });
 
   it('should show approve button when job is in open state and scope of work provided', () => {
@@ -641,14 +485,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: false
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const btnApprove = screen.queryByTestId('job-form-approve');
 
@@ -669,14 +515,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: false
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const btnAuthorize = screen.queryByTestId('job-form-authorize');
 
@@ -697,14 +545,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: false
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const btnAuthorize = screen.queryByTestId('job-form-authorize');
 
@@ -725,14 +575,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const btnExpedite = screen.queryByTestId('job-form-expedite');
 
@@ -752,14 +603,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: () => {}
+      onSubmit: () => {},
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const btnExpedite = screen.queryByTestId('job-form-expedite');
 
@@ -768,7 +620,7 @@ describe('Unit | Features | Job Edit | Form', () => {
   });
 
   it('should request to transition job to approved when approve button selected', async () => {
-    const putReq = sinon.spy();
+    const onSubmitReq = sinon.spy();
     const expected = 'approved';
     const props = {
       job: openImprovementJob,
@@ -782,14 +634,17 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: putReq
+      canApprove: true,
+      onSubmit: onSubmitReq,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: false
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     await act(async () => {
       const btnApprove = screen.queryByTestId('job-form-approve');
@@ -797,13 +652,12 @@ describe('Unit | Features | Job Edit | Form', () => {
     });
 
     // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[2] : {};
-    const actual = result.state || '';
+    const actual = onSubmitReq.called ? onSubmitReq.getCall(0).args[0] : {};
     expect(actual).toEqual(expected);
   });
 
   it('should request to transition job to authorized when authorize button selected', async () => {
-    const putReq = sinon.stub();
+    const onSubmitReq = sinon.stub();
     const expected = 'authorized';
     const props = {
       jobId: approvedImprovementJob.id,
@@ -818,79 +672,27 @@ describe('Unit | Features | Job Edit | Form', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: putReq
+      onSubmit: onSubmitReq,
+      canAuthorize: true,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions,
+      isMobile: false
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     act(() => {
       const btnAuthorize = screen.getByTestId('job-form-authorize');
       userEvent.click(btnAuthorize);
     });
 
-    await waitFor(() => putReq.called);
+    await waitFor(() => onSubmitReq.called);
 
     // Send update request
-    const result = putReq.getCall(0).args[2];
-    const actual = result.state || '';
-    expect(actual).toEqual(expected);
-  });
-
-  it('should request to transition job to expedite when expedite button selected', async () => {
-    const putReq = sinon.spy();
-    const expected = 'expedite';
-    const props = {
-      jobId: approvedImprovementJob.id,
-      job: approvedImprovementJob,
-      property: fullProperty,
-      apiState,
-      isOnline: true,
-      isStaging: true,
-      isNewJob: false,
-      user: { ...user },
-      bids: [{ ...approvedBid }],
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      toggleNavOpen: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      postJobCreate: () => {},
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      putJobUpdate: putReq,
-      onFileChange: () => {},
-      uploadState: false,
-      jobAttachments: [photoAttachment],
-      setDeleteAttachmentPromptVisible: () => {},
-      isDeleteAttachmentPromptVisible: false,
-      confirmAttachmentDelete: () => Promise.resolve(),
-      deleteAtachmentLoading: false,
-      sendNotification: () => {},
-      setDeleteTrelloCardPromptVisible: () => {},
-      isDeleteTrelloCardPromptVisible: false
-    };
-
-    let promptCalled = false;
-    window.prompt = jest.fn().mockImplementation(() => {
-      promptCalled = true;
-      return true;
-    });
-
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
-
-    await act(async () => {
-      const btnExpedite = screen.getByTestId('job-form-expedite');
-      userEvent.click(btnExpedite);
-      await waitFor(() => promptCalled); // eslint-disable-line
-    });
-
-    // Send update request
-    const result = putReq.called ? putReq.getCall(0).args[2] : {};
-    const actual = result.authorizedRules || '';
-    expect(window.prompt).toHaveBeenCalled();
+    const actual = onSubmitReq.getCall(0).args[0];
     expect(actual).toEqual(expected);
   });
 
@@ -920,12 +722,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       deleteAtachmentLoading: false,
       sendNotification: () => {},
       setDeleteTrelloCardPromptVisible: () => {},
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const btnAddTrelloCard = screen.queryByTestId('add-trello-card-btn');
     expect(btnAddTrelloCard).toBeTruthy();
@@ -959,12 +764,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       deleteAtachmentLoading: false,
       sendNotification: () => {},
       setDeleteTrelloCardPromptVisible: () => {},
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const elTrelloCard = screen.queryByTestId('trello-card-pill');
     expect(elTrelloCard).toBeTruthy();
@@ -998,12 +806,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       deleteAtachmentLoading: false,
       sendNotification: () => {},
       setDeleteTrelloCardPromptVisible: () => {},
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const elAddBidCard = screen.queryByTestId('add-bid-card-btn');
     const elEditBidCard = screen.queryAllByTestId('bid-edit-card-pill');
@@ -1037,12 +848,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       deleteAtachmentLoading: false,
       sendNotification: () => {},
       setDeleteTrelloCardPromptVisible: () => {},
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const elAddBidCard = screen.queryByTestId('add-bid-card-btn');
     const elEditBidCard = screen.queryAllByTestId('bid-edit-card-pill');
@@ -1076,12 +890,15 @@ describe('Unit | Features | Job Edit | Form', () => {
       deleteAtachmentLoading: false,
       sendNotification: () => {},
       setDeleteTrelloCardPromptVisible: () => {},
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const elAddBidCard = screen.queryByTestId('add-bid-card-btn');
     const elAddBidCardDisabled = screen.queryByTestId(
@@ -1119,12 +936,16 @@ describe('Unit | Features | Job Edit | Form', () => {
       setDeleteTrelloCardPromptVisible: () => {},
       onDeleteAttachment: () => {},
       currentAttachment: null,
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      bidsRequired: 1,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.desktop.minWidth
-    });
+    render(<JobForm {...props} />);
 
     const expected = '(+1 bid required)';
 
@@ -1166,14 +987,18 @@ describe('Unit | Features | Job Edit | Form', () => {
       setDeleteTrelloCardPromptVisible: () => {},
       onDeleteAttachment: () => {},
       currentAttachment: null,
-      isDeleteTrelloCardPromptVisible: false
+      isDeleteTrelloCardPromptVisible: false,
+      bidsRequired: 0,
+      register,
+      formState,
+      needValidationOptions,
+      expediteReasonValidation,
+      sowValidationOptions
     };
 
-    render(<JobForm {...props} />, {
-      contextWidth: breakpoints.tablet.maxWidth
-    });
+    render(<JobForm {...props} />);
 
-    const expected = 'Bid requirements met';
+    const expected = '(Bid requirements met)';
 
     const elBidRequired = screen.queryByTestId('bids-required');
     const [elBidRequirementMet] = screen.queryAllByTestId(

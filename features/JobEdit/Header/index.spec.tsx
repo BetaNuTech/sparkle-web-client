@@ -57,7 +57,8 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
       property: fullProperty,
       apiState,
       isNewJob: true,
-      isJobComplete: false
+      isJobComplete: false,
+      isOnline: true
     };
 
     render(<Header {...props} />, {
@@ -78,7 +79,8 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
       property: fullProperty,
       apiState,
       isNewJob: false,
-      isJobComplete: true
+      isJobComplete: true,
+      isOnline: true
     };
 
     render(<Header {...props} />, {
@@ -88,5 +90,133 @@ describe('Unit | Features | Job Edit | Desktop Header', () => {
     const headerSubmitBtn = screen.queryByTestId('jobedit-header-submit');
 
     expect(headerSubmitBtn).toBeNull();
+  });
+
+  it('should show submit button if job state is complete', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: false,
+      isLoading: false,
+      isOnline: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const headerSubmitBtn = screen.queryByTestId('jobedit-header-submit');
+
+    expect(headerSubmitBtn).toBeTruthy();
+  });
+
+  it('should show approve button when required conditions are met', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: false,
+      isLoading: false,
+      canApprove: true,
+      isOnline: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const headerApproveBtn = screen.queryByTestId('jobedit-header-approve');
+
+    expect(headerApproveBtn).toBeTruthy();
+  });
+
+  it('should show authorize button when required conditions are met ', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: false,
+      isLoading: false,
+      canAuthorize: true,
+      isOnline: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const headerAuthorizeBtn = screen.queryByTestId('jobedit-header-authorize');
+
+    expect(headerAuthorizeBtn).toBeTruthy();
+  });
+
+  it('should show expedite button when job is approved', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: false,
+      isLoading: false,
+      canExpedite: true,
+      isOnline: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const headerExpediteeBtn = screen.queryByTestId('jobedit-header-expedite');
+
+    expect(headerExpediteeBtn).toBeTruthy();
+  });
+
+  it('should show desktop header and does not show mobile header ', () => {
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const desktopHeader = screen.queryByTestId('jobedit-header');
+
+    const mobileFormCancel = screen.queryByTestId('mobile-form-cancel');
+
+    expect(mobileFormCancel).toBeNull();
+
+    // Desktop controls
+    expect(desktopHeader).toBeTruthy();
+  });
+
+  it('renders cancel button that links to property jobs for desktop', () => {
+    const expected = `/properties/${fullProperty.id}/jobs`;
+    const props = {
+      job: completeImprovementJob,
+      property: fullProperty,
+      apiState,
+      isNewJob: false,
+      isJobComplete: false,
+      jobLink: expected,
+      isOnline: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const result = screen.queryByTestId('jobedit-header-cancel');
+
+    const actual = result && result.getAttribute('href');
+    expect(actual).toEqual(expected);
   });
 });

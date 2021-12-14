@@ -13,7 +13,14 @@ interface useJobFormResult {
   job?: jobModel;
   postJobCreate(propertyId: string, job: jobModel): void;
   putJobUpdate(propertyId: string, jobId: string, job: jobModel): void;
-  error: ErrorBadRequest;
+  onPublish(
+    data: jobModel,
+    isNewJob: boolean,
+    propertyId: string,
+    jobId: string,
+    action: string
+  ): void;
+  generalFormErrors: Array<string>;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -21,29 +28,27 @@ type userNotifications = (message: string, options?: any) => any;
 export default function useJobForm(
   sendNotification: userNotifications
 ): useJobFormResult {
-  const [formState, setFormState] = useState({
-    isLoading: false,
-    job: null
-  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [job, setJob] = useState(null);
 
   const [error, setError] = useState<ErrorBadRequest>(null);
 
   const handleSuccessResponse = (
     jobId: string,
     propertyId: string,
-    job: jobModel
+    jobData: jobModel
   ) => {
     // Show success notification for creting or updating a property
     sendNotification(
       jobId === 'new'
         ? 'Create the job successfully'
-        : `${job.title} successfully updated`,
+        : `${jobData.title} successfully updated`,
       {
         type: 'success'
       }
     );
-    if (jobId === 'new' && job) {
-      Router.push(`/properties/${propertyId}/jobs/edit/${job.id}/`);
+    if (jobId === 'new' && jobData) {
+      Router.push(`/properties/${propertyId}/jobs/edit/${jobData.id}/`);
     }
   };
 
@@ -72,16 +77,14 @@ export default function useJobForm(
     }
   };
 
-  const postJobCreate = async (propertyId: string, job: jobModel) => {
-    setFormState({
-      isLoading: true,
-      job: null
-    });
+  const postJobCreate = async (propertyId: string, jobData: jobModel) => {
+    setIsLoading(true);
+    setJob(null);
 
     let jobCreate: jobModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      jobCreate = await jobsApi.createNewJob(propertyId, job);
+      jobCreate = await jobsApi.createNewJob(propertyId, jobData);
 
       handleSuccessResponse('new', propertyId, jobCreate);
     } catch (err) {
@@ -91,26 +94,22 @@ export default function useJobForm(
       }
     }
 
-    setFormState({
-      isLoading: false,
-      job: jobCreate
-    });
+    setIsLoading(false);
+    setJob(jobCreate);
   };
 
   const putJobUpdate = async (
     propertyId: string,
     jobId: string,
-    job: jobModel
+    jobData: jobModel
   ) => {
-    setFormState({
-      isLoading: true,
-      job: null
-    });
+    setIsLoading(true);
+    setJob(null);
 
     let jobUpdate: jobModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      jobUpdate = await jobsApi.updateJob(propertyId, jobId, job);
+      jobUpdate = await jobsApi.updateJob(propertyId, jobId, jobData);
 
       handleSuccessResponse(jobId, propertyId, jobUpdate);
     } catch (err) {
@@ -120,17 +119,54 @@ export default function useJobForm(
       }
     }
 
-    setFormState({
-      isLoading: false,
-      job: jobUpdate
-    });
+    setIsLoading(false);
+    setJob(jobUpdate);
   };
 
+  // Publish Job updates to API
+  const onPublish = (
+    data: jobModel,
+    isNewJob: boolean,
+    propertyId: string,
+    jobId: string,
+    action: string
+  ) => {
+    const formJob = {
+      ...data
+    } as jobModel;
+
+    switch (action) {
+      case 'approved':
+        formJob.state = 'approved';
+        break;
+      case 'authorized':
+        formJob.state = 'authorized';
+        break;
+      case 'expedite':
+        formJob.authorizedRules = 'expedite';
+        break;
+      default:
+        break;
+    }
+
+    if (!isNewJob) {
+      // Update request
+      putJobUpdate(propertyId, jobId, formJob);
+    } else {
+      // Save request
+      postJobCreate(propertyId, formJob);
+    }
+  };
+
+  const generalFormErrors =
+    error && error.errors ? error.errors.map((e) => e.detail) : [];
+
   return {
-    isLoading: formState.isLoading,
-    job: formState.job,
+    isLoading,
+    job,
     postJobCreate,
     putJobUpdate,
-    error
+    onPublish,
+    generalFormErrors
   };
 }
