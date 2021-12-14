@@ -98,4 +98,23 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
     );
     expect(clonedSection.added_multi_section).toBeTruthy();
   });
+
+  test('should remove section from the template', () => {
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const sectionId = originalMultiSection.id;
+    const currentTemplate = {
+      sections: {
+        [sectionId]: deepClone(
+          originalMultiSection
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    const selectionResult = result.current.removeSection(sectionId);
+    const removedSections =
+      selectionResult.sections[Object.keys(selectionResult.sections)[0]];
+    expect(removedSections).toBeNull();
+  });
 });
