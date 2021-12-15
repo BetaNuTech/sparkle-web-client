@@ -39,6 +39,7 @@ interface Props {
     sectionId: string
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
+  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
 }
 
 // Mobile layout
@@ -58,7 +59,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   hasUpdates,
   onAddSection,
   onRemoveSection,
-  onItemIsNAChange
+  onItemIsNAChange,
+  onClickAttachmentNotes
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -137,6 +139,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onAddSection={onAddSection}
         onRemoveSection={onRemoveSection}
         onItemIsNAChange={onItemIsNAChange}
+        onClickAttachmentNotes={onClickAttachmentNotes}
       />
     </>
   );

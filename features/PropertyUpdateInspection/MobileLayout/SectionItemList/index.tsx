@@ -17,13 +17,15 @@ interface Props {
   ): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
+  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
   item,
   onInputChange,
   onClickOneActionNotes,
-  onItemIsNAChange
+  onItemIsNAChange,
+  onClickAttachmentNotes
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   return (
@@ -46,7 +48,12 @@ const SectionItemList: FunctionComponent<Props> = ({
           onClickOneActionNotes={() => onClickOneActionNotes(item)}
         />
         {showAttachment && (
-          <Attachment photos={item.photos} notes={item.notes} />
+          <Attachment
+            photos={item.photos}
+            notes={item.notes}
+            inspectorNotes={item.inspectorNotes}
+            onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
+          />
         )}
         <SectionItemDropdown
           isItemNA={item.isItemNA}

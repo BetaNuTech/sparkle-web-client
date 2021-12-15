@@ -117,4 +117,26 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
       selectionResult.sections[Object.keys(selectionResult.sections)[0]];
     expect(removedSections).toBeNull();
   });
+
+  test('should update inspector notes', () => {
+    const expected = 'this is inspector notes';
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const itemId = unselectedCheckmarkItem.id;
+    const currentTemplate = {
+      items: {
+        [itemId]: deepClone(
+          unselectedCheckmarkItem
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    const selectionResult = result.current.updateInspectorNotes(
+      itemId,
+      expected
+    );
+    const actual = ((selectionResult.items || {})[itemId] || {}).inspectorNotes;
+    expect(actual).toEqual(expected);
+  });
 });
