@@ -19,13 +19,15 @@ interface Props {
   ): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
+  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
   item,
   onInputChange,
   onClickOneActionNotes,
-  onItemIsNAChange
+  onItemIsNAChange,
+  onClickAttachmentNotes
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   return (
@@ -48,7 +50,12 @@ const SectionItemList: FunctionComponent<Props> = ({
         )}
       >
         {showAttachment && (
-          <Attachment photos={item.photos} notes={item.notes} />
+          <Attachment
+            photos={item.photos}
+            inspectorNotes={item.inspectorNotes}
+            notes={item.notes}
+            onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
+          />
         )}
         <InspectionItemControls
           inputType={item.mainInputType || item.itemType}

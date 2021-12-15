@@ -31,6 +31,7 @@ interface MobileLayoutTeamItemModel {
     sectionId: string
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
+  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -43,7 +44,8 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onClickOneActionNotes,
   onAddSection,
   onRemoveSection,
-  onItemIsNAChange
+  onItemIsNAChange,
+  onClickAttachmentNotes
 }) => {
   const listItems = sectionItems.get(section.id);
 
@@ -105,6 +107,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             onInputChange={onInputChange}
             onClickOneActionNotes={onClickOneActionNotes}
             onItemIsNAChange={onItemIsNAChange}
+            onClickAttachmentNotes={onClickAttachmentNotes}
           />
         ))}
       </ul>

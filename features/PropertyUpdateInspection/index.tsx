@@ -18,6 +18,7 @@ import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates
 import usePublishUpdates from './hooks/usePublishUpdates';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
+import AttachmentNotesModal from './AttachmentNotesModal';
 
 interface Props {
   user: userModel;
@@ -44,10 +45,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     updateTextInputValue,
     addSection,
     removeSection,
-    setItemIsNA
+    setItemIsNA,
+    updateInspectorNotes
   } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
     useState(false);
+
+  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
+
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
   const { setLatestTemplateUpdates, hasUpdates } =
     useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
@@ -86,6 +92,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     textInputValue: string
   ) => {
     setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
+  };
+
+  // Add inspector notes updates to local, unpublised, changes
+  const onInspectorNotesChange = (
+    event: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setLatestTemplateUpdates(
+      updateInspectorNotes(selectedInspectionItem.id, event.target.value)
+    );
   };
 
   const onAddSection = (
@@ -167,9 +182,21 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setSelectedInspectionItem(item);
   };
 
+  //opens Attachment notes modal and also set selected inspection
+  const onClickAttachmentNotes = (item: inspectionTemplateItemModel) => {
+    setIsVisibleAttachmentNotesModal(true);
+    setSelectedInspectionItem(item);
+  };
+
   //closes OneActionsNotes modal and also remove value for selected inspection item.
   const closeOneActionNotesModal = () => {
     setIsVisibleOneActionNotesModal(false);
+    setSelectedInspectionItem(null);
+  };
+
+  //closes Attachment Notes modal and also remove value for selected inspection item.
+  const closeAttachmentNotesModal = () => {
+    setIsVisibleAttachmentNotesModal(false);
     setSelectedInspectionItem(null);
   };
 
@@ -197,6 +224,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onAddSection={onAddSection}
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
+            onClickAttachmentNotes={onClickAttachmentNotes}
           />
         </>
       )}
@@ -219,6 +247,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onAddSection={onAddSection}
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
+            onClickAttachmentNotes={onClickAttachmentNotes}
           />
         </>
       )}
@@ -226,6 +255,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         isVisible={isVisibleOneActionNotesModal}
         onClose={closeOneActionNotesModal}
         onChange={onOneActionNotesChange}
+        selectedInspectionItem={selectedInspectionItem}
+      />
+
+      <AttachmentNotesModal
+        isVisible={isVisibleAttachmentNotesModal}
+        onClose={closeAttachmentNotesModal}
+        onChange={onInspectorNotesChange}
         selectedInspectionItem={selectedInspectionItem}
       />
     </>

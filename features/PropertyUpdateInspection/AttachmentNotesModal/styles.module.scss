@@ -1,0 +1,18 @@
+@import '../../../styles/index.scss';
+
+.AttachmentNoteModal {
+  padding: $global-md-padding 0;
+
+  &__formLabel {
+    font-size: $form-label-fontsize;
+    font-weight: 600;
+    margin: $global-padding 0 $global-sm-padding 0;
+    color: $gray-med-dark;
+  }
+
+  &__formNoteInput {
+    @extend %inputText;
+    margin: 0;
+    padding: $global-padding;
+  }
+}

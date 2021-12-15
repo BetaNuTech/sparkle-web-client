@@ -19,7 +19,7 @@ interface Props {
       | React.ChangeEvent<HTMLInputElement>,
     value: string | number
   ): void;
-  onClickOneActionNotes(): void;
+  onClickOneActionNotes?(): void;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
