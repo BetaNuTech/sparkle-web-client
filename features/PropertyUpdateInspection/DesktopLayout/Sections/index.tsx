@@ -18,8 +18,14 @@ interface Props {
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible?: boolean;
-  onAddSection(sectionId: string): void;
-  onRemoveSection(sectionId: string): void;
+  onAddSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
+  onRemoveSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 

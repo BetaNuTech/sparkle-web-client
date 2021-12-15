@@ -22,8 +22,14 @@ interface MobileLayoutTeamItemModel {
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
-  onAddSection(sectionId: string): void;
-  onRemoveSection(sectionId: string): void;
+  onAddSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
+  onRemoveSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
@@ -40,24 +46,6 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onItemIsNAChange
 }) => {
   const listItems = sectionItems.get(section.id);
-
-  const onClickAdd = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    sectionId: string
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onAddSection(sectionId);
-  };
-
-  const onClickRemove = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    sectionId: string
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onRemoveSection(sectionId);
-  };
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -86,7 +74,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
                 {section.title !== nextSectionTitle && (
                   <button
                     className={styles['section__list__item__button--line']}
-                    onClick={(e) => onClickAdd(e, section.id)}
+                    onClick={(event) => onAddSection(event, section.id)}
                   >
                     Add
                   </button>
@@ -96,7 +84,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
                     className={
                       styles['section__list__item__button--redOutline']
                     }
-                    onClick={(e) => onClickRemove(e, section.id)}
+                    onClick={(event) => onRemoveSection(event, section.id)}
                   >
                     Remove
                   </button>

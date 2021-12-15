@@ -23,8 +23,14 @@ interface Props {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onShareAction(): void;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
-  onAddSection(sectionId: string): void;
-  onRemoveSection(sectionId: string): void;
+  onAddSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
+  onRemoveSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
   onSaveInspection(): void;
   isOnline?: boolean;
   isStaging?: boolean;

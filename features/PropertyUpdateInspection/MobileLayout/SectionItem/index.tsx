@@ -26,8 +26,14 @@ interface Props {
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   forceVisible: boolean;
-  onAddSection(sectionId: string): void;
-  onRemoveSection(sectionId: string): void;
+  onAddSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
+  onRemoveSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 
@@ -50,23 +56,6 @@ const SectionItem: FunctionComponent<Props> = ({
     if (target.closest('li') === event.currentTarget) {
       onSectionCollapseToggle(section);
     }
-  };
-
-  const onClickAdd = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    sectionId: string
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onAddSection(sectionId);
-  };
-  const onClickRemove = (
-    e: React.MouseEvent<HTMLButtonElement>,
-    sectionId: string
-  ) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onRemoveSection(sectionId);
   };
 
   return (
@@ -96,7 +85,7 @@ const SectionItem: FunctionComponent<Props> = ({
             {section.title !== nextSectionTitle && (
               <button
                 className={styles.section__list__item__button}
-                onClick={(e) => onClickAdd(e, section.id)}
+                onClick={(event) => onAddSection(event, section.id)}
               >
                 Add
               </button>
@@ -104,7 +93,7 @@ const SectionItem: FunctionComponent<Props> = ({
             {section.added_multi_section && (
               <button
                 className={styles['section__list__item__button--red']}
-                onClick={(e) => onClickRemove(e, section.id)}
+                onClick={(event) => onRemoveSection(event, section.id)}
               >
                 Remove
               </button>
