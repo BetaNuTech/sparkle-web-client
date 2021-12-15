@@ -22,11 +22,12 @@ export default function useInspectionSections(
   );
 
   const [collapsedSections, setCollapsedSections] = useState<string[]>([]);
+
   const sortedTemplateSections = Object.keys(mergedSections)
-    .map((id) => ({
-      id,
-      ...mergedSections[id]
-    }))
+    // remove locally deleted multi-sections
+    .filter((id) => Object.keys(mergedSections[id] || {}).length > 0)
+    // create new merged sections
+    .map((id) => ({ id, ...mergedSections[id] }))
     .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
 
   const onSectionCollapseToggle = (

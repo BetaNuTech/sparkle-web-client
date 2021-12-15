@@ -30,8 +30,14 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   hasUpdates?: boolean;
-  onAddSection(sectionId: string): void;
-  onRemoveSection(sectionId: string): void;
+  onAddSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
+  onRemoveSection(
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
 }
 

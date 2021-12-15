@@ -88,10 +88,21 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
   };
 
-  const onAddSection = (sectionId: string) => {
+  const onAddSection = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
     setLatestTemplateUpdates(addSection(sectionId));
   };
-  const onRemoveSection = (sectionId: string) => {
+
+  const onRemoveSection = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    sectionId: string
+  ) => {
+    event.preventDefault();
+    event.stopPropagation();
     setLatestTemplateUpdates(removeSection(sectionId));
   };
 
@@ -165,7 +176,6 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
-
   return (
     <>
       {isMobileorTablet && (

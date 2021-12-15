@@ -81,19 +81,12 @@ export default function inspectionUpdate(
     result.items = result.items || {};
 
     // Apply user's item changes
-    const updatedTemplateItem = updateItem(
+    result.items[targetId] = updateItem(
       updatedItem,
       currentItem,
       changes,
       options
     );
-    // merge data for unsaved template item
-    result.items[targetId] = updatedTemplateItem
-      ? {
-          ...(updatedItem || {}),
-          ...updatedTemplateItem
-        }
-      : null;
 
     // Remove no longer applicable updates
     if (!result.items[targetId]) delete result.items[targetId];
