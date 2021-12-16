@@ -90,6 +90,15 @@
     display: flex;
     gap: $global-sm-padding;
 
+    svg {
+      width: rem-calc(20);
+      height: rem-calc(20);
+
+      g {
+        stroke: $gray-med-dark;
+      }
+    }
+
     &__item {
       background-color: $gray-4;
       width: rem-calc(46);
@@ -113,15 +122,6 @@
             stroke: $white;
           }
         }
-      }
-    }
-
-    svg {
-      width: rem-calc(20);
-      height: rem-calc(20);
-
-      g {
-        stroke: $gray-med-dark;
       }
     }
   }

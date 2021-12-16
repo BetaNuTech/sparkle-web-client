@@ -1,6 +1,7 @@
 import inspectionModel from '../common/models/inspection';
 import inspectionTemplateSectionModel from '../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../common/models/inspectionTemplateItem';
+import inspectionTemplateItemModelPhotoData from '../common/models/inspectionTemplateItemPhotoData';
 
 export const fullInspection: inspectionModel = {
   id: 'inspection-1',
@@ -318,5 +319,12 @@ export const inspectionItems = [
   answeredTextInputItem,
   unselectedSignatureInputItem
 ];
+
+export const photoDataEntry: inspectionTemplateItemModelPhotoData = {
+  id: 'photo-data-1',
+  caption: 'test caption',
+  downloadURL:
+    'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/inspectionItemImages%2Fproperty-id%2Fitem-id%2F1639158738461.jpg?alt=media&token=123' // eslint-disable-line
+};
 
 export default [fullInspection, inspectionA, inspectionB];

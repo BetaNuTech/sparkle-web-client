@@ -263,6 +263,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onClose={closeAttachmentNotesModal}
         onChange={onInspectorNotesChange}
         selectedInspectionItem={selectedInspectionItem}
+        propertyId={property.id}
+        inspectionId={inspection.id}
+        isMobile={isMobileorTablet}
       />
     </>
   );

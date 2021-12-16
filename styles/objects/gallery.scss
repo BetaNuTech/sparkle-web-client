@@ -1,0 +1,35 @@
+%gallery {
+  display: grid;
+  width: 100%;
+  grid-gap: $global-sm-padding;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: rem-calc(240) rem-calc(80);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &.-oneRow {
+    grid-template-rows: rem-calc(240);
+  }
+}
+
+%galleryItem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: $global-radius;
+  background-color: $gray-lighter;
+
+  &:first-child {
+    grid-column: 1 / span 3;
+  }
+}
+
+%galleryPhoto {
+  display: block;
+  object-fit: cover;
+  min-width: 100%;
+  min-height: 100%;
+  max-width: none;
+}
