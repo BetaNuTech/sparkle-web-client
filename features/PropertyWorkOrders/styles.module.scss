@@ -2,7 +2,20 @@
 
 .header {
   @extend %gridHeader;
+
   &__title {
     @extend %gridHeaderTitle;
+  }
+
+  &__footer {
+    padding: 0 $global-padding;
+    display: flex;
+    flex: 0 1 auto;
+    flex-flow: column nowrap;
+    color: $white;
+    font-size: ($small-font-size * 1.25);
+    line-height: 1.4rem;
+    white-space: nowrap;
+    background-color: $info-color;
   }
 }
