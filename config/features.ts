@@ -16,5 +16,6 @@ export default {
   supportBetaPropertyInspectionCreate: true,
   supportBetaPropertyInspectionUpdate: false,
   supportBetaPropertyInspectionMove: false,
-  supportBetaPropertyUpdate: true
+  supportBetaPropertyUpdate: true,
+  supportBetaInspectionUploadPhotos: false
 };

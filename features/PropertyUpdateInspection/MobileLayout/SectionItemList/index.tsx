@@ -52,6 +52,7 @@ const SectionItemList: FunctionComponent<Props> = ({
             photos={item.photos}
             notes={item.notes}
             inspectorNotes={item.inspectorNotes}
+            photosData={item.photosData}
             onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
           />
         )}

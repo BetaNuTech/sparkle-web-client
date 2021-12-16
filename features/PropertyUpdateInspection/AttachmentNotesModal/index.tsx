@@ -3,30 +3,51 @@ import { FunctionComponent } from 'react';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import InspectionItemControls from '../../../common/InspectionItemControls';
+import MiniPreviewGallery from '../../../common/MiniPreviewGallery';
 import baseStyles from '../../../common/Modal/styles.module.scss';
+import LinkFeature from '../../../common/LinkFeature';
+import features from '../../../config/features';
 import styles from './styles.module.scss';
 
 interface Props extends ModalProps {
   onClose: () => void;
   onChange?: () => void;
   selectedInspectionItem: inspectionTemplateItemModel;
+  propertyId: string;
+  inspectionId: string;
+  isMobile: boolean;
 }
 
 const AttachmentNoteModal: FunctionComponent<Props> = ({
   onChange,
   onClose,
-  selectedInspectionItem
+  selectedInspectionItem,
+  propertyId,
+  inspectionId,
+  isMobile
 }) => {
-  const onInputChange = () => null;
+  // eslint-disable-next-line max-len
+  const uploadPageLink = `/properties/${propertyId}/update-inspection/${inspectionId}/uploads?item=${selectedInspectionItem.id}`;
 
   const {
     inspectorNotes,
     title,
     mainInputType,
     mainInputSelected,
-    mainInputSelection
+    mainInputSelection,
+    photos,
+    photosData
   } = selectedInspectionItem;
   const showInspectionItemControl = mainInputType !== 'oneaction_notes';
+
+  const photosDataItems = Object.keys(photosData || {}).map((key) => ({
+    id: key,
+    ...photosData[key]
+  }));
+
+  const hasExistingPhotos = photosDataItems.length > 0;
+  const showPhotosData = !isMobile && photos && hasExistingPhotos;
+
   return (
     <div
       className={styles.AttachmentNoteModal}
@@ -43,7 +64,30 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
         <h4 className={baseStyles.modal__heading}>{title}</h4>
       </header>
 
-      <div className={clsx(baseStyles.modal__main)}>
+      <div className={clsx(baseStyles.modal__main, baseStyles['-twoColumn'])}>
+        {showPhotosData && (
+          <aside
+            className={clsx(
+              baseStyles.modal__main__sidebar,
+              styles.AttachmentNoteModal__sidebar
+            )}
+            data-testid="attachmentNotesModal-sidebar"
+          >
+            <LinkFeature
+              featureEnabled={features.supportBetaInspectionUploadPhotos}
+              href={uploadPageLink}
+            >
+              <MiniPreviewGallery photos={photosDataItems} />
+            </LinkFeature>
+            <LinkFeature
+              featureEnabled={features.supportBetaInspectionUploadPhotos}
+              href={uploadPageLink}
+              className={styles.AttachmentNoteModal__addButton}
+            >
+              Add More Images
+            </LinkFeature>
+          </aside>
+        )}
         <div className={clsx(baseStyles.modal__main__content)}>
           <label
             htmlFor="inspection-main-input-notes"
@@ -61,6 +105,7 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
             name="notes"
             onChange={onChange}
             defaultValue={inspectorNotes}
+            data-testid="attachmentNotesModal-textarea"
           ></textarea>
 
           {showInspectionItemControl && (
@@ -72,7 +117,7 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
                 inputType={mainInputType}
                 selected={mainInputSelected}
                 selectedValue={mainInputSelection}
-                onInputChange={onInputChange}
+                onInputChange={() => null} // noop
               />
             </>
           )}

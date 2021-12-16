@@ -1,0 +1,24 @@
+@import '../../styles/index.scss';
+
+.miniPreviewGallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 $global-mlg-padding 0;
+
+  &__list {
+    @extend %gallery;
+  }
+
+  &__item {
+    @extend %galleryItem;
+  }
+
+  &__photo {
+    @extend %galleryPhoto;
+  }
+
+  &__button {
+    @extend %outlineButton;
+  }
+}

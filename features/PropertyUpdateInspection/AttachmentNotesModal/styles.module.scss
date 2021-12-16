@@ -3,6 +3,10 @@
 .AttachmentNoteModal {
   padding: $global-md-padding 0;
 
+  &__sidebar {
+    text-align: center;
+  }
+
   &__formLabel {
     font-size: $form-label-fontsize;
     font-weight: 600;
@@ -14,5 +18,9 @@
     @extend %inputText;
     margin: 0;
     padding: $global-padding;
+  }
+
+  &__addButton {
+    @extend %outlineButton;
   }
 }
