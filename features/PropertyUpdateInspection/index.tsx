@@ -37,7 +37,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   isStaging,
   property,
   inspection,
-  unpublishedTemplateUpdates
+  unpublishedTemplateUpdates,
+  forceVisible
 }) => {
   const {
     updateMainInputSelection,
@@ -225,6 +226,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
+            forceVisible={forceVisible}
           />
         </>
       )}
@@ -248,6 +250,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
+            forceVisible={forceVisible}
           />
         </>
       )}

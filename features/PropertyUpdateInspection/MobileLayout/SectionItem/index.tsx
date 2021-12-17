@@ -46,6 +46,7 @@ const SectionItem: FunctionComponent<Props> = ({
   onInputChange,
   onClickOneActionNotes,
   sectionItems,
+  forceVisible,
   onAddSection,
   onRemoveSection,
   onItemIsNAChange,
@@ -108,6 +109,7 @@ const SectionItem: FunctionComponent<Props> = ({
           <SectionItemList
             key={item.id}
             item={item}
+            forceVisible={forceVisible}
             onInputChange={onInputChange}
             onClickOneActionNotes={onClickOneActionNotes}
             onItemIsNAChange={onItemIsNAChange}
