@@ -1,5 +1,8 @@
+import { useState } from 'react';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import inspUtil from '../../../common/utils/inspection';
+import userModel from '../../../common/models/user';
+import { getUserFullname } from '../../../common/utils/user';
 
 interface useItemUpdateResult {
   updateMainInputSelection(
@@ -22,12 +25,18 @@ interface useItemUpdateResult {
     notes: string
   ): inspectionTemplateUpdateModel;
   removeSection(sectionId: string): inspectionTemplateUpdateModel;
+  enableAdminEditMode(currentUser: userModel): void;
+  disableAdminEditMode(): void;
+  isAdminEditModeEnabled: boolean;
 }
 
 export default function useInspectionItemUpdate(
   updatedTemplate: inspectionTemplateUpdateModel,
   currentTemplate: inspectionTemplateUpdateModel
 ): useItemUpdateResult {
+  const [isAdminEditModeEnabled, setIsAdminEditModeEnabled] = useState(false);
+  const [updateOption, setUpdateOption] = useState({});
+
   // merge item data with previous state for unsaved template item
   const mergeItem = (result: inspectionTemplateUpdateModel, itemId: string) => {
     const items = updatedTemplate?.items || {};
@@ -50,17 +59,27 @@ export default function useInspectionItemUpdate(
     itemId: string,
     selectionIndex: number
   ): inspectionTemplateUpdateModel =>
-    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
-      items: { [itemId]: { mainInputSelection: selectionIndex } }
-    });
+    inspUtil.updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      {
+        items: { [itemId]: { mainInputSelection: selectionIndex } }
+      },
+      updateOption
+    );
 
   const updateTextInputValue = (
     itemId: string,
     textInputValue: string
   ): inspectionTemplateUpdateModel => {
-    const result = inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
-      items: { [itemId]: { textInputValue } }
-    });
+    const result = inspUtil.updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      {
+        items: { [itemId]: { textInputValue } }
+      },
+      updateOption
+    );
 
     const mergedResult = mergeItem(result, itemId);
     return mergedResult;
@@ -70,25 +89,40 @@ export default function useInspectionItemUpdate(
     itemId: string,
     notes: string
   ): inspectionTemplateUpdateModel =>
-    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
-      items: { [itemId]: { mainInputNotes: notes } }
-    });
+    inspUtil.updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      {
+        items: { [itemId]: { mainInputNotes: notes } }
+      },
+      updateOption
+    );
 
   const updateInspectorNotes = (
     itemId: string,
     notes: string
   ): inspectionTemplateUpdateModel =>
-    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
-      items: { [itemId]: { inspectorNotes: notes } }
-    });
+    inspUtil.updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      {
+        items: { [itemId]: { inspectorNotes: notes } }
+      },
+      updateOption
+    );
 
   const setItemIsNA = (
     itemId: string,
     isItemNA: boolean
   ): inspectionTemplateUpdateModel =>
-    inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
-      items: { [itemId]: { isItemNA } }
-    });
+    inspUtil.updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      {
+        items: { [itemId]: { isItemNA } }
+      },
+      updateOption
+    );
 
   const addSection = (sectionId: string): inspectionTemplateUpdateModel =>
     inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
@@ -100,6 +134,19 @@ export default function useInspectionItemUpdate(
       sections: { [sectionId]: null }
     });
 
+  const enableAdminEditMode = (currentUser: userModel) => {
+    setIsAdminEditModeEnabled(true);
+    setUpdateOption({
+      adminEdit: true,
+      adminFullName: getUserFullname(currentUser),
+      adminId: currentUser.id
+    });
+  };
+  const disableAdminEditMode = () => {
+    setIsAdminEditModeEnabled(false);
+    setUpdateOption({});
+  };
+
   return {
     updateMainInputSelection,
     updateMainInputNotes,
@@ -107,6 +154,9 @@ export default function useInspectionItemUpdate(
     addSection,
     removeSection,
     setItemIsNA,
-    updateInspectorNotes
+    updateInspectorNotes,
+    enableAdminEditMode,
+    disableAdminEditMode,
+    isAdminEditModeEnabled
   };
 }

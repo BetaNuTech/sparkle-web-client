@@ -37,7 +37,44 @@ describe('Unit | Features | Property Update Inspection | Mobile Layout', () => {
     expect(completeButton).toBeDisabled();
   });
 
-  it('should show edit button and enable complete button if inspection not completed', () => {
+  it('should hide edit button if inspection is completed but user is not admin', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      canEditInspection: false
+    };
+
+    render(<MobileLayout {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const editButton = screen.queryByTestId('header-edit-button');
+
+    expect(editButton).toBeNull();
+  });
+
+  it('should show edit button if inspection completed and current user is admin', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      canEditInspection: true
+    };
+
+    render(<MobileLayout {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const editButton = screen.queryByTestId('header-edit-button');
+
+    expect(editButton).toBeTruthy();
+  });
+
+  it('should enable complete button if inspection completed', () => {
     const props = {
       property: fullProperty,
       inspection: fullInspection,
@@ -48,10 +85,8 @@ describe('Unit | Features | Property Update Inspection | Mobile Layout', () => {
 
     render(<MobileLayout {...props} />);
 
-    const editButton = screen.queryByTestId('header-edit-button');
     const completeButton = screen.queryByTestId('header-complete-button');
 
-    expect(editButton).toBeTruthy();
     expect(completeButton).not.toBeDisabled();
   });
 

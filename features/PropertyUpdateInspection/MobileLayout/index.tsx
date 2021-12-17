@@ -40,6 +40,8 @@ interface Props {
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
+  canEditInspection: boolean;
+  onEnableAdminEditMode(): void;
   forceVisible: boolean;
 }
 
@@ -62,6 +64,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   onRemoveSection,
   onItemIsNAChange,
   onClickAttachmentNotes,
+  canEditInspection,
+  onEnableAdminEditMode,
   forceVisible
 }) => {
   // Mobile Header actions buttons
@@ -86,11 +90,12 @@ const MobileLayout: FunctionComponent<Props> = ({
       >
         Share
       </button>
-      {inspection.inspectionCompleted && (
+      {canEditInspection && (
         <button
           type="button"
           className={headStyle.header__button}
           data-testid="header-edit-button"
+          onClick={onEnableAdminEditMode}
         >
           Edit
         </button>

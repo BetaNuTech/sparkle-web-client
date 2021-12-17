@@ -14,6 +14,8 @@ interface HeaderModel {
   hasUpdates: boolean;
   onShareAction(): void;
   onSaveInspection(): void;
+  canEditInspection: boolean;
+  onEnableAdminEditMode(): void;
 }
 
 const Header: FunctionComponent<HeaderModel> = ({
@@ -22,7 +24,9 @@ const Header: FunctionComponent<HeaderModel> = ({
   isOnline,
   hasUpdates,
   onShareAction,
-  onSaveInspection
+  onSaveInspection,
+  canEditInspection,
+  onEnableAdminEditMode
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const RightSide = () => (
@@ -34,7 +38,7 @@ const Header: FunctionComponent<HeaderModel> = ({
       >
         Share
       </button>
-      {inspection.inspectionCompleted && (
+      {canEditInspection && (
         <button
           type="button"
           className={clsx(
@@ -42,6 +46,7 @@ const Header: FunctionComponent<HeaderModel> = ({
             styles['header__item__button--dark']
           )}
           data-testid="header-edit-button"
+          onClick={onEnableAdminEditMode}
         >
           Edit
         </button>

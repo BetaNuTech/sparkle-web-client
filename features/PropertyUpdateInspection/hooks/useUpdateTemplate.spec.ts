@@ -1,8 +1,9 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import deepClone from '../../../__tests__/helpers/deepClone';
 import useUpdateTemplate from './useUpdateTemplate';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import { admin } from '../../../__mocks__/users';
 import {
   unselectedCheckmarkItem,
   emptyTextInputItem,
@@ -138,5 +139,74 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
     );
     const actual = ((selectionResult.items || {})[itemId] || {}).inspectorNotes;
     expect(actual).toEqual(expected);
+  });
+
+  test('should enable admin edit mode', () => {
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const itemId = unselectedCheckmarkItem.id;
+    const currentTemplate = {
+      items: {
+        [itemId]: deepClone(
+          unselectedCheckmarkItem
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    act(() => {
+      result.current.enableAdminEditMode(admin);
+    });
+
+    expect(result.current.isAdminEditModeEnabled).toBeTruthy();
+  });
+
+  test('should disable admin edit mode', () => {
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const itemId = unselectedCheckmarkItem.id;
+    const currentTemplate = {
+      items: {
+        [itemId]: deepClone(
+          unselectedCheckmarkItem
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    act(() => {
+      result.current.disableAdminEditMode();
+    });
+
+    expect(result.current.isAdminEditModeEnabled).toBeFalsy();
+  });
+
+  test('should update inspector notes with admin edit if admin edit mode enabled', () => {
+    const expected = 'this is inspector notes';
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const itemId = unselectedCheckmarkItem.id;
+    const currentTemplate = {
+      items: {
+        [itemId]: deepClone(
+          unselectedCheckmarkItem
+        ) as inspectionTemplateItemModel
+      }
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useUpdateTemplate(updatedTemplate, currentTemplate)
+    );
+    act(() => {
+      result.current.enableAdminEditMode(admin);
+    });
+
+    const selectionResult = result.current.updateInspectorNotes(
+      itemId,
+      expected
+    );
+
+    const actual = ((selectionResult.items || {})[itemId] || {}).inspectorNotes;
+    const adminEditsResult = ((selectionResult.items || {})[itemId] || {}).adminEdits;
+    expect(actual).toEqual(expected);
+    expect(adminEditsResult).toBeTruthy();
   });
 });
