@@ -42,7 +42,51 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     expect(completeButton).toBeDisabled();
   });
 
-  it('should show edit button and enable complete button if inspection not completed', () => {
+  it('should hide edit button if inspection is completed but user is not admin', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      canEditInspection: false
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const editButton = screen.queryByTestId('header-edit-button');
+
+    expect(editButton).toBeNull();
+  });
+
+  it('should show edit button if inspection completed and current user is admin', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      canEditInspection: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const editButton = screen.queryByTestId('header-edit-button');
+
+    expect(editButton).toBeTruthy();
+  });
+
+  it('should enable complete button if inspection completed', () => {
     const props = {
       property: fullProperty,
       inspection: fullInspection,
@@ -58,10 +102,8 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    const editButton = screen.queryByTestId('header-edit-button');
     const completeButton = screen.queryByTestId('header-complete-button');
 
-    expect(editButton).toBeTruthy();
     expect(completeButton).not.toBeDisabled();
   });
 

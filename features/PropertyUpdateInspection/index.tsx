@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useState, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -19,6 +19,7 @@ import usePublishUpdates from './hooks/usePublishUpdates';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import AttachmentNotesModal from './AttachmentNotesModal';
+import { canEditInspection } from '../../common/utils/userPermissions';
 
 interface Props {
   user: userModel;
@@ -38,6 +39,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   property,
   inspection,
   unpublishedTemplateUpdates,
+  user,
   forceVisible
 }) => {
   const {
@@ -47,8 +49,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     addSection,
     removeSection,
     setItemIsNA,
-    updateInspectorNotes
+    updateInspectorNotes,
+    enableAdminEditMode,
+    disableAdminEditMode,
+    isAdminEditModeEnabled
   } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
+
+  // disable admin edit mode when user exit from update inspection page
+  useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
     useState(false);
 
@@ -152,6 +161,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     );
   };
 
+  const onEnableAdminEditMode = () => {
+    enableAdminEditMode(user);
+  };
+
   // Publish local changes and on success
   // clear all local changes
   const onSaveInspection = () => {
@@ -201,6 +214,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setSelectedInspectionItem(null);
   };
 
+  const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
+
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
@@ -226,6 +241,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
+            canEditInspection={canEdit}
+            onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
           />
         </>
@@ -250,6 +267,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
+            canEditInspection={canEdit}
+            onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
           />
         </>

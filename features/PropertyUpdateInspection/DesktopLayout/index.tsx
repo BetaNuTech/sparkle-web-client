@@ -37,6 +37,8 @@ interface Props {
   hasUpdates?: boolean;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
+  canEditInspection: boolean;
+  onEnableAdminEditMode(): void;
   forceVisible: boolean;
 }
 
@@ -57,6 +59,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onRemoveSection,
   onItemIsNAChange,
   onClickAttachmentNotes,
+  canEditInspection,
+  onEnableAdminEditMode,
   forceVisible
 }) => (
   <>
@@ -67,6 +71,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
       hasUpdates={hasUpdates}
       onShareAction={onShareAction}
       onSaveInspection={onSaveInspection}
+      canEditInspection={canEditInspection}
+      onEnableAdminEditMode={onEnableAdminEditMode}
     />
     <div className={styles.main}>
       <Sections

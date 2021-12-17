@@ -7,6 +7,7 @@ import {
   propertyMember,
   noAccess
 } from '../../__mocks__/users';
+import { fullInspection, inspectionB } from '../../__mocks__/inspections';
 import {
   openImprovementJob,
   approvedImprovementJob,
@@ -181,6 +182,27 @@ describe('Unit | Common | Utils | User Permissions', () => {
       util.canCreateInspection(updatedTeamLead, propertyId),
       util.canCreateInspection(updatedPropertyMember, propertyId),
       util.canCreateInspection(noAccess, propertyId)
+    ];
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins to edit completed inspection if user is not in admin edit mode', () => {
+    const isAdminEditModeEnabled = true;
+    const expected = [true, false, false, false, false, false, false];
+
+    const actual = [
+      util.canEditInspection(admin, fullInspection, false),
+      util.canEditInspection(admin, fullInspection, isAdminEditModeEnabled),
+      util.canEditInspection(admin, inspectionB, isAdminEditModeEnabled),
+      util.canEditInspection(corporate, fullInspection, isAdminEditModeEnabled),
+      util.canEditInspection(teamLead, fullInspection, isAdminEditModeEnabled),
+      util.canEditInspection(
+        propertyMember,
+        fullInspection,
+        isAdminEditModeEnabled
+      ),
+      util.canEditInspection(noAccess, fullInspection, isAdminEditModeEnabled)
     ];
 
     expect(actual).toEqual(expected);

@@ -1,6 +1,7 @@
 import userModel from '../models/user';
 import jobModel from '../models/job';
 import bidModel from '../models/bid';
+import inspectionModel from '../models/inspection';
 
 // Create flat array of all user's
 // property's that they are team lead of.
@@ -121,6 +122,14 @@ export const canCreateInspection = (
   propertyId: string
 ): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
+
+// Checks user has permission to UPDATE a completed inspection
+export const canEditInspection = (
+  user: userModel,
+  inspection: inspectionModel,
+  isAdminEditModeEnabled: boolean
+): boolean =>
+  user.admin && inspection.inspectionCompleted && !isAdminEditModeEnabled;
 
 // Checks user has permission to view property jobs
 export const canAccessJobs = (user: userModel, propertyId: string): boolean =>
