@@ -37,6 +37,7 @@ interface Props {
   hasUpdates?: boolean;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
+  forceVisible: boolean;
 }
 
 const DesktopLayout: FunctionComponent<Props> = ({
@@ -55,7 +56,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onAddSection,
   onRemoveSection,
   onItemIsNAChange,
-  onClickAttachmentNotes
+  onClickAttachmentNotes,
+  forceVisible
 }) => (
   <>
     <Header
@@ -79,6 +81,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         onRemoveSection={onRemoveSection}
         onItemIsNAChange={onItemIsNAChange}
         onClickAttachmentNotes={onClickAttachmentNotes}
+        forceVisible={forceVisible}
       />
     </div>
   </>

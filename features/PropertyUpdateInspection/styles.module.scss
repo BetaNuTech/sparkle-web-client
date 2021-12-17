@@ -118,6 +118,7 @@
         position: relative;
         padding: $global-sm-padding $global-padding;
         border-bottom: rem-calc(1) solid $gray-lighter;
+        min-height: rem-calc(72);
 
         &--mainInput {
           display: flex;
@@ -133,6 +134,7 @@
           &Grid {
             gap: $global-mlg-padding;
             flex-direction: row;
+
             ul:nth-child(1) {
               flex: none;
             }
@@ -142,6 +144,7 @@
         &--grid {
           padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
           grid-template-columns: 0.6fr 1fr auto;
+          min-height: rem-calc(63);
 
           &Action {
             display: flex;
@@ -161,6 +164,14 @@
               max-height: rem-calc(22);
             }
           }
+        }
+        &--gridSignature {
+          min-height: rem-calc(128);
+          display: flex;
+          flex-direction: column;
+        }
+        &--signature {
+          min-height: rem-calc(185);
         }
 
         &--notApplicable {
@@ -193,6 +204,11 @@
       padding: 0px $global-padding;
     }
 
+    &__list__item__row--gridSignature {
+      display: grid;
+      flex-direction: row;
+      min-height: rem-calc(160);
+    }
     &__list__item__footer {
       align-items: center;
       gap: rem-calc(12);

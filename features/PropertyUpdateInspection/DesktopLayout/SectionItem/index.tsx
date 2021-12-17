@@ -39,6 +39,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   nextSectionTitle,
   collapsedSections,
   sectionItems,
+  forceVisible,
   onSectionCollapseToggle,
   onInputChange,
   onClickOneActionNotes,
@@ -104,6 +105,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
           <SectionItemList
             key={item.id}
             item={item}
+            forceVisible={forceVisible}
             onInputChange={onInputChange}
             onClickOneActionNotes={onClickOneActionNotes}
             onItemIsNAChange={onItemIsNAChange}
