@@ -16,6 +16,7 @@ import {
   unselectedCheckmarkItem,
   singleSection
 } from '../../../../__mocks__/inspections';
+import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import PropertyUpdateInspection from '../../../../features/PropertyUpdateInspection';
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
@@ -27,6 +28,8 @@ import inspectionTemplateItemModel from '../../../../common/models/inspectionTem
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateUpdateModel from '../../../../common/models/inspections/templateUpdate';
 import deepClone from '../../../helpers/deepClone';
+
+const FORCE_VISIBLE = true;
 
 function render(ui: any, options: any = {}) {
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
@@ -65,6 +68,8 @@ incompleteInspection.template = {
 } as inspectionTemplateModel;
 
 describe('Integration | Features | Property Update Inspection', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   afterEach(() => sinon.restore());
 
   it('should publish a inspection item update', async () => {
@@ -77,7 +82,8 @@ describe('Integration | Features | Property Update Inspection', () => {
       user,
       property: deepClone(fullProperty) as propertyModel,
       inspection: deepClone(incompleteInspection) as inspectionModel,
-      unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel
+      unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel,
+      forceVisible:FORCE_VISIBLE
     };
     render(<PropertyUpdateInspection {...props} />);
 

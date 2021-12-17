@@ -7,12 +7,14 @@ import FiveActionOneToFive from './FiveActionOneToFive';
 import OneActionNotes from './OneActionNotes';
 import Attachment from './Attachment';
 import TextInput from './TextInput';
+import Signature from './Signature';
 
 interface Props {
   inputType: string;
   selected?: boolean;
   selectedValue?: number;
   textInputValue?: string;
+  signatureDownloadURL?: string;
   onInputChange?(
     event:
       | React.MouseEvent<HTMLLIElement>
@@ -27,6 +29,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   selected,
   selectedValue,
   textInputValue,
+  signatureDownloadURL,
   onInputChange,
   onClickOneActionNotes
 }) => {
@@ -86,6 +89,8 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           onMainInputChange={onInputChange}
         />
       );
+    case 'signature':
+      return <Signature signatureDownloadURL={signatureDownloadURL} />;
     default:
       return <></>;
   }

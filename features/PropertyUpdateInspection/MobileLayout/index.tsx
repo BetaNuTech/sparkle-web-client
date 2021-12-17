@@ -40,6 +40,7 @@ interface Props {
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
+  forceVisible: boolean;
 }
 
 // Mobile layout
@@ -60,7 +61,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   onAddSection,
   onRemoveSection,
   onItemIsNAChange,
-  onClickAttachmentNotes
+  onClickAttachmentNotes,
+  forceVisible
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -140,6 +142,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onRemoveSection={onRemoveSection}
         onItemIsNAChange={onItemIsNAChange}
         onClickAttachmentNotes={onClickAttachmentNotes}
+        forceVisible={forceVisible}
       />
     </>
   );
