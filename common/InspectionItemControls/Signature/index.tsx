@@ -4,11 +4,18 @@ import parentStyles from '../styles.module.scss';
 
 interface Props {
   signatureDownloadURL: string;
+  onClickSignatureInput(): void;
 }
 
-const Signature: FunctionComponent<Props> = ({ signatureDownloadURL }) => (
+const Signature: FunctionComponent<Props> = ({
+  signatureDownloadURL,
+  onClickSignatureInput
+}) => (
   <div className={parentStyles.inspection}>
-    <button className={parentStyles.inspection__inputSignature}>
+    <button
+      className={parentStyles.inspection__inputSignature}
+      onClick={onClickSignatureInput}
+    >
       {signatureDownloadURL && (
         <img
           data-testid="inspection-signature-image"
@@ -20,6 +27,8 @@ const Signature: FunctionComponent<Props> = ({ signatureDownloadURL }) => (
   </div>
 );
 
-Signature.defaultProps = {};
+Signature.defaultProps = {
+  onClickSignatureInput: () => {} // eslint-disable-line
+};
 
 export default Signature;

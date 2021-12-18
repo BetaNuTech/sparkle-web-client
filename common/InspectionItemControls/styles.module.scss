@@ -57,6 +57,7 @@
 
       &Error {
         background-color: $alert-light-color;
+
         svg {
           g,
           path,
@@ -69,6 +70,7 @@
 
       &Ok {
         background-color: $black;
+
         svg {
           g,
           path,
@@ -124,6 +126,7 @@
         opacity: 0.35;
         cursor: default;
       }
+
       &--selected {
         background-color: $primary-dark-color;
         svg {
