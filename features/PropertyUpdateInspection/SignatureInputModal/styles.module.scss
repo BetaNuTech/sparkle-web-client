@@ -1,0 +1,133 @@
+@import '../../../styles/index.scss';
+
+.SignatureInputModal {
+  padding: $global-md-padding 0;
+  max-height: 90%;
+
+  &__modal {
+    padding: $global-md-padding 0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    &__header {
+      justify-content: center;
+    }
+  }
+
+  &__content {
+    display: flex;
+    position: relative;
+    overflow-x: hidden;
+    padding-bottom: 0px;
+  }
+
+  &__preview {
+    position: absolute;
+    width: 100%;
+    max-width: rem-calc(600);
+    left: 0;
+    right: 0;
+    bottom: rem-calc(45);
+    margin: 0 auto;
+    z-index: 10;
+    cursor: pointer;
+
+    img {
+      max-height: 100%;
+    }
+  }
+
+  &__canvas {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+
+    &__body {
+      max-width: 100%;
+      width: rem-calc(600); // Maximum signature size
+      max-height: rem-calc(180); // Maximum signature size
+      margin: 0 auto $global-padding;
+      box-sizing: content-box; // push borders to outside of box
+      border-top: 1px solid $gray-med-dark;
+      border-bottom: 1px solid $gray-med-dark;
+
+      &--previewing {
+        pointer-events: none;
+        opacity: 0.4;
+      }
+    }
+
+    &__controls {
+      display: flex;
+      flex-basis: rem-calc(28);
+      position: relative;
+      width: 100%;
+
+      // Ensure controls are always directly below sig pag
+      margin: 0 auto;
+      max-width: rem-calc(600);
+
+      // Top center all items
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    &__preview {
+      display: block;
+      text-transform: uppercase;
+      font-size: rem-calc(12);
+      color: $black;
+      background: none;
+      border-width: 0px;
+    }
+
+    &__undo {
+      // place in top right of container
+      right: rem-calc(-5);
+      top: rem-calc(-7);
+      position: absolute;
+      background: none;
+      border-width: 0;
+
+      > svg {
+        width: rem-calc(18);
+
+        path {
+          fill: $gray-med-dark;
+        }
+      }
+    }
+  }
+
+  // Show rotate request for small
+  // devices in portrait mode
+  @media (max-width: #{rem-calc(600)}) and (orientation:portrait) {
+    &__canvas {
+      background-image: url(../../../public/icons/sparkle/rotate-text.svg);
+      background-repeat: no-repeat;
+      background-position: center;
+      -ms-transform: rotate(90deg);
+      transform: rotateZ(90deg);
+      height: 100%;
+
+      &__body {
+        display: none;
+      }
+
+      &__controls {
+        display: none;
+      }
+    }
+
+    &__preview {
+      display: none;
+    }
+  }
+
+  @include media-query(desktop) {
+    max-height: 66.66%;
+  }
+}

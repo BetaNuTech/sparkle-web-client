@@ -19,6 +19,7 @@ import usePublishUpdates from './hooks/usePublishUpdates';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import AttachmentNotesModal from './AttachmentNotesModal';
+import SignatureInputModal from './SignatureInputModal';
 import { canEditInspection } from '../../common/utils/userPermissions';
 
 interface Props {
@@ -55,13 +56,17 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     isAdminEditModeEnabled
   } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
 
-  // disable admin edit mode when user exit from update inspection page
+  // Disable admin edit mode when user
+  // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
     useState(false);
 
   const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
+
+  const [isVisibleSignatureInputModal, setIsvibleSignatureInputModal] =
     useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
@@ -104,7 +109,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
   };
 
-  // Add inspector notes updates to local, unpublised, changes
+  // Add inspector notes updates to
+  // local, unpublised, changes
   const onInspectorNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
@@ -190,27 +196,45 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     sendNotification('Copied to clipboard.', { type: 'success' });
   };
 
-  //opens OneActionsNotes modal and also set selected inspection
+  // Opens OneActionsNotes modal and
+  // sets selected inspection
   const onClickOneActionNotes = (item: inspectionTemplateItemModel) => {
     setIsVisibleOneActionNotesModal(true);
     setSelectedInspectionItem(item);
   };
 
-  //opens Attachment notes modal and also set selected inspection
+  // Opens Attachment notes modal and
+  // sets selected inspection
   const onClickAttachmentNotes = (item: inspectionTemplateItemModel) => {
     setIsVisibleAttachmentNotesModal(true);
     setSelectedInspectionItem(item);
   };
 
-  //closes OneActionsNotes modal and also remove value for selected inspection item.
+  // Closes OneActionsNotes modal and
+  // removes value for selected inspection item
   const closeOneActionNotesModal = () => {
     setIsVisibleOneActionNotesModal(false);
     setSelectedInspectionItem(null);
   };
 
-  //closes Attachment Notes modal and also remove value for selected inspection item.
+  // Closes Attachment Notes modal and
+  // removes value for selected inspection item
   const closeAttachmentNotesModal = () => {
     setIsVisibleAttachmentNotesModal(false);
+    setSelectedInspectionItem(null);
+  };
+
+  // Opens signature Input modal and
+  // sets selected inspection
+  const onClickSignatureInput = (item: inspectionTemplateItemModel) => {
+    setIsvibleSignatureInputModal(true);
+    setSelectedInspectionItem(item);
+  };
+
+  // Closes signature input modal and
+  // removes value for selected inspection item
+  const closeSignatureInputModal = () => {
+    setIsvibleSignatureInputModal(false);
     setSelectedInspectionItem(null);
   };
 
@@ -219,6 +243,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
+
   return (
     <>
       {isMobileorTablet && (
@@ -241,6 +266,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
+            onClickSignatureInput={onClickSignatureInput}
             canEditInspection={canEdit}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
@@ -267,6 +293,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
+            onClickSignatureInput={onClickSignatureInput}
             canEditInspection={canEdit}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
@@ -288,6 +315,11 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         propertyId={property.id}
         inspectionId={inspection.id}
         isMobile={isMobileorTablet}
+      />
+      <SignatureInputModal
+        isVisible={isVisibleSignatureInputModal}
+        onClose={closeSignatureInputModal}
+        selectedInspectionItem={selectedInspectionItem}
       />
     </>
   );

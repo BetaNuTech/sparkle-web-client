@@ -20,6 +20,7 @@
   ],
   "dependencies": {
     "@hookform/resolvers": "^2.4.0",
+    "@types/zen-observable": "^0.8.3",
     "chart.js": "^3.4.1",
     "clsx": "^1.1.1",
     "deep-object-diff": "^1.1.0",
@@ -38,7 +39,8 @@
     "react-toastify": "^7.0.4",
     "reactfire": "^3.0.0-rc.0",
     "sass": "^1.32.13",
-    "yup": "^0.32.9"
+    "yup": "^0.32.9",
+    "zen-observable": "^0.8.15"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.14.5",

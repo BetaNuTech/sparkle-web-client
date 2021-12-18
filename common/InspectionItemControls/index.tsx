@@ -22,6 +22,7 @@ interface Props {
     value: string | number
   ): void;
   onClickOneActionNotes?(): void;
+  onClickSignatureInput?(): void;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
@@ -31,7 +32,8 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   textInputValue,
   signatureDownloadURL,
   onInputChange,
-  onClickOneActionNotes
+  onClickOneActionNotes,
+  onClickSignatureInput
 }) => {
   switch (inputType) {
     case 'twoactions_checkmarkx':
@@ -90,7 +92,12 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         />
       );
     case 'signature':
-      return <Signature signatureDownloadURL={signatureDownloadURL} />;
+      return (
+        <Signature
+          signatureDownloadURL={signatureDownloadURL}
+          onClickSignatureInput={onClickSignatureInput}
+        />
+      );
     default:
       return <></>;
   }

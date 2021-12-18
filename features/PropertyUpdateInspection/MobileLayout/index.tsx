@@ -40,6 +40,7 @@ interface Props {
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
+  onClickSignatureInput(item: inspectionTemplateItemModel): void;
   canEditInspection: boolean;
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
@@ -64,6 +65,7 @@ const MobileLayout: FunctionComponent<Props> = ({
   onRemoveSection,
   onItemIsNAChange,
   onClickAttachmentNotes,
+  onClickSignatureInput,
   canEditInspection,
   onEnableAdminEditMode,
   forceVisible
@@ -147,6 +149,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onRemoveSection={onRemoveSection}
         onItemIsNAChange={onItemIsNAChange}
         onClickAttachmentNotes={onClickAttachmentNotes}
+        onClickSignatureInput={onClickSignatureInput}
         forceVisible={forceVisible}
       />
     </>
