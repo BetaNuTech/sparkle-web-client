@@ -7,11 +7,13 @@ import styles from '../styles.module.scss';
 interface Props {
   enabled: boolean;
   selected: boolean;
+  onClickPhotos(): void;
 }
 
 const AttachmentPhoto: FunctionComponent<Props> = ({
   enabled,
-  selected
+  selected,
+  onClickPhotos
 }) => (
   <li
     className={clsx(
@@ -22,13 +24,15 @@ const AttachmentPhoto: FunctionComponent<Props> = ({
     data-testid="attachment-photo"
     data-test={enabled ? '' : 'disabled'}
     data-testselected={selected ? 'selected' : ''}
+    onClick={onClickPhotos}
   >
     <PhotoIcon />
   </li>
 );
 
 AttachmentPhoto.defaultProps = {
-  enabled: true
+  enabled: true,
+  onClickPhotos: () => {} // eslint-disable-line
 };
 
 export default AttachmentPhoto;

@@ -21,6 +21,7 @@ import LoadingHud from '../../common/LoadingHud';
 import AttachmentNotesModal from './AttachmentNotesModal';
 import SignatureInputModal from './SignatureInputModal';
 import { canEditInspection } from '../../common/utils/userPermissions';
+import PhotosModal from '../../common/InspectionItemPhotosModal';
 
 interface Props {
   user: userModel;
@@ -68,6 +69,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   const [isVisibleSignatureInputModal, setIsvibleSignatureInputModal] =
     useState(false);
+
+  const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
   const { setLatestTemplateUpdates, hasUpdates } =
@@ -238,6 +241,24 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setSelectedInspectionItem(null);
   };
 
+  // Opens photos modal and
+  // sets selected inspection
+  const onClickPhotos = (item: inspectionTemplateItemModel) => {
+    setIsVisiblePhotosModal(true);
+    setSelectedInspectionItem(item);
+  };
+
+  // Closes photos modal and
+  // removes value for selected inspection item
+  const closePhotosModal = () => {
+    setIsVisiblePhotosModal(false);
+    setSelectedInspectionItem(null);
+  };
+
+  const onChangeFiles = (files: Array<string>) => {
+    console.log(files);
+  };
+
   const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
 
   if (isLoading) {
@@ -267,6 +288,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
+            onClickPhotos={onClickPhotos}
             canEditInspection={canEdit}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
@@ -294,6 +316,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
+            onClickPhotos={onClickPhotos}
             canEditInspection={canEdit}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
@@ -320,6 +343,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         isVisible={isVisibleSignatureInputModal}
         onClose={closeSignatureInputModal}
         selectedInspectionItem={selectedInspectionItem}
+      />
+      <PhotosModal
+        photosData={selectedInspectionItem?.photosData}
+        isVisible={isVisiblePhotosModal}
+        onClose={closePhotosModal}
+        title={selectedInspectionItem?.title}
+        onChangeFiles={onChangeFiles}
       />
     </>
   );

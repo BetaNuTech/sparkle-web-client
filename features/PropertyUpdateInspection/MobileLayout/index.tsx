@@ -41,6 +41,7 @@ interface Props {
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
+  onClickPhotos(item:inspectionTemplateItemModel):void;
   canEditInspection: boolean;
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
@@ -66,6 +67,7 @@ const MobileLayout: FunctionComponent<Props> = ({
   onItemIsNAChange,
   onClickAttachmentNotes,
   onClickSignatureInput,
+  onClickPhotos,
   canEditInspection,
   onEnableAdminEditMode,
   forceVisible
@@ -150,6 +152,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onItemIsNAChange={onItemIsNAChange}
         onClickAttachmentNotes={onClickAttachmentNotes}
         onClickSignatureInput={onClickSignatureInput}
+        onClickPhotos={onClickPhotos}
         forceVisible={forceVisible}
       />
     </>

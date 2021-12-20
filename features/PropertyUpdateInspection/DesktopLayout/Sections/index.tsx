@@ -28,7 +28,8 @@ interface Props {
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
-  onClickSignatureInput(item:inspectionTemplateItemModel):void;
+  onClickSignatureInput(item: inspectionTemplateItemModel): void;
+  onClickPhotos(item: inspectionTemplateItemModel): void;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -44,7 +45,8 @@ const Sections: FunctionComponent<Props> = ({
   onRemoveSection,
   onItemIsNAChange,
   onClickAttachmentNotes,
-  onClickSignatureInput
+  onClickSignatureInput,
+  onClickPhotos
 }) => {
   if (sections && sections.length > 0) {
     return (
@@ -66,6 +68,7 @@ const Sections: FunctionComponent<Props> = ({
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
+            onClickPhotos={onClickPhotos}
           />
         ))}
       </ul>

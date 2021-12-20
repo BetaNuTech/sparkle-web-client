@@ -37,6 +37,7 @@ interface Props {
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
+  onClickPhotos(item:inspectionTemplateItemModel):void;
 }
 
 const SectionItem: FunctionComponent<Props> = ({
@@ -52,7 +53,8 @@ const SectionItem: FunctionComponent<Props> = ({
   onRemoveSection,
   onItemIsNAChange,
   onClickAttachmentNotes,
-  onClickSignatureInput
+  onClickSignatureInput,
+  onClickPhotos
 }) => {
   const listItems = sectionItems.get(section.id);
   const onListHeaderClick = (event) => {
@@ -117,6 +119,7 @@ const SectionItem: FunctionComponent<Props> = ({
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
+            onClickPhotos={onClickPhotos}
           />
         ))}
       </ul>

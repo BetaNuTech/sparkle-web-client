@@ -9,6 +9,7 @@ interface Props {
   notes?: boolean;
   inspectorNotes?: string;
   onClickAttachmentNotes?(): void;
+  onClickPhotos?(): void;
   photosData: Record<string, photoDataModel>;
 }
 
@@ -17,6 +18,7 @@ const Photo: FunctionComponent<Props> = ({
   notes,
   inspectorNotes,
   onClickAttachmentNotes,
+  onClickPhotos,
   photosData
 }) => {
   const isSelectedNotes = Boolean(inspectorNotes);
@@ -31,6 +33,7 @@ const Photo: FunctionComponent<Props> = ({
       />
       <AttachmentPhoto
         enabled={photos}
+        onClickPhotos={onClickPhotos}
         selected={isSelectedPhotos}
       />
     </ul>

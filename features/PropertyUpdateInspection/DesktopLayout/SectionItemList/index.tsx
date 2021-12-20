@@ -22,7 +22,8 @@ interface Props {
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
-  onClickSignatureInput(item:inspectionTemplateItemModel):void;
+  onClickSignatureInput(item: inspectionTemplateItemModel): void;
+  onClickPhotos(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
@@ -32,7 +33,8 @@ const SectionItemList: FunctionComponent<Props> = ({
   onClickOneActionNotes,
   onItemIsNAChange,
   onClickAttachmentNotes,
-  onClickSignatureInput
+  onClickSignatureInput,
+  onClickPhotos
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
@@ -68,6 +70,7 @@ const SectionItemList: FunctionComponent<Props> = ({
                 notes={item.notes}
                 photosData={item.photosData}
                 onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
+                onClickPhotos={() => onClickPhotos(item)}
               />
             )}
 
