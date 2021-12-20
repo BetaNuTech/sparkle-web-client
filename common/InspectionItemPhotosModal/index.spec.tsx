@@ -26,7 +26,7 @@ describe('Common | Inspection Item Photos Modal', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('opens note modal on click when not visible', () => {
+  it('opens Inspection item photos modal on click when not visible', () => {
     const onClose = sinon.spy();
     const props = {
       isVisible: true,

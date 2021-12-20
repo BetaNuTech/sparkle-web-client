@@ -1,8 +1,7 @@
 import sinon from 'sinon';
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 
-import currentUser from '../../../common/utils/currentUser';
 import useTrelloCard from './useTrelloCard';
 
 const STUBBED_NOTIFICATIONS = (message: string, options?: any) => [
@@ -27,6 +26,7 @@ describe('Unit | Features | Job Edit | Hooks | Use Trello Card', () => {
         useTrelloCard(STUBBED_NOTIFICATIONS, setValue, onSubmit)
       );
       result.current.openTrelloCardInputPrompt();
+      await waitFor(() => promptCalled); // eslint-disable-line
     });
 
     expect(window.prompt).toHaveBeenCalled();

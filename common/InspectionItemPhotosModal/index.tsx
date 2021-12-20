@@ -1,7 +1,14 @@
 import clsx from 'clsx';
-import { ChangeEvent, FunctionComponent, useRef } from 'react';
+import {
+  ChangeEvent,
+  FunctionComponent,
+  useRef,
+  useState,
+  MouseEvent
+} from 'react';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
+import PhotoPreview from './PhotoPreview';
 import baseStyles from '../Modal/styles.module.scss';
 import styles from './styles.module.scss';
 
@@ -28,6 +35,8 @@ const PhotosModal: FunctionComponent<Props> = ({
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const [photoForPreview, setPhotoForPreview] = useState(null);
+
   const hasExistingPhotos = photosDataItems.length > 0;
 
   // Promise to read file data into url
@@ -53,6 +62,14 @@ const PhotosModal: FunctionComponent<Props> = ({
     Promise.all(filesToDataUris).then((res: string[]) => onChangeFiles(res));
   };
 
+  const onClickImage = (
+    ev: MouseEvent<HTMLDivElement>,
+    photoData: photoDataModel
+  ) => {
+    ev.stopPropagation();
+    setPhotoForPreview(photoData);
+  };
+
   return (
     <div className={styles.PhotosModal} data-testid="photos-modal">
       <header
@@ -70,12 +87,13 @@ const PhotosModal: FunctionComponent<Props> = ({
         ×
       </button>
 
-      <div className={clsx(baseStyles.modal__main)} onClick={onClickAddFiles}>
+      <div className={clsx(baseStyles.modal__main, styles.PhotosModal__main)}>
         <div
           className={clsx(
             baseStyles.modal__main__content,
             styles.PhotosModal__content
           )}
+          onClick={onClickAddFiles}
         >
           {hasExistingPhotos && (
             <ul
@@ -89,6 +107,7 @@ const PhotosModal: FunctionComponent<Props> = ({
                 >
                   <div
                     className={styles.PhotosModal__photos__list__item__image}
+                    onClick={(ev) => onClickImage(ev, item)}
                   >
                     <img src={item.downloadURL} alt={item.caption} />
                     {item.caption && (
@@ -124,6 +143,10 @@ const PhotosModal: FunctionComponent<Props> = ({
             </button>
           </div>
         </div>
+        <PhotoPreview
+          photoData={photoForPreview}
+          onClose={() => setPhotoForPreview(null)}
+        />
       </div>
     </div>
   );

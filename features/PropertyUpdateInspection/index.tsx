@@ -61,26 +61,35 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
-    useState(false);
+  const [
+    isVisibleOneActionNotesModal,
+    setIsVisibleOneActionNotesModal
+  ] = useState(false);
 
-  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
-    useState(false);
+  const [
+    isVisibleAttachmentNotesModal,
+    setIsVisibleAttachmentNotesModal
+  ] = useState(false);
 
-  const [isVisibleSignatureInputModal, setIsvibleSignatureInputModal] =
-    useState(false);
+  const [
+    isVisibleSignatureInputModal,
+    setIsvibleSignatureInputModal
+  ] = useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-  const { setLatestTemplateUpdates, hasUpdates } =
-    useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
+  const {
+    setLatestTemplateUpdates,
+    hasUpdates
+  } = useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
 
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
-  const { updateInspectionTemplate, isLoading } =
-    usePublishUpdates(sendNotification);
+  const { updateInspectionTemplate, isLoading } = usePublishUpdates(
+    sendNotification
+  );
 
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
@@ -177,16 +186,20 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // Publish local changes and on success
   // clear all local changes
   const onSaveInspection = () => {
-    updateInspectionTemplate(inspection.id, unpublishedTemplateUpdates).then(
-      () => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel)
-    );
+    updateInspectionTemplate(
+      inspection.id,
+      unpublishedTemplateUpdates
+    ).then(() => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel));
   };
 
-  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
-    useInspectionSectionSort(
-      inspection.template.sections,
-      unpublishedTemplateUpdates
-    );
+  const {
+    sortedTemplateSections,
+    collapsedSections,
+    onSectionCollapseToggle
+  } = useInspectionSectionSort(
+    inspection.template.sections,
+    unpublishedTemplateUpdates
+  );
 
   // Items grouped by their section
   const { sectionItems } = useInspectionItems(
