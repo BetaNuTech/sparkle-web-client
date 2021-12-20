@@ -1,5 +1,5 @@
 import firebase from 'firebase/app';
-import { useState } from 'react';
+import { ChangeEventHandler, useState } from 'react';
 import moment from 'moment';
 import useStorage, { StorageResult } from '../../../common/hooks/useStorage';
 import errorReports from '../../../common/services/api/errorReports';
@@ -25,6 +25,7 @@ export type FileChangeEvent = {
 interface useAttachmentResult {
   uploadState: boolean;
   onFileChange(ev: FileChangeEvent): void;
+  onInputFileChange: ChangeEventHandler<HTMLInputElement>;
 }
 
 export default function useAttachment(
@@ -96,8 +97,23 @@ export default function useAttachment(
     setUploadState(false);
   };
 
+  const onInputFileChange = (ev) => {
+    const files = [];
+    // loop through files
+    for (let index = 0; index < ev.target.files.length; ) {
+      files.push(ev.target.files[index]);
+      index += 1;
+    }
+    onFileChange({
+      target: {
+        files
+      }
+    });
+  };
+
   return {
     uploadState,
-    onFileChange
+    onFileChange,
+    onInputFileChange
   };
 }
