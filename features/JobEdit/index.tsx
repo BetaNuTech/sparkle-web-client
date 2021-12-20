@@ -1,13 +1,11 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 import { useFirestore } from 'reactfire';
 import { useMediaQuery } from 'react-responsive';
 import clsx from 'clsx';
-import { diff } from 'deep-object-diff';
 import userModel from '../../common/models/user';
 import propertyModel from '../../common/models/property';
 import jobModel from '../../common/models/job';
 import bidModel from '../../common/models/bid';
-import attachmentModel from '../../common/models/attachment';
 import {
   canApproveJob,
   canAuthorizeJob,
@@ -24,6 +22,7 @@ import useJobForm from './hooks/useJobForm';
 import useAttachmentChange from './hooks/useAttachmentChange';
 import useAttachmentDelete from './hooks/useAttachmentDelete';
 import useValidateJobForm from './hooks/useValidateJobForm';
+import useTrelloCard from './hooks/useTrelloCard';
 import JobForm from './Form';
 import DeleteAttachmentPrompt from './DeleteAttachmentPrompt';
 import MobileJobInfoHeader from './MobileJobInfoHeader';
@@ -69,19 +68,6 @@ const JobNew: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
-  const [isDeleteTrelloCardPromptVisible, setDeleteTrelloCardPromptVisible] =
-    useState(false);
-
-  const { isLoading, generalFormErrors, onPublish } =
-    useJobForm(sendNotification);
-
-  const { uploadState, onFileChange } = useAttachmentChange(
-    firestore,
-    property.id,
-    jobId,
-    sendNotification
-  );
-
   const {
     register,
     getValues: getFormValues,
@@ -92,6 +78,33 @@ const JobNew: FunctionComponent<Props> = ({
     expediteReasonValidation,
     sowValidationOptions
   } = useValidateJobForm(job, isNewJob);
+
+  // get required job data for useJobForm hook
+  const apiJob = (({ title, need, type, scopeOfWork, trelloCardURL, id }) => ({
+    title,
+    need,
+    type,
+    scopeOfWork,
+    trelloCardURL,
+    id,
+    property: property.id
+  }))(job);
+
+  const { isLoading, generalFormErrors, onSubmit } = useJobForm(
+    sendNotification,
+    isNewJob,
+    triggerFormValidation,
+    getFormValues,
+    formState,
+    apiJob
+  );
+
+  const { uploadState, onInputFileChange } = useAttachmentChange(
+    firestore,
+    property.id,
+    jobId,
+    sendNotification
+  );
 
   const {
     isDeleteAttachmentPromptVisible,
@@ -106,96 +119,13 @@ const JobNew: FunctionComponent<Props> = ({
     setDeleteAttachmentPromptVisible(false);
   };
 
-  const closeTrelloCardDeletePrompt = () => {
-    setDeleteTrelloCardPromptVisible(false);
-  };
-
-  const openTrelloCardInputPrompt = (oldTrellCardURL?: string) => {
-    // eslint-disable-next-line no-alert
-    const trelloCardURL = window.prompt(
-      'Enter job trello card link.',
-      oldTrellCardURL
-    );
-
-    if (trelloCardURL) {
-      const regExp = /https:\/\/trello\.com\/c\/\w+(?:\/[a-zA-Z0-9-]*)?/;
-      // If reg ex matches then send update request
-      if (regExp.test(trelloCardURL)) {
-        setValue('trelloCardURL', trelloCardURL);
-        onSubmit('save');
-      } else {
-        // Show notificaiton
-        sendNotification(
-          'Not a valid trello card URL. Try again with valid URL.',
-          {
-            type: 'error'
-          }
-        );
-      }
-    }
-  };
-
-  const onInputFileChange = (ev) => {
-    const files = [];
-    // loop through files
-    for (let index = 0; index < ev.target.files.length; ) {
-      files.push(ev.target.files[index]);
-      index += 1;
-    }
-    onFileChange({
-      target: {
-        files
-      }
-    });
-  };
-
-  const openAttachmentDeletePrompt = (attachment: attachmentModel) => {
-    onDeleteAttachment(attachment);
-  };
-
-  const openTrelloCardDeletePrompt = () => {
-    setDeleteTrelloCardPromptVisible(true);
-  };
-
-  const apiJob = (({ title, need, type, scopeOfWork, trelloCardURL }) => ({
-    title,
-    need,
-    type,
-    scopeOfWork,
-    trelloCardURL
-  }))(job);
-
-  // Handle form submissions
-  const onSubmit = async (action) => {
-    // Check if form is valid
-    await triggerFormValidation();
-    const hasErrors = Boolean(Object.keys(formState.errors).length);
-    if (hasErrors) return;
-
-    const formData = getFormValues();
-    const difference: jobModel = diff(apiJob, formData) as jobModel;
-
-    // Check if it is an expedite request
-    if (action === 'expedite') {
-      // eslint-disable-next-line no-alert
-      const expediteReason = window.prompt('Expedite Reason');
-
-      if (!expediteReason) {
-        return;
-      }
-      difference.expediteReason = expediteReason;
-    }
-
-    // Make request to api call
-    onPublish(difference, isNewJob, property.id, job.id, action);
-  };
-
-  const confirmTrelloCardDelete = () => {
-    // Remove the trello card url from hidden value
-    setValue('trelloCardURL', '');
-    // Save the form
-    onSubmit('save');
-  };
+  const {
+    openTrelloCardInputPrompt,
+    isDeleteTrelloCardPromptVisible,
+    openTrelloCardDeletePrompt,
+    closeTrelloCardDeletePrompt,
+    confirmTrelloCardDelete
+  } = useTrelloCard(sendNotification, setValue, onSubmit);
 
   const propertyLink = `/properties/${property.id}/`;
   const jobLink = `/properties/${property.id}/jobs/`;
@@ -308,7 +238,7 @@ const JobNew: FunctionComponent<Props> = ({
         jobLink={jobLink}
         openTrelloCardInputPrompt={openTrelloCardInputPrompt}
         onInputFileChange={onInputFileChange}
-        openAttachmentDeletePrompt={openAttachmentDeletePrompt}
+        openAttachmentDeletePrompt={onDeleteAttachment}
         openTrelloCardDeletePrompt={openTrelloCardDeletePrompt}
       />
       <DeleteAttachmentPrompt

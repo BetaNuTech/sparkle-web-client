@@ -1,32 +1,33 @@
 import { useState } from 'react';
 import Router from 'next/router';
+import { UseFormGetValues, UseFormTrigger, FormState } from 'react-hook-form';
+import { diff } from 'deep-object-diff';
+
 import jobsApi from '../../../common/services/api/jobs';
 import jobModel from '../../../common/models/job';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorServerInternal from '../../../common/models/errors/serverInternal';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import FormInputs from '../Form/FormInputs';
 
 const PREFIX = 'features: EditJob: hooks: useJobForm:';
 interface useJobFormResult {
   isLoading: boolean;
   job?: jobModel;
-  postJobCreate(propertyId: string, job: jobModel): void;
-  putJobUpdate(propertyId: string, jobId: string, job: jobModel): void;
-  onPublish(
-    data: jobModel,
-    isNewJob: boolean,
-    propertyId: string,
-    jobId: string,
-    action: string
-  ): void;
   generalFormErrors: Array<string>;
+  onSubmit(action: string): void;
 }
 
 type userNotifications = (message: string, options?: any) => any;
 
 export default function useJobForm(
-  sendNotification: userNotifications
+  sendNotification: userNotifications,
+  isNewJob: boolean,
+  triggerFormValidation: UseFormTrigger<FormInputs>,
+  getFormValues: UseFormGetValues<FormInputs>,
+  formState: FormState<FormInputs>,
+  currentJob: jobModel // published/remote job state
 ): useJobFormResult {
   const [isLoading, setIsLoading] = useState(false);
   const [job, setJob] = useState(null);
@@ -77,16 +78,16 @@ export default function useJobForm(
     }
   };
 
-  const postJobCreate = async (propertyId: string, jobData: jobModel) => {
+  const postJobCreate = async (jobData: jobModel) => {
     setIsLoading(true);
     setJob(null);
 
     let jobCreate: jobModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      jobCreate = await jobsApi.createNewJob(propertyId, jobData);
+      jobCreate = await jobsApi.createNewJob(currentJob.property, jobData);
 
-      handleSuccessResponse('new', propertyId, jobCreate);
+      handleSuccessResponse('new', currentJob.property, jobCreate);
     } catch (err) {
       handleErrorResponse(err, 'new');
       if (err instanceof ErrorBadRequest) {
@@ -98,20 +99,20 @@ export default function useJobForm(
     setJob(jobCreate);
   };
 
-  const putJobUpdate = async (
-    propertyId: string,
-    jobId: string,
-    jobData: jobModel
-  ) => {
+  const putJobUpdate = async (jobData: jobModel) => {
     setIsLoading(true);
     setJob(null);
 
     let jobUpdate: jobModel = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      jobUpdate = await jobsApi.updateJob(propertyId, jobId, jobData);
+      jobUpdate = await jobsApi.updateJob(
+        currentJob.property,
+        currentJob.id,
+        jobData
+      );
 
-      handleSuccessResponse(jobId, propertyId, jobUpdate);
+      handleSuccessResponse(currentJob.id, currentJob.property, jobUpdate);
     } catch (err) {
       handleErrorResponse(err, 'new');
       if (err instanceof ErrorBadRequest) {
@@ -126,9 +127,7 @@ export default function useJobForm(
   // Publish Job updates to API
   const onPublish = (
     data: jobModel,
-    isNewJob: boolean,
-    propertyId: string,
-    jobId: string,
+
     action: string
   ) => {
     const formJob = {
@@ -151,11 +150,35 @@ export default function useJobForm(
 
     if (!isNewJob) {
       // Update request
-      putJobUpdate(propertyId, jobId, formJob);
+      putJobUpdate(formJob);
     } else {
       // Save request
-      postJobCreate(propertyId, formJob);
+      postJobCreate(formJob);
     }
+  };
+
+  const onSubmit = async (action: string) => {
+    // Check if form is valid
+    await triggerFormValidation();
+    const hasErrors = Boolean(Object.keys(formState.errors).length);
+    if (hasErrors) return;
+
+    const formData = getFormValues();
+    const difference: jobModel = diff(currentJob, formData) as jobModel;
+
+    // Check if it is an expedite request
+    if (action === 'expedite') {
+      // eslint-disable-next-line no-alert
+      const expediteReason = window.prompt('Expedite Reason');
+
+      if (!expediteReason) {
+        return;
+      }
+      difference.expediteReason = expediteReason;
+    }
+
+    // Make request to api call
+    onPublish(difference, action);
   };
 
   const generalFormErrors =
@@ -164,9 +187,7 @@ export default function useJobForm(
   return {
     isLoading,
     job,
-    postJobCreate,
-    putJobUpdate,
-    onPublish,
-    generalFormErrors
+    generalFormErrors,
+    onSubmit
   };
 }
