@@ -32,7 +32,8 @@ interface MobileLayoutTeamItemModel {
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
-  onClickSignatureInput(item:inspectionTemplateItemModel):void;
+  onClickSignatureInput(item: inspectionTemplateItemModel): void;
+  onClickPhotos(item: inspectionTemplateItemModel): void;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -48,7 +49,8 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onRemoveSection,
   onItemIsNAChange,
   onClickAttachmentNotes,
-  onClickSignatureInput
+  onClickSignatureInput,
+  onClickPhotos
 }) => {
   const listItems = sectionItems.get(section.id);
 
@@ -113,6 +115,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
+            onClickPhotos={onClickPhotos}
           />
         ))}
       </ul>
