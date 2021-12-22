@@ -13,6 +13,13 @@
     &__header {
       justify-content: center;
     }
+
+    &__saveButton {
+      @extend %hollowButton;
+      right: rem-calc(48);
+      top: rem-calc(12);
+      width: auto;
+    }
   }
 
   &__content {

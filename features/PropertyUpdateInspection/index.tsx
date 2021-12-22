@@ -272,6 +272,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
   };
 
+  const saveSignature = (signatureData: string) => {
+    console.log(signatureData);
+  };
+
   const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
 
   if (isLoading) {
@@ -358,6 +362,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         isVisible={isVisibleSignatureInputModal}
         onClose={closeSignatureInputModal}
         selectedInspectionItem={selectedInspectionItem}
+        saveSignature={saveSignature}
       />
       <PhotosModal
         photosData={selectedInspectionItem?.photosData}

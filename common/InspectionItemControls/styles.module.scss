@@ -7,6 +7,7 @@
   padding-left: 0;
   margin: 0;
   flex: 1;
+  max-width: calc(100% - 44px);
 
   &__input {
     display: flex;
@@ -97,6 +98,8 @@
     border-radius: 0.1875rem;
     border: 1px solid $gray-light;
     max-width: 100%;
+    width: rem-calc(441);
+    height: rem-calc(134);
   }
 
   &__attachment {
