@@ -7,6 +7,7 @@ import {
   MouseEvent
 } from 'react';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
+import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
 import PhotoPreview from './PhotoPreview';
 import baseStyles from '../Modal/styles.module.scss';
@@ -15,12 +16,14 @@ import styles from './styles.module.scss';
 interface Props extends ModalProps {
   onClose: () => void;
   photosData: Record<string, photoDataModel>;
+  unpublishedPhotosData: unPublishedPhotoDataModel[];
   title: string;
   onChangeFiles(files: Array<string>): void;
 }
 
 const PhotosModal: FunctionComponent<Props> = ({
   photosData,
+  unpublishedPhotosData,
   onClose,
   title,
   onChangeFiles
@@ -37,7 +40,8 @@ const PhotosModal: FunctionComponent<Props> = ({
 
   const [photoForPreview, setPhotoForPreview] = useState(null);
 
-  const hasExistingPhotos = photosDataItems.length > 0;
+  const hasExistingPhotos =
+    photosDataItems.length > 0 || unpublishedPhotosData.length > 0;
 
   // Promise to read file data into url
   const fileToDataURI = (file: File) =>
@@ -100,6 +104,33 @@ const PhotosModal: FunctionComponent<Props> = ({
               className={styles.PhotosModal__photos__list}
               data-testid="photos-modal-photos"
             >
+              {unpublishedPhotosData.map((item) => (
+                <li
+                  key={item.id}
+                  className={styles.PhotosModal__photos__list__item}
+                >
+                  <div
+                    className={styles.PhotosModal__photos__list__item__image}
+                    onClick={(ev) =>
+                      onClickImage(ev, {
+                        downloadURL: item.photoData,
+                        ...item
+                      })
+                    }
+                  >
+                    <img src={item.photoData} alt={item.caption} />
+                    {item.caption && (
+                      <div
+                        className={
+                          styles.PhotosModal__photos__list__item__image__caption
+                        }
+                      >
+                        {item.caption}
+                      </div>
+                    )}
+                  </div>
+                </li>
+              ))}
               {photosDataItems.map((item) => (
                 <li
                   key={item.id}
@@ -150,6 +181,10 @@ const PhotosModal: FunctionComponent<Props> = ({
       </div>
     </div>
   );
+};
+
+PhotosModal.defaultProps = {
+  unpublishedPhotosData: []
 };
 
 export default Modal(PhotosModal, false, styles.PhotosModal);

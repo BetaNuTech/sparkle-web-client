@@ -7,6 +7,7 @@ import DiamondLayersIcon from '../../../../public/icons/sparkle/diamond-layers.s
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import styles from '../../styles.module.scss';
 import SectionItemList from '../SectionItemList';
 
@@ -37,7 +38,8 @@ interface Props {
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
-  onClickPhotos(item:inspectionTemplateItemModel):void;
+  onClickPhotos(item: inspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
 }
 
 const SectionItem: FunctionComponent<Props> = ({
@@ -54,7 +56,8 @@ const SectionItem: FunctionComponent<Props> = ({
   onItemIsNAChange,
   onClickAttachmentNotes,
   onClickSignatureInput,
-  onClickPhotos
+  onClickPhotos,
+  inspectionItemsPhotos
 }) => {
   const listItems = sectionItems.get(section.id);
   const onListHeaderClick = (event) => {
@@ -120,6 +123,7 @@ const SectionItem: FunctionComponent<Props> = ({
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
+            inspectionItemsPhotos={inspectionItemsPhotos}
           />
         ))}
       </ul>

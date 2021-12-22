@@ -1,6 +1,7 @@
 import { FunctionComponent, useRef } from 'react';
 import clsx from 'clsx';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import InspectionItemControls, {
   Attachment
 } from '../../../../common/InspectionItemControls';
@@ -22,7 +23,8 @@ interface Props {
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
-  onClickPhotos(item:inspectionTemplateItemModel):void;
+  onClickPhotos(item: inspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
@@ -33,12 +35,16 @@ const SectionItemList: FunctionComponent<Props> = ({
   onItemIsNAChange,
   onClickAttachmentNotes,
   onClickSignatureInput,
-  onClickPhotos
+  onClickPhotos,
+  inspectionItemsPhotos
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
+  const unPublishedPhotosDataCount = (inspectionItemsPhotos.get(item.id) || [])
+    .length;
+
   return (
     <li
       className={clsx(
@@ -73,6 +79,7 @@ const SectionItemList: FunctionComponent<Props> = ({
                 photos={item.photos}
                 notes={item.notes}
                 photosData={item.photosData}
+                unPublishedPhotosDataCount={unPublishedPhotosDataCount}
                 inspectorNotes={item.inspectorNotes}
                 onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
                 onClickPhotos={() => onClickPhotos(item)}

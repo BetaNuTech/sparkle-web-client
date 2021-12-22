@@ -16,6 +16,7 @@ import inspectionTemplateItemModel from '../../common/models/inspectionTemplateI
 import useUpdateTemplate from './hooks/useUpdateTemplate';
 import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates';
 import usePublishUpdates from './hooks/usePublishUpdates';
+import useUnpublishInspectionItemPhotos from './hooks/useUnpublishedInspectionItemPhotos';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import AttachmentNotesModal from './AttachmentNotesModal';
@@ -61,34 +62,35 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [
-    isVisibleOneActionNotesModal,
-    setIsVisibleOneActionNotesModal
-  ] = useState(false);
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleAttachmentNotesModal,
-    setIsVisibleAttachmentNotesModal
-  ] = useState(false);
+  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleSignatureInputModal,
-    setIsvibleSignatureInputModal
-  ] = useState(false);
+  const [isVisibleSignatureInputModal, setIsvibleSignatureInputModal] =
+    useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-  const {
-    setLatestTemplateUpdates,
-    hasUpdates
-  } = useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
+  const { setLatestTemplateUpdates, hasUpdates } =
+    useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
 
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
-  const { updateInspectionTemplate, isLoading } = usePublishUpdates(
-    sendNotification
+  const { updateInspectionTemplate, isLoading } =
+    usePublishUpdates(sendNotification);
+
+  const {
+    addUnpublishedInspectionItemPhotos,
+    unpublishedInspectionItemsPhotos,
+    unpublishedSelectedInspectionItemsPhotos
+  } = useUnpublishInspectionItemPhotos(
+    sendNotification,
+    selectedInspectionItem,
+    inspection.id
   );
 
   // Responsive queries
@@ -186,20 +188,16 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // Publish local changes and on success
   // clear all local changes
   const onSaveInspection = () => {
-    updateInspectionTemplate(
-      inspection.id,
-      unpublishedTemplateUpdates
-    ).then(() => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel));
+    updateInspectionTemplate(inspection.id, unpublishedTemplateUpdates).then(
+      () => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel)
+    );
   };
 
-  const {
-    sortedTemplateSections,
-    collapsedSections,
-    onSectionCollapseToggle
-  } = useInspectionSectionSort(
-    inspection.template.sections,
-    unpublishedTemplateUpdates
-  );
+  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
+    useInspectionSectionSort(
+      inspection.template.sections,
+      unpublishedTemplateUpdates
+    );
 
   // Items grouped by their section
   const { sectionItems } = useInspectionItems(
@@ -268,8 +266,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     setSelectedInspectionItem(null);
   };
 
-  const onChangeFiles = (files: Array<string>) => {
-    console.log(files);
+  // User updates an item's
+  // unpublished photo data
+  const onChangeItemsUnpublishedPhotos = async (files: Array<string>) => {
+    addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
   };
 
   const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
@@ -305,6 +305,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             canEditInspection={canEdit}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
+            inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
           />
         </>
       )}
@@ -333,6 +334,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             canEditInspection={canEdit}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
+            inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
           />
         </>
       )}
@@ -359,10 +361,11 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
       />
       <PhotosModal
         photosData={selectedInspectionItem?.photosData}
+        unpublishedPhotosData={unpublishedSelectedInspectionItemsPhotos}
         isVisible={isVisiblePhotosModal}
         onClose={closePhotosModal}
         title={selectedInspectionItem?.title}
-        onChangeFiles={onChangeFiles}
+        onChangeFiles={onChangeItemsUnpublishedPhotos}
       />
     </>
   );
