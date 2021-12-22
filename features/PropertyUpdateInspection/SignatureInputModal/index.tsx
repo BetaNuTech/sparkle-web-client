@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import SignaturePad from 'react-signature-canvas';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import resizeStream from '../../../common/utils/resizeStream';
@@ -11,6 +12,7 @@ import styles from './styles.module.scss';
 interface Props extends ModalProps {
   onClose: () => void;
   selectedInspectionItem: inspectionTemplateItemModel;
+  saveSignature(signatureData: string): void;
 }
 
 interface WindowSize {
@@ -20,17 +22,23 @@ interface WindowSize {
 
 const MAX_CANVAS_WIDTH = 600;
 const CANVAS_HEIGHT_OFFSET = 0.3;
+const CANVAS_RESOLUTION_RATIO = 6;
 
 const SignatureInputModal: FunctionComponent<Props> = ({
   onClose,
-  selectedInspectionItem
+  selectedInspectionItem,
+  saveSignature
 }) => {
   const [isPreview, setIsPreview] = useState(false);
+  const [signatureData, setSignatureData] = useState([]);
+  const hasSignData = signatureData.length > 0;
+
   const [canvasStyle, setCanvasStyle] = useState({
     width: `${MAX_CANVAS_WIDTH}px`,
     height: `${MAX_CANVAS_WIDTH * 180}px`
   });
   const canvasParentRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     const subscription = resizeStream.subscribe({ next: setCanvasDimensions });
@@ -45,7 +53,8 @@ const SignatureInputModal: FunctionComponent<Props> = ({
 
     // Unscubscribe resize on exit
     return () => subscription.unsubscribe();
-  }, [canvasParentRef, isPreview]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [canvasParentRef, isPreview, signatureData]);
 
   const setCanvasDimensions = (windowSize: WindowSize) => {
     let width = MAX_CANVAS_WIDTH;
@@ -64,6 +73,36 @@ const SignatureInputModal: FunctionComponent<Props> = ({
       width: `${width}px`,
       height: `${width * CANVAS_HEIGHT_OFFSET}px`
     });
+    resizeSignaturePad();
+  };
+
+  // resize canvas and set resolution to 6x larger
+  const resizeSignaturePad = () => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current.getCanvas();
+      canvas.width = canvas.offsetWidth * CANVAS_RESOLUTION_RATIO;
+      canvas.height = canvas.offsetHeight * CANVAS_RESOLUTION_RATIO;
+      canvas
+        .getContext('2d')
+        .scale(CANVAS_RESOLUTION_RATIO, CANVAS_RESOLUTION_RATIO);
+      canvasRef.current.fromData(signatureData);
+    }
+  };
+
+  const onUndo = () => {
+    const signData = [...signatureData];
+    const fromData = signData.slice(0, -1);
+    canvasRef.current.fromData(fromData);
+    setSignatureData(fromData);
+  };
+
+  const onAddedStroke = () => {
+    setSignatureData([...canvasRef.current.toData()]);
+  };
+
+  const onSaveSignature = () => {
+    const signDataURL = canvasRef.current.toDataURL();
+    saveSignature(signDataURL);
   };
 
   const { signatureDownloadURL } = selectedInspectionItem;
@@ -79,6 +118,19 @@ const SignatureInputModal: FunctionComponent<Props> = ({
       >
         ×
       </button>
+
+      {hasSignData && (
+        <button
+          className={clsx(
+            baseStyles.modal__closeButton,
+            styles.SignatureInputModal__modal__saveButton
+          )}
+          onClick={onSaveSignature}
+          data-testid="signature-input-modal-save"
+        >
+          Save
+        </button>
+      )}
       <header
         className={clsx(
           baseStyles.modal__header,
@@ -112,14 +164,21 @@ const SignatureInputModal: FunctionComponent<Props> = ({
             ref={canvasParentRef}
             className={styles.SignatureInputModal__canvas}
           >
-            <canvas
-              className={clsx(
-                styles.SignatureInputModal__canvas__body,
-                isPreview &&
-                  styles['SignatureInputModal__canvas__body--previewing']
-              )}
+            <SignaturePad
+              canvasProps={{
+                className: clsx(
+                  styles.SignatureInputModal__canvas__body,
+                  isPreview &&
+                    styles['SignatureInputModal__canvas__body--previewing']
+                ),
+                style: canvasStyle
+              }}
+              ref={canvasRef}
               style={canvasStyle}
+              penColor="#7c8491"
+              onEnd={onAddedStroke}
             />
+
             <div className={styles.SignatureInputModal__canvas__controls}>
               {signatureDownloadURL && (
                 <button
@@ -130,9 +189,14 @@ const SignatureInputModal: FunctionComponent<Props> = ({
                   {isPreview ? 'Hide' : 'Preview'} Current
                 </button>
               )}
-              <button className={styles.SignatureInputModal__canvas__undo}>
-                <UndoIcon />
-              </button>
+              {hasSignData && (
+                <button
+                  className={styles.SignatureInputModal__canvas__undo}
+                  onClick={onUndo}
+                >
+                  <UndoIcon />
+                </button>
+              )}
             </div>
           </div>
         </div>
