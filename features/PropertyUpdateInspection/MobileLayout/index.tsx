@@ -8,6 +8,7 @@ import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import parentStyles from '../styles.module.scss';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import unPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import Sections from './Sections';
 
 interface Props {
@@ -45,6 +46,7 @@ interface Props {
   canEditInspection: boolean;
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
+  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
 }
 
 // Mobile layout
@@ -70,7 +72,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   onClickPhotos,
   canEditInspection,
   onEnableAdminEditMode,
-  forceVisible
+  forceVisible,
+  inspectionItemsPhotos
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -154,6 +157,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onClickSignatureInput={onClickSignatureInput}
         onClickPhotos={onClickPhotos}
         forceVisible={forceVisible}
+        inspectionItemsPhotos={inspectionItemsPhotos}
       />
     </>
   );

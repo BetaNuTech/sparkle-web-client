@@ -15,7 +15,8 @@ describe('Common | Inspection Item Photos Modal', () => {
       onClose,
       title: 'One',
       onChangeFiles: sinon.spy(),
-      photosData: []
+      photosData: [],
+      inspectionItemsPhotos: new Map()
     };
     render(<PhotosModal {...props} />);
 
@@ -33,7 +34,8 @@ describe('Common | Inspection Item Photos Modal', () => {
       onClose,
       title: 'One',
       onChangeFiles: sinon.spy(),
-      photosData: []
+      photosData: [],
+      inspectionItemsPhotos: []
     };
     render(<PhotosModal {...props} />);
 
@@ -48,7 +50,8 @@ describe('Common | Inspection Item Photos Modal', () => {
       onClose,
       title: 'One',
       onChangeFiles: sinon.spy(),
-      photosData: [photoDataEntry]
+      photosData: [photoDataEntry],
+      inspectionItemsPhotos: []
     };
     render(<PhotosModal {...props} />);
 
@@ -63,7 +66,8 @@ describe('Common | Inspection Item Photos Modal', () => {
       onClose,
       title: 'One',
       onChangeFiles: sinon.spy(),
-      photosData: []
+      photosData: [],
+      inspectionItemsPhotos: []
     };
     render(<PhotosModal {...props} />);
 

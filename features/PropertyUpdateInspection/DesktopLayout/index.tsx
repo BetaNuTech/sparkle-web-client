@@ -3,6 +3,7 @@ import propertyModel from '../../../common/models/property';
 import inspectionModel from '../../../common/models/inspection';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import unPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import Sections from './Sections';
@@ -42,6 +43,7 @@ interface Props {
   canEditInspection: boolean;
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
+  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
 }
 
 const DesktopLayout: FunctionComponent<Props> = ({
@@ -65,7 +67,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onClickPhotos,
   canEditInspection,
   onEnableAdminEditMode,
-  forceVisible
+  forceVisible,
+  inspectionItemsPhotos
 }) => (
   <>
     <Header
@@ -94,6 +97,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         onClickSignatureInput={onClickSignatureInput}
         onClickPhotos={onClickPhotos}
         forceVisible={forceVisible}
+        inspectionItemsPhotos={inspectionItemsPhotos}
       />
     </div>
   </>

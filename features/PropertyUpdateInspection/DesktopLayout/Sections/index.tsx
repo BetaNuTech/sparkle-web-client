@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import SectionItem from '../SectionItem';
 
 interface Props {
@@ -30,6 +31,7 @@ interface Props {
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -46,7 +48,8 @@ const Sections: FunctionComponent<Props> = ({
   onItemIsNAChange,
   onClickAttachmentNotes,
   onClickSignatureInput,
-  onClickPhotos
+  onClickPhotos,
+  inspectionItemsPhotos
 }) => {
   if (sections && sections.length > 0) {
     return (
@@ -69,6 +72,7 @@ const Sections: FunctionComponent<Props> = ({
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
+            inspectionItemsPhotos={inspectionItemsPhotos}
           />
         ))}
       </ul>

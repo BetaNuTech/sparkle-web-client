@@ -3,6 +3,7 @@ import { FunctionComponent } from 'react';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import styles from '../../styles.module.scss';
 import SectionItemList from '../SectionItemList';
 
@@ -34,6 +35,7 @@ interface MobileLayoutTeamItemModel {
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -50,10 +52,10 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onItemIsNAChange,
   onClickAttachmentNotes,
   onClickSignatureInput,
-  onClickPhotos
+  onClickPhotos,
+  inspectionItemsPhotos
 }) => {
-  const listItems = sectionItems.get(section.id);
-
+  const listItems = sectionItems.get(section.id) || [];
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
@@ -116,6 +118,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
+            inspectionItemsPhotos={inspectionItemsPhotos}
           />
         ))}
       </ul>

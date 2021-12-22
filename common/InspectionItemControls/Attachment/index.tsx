@@ -11,6 +11,7 @@ interface Props {
   onClickAttachmentNotes?(): void;
   onClickPhotos?(): void;
   photosData: Record<string, photoDataModel>;
+  unPublishedPhotosDataCount: number;
 }
 
 const Photo: FunctionComponent<Props> = ({
@@ -19,10 +20,12 @@ const Photo: FunctionComponent<Props> = ({
   inspectorNotes,
   onClickAttachmentNotes,
   onClickPhotos,
-  photosData
+  photosData,
+  unPublishedPhotosDataCount
 }) => {
   const isSelectedNotes = Boolean(inspectorNotes);
-  const isSelectedPhotos = Object.keys(photosData || {}).length > 0;
+  const isSelectedPhotos =
+    Object.keys(photosData || {}).length > 0 || unPublishedPhotosDataCount > 0;
 
   return (
     <ul className={styles.inspection__attachment}>
@@ -43,7 +46,8 @@ const Photo: FunctionComponent<Props> = ({
 Photo.defaultProps = {
   photos: false,
   notes: false,
-  onClickAttachmentNotes: () => {} // eslint-disable-line
+  onClickAttachmentNotes: () => {}, // eslint-disable-line
+  unPublishedPhotosDataCount: 0
 };
 
 export default Photo;
