@@ -44,7 +44,7 @@ describe('Unit | Features | Property Update Inspection | Mobile Layout', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onShareAction: () => {},
       isOnline: true,
-      canEditInspection: false
+      canEnableEditMode: false
     };
 
     render(<MobileLayout {...props} />, {
@@ -62,7 +62,7 @@ describe('Unit | Features | Property Update Inspection | Mobile Layout', () => {
       inspection: fullInspection,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onShareAction: () => {},
-      canEditInspection: true
+      canEnableEditMode: true
     };
 
     render(<MobileLayout {...props} />, {

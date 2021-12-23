@@ -1,11 +1,6 @@
 import clsx from 'clsx';
-import {
-  ChangeEvent,
-  FunctionComponent,
-  useRef,
-  useState,
-  MouseEvent
-} from 'react';
+import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
+import { useDropzone } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
@@ -13,12 +8,16 @@ import PhotoPreview from './PhotoPreview';
 import baseStyles from '../Modal/styles.module.scss';
 import styles from './styles.module.scss';
 
+type userNotifications = (message: string, options?: any) => any;
+
 interface Props extends ModalProps {
   onClose: () => void;
   photosData: Record<string, photoDataModel>;
   unpublishedPhotosData: unPublishedPhotoDataModel[];
   title: string;
   onChangeFiles(files: Array<string>): void;
+  sendNotification: userNotifications;
+  disabled?: boolean;
 }
 
 const PhotosModal: FunctionComponent<Props> = ({
@@ -26,7 +25,9 @@ const PhotosModal: FunctionComponent<Props> = ({
   unpublishedPhotosData,
   onClose,
   title,
-  onChangeFiles
+  onChangeFiles,
+  sendNotification,
+  disabled
 }) => {
   const photosDataItems = Object.keys(photosData || {})
     .map((key) => ({
@@ -35,8 +36,6 @@ const PhotosModal: FunctionComponent<Props> = ({
     }))
     // sort from newest to oldest photos data bases on UNIX timestamp based id
     .sort(({ id: aId }, { id: bId }) => Number(bId) - Number(aId));
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [photoForPreview, setPhotoForPreview] = useState(null);
 
@@ -52,15 +51,8 @@ const PhotosModal: FunctionComponent<Props> = ({
       fileReader.readAsDataURL(file);
     });
 
-  const onClickAddFiles = () => {
-    fileInputRef?.current?.click();
-  };
-
   // Publish all files data URL's to parent
-  const onFileInputChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    // Convert file list to an array
-    const files = Array.from(event.target.files);
-
+  const processAcceptedFiles = async (files: Array<File>) => {
     // List of promises for file data URL's
     const filesToDataUris = files.map(async (file) => fileToDataURI(file));
     Promise.all(filesToDataUris).then((res: string[]) => onChangeFiles(res));
@@ -73,6 +65,31 @@ const PhotosModal: FunctionComponent<Props> = ({
     ev.stopPropagation();
     setPhotoForPreview(photoData);
   };
+
+  const onClosePreview = (
+    ev: MouseEvent<HTMLButtonElement | HTMLDivElement>
+  ) => {
+    ev.stopPropagation();
+    setPhotoForPreview(null);
+  };
+
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    if (disabled) return;
+    processAcceptedFiles(acceptedFiles);
+
+    if (rejectedFiles.length > 0) {
+      sendNotification('File type must be image', {
+        type: 'error'
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: 'image/*,capture=camera',
+    noClick: disabled
+  });
 
   return (
     <div className={styles.PhotosModal} data-testid="photos-modal">
@@ -91,14 +108,23 @@ const PhotosModal: FunctionComponent<Props> = ({
         ×
       </button>
 
-      <div className={clsx(baseStyles.modal__main, styles.PhotosModal__main)}>
+      <div
+        className={clsx(
+          baseStyles.modal__main,
+          styles.PhotosModal__main,
+          isDragActive && styles['PhotosModal__main--dragging'],
+          isDragActive && disabled && styles['PhotosModal__main--disabled']
+        )}
+        data-testid="inspection-item-photos-dropzone"
+        {...getRootProps()}
+      >
         <div
           className={clsx(
             baseStyles.modal__main__content,
             styles.PhotosModal__content
           )}
-          onClick={onClickAddFiles}
         >
+          <input {...getInputProps()} />
           {hasExistingPhotos && (
             <ul
               className={styles.PhotosModal__photos__list}
@@ -161,30 +187,23 @@ const PhotosModal: FunctionComponent<Props> = ({
               !hasExistingPhotos && styles['PhotosModal__buttons--noPhotos']
             )}
           >
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/*;capture=camera"
-              multiple
-              className={styles.PhotosModal__buttons__fileInput}
-              onChange={onFileInputChange}
-            />
-            <button className={styles.PhotosModal__buttons__add}>
+            <button
+              className={styles.PhotosModal__buttons__add}
+              disabled={disabled}
+            >
               Add Files
             </button>
           </div>
         </div>
-        <PhotoPreview
-          photoData={photoForPreview}
-          onClose={() => setPhotoForPreview(null)}
-        />
+        <PhotoPreview photoData={photoForPreview} onClose={onClosePreview} />
       </div>
     </div>
   );
 };
 
 PhotosModal.defaultProps = {
-  unpublishedPhotosData: []
+  unpublishedPhotosData: [],
+  disabled: false
 };
 
 export default Modal(PhotosModal, false, styles.PhotosModal);

@@ -52,7 +52,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       hasUpdates: true,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
-      canEditInspection: false
+      canEnableEditMode: false
     };
 
     render(<Header {...props} />, {
@@ -74,7 +74,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       hasUpdates: true,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
-      canEditInspection: true
+      canEnableEditMode: true
     };
 
     render(<Header {...props} />, {

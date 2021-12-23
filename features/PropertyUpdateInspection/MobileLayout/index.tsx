@@ -42,8 +42,8 @@ interface Props {
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
-  onClickPhotos(item:inspectionTemplateItemModel):void;
-  canEditInspection: boolean;
+  onClickPhotos(item: inspectionTemplateItemModel): void;
+  canEnableEditMode: boolean;
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
@@ -70,7 +70,7 @@ const MobileLayout: FunctionComponent<Props> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  canEditInspection,
+  canEnableEditMode,
   onEnableAdminEditMode,
   forceVisible,
   inspectionItemsPhotos
@@ -97,7 +97,7 @@ const MobileLayout: FunctionComponent<Props> = ({
       >
         Share
       </button>
-      {canEditInspection && (
+      {canEnableEditMode && (
         <button
           type="button"
           className={headStyle.header__button}

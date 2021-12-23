@@ -40,7 +40,7 @@ interface Props {
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
-  canEditInspection: boolean;
+  canEnableEditMode: boolean;
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
@@ -65,7 +65,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  canEditInspection,
+  canEnableEditMode,
   onEnableAdminEditMode,
   forceVisible,
   inspectionItemsPhotos
@@ -78,7 +78,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
       hasUpdates={hasUpdates}
       onShareAction={onShareAction}
       onSaveInspection={onSaveInspection}
-      canEditInspection={canEditInspection}
+      canEnableEditMode={canEnableEditMode}
       onEnableAdminEditMode={onEnableAdminEditMode}
     />
     <div className={styles.main}>

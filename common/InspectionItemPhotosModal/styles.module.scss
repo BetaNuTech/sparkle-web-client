@@ -42,6 +42,15 @@
 
   &__main {
     position: relative;
+
+    &--dragging {
+      background: $gray-4;
+    }
+
+    &--disabled {
+      background: $gray-dark;
+      cursor: no-drop;
+    }
   }
 
   &__content {
