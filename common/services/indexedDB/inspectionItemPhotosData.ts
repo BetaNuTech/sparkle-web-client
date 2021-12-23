@@ -57,8 +57,17 @@ export const queryInspectionRecords = async (
   }
 };
 
+export const deleteRecord = async (recordId: string): Promise<void> => {
+  try {
+    await db.inspectionItemPhotos.delete(recordId);
+  } catch (err) {
+    throw Error(`${PREFIX} deleteRecord: ${err}`);
+  }
+};
+
 export default {
   queryItemRecords,
   queryInspectionRecords,
-  createMultipleRecords
+  createMultipleRecords,
+  deleteRecord
 };

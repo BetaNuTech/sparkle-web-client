@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
+
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
 import PhotoPreview from './PhotoPreview';
@@ -16,6 +17,7 @@ interface Props extends ModalProps {
   unpublishedPhotosData: unPublishedPhotoDataModel[];
   title: string;
   onChangeFiles(files: Array<string>): void;
+  onRemovePhoto(unpublishedPhotoId: string): void;
   sendNotification: userNotifications;
   disabled?: boolean;
 }
@@ -26,6 +28,7 @@ const PhotosModal: FunctionComponent<Props> = ({
   onClose,
   title,
   onChangeFiles,
+  onRemovePhoto,
   sendNotification,
   disabled
 }) => {
@@ -64,6 +67,14 @@ const PhotosModal: FunctionComponent<Props> = ({
   ) => {
     ev.stopPropagation();
     setPhotoForPreview(photoData);
+  };
+
+  const onClickRemovePhoto = (
+    ev: MouseEvent<HTMLButtonElement>,
+    photoId: string
+  ) => {
+    ev.stopPropagation();
+    onRemovePhoto(photoId);
   };
 
   const onClosePreview = (
@@ -134,7 +145,15 @@ const PhotosModal: FunctionComponent<Props> = ({
                 <li
                   key={item.id}
                   className={styles.PhotosModal__photos__list__item}
+                  data-testid="photos-modal-unpublished-photo-list"
                 >
+                  <button
+                    className={styles.PhotosModal__photos__list__item__remove}
+                    onClick={(ev) => onClickRemovePhoto(ev, item.id)}
+                    data-testid="photos-modal-photos-remove"
+                  >
+                    ×
+                  </button>
                   <div
                     className={styles.PhotosModal__photos__list__item__image}
                     onClick={(ev) =>

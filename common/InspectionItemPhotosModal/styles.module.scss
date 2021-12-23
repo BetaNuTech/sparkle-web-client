@@ -75,6 +75,17 @@
       padding-bottom: $global-lg-padding;
       cursor: pointer;
 
+      &__remove {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        font-size: rem-calc(40);
+        line-height: 0.5;
+        background-color: transparent;
+        border-width: 0;
+        color: $gray-light;
+      }
+
       &__image {
         width: rem-calc(100);
         height: rem-calc(100);

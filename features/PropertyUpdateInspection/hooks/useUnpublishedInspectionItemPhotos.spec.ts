@@ -57,4 +57,27 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     const actual = spyFunc.called;
     expect(actual).toEqual(expected);
   });
+
+  test('should call the method to remove inspection item photos', async () => {
+    const sendNotification = sinon.spy();
+    const expected = true;
+
+    const spyFunc = sinon.spy(
+      inspectionItemPhotosData,
+      'deleteRecord'
+    );
+    const { result } = renderHook(() =>
+      useInspectionItemPhotos(
+        sendNotification,
+        selectedCheckmarkItem,
+        'inspection-1'
+      )
+    );
+
+    await act(async () => {
+      await result.current.removeUnpublishedInspectionItemPhoto('photo-1');
+    });
+    const actual = spyFunc.called;
+    expect(actual).toEqual(expected);
+  });
 });
