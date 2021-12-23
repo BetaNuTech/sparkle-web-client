@@ -1,8 +1,11 @@
 import sinon from 'sinon';
-import { render, screen } from '@testing-library/react';
+import { render, screen, act, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PhotosModal from './index';
-import { photoDataEntry } from '../../__mocks__/inspections';
+import {
+  photoDataEntry,
+  unpublishedPhotoDataEntry
+} from '../../__mocks__/inspections';
 import * as dropzoneUtils from '../../__tests__/helpers/dropzone';
 
 describe('Common | Inspection Item Photos Modal', () => {
@@ -17,7 +20,7 @@ describe('Common | Inspection Item Photos Modal', () => {
       title: 'One',
       onChangeFiles: sinon.spy(),
       photosData: [],
-      inspectionItemsPhotos: new Map()
+      unpublishedPhotosData: []
     };
     render(<PhotosModal {...props} />);
 
@@ -36,7 +39,7 @@ describe('Common | Inspection Item Photos Modal', () => {
       title: 'One',
       onChangeFiles: sinon.spy(),
       photosData: [],
-      inspectionItemsPhotos: []
+      unpublishedPhotosData: []
     };
     render(<PhotosModal {...props} />);
 
@@ -52,7 +55,7 @@ describe('Common | Inspection Item Photos Modal', () => {
       title: 'One',
       onChangeFiles: sinon.spy(),
       photosData: [photoDataEntry],
-      inspectionItemsPhotos: []
+      unpublishedPhotosData: []
     };
     render(<PhotosModal {...props} />);
 
@@ -68,13 +71,55 @@ describe('Common | Inspection Item Photos Modal', () => {
       title: 'One',
       onChangeFiles: sinon.spy(),
       photosData: [],
-      inspectionItemsPhotos: []
+      unpublishedPhotosData: []
     };
     render(<PhotosModal {...props} />);
 
     const photosContainer = screen.queryByTestId('photos-modal-photos');
 
     expect(photosContainer).toBeNull();
+  });
+
+  it('should render remove button for unpublished photos', () => {
+    const onClose = sinon.spy();
+    const props = {
+      isVisible: true,
+      onClose,
+      title: 'One',
+      onChangeFiles: sinon.spy(),
+      photosData: [],
+      unpublishedPhotosData: [unpublishedPhotoDataEntry]
+    };
+    render(<PhotosModal {...props} />);
+
+    const removeButton = screen.queryByTestId('photos-modal-photos-remove');
+
+    expect(removeButton).toBeTruthy();
+  });
+
+  it('should request to remove a photo on remove button click', async () => {
+    const expected = unpublishedPhotoDataEntry.id;
+    const onRemovePhoto = sinon.spy();
+    const props = {
+      isVisible: true,
+      onClose: sinon.spy(),
+      onRemovePhoto,
+      title: 'One',
+      onChangeFiles: sinon.spy(),
+      photosData: [],
+      unpublishedPhotosData: [unpublishedPhotoDataEntry]
+    };
+    render(<PhotosModal {...props} />);
+
+    act(() => {
+      const removeButton = screen.queryByTestId('photos-modal-photos-remove');
+      userEvent.click(removeButton);
+    });
+    await waitFor(() => onRemovePhoto.called);
+
+    const result = onRemovePhoto.firstCall || { args: [] };
+    const actual = result.args[0] || '';
+    expect(actual).toEqual(expected);
   });
 
   it('should publish an encoded photo dropped into the modal', async () => {

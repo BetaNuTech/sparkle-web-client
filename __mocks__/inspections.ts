@@ -2,6 +2,8 @@ import inspectionModel from '../common/models/inspection';
 import inspectionTemplateSectionModel from '../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../common/models/inspectionTemplateItem';
 import inspectionTemplateItemModelPhotoData from '../common/models/inspectionTemplateItemPhotoData';
+// eslint-disable-next-line max-len
+import inspectionTemplateItemModelUnpublishedPhotoData from '../common/models/inspections/templateItemUnpublishedPhotoData';
 
 export const fullInspection: inspectionModel = {
   id: 'inspection-1',
@@ -83,7 +85,7 @@ export const unselectedCheckmarkItem: inspectionTemplateItemModel = {
   index: 3,
   itemType: 'main',
   title: 'Four',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'twoactions_checkmarkx',
   mainInputSelected: false,
   mainInputSelection: -1,
@@ -104,7 +106,7 @@ export const selectedCheckmarkItem: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'One',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'twoactions_checkmarkx',
   mainInputSelected: true,
   mainInputSelection: 0,
@@ -125,7 +127,7 @@ export const unselectedThumbsItem: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'Two',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'twoactions_thumbs',
   mainInputSelected: false,
   mainInputSelection: -1,
@@ -146,7 +148,7 @@ export const unselectedCheckedExclaimItem: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'Six',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'threeactions_checkmarkexclamationx',
   mainInputSelected: false,
   mainInputSelection: -1,
@@ -167,7 +169,7 @@ export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'Six',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'threeactions_checkmarkexclamationx',
   mainInputSelected: true,
   mainInputSelection: 1,
@@ -188,7 +190,7 @@ export const unselectedAbcItem: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'Two',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'threeactions_abc',
   mainInputSelected: false,
   mainInputSelection: -1,
@@ -209,7 +211,7 @@ export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'Five',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'fiveactions_onetofive',
   mainInputSelected: false,
   mainInputSelection: -1,
@@ -230,7 +232,7 @@ export const unselectedOneActionNote: inspectionTemplateItemModel = {
   isTextInputItem: false,
   itemType: 'main',
   title: 'Six',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputType: 'OneAction_notes',
   mainInputNotes: '',
   mainInputSelected: false,
@@ -251,7 +253,7 @@ export const emptyTextInputItem: inspectionTemplateItemModel = {
   isTextInputItem: true,
   itemType: 'text_input',
   title: 'eight',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   mainInputSelected: false,
   mainInputFourValue: 0,
   mainInputOneValue: 0,
@@ -269,7 +271,7 @@ export const answeredTextInputItem: inspectionTemplateItemModel = {
   index: 8,
   itemType: 'text_input',
   title: 'nine',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   isItemNA: false,
   isTextInputItem: true,
   mainInputFourValue: 0,
@@ -290,7 +292,7 @@ export const unselectedSignatureInputItem: inspectionTemplateItemModel = {
   isItemNA: false,
   itemType: 'signature',
   title: 'ten',
-  sectionId: 'section-1',
+  sectionId: singleSection.id,
   isTextInputItem: false,
   mainInputFourValue: 0,
   mainInputOneValue: 0,
@@ -326,5 +328,16 @@ export const photoDataEntry: inspectionTemplateItemModelPhotoData = {
   downloadURL:
     'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/inspectionItemImages%2Fproperty-id%2Fitem-id%2F1639158738461.jpg?alt=media&token=123' // eslint-disable-line
 };
+
+export const unpublishedPhotoDataEntry: inspectionTemplateItemModelUnpublishedPhotoData =
+  {
+    id: 'unpublised-photo-data-1',
+    caption: 'caption-1',
+    createdAt: 1,
+    inspection: fullInspection.id,
+    item: unselectedCheckmarkItem.id,
+    photoData:
+      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+  };
 
 export default [fullInspection, inspectionA, inspectionB];

@@ -15,6 +15,7 @@ import {
   fullInspection,
   unselectedCheckmarkItem,
   singleSection
+  // unpublishedPhotoDataEntry
 } from '../../../../__mocks__/inspections';
 import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import PropertyUpdateInspection from '../../../../features/PropertyUpdateInspection';
@@ -27,6 +28,7 @@ import inspectionTemplateModel from '../../../../common/models/inspectionTemplat
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateUpdateModel from '../../../../common/models/inspections/templateUpdate';
+// import inspectionItemPhotosData from '../../../../common/services/indexedDB/inspectionItemPhotosData';
 import deepClone from '../../../helpers/deepClone';
 
 const FORCE_VISIBLE = true;
@@ -83,7 +85,7 @@ describe('Integration | Features | Property Update Inspection', () => {
       property: deepClone(fullProperty) as propertyModel,
       inspection: deepClone(incompleteInspection) as inspectionModel,
       unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel,
-      forceVisible:FORCE_VISIBLE
+      forceVisible: FORCE_VISIBLE
     };
     render(<PropertyUpdateInspection {...props} />);
 
@@ -103,4 +105,55 @@ describe('Integration | Features | Property Update Inspection', () => {
     const actual = Boolean(payload.items || null);
     expect(actual).toEqual(expected);
   });
+
+  // TODO:
+  // it('should delete an unpublished inspetion item photo when it is removed', async () => {
+  //   const expected = true;
+  //   const unpublishedPhotosData = [unpublishedPhotoDataEntry];
+  //   const deletePhotoRequest = sinon
+  //     .stub(inspectionItemPhotosData, 'deleteRecord')
+  //     .returns({
+  //       snapshot: { ref: 'test' },
+  //       on(evt, onStart, onError, onComplete) {
+  //         onComplete();
+  //       }
+  //     });
+
+  //   // Setup inspection with single section/item
+  //   const inspection = deepClone(incompleteInspection) as inspectionModel;
+  //   inspection.template.sections = {
+  //     [singleSection.id]: deepClone(singleSection)
+  //   };
+  //   inspection.template.items = {
+  //     [unselectedCheckmarkItem.id]: deepClone(unselectedCheckmarkItem)
+  //   };
+
+  //   //
+  //   // TODO add unpublished photos data
+  //   // sinon.stub(inspectionItemPhotosData, 'queryRecords').resolves(...);
+  //   //
+
+  //   const props = {
+  //     isOnline: true,
+  //     user,
+  //     property: deepClone(fullProperty) as propertyModel,
+  //     inspection,
+  //     unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel,
+  //     forceVisible: FORCE_VISIBLE
+  //   };
+  //   render(<PropertyUpdateInspection {...props} />);
+
+  //   //
+  //   // TODO open item photo modal
+  //   //
+
+  //   act(() => {
+  //     const removeButton = screen.queryByTestId('photos-modal-photos-remove');
+  //     userEvent.click(removeButton);
+  //   });
+  //   await waitFor(() => deletePhotoRequest.called);
+
+  //   const actual = deletePhotoRequest.called;
+  //   expect(actual).toEqual(expected);
+  // });
 });

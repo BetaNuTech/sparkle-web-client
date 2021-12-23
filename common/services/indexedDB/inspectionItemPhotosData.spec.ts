@@ -8,7 +8,9 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
     let result = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionItemPhotosDataService.queryInspectionRecords('inspection-1');
+      result = await inspectionItemPhotosDataService.queryInspectionRecords(
+        'inspection-1'
+      );
     } catch (err) {
       result = err;
     }
@@ -41,7 +43,9 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
     let result = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionItemPhotosDataService.queryInspectionRecords('inspection-1');
+      result = await inspectionItemPhotosDataService.queryInspectionRecords(
+        'inspection-1'
+      );
     } catch (err) {
       result = err;
     }
@@ -50,5 +54,33 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
       expect(item.inspection).toEqual('inspection-1');
       expect(item.item).toEqual('item-1');
     });
+  });
+
+  test('should delete photo data previously added in indexed db', async () => {
+    let result = null;
+    let photoIdFordelete = '';
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      result = await inspectionItemPhotosDataService.queryInspectionRecords(
+        'inspection-1'
+      );
+    } catch (err) {
+      result = err;
+    }
+    photoIdFordelete = result[0].id;
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    await inspectionItemPhotosDataService.deleteRecord(photoIdFordelete);
+
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      result = await inspectionItemPhotosDataService.queryInspectionRecords(
+        'inspection-1'
+      );
+    } catch (err) {
+      result = err;
+    }
+    expect(result).toHaveLength(1);
+    expect(result.id).not.toEqual(photoIdFordelete);
   });
 });

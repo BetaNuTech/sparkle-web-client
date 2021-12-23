@@ -14,6 +14,7 @@ interface result {
     itemId: string
   ): void;
   getUnpublishedInspectionPhotos(): void;
+  removeUnpublishedInspectionItemPhoto(unpublishedPhotoId:string):void;
   unpublishedInspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   unpublishedSelectedInspectionItemsPhotos: unPublishedPhotoDataModel[];
 }
@@ -97,6 +98,16 @@ export default function useInspectionItemPhotos(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedInspectionItem]);
 
+  const removeUnpublishedInspectionItemPhoto = async (unpublishedPhotoId: string) => {
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionItemPhotosData.deleteRecord(unpublishedPhotoId);
+      return getUnpublishedInspectionPhotos();
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
+
   // Request all photos on load
   // and when selected item changes
   useEffect(() => {
@@ -107,6 +118,7 @@ export default function useInspectionItemPhotos(
   return {
     addUnpublishedInspectionItemPhotos,
     getUnpublishedInspectionPhotos,
+    removeUnpublishedInspectionItemPhoto,
     unpublishedInspectionItemsPhotos,
     unpublishedSelectedInspectionItemsPhotos
   };

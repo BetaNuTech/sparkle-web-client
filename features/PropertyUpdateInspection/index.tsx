@@ -89,7 +89,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const {
     addUnpublishedInspectionItemPhotos,
     unpublishedInspectionItemsPhotos,
-    unpublishedSelectedInspectionItemsPhotos
+    unpublishedSelectedInspectionItemsPhotos,
+    removeUnpublishedInspectionItemPhoto
   } = useUnpublishInspectionItemPhotos(
     sendNotification,
     selectedInspectionItem,
@@ -279,12 +280,16 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     console.log(signatureData);
   };
 
+  const onRemoveItemsUnpublishedPhoto = (unpublishedPhotoId: string) => {
+    removeUnpublishedInspectionItemPhoto(unpublishedPhotoId);
+  };
+
+  const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
   const canEnableEditMode = canEnableOverwriteMode(
     user,
     inspection,
     isAdminEditModeEnabled
   );
-  const caneEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
 
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
@@ -379,8 +384,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onClose={closePhotosModal}
         title={selectedInspectionItem?.title}
         onChangeFiles={onChangeItemsUnpublishedPhotos}
+        onRemovePhoto={onRemoveItemsUnpublishedPhoto}
         sendNotification={sendNotification}
-        disabled={!caneEdit}
+        disabled={!canEdit}
       />
     </>
   );
