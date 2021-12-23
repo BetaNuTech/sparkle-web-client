@@ -19,8 +19,9 @@ All 3rd party code used by this application.
 
 ## Store & Data
 
-- [Firebase SDK](https://github.com/firebase/firebase-js-sdk) this acts as our application store.  [We do not use Redux with firebase](https://prescottprue.medium.com/react-and-firebase-without-redux-5c1b2b6a6ba1).  [Learn more](https://firebase.google.com/)
+- [Firebase SDK](https://github.com/firebase/firebase-js-sdk) this acts as our application store. [We do not use Redux with firebase](https://prescottprue.medium.com/react-and-firebase-without-redux-5c1b2b6a6ba1). [Learn more](https://firebase.google.com/)
 - [React Fire](https://github.com/FirebaseExtended/reactfire) firestore update watchers and miscellaneous firebase utilities.
+- [Dexie.js](https://github.com/dexie/Dexie.js) a minimal IndexedDB wrapper to simplify the process of working with the native API.
 
 ## Linting
 
@@ -61,8 +62,12 @@ All 3rd party code used by this application.
 
 ## Charts
 
-- [react-chartjs-2](https://github.com/reactchartjs/react-chartjs-2) React Component based library wrapper of chart.js  
+- [react-chartjs-2](https://github.com/reactchartjs/react-chartjs-2) React Component based library wrapper of chart.js
 - [chart.js](https://www.chartjs.org/docs/latest/) library to show charts representation of data
+
+## Drag and Drop
+
+- [React Dropzone](https://github.com/react-dropzone/react-dropzone) Hooks for HTML5 compliant drag and drop support.
 
 ## Misc
 

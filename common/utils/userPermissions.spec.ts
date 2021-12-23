@@ -187,14 +187,14 @@ describe('Unit | Common | Utils | User Permissions', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('it should only allow admins to edit completed inspection if user is not in admin edit mode', () => {
+  test('it should only allow admins to edit completed inspection if user is in edit mode', () => {
     const isAdminEditModeEnabled = true;
-    const expected = [true, false, false, false, false, false, false];
+    const expected = [false, true, true, true, false, false, false];
 
     const actual = [
       util.canEditInspection(admin, fullInspection, false),
       util.canEditInspection(admin, fullInspection, isAdminEditModeEnabled),
-      util.canEditInspection(admin, inspectionB, isAdminEditModeEnabled),
+
       util.canEditInspection(corporate, fullInspection, isAdminEditModeEnabled),
       util.canEditInspection(teamLead, fullInspection, isAdminEditModeEnabled),
       util.canEditInspection(
@@ -202,7 +202,144 @@ describe('Unit | Common | Utils | User Permissions', () => {
         fullInspection,
         isAdminEditModeEnabled
       ),
+      util.canEditInspection(
+        teamMember,
+        fullInspection,
+        isAdminEditModeEnabled
+      ),
       util.canEditInspection(noAccess, fullInspection, isAdminEditModeEnabled)
+    ];
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should allow inspection owner to edit their incomplete inspection', () => {
+    const teamMemberCompletedInspection = Object.assign(
+      deepClone(fullInspection),
+      {
+        inspector: teamMember.id
+      }
+    );
+    const teamMemberIncompleteInspection = Object.assign(
+      deepClone(inspectionB),
+      {
+        inspector: teamMember.id
+      }
+    );
+
+    const teamLeadCompletedInspection = Object.assign(
+      deepClone(fullInspection),
+      {
+        inspector: teamLead.id
+      }
+    );
+    const teamLeadIncompleteInspection = Object.assign(deepClone(inspectionB), {
+      inspector: teamLead.id
+    });
+
+    const propertyMemberCompletedInspection = Object.assign(
+      deepClone(fullInspection),
+      {
+        inspector: propertyMember.id
+      }
+    );
+    const propertyMemberIncompleteInspection = Object.assign(
+      deepClone(inspectionB),
+      {
+        inspector: propertyMember.id
+      }
+    );
+
+    const expected = [
+      false,
+      true,
+      false,
+      false,
+      true,
+      false,
+      false,
+      true,
+      false
+    ];
+
+    const actual = [
+      util.canEditInspection(teamMember, teamMemberCompletedInspection, false),
+      util.canEditInspection(teamMember, teamMemberIncompleteInspection, false),
+      util.canEditInspection(
+        propertyMember,
+        teamMemberIncompleteInspection,
+        false
+      ),
+      util.canEditInspection(teamLead, teamLeadCompletedInspection, false),
+      util.canEditInspection(teamLead, teamLeadIncompleteInspection, false),
+      util.canEditInspection(teamMember, teamLeadIncompleteInspection, false),
+      util.canEditInspection(
+        propertyMember,
+        propertyMemberCompletedInspection,
+        false
+      ),
+      util.canEditInspection(
+        propertyMember,
+        propertyMemberIncompleteInspection,
+        false
+      ),
+      util.canEditInspection(
+        teamLead,
+        propertyMemberIncompleteInspection,
+        false
+      )
+    ];
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('should only allow admin and corporate user to enable edit mode if user is not in admin edit mode', () => {
+    const isAdminEditModeEnabled = true;
+    const expected = [true, false, false, false, false, false, false];
+
+    const actual = [
+      util.canEnableOverwriteMode(admin, fullInspection, false),
+      util.canEnableOverwriteMode(
+        admin,
+        fullInspection,
+        isAdminEditModeEnabled
+      ),
+      util.canEnableOverwriteMode(admin, inspectionB, isAdminEditModeEnabled),
+      util.canEnableOverwriteMode(
+        corporate,
+        fullInspection,
+        isAdminEditModeEnabled
+      ),
+      util.canEnableOverwriteMode(
+        teamLead,
+        fullInspection,
+        isAdminEditModeEnabled
+      ),
+      util.canEnableOverwriteMode(
+        propertyMember,
+        fullInspection,
+        isAdminEditModeEnabled
+      ),
+      util.canEnableOverwriteMode(
+        noAccess,
+        fullInspection,
+        isAdminEditModeEnabled
+      )
+    ];
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admin and corporate user to overwrite inspection', () => {
+    const expected = [true, true, true, false, false, false];
+
+    const actual = [
+      util.canOverwriteInspection(admin),
+      util.canOverwriteInspection(corporate),
+      util.canOverwriteInspection(teamLead),
+      util.canOverwriteInspection(teamMember),
+      util.canOverwriteInspection(propertyMember),
+      util.canOverwriteInspection(noAccess)
     ];
 
     expect(actual).toEqual(expected);

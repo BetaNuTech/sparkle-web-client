@@ -123,13 +123,40 @@ export const canCreateInspection = (
 ): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
 
-// Checks user has permission to UPDATE a completed inspection
+// Checks if inspection is completed
+export const isInspectionComplete = (inspection: inspectionModel): boolean =>
+  inspection.inspectionCompleted;
+
+// Checks if user is inspection owner
+export const isInspectionOwner = (
+  user: userModel,
+  inspection: inspectionModel
+): boolean => user.id === inspection.inspector;
+
+// Checks if user have permission to edit inspection
 export const canEditInspection = (
   user: userModel,
   inspection: inspectionModel,
   isAdminEditModeEnabled: boolean
 ): boolean =>
-  user.admin && inspection.inspectionCompleted && !isAdminEditModeEnabled;
+  // Allow user to update their own incomplete inspection
+  (isInspectionOwner(user, inspection) && !isInspectionComplete(inspection)) ||
+  // Allow privaleged user to update another user's comleted inspection in overwrite mode
+  (canOverwriteInspection(user) && isAdminEditModeEnabled);
+
+// Checks user have permission to overwight inspection
+export const canOverwriteInspection = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks user has permission to UPDATE a completed inspection
+export const canEnableOverwriteMode = (
+  user: userModel,
+  inspection: inspectionModel,
+  isAdminEditModeEnabled: boolean
+): boolean =>
+  canOverwriteInspection(user) &&
+  isInspectionComplete(inspection) &&
+  !isAdminEditModeEnabled;
 
 // Checks user has permission to view property jobs
 export const canAccessJobs = (user: userModel, propertyId: string): boolean =>

@@ -21,7 +21,10 @@ import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import AttachmentNotesModal from './AttachmentNotesModal';
 import SignatureInputModal from './SignatureInputModal';
-import { canEditInspection } from '../../common/utils/userPermissions';
+import {
+  canEnableOverwriteMode,
+  canEditInspection
+} from '../../common/utils/userPermissions';
 import PhotosModal from '../../common/InspectionItemPhotosModal';
 
 interface Props {
@@ -276,7 +279,12 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     console.log(signatureData);
   };
 
-  const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
+  const canEnableEditMode = canEnableOverwriteMode(
+    user,
+    inspection,
+    isAdminEditModeEnabled
+  );
+  const caneEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
 
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
@@ -306,7 +314,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
-            canEditInspection={canEdit}
+            canEnableEditMode={canEnableEditMode}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
             inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
@@ -335,7 +343,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
-            canEditInspection={canEdit}
+            canEnableEditMode={canEnableEditMode}
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
             inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
@@ -371,6 +379,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onClose={closePhotosModal}
         title={selectedInspectionItem?.title}
         onChangeFiles={onChangeItemsUnpublishedPhotos}
+        sendNotification={sendNotification}
+        disabled={!caneEdit}
       />
     </>
   );

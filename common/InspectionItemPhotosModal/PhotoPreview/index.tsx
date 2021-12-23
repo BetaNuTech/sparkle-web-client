@@ -1,12 +1,12 @@
 import clsx from 'clsx';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, MouseEvent } from 'react';
 import photoDataModel from '../../models/inspectionTemplateItemPhotoData';
 
 import baseStyles from '../../Modal/styles.module.scss';
 import styles from '../styles.module.scss';
 
 interface Props {
-  onClose: () => void;
+  onClose: (ev: MouseEvent<HTMLButtonElement | HTMLDivElement>) => void;
   photoData: photoDataModel;
 }
 

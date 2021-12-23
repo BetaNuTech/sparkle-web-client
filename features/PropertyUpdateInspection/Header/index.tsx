@@ -14,7 +14,7 @@ interface HeaderModel {
   hasUpdates: boolean;
   onShareAction(): void;
   onSaveInspection(): void;
-  canEditInspection: boolean;
+  canEnableEditMode: boolean;
   onEnableAdminEditMode(): void;
 }
 
@@ -25,7 +25,7 @@ const Header: FunctionComponent<HeaderModel> = ({
   hasUpdates,
   onShareAction,
   onSaveInspection,
-  canEditInspection,
+  canEnableEditMode,
   onEnableAdminEditMode
 }) => {
   const propertyLink = `/properties/${property.id}/`;
@@ -38,7 +38,7 @@ const Header: FunctionComponent<HeaderModel> = ({
       >
         Share
       </button>
-      {canEditInspection && (
+      {canEnableEditMode && (
         <button
           type="button"
           className={clsx(
