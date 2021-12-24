@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import { FunctionComponent, useEffect, useRef, useState } from 'react';
 import SignaturePad from 'react-signature-canvas';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import unPublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import resizeStream from '../../../common/utils/resizeStream';
 import UndoIcon from '../../../public/icons/sparkle/undo.svg';
@@ -12,7 +13,8 @@ import styles from './styles.module.scss';
 interface Props extends ModalProps {
   onClose: () => void;
   selectedInspectionItem: inspectionTemplateItemModel;
-  saveSignature(signatureData: string): void;
+  saveSignature(signatureData: string, itemId: string): void;
+  inspectionItemsSignature: unPublishedSignatureModel[];
 }
 
 interface WindowSize {
@@ -27,7 +29,8 @@ const CANVAS_RESOLUTION_RATIO = 6;
 const SignatureInputModal: FunctionComponent<Props> = ({
   onClose,
   selectedInspectionItem,
-  saveSignature
+  saveSignature,
+  inspectionItemsSignature
 }) => {
   const [isPreview, setIsPreview] = useState(false);
   const [signatureData, setSignatureData] = useState([]);
@@ -102,10 +105,14 @@ const SignatureInputModal: FunctionComponent<Props> = ({
 
   const onSaveSignature = () => {
     const signDataURL = canvasRef.current.toDataURL();
-    saveSignature(signDataURL);
+    saveSignature(signDataURL, selectedInspectionItem.id);
   };
 
-  const { signatureDownloadURL } = selectedInspectionItem;
+  const signatureDownloadURL =
+    (inspectionItemsSignature.length > 0 &&
+      inspectionItemsSignature[0].signature) ||
+    selectedInspectionItem.signatureDownloadURL;
+
   return (
     <div
       className={styles.SignatureInputModal__modal}

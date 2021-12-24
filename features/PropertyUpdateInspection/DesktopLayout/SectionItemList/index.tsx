@@ -9,6 +9,7 @@ import SectionItemDropdown from '../../SectionItemDropdown';
 import useVisibility from '../../../../common/hooks/useVisibility';
 
 import styles from '../../styles.module.scss';
+import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
   item: inspectionTemplateItemModel;
@@ -26,6 +27,7 @@ interface Props {
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
@@ -37,7 +39,8 @@ const SectionItemList: FunctionComponent<Props> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  inspectionItemsPhotos
+  inspectionItemsPhotos,
+  inspectionItemsSignature
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
@@ -46,6 +49,15 @@ const SectionItemList: FunctionComponent<Props> = ({
 
   const unPublishedPhotosDataCount = (inspectionItemsPhotos.get(item.id) || [])
     .length;
+
+  const unPublishedItemsSignatureData =
+    inspectionItemsSignature.get(item.id) || [];
+
+  const signatureDownloadURL =
+    (unPublishedItemsSignatureData.length > 0 &&
+      unPublishedItemsSignatureData[0].signature) ||
+    item.signatureDownloadURL;
+
   return (
     <li
       className={clsx(
@@ -86,7 +98,7 @@ const SectionItemList: FunctionComponent<Props> = ({
               selected={item.mainInputSelected}
               selectedValue={item.mainInputSelection}
               textInputValue={item.textInputValue}
-              signatureDownloadURL={item.signatureDownloadURL}
+              signatureDownloadURL={signatureDownloadURL}
               onInputChange={(event, selectionIndex) =>
                 onInputChange(event, item, selectionIndex)
               }

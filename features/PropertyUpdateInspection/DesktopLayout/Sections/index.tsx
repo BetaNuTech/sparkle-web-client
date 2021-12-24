@@ -3,6 +3,7 @@ import inspectionTemplateSectionModel from '../../../../common/models/inspection
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import SectionItem from '../SectionItem';
+import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
   propertyId: string;
@@ -32,6 +33,7 @@ interface Props {
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -49,7 +51,8 @@ const Sections: FunctionComponent<Props> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  inspectionItemsPhotos
+  inspectionItemsPhotos,
+  inspectionItemsSignature
 }) => {
   if (sections && sections.length > 0) {
     return (
@@ -73,6 +76,7 @@ const Sections: FunctionComponent<Props> = ({
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
             inspectionItemsPhotos={inspectionItemsPhotos}
+            inspectionItemsSignature={inspectionItemsSignature}
           />
         ))}
       </ul>

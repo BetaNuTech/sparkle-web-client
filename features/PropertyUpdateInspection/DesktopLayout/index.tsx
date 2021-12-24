@@ -7,6 +7,7 @@ import unPublishedPhotoDataModel from '../../../common/models/inspections/templa
 import Header from '../Header';
 import styles from '../styles.module.scss';
 import Sections from './Sections';
+import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
   property: propertyModel;
@@ -44,6 +45,7 @@ interface Props {
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
 }
 
 const DesktopLayout: FunctionComponent<Props> = ({
@@ -68,7 +70,8 @@ const DesktopLayout: FunctionComponent<Props> = ({
   canEnableEditMode,
   onEnableAdminEditMode,
   forceVisible,
-  inspectionItemsPhotos
+  inspectionItemsPhotos,
+  inspectionItemsSignature
 }) => (
   <>
     <Header
@@ -98,6 +101,7 @@ const DesktopLayout: FunctionComponent<Props> = ({
         onClickPhotos={onClickPhotos}
         forceVisible={forceVisible}
         inspectionItemsPhotos={inspectionItemsPhotos}
+        inspectionItemsSignature={inspectionItemsSignature}
       />
     </div>
   </>
