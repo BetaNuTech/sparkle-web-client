@@ -10,6 +10,7 @@ import inspectionTemplateSectionModel from '../../../common/models/inspectionTem
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import Sections from './Sections';
+import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
   property: propertyModel;
@@ -47,6 +48,7 @@ interface Props {
   onEnableAdminEditMode(): void;
   forceVisible: boolean;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
 }
 
 // Mobile layout
@@ -73,7 +75,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   canEnableEditMode,
   onEnableAdminEditMode,
   forceVisible,
-  inspectionItemsPhotos
+  inspectionItemsPhotos,
+  inspectionItemsSignature
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -158,6 +161,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         onClickPhotos={onClickPhotos}
         forceVisible={forceVisible}
         inspectionItemsPhotos={inspectionItemsPhotos}
+        inspectionItemsSignature={inspectionItemsSignature}
       />
     </>
   );

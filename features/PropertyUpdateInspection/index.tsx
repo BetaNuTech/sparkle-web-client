@@ -17,6 +17,7 @@ import useUpdateTemplate from './hooks/useUpdateTemplate';
 import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates';
 import usePublishUpdates from './hooks/usePublishUpdates';
 import useUnpublishInspectionItemPhotos from './hooks/useUnpublishedInspectionItemPhotos';
+import useUnpublishedInspectionSignature from './hooks/useUnpublishedInspectionItemSignature';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import AttachmentNotesModal from './AttachmentNotesModal';
@@ -93,6 +94,16 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     addUnpublishedInspectionPhotoCaption,
     removeUnpublishedInspectionItemPhoto
   } = useUnpublishInspectionItemPhotos(
+    sendNotification,
+    selectedInspectionItem,
+    inspection.id
+  );
+
+  const {
+    unpublishedInspectionItemsSignature,
+    unpublishedSelectedInspectionItemsSignature,
+    saveUnpublishedInspectionSignature
+  } = useUnpublishedInspectionSignature(
     sendNotification,
     selectedInspectionItem,
     inspection.id
@@ -277,8 +288,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
   };
 
-  const saveSignature = (signatureData: string) => {
-    console.log(signatureData);
+  const saveSignature = async (signatureData: string,itemId:string) => {
+    saveUnpublishedInspectionSignature(signatureData,itemId)
+    closeSignatureInputModal()
   };
 
   const onRemoveItemsUnpublishedPhoto = (unpublishedPhotoId: string) => {
@@ -295,7 +307,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
-
+  
   return (
     <>
       {isMobileorTablet && (
@@ -324,6 +336,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
             inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
+            inspectionItemsSignature={unpublishedInspectionItemsSignature}
           />
         </>
       )}
@@ -353,6 +366,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
             inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
+            inspectionItemsSignature={unpublishedInspectionItemsSignature}
           />
         </>
       )}
@@ -376,6 +390,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         isVisible={isVisibleSignatureInputModal}
         onClose={closeSignatureInputModal}
         selectedInspectionItem={selectedInspectionItem}
+        inspectionItemsSignature={unpublishedSelectedInspectionItemsSignature}
         saveSignature={saveSignature}
       />
       <PhotosModal

@@ -2,6 +2,7 @@ import sinon from 'sinon';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SignatureInputModal from './index';
+import { unpublishedSignatureEntry } from '../../../__mocks__/inspections';
 
 describe('Unit | Features | Property Update Inspection | Signature Input Modal', () => {
   afterEach(() => sinon.restore());
@@ -12,6 +13,7 @@ describe('Unit | Features | Property Update Inspection | Signature Input Modal',
     const props = {
       isVisible: true,
       onClose,
+      inspectionItemsSignature: [],
       selectedInspectionItem: { title: 'six', mainInputNotes: '' }
     };
     render(<SignatureInputModal {...props} />);
@@ -28,6 +30,7 @@ describe('Unit | Features | Property Update Inspection | Signature Input Modal',
     const props = {
       isVisible: true,
       onClose,
+      inspectionItemsSignature: [],
       selectedInspectionItem: { title: 'six', mainInputNotes: '' }
     };
     render(<SignatureInputModal {...props} />);
@@ -42,6 +45,7 @@ describe('Unit | Features | Property Update Inspection | Signature Input Modal',
     const props = {
       isVisible: true,
       onClose,
+      inspectionItemsSignature: [],
       selectedInspectionItem: {
         title: 'six',
         mainInputNotes: '',
@@ -63,6 +67,7 @@ describe('Unit | Features | Property Update Inspection | Signature Input Modal',
     const props = {
       isVisible: true,
       onClose,
+      inspectionItemsSignature: [],
       selectedInspectionItem: {
         title: 'six',
         mainInputNotes: '',
@@ -89,6 +94,7 @@ describe('Unit | Features | Property Update Inspection | Signature Input Modal',
     const props = {
       isVisible: true,
       onClose,
+      inspectionItemsSignature: [],
       selectedInspectionItem: {
         title: 'six',
         mainInputNotes: '',
@@ -108,5 +114,35 @@ describe('Unit | Features | Property Update Inspection | Signature Input Modal',
       'signature-input-modal-preview-image'
     );
     expect(previewImg).toBeNull();
+  });
+
+  it('should show unpublished signature in preview when click on preview current', () => {
+    const signatureDownloadURL = 'https://dummyimage.com/600x400/000/fff';
+    const onClose = sinon.spy();
+    const props = {
+      isVisible: true,
+      onClose,
+      inspectionItemsSignature: [unpublishedSignatureEntry],
+      selectedInspectionItem: {
+        title: 'six',
+        mainInputNotes: '',
+        signatureDownloadURL
+      }
+    };
+    render(<SignatureInputModal {...props} />);
+
+    const previewBtn = screen.queryByTestId(
+      'signature-input-modal-preview-button'
+    );
+
+    userEvent.click(previewBtn);
+    const previewImg = screen.queryByTestId(
+      'signature-input-modal-preview-image'
+    );
+    expect(previewBtn).toHaveTextContent('Hide Current');
+    expect(previewImg).toHaveAttribute(
+      'src',
+      unpublishedSignatureEntry.signature
+    );
   });
 });

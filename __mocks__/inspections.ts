@@ -4,6 +4,8 @@ import inspectionTemplateItemModel from '../common/models/inspectionTemplateItem
 import inspectionTemplateItemModelPhotoData from '../common/models/inspectionTemplateItemPhotoData';
 // eslint-disable-next-line max-len
 import inspectionTemplateItemModelUnpublishedPhotoData from '../common/models/inspections/templateItemUnpublishedPhotoData';
+// eslint-disable-next-line max-len
+import inspectionTemplateItemModelUnpublishedSignature from '../common/models/inspections/templateItemUnpublishedSignature';
 
 export const fullInspection: inspectionModel = {
   id: 'inspection-1',
@@ -328,6 +330,16 @@ export const photoDataEntry: inspectionTemplateItemModelPhotoData = {
   downloadURL:
     'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/inspectionItemImages%2Fproperty-id%2Fitem-id%2F1639158738461.jpg?alt=media&token=123' // eslint-disable-line
 };
+
+export const unpublishedSignatureEntry: inspectionTemplateItemModelUnpublishedSignature =
+  {
+    id: 'unpublised-signature-data-1',
+    createdAt: 1,
+    inspection: fullInspection.id,
+    item: unselectedCheckmarkItem.id,
+    signature:
+      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+  };
 
 export const unpublishedPhotoDataEntry: inspectionTemplateItemModelUnpublishedPhotoData =
   {

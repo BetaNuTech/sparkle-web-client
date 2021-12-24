@@ -10,6 +10,7 @@ import inspectionTemplateItemModel from '../../../../common/models/inspectionTem
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import styles from '../../styles.module.scss';
 import SectionItemList from '../SectionItemList';
+import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
   propertyId: string;
@@ -40,6 +41,7 @@ interface Props {
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
 }
 
 const SectionItem: FunctionComponent<Props> = ({
@@ -57,7 +59,8 @@ const SectionItem: FunctionComponent<Props> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  inspectionItemsPhotos
+  inspectionItemsPhotos,
+  inspectionItemsSignature
 }) => {
   const listItems = sectionItems.get(section.id);
   const onListHeaderClick = (event) => {
@@ -124,6 +127,7 @@ const SectionItem: FunctionComponent<Props> = ({
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
             inspectionItemsPhotos={inspectionItemsPhotos}
+            inspectionItemsSignature={inspectionItemsSignature}
           />
         ))}
       </ul>

@@ -1,7 +1,14 @@
 import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { fullInspection, inspectionB } from '../../../__mocks__/inspections';
+import stubIntersectionObserver from '../../../__tests__/helpers/stubIntersectionObserver';
+import {
+  fullInspection,
+  inspectionB,
+  unpublishedSignatureEntry,
+  unselectedSignatureInputItem,
+  singleSection
+} from '../../../__mocks__/inspections';
 import { fullProperty } from '../../../__mocks__/properties';
 import breakpoints from '../../../config/breakpoints';
 import MobileLayout from './index';
@@ -148,5 +155,40 @@ describe('Unit | Features | Property Update Inspection | Mobile Layout', () => {
 
     const saveButton = screen.queryByTestId('header-save-button');
     expect(saveButton).not.toBeDisabled();
+  });
+
+  it('should show unpublished signature', () => {
+    stubIntersectionObserver();
+    const sectionItems = new Map();
+    const inspectionItemsSignature = new Map();
+    const inspectionItem = { ...unselectedSignatureInputItem, id: 'item-1' };
+    inspectionItemsSignature.set('item-1', [unpublishedSignatureEntry]);
+    sectionItems.set('section-1', [inspectionItem]);
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      collapsedSections: [],
+      inspectionItemsPhotos: new Map(),
+      templateSections: [singleSection],
+      forceVisible: true,
+      sectionItems,
+      inspectionItemsSignature
+    };
+
+    render(<MobileLayout {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const signatureImage = screen.queryByTestId('inspection-signature-image');
+    expect(signatureImage).toHaveAttribute(
+      'src',
+      unpublishedSignatureEntry.signature
+    );
   });
 });

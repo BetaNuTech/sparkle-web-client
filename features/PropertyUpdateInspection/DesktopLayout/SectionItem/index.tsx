@@ -6,6 +6,7 @@ import inspectionTemplateItemModel from '../../../../common/models/inspectionTem
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import styles from '../../styles.module.scss';
 import SectionItemList from '../SectionItemList';
+import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface MobileLayoutTeamItemModel {
   propertyId: string;
@@ -36,6 +37,7 @@ interface MobileLayoutTeamItemModel {
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -53,7 +55,8 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  inspectionItemsPhotos
+  inspectionItemsPhotos,
+  inspectionItemsSignature
 }) => {
   const listItems = sectionItems.get(section.id) || [];
   return (
@@ -119,6 +122,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
             inspectionItemsPhotos={inspectionItemsPhotos}
+            inspectionItemsSignature={inspectionItemsSignature}
           />
         ))}
       </ul>
