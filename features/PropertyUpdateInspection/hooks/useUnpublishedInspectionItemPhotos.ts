@@ -17,6 +17,10 @@ interface result {
   removeUnpublishedInspectionItemPhoto(unpublishedPhotoId:string):void;
   unpublishedInspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   unpublishedSelectedInspectionItemsPhotos: unPublishedPhotoDataModel[];
+  addUnpublishedInspectionPhotoCaption(
+    unpublishedPhotoId: string,
+    captionText: string
+  ): void;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -98,6 +102,20 @@ export default function useInspectionItemPhotos(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedInspectionItem]);
 
+  const addUnpublishedInspectionPhotoCaption = async (
+    unpublishedPhotoId: string,
+    captionText: string
+  ) => {
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionItemPhotosData.updateRecord(unpublishedPhotoId, {
+        caption: captionText
+      });
+      getUnpublishedInspectionPhotos();
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
   const removeUnpublishedInspectionItemPhoto = async (unpublishedPhotoId: string) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
@@ -120,6 +138,7 @@ export default function useInspectionItemPhotos(
     getUnpublishedInspectionPhotos,
     removeUnpublishedInspectionItemPhoto,
     unpublishedInspectionItemsPhotos,
-    unpublishedSelectedInspectionItemsPhotos
+    unpublishedSelectedInspectionItemsPhotos,
+    addUnpublishedInspectionPhotoCaption
   };
 }

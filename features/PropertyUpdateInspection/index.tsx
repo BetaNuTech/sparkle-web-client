@@ -90,6 +90,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     addUnpublishedInspectionItemPhotos,
     unpublishedInspectionItemsPhotos,
     unpublishedSelectedInspectionItemsPhotos,
+    addUnpublishedInspectionPhotoCaption,
     removeUnpublishedInspectionItemPhoto
   } = useUnpublishInspectionItemPhotos(
     sendNotification,
@@ -384,6 +385,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onClose={closePhotosModal}
         title={selectedInspectionItem?.title}
         onChangeFiles={onChangeItemsUnpublishedPhotos}
+        onAddCaption={addUnpublishedInspectionPhotoCaption}
         onRemovePhoto={onRemoveItemsUnpublishedPhoto}
         sendNotification={sendNotification}
         disabled={!canEdit}
