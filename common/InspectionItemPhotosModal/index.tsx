@@ -17,6 +17,7 @@ interface Props extends ModalProps {
   unpublishedPhotosData: unPublishedPhotoDataModel[];
   title: string;
   onChangeFiles(files: Array<string>): void;
+  onAddCaption(unpublishedPhotoId: string, captionText: string): void;
   onRemovePhoto(unpublishedPhotoId: string): void;
   sendNotification: userNotifications;
   disabled?: boolean;
@@ -28,6 +29,7 @@ const PhotosModal: FunctionComponent<Props> = ({
   onClose,
   title,
   onChangeFiles,
+  onAddCaption,
   onRemovePhoto,
   sendNotification,
   disabled
@@ -67,6 +69,18 @@ const PhotosModal: FunctionComponent<Props> = ({
   ) => {
     ev.stopPropagation();
     setPhotoForPreview(photoData);
+  };
+
+  const onClickAddCaption = (
+    ev: MouseEvent<HTMLButtonElement>,
+    unPublishedPhotoId: string
+  ) => {
+    ev.stopPropagation();
+    // eslint-disable-next-line no-alert
+    const captionText = window.prompt('Enter your caption');
+    if (captionText) {
+      onAddCaption(unPublishedPhotoId, captionText);
+    }
   };
 
   const onClickRemovePhoto = (
@@ -174,6 +188,17 @@ const PhotosModal: FunctionComponent<Props> = ({
                       </div>
                     )}
                   </div>
+                  {!item.caption && (
+                    <button
+                      className={
+                        styles.PhotosModal__photos__list__item__caption
+                      }
+                      onClick={(ev) => onClickAddCaption(ev, item.id)}
+                      data-testid="photo-modal-photo-add-caption"
+                    >
+                      Add Caption
+                    </button>
+                  )}
                 </li>
               ))}
               {photosDataItems.map((item) => (

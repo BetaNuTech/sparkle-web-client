@@ -57,6 +57,27 @@ export const queryInspectionRecords = async (
   }
 };
 
+// Will return number
+// dexie table.update returns 1 if record upate suuccessfully , otherwise 0
+// https://dexie.org/docs/Table/Table.update()#return-value
+export const updateRecord = async (
+    unpublishedPhotoId: string,
+    updates: Record<string,string>
+  ): Promise<number> => {
+    try {
+      const result = await db.inspectionItemPhotos.update(
+        unpublishedPhotoId,
+        updates
+      );
+      if (result === 1) {
+        return result;
+      }
+      throw Error(`${PREFIX} updateRecord: Data not updated in indexedDB`);
+    } catch (err) {
+      throw Error(`${PREFIX} updateRecord: ${err}`);
+    }
+  };
+
 export const deleteRecord = async (recordId: string): Promise<void> => {
   try {
     await db.inspectionItemPhotos.delete(recordId);
@@ -69,5 +90,6 @@ export default {
   queryItemRecords,
   queryInspectionRecords,
   createMultipleRecords,
+  updateRecord,
   deleteRecord
 };

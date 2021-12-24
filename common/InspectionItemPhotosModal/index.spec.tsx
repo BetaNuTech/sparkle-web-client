@@ -4,7 +4,8 @@ import userEvent from '@testing-library/user-event';
 import PhotosModal from './index';
 import {
   photoDataEntry,
-  unpublishedPhotoDataEntry
+  unpublishedPhotoDataEntry,
+  unpublishedPhotoDataEntryNoCaption
 } from '../../__mocks__/inspections';
 import * as dropzoneUtils from '../../__tests__/helpers/dropzone';
 
@@ -178,5 +179,48 @@ describe('Common | Inspection Item Photos Modal', () => {
 
     const actual = onChangeFiles.called;
     expect(actual).toEqual(expected);
+  });
+
+  test('should request and publish photo data caption', async () => {
+    const expectedCaptionText = 'Caption Text';
+    const onAddCaption = sinon.spy();
+
+    let promptCalled = false;
+    const mockPrompt = jest.spyOn(window, 'prompt');
+    mockPrompt.mockImplementation(() => {
+      promptCalled = true;
+      return expectedCaptionText;
+    });
+
+    const props = {
+      isVisible: true,
+      onClose: sinon.spy(),
+      onRemovePhoto: sinon.spy(),
+      title: 'One',
+      onChangeFiles: sinon.spy(),
+      photosData: [],
+      unpublishedPhotosData: [unpublishedPhotoDataEntryNoCaption],
+      onAddCaption
+    };
+
+    render(<PhotosModal {...props} />);
+
+    await act(async () => {
+      const addCaptionButton = screen.queryByTestId(
+        'photo-modal-photo-add-caption'
+      );
+      userEvent.click(addCaptionButton);
+      await waitFor(() => promptCalled);
+    });
+
+    const result = onAddCaption.firstCall;
+    const captionText = result.args[1];
+    const photoDataId = result.args[0];
+
+    expect(mockPrompt).toHaveBeenCalled();
+    expect(onAddCaption.called).toBeTruthy();
+    expect(captionText).toEqual(expectedCaptionText);
+    expect(photoDataId).toEqual(unpublishedPhotoDataEntryNoCaption.id);
+    mockPrompt.mockRestore();
   });
 });

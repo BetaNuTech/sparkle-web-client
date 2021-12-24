@@ -56,6 +56,35 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
     });
   });
 
+  test('should update photo record in indexed db', async () => {
+    const expected = 'test caption';
+    let result = null;
+    let idForUpdate = null;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      result = await inspectionItemPhotosDataService.queryInspectionRecords(
+        'inspection-1'
+      );
+    } catch (err) {
+      result = err;
+    }
+    idForUpdate = result[0].id;
+    // eslint-disable-next-line import/no-named-as-default-member
+    await inspectionItemPhotosDataService.updateRecord(idForUpdate, {
+      caption: expected
+    });
+
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      result = await inspectionItemPhotosDataService.queryInspectionRecords(
+        'inspection-1'
+      );
+    } catch (err) {
+      result = err;
+    }
+    expect(result[0].caption).toBe(expected);
+  });
+
   test('should delete photo data previously added in indexed db', async () => {
     let result = null;
     let photoIdFordelete = '';

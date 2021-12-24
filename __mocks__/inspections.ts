@@ -339,5 +339,15 @@ export const unpublishedPhotoDataEntry: inspectionTemplateItemModelUnpublishedPh
     photoData:
       'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
   };
+export const unpublishedPhotoDataEntryNoCaption: inspectionTemplateItemModelUnpublishedPhotoData =
+  {
+    id: 'unpublised-photo-data-2',
+    caption: '',
+    createdAt: 1,
+    inspection: fullInspection.id,
+    item: unselectedCheckmarkItem.id,
+    photoData:
+      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+  };
 
 export default [fullInspection, inspectionA, inspectionB];
