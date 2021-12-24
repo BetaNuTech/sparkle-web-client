@@ -1,12 +1,13 @@
-import { FunctionComponent, useRef } from 'react';
+import { FunctionComponent, useRef, useState } from 'react';
 import clsx from 'clsx';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import InspectionItemControls, {
   Attachment
 } from '../../../../common/InspectionItemControls';
+import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import useVisibility from '../../../../common/hooks/useVisibility';
-import SectionItemDropdown from '../../SectionItemDropdown';
+import SectionItemActions from '../../SectionItemActions';
 import styles from '../../styles.module.scss';
 
 interface Props {
@@ -38,12 +39,21 @@ const SectionItemList: FunctionComponent<Props> = ({
   onClickPhotos,
   inspectionItemsPhotos
 }) => {
+  const [isSwipeOpen, setIsSwipeOpen] = useState(false);
+  const swipeContainerRef = useRef();
+  useSwipeReveal(swipeContainerRef, setIsSwipeOpen);
+
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
   const unPublishedPhotosDataCount = (inspectionItemsPhotos.get(item.id) || [])
     .length;
+
+  const onChangeNA = (itemId: string, isItemNA: boolean) => {
+    onItemIsNAChange(itemId, isItemNA);
+    setIsSwipeOpen(false);
+  };
 
   return (
     <li
@@ -53,46 +63,72 @@ const SectionItemList: FunctionComponent<Props> = ({
       )}
       ref={placeholderRef}
     >
-      {isVisible && (
-        <>
-          {item.isItemNA && (
-            <div className={styles['section__list__item__row--notApplicable']}>
-              <h3>NA</h3>
+      <div ref={swipeContainerRef}>
+        {isVisible && (
+          <>
+            <div
+              className={clsx(
+                styles.section__list__item__row__swipeContainer,
+                isSwipeOpen &&
+                  styles['section__list__item__row__swipeContainer--swipeOpen'],
+                isSwipeOpen &&
+                  item.isItemNA &&
+                  styles[
+                    'section__list__item__row__swipeContainer--swipeOpenNA'
+                  ]
+              )}
+            >
+              {item.isItemNA && (
+                <div
+                  className={styles['section__list__item__row--notApplicable']}
+                >
+                  <h3>NA</h3>
+                </div>
+              )}
+              <div>
+                {item.itemType === 'signature' ? 'Signature' : item.title}
+              </div>
+              <div className={styles['section__list__item__row--mainInput']}>
+                <InspectionItemControls
+                  inputType={item.mainInputType || item.itemType}
+                  selected={item.mainInputSelected}
+                  selectedValue={item.mainInputSelection}
+                  textInputValue={item.textInputValue}
+                  signatureDownloadURL={item.signatureDownloadURL}
+                  onInputChange={(event, selectionIndex) =>
+                    onInputChange(event, item, selectionIndex)
+                  }
+                  onClickOneActionNotes={() => onClickOneActionNotes(item)}
+                  onClickSignatureInput={() => onClickSignatureInput(item)}
+                />
+                {showAttachment && (
+                  <Attachment
+                    photos={item.photos}
+                    notes={item.notes}
+                    photosData={item.photosData}
+                    unPublishedPhotosDataCount={unPublishedPhotosDataCount}
+                    inspectorNotes={item.inspectorNotes}
+                    onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
+                    onClickPhotos={() => onClickPhotos(item)}
+                  />
+                )}
+              </div>
             </div>
-          )}
-          <div>{item.itemType === 'signature' ? 'Signature' : item.title}</div>
-          <div className={styles['section__list__item__row--mainInput']}>
-            <InspectionItemControls
-              inputType={item.mainInputType || item.itemType}
-              selected={item.mainInputSelected}
-              selectedValue={item.mainInputSelection}
-              textInputValue={item.textInputValue}
-              signatureDownloadURL={item.signatureDownloadURL}
-              onInputChange={(event, selectionIndex) =>
-                onInputChange(event, item, selectionIndex)
-              }
-              onClickOneActionNotes={() => onClickOneActionNotes(item)}
-              onClickSignatureInput={() => onClickSignatureInput(item)}
-            />
-            {showAttachment && (
-              <Attachment
-                photos={item.photos}
-                notes={item.notes}
-                photosData={item.photosData}
-                unPublishedPhotosDataCount={unPublishedPhotosDataCount}
-                inspectorNotes={item.inspectorNotes}
-                onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
-                onClickPhotos={() => onClickPhotos(item)}
+            <div
+              className={clsx(
+                styles.section__list__item__row__swipeActions,
+                isSwipeOpen &&
+                  styles['section__list__item__row__swipeActions--reveal']
+              )}
+            >
+              <SectionItemActions
+                isItemNA={item.isItemNA}
+                onChangeItemNA={(isItemNA) => onChangeNA(item.id, isItemNA)}
               />
-            )}
-
-            <SectionItemDropdown
-              isItemNA={item.isItemNA}
-              onChangeItemNA={(isItemNA) => onItemIsNAChange(item.id, isItemNA)}
-            />
-          </div>
-        </>
-      )}
+            </div>
+          </>
+        )}
+      </div>
     </li>
   );
 };

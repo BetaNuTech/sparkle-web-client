@@ -21,6 +21,21 @@
   padding: $global-lg-padding $global-padding $global-padding;
 }
 
+.swipeReveal {
+  @extend %swipeReveal;
+  @extend %swipeReveal__hidden;
+
+  > a,
+  > button {
+    @extend %flexButton;
+    align-items: center;
+  }
+
+  &__reveal {
+    @extend %swipeReveal__hidden--reveal;
+  }
+}
+
 .section {
   &__list {
     @extend %list;
@@ -116,9 +131,44 @@
       &__row {
         display: grid;
         position: relative;
-        padding: $global-sm-padding $global-padding;
-        border-bottom: rem-calc(1) solid $gray-lighter;
+
         min-height: rem-calc(72);
+
+        &__swipeContainer {
+          @extend %swipeReveal;
+          @extend %swipeReveal__visible;
+
+          padding: $global-sm-padding $global-padding;
+          background: $white;
+          border-bottom: rem-calc(1) solid $gray-lighter;
+
+          &--swipeOpen {
+            transform: translateX(rem-calc(-54));
+          }
+          &--swipeOpenNA {
+            transform: translateX(rem-calc(-66));
+          }
+        }
+
+        &__swipeActions {
+          @extend %swipeReveal__hidden;
+          background: $primary-dark-color;
+
+          &--reveal {
+            @extend %swipeReveal__hidden--reveal;
+          }
+
+          > div {
+            display: flex;
+          }
+
+          button {
+            padding: 0 $global-padding;
+            border: none;
+            background: $primary-dark-color;
+            color: $white;
+          }
+        }
 
         &--mainInput {
           display: flex;
@@ -145,6 +195,7 @@
           padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
           grid-template-columns: 0.6fr 1fr auto;
           min-height: rem-calc(63);
+          border-bottom: rem-calc(1) solid $gray-lighter;
 
           &Action {
             display: flex;
