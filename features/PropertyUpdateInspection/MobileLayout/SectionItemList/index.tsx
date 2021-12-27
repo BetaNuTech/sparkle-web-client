@@ -28,6 +28,7 @@ interface Props {
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  canEdit: boolean;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
@@ -40,11 +41,17 @@ const SectionItemList: FunctionComponent<Props> = ({
   onClickSignatureInput,
   onClickPhotos,
   inspectionItemsPhotos,
-  inspectionItemsSignature
+  inspectionItemsSignature,
+  canEdit
 }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const swipeContainerRef = useRef();
-  useSwipeReveal(swipeContainerRef, setIsSwipeOpen);
+
+  const setSwipeOpen = (isOpen: boolean) => {
+    if (canEdit) setIsSwipeOpen(isOpen);
+  };
+
+  useSwipeReveal(swipeContainerRef, setSwipeOpen);
 
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
@@ -109,6 +116,7 @@ const SectionItemList: FunctionComponent<Props> = ({
                   }
                   onClickOneActionNotes={() => onClickOneActionNotes(item)}
                   onClickSignatureInput={() => onClickSignatureInput(item)}
+                  isDisabled={!canEdit}
                 />
                 {showAttachment && (
                   <Attachment

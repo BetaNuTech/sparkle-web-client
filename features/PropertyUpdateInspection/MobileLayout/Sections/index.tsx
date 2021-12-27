@@ -35,6 +35,7 @@ interface Props {
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  canEdit: boolean;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -53,7 +54,8 @@ const Sections: FunctionComponent<Props> = ({
   onClickSignatureInput,
   onClickPhotos,
   inspectionItemsPhotos,
-  inspectionItemsSignature
+  inspectionItemsSignature,
+  canEdit
 }) => {
   if (!sections || !sections.length) {
     return null;
@@ -81,6 +83,7 @@ const Sections: FunctionComponent<Props> = ({
           onClickPhotos={onClickPhotos}
           inspectionItemsPhotos={inspectionItemsPhotos}
           inspectionItemsSignature={inspectionItemsSignature}
+          canEdit={canEdit}
         />
       ))}
     </ul>

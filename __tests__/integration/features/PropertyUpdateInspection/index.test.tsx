@@ -14,8 +14,8 @@ import { fullProperty } from '../../../../__mocks__/properties';
 import {
   fullInspection,
   unselectedCheckmarkItem,
-  singleSection
-  // unpublishedPhotoDataEntry
+  singleSection,
+  unpublishedPhotoDataEntry
 } from '../../../../__mocks__/inspections';
 import stubIntersectionObserver from '../../../helpers/stubIntersectionObserver';
 import PropertyUpdateInspection from '../../../../features/PropertyUpdateInspection';
@@ -28,7 +28,7 @@ import inspectionTemplateModel from '../../../../common/models/inspectionTemplat
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateUpdateModel from '../../../../common/models/inspections/templateUpdate';
-// import inspectionItemPhotosData from '../../../../common/services/indexedDB/inspectionItemPhotosData';
+import inspectionItemPhotosData from '../../../../common/services/indexedDB/inspectionItemPhotosData';
 import deepClone from '../../../helpers/deepClone';
 
 const FORCE_VISIBLE = true;
@@ -91,13 +91,18 @@ describe('Integration | Features | Property Update Inspection', () => {
 
     await act(async () => {
       const checkmarkButton = screen.getByTestId('control-checkmark');
+
       await userEvent.click(checkmarkButton);
+
+      // need to wait for all state updates related to unpublished template updates
+      await new Promise((r) => setTimeout(r, 100));
     });
 
     await act(async () => {
       const save = screen.getByTestId('header-save-button');
       await userEvent.click(save);
     });
+
     await waitFor(() => onSave.called);
 
     const result = onSave.firstCall || { args: [] };
@@ -106,54 +111,67 @@ describe('Integration | Features | Property Update Inspection', () => {
     expect(actual).toEqual(expected);
   });
 
-  // TODO:
-  // it('should delete an unpublished inspetion item photo when it is removed', async () => {
-  //   const expected = true;
-  //   const unpublishedPhotosData = [unpublishedPhotoDataEntry];
-  //   const deletePhotoRequest = sinon
-  //     .stub(inspectionItemPhotosData, 'deleteRecord')
-  //     .returns({
-  //       snapshot: { ref: 'test' },
-  //       on(evt, onStart, onError, onComplete) {
-  //         onComplete();
-  //       }
-  //     });
+  it('should delete an unpublished inspection item photo when it is removed', async () => {
+    const expected = true;
+    const unpublishedPhotosData = [unpublishedPhotoDataEntry];
+    const deletePhotoRequest = sinon
+      .stub(inspectionItemPhotosData, 'deleteRecord')
+      .returns({
+        snapshot: { ref: 'test' },
+        on(evt, onStart, onError, onComplete) {
+          onComplete();
+        }
+      });
 
-  //   // Setup inspection with single section/item
-  //   const inspection = deepClone(incompleteInspection) as inspectionModel;
-  //   inspection.template.sections = {
-  //     [singleSection.id]: deepClone(singleSection)
-  //   };
-  //   inspection.template.items = {
-  //     [unselectedCheckmarkItem.id]: deepClone(unselectedCheckmarkItem)
-  //   };
+    // Setup inspection with single section/item
+    const inspection = deepClone(incompleteInspection) as inspectionModel;
+    inspection.template.sections = {
+      [singleSection.id]: deepClone(singleSection)
+    };
+    inspection.template.items = {
+      [unselectedCheckmarkItem.id]: deepClone(unselectedCheckmarkItem)
+    };
 
-  //   //
-  //   // TODO add unpublished photos data
-  //   // sinon.stub(inspectionItemPhotosData, 'queryRecords').resolves(...);
-  //   //
+    // Setup unpublished photo for inspection item
+    const unpublishedPhoto = deepClone(unpublishedPhotosData);
+    unpublishedPhoto.item = unselectedCheckmarkItem.id;
+    unpublishedPhoto.inspection = inspection.id;
 
-  //   const props = {
-  //     isOnline: true,
-  //     user,
-  //     property: deepClone(fullProperty) as propertyModel,
-  //     inspection,
-  //     unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel,
-  //     forceVisible: FORCE_VISIBLE
-  //   };
-  //   render(<PropertyUpdateInspection {...props} />);
+    // Return unpublished photo data for item
+    sinon
+      .stub(inspectionItemPhotosData, 'queryInspectionRecords')
+      .resolves(unpublishedPhoto);
 
-  //   //
-  //   // TODO open item photo modal
-  //   //
+    const props = {
+      isOnline: true,
+      user,
+      property: deepClone(fullProperty) as propertyModel,
+      inspection,
+      unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel,
+      forceVisible: FORCE_VISIBLE
+    };
 
-  //   act(() => {
-  //     const removeButton = screen.queryByTestId('photos-modal-photos-remove');
-  //     userEvent.click(removeButton);
-  //   });
-  //   await waitFor(() => deletePhotoRequest.called);
+    render(<PropertyUpdateInspection {...props} />);
 
-  //   const actual = deletePhotoRequest.called;
-  //   expect(actual).toEqual(expected);
-  // });
+    // Open item photo modal
+    act(() => {
+      const attachmentButton = screen.queryByTestId('attachment-photo');
+      userEvent.click(attachmentButton);
+    });
+
+    let photoModal = null;
+    await waitFor(() => {
+      photoModal = screen.queryByTestId('photos-modal');
+      return Boolean(photoModal);
+    });
+
+    act(() => {
+      const removeButton = screen.queryByTestId('photos-modal-photos-remove');
+      userEvent.click(removeButton);
+    });
+    await waitFor(() => deletePhotoRequest.called);
+
+    const actual = deletePhotoRequest.called;
+    expect(actual).toEqual(expected);
+  });
 });

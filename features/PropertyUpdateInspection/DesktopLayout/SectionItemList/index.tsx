@@ -28,6 +28,7 @@ interface Props {
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  canEdit: boolean;
 }
 
 const SectionItemList: FunctionComponent<Props> = ({
@@ -40,7 +41,8 @@ const SectionItemList: FunctionComponent<Props> = ({
   onClickSignatureInput,
   onClickPhotos,
   inspectionItemsPhotos,
-  inspectionItemsSignature
+  inspectionItemsSignature,
+  canEdit
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
@@ -104,13 +106,15 @@ const SectionItemList: FunctionComponent<Props> = ({
               }
               onClickOneActionNotes={() => onClickOneActionNotes(item)}
               onClickSignatureInput={() => onClickSignatureInput(item)}
+              isDisabled={!canEdit}
             />
           </div>
-
-          <SectionItemDropdown
-            isItemNA={item.isItemNA}
-            onChangeItemNA={(isItemNA) => onItemIsNAChange(item.id, isItemNA)}
-          />
+          {canEdit && (
+            <SectionItemDropdown
+              isItemNA={item.isItemNA}
+              onChangeItemNA={(isItemNA) => onItemIsNAChange(item.id, isItemNA)}
+            />
+          )}
         </>
       )}
     </li>

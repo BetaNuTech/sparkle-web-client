@@ -9,12 +9,14 @@ interface Props extends ModalProps {
   onClose: () => void;
   onChange: () => void;
   selectedInspectionItem: inspectionTemplateItemModel;
+  canEdit: boolean;
 }
 
 const OneActionNotesModal: FunctionComponent<Props> = ({
   onChange,
   onClose,
-  selectedInspectionItem
+  selectedInspectionItem,
+  canEdit
 }) => {
   const { mainInputNotes: value, title } = selectedInspectionItem;
   return (
@@ -55,6 +57,7 @@ const OneActionNotesModal: FunctionComponent<Props> = ({
           name="notes"
           onChange={onChange}
           defaultValue={value}
+          disabled={!canEdit}
         ></textarea>
       </div>
     </div>

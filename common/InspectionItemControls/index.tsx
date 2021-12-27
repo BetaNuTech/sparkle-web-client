@@ -23,6 +23,7 @@ interface Props {
   ): void;
   onClickOneActionNotes?(): void;
   onClickSignatureInput?(): void;
+  isDisabled: boolean;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
@@ -33,7 +34,8 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   signatureDownloadURL,
   onInputChange,
   onClickOneActionNotes,
-  onClickSignatureInput
+  onClickSignatureInput,
+  isDisabled
 }) => {
   switch (inputType) {
     case 'twoactions_checkmarkx':
@@ -42,6 +44,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
           selectedValue={selectedValue}
           onMainInputChange={onInputChange}
+          isDisabled={isDisabled}
         />
       );
     case 'twoactions_thumbs':
@@ -50,6 +53,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
           selectedValue={selectedValue}
           onMainInputChange={onInputChange}
+          isDisabled={isDisabled}
         />
       );
     case 'threeactions_checkmarkexclamationx':
@@ -58,6 +62,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
           selectedValue={selectedValue}
           onMainInputChange={onInputChange}
+          isDisabled={isDisabled}
         />
       );
     case 'threeactions_abc':
@@ -66,6 +71,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
           selectedValue={selectedValue}
           onMainInputChange={onInputChange}
+          isDisabled={isDisabled}
         />
       );
     case 'fiveactions_onetofive':
@@ -74,6 +80,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
           selectedValue={selectedValue}
           onMainInputChange={onInputChange}
+          isDisabled={isDisabled}
         />
       );
     case 'oneaction_notes':
@@ -89,6 +96,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           selected={selected}
           textInputValue={textInputValue}
           onMainInputChange={onInputChange}
+          isDisabled={isDisabled}
         />
       );
     case 'signature':
@@ -96,6 +104,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
         <Signature
           signatureDownloadURL={signatureDownloadURL}
           onClickSignatureInput={onClickSignatureInput}
+          isDisabled={isDisabled}
         />
       );
     default:

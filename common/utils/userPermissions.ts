@@ -153,10 +153,7 @@ export const canEnableOverwriteMode = (
   user: userModel,
   inspection: inspectionModel,
   isAdminEditModeEnabled: boolean
-): boolean =>
-  canOverwriteInspection(user) &&
-  isInspectionComplete(inspection) &&
-  !isAdminEditModeEnabled;
+): boolean => canOverwriteInspection(user) && !isAdminEditModeEnabled;
 
 // Checks user has permission to view property jobs
 export const canAccessJobs = (user: userModel, propertyId: string): boolean =>

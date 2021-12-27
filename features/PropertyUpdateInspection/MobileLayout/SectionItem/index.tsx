@@ -42,6 +42,7 @@ interface Props {
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  canEdit: boolean;
 }
 
 const SectionItem: FunctionComponent<Props> = ({
@@ -60,9 +61,12 @@ const SectionItem: FunctionComponent<Props> = ({
   onClickSignatureInput,
   onClickPhotos,
   inspectionItemsPhotos,
-  inspectionItemsSignature
+  inspectionItemsSignature,
+  canEdit
 }) => {
   const listItems = sectionItems.get(section.id);
+  const showSectionButtons = canEdit && section.section_type === 'multi';
+
   const onListHeaderClick = (event) => {
     event.preventDefault();
     const target = event.target as HTMLElement;
@@ -93,7 +97,7 @@ const SectionItem: FunctionComponent<Props> = ({
             )}
           </span>
         </div>
-        {section.section_type === 'multi' && (
+        {showSectionButtons && (
           <footer className={styles.section__list__item__footer}>
             {section.title !== nextSectionTitle && (
               <button
@@ -128,6 +132,7 @@ const SectionItem: FunctionComponent<Props> = ({
             onClickPhotos={onClickPhotos}
             inspectionItemsPhotos={inspectionItemsPhotos}
             inspectionItemsSignature={inspectionItemsSignature}
+            canEdit={canEdit}
           />
         ))}
       </ul>

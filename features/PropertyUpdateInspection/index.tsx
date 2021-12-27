@@ -4,6 +4,7 @@ import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import inspectionModel from '../../common/models/inspection';
 import inspectionTemplateUpdateModel from '../../common/models/inspections/templateUpdate';
+
 import userModel from '../../common/models/user';
 import copyTextToClipboard from '../../common/utils/copyTextToClipboard';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
@@ -20,8 +21,10 @@ import useUnpublishInspectionItemPhotos from './hooks/useUnpublishedInspectionIt
 import useUnpublishedInspectionSignature from './hooks/useUnpublishedInspectionItemSignature';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
+import MobileHeader from './MobileHeader';
 import AttachmentNotesModal from './AttachmentNotesModal';
 import SignatureInputModal from './SignatureInputModal';
+import Header from './Header';
 import {
   canEnableOverwriteMode,
   canEditInspection
@@ -66,26 +69,35 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
-    useState(false);
+  const [
+    isVisibleOneActionNotesModal,
+    setIsVisibleOneActionNotesModal
+  ] = useState(false);
 
-  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
-    useState(false);
+  const [
+    isVisibleAttachmentNotesModal,
+    setIsVisibleAttachmentNotesModal
+  ] = useState(false);
 
-  const [isVisibleSignatureInputModal, setIsvibleSignatureInputModal] =
-    useState(false);
+  const [
+    isVisibleSignatureInputModal,
+    setIsVisibleSignatureInputModal
+  ] = useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-  const { setLatestTemplateUpdates, hasUpdates } =
-    useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
+  const {
+    setLatestTemplateUpdates,
+    hasUpdates
+  } = useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
 
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
-  const { updateInspectionTemplate, isLoading } =
-    usePublishUpdates(sendNotification);
+  const { updateInspectionTemplate, isLoading } = usePublishUpdates(
+    sendNotification
+  );
 
   const {
     addUnpublishedInspectionItemPhotos,
@@ -110,12 +122,22 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   );
 
   // Responsive queries
-  const isMobileorTablet = useMediaQuery({
+  const isTablet = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
+  const isMobile = useMediaQuery({
     maxWidth: breakpoints.mobile.maxWidth
   });
   const isDesktop = useMediaQuery({
-    minWidth: breakpoints.tablet.minWidth
+    minWidth: breakpoints.desktop.minWidth
   });
+
+  const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
+  const canEnableEditMode = canEnableOverwriteMode(
+    user,
+    inspection,
+    isAdminEditModeEnabled
+  ) && !canEdit;
 
   // User updates main item selection
   const onMainInputChange = (
@@ -204,16 +226,20 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // Publish local changes and on success
   // clear all local changes
   const onSaveInspection = () => {
-    updateInspectionTemplate(inspection.id, unpublishedTemplateUpdates).then(
-      () => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel)
-    );
+    updateInspectionTemplate(
+      inspection.id,
+      unpublishedTemplateUpdates
+    ).then(() => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel));
   };
 
-  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
-    useInspectionSectionSort(
-      inspection.template.sections,
-      unpublishedTemplateUpdates
-    );
+  const {
+    sortedTemplateSections,
+    collapsedSections,
+    onSectionCollapseToggle
+  } = useInspectionSectionSort(
+    inspection.template.sections,
+    unpublishedTemplateUpdates
+  );
 
   // Items grouped by their section
   const { sectionItems } = useInspectionItems(
@@ -257,14 +283,14 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // Opens signature Input modal and
   // sets selected inspection
   const onClickSignatureInput = (item: inspectionTemplateItemModel) => {
-    setIsvibleSignatureInputModal(true);
+    setIsVisibleSignatureInputModal(true);
     setSelectedInspectionItem(item);
   };
 
   // Closes signature input modal and
   // removes value for selected inspection item
   const closeSignatureInputModal = () => {
-    setIsvibleSignatureInputModal(false);
+    setIsVisibleSignatureInputModal(false);
     setSelectedInspectionItem(null);
   };
 
@@ -288,85 +314,90 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
   };
 
-  const saveSignature = async (signatureData: string,itemId:string) => {
-    saveUnpublishedInspectionSignature(signatureData,itemId)
-    closeSignatureInputModal()
+  const saveSignature = async (signatureData: string, itemId: string) => {
+    saveUnpublishedInspectionSignature(signatureData, itemId);
+    closeSignatureInputModal();
   };
 
   const onRemoveItemsUnpublishedPhoto = (unpublishedPhotoId: string) => {
     removeUnpublishedInspectionItemPhoto(unpublishedPhotoId);
   };
 
-  const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
-  const canEnableEditMode = canEnableOverwriteMode(
-    user,
-    inspection,
-    isAdminEditModeEnabled
-  );
+  const showDesktopLayout = (isDesktop || isTablet) && !isMobile;
 
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
-  
+
   return (
     <>
-      {isMobileorTablet && (
+      {isTablet || isMobile ? (
+        <MobileHeader
+          property={property}
+          inspection={inspection}
+          isOnline={isOnline}
+          hasUpdates={hasUpdates}
+          onShareAction={onShareAction}
+          onSaveInspection={onSaveInspection}
+          canEnableEditMode={canEnableEditMode}
+          onEnableAdminEditMode={onEnableAdminEditMode}
+          isStaging={isStaging}
+        />
+      ) : (
+        <Header
+          property={property}
+          inspection={inspection}
+          isOnline={isOnline}
+          hasUpdates={hasUpdates}
+          onShareAction={onShareAction}
+          onSaveInspection={onSaveInspection}
+          canEnableEditMode={canEnableEditMode}
+          onEnableAdminEditMode={onEnableAdminEditMode}
+        />
+      )}
+      {isMobile && (
         <>
           <MobileLayout
             property={property}
-            isOnline={isOnline}
-            isStaging={isStaging}
-            inspection={inspection}
-            hasUpdates={hasUpdates}
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
             onInputChange={onInputChange}
-            onShareAction={onShareAction}
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
-            onSaveInspection={onSaveInspection}
             onAddSection={onAddSection}
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
-            canEnableEditMode={canEnableEditMode}
-            onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
             inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
             inspectionItemsSignature={unpublishedInspectionItemsSignature}
+            canEdit={canEdit}
           />
         </>
       )}
-      {isDesktop && (
+      {showDesktopLayout && (
         <>
           <DesktopLayout
             property={property}
-            isOnline={isOnline}
-            isStaging={isStaging}
-            inspection={inspection}
-            hasUpdates={hasUpdates}
             templateSections={sortedTemplateSections}
             collapsedSections={collapsedSections}
             onSectionCollapseToggle={onSectionCollapseToggle}
             onInputChange={onInputChange}
-            onShareAction={onShareAction}
             sectionItems={sectionItems}
             onClickOneActionNotes={onClickOneActionNotes}
-            onSaveInspection={onSaveInspection}
             onAddSection={onAddSection}
             onRemoveSection={onRemoveSection}
             onItemIsNAChange={onItemIsNAChange}
             onClickAttachmentNotes={onClickAttachmentNotes}
             onClickSignatureInput={onClickSignatureInput}
             onClickPhotos={onClickPhotos}
-            canEnableEditMode={canEnableEditMode}
-            onEnableAdminEditMode={onEnableAdminEditMode}
             forceVisible={forceVisible}
             inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
             inspectionItemsSignature={unpublishedInspectionItemsSignature}
+            canEdit={canEdit}
           />
         </>
       )}
@@ -375,6 +406,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onClose={closeOneActionNotesModal}
         onChange={onOneActionNotesChange}
         selectedInspectionItem={selectedInspectionItem}
+        canEdit={canEdit}
       />
 
       <AttachmentNotesModal
@@ -384,7 +416,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         selectedInspectionItem={selectedInspectionItem}
         propertyId={property.id}
         inspectionId={inspection.id}
-        isMobile={isMobileorTablet}
+        isMobile={isMobile}
+        canEdit={canEdit}
       />
       <SignatureInputModal
         isVisible={isVisibleSignatureInputModal}

@@ -67,6 +67,50 @@
     max-width: rem-calc(43);
     margin-right: $global-padding;
   }
+
+  //
+  // Alternative Sparkle background
+  // patterned header for modal
+  //
+  &--blue {
+    justify-content: center;
+    position: relative;
+    margin: 0px;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+
+    // Primary Blue Modal header
+    h4 {
+      padding: $global-padding 0px;
+      color: $white;
+    }
+
+    // Sub heading
+    h5 {
+      padding: $global-sm-padding $global-padding;
+      font-size: rem-calc(12);
+      background: $info-color;
+      color: $white;
+    }
+
+    // Add sparkle background image
+    // as the pattern of the header
+    &:before {
+      content: '';
+      display: block;
+      top: -100%;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-repeat: no-repeat;
+      background-image: url(../../public/icons/sparkle/banner-background.svg);
+      background-position: top center;
+      background-size: cover;
+      z-index: -2;
+    }
+  }
 }
 
 // Headings
