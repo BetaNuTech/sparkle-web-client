@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, FileRejection } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
@@ -50,9 +50,15 @@ const PhotosModal: FunctionComponent<Props> = ({
   // Promise to read file data into url
   const fileToDataURI = (file: File) =>
     // Read file as data URL
-    new Promise((resolve) => {
+    new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.onload = () => resolve(fileReader.result);
+      fileReader.onerror = () =>
+        reject(
+          new Error(
+            `File ${file.name} could not be saved, please try again or use a different file`
+          )
+        );
       fileReader.readAsDataURL(file);
     });
 
@@ -60,7 +66,13 @@ const PhotosModal: FunctionComponent<Props> = ({
   const processAcceptedFiles = async (files: Array<File>) => {
     // List of promises for file data URL's
     const filesToDataUris = files.map(async (file) => fileToDataURI(file));
-    Promise.all(filesToDataUris).then((res: string[]) => onChangeFiles(res));
+    Promise.all(filesToDataUris)
+      .then((res: string[]) => onChangeFiles(res))
+      .catch((err: Error) =>
+        sendNotification(err.message, {
+          type: 'error'
+        })
+      );
   };
 
   const onClickImage = (
@@ -103,9 +115,23 @@ const PhotosModal: FunctionComponent<Props> = ({
     processAcceptedFiles(acceptedFiles);
 
     if (rejectedFiles.length > 0) {
-      sendNotification('File type must be image', {
-        type: 'error'
-      });
+      const rejectedFileTypes = Array.from(
+        new Set<string>(
+          rejectedFiles.map(
+            (rejectedFile: FileRejection) =>
+              rejectedFile?.file?.type?.split('/')[1] || ''
+          )
+        )
+      ) as Array<string>;
+
+      rejectedFileTypes.map((type: string) =>
+        sendNotification(
+          `File format ${type.toUpperCase()} is not supported, please try a different file`,
+          {
+            type: 'error'
+          }
+        )
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
