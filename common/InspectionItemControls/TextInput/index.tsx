@@ -9,11 +9,13 @@ interface Props {
   ): void;
   selected: boolean;
   textInputValue: string;
+  isDisabled?: boolean;
 }
 
 const TextInput: FunctionComponent<Props> = ({
   onMainInputChange,
-  textInputValue
+  textInputValue,
+  isDisabled
 }) => (
   <ul className={parentStyles.inspection}>
     <li className={parentStyles.inspection__textInputItem}>
@@ -23,11 +25,14 @@ const TextInput: FunctionComponent<Props> = ({
         defaultValue={textInputValue}
         placeholder="Enter Text"
         onChange={(event) => onMainInputChange(event, event.target.value)}
+        disabled={isDisabled}
       />
     </li>
   </ul>
 );
 
-TextInput.defaultProps = {};
+TextInput.defaultProps = {
+  isDisabled: false
+};
 
 export default TextInput;

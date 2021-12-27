@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import clsx from 'clsx';
 import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
@@ -75,19 +76,11 @@ const PhotosModal: FunctionComponent<Props> = ({
       );
   };
 
-  const onClickImage = (
-    ev: MouseEvent<HTMLDivElement>,
-    photoData: photoDataModel
-  ) => {
-    ev.stopPropagation();
+  const onClickImage = (photoData: photoDataModel) => {
     setPhotoForPreview(photoData);
   };
 
-  const onClickAddCaption = (
-    ev: MouseEvent<HTMLButtonElement>,
-    unPublishedPhotoId: string
-  ) => {
-    ev.stopPropagation();
+  const onClickAddCaption = (unPublishedPhotoId: string) => {
     // eslint-disable-next-line no-alert
     const captionText = window.prompt('Enter your caption');
     if (captionText) {
@@ -95,11 +88,7 @@ const PhotosModal: FunctionComponent<Props> = ({
     }
   };
 
-  const onClickRemovePhoto = (
-    ev: MouseEvent<HTMLButtonElement>,
-    photoId: string
-  ) => {
-    ev.stopPropagation();
+  const onClickRemovePhoto = (photoId: string) => {
     onRemovePhoto(photoId);
   };
 
@@ -108,6 +97,10 @@ const PhotosModal: FunctionComponent<Props> = ({
   ) => {
     ev.stopPropagation();
     setPhotoForPreview(null);
+  };
+
+  const onClickPhotoItem = (ev: MouseEvent<HTMLLIElement>) => {
+    ev.stopPropagation();
   };
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
@@ -139,13 +132,16 @@ const PhotosModal: FunctionComponent<Props> = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'image/*,capture=camera',
-    noClick: disabled
+    noClick: disabled || Boolean(photoForPreview)
   });
 
   return (
     <div className={styles.PhotosModal} data-testid="photos-modal">
       <header
-        className={clsx(baseStyles.modal__header, styles.PhotosModal__header)}
+        className={clsx(
+          baseStyles.modal__header,
+          baseStyles['modal__header--blue']
+        )}
       >
         <h4 className={baseStyles.modal__heading}>Uploads</h4>
         <h5>{title}</h5>
@@ -186,18 +182,19 @@ const PhotosModal: FunctionComponent<Props> = ({
                   key={item.id}
                   className={styles.PhotosModal__photos__list__item}
                   data-testid="photos-modal-unpublished-photo-list"
+                  onClick={onClickPhotoItem}
                 >
                   <button
                     className={styles.PhotosModal__photos__list__item__remove}
-                    onClick={(ev) => onClickRemovePhoto(ev, item.id)}
+                    onClick={() => onClickRemovePhoto(item.id)}
                     data-testid="photos-modal-photos-remove"
                   >
                     ×
                   </button>
                   <div
                     className={styles.PhotosModal__photos__list__item__image}
-                    onClick={(ev) =>
-                      onClickImage(ev, {
+                    onClick={() =>
+                      onClickImage({
                         downloadURL: item.photoData,
                         ...item
                       })
@@ -219,7 +216,7 @@ const PhotosModal: FunctionComponent<Props> = ({
                       className={
                         styles.PhotosModal__photos__list__item__caption
                       }
-                      onClick={(ev) => onClickAddCaption(ev, item.id)}
+                      onClick={() => onClickAddCaption(item.id)}
                       data-testid="photo-modal-photo-add-caption"
                     >
                       Add Caption
@@ -231,10 +228,11 @@ const PhotosModal: FunctionComponent<Props> = ({
                 <li
                   key={item.id}
                   className={styles.PhotosModal__photos__list__item}
+                  onClick={onClickPhotoItem}
                 >
                   <div
                     className={styles.PhotosModal__photos__list__item__image}
-                    onClick={(ev) => onClickImage(ev, item)}
+                    onClick={() => onClickImage(item)}
                   >
                     <img src={item.downloadURL} alt={item.caption} />
                     {item.caption && (
@@ -257,12 +255,14 @@ const PhotosModal: FunctionComponent<Props> = ({
               !hasExistingPhotos && styles['PhotosModal__buttons--noPhotos']
             )}
           >
-            <button
-              className={styles.PhotosModal__buttons__add}
-              disabled={disabled}
-            >
-              Add Files
-            </button>
+            {!disabled && (
+              <button
+                className={styles.PhotosModal__buttons__add}
+                disabled={disabled}
+              >
+                Add Files
+              </button>
+            )}
           </div>
         </div>
         <PhotoPreview photoData={photoForPreview} onClose={onClosePreview} />

@@ -38,6 +38,7 @@ interface MobileLayoutTeamItemModel {
   onClickPhotos(item: inspectionTemplateItemModel): void;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  canEdit: boolean;
 }
 
 const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
@@ -56,9 +57,13 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onClickSignatureInput,
   onClickPhotos,
   inspectionItemsPhotos,
-  inspectionItemsSignature
+  inspectionItemsSignature,
+  canEdit
 }) => {
   const listItems = sectionItems.get(section.id) || [];
+
+  const showSectionButtons = canEdit && section.section_type === 'multi';
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
@@ -81,7 +86,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         <div className={clsx(styles.section__list__item__header__content)}>
           {section.title}
           <div className={clsx(styles.section__list__item__footer)}>
-            {section.section_type === 'multi' && (
+            {showSectionButtons && (
               <div className={styles.section__list__item__action}>
                 {section.title !== nextSectionTitle && (
                   <button
@@ -123,6 +128,7 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
             onClickPhotos={onClickPhotos}
             inspectionItemsPhotos={inspectionItemsPhotos}
             inspectionItemsSignature={inspectionItemsSignature}
+            canEdit={canEdit}
           />
         ))}
       </ul>

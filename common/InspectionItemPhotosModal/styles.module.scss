@@ -5,41 +5,6 @@
   display: flex;
   flex-direction: column;
 
-  &__header {
-    position: relative;
-    margin: 0px;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-
-    &:before {
-      display: block;
-      top: -100%;
-      z-index: -2;
-      background-repeat: no-repeat;
-      background-image: url(../../public/icons/sparkle/banner-background.svg);
-      background-position: top center;
-      background-size: cover;
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-    }
-
-    h4 {
-      padding: $global-padding 0px;
-      color: $white;
-    }
-
-    h5 {
-      background: $info-color;
-      color: $white;
-      font-size: rem-calc(12);
-      padding: $global-sm-padding $global-padding;
-    }
-  }
-
   &__main {
     position: relative;
 
@@ -98,6 +63,11 @@
         position: relative;
         display: flex;
         align-items: center;
+        justify-content: center;
+
+        > img {
+          max-height: 100%;
+        }
 
         &__caption {
           position: absolute;

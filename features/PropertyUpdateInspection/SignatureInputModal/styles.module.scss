@@ -1,24 +1,23 @@
 @import '../../../styles/index.scss';
 
 .SignatureInputModal {
-  padding: $global-md-padding 0;
+  padding-bottom: $global-md-padding;
   max-height: 90%;
 
   &__modal {
-    padding: $global-md-padding 0;
+    padding-bottom: $global-md-padding;
     display: flex;
     flex-direction: column;
     height: 100%;
 
-    &__header {
-      justify-content: center;
-    }
-
     &__saveButton {
-      @extend %hollowButton;
+      @extend %headerButton;
       right: rem-calc(48);
-      top: rem-calc(12);
+      top: rem-calc(8);
       width: auto;
+      position: absolute;
+      z-index: 2;
+      font-size: rem-calc(16);
     }
   }
 

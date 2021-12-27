@@ -118,6 +118,14 @@ const SignatureInputModal: FunctionComponent<Props> = ({
       className={styles.SignatureInputModal__modal}
       data-testid="signature-input-modal"
     >
+      <header
+        className={clsx(
+          baseStyles.modal__header,
+          baseStyles['modal__header--blue']
+        )}
+      >
+        <h4 className={baseStyles.modal__heading}>SIGNATURE</h4>
+      </header>
       <button
         className={baseStyles.modal__closeButton}
         onClick={onClose}
@@ -135,17 +143,9 @@ const SignatureInputModal: FunctionComponent<Props> = ({
           onClick={onSaveSignature}
           data-testid="signature-input-modal-save"
         >
-          Save
+          SAVE
         </button>
       )}
-      <header
-        className={clsx(
-          baseStyles.modal__header,
-          styles.SignatureInputModal__modal__header
-        )}
-      >
-        <h4 className={baseStyles.modal__heading}>Signature</h4>
-      </header>
 
       <div className={baseStyles.modal__main}>
         <div
@@ -196,7 +196,7 @@ const SignatureInputModal: FunctionComponent<Props> = ({
                   {isPreview ? 'Hide' : 'Preview'} Current
                 </button>
               )}
-              {hasSignData && (
+              {hasSignData && !isPreview && (
                 <button
                   className={styles.SignatureInputModal__canvas__undo}
                   onClick={onUndo}

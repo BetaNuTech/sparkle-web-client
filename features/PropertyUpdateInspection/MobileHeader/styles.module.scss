@@ -1,0 +1,34 @@
+@import '../../../styles/index.scss';
+
+.header {
+  &__propertyName {
+    @extend %gridHeaderLink;
+  }
+
+  &__item {
+    &__button {
+      @extend %gridHeaderCreateButton;
+      display: inline-flex;
+      margin: 0 rem-calc(16) 0 0;
+
+      &:disabled {
+        opacity: 0.5;
+      }
+
+      &--dark {
+        background-color: $primary-xdark-color;
+      }
+
+      // Icon of Add button
+      svg {
+        margin-left: rem-calc(4);
+        width: rem-calc(12);
+        height: rem-calc(12);
+      }
+
+      &:last-child {
+        margin: 0;
+      }
+    }
+  }
+}

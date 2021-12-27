@@ -1,7 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import sinon from 'sinon';
+import { render, screen, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import TwoActionThumb from './index';
 
 describe('Common | Inspection Item Control | Two Action Thumb', () => {
+  afterEach(() => sinon.restore());
+
   it('should not select any when selected is false', async () => {
     const props = {
       selected: false,
@@ -43,5 +47,46 @@ describe('Common | Inspection Item Control | Two Action Thumb', () => {
 
     expect(thumbsUp.dataset.test).toEqual('');
     expect(thumbsDown.dataset.test).toEqual('selected');
+  });
+
+  it('should invoke click action for all selections when not disabled', () => {
+    const expected = 2;
+    const onClick = sinon.spy();
+    const props = {
+      onMainInputChange: onClick
+    };
+
+    const { container } = render(<TwoActionThumb {...props} />);
+
+    act(() => {
+      const options = Array.from(
+        container.querySelectorAll('[data-test-control]')
+      );
+      options.forEach((option) => userEvent.click(option));
+    });
+
+    const actual = onClick.callCount;
+    expect(actual).toEqual(expected);
+  });
+
+  it('should not invoke click action when disabled', () => {
+    const expected = false;
+    const onClick = sinon.spy();
+    const props = {
+      onMainInputChange: onClick,
+      isDisabled: true
+    };
+
+    const { container } = render(<TwoActionThumb {...props} />);
+
+    act(() => {
+      const options = Array.from(
+        container.querySelectorAll('[data-test-control]')
+      );
+      options.forEach((option) => userEvent.click(option));
+    });
+
+    const actual = onClick.called;
+    expect(actual).toEqual(expected);
   });
 });

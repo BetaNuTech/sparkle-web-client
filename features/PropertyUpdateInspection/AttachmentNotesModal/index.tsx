@@ -16,6 +16,7 @@ interface Props extends ModalProps {
   propertyId: string;
   inspectionId: string;
   isMobile: boolean;
+  canEdit: boolean;
 }
 
 const AttachmentNoteModal: FunctionComponent<Props> = ({
@@ -24,7 +25,8 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
   selectedInspectionItem,
   propertyId,
   inspectionId,
-  isMobile
+  isMobile,
+  canEdit
 }) => {
   // eslint-disable-next-line max-len
   const uploadPageLink = `/properties/${propertyId}/update-inspection/${inspectionId}/uploads?item=${selectedInspectionItem.id}`;
@@ -79,13 +81,15 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
             >
               <MiniPreviewGallery photos={photosDataItems} />
             </LinkFeature>
-            <LinkFeature
-              featureEnabled={features.supportBetaInspectionUploadPhotos}
-              href={uploadPageLink}
-              className={styles.AttachmentNoteModal__addButton}
-            >
-              Add More Images
-            </LinkFeature>
+            {canEdit && (
+              <LinkFeature
+                featureEnabled={features.supportBetaInspectionUploadPhotos}
+                href={uploadPageLink}
+                className={styles.AttachmentNoteModal__addButton}
+              >
+                Add More Images
+              </LinkFeature>
+            )}
           </aside>
         )}
         <div className={clsx(baseStyles.modal__main__content)}>
@@ -106,6 +110,7 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
             onChange={onChange}
             defaultValue={inspectorNotes}
             data-testid="attachmentNotesModal-textarea"
+            disabled={!canEdit}
           ></textarea>
 
           {showInspectionItemControl && (
@@ -117,7 +122,7 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
                 inputType={mainInputType}
                 selected={mainInputSelected}
                 selectedValue={mainInputSelection}
-                onInputChange={() => null} // noop
+                isDisabled
               />
             </>
           )}

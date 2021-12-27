@@ -1,6 +1,11 @@
-import { canAddClass } from './index';
+import sinon from 'sinon';
+import { render, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import FiveActionOneToFive, { canAddClass } from './index';
 
 describe('Common | Inspection Item Control | Five Action One to Five', () => {
+  afterEach(() => sinon.restore());
+
   it('should not select any when selected is false', async () => {
     const result = [
       canAddClass(false, 0, 0),
@@ -71,5 +76,46 @@ describe('Common | Inspection Item Control | Five Action One to Five', () => {
     ];
 
     expect(result).toEqual([true, true, true, true, true]);
+  });
+
+  it('should invoke click action for all selections when not disabled', () => {
+    const expected = 5;
+    const onClick = sinon.spy();
+    const props = {
+      onMainInputChange: onClick
+    };
+
+    const { container } = render(<FiveActionOneToFive {...props} />);
+
+    act(() => {
+      const options = Array.from(
+        container.querySelectorAll('[data-test-control]')
+      );
+      options.forEach((option) => userEvent.click(option));
+    });
+
+    const actual = onClick.callCount;
+    expect(actual).toEqual(expected);
+  });
+
+  it('should not invoke click action when disabled', () => {
+    const expected = false;
+    const onClick = sinon.spy();
+    const props = {
+      onMainInputChange: onClick,
+      isDisabled: true
+    };
+
+    const { container } = render(<FiveActionOneToFive {...props} />);
+
+    act(() => {
+      const options = Array.from(
+        container.querySelectorAll('[data-test-control]')
+      );
+      options.forEach((option) => userEvent.click(option));
+    });
+
+    const actual = onClick.called;
+    expect(actual).toEqual(expected);
   });
 });
