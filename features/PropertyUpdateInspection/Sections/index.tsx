@@ -1,15 +1,13 @@
 import { FunctionComponent } from 'react';
-import propertyModel from '../../../common/models/property';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
-import styles from '../styles.module.scss';
-import Sections from './Sections';
+import Group from './Group';
 import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
+import styles from '../styles.module.scss';
 
 interface Props {
-  property: propertyModel;
-  templateSections: Array<inspectionTemplateSectionModel>;
+  sections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
   onInputChange(
@@ -19,8 +17,9 @@ interface Props {
     item: inspectionTemplateItemModel,
     value: string | number
   ): void;
-  sectionItems: Map<string, inspectionTemplateItemModel[]>;
   onClickOneActionNotes(item: inspectionTemplateItemModel): void;
+  sectionItems: Map<string, inspectionTemplateItemModel[]>;
+  forceVisible?: boolean;
   onAddSection(
     event: React.MouseEvent<HTMLButtonElement>,
     sectionId: string
@@ -33,19 +32,19 @@ interface Props {
   onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
   onClickSignatureInput(item: inspectionTemplateItemModel): void;
   onClickPhotos(item: inspectionTemplateItemModel): void;
-  forceVisible: boolean;
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
   canEdit: boolean;
+  isMobile: boolean;
 }
 
-const DesktopLayout: FunctionComponent<Props> = ({
-  property,
-  templateSections,
+const Sections: FunctionComponent<Props> = ({
+  sections,
   collapsedSections,
   onSectionCollapseToggle,
   onInputChange,
   onClickOneActionNotes,
+  forceVisible,
   sectionItems,
   onAddSection,
   onRemoveSection,
@@ -53,36 +52,41 @@ const DesktopLayout: FunctionComponent<Props> = ({
   onClickAttachmentNotes,
   onClickSignatureInput,
   onClickPhotos,
-  forceVisible,
   inspectionItemsPhotos,
   inspectionItemsSignature,
-  canEdit
-}) => (
-  <>
-    <div className={styles.main}>
-      <Sections
-        propertyId={property.id}
-        sections={templateSections}
-        collapsedSections={collapsedSections}
-        onSectionCollapseToggle={onSectionCollapseToggle}
-        onInputChange={onInputChange}
-        sectionItems={sectionItems}
-        onClickOneActionNotes={onClickOneActionNotes}
-        onAddSection={onAddSection}
-        onRemoveSection={onRemoveSection}
-        onItemIsNAChange={onItemIsNAChange}
-        onClickAttachmentNotes={onClickAttachmentNotes}
-        onClickSignatureInput={onClickSignatureInput}
-        onClickPhotos={onClickPhotos}
-        forceVisible={forceVisible}
-        inspectionItemsPhotos={inspectionItemsPhotos}
-        inspectionItemsSignature={inspectionItemsSignature}
-        canEdit={canEdit}
-      />
-    </div>
-  </>
-);
+  canEdit,
+  isMobile
+}) => {
+  if (sections && sections.length > 0) {
+    return (
+      <ul data-testid="inspection-section" className={styles.section}>
+        {sections.map((sectionItem, idx) => (
+          <Group
+            key={sectionItem.id}
+            section={sectionItem}
+            nextSectionTitle={sections[idx + 1] && sections[idx + 1].title}
+            forceVisible={forceVisible}
+            collapsedSections={collapsedSections}
+            onSectionCollapseToggle={onSectionCollapseToggle}
+            onInputChange={onInputChange}
+            sectionItems={sectionItems}
+            onClickOneActionNotes={onClickOneActionNotes}
+            onAddSection={onAddSection}
+            onRemoveSection={onRemoveSection}
+            onItemIsNAChange={onItemIsNAChange}
+            onClickAttachmentNotes={onClickAttachmentNotes}
+            onClickSignatureInput={onClickSignatureInput}
+            onClickPhotos={onClickPhotos}
+            inspectionItemsPhotos={inspectionItemsPhotos}
+            inspectionItemsSignature={inspectionItemsSignature}
+            canEdit={canEdit}
+            isMobile={isMobile}
+          />
+        ))}
+      </ul>
+    );
+  }
+  return null;
+};
 
-DesktopLayout.defaultProps = {};
-
-export default DesktopLayout;
+export default Sections;

@@ -9,9 +9,8 @@ import userModel from '../../common/models/user';
 import copyTextToClipboard from '../../common/utils/copyTextToClipboard';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
-import MobileLayout from './MobileLayout';
 import useInspectionSectionSort from './hooks/useInspectionSections';
-import DesktopLayout from './DesktopLayout';
+import Sections from './Sections';
 import useInspectionItems from './hooks/useInspectionItems';
 import inspectionTemplateItemModel from '../../common/models/inspectionTemplateItem';
 import useUpdateTemplate from './hooks/useUpdateTemplate';
@@ -323,8 +322,6 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     removeUnpublishedInspectionItemPhoto(unpublishedPhotoId);
   };
 
-  const showDesktopLayout = (isDesktop || isTablet) && !isMobile;
-
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
@@ -355,52 +352,27 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           onEnableAdminEditMode={onEnableAdminEditMode}
         />
       )}
-      {isMobile && (
-        <>
-          <MobileLayout
-            property={property}
-            templateSections={sortedTemplateSections}
-            collapsedSections={collapsedSections}
-            onSectionCollapseToggle={onSectionCollapseToggle}
-            onInputChange={onInputChange}
-            sectionItems={sectionItems}
-            onClickOneActionNotes={onClickOneActionNotes}
-            onAddSection={onAddSection}
-            onRemoveSection={onRemoveSection}
-            onItemIsNAChange={onItemIsNAChange}
-            onClickAttachmentNotes={onClickAttachmentNotes}
-            onClickSignatureInput={onClickSignatureInput}
-            onClickPhotos={onClickPhotos}
-            forceVisible={forceVisible}
-            inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
-            inspectionItemsSignature={unpublishedInspectionItemsSignature}
-            canEdit={canEdit}
-          />
-        </>
-      )}
-      {showDesktopLayout && (
-        <>
-          <DesktopLayout
-            property={property}
-            templateSections={sortedTemplateSections}
-            collapsedSections={collapsedSections}
-            onSectionCollapseToggle={onSectionCollapseToggle}
-            onInputChange={onInputChange}
-            sectionItems={sectionItems}
-            onClickOneActionNotes={onClickOneActionNotes}
-            onAddSection={onAddSection}
-            onRemoveSection={onRemoveSection}
-            onItemIsNAChange={onItemIsNAChange}
-            onClickAttachmentNotes={onClickAttachmentNotes}
-            onClickSignatureInput={onClickSignatureInput}
-            onClickPhotos={onClickPhotos}
-            forceVisible={forceVisible}
-            inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
-            inspectionItemsSignature={unpublishedInspectionItemsSignature}
-            canEdit={canEdit}
-          />
-        </>
-      )}
+
+      <Sections
+        sections={sortedTemplateSections}
+        collapsedSections={collapsedSections}
+        onSectionCollapseToggle={onSectionCollapseToggle}
+        onInputChange={onInputChange}
+        sectionItems={sectionItems}
+        onClickOneActionNotes={onClickOneActionNotes}
+        onAddSection={onAddSection}
+        onRemoveSection={onRemoveSection}
+        onItemIsNAChange={onItemIsNAChange}
+        onClickAttachmentNotes={onClickAttachmentNotes}
+        onClickSignatureInput={onClickSignatureInput}
+        onClickPhotos={onClickPhotos}
+        forceVisible={forceVisible}
+        inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
+        inspectionItemsSignature={unpublishedInspectionItemsSignature}
+        canEdit={canEdit}
+        isMobile={isMobile}
+      />
+
       <OneActionNotesModal
         isVisible={isVisibleOneActionNotesModal}
         onClose={closeOneActionNotesModal}

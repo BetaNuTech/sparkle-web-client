@@ -17,10 +17,6 @@
   }
 }
 
-.main {
-  padding: $global-lg-padding $global-padding $global-padding;
-}
-
 .swipeReveal {
   @extend %swipeReveal;
   @extend %swipeReveal__hidden;
@@ -37,6 +33,7 @@
 }
 
 .section {
+  padding:0;
   &__list {
     @extend %list;
     @extend %stickyBoundingBox;
@@ -246,6 +243,9 @@
   }
 
   @include media-query(tablet) {
+
+    padding: $global-lg-padding $global-padding $global-padding;
+
     &__list__item__header__content {
       font-size: rem-calc(22);
       line-height: rem-calc(30);

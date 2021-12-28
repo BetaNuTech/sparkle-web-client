@@ -31,7 +31,7 @@ interface Props {
   canEdit: boolean;
 }
 
-const SectionItemList: FunctionComponent<Props> = ({
+const ItemListSwipable: FunctionComponent<Props> = ({
   item,
   forceVisible,
   onInputChange,
@@ -150,6 +150,6 @@ const SectionItemList: FunctionComponent<Props> = ({
   );
 };
 
-SectionItemList.defaultProps = {};
+ItemListSwipable.defaultProps = {};
 
-export default SectionItemList;
+export default ItemListSwipable;

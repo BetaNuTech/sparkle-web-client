@@ -1,15 +1,15 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
-import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import styles from '../../styles.module.scss';
-import SectionItemList from '../SectionItemList';
+import ItemList from '../ItemList';
+import ItemListSwipable from '../ItemListSwipable';
+import Header from '../Header';
 import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
-interface MobileLayoutTeamItemModel {
-  propertyId: string;
+interface Props {
   section: inspectionTemplateSectionModel;
   nextSectionTitle: string;
   collapsedSections: Array<string>;
@@ -39,9 +39,10 @@ interface MobileLayoutTeamItemModel {
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
   canEdit: boolean;
+  isMobile: boolean;
 }
 
-const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
+const Group: FunctionComponent<Props> = ({
   section,
   nextSectionTitle,
   collapsedSections,
@@ -58,16 +59,19 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   onClickPhotos,
   inspectionItemsPhotos,
   inspectionItemsSignature,
-  canEdit
+  canEdit,
+  isMobile
 }) => {
   const listItems = sectionItems.get(section.id) || [];
-
-  const showSectionButtons = canEdit && section.section_type === 'multi';
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
-      className={styles['section__list__item--grid']}
+      className={clsx(
+        isMobile
+          ? styles.section__list__item
+          : styles['section__list__item--grid']
+      )}
       onClick={(event) => {
         event.preventDefault();
         const target = event.target as HTMLElement;
@@ -75,67 +79,56 @@ const SectionItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
           onSectionCollapseToggle(section);
         }
       }}
+      data-testid="section-list-item"
     >
-      <header
-        className={clsx(
-          styles['section__list__item__header--grid'],
-          collapsedSections.includes(section.id) &&
-            styles['section__list__item__header--collapsed']
-        )}
-      >
-        <div className={clsx(styles.section__list__item__header__content)}>
-          {section.title}
-          <div className={clsx(styles.section__list__item__footer)}>
-            {showSectionButtons && (
-              <div className={styles.section__list__item__action}>
-                {section.title !== nextSectionTitle && (
-                  <button
-                    className={styles['section__list__item__button--line']}
-                    onClick={(event) => onAddSection(event, section.id)}
-                  >
-                    Add
-                  </button>
-                )}
-                {section.added_multi_section && (
-                  <button
-                    className={
-                      styles['section__list__item__button--redOutline']
-                    }
-                    onClick={(event) => onRemoveSection(event, section.id)}
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
-            )}
-            <span>
-              <ChevronIcon />
-            </span>
-          </div>
-        </div>
-      </header>
+      <Header
+        collapsedSections={collapsedSections}
+        section={section}
+        nextSectionTitle={nextSectionTitle}
+        onAddSection={onAddSection}
+        onRemoveSection={onRemoveSection}
+        canEdit={canEdit}
+        isMobile={isMobile}
+      />
       <ul className={clsx(collapsedSections.includes(section.id) && '-d-none')}>
-        {listItems.map((item) => (
-          <SectionItemList
-            key={item.id}
-            item={item}
-            forceVisible={forceVisible}
-            onInputChange={onInputChange}
-            onClickOneActionNotes={onClickOneActionNotes}
-            onItemIsNAChange={onItemIsNAChange}
-            onClickAttachmentNotes={onClickAttachmentNotes}
-            onClickSignatureInput={onClickSignatureInput}
-            onClickPhotos={onClickPhotos}
-            inspectionItemsPhotos={inspectionItemsPhotos}
-            inspectionItemsSignature={inspectionItemsSignature}
-            canEdit={canEdit}
-          />
-        ))}
+        {listItems.map((item) =>
+          isMobile ? (
+            <ItemListSwipable
+              key={item.id}
+              item={item}
+              forceVisible={forceVisible}
+              onInputChange={onInputChange}
+              onClickOneActionNotes={onClickOneActionNotes}
+              onItemIsNAChange={onItemIsNAChange}
+              onClickAttachmentNotes={onClickAttachmentNotes}
+              onClickSignatureInput={onClickSignatureInput}
+              onClickPhotos={onClickPhotos}
+              inspectionItemsPhotos={inspectionItemsPhotos}
+              inspectionItemsSignature={inspectionItemsSignature}
+              canEdit={canEdit}
+            />
+          ) : (
+            <ItemList
+              key={item.id}
+              item={item}
+              forceVisible={forceVisible}
+              onInputChange={onInputChange}
+              onClickOneActionNotes={onClickOneActionNotes}
+              onItemIsNAChange={onItemIsNAChange}
+              onClickAttachmentNotes={onClickAttachmentNotes}
+              onClickSignatureInput={onClickSignatureInput}
+              onClickPhotos={onClickPhotos}
+              inspectionItemsPhotos={inspectionItemsPhotos}
+              inspectionItemsSignature={inspectionItemsSignature}
+              canEdit={canEdit}
+            />
+          )
+        )}
       </ul>
     </li>
   );
 };
 
-SectionItem.defaultProps = {};
+Group.defaultProps = {};
 
-export default SectionItem;
+export default Group;
