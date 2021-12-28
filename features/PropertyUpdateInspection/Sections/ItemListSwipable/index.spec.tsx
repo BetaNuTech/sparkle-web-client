@@ -7,7 +7,7 @@ import {
   unselectedSignatureInputItem
 } from '../../../../__mocks__/inspections';
 import breakpoints from '../../../../config/breakpoints';
-import SectionItemList from './index';
+import SectionItemListMobile from './index';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
@@ -21,7 +21,7 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-describe('Unit | Features | Property Update Inspection | Desktop Layout', () => {
+describe('Unit | Features | Property Update Inspection | Sections | Item List Swipable', () => {
   it('should show unpublished signature', () => {
     stubIntersectionObserver();
     const inspectionItemsSignature = new Map();
@@ -40,7 +40,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Layout', () => 
       inspectionItemsSignature
     };
 
-    render(<SectionItemList {...props} />, {
+    render(<SectionItemListMobile {...props} />, {
       contextWidth: breakpoints.desktop.minWidth
     });
 
