@@ -6,6 +6,7 @@ import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
+import IndexedDBStorage from '../IndexedDBStorage';
 import PhotoPreview from './PhotoPreview';
 import baseStyles from '../Modal/styles.module.scss';
 import styles from './styles.module.scss';
@@ -267,6 +268,7 @@ const PhotosModal: FunctionComponent<Props> = ({
         </div>
         <PhotoPreview photoData={photoForPreview} onClose={onClosePreview} />
       </div>
+      <IndexedDBStorage hiddenUntil={75} />
     </div>
   );
 };

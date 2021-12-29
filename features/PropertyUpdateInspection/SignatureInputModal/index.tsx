@@ -7,6 +7,7 @@ import Modal, { Props as ModalProps } from '../../../common/Modal';
 import resizeStream from '../../../common/utils/resizeStream';
 import UndoIcon from '../../../public/icons/sparkle/undo.svg';
 import breakpoints from '../../../config/breakpoints';
+import IndexedDBStorage from '../../../common/IndexedDBStorage';
 import baseStyles from '../../../common/Modal/styles.module.scss';
 import styles from './styles.module.scss';
 
@@ -208,6 +209,7 @@ const SignatureInputModal: FunctionComponent<Props> = ({
           </div>
         </div>
       </div>
+      <IndexedDBStorage hiddenUntil={75} />
     </div>
   );
 };
