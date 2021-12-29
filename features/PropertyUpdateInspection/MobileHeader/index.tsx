@@ -1,9 +1,11 @@
 import { FunctionComponent } from 'react';
+import clsx from 'clsx';
 import Link from 'next/link';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import inspectionModel from '../../../common/models/inspection';
 import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
+import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import MobileHeader from '../../../common/MobileHeader';
 import styles from '../styles.module.scss';
 
@@ -17,6 +19,7 @@ interface HeaderModel {
   canEnableEditMode: boolean;
   onEnableAdminEditMode(): void;
   isStaging: boolean;
+  canUpdateCompleteInspection: boolean;
 }
 
 const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
@@ -28,7 +31,8 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
   onSaveInspection,
   canEnableEditMode,
   onEnableAdminEditMode,
-  isStaging
+  isStaging,
+  canUpdateCompleteInspection
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -47,10 +51,13 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
     <>
       <button
         type="button"
-        className={headStyle.header__button}
+        className={clsx(
+          headStyle.header__button,
+          headStyle.header__button__share
+        )}
         onClick={onShareAction}
       >
-        Share
+        <ShareIcon />
       </button>
       {canEnableEditMode && (
         <button
@@ -63,24 +70,27 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
         </button>
       )}
 
-      <button
-        type="button"
-        className={headStyle.header__button}
-        disabled={!inspection.inspectionCompleted}
-        data-testid="header-complete-button"
-      >
-        <FileUploadIcon />
-      </button>
-
-      <button
-        type="button"
-        className={headStyle.header__button}
-        disabled={!(hasUpdates && isOnline)}
-        data-testid="header-save-button"
-        onClick={onSaveInspection}
-      >
-        Save
-      </button>
+      {canUpdateCompleteInspection ? (
+        <button
+          type="button"
+          className={headStyle.header__button}
+          disabled={!(hasUpdates && isOnline)}
+          data-testid="header-complete-button"
+        >
+          <span className={headStyle.header__button__text}>Complete</span>
+          <FileUploadIcon />
+        </button>
+      ) : (
+        <button
+          type="button"
+          className={headStyle.header__button}
+          disabled={!(hasUpdates && isOnline)}
+          data-testid="header-save-button"
+          onClick={onSaveInspection}
+        >
+          Save
+        </button>
+      )}
     </>
   );
 

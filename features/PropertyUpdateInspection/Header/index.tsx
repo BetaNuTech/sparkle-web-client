@@ -5,6 +5,7 @@ import DesktopHeader from '../../../common/DesktopHeader';
 import inspectionModel from '../../../common/models/inspection';
 import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
+import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import styles from './styles.module.scss';
 
 interface HeaderModel {
@@ -16,6 +17,7 @@ interface HeaderModel {
   onSaveInspection(): void;
   canEnableEditMode: boolean;
   onEnableAdminEditMode(): void;
+  canUpdateCompleteInspection: boolean;
 }
 
 const Header: FunctionComponent<HeaderModel> = ({
@@ -26,17 +28,21 @@ const Header: FunctionComponent<HeaderModel> = ({
   onShareAction,
   onSaveInspection,
   canEnableEditMode,
-  onEnableAdminEditMode
+  onEnableAdminEditMode,
+  canUpdateCompleteInspection
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const RightSide = () => (
     <div className={styles.header__item}>
       <button
         type="button"
-        className={clsx(styles.header__item__button)}
+        className={clsx(
+          styles.header__item__button,
+          styles.header__item__button__share
+        )}
         onClick={onShareAction}
       >
-        Share
+        <ShareIcon />
       </button>
       {canEnableEditMode && (
         <button
@@ -51,27 +57,29 @@ const Header: FunctionComponent<HeaderModel> = ({
           Edit
         </button>
       )}
-
-      <button
-        type="button"
-        className={clsx(styles.header__item__button)}
-        disabled={!inspection.inspectionCompleted}
-        data-testid="header-complete-button"
-      >
-        Complete
-        <span>
-          <FileUploadIcon />
-        </span>
-      </button>
-      <button
-        type="button"
-        className={clsx(styles.header__item__button)}
-        disabled={!(hasUpdates && isOnline)}
-        data-testid="header-save-button"
-        onClick={onSaveInspection}
-      >
-        Save
-      </button>
+      {canUpdateCompleteInspection ? (
+        <button
+          type="button"
+          className={clsx(styles.header__item__button)}
+          disabled={!(hasUpdates && isOnline)}
+          data-testid="header-complete-button"
+        >
+          Complete
+          <span>
+            <FileUploadIcon />
+          </span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          className={clsx(styles.header__item__button)}
+          disabled={!(hasUpdates && isOnline)}
+          data-testid="header-save-button"
+          onClick={onSaveInspection}
+        >
+          Save
+        </button>
+      )}
     </div>
   );
   return (

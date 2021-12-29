@@ -142,8 +142,29 @@ export const unselectedThumbsItem: inspectionTemplateItemModel = {
   photos: true
 };
 
-export const unselectedCheckedExclaimItem: inspectionTemplateItemModel = {
+export const selectedThumbsItem: inspectionTemplateItemModel = {
   id: 'item-4',
+  deficient: false,
+  index: 1,
+  isItemNA: false,
+  isTextInputItem: false,
+  itemType: 'main',
+  title: 'Two',
+  sectionId: singleSection.id,
+  mainInputType: 'twoactions_thumbs',
+  mainInputSelected: true,
+  mainInputSelection: 1,
+  mainInputFourValue: 0,
+  mainInputOneValue: 0,
+  mainInputThreeValue: 0,
+  mainInputTwoValue: 0,
+  mainInputZeroValue: 3,
+  notes: true,
+  photos: true
+};
+
+export const unselectedCheckedExclaimItem: inspectionTemplateItemModel = {
+  id: 'item-5',
   deficient: false,
   index: 6,
   isItemNA: false,
@@ -164,7 +185,7 @@ export const unselectedCheckedExclaimItem: inspectionTemplateItemModel = {
 };
 
 export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
-  id: 'item-5',
+  id: 'item-6',
   deficient: false,
   index: 5,
   isItemNA: false,
@@ -185,7 +206,7 @@ export const selectedCheckedExclaimItem: inspectionTemplateItemModel = {
 };
 
 export const unselectedAbcItem: inspectionTemplateItemModel = {
-  id: 'item-6',
+  id: 'item-7',
   deficient: false,
   index: 2,
   isItemNA: false,
@@ -206,7 +227,7 @@ export const unselectedAbcItem: inspectionTemplateItemModel = {
 };
 
 export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
-  id: 'item-7',
+  id: 'item-8',
   deficient: false,
   index: 4,
   isItemNA: false,
@@ -227,7 +248,7 @@ export const unselectedOneToFiveItem: inspectionTemplateItemModel = {
 };
 
 export const unselectedOneActionNote: inspectionTemplateItemModel = {
-  id: 'item-8',
+  id: 'item-9',
   deficient: false,
   index: 5,
   isItemNA: false,
@@ -248,7 +269,7 @@ export const unselectedOneActionNote: inspectionTemplateItemModel = {
 };
 
 export const emptyTextInputItem: inspectionTemplateItemModel = {
-  id: 'item-8',
+  id: 'item-10',
   deficient: false,
   index: 7,
   isItemNA: false,
@@ -268,7 +289,7 @@ export const emptyTextInputItem: inspectionTemplateItemModel = {
 };
 
 export const answeredTextInputItem: inspectionTemplateItemModel = {
-  id: 'item-9',
+  id: 'item-11',
   deficient: false,
   index: 8,
   itemType: 'text_input',
@@ -288,7 +309,7 @@ export const answeredTextInputItem: inspectionTemplateItemModel = {
 };
 
 export const unselectedSignatureInputItem: inspectionTemplateItemModel = {
-  id: 'item-10',
+  id: 'item-12',
   deficient: false,
   index: 9,
   isItemNA: false,
@@ -314,6 +335,7 @@ export const inspectionItems = [
   unselectedCheckmarkItem,
   selectedCheckmarkItem,
   unselectedThumbsItem,
+  selectedThumbsItem,
   unselectedCheckedExclaimItem,
   selectedCheckedExclaimItem,
   unselectedAbcItem,

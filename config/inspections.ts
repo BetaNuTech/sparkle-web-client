@@ -23,5 +23,13 @@ export default {
     threeactions_checkmarkexclamationx: ['checkmark', 'exclamation', 'X'],
     threeactions_abc: ['A', 'B', 'C'],
     fiveactions_onetofive: ['1', '2', '3', '4', '5']
+  },
+
+  deficientListEligible: {
+    twoactions_checkmarkx: [false, true],
+    twoactions_thumbs: [false, true],
+    threeactions_checkmarkexclamationx: [false, true, true],
+    threeactions_abc: [false, true, true],
+    fiveactions_onetofive: [true, true, true, true, false]
   }
 };
