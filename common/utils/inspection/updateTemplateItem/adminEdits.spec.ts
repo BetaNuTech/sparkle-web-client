@@ -621,7 +621,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Item | Admin Edit
       {
         expected: { new: addEntry },
         item: unselectedCheckmarkItem,
-        change: { photosData: { new: photoDataEntry } },
+        change: { photosData: { file: photoDataEntry } },
         msg: 'adds new add admin edit entry when selected changes are publishable'
       },
       {

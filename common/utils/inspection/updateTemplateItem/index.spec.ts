@@ -165,47 +165,47 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
     const tests = [
       {
         expected: undefined,
-        item: unselectedOneActionNote,
+        item: { ...unselectedOneActionNote },
         change: { isItemNA: true },
         msg: 'ignores unrelated update'
       },
       {
         expected: undefined,
-        item: unselectedOneActionNote,
+        item: { ...unselectedOneActionNote, mainInputNotes: '' },
         change: { mainInputNotes: '' },
         msg: 'ignores changing empty text input to an empty value'
       },
       {
         expected: 'test',
-        item: unselectedOneActionNote,
+        item: { ...unselectedOneActionNote },
         previous: { mainInputNotes: 'test' },
         change: { isItemNa: true },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: 'test',
-        item: unselectedOneActionNote,
+        item: { ...unselectedOneActionNote, mainInputNotes: '' },
         change: { mainInputNotes: 'test' },
         msg: 'adds new note value to an empty item'
       },
       {
         expected: 'new',
-        item: unselectedOneActionNote,
-        previous: { mainInputNotes: 'old' },
+        item: { ...unselectedOneActionNote },
+        previous: { mainInputNotes: 'old', mainInputSelected: true },
         change: { mainInputNotes: ' new ' }, // check whitespace padding removed
         msg: 'updates over previously updated main note value'
       },
       {
         expected: undefined,
-        item: unselectedOneActionNote,
-        previous: { mainInputNotes: 'update' },
+        item: { ...unselectedOneActionNote, mainInputNotes: '' },
+        previous: { mainInputNotes: 'update', mainInputSelected: true },
         change: { mainInputNotes: '' },
         msg: 'removes previously updated main note value back to empty original state'
       },
       {
         expected: undefined,
         item: { ...unselectedOneActionNote, mainInputNotes: 'initial' },
-        previous: { mainInputNotes: 'update' },
+        previous: { mainInputNotes: 'update', mainInputSelected: true },
         change: { mainInputNotes: 'initial' },
         msg: 'removes previously updated main note value back to original truthy state'
       }
@@ -565,22 +565,22 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
         msg: 'ignores unrelated update'
       },
       {
-        expected: { 1: imgOnlyAdd },
+        expected: { '1': imgOnlyAdd },
         item: { ...unselectedCheckmarkItem },
-        change: { photosData: { new: imgOnlyAdd } },
+        change: { photosData: { 1: imgOnlyAdd } },
         msg: 'add a new photo data image update'
       },
       {
-        expected: { 1: imgCaptionAdd },
+        expected: { '1': imgCaptionAdd },
         item: { ...unselectedCheckmarkItem },
-        change: { photosData: { new: imgCaptionAdd } },
+        change: { photosData: { 1: imgCaptionAdd } },
         msg: 'add a new photo data image/caption update'
       },
       {
-        expected: { 1: imgOnlyAdd, 2: imgCaptionAdd },
-        previous: { photosData: { 1: imgOnlyAdd } },
+        expected: { '1': imgOnlyAdd, '2': imgCaptionAdd },
+        previous: { photosData: { '1': imgOnlyAdd } },
         item: { ...unselectedCheckmarkItem },
-        change: { photosData: { new: imgCaptionAdd } },
+        change: { photosData: { '2': imgCaptionAdd } },
         msg: 'appends new photo updates to existing ones'
       }
     ];
@@ -591,38 +591,9 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
       const updatedItem = previous as inspectionTemplateItemModel;
       const userChanges = change as userUpdate;
       const result = update(updatedItem, currentItem, userChanges);
-      const actual = result
-        ? normalizePhotoData(result.photosData) || undefined
-        : undefined;
+      const actual = result.photosData || undefined;
       expect(actual, msg).toEqual(expected);
     }
-  });
-
-  test('it always adds a photo data items under a unique unix timestamp', () => {
-    let expected = 0;
-    const currentItem = deepClone(
-      unselectedCheckedExclaimItem
-    ) as inspectionTemplateItemModel;
-    let updatedItem = {} as inspectionTemplateItemModel;
-
-    for (let i = 0; i < 4; i += 1) {
-      const photoData = {
-        caption: `${i}`,
-        downloadURL: 'url.com/img.jpg'
-      } as inspectionTemplateItemPhotoDataModel;
-      updatedItem = update(updatedItem, currentItem, {
-        photosData: { new: photoData }
-      });
-      expected += 1;
-    }
-
-    const photosData = updatedItem.photosData || {};
-    const uniqueResults = Object.keys(photosData).filter(
-      (id, i, arr) => arr.indexOf(id) === i
-    );
-    const actual = uniqueResults.length;
-
-    expect(actual).toEqual(expected);
   });
 
   test('it removes a photo from an items photo data', () => {
@@ -641,23 +612,29 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
         msg: 'ignores unrelated update'
       },
       {
-        expected: { 1: null },
-        item: { ...unselectedCheckmarkItem, photosData: { 1: photoDataItem } },
-        change: { photosData: { 1: null } },
+        expected: { '1': null },
+        item: {
+          ...unselectedCheckmarkItem,
+          photosData: { '1': photoDataItem }
+        },
+        change: { photosData: { '1': null } },
         msg: 'creates a publishable removal of a published photo data image'
       },
       {
-        expected: { 1: photoDataItem },
-        previous: { photosData: { 1: photoDataItem, 2: photoDataItem2 } },
+        expected: { '1': photoDataItem },
+        previous: { photosData: { '1': photoDataItem, '2': photoDataItem2 } },
         item: { ...unselectedCheckmarkItem },
-        change: { photosData: { 2: null } },
+        change: { photosData: { '2': null } },
         msg: 'deletes local only photo data add'
       },
       {
         expected: undefined,
-        previous: { photosData: { 2: photoDataItem2 } },
-        item: { ...unselectedCheckmarkItem, photosData: { 1: photoDataItem } },
-        change: { photosData: { 2: null } },
+        previous: { photosData: { '2': photoDataItem2 } },
+        item: {
+          ...unselectedCheckmarkItem,
+          photosData: { '1': photoDataItem }
+        },
+        change: { photosData: { '2': null } },
         msg: 'deletes all local only photo data when none present'
       }
     ];
@@ -743,19 +720,3 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
     }
   });
 });
-
-// Convert photos data timestamp ID's to smallest
-// possible integers sorted asc by original timestamp
-function normalizePhotoData(photosData?: any): any {
-  if (!photosData) {
-    return null;
-  }
-
-  return Object.keys(photosData)
-    .map((id) => parseInt(id, 10))
-    .sort()
-    .reduce((acc, id, i) => {
-      acc[i + 1] = photosData[id];
-      return acc;
-    }, {});
-}

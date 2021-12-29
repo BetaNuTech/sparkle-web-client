@@ -31,7 +31,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('it should increment all section indexes for newly added section', () => {
+  test('it should increment all section indexes after a newly added section', () => {
     const expected = [1, 2];
     const updated = {} as inspectionTemplateUpdateModel;
     const current = {} as inspectionTemplateUpdateModel;
@@ -50,9 +50,10 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
       two: sectionTwo
     };
     const result = update(updated, current, { cloneOf: sectionOne.id }, 'new');
-    const actual = Object.entries(result.sections || {}).map(
-      ([, { index }]) => index
-    );
+    const actual = Object.entries(result.sections || {})
+      .map(([, section]) => section as inspectionTemplateSectionModel)
+      .map(({ index }) => index);
+
     expect(actual).toEqual(expected);
   });
 
@@ -79,8 +80,9 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
     current.sections = { one: sectionOne };
     const result = update(updated, current, { cloneOf: 'one' }, 'new');
     const [actual] = Object.entries(result.items)
-      .filter(([, { sectionId }]) => sectionId !== 'one')
-      .map(([, s]) => s);
+      .map(([, item]) => item as inspectionTemplateItemModel)
+      .filter(({ sectionId }) => sectionId !== 'one');
+
     delete actual.sectionId;
     expect(actual).toEqual(expected);
   });
@@ -246,9 +248,48 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
     updates.items = { itemTwo };
     updates.sections = { two: sectionTwo };
 
-    // Clone original
     const result = update(updates, current, null, 'two');
     const actual = (result.items || {}).itemTwo;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should remove previously incremented sections from updates after a local multi section was removed', () => {
+    const expected = undefined;
+    const current = {} as inspectionTemplateUpdateModel;
+    let updates = {} as inspectionTemplateUpdateModel;
+    const sectionOne = {
+      ...originalMultiSection,
+      id: 'one',
+      index: 0
+    } as inspectionTemplateSectionModel;
+    const sectionTwo = {
+      ...singleSection,
+      index: 1
+    } as inspectionTemplateSectionModel;
+    const itemOne = {
+      ...unselectedCheckmarkItem,
+      sectionId: 'one',
+      index: 0
+    } as inspectionTemplateItemModel;
+    const itemTwo = {
+      ...unselectedCheckmarkItem,
+      sectionId: 'two',
+      index: 0
+    } as inspectionTemplateItemModel;
+    current.items = { itemOne, itemTwo };
+    current.sections = { one: sectionOne, two: sectionTwo };
+
+    // Add new multi-section, incrementing section two's index
+    updates = update(updates, current, { cloneOf: sectionOne.id }, 'new');
+    const addedSectionId = Object.keys(updates.sections || {}).find(
+      (id) => id !== 'two'
+    );
+
+    // Remove added multi-section
+    const result = update(updates, current, null, addedSectionId);
+
+    // Lookup section two's updates
+    const actual = (result.sections || {}).two;
     expect(actual).toEqual(expected);
   });
 });
