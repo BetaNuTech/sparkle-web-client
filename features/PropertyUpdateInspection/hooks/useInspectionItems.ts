@@ -6,6 +6,7 @@ import utilArray from '../../../common/utils/array';
 
 interface useInspectionItemsResult {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
+  inspectionItems: Array<inspectionTemplateItemModel>;
 }
 
 // Hooks for filtering inspections list
@@ -49,6 +50,7 @@ export default function useInspectionItems(
   });
 
   return {
-    sectionItems
+    sectionItems,
+    inspectionItems: itemsList
   };
 }

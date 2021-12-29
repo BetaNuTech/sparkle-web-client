@@ -125,6 +125,15 @@
     &:active {
       color: $white;
     }
+
+    &__text {
+      display: inline-block;
+      margin-right: $global-sm-padding;
+    }
+
+    svg path {
+      fill: $white;
+    }
   }
 
   &__footer {

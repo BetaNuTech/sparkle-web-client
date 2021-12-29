@@ -19,7 +19,7 @@ function render(ui: any, options: any = {}) {
 }
 
 describe('Unit | Features | Property Update Inspection | Desktop Header', () => {
-  it('should hide edit button and disable complete button if inspection not completed', () => {
+  it('should hide edit button and complete button if inspection not completed', () => {
     const props = {
       property: fullProperty,
       inspection: inspectionB,
@@ -39,7 +39,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     const completeButton = screen.queryByTestId('header-complete-button');
 
     expect(editButton).toBeNull();
-    expect(completeButton).toBeDisabled();
+    expect(completeButton).toBeNull();
   });
 
   it('should hide edit button if inspection is completed but user is not admin', () => {
@@ -86,7 +86,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     expect(editButton).toBeTruthy();
   });
 
-  it('should enable complete button if inspection completed', () => {
+  it('should show complete button if inspection can be completed by updates', () => {
     const props = {
       property: fullProperty,
       inspection: fullInspection,
@@ -95,7 +95,8 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       isOnline: true,
       hasUpdates: true,
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      onSaveInspection: () => {}
+      onSaveInspection: () => {},
+      canUpdateCompleteInspection: true
     };
 
     render(<Header {...props} />, {
@@ -104,7 +105,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
 
     const completeButton = screen.queryByTestId('header-complete-button');
 
-    expect(completeButton).not.toBeDisabled();
+    expect(completeButton).toBeTruthy();
   });
 
   it('should disable save button if no updates to the inspection are publishable', () => {

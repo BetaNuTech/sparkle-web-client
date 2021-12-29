@@ -29,6 +29,18 @@
       &:last-child {
         margin: 0;
       }
+
+      &__share {
+        @extend %gridHeaderButtonIcon;
+        padding: 0;
+        height: auto;
+        width: auto;
+
+        svg {
+          width: $global-lg-padding;
+          height: auto;
+        }
+      }
     }
   }
 }

@@ -1,14 +1,14 @@
-import { FunctionComponent, useState, useEffect } from 'react';
+import { FunctionComponent, useState, useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import inspectionModel from '../../common/models/inspection';
 import inspectionTemplateUpdateModel from '../../common/models/inspections/templateUpdate';
-
 import userModel from '../../common/models/user';
 import copyTextToClipboard from '../../common/utils/copyTextToClipboard';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
+import { filterCompletedItems } from '../../common/utils/inspection/filterCompletedItems';
 import useInspectionSectionSort from './hooks/useInspectionSections';
 import Sections from './Sections';
 import useInspectionItems from './hooks/useInspectionItems';
@@ -68,20 +68,14 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [
-    isVisibleOneActionNotesModal,
-    setIsVisibleOneActionNotesModal
-  ] = useState(false);
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleAttachmentNotesModal,
-    setIsVisibleAttachmentNotesModal
-  ] = useState(false);
+  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleSignatureInputModal,
-    setIsVisibleSignatureInputModal
-  ] = useState(false);
+  const [isVisibleSignatureInputModal, setIsVisibleSignatureInputModal] =
+    useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
@@ -90,18 +84,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
-  const { updateInspectionTemplate, isLoading } = usePublishUpdates(
-    sendNotification
-  );
-  const {
-    setLatestTemplateUpdates,
-    hasUpdates
-  } = useUnpublishedTemplateUpdates(
-    inspection.id,
-    property.id,
-    sendNotification,
-    unpublishedTemplateUpdates
-  );
+  const { updateInspectionTemplate, isLoading } =
+    usePublishUpdates(sendNotification);
+  const { setLatestTemplateUpdates, hasUpdates } =
+    useUnpublishedTemplateUpdates(
+      inspection.id,
+      property.id,
+      sendNotification,
+      unpublishedTemplateUpdates
+    );
 
   const {
     addUnpublishedInspectionItemPhotos,
@@ -230,23 +221,19 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // Publish local changes and on success
   // clear all local changes
   const onSaveInspection = () => {
-    updateInspectionTemplate(
-      inspection.id,
-      unpublishedTemplateUpdates
-    ).then(() => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel));
+    updateInspectionTemplate(inspection.id, unpublishedTemplateUpdates).then(
+      () => setLatestTemplateUpdates({} as inspectionTemplateUpdateModel)
+    );
   };
 
-  const {
-    sortedTemplateSections,
-    collapsedSections,
-    onSectionCollapseToggle
-  } = useInspectionSectionSort(
-    inspection.template.sections,
-    unpublishedTemplateUpdates
-  );
+  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
+    useInspectionSectionSort(
+      inspection.template.sections,
+      unpublishedTemplateUpdates
+    );
 
   // Items grouped by their section
-  const { sectionItems } = useInspectionItems(
+  const { sectionItems, inspectionItems } = useInspectionItems(
     unpublishedTemplateUpdates,
     inspection.template
   );
@@ -327,6 +314,18 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     removeUnpublishedInspectionItemPhoto(unpublishedPhotoId);
   };
 
+  // Determine if inspection could be completed
+  // when user requests to publish their updates
+  const canUpdatesCompleteInspection = useMemo(() => {
+    const completedItemsLength = (
+      filterCompletedItems(
+        inspectionItems,
+        inspection.template.requireDeficientItemNoteAndPhoto
+      ) || []
+    ).length;
+    return completedItemsLength === inspectionItems.length;
+  }, [inspectionItems]);
+
   if (isLoading) {
     return <LoadingHud title="Saving Inspection" />;
   }
@@ -344,6 +343,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           canEnableEditMode={canEnableEditMode}
           onEnableAdminEditMode={onEnableAdminEditMode}
           isStaging={isStaging}
+          canUpdateCompleteInspection={canUpdatesCompleteInspection}
         />
       ) : (
         <Header
@@ -355,6 +355,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           onSaveInspection={onSaveInspection}
           canEnableEditMode={canEnableEditMode}
           onEnableAdminEditMode={onEnableAdminEditMode}
+          canUpdateCompleteInspection={canUpdatesCompleteInspection}
         />
       )}
 
