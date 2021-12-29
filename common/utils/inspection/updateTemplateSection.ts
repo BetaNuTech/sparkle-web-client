@@ -116,11 +116,12 @@ function setAddedMultiSection(
   Object.keys(updatedSections).forEach((id) => {
     result.sections[id] =
       result.sections[id] || ({} as inspectionTemplateSectionModel); // setup
-    const section = result.sections[id];
+    const resultSection = result.sections[id];
     const updatedSection = updatedSections[id];
 
-    if (section.index !== updatedSection.index) {
-      result.sections[id].index = updatedSection.index;
+    // Update section index
+    if (resultSection.index !== updatedSection.index) {
+      resultSection.index = updatedSection.index;
     }
   });
 
@@ -182,11 +183,23 @@ function setRemovedMultiSection(
   Object.keys(updatedSections).forEach((id) => {
     result.sections[id] =
       result.sections[id] || ({} as inspectionTemplateSectionModel); // setup
-    const section = result.sections[id];
+    const resultSection = result.sections[id];
     const updatedSection = updatedSections[id];
+    const currentSectionIndex = (currentSections[id] || {}).index || -1;
 
-    if (section.index !== updatedSection.index) {
-      result.sections[id].index = updatedSection.index;
+    // Update section index
+    if (resultSection.index !== updatedSection.index) {
+      resultSection.index = updatedSection.index;
+    }
+
+    // Remove index matching current
+    if (resultSection.index === currentSectionIndex) {
+      delete resultSection.index;
+    }
+
+    // Remove section without updates
+    if (Object.keys(resultSection).length === 0) {
+      delete result.sections[id];
     }
   });
 

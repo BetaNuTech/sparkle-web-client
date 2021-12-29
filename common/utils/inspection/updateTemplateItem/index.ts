@@ -91,6 +91,14 @@ const setMainInputSelection = (
   const isCurrentlyUnselected = currentItem.mainInputSelection === -1;
   const isMainInputItem =
     currentItem.itemType === 'main' && Boolean(currentItem.mainInputType);
+  const isOneActionNote =
+    isMainInputItem && getMainItemType(currentItem) === 'oneaction_notes';
+
+  // Ignore one action notes
+  // that have no selection index
+  if (isOneActionNote) {
+    return result;
+  }
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
@@ -158,7 +166,7 @@ function setOneActionNoteItemValue(
   const isChanging = typeof userChanges.mainInputNotes === 'string';
   const hasPreviousUpdate = typeof updatedItem.mainInputNotes === 'string';
   const value = `${userChanges.mainInputNotes || ''}`.trim();
-  const isDifferentThanCurrent = value !== currentItem.mainInputNotes;
+  const isDifferentThanCurrent = value !== (currentItem.mainInputNotes || '');
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
@@ -367,31 +375,20 @@ const addPhotoData = (
   result: inspectionTemplateItemModel,
   settings: composableSettings
 ): inspectionTemplateItemModel => {
-  const { userChanges, currentItem, updatedItem } = settings;
+  const { userChanges } = settings;
   const hasPhotoDataUpdates = typeof userChanges.photosData !== 'undefined';
-  const photoDataUpdate = hasPhotoDataUpdates
-    ? (Object.entries(userChanges.photosData)[0] || [])[1]
-    : undefined;
+  const [photoDataId, photoDataUpdate] = hasPhotoDataUpdates
+    ? Object.entries(userChanges.photosData)[0] || []
+    : [];
   const isAddingPhoto = Boolean(photoDataUpdate);
 
   if (!isAddingPhoto) {
     return result;
   }
 
-  // Create new/unique timestamp photo data ID
-  let unixTimeId = Math.round(Date.now() / 1000);
-  const existingPhotoIds = [
-    ...Object.keys(updatedItem.photosData || {}),
-    ...Object.keys(currentItem.photosData || {})
-  ].map((id) => parseInt(id, 10));
-
-  while (existingPhotoIds.includes(unixTimeId)) {
-    unixTimeId += 1;
-  }
-
-  // Append update
+  // Append photo data entry
   result.photosData = result.photosData || {};
-  result.photosData[unixTimeId] = {
+  result.photosData[photoDataId] = {
     ...photoDataUpdate
   } as inspectionTemplateItemPhotoDataModel;
 
