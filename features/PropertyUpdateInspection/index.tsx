@@ -86,16 +86,21 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-  const {
-    setLatestTemplateUpdates,
-    hasUpdates
-  } = useUnpublishedTemplateUpdates(unpublishedTemplateUpdates);
 
   // User notifications setup
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
   const { updateInspectionTemplate, isLoading } = usePublishUpdates(
     sendNotification
+  );
+  const {
+    setLatestTemplateUpdates,
+    hasUpdates
+  } = useUnpublishedTemplateUpdates(
+    inspection.id,
+    property.id,
+    sendNotification,
+    unpublishedTemplateUpdates
   );
 
   const {
@@ -132,11 +137,11 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   });
 
   const canEdit = canEditInspection(user, inspection, isAdminEditModeEnabled);
-  const canEnableEditMode = canEnableOverwriteMode(
-    user,
-    inspection,
-    isAdminEditModeEnabled
-  ) && !canEdit;
+
+  // Permission is only relevant when user cannot edit an inspection
+  const canEnableEditMode =
+    canEnableOverwriteMode(user, inspection, isAdminEditModeEnabled) &&
+    !canEdit;
 
   // User updates main item selection
   const onMainInputChange = (
