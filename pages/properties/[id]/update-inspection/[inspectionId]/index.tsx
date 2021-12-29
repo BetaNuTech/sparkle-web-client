@@ -43,8 +43,14 @@ const Page: React.FC = (): ReactElement => {
 
   // Locally stored user updates to inspection
   // NOTE: users can only update an inspection's template
-  const { data: updatedTemplate, status: updatedTemplateStatus } =
-    useUnpublishedTemplateUpdates();
+  const {
+    data: updatedTemplate,
+    status: updatedTemplateStatus
+  } = useUnpublishedTemplateUpdates(
+    inspectionIdFinal,
+    propertyId,
+    sendNotification
+  );
 
   // Loading State
   let isLoaded = false;
