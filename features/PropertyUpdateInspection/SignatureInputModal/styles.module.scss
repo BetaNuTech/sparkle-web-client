@@ -1,11 +1,9 @@
 @import '../../../styles/index.scss';
 
 .SignatureInputModal {
-  padding-bottom: $global-md-padding;
   max-height: 90%;
 
   &__modal {
-    padding-bottom: $global-md-padding;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -25,7 +23,6 @@
     display: flex;
     position: relative;
     overflow-x: hidden;
-    padding-bottom: 0px;
   }
 
   &__preview {
