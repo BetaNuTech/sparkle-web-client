@@ -28,6 +28,10 @@ interface useItemUpdateResult {
   enableAdminEditMode(currentUser: userModel): void;
   disableAdminEditMode(): void;
   isAdminEditModeEnabled: boolean;
+  setItemSignatureDownloadURL(
+    itemId: string,
+    signatureDownloadURL: string
+  ): inspectionTemplateUpdateModel;
 }
 
 export default function useInspectionItemUpdate(
@@ -124,6 +128,19 @@ export default function useInspectionItemUpdate(
       updateOption
     );
 
+  const setItemSignatureDownloadURL = (
+    itemId: string,
+    signatureDownloadURL: string
+  ): inspectionTemplateUpdateModel =>
+    inspUtil.updateTemplate(
+      updatedTemplate,
+      currentTemplate,
+      {
+        items: { [itemId]: { signatureDownloadURL } }
+      },
+      updateOption
+    );
+
   const addSection = (sectionId: string): inspectionTemplateUpdateModel =>
     inspUtil.updateTemplate(updatedTemplate, currentTemplate, {
       sections: { new: { cloneOf: sectionId } }
@@ -157,6 +174,7 @@ export default function useInspectionItemUpdate(
     updateInspectorNotes,
     enableAdminEditMode,
     disableAdminEditMode,
-    isAdminEditModeEnabled
+    isAdminEditModeEnabled,
+    setItemSignatureDownloadURL
   };
 }

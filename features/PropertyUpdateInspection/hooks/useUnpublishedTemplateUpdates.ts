@@ -13,7 +13,8 @@ interface Result {
   hasUpdates: boolean;
   setLatestTemplateUpdates(
     latestTemplate: inspectionTemplateUpdateModel
-  ): inspectionTemplateUpdateModel;
+  ): Promise<inspectionTemplateUpdateModel>;
+  clearUnpublishedTemplateUpdates(): void;
 }
 type userNotifications = (message: string, options?: any) => any;
 
@@ -41,15 +42,14 @@ export default function useUnpublishedTemplate(
 
   // Set latest inpsection updates
   // and save them locally
-  function setLatestTemplateUpdates(
+  const setLatestTemplateUpdates = async (
     latestTemplate: inspectionTemplateUpdateModel
-  ): inspectionTemplateUpdateModel {
+  ): Promise<inspectionTemplateUpdateModel> => {
     // Updated template has publishable state
     setHasUpdates(isInspectionTemplateUpdated(latestTemplate));
     // Setup updated template for merging
     updatedTemplate.items = updatedTemplate.items || {};
     updatedTemplate.sections = updatedTemplate.sections || {};
-
     // Merge latest
     objectHelper.replaceContent(
       updatedTemplate.items,
@@ -63,12 +63,11 @@ export default function useUnpublishedTemplate(
     // Cleanup removals
     if (!updatedTemplate.items) delete updatedTemplate.items;
     if (!updatedTemplate.sections) delete updatedTemplate.sections;
-
     // Set latest template updates
     setUnpublishedTemplateUpdates({ ...updatedTemplate });
-    saveUnpublishedUpdatedTemplate({ ...updatedTemplate });
+    await saveUnpublishedUpdatedTemplate({ ...updatedTemplate });
     return latestTemplate;
-  }
+  };
 
   const handleErrorResponse = (err) => {
     sendNotification(
@@ -106,6 +105,7 @@ export default function useUnpublishedTemplate(
       if (stringifiedUpdatedTemplate !== stringifiedResultUpdatedTemplate) {
         setUnpublishedTemplateUpdates({ ...result.template });
       }
+      return result.id;
     }
   };
 
@@ -122,6 +122,7 @@ export default function useUnpublishedTemplate(
         inspectionId
       );
       setUnpublishedTemplateUpdateId(resultId);
+      return resultId;
     } catch (err) {
       handleErrorResponse(err);
     }
@@ -134,7 +135,7 @@ export default function useUnpublishedTemplate(
   ) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await inspectionTemplateUpdates.updateRecord(
+      return await inspectionTemplateUpdates.updateRecord(
         templateUpdates,
         unpublishedTemplateUpdateId
       );
@@ -143,34 +144,44 @@ export default function useUnpublishedTemplate(
     }
   };
 
-  const deleteTemplateRecord = async () => {
+  const deleteTemplateRecord = async (templateId: string) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await inspectionTemplateUpdates.deleteRecord(unpublishedTemplateUpdateId);
-      setUnpublishedTemplateUpdateId(null);
+      await inspectionTemplateUpdates.deleteRecord(templateId);
+      return setUnpublishedTemplateUpdateId(null);
     } catch (err) {
       handleErrorResponse(err);
     }
   };
 
-  const saveUnpublishedUpdatedTemplate = (
+  const saveUnpublishedUpdatedTemplate = async (
     templateUpdates: inspectionTemplateUpdateModel
   ) => {
     const hasSections = Object.keys(templateUpdates.sections || {}).length > 0;
     const hasItems = Object.keys(templateUpdates.items || {}).length > 0;
-
     if (hasSections || hasItems) {
       // update record if it exist in local db
       if (unpublishedTemplateUpdateId) {
-        updateTemplateRecord(templateUpdates);
+        await updateTemplateRecord(templateUpdates);
       } else {
         // create record in localDB and set record id for record reference
-        addTemplateRecord(templateUpdates);
+        await addTemplateRecord(templateUpdates);
       }
     } else if (unpublishedTemplateUpdateId) {
       // remove templdate update from localDB
-      deleteTemplateRecord();
+      await deleteTemplateRecord(unpublishedTemplateUpdateId);
     }
+  };
+
+  const clearUnpublishedTemplateUpdates = async () => {
+    const templateId = await getUnpublishedTemplateUpdates();
+
+    setHasUpdates(false);
+    if (templateId) {
+      // remove template update from localDB
+      await deleteTemplateRecord(templateId);
+    }
+    setLatestTemplateUpdates({});
   };
 
   useEffect(() => {
@@ -182,6 +193,7 @@ export default function useUnpublishedTemplate(
     status: 'success',
     data: updatedTemplate,
     hasUpdates,
-    setLatestTemplateUpdates
+    setLatestTemplateUpdates,
+    clearUnpublishedTemplateUpdates
   };
 }

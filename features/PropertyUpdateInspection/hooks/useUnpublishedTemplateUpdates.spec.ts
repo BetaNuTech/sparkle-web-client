@@ -32,8 +32,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Unpublished
     );
 
     await act(async () => {
-      result.current.setLatestTemplateUpdates(updatedTemplate);
-      await new Promise((r) => setTimeout(r, 100));
+      await result.current.setLatestTemplateUpdates(updatedTemplate);
     });
 
     const actual = result.current.hasUpdates;
@@ -62,8 +61,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Unpublished
     );
 
     await act(async () => {
-      result.current.setLatestTemplateUpdates(updatedTemplate);
-      await new Promise((r) => setTimeout(r, 100));
+      await result.current.setLatestTemplateUpdates(updatedTemplate);
     });
     await waitFor(() => createRecord.called);
 
@@ -106,8 +104,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Unpublished
     );
 
     await act(async () => {
-      result.current.setLatestTemplateUpdates(updatedTemplate);
-      await new Promise((r) => setTimeout(r, 100));
+      await result.current.setLatestTemplateUpdates(updatedTemplate);
     });
 
     await act(async () => {
@@ -142,8 +139,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Unpublished
     );
 
     await act(async () => {
-      result.current.setLatestTemplateUpdates(updatedTemplate);
-      await new Promise((r) => setTimeout(r, 100));
+      await result.current.setLatestTemplateUpdates(updatedTemplate);
     });
 
     await act(async () => {

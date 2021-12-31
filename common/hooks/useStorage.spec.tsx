@@ -1,5 +1,6 @@
 import sinon from 'sinon';
 import { FunctionComponent, ChangeEvent, useState } from 'react';
+
 import {
   fireEvent,
   act,
@@ -7,6 +8,7 @@ import {
   screen,
   waitFor
 } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import useStorage from './useStorage';
 import storageApi from '../services/storage';
 
@@ -94,5 +96,33 @@ describe('Unit | Common | Hooks | Use Storage', () => {
     const result = screen.getByTestId('result');
     const actual = result.textContent;
     expect(actual).toEqual(expected);
+  });
+
+  test('should resolve a file URL', async () => {
+    const expected = '/test/test.png';
+    let called = false;
+    const signature =
+      'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+    sinon.stub(storageApi, 'getFileUrl').resolves(expected);
+    sinon.stub(storageApi, 'createBase64UploadTask').returns({
+      snapshot: { ref: 'test' },
+      on(evt, onStart, onError, onComplete) {
+        onComplete();
+        called = true;
+      }
+    });
+    let storageResult = null;
+
+    const { result } = renderHook(() => useStorage());
+    await act(async () => {
+      storageResult = await result.current.uploadBase64FileToStorage(
+        '/test.png',
+        signature
+      );
+    });
+
+    await waitFor(() => called);
+
+    expect(storageResult.fileUrl).toEqual(expected);
   });
 });

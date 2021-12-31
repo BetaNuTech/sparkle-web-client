@@ -64,8 +64,19 @@ export const updateRecord = async (
   }
 };
 
+export const deleteMultipleRecords = async (
+  recordIds: Array<string>
+): Promise<void> => {
+  try {
+    await db.inspectionSignature.bulkDelete(recordIds);
+  } catch (err) {
+    throw Error(`${PREFIX} deleteRecord: ${err}`);
+  }
+};
+
 export default {
   createRecord,
   queryRecords,
-  updateRecord
+  updateRecord,
+  deleteMultipleRecords
 };
