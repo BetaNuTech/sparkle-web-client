@@ -21,6 +21,22 @@ export default {
     return uploadTask;
   },
 
+  createBase64UploadTask(
+    location: string,
+    base64: string
+  ): firebase.storage.UploadTask {
+    // Create a storage reference
+    const storageRef = firebase.storage().ref();
+    const filePath = `${location}`;
+
+    // Create a reference to image reference in storage
+    const fileRef = storageRef.child(filePath);
+
+    // Create a upload task for base64 string
+    const uploadBase64Task = fileRef.putString(base64, 'data_url');
+    return uploadBase64Task;
+  },
+
   // Lookup uploaded
   // storage file's URL
   getFileUrl: async (
