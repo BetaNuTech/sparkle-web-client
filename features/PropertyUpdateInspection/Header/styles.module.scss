@@ -4,6 +4,9 @@
   &__propertyName {
     @extend %gridHeaderLink;
   }
+  &__breadcrumb {
+    @extend %gridHeaderLinkMain;
+  }
 
   &__item {
     &__button {
