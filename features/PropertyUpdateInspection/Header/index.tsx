@@ -88,9 +88,16 @@ const Header: FunctionComponent<HeaderModel> = ({
       isColumnTitle
       title={
         <>
-          <Link href={propertyLink}>
-            <a className={styles.header__propertyName}>{`${property.name}`}</a>
-          </Link>
+          <div className={styles.header__breadcrumb}>
+            <Link href={propertyLink}>
+              <a
+                className={styles.header__propertyName}
+              >{`${property.name}`}</a>
+            </Link>
+            <span className={styles.header__breadcrumb}>
+              &nbsp;&nbsp;/&nbsp;&nbsp;Inspection
+            </span>
+          </div>
           <div>{inspection.templateName}</div>
         </>
       }

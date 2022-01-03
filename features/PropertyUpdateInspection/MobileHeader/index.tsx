@@ -7,7 +7,7 @@ import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import MobileHeader from '../../../common/MobileHeader';
-import styles from '../styles.module.scss';
+import styles from './styles.module.scss';
 
 interface HeaderModel {
   property: propertyModel;
@@ -94,6 +94,8 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
     </>
   );
 
+  const propertyLink = `/properties/${property.id}/`;
+
   return (
     <>
       <MobileHeader
@@ -102,6 +104,17 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
         left={mobileHeaderLeft}
         actions={mobileHeaderActions}
       />
+      <div className={styles.header}>
+        <div className={styles.header__breadcrumb}>
+          <Link href={propertyLink}>
+            <a className={styles.header__propertyName}>{`${property.name}`}</a>
+          </Link>
+          <span className={styles.header__breadcrumb}>
+            &nbsp;&nbsp;/&nbsp;&nbsp;Inspection
+          </span>
+        </div>
+        <h1 className={styles.header__title}>{inspection.templateName}</h1>
+      </div>
       {inspection.inspectionReportURL && (
         <p className={styles.header__pdfReport}>PDF Report is available</p>
       )}

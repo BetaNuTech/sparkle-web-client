@@ -1,34 +1,25 @@
 @import '../../../styles/index.scss';
 
 .header {
+  @extend %gridMobileHeaderTopInfo;
   &__propertyName {
     @extend %gridHeaderLink;
   }
 
-  &__item {
-    &__button {
-      @extend %gridHeaderCreateButton;
-      display: inline-flex;
-      margin: 0 rem-calc(16) 0 0;
+  &__breadcrumb {
+    @extend %gridHeaderLinkMain;
+  }
 
-      &:disabled {
-        opacity: 0.5;
-      }
+  &__title {
+    @extend %gridHeaderSmallTitle;
+  }
 
-      &--dark {
-        background-color: $primary-xdark-color;
-      }
-
-      // Icon of Add button
-      svg {
-        margin-left: rem-calc(4);
-        width: rem-calc(12);
-        height: rem-calc(12);
-      }
-
-      &:last-child {
-        margin: 0;
-      }
-    }
+  &__pdfReport {
+    text-align: center;
+    color: $white;
+    background-color: $black;
+    padding: rem-calc(4) 0;
+    font-size: rem-calc(14);
+    margin: 0;
   }
 }
