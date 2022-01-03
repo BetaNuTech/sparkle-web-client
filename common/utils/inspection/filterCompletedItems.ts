@@ -1,12 +1,16 @@
 import pipe from '../pipe';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
 import inspectionConfig from '../../../config/inspections';
+import unPublishedSignatureModel from '../../models/inspections/templateItemUnpublishedSignature';
+import unPublishedPhotoDataModel from '../../models/inspections/templateItemUnpublishedPhotoData';
 
 const DEFICIENT_LIST_ELIGIBLE = inspectionConfig.deficientListEligible;
 
 // Filter items for completed
 export const filterCompletedItems = (
   items: Array<inspectionTemplateItemModel>,
+  unpublishedInspectionItemsSignature: Map<string, unPublishedSignatureModel[]>,
+  unpublishedInspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>,
   requireDeficientItemNoteAndPhoto = false
 ): Array<inspectionTemplateItemModel> =>
   pipe(
@@ -16,7 +20,13 @@ export const filterCompletedItems = (
     concatCompletedSignatureInputItems,
     concatCompletedMainNoteInputItems,
     concatIfYesNoTextInputItems
-  )([], items, Boolean(requireDeficientItemNoteAndPhoto)).filter(
+  )(
+    [],
+    items,
+    Boolean(requireDeficientItemNoteAndPhoto),
+    unpublishedInspectionItemsSignature,
+    unpublishedInspectionItemsPhotos
+  ).filter(
     (
       item: inspectionTemplateItemModel,
       index: number,
@@ -28,7 +38,9 @@ export const filterCompletedItems = (
 const concatCompletedMainInputItems = (
   src: Array<inspectionTemplateItemModel>,
   items: Array<inspectionTemplateItemModel>,
-  requireDeficientItemNoteAndPhoto: boolean
+  requireDeficientItemNoteAndPhoto: boolean,
+  unpublishedInspectionItemsSignature: Map<string, unPublishedSignatureModel[]>,
+  unpublishedInspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>
 ) =>
   src.concat(
     items.filter((item) => {
@@ -52,7 +64,10 @@ const concatCompletedMainInputItems = (
         hasRequiredDInote =
           isDeficient && item.notes ? Boolean(item.inspectorNotes) : true;
         hasRequiredDIphoto =
-          isDeficient && item.photos ? Boolean(item.photosData) : true;
+          isDeficient && item.photos
+            ? Boolean(item.photosData) ||
+              unpublishedInspectionItemsPhotos.get(item.id)?.length > 0
+            : true;
       }
 
       return (
@@ -88,12 +103,15 @@ const concatCompletedTextInputItems = (
 // Add completed signature input items
 const concatCompletedSignatureInputItems = (
   src: Array<inspectionTemplateItemModel>,
-  items: Array<inspectionTemplateItemModel>
+  items: Array<inspectionTemplateItemModel>,
+  requireDeficientItemNoteAndPhoto: boolean,
+  unpublishedInspectionItemsSignature: Map<string, unPublishedSignatureModel[]>
 ) =>
   src.concat(
     items.filter(
       (item: inspectionTemplateItemModel) =>
-        item.itemType === 'signature' && Boolean(item.signatureDownloadURL)
+        Boolean(item.signatureDownloadURL) ||
+        unpublishedInspectionItemsSignature.get(item.id)?.length > 0
     )
   );
 
