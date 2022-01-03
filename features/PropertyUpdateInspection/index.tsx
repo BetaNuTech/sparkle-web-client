@@ -354,6 +354,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     const completedItemsLength = (
       filterCompletedItems(
         inspectionItems,
+        unpublishedInspectionItemsSignature,
+        unpublishedInspectionItemsPhotos,
         inspection.template.requireDeficientItemNoteAndPhoto
       ) || []
     ).length;
