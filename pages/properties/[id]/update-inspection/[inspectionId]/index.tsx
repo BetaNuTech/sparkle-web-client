@@ -34,23 +34,17 @@ const Page: React.FC = (): ReactElement => {
   );
 
   // Fetch inspection
-  const inspectionIdFinal =
+  const finalInspectionId =
     typeof inspectionId === 'string' ? inspectionId : inspectionId[0];
   const { data: inspection, status: inspectionStatus } = useInspection(
     firestore,
-    inspectionIdFinal
+    finalInspectionId
   );
 
   // Locally stored user updates to inspection
   // NOTE: users can only update an inspection's template
-  const {
-    data: updatedTemplate,
-    status: updatedTemplateStatus
-  } = useUnpublishedTemplateUpdates(
-    inspectionIdFinal,
-    propertyId,
-    sendNotification
-  );
+  const { data: unpublishedTemplateUpdates, status: updatedTemplateStatus } =
+    useUnpublishedTemplateUpdates(finalInspectionId);
 
   // Loading State
   let isLoaded = false;
@@ -70,7 +64,7 @@ const Page: React.FC = (): ReactElement => {
     propertyStatus === 'success' && Boolean(property.name) === false;
   const isInspectionNotFound =
     inspectionStatus === 'success' && Boolean(inspection.id) === false;
-  const isInspectioNotPropertys =
+  const isInspectioNotForProperty =
     inspectionStatus === 'success' && inspection.property !== propertyId;
 
   // Property not found
@@ -86,7 +80,7 @@ const Page: React.FC = (): ReactElement => {
     notificationMsg = 'Could not load inspection.';
 
     // Inspection is not associated to the property
-  } else if (isInspectioNotPropertys) {
+  } else if (isInspectioNotForProperty) {
     isRedirectRequired = true;
     redirectUrl = `/properties/${propertyId}`;
     notificationMsg = 'Inspection does not belong this property.';
@@ -105,7 +99,7 @@ const Page: React.FC = (): ReactElement => {
           user={user}
           property={property}
           inspection={inspection}
-          unpublishedTemplateUpdates={updatedTemplate}
+          unpublishedTemplateUpdates={unpublishedTemplateUpdates}
         />
       ) : (
         <LoadingHud />

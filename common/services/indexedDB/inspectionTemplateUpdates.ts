@@ -6,10 +6,10 @@ import db from './init';
 const PREFIX = 'common: services: indexedDB:  inspectionTemplateUpdates:';
 
 // add templateUpdates data to indexed db for inspection
-export const createRecord = async (
-  template: inspectionTemplateUpdate,
+const createRecord = async (
   propertyId: string,
-  inspectionId: string
+  inspectionId: string,
+  template: inspectionTemplateUpdate
 ): Promise<any> => {
   const templateUpdatesData = {
     id: uuid(20),
@@ -28,51 +28,105 @@ export const createRecord = async (
   }
 };
 
-export const getRecord = async (
-  inspectionId: string
+interface QueryRecordParams {
+  inspection: string;
+}
+
+// Query for a record
+const queryRecord = (
+  query: QueryRecordParams
 ): Promise<unpublishedTemplateUpdate> => {
   try {
-    const templateUpdates = await db.inspectionTemplateUpdates.get({
-      inspection: inspectionId
-    });
-    return templateUpdates;
+    return db.inspectionTemplateUpdates.get(query);
   } catch (err) {
-    throw Error(`${PREFIX} getRecord: ${err}`);
+    throw Error(`${PREFIX} queryRecord: ${err}`);
   }
 };
 
 // Will return number
 // dexie table.update returns 1 if record upate suuccessfully , otherwise 0
 // https://dexie.org/docs/Table/Table.update()#return-value
-export const updateRecord = async (
-  template: inspectionTemplateUpdate,
-  templateId: string
-): Promise<number> => {
+const updateRecordTemplate = async (
+  id: string,
+  data: inspectionTemplateUpdate
+): Promise<inspectionTemplateUpdate> => {
   try {
-    const result = await db.inspectionTemplateUpdates.update(templateId, {
-      template
+    const result = await db.inspectionTemplateUpdates.update(id, {
+      template: data
     });
 
-    if (result === 1) {
-      return result;
+    if (result !== 1) {
+      throw Error(`${PREFIX} updateRecordTemplate: failed to update record`);
     }
-    throw Error(`${PREFIX} updateRecord: Data not updated in indexedDB`);
+
+    return data;
   } catch (err) {
-    throw Error(`${PREFIX} updateRecord: ${err}`);
+    throw Error(`${PREFIX} updateRecordTemplate: ${err}`);
   }
 };
 
-export const deleteRecord = async (templateUpdatesId: string): Promise<any> => {
+// Updates existing record otherwise
+// creates a new record
+const upsertRecord = async (
+  propertyId: string,
+  inspectionId: string,
+  data: inspectionTemplateUpdate
+): Promise<inspectionTemplateUpdate> => {
+  let current = null;
   try {
-    await db.inspectionTemplateUpdates.delete(templateUpdatesId);
+    current = await queryRecord({
+      inspection: inspectionId
+    });
   } catch (err) {
-    throw Error(`${PREFIX} deleteRecord: ${err}`);
+    throw Error(`${PREFIX} upsertRecord: query record failed: ${err}`);
+  }
+
+  if (current) {
+    try {
+      return updateRecordTemplate(current.id, data);
+    } catch (err) {
+      throw Error(`${PREFIX} upsertRecord: update record failed: ${err}`);
+    }
+  }
+
+  try {
+    return createRecord(propertyId, inspectionId, data);
+  } catch (err) {
+    throw Error(`${PREFIX} upsertRecord: create record failed: ${err}`);
+  }
+};
+
+// Delete record associated with
+// an inspection if it exists
+const deleteRecordForInspection = async (
+  inspectionId: string
+): Promise<void> => {
+  let current = null;
+  try {
+    current = await queryRecord({
+      inspection: inspectionId
+    });
+  } catch (err) {
+    throw Error(
+      `${PREFIX} deleteRecordForInspection: query record failed: ${err}`
+    );
+  }
+
+  // Do nothing if record
+  // cannot be found for inspection
+  if (!current) return;
+
+  try {
+    await db.inspectionTemplateUpdates.delete(current.id);
+  } catch (err) {
+    throw Error(`${PREFIX} deleteRecordForInspection: ${err}`);
   }
 };
 
 export default {
   createRecord,
-  getRecord,
-  updateRecord,
-  deleteRecord
+  queryRecord,
+  upsertRecord,
+  updateRecordTemplate,
+  deleteRecordForInspection
 };

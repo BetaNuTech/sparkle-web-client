@@ -10,12 +10,9 @@ const PREFIX =
 
 interface result {
   saveUnpublishedInspectionSignature(file: string, itemId: string): void;
-  getUnpublishedInspectionSignature(): void;
+  reloadSignatures(): void;
   unpublishedInspectionItemsSignature: Map<string, unPublishedSignatureModel[]>;
   unpublishedSelectedInspectionItemsSignature: unPublishedSignatureModel[];
-  removeUnpublishedInspectionItemSignature(
-    signatureItems: Array<inspectionTemplateItemModal>
-  ): Promise<any>;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -125,28 +122,6 @@ export default function useUnpublishedInspectionSignature(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspectionId, selectedInspectionItem]);
 
-  // remove items signatures from local db
-  const removeUnpublishedInspectionItemSignature = async (
-    signatureItems: Array<inspectionTemplateItemModal>
-  ) => {
-    const deleteSignatureIds = [];
-    signatureItems.forEach((signature) => {
-      const unpublishedSignature = unpublishedInspectionItemsSignature.get(
-        signature.id
-      );
-      if (unpublishedSignature && unpublishedSignature[0]) {
-        deleteSignatureIds.push(unpublishedSignature[0].id);
-      }
-    });
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      await inspectionSignature.deleteMultipleRecords(deleteSignatureIds);
-      return getUnpublishedInspectionSignature();
-    } catch (err) {
-      handleErrorResponse(err);
-    }
-  };
-
   // Request all signatures on load
   // and when selected item changes
   useEffect(() => {
@@ -156,9 +131,8 @@ export default function useUnpublishedInspectionSignature(
 
   return {
     saveUnpublishedInspectionSignature,
-    getUnpublishedInspectionSignature,
+    reloadSignatures: getUnpublishedInspectionSignature,
     unpublishedInspectionItemsSignature,
-    unpublishedSelectedInspectionItemsSignature,
-    removeUnpublishedInspectionItemSignature
+    unpublishedSelectedInspectionItemsSignature
   };
 }

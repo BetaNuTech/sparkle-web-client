@@ -3,7 +3,6 @@ import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import inspectionModel from '../../common/models/inspection';
-import inspectionTemplateUpdateModel from '../../common/models/inspections/templateUpdate';
 import userModel from '../../common/models/user';
 import copyTextToClipboard from '../../common/utils/copyTextToClipboard';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
@@ -13,11 +12,10 @@ import useInspectionSectionSort from './hooks/useInspectionSections';
 import Sections from './Sections';
 import useInspectionItems from './hooks/useInspectionItems';
 import inspectionTemplateItemModel from '../../common/models/inspectionTemplateItem';
+import unpublishedTemplateUpdatesModel from '../../common/models/inspections/unpublishedTemplateUpdate';
 import useUpdateTemplate from './hooks/useUpdateTemplate';
-import useUnpublishedTemplateUpdates from './hooks/useUnpublishedTemplateUpdates';
 import useUnpublishInspectionItemPhotos from './hooks/useUnpublishedInspectionItemPhotos';
 import useUnpublishedInspectionSignature from './hooks/useUnpublishedInspectionItemSignature';
-import useInspectionUpload from './hooks/useInspectionUpload';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import MobileHeader from './MobileHeader';
@@ -33,7 +31,7 @@ import PhotosModal from '../../common/InspectionItemPhotosModal';
 interface Props {
   user: userModel;
   inspection: inspectionModel;
-  unpublishedTemplateUpdates: inspectionTemplateUpdateModel;
+  unpublishedTemplateUpdates: unpublishedTemplateUpdatesModel;
   property: propertyModel;
   isOnline?: boolean;
   isStaging?: boolean;
@@ -51,7 +49,15 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   user,
   forceVisible
 }) => {
+  // User notifications setup
+  /* eslint-disable */
+  const sendNotification = notifications.createPublisher(useNotifications());
+
   const {
+    isPublishing,
+    isAdminEditModeEnabled,
+    hasUpdates,
+    updates,
     updateMainInputSelection,
     updateMainInputNotes,
     updateTextInputValue,
@@ -61,47 +67,32 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     updateInspectorNotes,
     enableAdminEditMode,
     disableAdminEditMode,
-    isAdminEditModeEnabled,
-    setItemSignatureDownloadURL
-  } = useUpdateTemplate(unpublishedTemplateUpdates, inspection.template);
+    destroyUpdates,
+    publish
+  } = useUpdateTemplate(
+    property.id,
+    inspection.id,
+    unpublishedTemplateUpdates,
+    inspection.template,
+    sendNotification
+  );
 
   // Disable admin edit mode when user
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [
-    isVisibleOneActionNotesModal,
-    setIsVisibleOneActionNotesModal
-  ] = useState(false);
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleAttachmentNotesModal,
-    setIsVisibleAttachmentNotesModal
-  ] = useState(false);
+  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleSignatureInputModal,
-    setIsVisibleSignatureInputModal
-  ] = useState(false);
+  const [isVisibleSignatureInputModal, setIsVisibleSignatureInputModal] =
+    useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
-
-  // User notifications setup
-  /* eslint-disable */
-  const sendNotification = notifications.createPublisher(useNotifications());
-
-  const {
-    setLatestTemplateUpdates,
-    clearUnpublishedTemplateUpdates,
-    hasUpdates
-  } = useUnpublishedTemplateUpdates(
-    inspection.id,
-    property.id,
-    sendNotification,
-    unpublishedTemplateUpdates
-  );
 
   const {
     addUnpublishedInspectionItemPhotos,
@@ -119,7 +110,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     unpublishedInspectionItemsSignature,
     unpublishedSelectedInspectionItemsSignature,
     saveUnpublishedInspectionSignature,
-    removeUnpublishedInspectionItemSignature
+    reloadSignatures
   } = useUnpublishedInspectionSignature(
     sendNotification,
     selectedInspectionItem,
@@ -152,7 +143,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     item: inspectionTemplateItemModel,
     selectionIndex: number
   ) => {
-    setLatestTemplateUpdates(updateMainInputSelection(item.id, selectionIndex));
+    updateMainInputSelection(item.id, selectionIndex);
   };
 
   // User updates text item value
@@ -163,7 +154,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     item: inspectionTemplateItemModel,
     textInputValue: string
   ) => {
-    setLatestTemplateUpdates(updateTextInputValue(item.id, textInputValue));
+    updateTextInputValue(item.id, textInputValue);
   };
 
   // Add inspector notes updates to
@@ -171,9 +162,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const onInspectorNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setLatestTemplateUpdates(
-      updateInspectorNotes(selectedInspectionItem.id, event.target.value)
-    );
+    updateInspectorNotes(selectedInspectionItem.id, event.target.value);
   };
 
   const onAddSection = (
@@ -182,7 +171,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   ) => {
     event.preventDefault();
     event.stopPropagation();
-    setLatestTemplateUpdates(addSection(sectionId));
+    addSection(sectionId);
   };
 
   const onRemoveSection = (
@@ -191,7 +180,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   ) => {
     event.preventDefault();
     event.stopPropagation();
-    setLatestTemplateUpdates(removeSection(sectionId));
+    removeSection(sectionId);
   };
 
   // Add main and text input updates
@@ -211,7 +200,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   };
 
   const onItemIsNAChange = (itemId: string, itemIsNA: boolean) => {
-    setLatestTemplateUpdates(setItemIsNA(itemId, itemIsNA));
+    setItemIsNA(itemId, itemIsNA);
   };
 
   // Add main input note updates to
@@ -219,56 +208,31 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const onOneActionNotesChange = (
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) => {
-    setLatestTemplateUpdates(
-      updateMainInputNotes(selectedInspectionItem.id, event.target.value)
-    );
+    updateMainInputNotes(selectedInspectionItem.id, event.target.value);
   };
 
   const onEnableAdminEditMode = () => {
     enableAdminEditMode(user);
   };
 
-  // Add signature updates to
-  // local, unpublised, changes
-  const changeItemsSignature = async (
-    itemId: string,
-    signatureDownloadURL: string
-  ): Promise<inspectionTemplateUpdateModel> => {
-    return await setLatestTemplateUpdates(
-      setItemSignatureDownloadURL(itemId, signatureDownloadURL)
-    );
-  };
-
-  // hook for inspectionUpload
-  const { onInspectionUpload, isLoading: isPublishing } = useInspectionUpload(
-    inspection.id,
-    sendNotification,
-    changeItemsSignature,
-    removeUnpublishedInspectionItemSignature
-  );
-
   // Publish local changes and on success
   // clear all local changes
   const onSaveInspection = async () => {
-    await onInspectionUpload(
-      unpublishedInspectionItemsSignature,
-      unpublishedTemplateUpdates
-    );
-    clearUnpublishedTemplateUpdates();
+    try {
+      await publish(unpublishedInspectionItemsSignature);
+      destroyUpdates();
+    } catch (err) {}
+
+    reloadSignatures();
+    // TODO reload item photos state
   };
 
-  const {
-    sortedTemplateSections,
-    collapsedSections,
-    onSectionCollapseToggle
-  } = useInspectionSectionSort(
-    inspection.template.sections,
-    unpublishedTemplateUpdates
-  );
+  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
+    useInspectionSectionSort(inspection.template.sections, updates);
 
   // Items grouped by their section
   const { sectionItems, inspectionItems } = useInspectionItems(
-    unpublishedTemplateUpdates,
+    updates,
     inspection.template
   );
 
@@ -368,6 +332,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   const hasUnpublishedUpdates =
     hasUpdates || unpublishedInspectionItemsSignature.size > 0;
+
   return (
     <>
       {isTablet || isMobile ? (

@@ -1,154 +1,48 @@
-import { renderHook } from '@testing-library/react-hooks';
 import sinon from 'sinon';
+import { renderHook } from '@testing-library/react-hooks';
 import { act, waitFor } from '@testing-library/react';
 import useUnpublishedTemplateUpdates from './useUnpublishedTemplateUpdates';
 import inspectionTemplateModel from '../../../common/models/inspectionTemplate';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
-import {
-  unselectedCheckmarkItem,
-  unselectedThumbsItem
-} from '../../../__mocks__/inspections';
+import unpublishedTemplateUpdatesModel from '../../../common/models/inspections/unpublishedTemplateUpdate';
+import { unselectedThumbsItem } from '../../../__mocks__/inspections';
 import inspectionTemplateUpdates from '../../../common/services/indexedDB/inspectionTemplateUpdates';
 
+const PROPERTY_ID = '123';
+const INSPECTION_ID = '456';
+
 describe('Unit | Features | Property Update Inspection | Hooks | Use Unpublished Template Updates', () => {
-  test('should set when inspection template has unpublished updates', async () => {
-    const sendNotification = sinon.spy();
-    const expected = true;
+  afterEach(() => sinon.restore());
 
-    const updatedTemplate = {
-      items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 0,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel
-      }
-    } as inspectionTemplateModel;
-    const { result } = renderHook(() =>
-      useUnpublishedTemplateUpdates(
-        'inspection-1',
-        'property-1',
-        sendNotification
-      )
-    );
-
-    await act(async () => {
-      await result.current.setLatestTemplateUpdates(updatedTemplate);
-    });
-
-    const actual = result.current.hasUpdates;
-    expect(actual).toEqual(expected);
-  });
-
-  test('should request to add template update in local indexed db for unpublished updates', async () => {
-    const sendNotification = sinon.spy();
-    const expected = true;
-    const createRecord = sinon.spy(inspectionTemplateUpdates, 'createRecord');
-
-    const updatedTemplate = {
-      items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 0,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel
-      }
-    } as inspectionTemplateModel;
-    const { result } = renderHook(() =>
-      useUnpublishedTemplateUpdates(
-        'inspection-1',
-        'property-1',
-        sendNotification
-      )
-    );
-
-    await act(async () => {
-      await result.current.setLatestTemplateUpdates(updatedTemplate);
-    });
-    await waitFor(() => createRecord.called);
-
-    const actual = createRecord.called;
-    expect(actual).toEqual(expected);
-  });
-
-  test('should request to update inspection template update in local indexed db', async () => {
-    const sendNotification = sinon.spy();
-    const expected = true;
-    const updateRecord = sinon.spy(inspectionTemplateUpdates, 'updateRecord');
-
-    const updatedTemplate = {
-      items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 0,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel
-      }
-    } as inspectionTemplateModel;
-
+  test('should load an existing unpublished inspection template record', async () => {
     const updatedTemplateWithThumbsItem = {
       items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 0,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel,
         [unselectedThumbsItem.id]: {
           mainInputSelection: 1,
           mainInputSelected: true
         } as inspectionTemplateItemModel
       }
     } as inspectionTemplateModel;
+    const expected = {
+      id: 'abc',
+      property: PROPERTY_ID,
+      inspection: INSPECTION_ID,
+      template: updatedTemplateWithThumbsItem
+    } as unpublishedTemplateUpdatesModel;
+
+    // Stub requests
+    sinon.stub(inspectionTemplateUpdates, 'queryRecord').resolves(expected);
+
     const { result } = renderHook(() =>
-      useUnpublishedTemplateUpdates(
-        'inspection-1',
-        'property-1',
-        sendNotification
-      )
+      useUnpublishedTemplateUpdates(INSPECTION_ID)
     );
 
     await act(async () => {
-      await result.current.setLatestTemplateUpdates(updatedTemplate);
+      await waitFor(() => result.current.status === 'success');
+      await new Promise((resolve) => setTimeout(resolve, 100));
     });
 
-    await act(async () => {
-      result.current.setLatestTemplateUpdates(updatedTemplateWithThumbsItem);
-    });
-
-    await waitFor(() => updateRecord.called);
-
-    const actual = updateRecord.called;
-    expect(actual).toEqual(expected);
-  });
-
-  test('should request to remove inspection template update from local indexed db', async () => {
-    const sendNotification = sinon.spy();
-    const expected = true;
-    const deleteRecord = sinon.spy(inspectionTemplateUpdates, 'deleteRecord');
-
-    const updatedTemplate = {
-      items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 0,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel
-      }
-    } as inspectionTemplateModel;
-    const { result } = renderHook(() =>
-      useUnpublishedTemplateUpdates(
-        'inspection-1',
-        'property-1',
-        sendNotification
-      )
-    );
-
-    await act(async () => {
-      await result.current.setLatestTemplateUpdates(updatedTemplate);
-    });
-
-    await act(async () => {
-      result.current.setLatestTemplateUpdates({});
-    });
-
-    await waitFor(() => deleteRecord.called);
-
-    const actual = deleteRecord.called;
+    const actual = result.current.data || {};
     expect(actual).toEqual(expected);
   });
 });

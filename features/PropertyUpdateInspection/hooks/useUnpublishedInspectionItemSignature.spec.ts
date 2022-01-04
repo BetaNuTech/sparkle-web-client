@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import { act, waitFor } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import { selectedCheckmarkItem } from '../../../__mocks__/inspections';
 import inspectionSignature from '../../../common/services/indexedDB/inspectionSignature';
@@ -21,7 +21,7 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     );
 
     await act(async () => {
-      await result.current.getUnpublishedInspectionSignature();
+      await result.current.reloadSignatures();
     });
     const actual = spyFunc.called;
     expect(actual).toEqual(expected);
@@ -46,41 +46,6 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     await act(async () => {
       await result.current.saveUnpublishedInspectionSignature(file, 'item-1');
     });
-    const actual = spyFunc.called;
-    expect(actual).toEqual(expected);
-  });
-
-  test('should request to delete a signatures to the local database', async () => {
-    const sendNotification = sinon.spy();
-    const expected = true;
-    const signatureData = {
-      id: 'signature-1',
-      inspection: 'inspection-1',
-      item: 'item-1',
-      signature: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-    };
-    const queryRecords = sinon
-      .stub(inspectionSignature, 'queryRecords')
-      .resolves([signatureData]);
-    const spyFunc = sinon.spy(inspectionSignature, 'deleteMultipleRecords');
-    const { result } = renderHook(() =>
-      useUnpublishedInspectionItemSignature(
-        sendNotification,
-        selectedCheckmarkItem,
-        'inspection-1'
-      )
-    );
-
-    await waitFor(() => queryRecords.called);
-
-    const signatureItems = [{ signatureDownloadURL: '', id: 'item-1' }];
-
-    await act(async () => {
-      await result.current.removeUnpublishedInspectionItemSignature(
-        signatureItems
-      );
-    });
-
     const actual = spyFunc.called;
     expect(actual).toEqual(expected);
   });

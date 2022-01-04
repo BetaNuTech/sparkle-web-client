@@ -1,119 +1,111 @@
-import sinon from 'sinon';
 import inspectionTemplateUpdates from './inspectionTemplateUpdates';
 import inspectionTemplateItemModel from '../../models/inspectionTemplateItem';
 import inspectionTemplateModel from '../../models/inspectionTemplate';
-import {
-  unselectedCheckmarkItem,
-  unselectedThumbsItem
-} from '../../../__mocks__/inspections';
+import { unselectedCheckmarkItem } from '../../../__mocks__/inspections';
+
+const PROPERTY_ID = '123';
+const INSPECTION_ID = '456';
+const UPDATED_TEMPLATE = Object.freeze({
+  items: {
+    [unselectedCheckmarkItem.id]: {
+      mainInputSelection: 0,
+      mainInputSelected: true
+    } as inspectionTemplateItemModel
+  }
+}) as inspectionTemplateModel;
 
 describe('Unit | Services | indexedDB | Inspection Template Updates', () => {
-  afterEach(() => sinon.restore());
+  afterEach(() =>
+    inspectionTemplateUpdates.deleteRecordForInspection(INSPECTION_ID)
+  );
 
-  test('should call get and return template updates data for inspection from indexedDB ', async () => {
+  test('should be able to lookup a record created for an inspection', async () => {
     let result = null;
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.getRecord('inspection-1');
-    } catch (err) {
-      result = err;
-    }
-    expect(result).toBeUndefined();
+    const expected = INSPECTION_ID;
+
+    await inspectionTemplateUpdates.createRecord(
+      PROPERTY_ID,
+      INSPECTION_ID,
+      UPDATED_TEMPLATE
+    );
+
+    result = await inspectionTemplateUpdates.queryRecord({
+      inspection: INSPECTION_ID
+    });
+
+    const actual = result ? result.inspection : '';
+    expect(actual).toEqual(expected);
   });
 
-  test('should call method to add inspection template update and return last inserted id', async () => {
-    const updatedTemplate = {
-      items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 0,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel
-      }
-    } as inspectionTemplateModel;
+  test('should create a new record when it does not exist yet', async () => {
+    const expected = INSPECTION_ID;
+
+    await inspectionTemplateUpdates.upsertRecord(
+      PROPERTY_ID,
+      INSPECTION_ID,
+      UPDATED_TEMPLATE
+    );
+
     let result = null;
     try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.createRecord(
-        updatedTemplate,
-        'property-1',
-        'inspection-1'
-      );
+      result = await inspectionTemplateUpdates.queryRecord({
+        inspection: INSPECTION_ID
+      });
     } catch (err) {
       result = err;
     }
 
-    expect(result).toBeTruthy();
-    expect(result).toHaveLength(20);
+    const actual = result ? result.inspection : '';
+    expect(actual).toEqual(expected);
   });
 
-  test('should return template updates data added in indexed db', async () => {
-    let result = null;
+  test('should update a record when it already exists', async () => {
+    const expected = UPDATED_TEMPLATE;
 
+    await inspectionTemplateUpdates.createRecord(
+      PROPERTY_ID,
+      INSPECTION_ID,
+      {}
+    );
+
+    await inspectionTemplateUpdates.upsertRecord(
+      PROPERTY_ID,
+      INSPECTION_ID,
+      UPDATED_TEMPLATE
+    );
+
+    let result = null;
     try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.getRecord('inspection-1');
+      result = await inspectionTemplateUpdates.queryRecord({
+        inspection: INSPECTION_ID
+      });
     } catch (err) {
       result = err;
     }
-    expect(result.inspection).toEqual('inspection-1');
+
+    const actual = result ? result.template : null;
+    expect(actual).toEqual(expected);
   });
 
-  test('should update template updates record in indexed db', async () => {
-    const updatedTemplate = {
-      items: {
-        [unselectedCheckmarkItem.id]: {
-          mainInputSelection: 1,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel,
-        [unselectedThumbsItem.id]: {
-          mainInputSelection: 1,
-          mainInputSelected: true
-        } as inspectionTemplateItemModel
-      }
-    } as inspectionTemplateModel;
+  test('should delete a record for a given inspection', async () => {
+    let actual = null;
+    const expected = undefined;
 
-    const expected = 2;
+    // Create
+    await inspectionTemplateUpdates.createRecord(
+      PROPERTY_ID,
+      INSPECTION_ID,
+      {}
+    );
 
-    let result = null;
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.getRecord('inspection-1');
-    } catch (err) {
-      result = err;
-    }
-    // eslint-disable-next-line import/no-named-as-default-member
-    await inspectionTemplateUpdates.updateRecord(updatedTemplate, result.id);
+    // Delete
+    await inspectionTemplateUpdates.deleteRecordForInspection(INSPECTION_ID);
 
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.getRecord('inspection-1');
-    } catch (err) {
-      result = err;
-    }
+    // Lookup
+    actual = await inspectionTemplateUpdates.queryRecord({
+      inspection: INSPECTION_ID
+    });
 
-    const itemsCount = Object.keys(result.template.items || {}).length;
-    expect(result.inspection).toEqual('inspection-1');
-    expect(itemsCount).toEqual(expected);
-  });
-
-  test('should delete template update record previously added in indexed db', async () => {
-    let result = null;
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.getRecord('inspection-1');
-    } catch (err) {
-      result = err;
-    }
-
-    // eslint-disable-next-line import/no-named-as-default-member
-    await inspectionTemplateUpdates.deleteRecord(result.id);
-
-    try {
-      // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionTemplateUpdates.getRecord('inspection-1');
-    } catch (err) {
-      result = err;
-    }
-    expect(result).toBeUndefined();
+    expect(actual).toEqual(expected);
   });
 });

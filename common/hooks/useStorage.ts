@@ -7,6 +7,7 @@ export type StorageResult = {
   fileUrl: string;
   fileDestination: string;
 };
+
 interface useStorageResult {
   uploadFileToStorage(destination: string, file: File): Promise<StorageResult>;
   uploadBase64FileToStorage(
@@ -65,6 +66,7 @@ export default function useStorage(): useStorageResult {
   const uploadBase64FileToStorage = (destination: string, base64: string) =>
     new Promise<StorageResult>((resolve, reject) => {
       let uploadTask = null;
+
       try {
         uploadTask = storageApi.createBase64UploadTask(destination, base64);
       } catch (err) {
