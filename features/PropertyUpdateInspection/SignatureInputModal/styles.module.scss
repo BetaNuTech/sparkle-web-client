@@ -17,6 +17,20 @@
       z-index: 2;
       font-size: rem-calc(16);
     }
+
+    &__warning {
+      background-color: $warning-color;
+      padding: $global-sm-padding;
+      font-size: rem-calc(12);
+      display: flex;
+      justify-content: center;
+
+      // warning icon
+      svg {
+        width: rem-calc(14);
+        height: rem-calc(14);
+      }
+    }
   }
 
   &__content {
@@ -31,7 +45,7 @@
     max-width: rem-calc(600);
     left: 0;
     right: 0;
-    bottom: rem-calc(45);
+    bottom: rem-calc(77);
     margin: 0 auto;
     z-index: 10;
     cursor: pointer;
@@ -87,8 +101,8 @@
       border-width: 0px;
     }
 
+    // place undo button in top right of container
     &__undo {
-      // place in top right of container
       right: rem-calc(-5);
       top: rem-calc(-7);
       position: absolute;
@@ -102,6 +116,14 @@
           fill: $gray-med-dark;
         }
       }
+    }
+
+    // place clear button in left of container
+    &__clear {
+      left: rem-calc(-5);
+      position: absolute;
+      background: none;
+      border-width: 0;
     }
   }
 

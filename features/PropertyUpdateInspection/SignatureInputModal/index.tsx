@@ -1,18 +1,19 @@
 import clsx from 'clsx';
-import { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, FunctionComponent } from 'react';
 import SignaturePad from 'react-signature-canvas';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import unPublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import resizeStream from '../../../common/utils/resizeStream';
 import UndoIcon from '../../../public/icons/sparkle/undo.svg';
+import WarningIcon from '../../../public/icons/sparkle/warning.svg';
 import breakpoints from '../../../config/breakpoints';
 import IndexedDBStorage from '../../../common/IndexedDBStorage';
 import baseStyles from '../../../common/Modal/styles.module.scss';
+import globalEvents from '../../../common/utils/globalEvents';
 import styles from './styles.module.scss';
 
 interface Props extends ModalProps {
-  onClose: () => void;
   selectedInspectionItem: inspectionTemplateItemModel;
   saveSignature(signatureData: string, itemId: string): void;
   inspectionItemsSignature: unPublishedSignatureModel[];
@@ -28,7 +29,6 @@ const CANVAS_HEIGHT_OFFSET = 0.3;
 const CANVAS_RESOLUTION_RATIO = 6;
 
 const SignatureInputModal: FunctionComponent<Props> = ({
-  onClose,
   selectedInspectionItem,
   saveSignature,
   inspectionItemsSignature
@@ -45,7 +45,9 @@ const SignatureInputModal: FunctionComponent<Props> = ({
   const canvasRef = useRef(null);
 
   useEffect(() => {
-    const subscription = resizeStream.subscribe({ next: setCanvasDimensions });
+    const subscription = resizeStream.subscribe({
+      next: setCanvasDimensions
+    });
 
     // Initial canvas sizing
     if (typeof window !== 'undefined') {
@@ -100,14 +102,32 @@ const SignatureInputModal: FunctionComponent<Props> = ({
     setSignatureData(fromData);
   };
 
+  // clear all user added signature data
+  const onClear = () => {
+    canvasRef.current.fromData([]);
+    setSignatureData([]);
+  };
+
   const onAddedStroke = () => {
     setSignatureData([...canvasRef.current.toData()]);
   };
 
-  const onSaveSignature = () => {
-    const signDataURL = canvasRef.current.toDataURL();
-    saveSignature(signDataURL, selectedInspectionItem.id);
+  // Save any available user signature
+  // and call on close callback
+  const onCloseModal = () => {
+    if (hasSignData) {
+      const signDataURL = canvasRef.current.toDataURL();
+      saveSignature(signDataURL, selectedInspectionItem.id);
+    }
   };
+
+  // Complete on close actions when
+  // global modal close event fires
+  useEffect(() => {
+    const unsubscribe = globalEvents.subscribe('modalClose', onCloseModal);
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasSignData]); // needed so callback as latest data
 
   const signatureDownloadURL =
     (inspectionItemsSignature.length > 0 &&
@@ -127,26 +147,19 @@ const SignatureInputModal: FunctionComponent<Props> = ({
       >
         <h4 className={baseStyles.modal__heading}>SIGNATURE</h4>
       </header>
+      {signatureDownloadURL && hasSignData && (
+        <h6 className={styles.SignatureInputModal__modal__warning}>
+          <WarningIcon />
+          &nbsp; You are about to replace the existing signature
+        </h6>
+      )}
       <button
         className={baseStyles.modal__closeButton}
-        onClick={onClose}
+        data-modal="trigger-close"
         data-testid="signature-input-modal-close"
       >
         ×
       </button>
-
-      {hasSignData && (
-        <button
-          className={clsx(
-            baseStyles.modal__closeButton,
-            styles.SignatureInputModal__modal__saveButton
-          )}
-          onClick={onSaveSignature}
-          data-testid="signature-input-modal-save"
-        >
-          SAVE
-        </button>
-      )}
 
       <div className={baseStyles.modal__main}>
         <div
@@ -188,6 +201,20 @@ const SignatureInputModal: FunctionComponent<Props> = ({
             />
 
             <div className={styles.SignatureInputModal__canvas__controls}>
+              {/* it will show button to clear all data if its not in preview mode and it has signature data */}
+              {hasSignData && !isPreview && (
+                <button
+                  className={clsx(
+                    styles.SignatureInputModal__canvas__clear,
+                    styles.SignatureInputModal__canvas__preview
+                  )}
+                  onClick={onClear}
+                >
+                  Clear
+                </button>
+              )}
+
+              {/* it will show button for preview if item have signature */}
               {signatureDownloadURL && (
                 <button
                   className={styles.SignatureInputModal__canvas__preview}
@@ -197,6 +224,8 @@ const SignatureInputModal: FunctionComponent<Props> = ({
                   {isPreview ? 'Hide' : 'Preview'} Current
                 </button>
               )}
+
+              {/* it will show undo button if its not in preview mode and it has signature data */}
               {hasSignData && !isPreview && (
                 <button
                   className={styles.SignatureInputModal__canvas__undo}

@@ -1,7 +1,9 @@
+import sinon from 'sinon';
 import util from './publishSignatures';
 import { unpublishedSignatureEntry } from '../../../__mocks__/inspections';
 import deepClone from '../../../__tests__/helpers/deepClone';
 import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
+import signatureDb from '../../../common/services/indexedDB/inspectionSignature';
 import { StorageResult } from '../../../common/hooks/useStorage';
 
 const INSPECTION_ID = '123';
@@ -22,6 +24,8 @@ const SIGNATURE_TWO = Object.freeze({
 } as unpublishedSignatureModel);
 
 describe('Unit | Features | Property Update Inspection | Utils | Publish Signatures', () => {
+  afterEach(() => sinon.restore());
+
   test('it uploads all signatures data to storage', async () => {
     const signatures = [SIGNATURE_ONE, SIGNATURE_TWO].map(
       (sig) => deepClone(sig) as unpublishedSignatureModel
@@ -66,6 +70,52 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Signatu
     };
 
     const { errors } = await util.upload(INSPECTION_ID, signatures, onUpload);
+
+    const actual = errors.map((err) => err.toString());
+    expect(actual).toEqual(expected);
+  });
+
+  test('it removes all signatures previously uploaded to storage from local database', async () => {
+    const signatures = [SIGNATURE_ONE, SIGNATURE_TWO].map((sig) => {
+      const clone = deepClone(sig) as unpublishedSignatureModel;
+      clone.signatureDownloadURL = `inspectionItemImages/${sig.inspection}/${sig.item}/${sig.createdAt}.png`;
+      return clone;
+    });
+    const expected = signatures.map(({ id }) => id);
+
+    // Stub delete
+    const deleteRecord = sinon
+      .stub(signatureDb, 'deleteMultipleRecords')
+      .resolves();
+    await util.removePublished(signatures);
+
+    const actual = [];
+    const firstArg = (deleteRecord.firstCall || { args: [['']] }).args[0][0];
+    const secondArg = (deleteRecord.secondCall || { args: [['']] }).args[0][0];
+    actual.push(firstArg, secondArg);
+    expect(actual).toEqual(expected);
+  });
+
+  test('it collects errors for any failed signature removals', async () => {
+    const signatures = [SIGNATURE_ONE, SIGNATURE_TWO].map((sig) => {
+      const clone = deepClone(sig) as unpublishedSignatureModel;
+      clone.signatureDownloadURL = `inspectionItemImages/${sig.inspection}/${sig.item}/${sig.createdAt}.png`;
+      return clone;
+    });
+    const badSig = signatures[1];
+    const expected = [
+      // eslint-disable-next-line max-len
+      `Error: features: PropertyUpdateInspection: utils: publishSignatures: removePublished: failed to remove signature: "${badSig.id}" for inspection: "${badSig.inspection}" item: "${badSig.item}": Error: fail`
+    ];
+
+    // Stub delete
+    sinon
+      .stub(signatureDb, 'deleteMultipleRecords')
+      .onCall(0)
+      .resolves()
+      .onCall(1)
+      .rejects(Error('fail'));
+    const { errors } = await util.removePublished(signatures);
 
     const actual = errors.map((err) => err.toString());
     expect(actual).toEqual(expected);

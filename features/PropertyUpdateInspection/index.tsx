@@ -307,7 +307,6 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   const saveSignature = async (signatureData: string, itemId: string) => {
     saveUnpublishedInspectionSignature(signatureData, itemId);
-    closeSignatureInputModal();
   };
 
   const onRemoveItemsUnpublishedPhoto = (unpublishedPhotoId: string) => {
