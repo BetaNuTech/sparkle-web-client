@@ -105,6 +105,17 @@ const ItemListSwipable: FunctionComponent<Props> = ({
                 {item.itemType === 'signature' ? 'Signature' : item.title}
               </div>
               <div className={styles['section__list__item__row--mainInput']}>
+                {showAttachment && (
+                  <Attachment
+                    photos={item.photos}
+                    notes={item.notes}
+                    photosData={item.photosData}
+                    unPublishedPhotosDataCount={unPublishedPhotosDataCount}
+                    inspectorNotes={item.inspectorNotes}
+                    onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
+                    onClickPhotos={() => onClickPhotos(item)}
+                  />
+                )}
                 <InspectionItemControls
                   inputType={item.mainInputType || item.itemType}
                   selected={item.mainInputSelected}
@@ -118,17 +129,6 @@ const ItemListSwipable: FunctionComponent<Props> = ({
                   onClickSignatureInput={() => onClickSignatureInput(item)}
                   isDisabled={!canEdit}
                 />
-                {showAttachment && (
-                  <Attachment
-                    photos={item.photos}
-                    notes={item.notes}
-                    photosData={item.photosData}
-                    unPublishedPhotosDataCount={unPublishedPhotosDataCount}
-                    inspectorNotes={item.inspectorNotes}
-                    onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
-                    onClickPhotos={() => onClickPhotos(item)}
-                  />
-                )}
               </div>
             </div>
             <div
