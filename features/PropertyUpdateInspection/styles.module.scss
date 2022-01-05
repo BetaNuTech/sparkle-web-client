@@ -163,12 +163,6 @@
           flex: 1 1 auto;
           gap: $global-md-padding;
 
-          // Expand main input items
-          // to fill available space
-          ul:nth-child(1) {
-            flex: 1 1 auto;
-          }
-
           &Grid {
             gap: $global-mlg-padding;
             flex-direction: row;
