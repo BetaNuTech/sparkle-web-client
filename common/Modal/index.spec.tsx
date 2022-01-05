@@ -34,7 +34,7 @@ describe('Unit | Common | Modal', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('invokes on close action when overlay is clicked', () => {
+  it('invokes on close action when overlay is clicked', async () => {
     const expected = true;
     const isVisible = true;
     const onClose = sinon.spy();
@@ -43,6 +43,9 @@ describe('Unit | Common | Modal', () => {
     const overlay = screen.queryByTestId('modal-overlay');
 
     userEvent.click(overlay);
+
+    // wait for 100 ms as we are triggring onClose after 100ms
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     const actual = onClose.called;
     expect(actual).toEqual(expected);

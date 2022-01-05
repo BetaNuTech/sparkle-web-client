@@ -1,5 +1,6 @@
 const PREFIX = 'sparkle';
 
 export default {
-  visibilityForceCheck: `${PREFIX}:visibilityForceCheck`
+  visibilityForceCheck: `${PREFIX}:visibilityForceCheck`,
+  modalClose: `${PREFIX}:modalClose`
 };
