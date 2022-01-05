@@ -36,6 +36,8 @@ interface Props {
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
   canEdit: boolean;
   isMobile: boolean;
+  isIncompleteRevealed: boolean;
+  completedItems: inspectionTemplateItemModel[];
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -55,7 +57,9 @@ const Sections: FunctionComponent<Props> = ({
   inspectionItemsPhotos,
   inspectionItemsSignature,
   canEdit,
-  isMobile
+  isMobile,
+  isIncompleteRevealed,
+  completedItems
 }) => {
   if (sections && sections.length > 0) {
     return (
@@ -81,6 +85,8 @@ const Sections: FunctionComponent<Props> = ({
             inspectionItemsSignature={inspectionItemsSignature}
             canEdit={canEdit}
             isMobile={isMobile}
+            isIncompleteRevealed={isIncompleteRevealed}
+            completedItems={completedItems}
           />
         ))}
       </ul>

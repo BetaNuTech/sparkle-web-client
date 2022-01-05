@@ -1,5 +1,5 @@
 import 'firebase/firestore';
-import { ReactElement } from 'react';
+import { ReactElement, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useUser, useFirestore } from 'reactfire';
 import useProperty from '../../../../../common/hooks/useProperty';
@@ -17,6 +17,7 @@ const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
+  const [isIncompleteRevealed, setIsIncompleteRevealed] = useState(false);
   // Fetch User
   const { data: authUser } = useUser();
   const router = useRouter();
@@ -92,6 +93,17 @@ const Page: React.FC = (): ReactElement => {
     router.push(redirectUrl);
   }
 
+  // Enter incomplete revealed mode when
+  // inspection has prior published updates
+  //
+  // NOTE: use effect is necessary here to prevent
+  //       this mode from activating after a user saves,
+  //       as this mode only activates per page entry
+  useEffect(() => {
+    setIsIncompleteRevealed(inspection?.creationDate !== inspection?.updatedAt);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finalInspectionId, isLoaded]);
+
   return (
     <MainLayout>
       {isLoaded ? (
@@ -100,6 +112,7 @@ const Page: React.FC = (): ReactElement => {
           property={property}
           inspection={inspection}
           unpublishedTemplateUpdates={unpublishedTemplateUpdates}
+          isIncompleteRevealed={isIncompleteRevealed}
         />
       ) : (
         <LoadingHud />

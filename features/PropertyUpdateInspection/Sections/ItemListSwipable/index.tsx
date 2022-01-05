@@ -29,6 +29,8 @@ interface Props {
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
   canEdit: boolean;
+  completedItems: inspectionTemplateItemModel[];
+  isIncompleteRevealed: boolean;
 }
 
 const ItemListSwipable: FunctionComponent<Props> = ({
@@ -42,7 +44,9 @@ const ItemListSwipable: FunctionComponent<Props> = ({
   onClickPhotos,
   inspectionItemsPhotos,
   inspectionItemsSignature,
-  canEdit
+  canEdit,
+  completedItems,
+  isIncompleteRevealed
 }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const swipeContainerRef = useRef();
@@ -66,6 +70,10 @@ const ItemListSwipable: FunctionComponent<Props> = ({
     (unPublishedItemsSignatureData.length > 0 &&
       unPublishedItemsSignatureData[0].signature) ||
     item.signatureDownloadURL;
+
+  const isItemCompleted = Boolean(
+    completedItems.find((completedItem) => completedItem.id === item.id)
+  );
 
   const onChangeNA = (itemId: string, isItemNA: boolean) => {
     onItemIsNAChange(itemId, isItemNA);
@@ -91,7 +99,10 @@ const ItemListSwipable: FunctionComponent<Props> = ({
                   item.isItemNA &&
                   styles[
                     'section__list__item__row__swipeContainer--swipeOpenNA'
-                  ]
+                  ],
+                !isItemCompleted &&
+                  isIncompleteRevealed &&
+                  styles['section__list__item__row__swipeContainer--incomplete']
               )}
             >
               {item.isItemNA && (

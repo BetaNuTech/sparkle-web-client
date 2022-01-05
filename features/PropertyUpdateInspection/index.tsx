@@ -38,6 +38,7 @@ interface Props {
   isNavOpen?: boolean;
   toggleNavOpen?(): void;
   forceVisible?: boolean;
+  isIncompleteRevealed: boolean;
 }
 
 const PropertyUpdateInspection: FunctionComponent<Props> = ({
@@ -47,7 +48,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   inspection,
   unpublishedTemplateUpdates,
   user,
-  forceVisible
+  forceVisible,
+  isIncompleteRevealed
 }) => {
   // User notifications setup
   /* eslint-disable */
@@ -314,16 +316,19 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   // Determine if inspection could be completed
   // when user requests to publish their updates
-  const canUpdatesCompleteInspection = useMemo(() => {
-    const completedItemsLength = (
+  const { canUpdatesCompleteInspection, completedItems } = useMemo(() => {
+    const completedItems =
       filterCompletedItems(
         inspectionItems,
         unpublishedInspectionItemsSignature,
         unpublishedInspectionItemsPhotos,
         inspection.template.requireDeficientItemNoteAndPhoto
-      ) || []
-    ).length;
-    return completedItemsLength === inspectionItems.length;
+      ) || [];
+    return {
+      canUpdatesCompleteInspection:
+        completedItems.length === inspectionItems.length,
+      completedItems
+    };
   }, [inspectionItems]);
 
   if (isPublishing) {
@@ -380,6 +385,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         inspectionItemsSignature={unpublishedInspectionItemsSignature}
         canEdit={canEdit}
         isMobile={isMobile}
+        isIncompleteRevealed={isIncompleteRevealed}
+        completedItems={completedItems}
       />
 
       <OneActionNotesModal
