@@ -37,7 +37,8 @@ describe('Unit | Features | Property Update Inspection | Sections | Item List Sw
       onClickPhotos: sinon.spy(),
       inspectionItemsPhotos: new Map(),
       forceVisible: true,
-      inspectionItemsSignature
+      inspectionItemsSignature,
+      completedItems: []
     };
 
     render(<SectionItemListMobile {...props} />, {

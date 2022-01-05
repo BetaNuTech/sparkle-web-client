@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
@@ -40,6 +40,8 @@ interface Props {
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
   canEdit: boolean;
   isMobile: boolean;
+  isIncompleteRevealed: boolean;
+  completedItems: inspectionTemplateItemModel[];
 }
 
 const Group: FunctionComponent<Props> = ({
@@ -60,9 +62,14 @@ const Group: FunctionComponent<Props> = ({
   inspectionItemsPhotos,
   inspectionItemsSignature,
   canEdit,
-  isMobile
+  isMobile,
+  isIncompleteRevealed,
+  completedItems
 }) => {
-  const listItems = sectionItems.get(section.id) || [];
+  const listItems = useMemo(
+    () => sectionItems.get(section.id) || [],
+    [sectionItems, section.id]
+  );
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -104,8 +111,10 @@ const Group: FunctionComponent<Props> = ({
               onClickSignatureInput={onClickSignatureInput}
               onClickPhotos={onClickPhotos}
               inspectionItemsPhotos={inspectionItemsPhotos}
-              inspectionItemsSignature={inspectionItemsSignature}
               canEdit={canEdit}
+              inspectionItemsSignature={inspectionItemsSignature}
+              completedItems={completedItems}
+              isIncompleteRevealed={isIncompleteRevealed}
             />
           ) : (
             <ItemList
@@ -119,8 +128,10 @@ const Group: FunctionComponent<Props> = ({
               onClickSignatureInput={onClickSignatureInput}
               onClickPhotos={onClickPhotos}
               inspectionItemsPhotos={inspectionItemsPhotos}
-              inspectionItemsSignature={inspectionItemsSignature}
               canEdit={canEdit}
+              inspectionItemsSignature={inspectionItemsSignature}
+              completedItems={completedItems}
+              isIncompleteRevealed={isIncompleteRevealed}
             />
           )
         )}

@@ -1,5 +1,7 @@
 @import '../../styles/index.scss';
 
+$incomplete-color: lighten($alert-light-color, 2);
+
 .header {
   @extend %gridHeader;
 
@@ -119,8 +121,11 @@
       &__row {
         display: grid;
         position: relative;
-
         min-height: rem-calc(72);
+
+        &--incomplete {
+          background: $incomplete-color;
+        }
 
         &__swipeContainer {
           @extend %swipeReveal;
@@ -133,8 +138,13 @@
           &--swipeOpen {
             transform: translateX(rem-calc(-54));
           }
+
           &--swipeOpenNA {
             transform: translateX(rem-calc(-66));
+          }
+
+          &--incomplete {
+            background: $incomplete-color;
           }
         }
 

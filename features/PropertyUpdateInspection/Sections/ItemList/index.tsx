@@ -29,6 +29,8 @@ interface Props {
   inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
   canEdit: boolean;
+  completedItems: inspectionTemplateItemModel[];
+  isIncompleteRevealed: boolean;
 }
 
 const ItemList: FunctionComponent<Props> = ({
@@ -42,7 +44,9 @@ const ItemList: FunctionComponent<Props> = ({
   onClickPhotos,
   inspectionItemsPhotos,
   inspectionItemsSignature,
-  canEdit
+  canEdit,
+  completedItems,
+  isIncompleteRevealed
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
@@ -60,12 +64,19 @@ const ItemList: FunctionComponent<Props> = ({
       unPublishedItemsSignatureData[0].signature) ||
     item.signatureDownloadURL;
 
+  const isItemCompleted = completedItems.some(
+    (completedItem) => completedItem.id === item.id
+  );
+
   return (
     <li
       className={clsx(
         styles.section__list__item__row,
         styles['section__list__item__row--grid'],
-        isSignature && styles['section__list__item__row--gridSignature']
+        isSignature && styles['section__list__item__row--gridSignature'],
+        !isItemCompleted &&
+          isIncompleteRevealed &&
+          styles['section__list__item__row--incomplete']
       )}
       ref={placeholderRef}
     >
