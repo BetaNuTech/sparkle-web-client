@@ -2,6 +2,7 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import DesktopHeader from '../../../common/DesktopHeader';
+import PDFReportStatus from '../PDFReportStatus';
 import inspectionModel from '../../../common/models/inspection';
 import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
@@ -18,6 +19,10 @@ interface HeaderModel {
   canEnableEditMode: boolean;
   onEnableAdminEditMode(): void;
   canUpdateCompleteInspection: boolean;
+  onCopyReportURL(): void;
+  isPdfReportStatusShowing: boolean;
+  isPDFReportOutOfDate: boolean;
+  isReportGenerating: boolean;
 }
 
 const Header: FunctionComponent<HeaderModel> = ({
@@ -29,7 +34,11 @@ const Header: FunctionComponent<HeaderModel> = ({
   onSaveInspection,
   canEnableEditMode,
   onEnableAdminEditMode,
-  canUpdateCompleteInspection
+  canUpdateCompleteInspection,
+  onCopyReportURL,
+  isPdfReportStatusShowing,
+  isPDFReportOutOfDate,
+  isReportGenerating
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const RightSide = () => (
@@ -63,6 +72,7 @@ const Header: FunctionComponent<HeaderModel> = ({
           className={clsx(styles.header__item__button)}
           disabled={!(hasUpdates && isOnline)}
           data-testid="header-complete-button"
+          onClick={onSaveInspection}
         >
           Complete
           <span>
@@ -80,6 +90,13 @@ const Header: FunctionComponent<HeaderModel> = ({
           Save
         </button>
       )}
+      <PDFReportStatus
+        isPdfReportStatusShowing={isPdfReportStatusShowing}
+        isReportGenerating={isReportGenerating}
+        isPDFReportOutOfDate={isPDFReportOutOfDate}
+        inspectionReportURL={inspection.inspectionReportURL}
+        onCopyReportURL={onCopyReportURL}
+      />
     </div>
   );
   return (

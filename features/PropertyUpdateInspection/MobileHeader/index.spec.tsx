@@ -150,4 +150,96 @@ describe('Unit | Features | Property Update Inspection | Mobile Header', () => {
     const saveButton = screen.queryByTestId('header-save-button');
     expect(saveButton).not.toBeDisabled();
   });
+
+  it('should show PDF report status', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportStatusShowing: true
+    };
+
+    render(<MobileHeader {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const pdfReport = screen.queryByTestId('header-pdf-report');
+    expect(pdfReport).toBeTruthy();
+  });
+
+  it('should show PDF report status as available', () => {
+    const expected = 'PDF Report is available';
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportStatusShowing: true,
+      isPDFReportOutOfDate: false
+    };
+
+    render(<MobileHeader {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const pdfReportText = screen.queryByTestId('header-pdf-report-text');
+    expect(pdfReportText).toHaveTextContent(expected);
+  });
+
+  it('should show PDF report status as out of date', () => {
+    const expected = 'PDF Report is out-of-date';
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportStatusShowing: true,
+      isPDFReportOutOfDate: true
+    };
+
+    render(<MobileHeader {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const pdfReportText = screen.queryByTestId('header-pdf-report-text');
+    expect(pdfReportText).toHaveTextContent(expected);
+  });
+
+  it('should show PDF report status as Generating PDF if inspection report is generating', () => {
+    const expected = 'Generating PDF';
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportStatusShowing: true,
+      isReportGenerating: true
+    };
+
+    render(<MobileHeader {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const pdfReportGenerating = screen.queryByTestId(
+      'header-pdf-report-generating'
+    );
+    expect(pdfReportGenerating).toHaveTextContent(expected);
+  });
 });

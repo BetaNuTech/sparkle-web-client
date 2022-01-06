@@ -9,6 +9,8 @@
   }
 
   &__item {
+    text-align: right;
+
     &__button {
       @extend %gridHeaderCreateButton;
       display: inline-flex;

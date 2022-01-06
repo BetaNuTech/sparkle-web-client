@@ -1,0 +1,40 @@
+@import '../../../styles/index.scss';
+
+.pdfReport {
+  text-align: center;
+  color: $white;
+  background-color: $black;
+  padding: rem-calc(4) 0;
+  font-size: rem-calc(14);
+
+  &__generating {
+    @extend %ani-blink;
+  }
+
+  &__status {
+    margin: 0;
+
+    &__action {
+      text-decoration: underline;
+      margin: 0 rem-calc(5);
+      cursor: pointer;
+
+      a {
+        color: $white;
+      }
+    }
+  }
+
+  @include media-query(desktop) {
+    background-color: $white;
+    color: $info-color;
+
+    &__status {
+      &__action {
+        a {
+          color: $info-color;
+        }
+      }
+    }
+  }
+}
