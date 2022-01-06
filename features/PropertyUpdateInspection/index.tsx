@@ -243,6 +243,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     sendNotification('Copied to clipboard.', { type: 'success' });
   };
 
+  const onCopyReportURL = () => {
+    copyTextToClipboard(inspection.inspectionReportURL);
+    sendNotification('Inspection Report URL copied to clipboard.', {
+      type: 'success'
+    });
+  };
+
   // Opens OneActionsNotes modal and
   // sets selected inspection
   const onClickOneActionNotes = (item: inspectionTemplateItemModel) => {
@@ -330,12 +337,30 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     };
   }, [inspectionItems]);
 
+  // Check if inspection has any unpublished updates
+  // or unpublished signatures
+  const hasUnpublishedUpdates =
+    hasUpdates || unpublishedInspectionItemsSignature.size > 0;
+
+
+  // Determine if PDF report status can be displayed 
+  const isPdfReportStatusShowing =
+    inspection.inspectionCompleted &&
+    inspection.inspectionReportStatus === 'completed_success' &&
+    inspection.inspectionReportURL &&
+    isOnline;
+
+  // Determine if PDF report status up-to-date or not
+  const isPDFReportOutOfDate =
+    inspection.inspectionReportUpdateLastDate !== inspection.updatedAt ||
+    hasUpdates;
+
+  // Determine if PDF report is generating
+  const isReportGenerating = inspection.inspectionReportStatus === 'generating';
+
   if (isPublishing) {
     return <LoadingHud title="Saving Inspection" />;
   }
-
-  const hasUnpublishedUpdates =
-    hasUpdates || unpublishedInspectionItemsSignature.size > 0;
 
   return (
     <>
@@ -351,6 +376,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           onEnableAdminEditMode={onEnableAdminEditMode}
           isStaging={isStaging}
           canUpdateCompleteInspection={canUpdatesCompleteInspection}
+          onCopyReportURL={onCopyReportURL}
+          isPdfReportStatusShowing={isPdfReportStatusShowing}
+          isPDFReportOutOfDate={isPDFReportOutOfDate}
+          isReportGenerating={isReportGenerating}
         />
       ) : (
         <Header
@@ -363,6 +392,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           canEnableEditMode={canEnableEditMode}
           onEnableAdminEditMode={onEnableAdminEditMode}
           canUpdateCompleteInspection={canUpdatesCompleteInspection}
+          onCopyReportURL={onCopyReportURL}
+          isPdfReportStatusShowing={isPdfReportStatusShowing}
+          isPDFReportOutOfDate={isPDFReportOutOfDate}
+          isReportGenerating={isReportGenerating}
         />
       )}
 

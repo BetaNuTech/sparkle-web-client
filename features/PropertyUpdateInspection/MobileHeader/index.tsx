@@ -7,6 +7,7 @@ import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import MobileHeader from '../../../common/MobileHeader';
+import PDFReportStatus from '../PDFReportStatus';
 import styles from './styles.module.scss';
 
 interface HeaderModel {
@@ -20,6 +21,10 @@ interface HeaderModel {
   onEnableAdminEditMode(): void;
   isStaging: boolean;
   canUpdateCompleteInspection: boolean;
+  onCopyReportURL(): void;
+  isPdfReportStatusShowing: boolean;
+  isPDFReportOutOfDate: boolean;
+  isReportGenerating: boolean;
 }
 
 const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
@@ -32,7 +37,11 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
   canEnableEditMode,
   onEnableAdminEditMode,
   isStaging,
-  canUpdateCompleteInspection
+  canUpdateCompleteInspection,
+  onCopyReportURL,
+  isPdfReportStatusShowing,
+  isPDFReportOutOfDate,
+  isReportGenerating
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -76,6 +85,7 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
           className={headStyle.header__button}
           disabled={!(hasUpdates && isOnline)}
           data-testid="header-complete-button"
+          onClick={onSaveInspection}
         >
           <span className={headStyle.header__button__text}>Complete</span>
           <FileUploadIcon />
@@ -115,9 +125,13 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
         </div>
         <h1 className={styles.header__title}>{inspection.templateName}</h1>
       </div>
-      {inspection.inspectionReportURL && (
-        <p className={styles.header__pdfReport}>PDF Report is available</p>
-      )}
+      <PDFReportStatus
+        isPdfReportStatusShowing={isPdfReportStatusShowing}
+        isReportGenerating={isReportGenerating}
+        isPDFReportOutOfDate={isPDFReportOutOfDate}
+        inspectionReportURL={inspection.inspectionReportURL}
+        onCopyReportURL={onCopyReportURL}
+      />
     </>
   );
 };
