@@ -221,7 +221,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // clear all local changes
   const onSaveInspection = async () => {
     try {
-      await publish(unpublishedInspectionItemsSignature);
+      await publish(
+        unpublishedInspectionItemsSignature,
+        unpublishedInspectionItemsPhotos
+      );
       destroyUpdates();
     } catch (err) {}
 
@@ -339,8 +342,11 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   // Check if inspection has any unpublished updates
   // or unpublished signatures
+  // or unpublished item photos
   const hasUnpublishedUpdates =
-    hasUpdates || unpublishedInspectionItemsSignature.size > 0;
+    hasUpdates ||
+    unpublishedInspectionItemsSignature.size > 0 ||
+    unpublishedInspectionItemsPhotos.size > 0;
 
 
   // Determine if PDF report status can be displayed 

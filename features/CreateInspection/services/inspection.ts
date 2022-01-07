@@ -8,8 +8,8 @@ const PREFIX = 'feature: CreateInspection: services: createRecord:';
 type userNotifications = (message: string, options?: any) => any;
 
 const createRecord = (
-  template: templateModel,
   propertyId: string,
+  template: templateModel,
   sendNotification: userNotifications
 ): Promise<string> => {
   const request = { template: template.id };

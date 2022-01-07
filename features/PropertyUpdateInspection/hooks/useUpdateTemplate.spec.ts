@@ -9,12 +9,18 @@ import unpublishedTemplateUpdatesModel from '../../../common/models/inspections/
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import inspectionTemplateUpdates from '../../../common/services/indexedDB/inspectionTemplateUpdates';
+import storageApi from '../../../common/services/storage';
+import inspectionsApi from '../../../common/services/api/inspections';
+import errorReports from '../../../common/services/api/errorReports';
 import { admin } from '../../../__mocks__/users';
+import currentUser from '../../../common/utils/currentUser';
 import {
   unselectedCheckmarkItem,
   emptyTextInputItem,
   originalMultiSection,
-  addedMultiSecton
+  addedMultiSecton,
+  unpublishedSignatureEntry,
+  unpublishedPhotoDataEntry
 } from '../../../__mocks__/inspections';
 
 const PROPERTY_ID = '125';
@@ -441,82 +447,91 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
     expect(actual).toEqual(expected);
   });
 
-  // TODO Publishing tests
-  // test('should request to upload signature file', async () => {
-  //   const expected = true;
-  //   const sendNotification = sinon.spy();
-  //   const changeItemsSignature = sinon.spy();
+  test('should request to upload signature file and publish inspection', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
 
-  //   const signatureData = {
-  //     id: 'signature-1',
-  //     inspection: 'inspection-1',
-  //     item: 'item-1',
-  //     signature: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-  //   };
+    const signatureUploadData = new Map();
+    signatureUploadData.set(unpublishedSignatureEntry.item, [
+      unpublishedSignatureEntry
+    ]);
 
-  //   const signatureUploadData = new Map();
-  //   signatureUploadData.set('item-1', [signatureData]);
+    // Creates spy for method in storageApi
+    const createBase64UploadTask = sinon.stub(
+      storageApi,
+      'createBase64UploadTask'
+    );
+    sinon.stub(errorReports, 'send').resolves(true);
 
-  //   // Creates spy for method in storageApi
-  //   const createBase64UploadTask = sinon.stub(
-  //     storageApi,
-  //     'createBase64UploadTask'
-  //   );
-  //   sinon.stub(errorReports, 'send').resolves(true);
+    const updatedInspectionFn = sinon
+      .stub(inspectionsApi, 'updateInspectionTemplate')
+      .resolves(true);
 
-  //   await act(async () => {
-  //     const { result } = renderHook(() =>
-  //       useInspectionUploadAndPublish(
-  //         'inspection-1',
-  //         sendNotification,
-  //         changeItemsSignature
-  //       )
-  //     );
-  //     await result.current.onSaveInspectionUpdates(signatureUploadData, {});
-  //   });
-  //   await waitFor(() => createBase64UploadTask.called);
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateTemplate(
+          PROPERTY_ID,
+          unpublishedSignatureEntry.inspection,
+          EMPTY_PREVIOUS_UPDATES,
+          CURRENT_TEMPLATE,
+          sendNotification
+        )
+      );
+      await result.current.publish(signatureUploadData, new Map());
+    });
+    await waitFor(() => createBase64UploadTask.called);
 
-  //   const actual = createBase64UploadTask.called;
-  //   expect(actual).toEqual(expected);
+    const actual = createBase64UploadTask.called;
+    expect(actual).toEqual(expected);
 
-  //   // Send notification check
-  //   const uploadResult = createBase64UploadTask.firstCall || { args: [] };
-  //   const requestedFileString = uploadResult.args[1];
+    // requested file string check
+    const uploadResult = createBase64UploadTask.firstCall || { args: [] };
+    const requestedFileString = uploadResult.args[1];
 
-  //   expect(requestedFileString).toEqual(signatureData.signature);
-  // });
+    expect(requestedFileString).toEqual(unpublishedSignatureEntry.signature);
+    expect(updatedInspectionFn.called).toBeTruthy();
+  });
 
-  // test('should call the update inspection template method of inspection service', async () => {
-  //   const expected = true;
-  //   const changeItemsSignature = sinon.spy();
+  test('should request to upload photos and publish inspection', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
 
-  //   const signatureData = {
-  //     id: 'signature-1',
-  //     inspection: 'inspection-1',
-  //     item: 'item-1',
-  //     signature: 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-  //   };
+    const photoUploadData = new Map();
+    photoUploadData.set(unpublishedPhotoDataEntry.item, [
+      unpublishedPhotoDataEntry
+    ]);
 
-  //   const signatureUploadData = new Map();
-  //   signatureUploadData.set('item-1', [signatureData]);
-  //   const sendNotification = sinon.spy();
+    // Creates spy for method in inspectionsApi
+    const uploadPhoto = sinon
+      .stub(inspectionsApi, 'uploadPhotoData')
+      .resolves(true);
 
-  //   // Creates spy for method in inspectionsApi
-  //   const spyFunc = sinon.spy(inspectionsApi, 'updateInspectionTemplate');
-  //   sinon.stub(errorReports, 'send').resolves(true);
+    sinon.stub(errorReports, 'send').resolves(true);
 
-  //   await act(async () => {
-  //     const { result } = renderHook(() =>
-  //       useInspectionUploadAndPublish(
-  //         'inspection-1',
-  //         sendNotification,
-  //         changeItemsSignature
-  //       )
-  //     );
-  //     await result.current.onSaveInspectionUpdates(signatureUploadData, {});
-  //   });
+    // Creates spy for method in inspectionsApi to update inspection template
+    const updatedInspectionFn = sinon
+      .stub(inspectionsApi, 'updateInspectionTemplate')
+      .resolves(true);
 
-  //   const actual = spyFunc.called;
-  //   expect(actual).toEqual(expected);
-  // });
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateTemplate(
+          PROPERTY_ID,
+          unpublishedPhotoDataEntry.inspection,
+          EMPTY_PREVIOUS_UPDATES,
+          CURRENT_TEMPLATE,
+          sendNotification
+        )
+      );
+      await result.current.publish(new Map(), photoUploadData);
+    });
+
+    await waitFor(() => uploadPhoto.called);
+
+    const actual = uploadPhoto.called;
+    expect(actual).toEqual(expected);
+    expect(updatedInspectionFn.called).toBeTruthy();
+  });
 });

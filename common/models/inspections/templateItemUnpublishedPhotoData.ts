@@ -6,6 +6,8 @@ interface inspectionTemplateItemLocalPhotoData {
   inspection: string;
   item: string;
   photoData: string;
+  downloadURL?: string; // temporary placeholder for the uploaded photo location
+  fileId?: string; // temporary placeholder for uploaded photo id
 }
 
 export default inspectionTemplateItemLocalPhotoData;

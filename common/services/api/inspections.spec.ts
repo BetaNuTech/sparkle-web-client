@@ -18,6 +18,16 @@ const API_INSP_TEMPLATE_UPDATE_RESULT = {
   }
 };
 
+const API_INSP_UPLOAD_PHOTO_RESULT = {
+  data: {
+    id: '123-abc',
+    type: 'inspection-item-photo-data',
+    attributes: {
+      downloadURL: 'https://dummyimage.com/600x400/000/fff'
+    }
+  }
+};
+
 const jsonOK = (body) => {
   const mockResponse = new Response(JSON.stringify(body), {
     status: 201,
@@ -39,7 +49,41 @@ const jsonErr = (status = 401) => {
 describe('Unit | Services | API | Inspections', () => {
   afterEach(() => sinon.restore());
 
-  test('it rejects with unauthorized error when patch inspection template request not allowed', async () => {
+  test('it rejects with unauthorized error when create inspection request not allowed', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonErr());
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    let result = null;
+    try {
+      await inspectionsApi.createRecord(fullInspection.property, {
+        template: '123'
+      });
+    } catch (err) {
+      result = err;
+    }
+
+    const actual = result instanceof ErrorUnauthorized;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves an updated inspection model on successful create inspection request', async () => {
+    const expected = deepClone(fullInspection) as inspectionModel;
+
+    sinon
+      .stub(window, 'fetch')
+      .resolves(jsonOK(API_INSP_TEMPLATE_UPDATE_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    const actual = await inspectionsApi.createRecord(fullInspection.id, {
+      template: '123'
+    });
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('it rejects with unauthorized error when update inspection request not allowed', async () => {
     const expected = true;
 
     sinon.stub(window, 'fetch').resolves(jsonErr());
@@ -58,7 +102,7 @@ describe('Unit | Services | API | Inspections', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('it resolves an updated inspection model on sucessful patch inspection template request', async () => {
+  test('it resolves an updated inspection model on successful update inspection request', async () => {
     const expected = deepClone(fullInspection) as inspectionModel;
 
     sinon
@@ -73,6 +117,46 @@ describe('Unit | Services | API | Inspections', () => {
       } as inspectionTemplateUpdateModel
     );
 
+    expect(actual).toEqual(expected);
+  });
+
+  test('it rejects with unauthorized error when upload inspection photo data request not allowed', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonErr());
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    let result = null;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionsApi.uploadPhotoData(
+        fullInspection.id,
+        'item-1',
+        new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })
+      );
+    } catch (err) {
+      result = err;
+    }
+
+    const actual = result instanceof ErrorUnauthorized;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves upload inspection photo data request', async () => {
+    const expected = {
+      id: '123-abc',
+      downloadURL: 'https://dummyimage.com/600x400/000/fff'
+    };
+
+    sinon.stub(window, 'fetch').resolves(jsonOK(API_INSP_UPLOAD_PHOTO_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    const actual = await inspectionsApi.uploadPhotoData(
+      fullInspection.id,
+      'item-1',
+      new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })
+    );
     expect(actual).toEqual(expected);
   });
 });
