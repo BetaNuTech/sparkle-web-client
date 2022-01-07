@@ -38,6 +38,7 @@ interface Props {
   isMobile: boolean;
   isIncompleteRevealed: boolean;
   completedItems: inspectionTemplateItemModel[];
+  requireDeficientItemNoteAndPhoto: boolean;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -59,7 +60,8 @@ const Sections: FunctionComponent<Props> = ({
   canEdit,
   isMobile,
   isIncompleteRevealed,
-  completedItems
+  completedItems,
+  requireDeficientItemNoteAndPhoto
 }) => {
   if (sections && sections.length > 0) {
     return (
@@ -87,6 +89,7 @@ const Sections: FunctionComponent<Props> = ({
             isMobile={isMobile}
             isIncompleteRevealed={isIncompleteRevealed}
             completedItems={completedItems}
+            requireDeficientItemNoteAndPhoto={requireDeficientItemNoteAndPhoto}
           />
         ))}
       </ul>

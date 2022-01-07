@@ -31,6 +31,7 @@ interface Props {
   canEdit: boolean;
   completedItems: inspectionTemplateItemModel[];
   isIncompleteRevealed: boolean;
+  isItemDeficient: boolean;
 }
 
 const ItemListSwipable: FunctionComponent<Props> = ({
@@ -46,7 +47,8 @@ const ItemListSwipable: FunctionComponent<Props> = ({
   inspectionItemsSignature,
   canEdit,
   completedItems,
-  isIncompleteRevealed
+  isIncompleteRevealed,
+  isItemDeficient
 }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const swipeContainerRef = useRef();
@@ -125,6 +127,7 @@ const ItemListSwipable: FunctionComponent<Props> = ({
                     inspectorNotes={item.inspectorNotes}
                     onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
                     onClickPhotos={() => onClickPhotos(item)}
+                    isDeficient={isItemDeficient}
                   />
                 )}
                 <InspectionItemControls

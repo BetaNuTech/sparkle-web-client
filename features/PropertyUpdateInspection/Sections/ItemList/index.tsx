@@ -31,6 +31,7 @@ interface Props {
   canEdit: boolean;
   completedItems: inspectionTemplateItemModel[];
   isIncompleteRevealed: boolean;
+  isItemDeficient: boolean;
 }
 
 const ItemList: FunctionComponent<Props> = ({
@@ -46,7 +47,8 @@ const ItemList: FunctionComponent<Props> = ({
   inspectionItemsSignature,
   canEdit,
   completedItems,
-  isIncompleteRevealed
+  isIncompleteRevealed,
+  isItemDeficient
 }) => {
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
@@ -79,6 +81,7 @@ const ItemList: FunctionComponent<Props> = ({
           styles['section__list__item__row--incomplete']
       )}
       ref={placeholderRef}
+      data-testid="section-list-item-row"
     >
       {isVisible && (
         <>
@@ -103,6 +106,7 @@ const ItemList: FunctionComponent<Props> = ({
                 unPublishedPhotosDataCount={unPublishedPhotosDataCount}
                 onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
                 onClickPhotos={() => onClickPhotos(item)}
+                isDeficient={isItemDeficient}
               />
             )}
 

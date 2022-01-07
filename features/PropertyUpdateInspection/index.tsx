@@ -425,6 +425,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isIncompleteRevealed={isIncompleteRevealed}
         completedItems={completedItems}
+        requireDeficientItemNoteAndPhoto={
+          inspection.template.requireDeficientItemNoteAndPhoto
+        }
       />
 
       <OneActionNotesModal

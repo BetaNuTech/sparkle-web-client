@@ -1,4 +1,4 @@
-@use "sass:math";
+@use 'sass:math';
 
 // Base
 $rem-base: 16px;
@@ -42,6 +42,7 @@ $gray-med-dark: #666;
 $gray-med-dark-2: #6e6e6e;
 $gray-dark: #555;
 $gray-darker: #424242;
+$required-color: #ffcccc;
 
 /// Black color with opacity 0.12
 /// @type Color
