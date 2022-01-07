@@ -201,7 +201,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
       isPdfReportStatusShowing: true,
-      isPDFReportOutOfDate: false
+      isPdfReportOutOfDate: false
     };
 
     render(<Header {...props} />, {
@@ -224,7 +224,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
       isPdfReportStatusShowing: true,
-      isPDFReportOutOfDate: true
+      isPdfReportOutOfDate: true
     };
 
     render(<Header {...props} />, {
@@ -247,7 +247,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
       isPdfReportStatusShowing: true,
-      isReportGenerating: true
+      isPdfReportGenerating: true
     };
 
     render(<Header {...props} />, {

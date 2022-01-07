@@ -32,6 +32,8 @@ const patchInspectionTemplateApiError = createApiError(
 
 const postFileRequestApiError = createApiError(`${PREFIX} uploadPhotoData:`);
 
+const generatePDFApiError = createApiError(`${PREFIX} generatePdfReport:`);
+
 const createRecord = async (
   propertyId: string,
   body: Record<string, string>
@@ -234,4 +236,58 @@ const uploadPhotoData = async (
   }
 };
 
-export default { createRecord, updateInspectionTemplate, uploadPhotoData };
+const patchInspectionPdfReportRequest = (
+  authToken: string,
+  inspectionId: string
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/inspections/${inspectionId}/report-pdf`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+const generatePdfReport = async (inspectionId: string): Promise<boolean> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} generatePdfReport: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await patchInspectionPdfReportRequest(authToken, inspectionId);
+  } catch (err) {
+    throw Error(`${PREFIX} generatePdfReport: PATCH request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} generatePdfReport: failed to parse JSON: ${err}`);
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = generatePDFApiError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return true;
+};
+
+export default {
+  createRecord,
+  updateInspectionTemplate,
+  uploadPhotoData,
+  generatePdfReport
+};

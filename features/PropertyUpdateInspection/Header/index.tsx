@@ -2,14 +2,14 @@ import { FunctionComponent } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import DesktopHeader from '../../../common/DesktopHeader';
-import PDFReportStatus from '../PDFReportStatus';
+import PdfReportStatus from '../PdfReportStatus';
 import inspectionModel from '../../../common/models/inspection';
 import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import styles from './styles.module.scss';
 
-interface HeaderModel {
+interface Props {
   property: propertyModel;
   inspection: inspectionModel;
   isOnline: boolean;
@@ -21,11 +21,13 @@ interface HeaderModel {
   canUpdateCompleteInspection: boolean;
   onCopyReportURL(): void;
   isPdfReportStatusShowing: boolean;
-  isPDFReportOutOfDate: boolean;
-  isReportGenerating: boolean;
+  isPdfReportOutOfDate: boolean;
+  isPdfReportGenerating: boolean;
+  hasPdfReportGenerationFailed: boolean;
+  onRegenerateReport(): void;
 }
 
-const Header: FunctionComponent<HeaderModel> = ({
+const Header: FunctionComponent<Props> = ({
   property,
   inspection,
   isOnline,
@@ -37,8 +39,10 @@ const Header: FunctionComponent<HeaderModel> = ({
   canUpdateCompleteInspection,
   onCopyReportURL,
   isPdfReportStatusShowing,
-  isPDFReportOutOfDate,
-  isReportGenerating
+  isPdfReportOutOfDate,
+  isPdfReportGenerating,
+  hasPdfReportGenerationFailed,
+  onRegenerateReport
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const RightSide = () => (
@@ -90,12 +94,14 @@ const Header: FunctionComponent<HeaderModel> = ({
           Save
         </button>
       )}
-      <PDFReportStatus
+      <PdfReportStatus
         isPdfReportStatusShowing={isPdfReportStatusShowing}
-        isReportGenerating={isReportGenerating}
-        isPDFReportOutOfDate={isPDFReportOutOfDate}
+        isPdfReportGenerating={isPdfReportGenerating}
+        isPdfReportOutOfDate={isPdfReportOutOfDate}
         inspectionReportURL={inspection.inspectionReportURL}
         onCopyReportURL={onCopyReportURL}
+        hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
+        onRegenerateReport={onRegenerateReport}
       />
     </div>
   );
@@ -124,6 +130,11 @@ const Header: FunctionComponent<HeaderModel> = ({
   );
 };
 
-Header.defaultProps = {};
+Header.defaultProps = {
+  isPdfReportStatusShowing: false,
+  isPdfReportOutOfDate: false,
+  isPdfReportGenerating: false,
+  hasPdfReportGenerationFailed: false
+};
 
 export default Header;
