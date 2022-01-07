@@ -71,6 +71,10 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   const templateCategory =
     filteredCategory.length > 0 ? filteredCategory[0].name : 'Uncategorized';
   const { isVisible } = useVisibility(ref, {}, forceVisible);
+
+  const inspectionUpdateUrl = `/properties/${propertyId}/inspections/edit/${inspection.id}`;
+  const legacyInspectionUpdateUrl = `/properties/${propertyId}/update-inspection/${inspection.id}`;
+
   return (
     <li
       ref={ref}
@@ -86,7 +90,8 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           )}
         >
           <LinkFeature
-            href={`/properties/${propertyId}/update-inspection/${inspection.id}`}
+            href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             featureEnabled={features.supportBetaPropertyInspectionUpdate}
           >
             <div
