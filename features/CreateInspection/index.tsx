@@ -70,7 +70,7 @@ const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
       .then((inspectionId) => {
         if (features.supportBetaPropertyInspectionUpdate) {
           Router.push(
-            `/properties/${propertyId}/update-inspection/${inspectionId}/`
+            `/properties/${propertyId}/inspections/edit/${inspectionId}/`
           );
         } else {
           window.location.href = `/properties/${propertyId}/update-inspection/${inspectionId}/`;

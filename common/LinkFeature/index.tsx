@@ -4,6 +4,7 @@ import Link from 'next/link';
 interface Props {
   href: string;
   featureEnabled?: boolean;
+  legacyHref?: string;
   // All other props
   [x: string]: any;
 }
@@ -11,6 +12,7 @@ interface Props {
 const LinkFeature: FunctionComponent<Props> = ({
   featureEnabled,
   href,
+  legacyHref,
   children,
   ...props
 }) => {
@@ -22,14 +24,15 @@ const LinkFeature: FunctionComponent<Props> = ({
     );
   }
   return (
-    <a href={href} {...{ ...props }}>
+    <a href={legacyHref || href} {...{ ...props }}>
       {children}
     </a>
   );
 };
 
 LinkFeature.defaultProps = {
-  featureEnabled: false
+  featureEnabled: false,
+  legacyHref: ''
 };
 
 export default LinkFeature;

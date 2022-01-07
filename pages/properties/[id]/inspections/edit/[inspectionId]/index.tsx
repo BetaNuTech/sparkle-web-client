@@ -2,16 +2,16 @@ import 'firebase/firestore';
 import { ReactElement, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useUser, useFirestore } from 'reactfire';
-import useProperty from '../../../../../common/hooks/useProperty';
-import useInspection from '../../../../../common/hooks/useInspection';
-import PropertyUpdateInspection from '../../../../../features/PropertyUpdateInspection';
-import { MainLayout } from '../../../../../common/MainLayout';
-import useFirestoreUser from '../../../../../common/hooks/useFirestoreUser';
-import LoadingHud from '../../../../../common/LoadingHud';
-import useNotifications from '../../../../../common/hooks/useNotifications';
-import notifications from '../../../../../common/services/notifications';
+import useProperty from '../../../../../../common/hooks/useProperty';
+import useInspection from '../../../../../../common/hooks/useInspection';
+import PropertyUpdateInspection from '../../../../../../features/PropertyUpdateInspection';
+import { MainLayout } from '../../../../../../common/MainLayout';
+import useFirestoreUser from '../../../../../../common/hooks/useFirestoreUser';
+import LoadingHud from '../../../../../../common/LoadingHud';
+import useNotifications from '../../../../../../common/hooks/useNotifications';
+import notifications from '../../../../../../common/services/notifications';
 // eslint-disable-next-line max-len
-import useUnpublishedTemplateUpdates from '../../../../../features/PropertyUpdateInspection/hooks/useUnpublishedTemplateUpdates';
+import useUnpublishedTemplateUpdates from '../../../../../../features/PropertyUpdateInspection/hooks/useUnpublishedTemplateUpdates';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();

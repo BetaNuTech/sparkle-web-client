@@ -14,7 +14,9 @@ export default {
   supportBetaPropertyYardiResident: false,
   supportBetaPropertyYardiWorkOrder: false,
   supportBetaPropertyInspectionCreate: true,
-  supportBetaPropertyInspectionUpdate: false,
+  supportBetaPropertyInspectionUpdate:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_PROPERTY_INSPECTION_UPDATE ===
+      'true' || false,
   supportBetaPropertyInspectionMove: false,
   supportBetaPropertyUpdate: true,
   supportBetaInspectionUploadPhotos: false

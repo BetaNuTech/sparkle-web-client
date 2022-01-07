@@ -81,7 +81,8 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   );
   const templateCategory =
     filteredCategory.length > 0 ? filteredCategory[0].name : 'Uncategorized';
-  const inspectionUpdateUrl = `/properties/${propertyId}/update-inspection/${inspection.id}`;
+  const inspectionUpdateUrl = `/properties/${propertyId}/inspections/edit/${inspection.id}`;
+  const legacyInspectionUpdateUrl = `/properties/${propertyId}/update-inspection/${inspection.id}`;
 
   // Can user take action on inspection row
   const hasActionColumn = hasInspectionUpdateActions(user);
@@ -97,6 +98,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
         <>
           <LinkFeature
             href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-creator"
             featureEnabled={features.supportBetaPropertyInspectionUpdate}
@@ -114,6 +116,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           </LinkFeature>
           <LinkFeature
             href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-creation-date"
             data-time={inspection.creationDate}
@@ -131,6 +134,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           </LinkFeature>
           <LinkFeature
             href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-update-date"
             featureEnabled={features.supportBetaPropertyInspectionUpdate}
@@ -147,6 +151,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           </LinkFeature>
           <LinkFeature
             href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-template"
             featureEnabled={features.supportBetaPropertyInspectionUpdate}
@@ -155,6 +160,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           </LinkFeature>
           <LinkFeature
             href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-template-cat"
             featureEnabled={features.supportBetaPropertyInspectionUpdate}
@@ -163,6 +169,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           </LinkFeature>
           <LinkFeature
             href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
             className={clsx(
               styles.propertyProfile__gridRow__column,
               inspection.deficienciesExist ? '-c-red' : '-c-blue'
