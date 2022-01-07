@@ -184,7 +184,7 @@ describe('Unit | Features | Property Update Inspection | Mobile Header', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
       isPdfReportStatusShowing: true,
-      isPDFReportOutOfDate: false
+      isPdfReportOutOfDate: false
     };
 
     render(<MobileHeader {...props} />, {
@@ -207,7 +207,7 @@ describe('Unit | Features | Property Update Inspection | Mobile Header', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
       isPdfReportStatusShowing: true,
-      isPDFReportOutOfDate: true
+      isPdfReportOutOfDate: true
     };
 
     render(<MobileHeader {...props} />, {
@@ -230,7 +230,7 @@ describe('Unit | Features | Property Update Inspection | Mobile Header', () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onSaveInspection: () => {},
       isPdfReportStatusShowing: true,
-      isReportGenerating: true
+      isPdfReportGenerating: true
     };
 
     render(<MobileHeader {...props} />, {

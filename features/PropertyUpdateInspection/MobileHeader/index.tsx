@@ -7,10 +7,10 @@ import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import MobileHeader from '../../../common/MobileHeader';
-import PDFReportStatus from '../PDFReportStatus';
+import PdfReportStatus from '../PdfReportStatus';
 import styles from './styles.module.scss';
 
-interface HeaderModel {
+interface Props {
   property: propertyModel;
   inspection: inspectionModel;
   isOnline: boolean;
@@ -23,11 +23,13 @@ interface HeaderModel {
   canUpdateCompleteInspection: boolean;
   onCopyReportURL(): void;
   isPdfReportStatusShowing: boolean;
-  isPDFReportOutOfDate: boolean;
-  isReportGenerating: boolean;
+  isPdfReportOutOfDate: boolean;
+  isPdfReportGenerating: boolean;
+  hasPdfReportGenerationFailed: boolean;
+  onRegenerateReport(): void;
 }
 
-const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
+const InspectionMobileHeader: FunctionComponent<Props> = ({
   property,
   inspection,
   isOnline,
@@ -40,8 +42,10 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
   canUpdateCompleteInspection,
   onCopyReportURL,
   isPdfReportStatusShowing,
-  isPDFReportOutOfDate,
-  isReportGenerating
+  isPdfReportOutOfDate,
+  isPdfReportGenerating,
+  hasPdfReportGenerationFailed,
+  onRegenerateReport
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -125,17 +129,24 @@ const InspectionMobileHeader: FunctionComponent<HeaderModel> = ({
         </div>
         <h1 className={styles.header__title}>{inspection.templateName}</h1>
       </div>
-      <PDFReportStatus
+      <PdfReportStatus
         isPdfReportStatusShowing={isPdfReportStatusShowing}
-        isReportGenerating={isReportGenerating}
-        isPDFReportOutOfDate={isPDFReportOutOfDate}
+        isPdfReportGenerating={isPdfReportGenerating}
+        isPdfReportOutOfDate={isPdfReportOutOfDate}
         inspectionReportURL={inspection.inspectionReportURL}
+        hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
         onCopyReportURL={onCopyReportURL}
+        onRegenerateReport={onRegenerateReport}
       />
     </>
   );
 };
 
-InspectionMobileHeader.defaultProps = {};
+InspectionMobileHeader.defaultProps = {
+  isPdfReportStatusShowing: false,
+  isPdfReportOutOfDate: false,
+  isPdfReportGenerating: false,
+  hasPdfReportGenerationFailed: false
+};
 
 export default InspectionMobileHeader;

@@ -16,6 +16,7 @@ import unpublishedTemplateUpdatesModel from '../../common/models/inspections/unp
 import useUpdateTemplate from './hooks/useUpdateTemplate';
 import useUnpublishInspectionItemPhotos from './hooks/useUnpublishedInspectionItemPhotos';
 import useUnpublishedInspectionSignature from './hooks/useUnpublishedInspectionItemSignature';
+import usePdfReport from './hooks/usePdfReport';
 import OneActionNotesModal from './OneActionNotesModal';
 import LoadingHud from '../../common/LoadingHud';
 import MobileHeader from './MobileHeader';
@@ -118,6 +119,14 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     selectedInspectionItem,
     inspection.id
   );
+
+  const {
+    generatePdfReport,
+    isPdfReportStatusShowing,
+    isPdfReportOutOfDate,
+    isPdfReportGenerating,
+    hasPdfReportGenerationFailed
+  } = usePdfReport(inspection, sendNotification, isOnline, hasUpdates);
 
   // Responsive queries
   const isTablet = useMediaQuery({
@@ -348,22 +357,6 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     unpublishedInspectionItemsSignature.size > 0 ||
     unpublishedInspectionItemsPhotos.size > 0;
 
-
-  // Determine if PDF report status can be displayed 
-  const isPdfReportStatusShowing =
-    inspection.inspectionCompleted &&
-    inspection.inspectionReportStatus === 'completed_success' &&
-    inspection.inspectionReportURL &&
-    isOnline;
-
-  // Determine if PDF report status up-to-date or not
-  const isPDFReportOutOfDate =
-    inspection.inspectionReportUpdateLastDate !== inspection.updatedAt ||
-    hasUpdates;
-
-  // Determine if PDF report is generating
-  const isReportGenerating = inspection.inspectionReportStatus === 'generating';
-
   if (isPublishing) {
     return <LoadingHud title="Saving Inspection" />;
   }
@@ -384,8 +377,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           canUpdateCompleteInspection={canUpdatesCompleteInspection}
           onCopyReportURL={onCopyReportURL}
           isPdfReportStatusShowing={isPdfReportStatusShowing}
-          isPDFReportOutOfDate={isPDFReportOutOfDate}
-          isReportGenerating={isReportGenerating}
+          isPdfReportOutOfDate={isPdfReportOutOfDate}
+          isPdfReportGenerating={isPdfReportGenerating}
+          hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
+          onRegenerateReport={generatePdfReport}
         />
       ) : (
         <Header
@@ -400,8 +395,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           canUpdateCompleteInspection={canUpdatesCompleteInspection}
           onCopyReportURL={onCopyReportURL}
           isPdfReportStatusShowing={isPdfReportStatusShowing}
-          isPDFReportOutOfDate={isPDFReportOutOfDate}
-          isReportGenerating={isReportGenerating}
+          isPdfReportOutOfDate={isPdfReportOutOfDate}
+          isPdfReportGenerating={isPdfReportGenerating}
+          hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
+          onRegenerateReport={generatePdfReport}
         />
       )}
 

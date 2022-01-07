@@ -28,6 +28,20 @@ const API_INSP_UPLOAD_PHOTO_RESULT = {
   }
 };
 
+const API_INSP_PDF_REPORT_RESULT = {
+  data: {
+    id: fullInspection.id,
+    type: 'inspection',
+    attributes: {
+      inspectionReportURL: 'pdf.com/report.pdf',
+      inspectionReportStatus: 'completed_success',
+      inspectionReportUpdateLastDate: 123
+    }
+  }
+};
+
+const FILE = new File(['(⌐□_□)'], 'test.png', { type: 'image/png' });
+
 const jsonOK = (body) => {
   const mockResponse = new Response(JSON.stringify(body), {
     status: 201,
@@ -129,11 +143,7 @@ describe('Unit | Services | API | Inspections', () => {
     let result = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await inspectionsApi.uploadPhotoData(
-        fullInspection.id,
-        'item-1',
-        new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })
-      );
+      await inspectionsApi.uploadPhotoData(fullInspection.id, 'item-1', FILE);
     } catch (err) {
       result = err;
     }
@@ -155,8 +165,37 @@ describe('Unit | Services | API | Inspections', () => {
     const actual = await inspectionsApi.uploadPhotoData(
       fullInspection.id,
       'item-1',
-      new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })
+      FILE
     );
+    expect(actual).toEqual(expected);
+  });
+
+  test('it rejects with unauthorized error when generate PDF report request not allowed', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonErr());
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    let result = null;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionsApi.generatePdfReport(fullInspection.id);
+    } catch (err) {
+      result = err;
+    }
+
+    const actual = result instanceof ErrorUnauthorized;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves successful generate PDF report request', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonOK(API_INSP_PDF_REPORT_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    const actual = await inspectionsApi.generatePdfReport(fullInspection.id);
     expect(actual).toEqual(expected);
   });
 });
