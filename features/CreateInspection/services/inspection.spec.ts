@@ -15,7 +15,7 @@ describe('Unit | Features | Property Profile | Services | Upload Attachment', ()
     const sendError = sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await expect(
-      inspectionService.createRecord(templateA, 'property-1', sendNotification)
+      inspectionService.createRecord('property-1', templateA, sendNotification)
     ).rejects.toThrowError(Error);
 
     const result = sendNotification.firstCall || { args: [] };
@@ -44,8 +44,8 @@ describe('Unit | Features | Property Profile | Services | Upload Attachment', ()
     });
 
     await inspectionService.createRecord(
-      templateA,
       'property-1',
+      templateA,
       sendNotification
     );
 

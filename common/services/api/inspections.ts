@@ -1,6 +1,7 @@
 import currentUser from '../../utils/currentUser';
 import inspectionModel from '../../models/inspection';
 import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
+import inspectionPhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
 import createApiError from '../../utils/api/createError';
 
 const PREFIX = 'services: api: inspections:';
@@ -23,9 +24,13 @@ const postRequest = (
     })
   });
 
+const postInspectionApiError = createApiError(`${PREFIX} createRecord:`);
+
 const patchInspectionTemplateApiError = createApiError(
   `${PREFIX} updateInspectionTemplate:`
 );
+
+const postFileRequestApiError = createApiError(`${PREFIX} uploadPhotoData:`);
 
 const createRecord = async (
   propertyId: string,
@@ -45,28 +50,32 @@ const createRecord = async (
   let response = null;
   try {
     response = await postRequest(authToken, propertyId, body);
-    if (response.status !== 201) {
-      throw Error(`failed with status: ${response.status}`);
-    }
   } catch (err) {
     throw Error(`${PREFIX} createRecord: POST request failed: ${err}`);
   }
 
-  // Means inspections is created
-  let json = null;
+  // Parse payload
+  let responseJson: any = {};
   try {
-    json = await response.json();
+    responseJson = await response.json();
   } catch (err) {
     throw Error(`${PREFIX} createRecord: failed to parse response: ${err}`);
   }
 
-  // TODO throw any API errors
+  // Throw unsuccessful request API error
+  const apiError: any = postInspectionApiError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
 
   // Assemble inspection
   try {
     return {
-      id: json.data.id,
-      ...json.data.attributes
+      id: responseJson.data.id,
+      ...responseJson.data.attributes
     } as inspectionModel;
   } catch (err) {
     throw Error(`${PREFIX} createRecord: unexpected response payload: ${err}`);
@@ -153,4 +162,76 @@ const updateInspectionTemplate = async (
   return inspection;
 };
 
-export default { createRecord, updateInspectionTemplate };
+// POST photo data
+const postFileRequest = (
+  authToken: string,
+  inspectionId: string,
+  itemId: string,
+  file: File
+): Promise<Response> => {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  return fetch(
+    `${API_DOMAIN}/api/v0/inspections/${inspectionId}/template/items/${itemId}/image`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `FB-JWT ${authToken}`
+      },
+      body: formData
+    }
+  );
+};
+
+// Upload a single photo
+// to a target inspection item
+const uploadPhotoData = async (
+  inspectionId: string,
+  itemId: string,
+  file: File
+): Promise<inspectionPhotoDataModel> => {
+  let authToken = '';
+  let responseJson: any = {};
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (err) {
+    throw Error(`${PREFIX} uploadPhotoData: could not recover token: ${err}`);
+  }
+
+  let response = null;
+  try {
+    response = await postFileRequest(authToken, inspectionId, itemId, file);
+  } catch (err) {
+    throw Error(`${PREFIX} uploadPhotoData: POST request failed: ${err}`);
+  }
+
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} uploadPhotoData: failed to parse JSON: ${err}`);
+  }
+
+  const apiError: any = postFileRequestApiError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  // Assemble inspection uploaded photo data
+  try {
+    return {
+      id: responseJson.data.id,
+      ...responseJson.data.attributes
+    } as inspectionPhotoDataModel;
+  } catch (err) {
+    throw Error(
+      `${PREFIX} uploadPhotoData: unexpected response payload: ${err}`
+    );
+  }
+};
+
+export default { createRecord, updateInspectionTemplate, uploadPhotoData };

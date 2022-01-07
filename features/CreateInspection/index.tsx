@@ -53,6 +53,7 @@ const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
   );
 
   const createInspection = (template: templateModel) => {
+    // TODO disable on click events instead
     if (!isOnline) {
       // Check if we are in offline state show the notification
       return sendNotification('You must be online to create an inspection', {
@@ -65,7 +66,7 @@ const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
 
     // Send request
     inspectionService
-      .createRecord(template, propertyId, sendNotification)
+      .createRecord(propertyId, template, sendNotification)
       .then((inspectionId) => {
         if (features.supportBetaPropertyInspectionUpdate) {
           Router.push(

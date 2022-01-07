@@ -9,8 +9,10 @@ import { getUserFullname } from '../../../common/utils/user';
 import errorReports from '../../../common/services/api/errorReports';
 import inspectionsApi from '../../../common/services/api/inspections';
 import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
+import unpublishedPhotosModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import inspectionTemplateUpdates from '../../../common/services/indexedDB/inspectionTemplateUpdates';
 import publishSignatures from '../utils/publishSignatures';
+import publishPhotos from '../utils/publishPhotos';
 
 const PREFIX = 'features: PropertyUpdateInspection: hooks: useUpdateTemplate:';
 
@@ -46,7 +48,10 @@ interface Result {
   disableAdminEditMode(): void;
 
   destroyUpdates(): void;
-  publish(signatures: Map<string, unpublishedSignatureModel[]>): Promise<void>;
+  publish(
+    signatures: Map<string, unpublishedSignatureModel[]>,
+    unpublishedItemPhotos: Map<string, unpublishedPhotosModel[]>
+  ): Promise<void>;
 }
 
 export default function useInspectionItemUpdate(
@@ -257,18 +262,18 @@ export default function useInspectionItemUpdate(
 
   // upload all signature and then publish updated inspection to api
   const publish = async (
-    unpublishedSignatures: Map<string, unpublishedSignatureModel[]>
+    unpublishedSignatures: Map<string, unpublishedSignatureModel[]>,
+    unpublishedItemPhotos: Map<string, unpublishedPhotosModel[]>
   ) => {
     setIsPublishing(true);
 
-    // Create flat list of all signatures
-    const flattenedUnpublishedSignatures = [];
-    unpublishedSignatures.forEach((signatures) => {
-      flattenedUnpublishedSignatures.push(...signatures);
-    });
+    // Create flat list of signatures & photos
+    const flattenedUnpublishedSignatures = flattenMap(unpublishedSignatures);
+    const flattenedUnpublishedPhotos = flattenMap(unpublishedItemPhotos);
 
     // Error collections
     const signatureErrors = [];
+    const photosErrors = [];
 
     // Upload signatures
     const { successful: signatureUploads, errors: signatureUploadErrors } =
@@ -295,9 +300,27 @@ export default function useInspectionItemUpdate(
     // Combine all signature errors
     signatureErrors.push(...signatureUploadErrors, ...signatureRemoveErrors);
 
-    //
-    // TODO Upload item photos
-    //
+    // Upload photos
+    const { successful: photoUploads, errors: photoUploadErrors } =
+      await publishPhotos.upload(inspectionId, flattenedUnpublishedPhotos);
+
+    // Save photo's data to unpublished updates
+    applyLatestUpdates(
+      publishPhotos.addPhotoData(
+        updates,
+        currentTemplate,
+        updateOption,
+        photoUploads
+      )
+    );
+
+    // Remove all uploaded photo from local database
+    const { errors: photoRemoveErrors } = await publishPhotos.removePublished(
+      photoUploads
+    );
+
+    // Combine all photo errors
+    photosErrors.push(...photoUploadErrors, ...photoRemoveErrors);
 
     // Publish inspection updates
     // NOTE: should not fail gracefully
@@ -317,12 +340,20 @@ export default function useInspectionItemUpdate(
     }
 
     // Combine all errors
-    const errors = [...signatureErrors];
+    const errors = [...signatureErrors, ...photosErrors];
 
     // User signature error notification
     if (signatureErrors.length > 0) {
       sendNotification(
         'Some signatures failed to publish, please check your internet connection and try again',
+        { type: 'error' }
+      );
+    }
+
+    // User photo error notification
+    if (photosErrors.length > 0) {
+      sendNotification(
+        'Some inspection item photos failed to publish, please check your internet connection and try again',
         { type: 'error' }
       );
     }
@@ -381,4 +412,13 @@ function sendErrorReports(errors: Error[]) {
 // Deep clone an object
 function clone(obj: any): any {
   return JSON.parse(JSON.stringify(obj));
+}
+
+// Convert a map to a flat array
+function flattenMap(map: Map<string, any[]>): any[] {
+  const result = [];
+  map.forEach((items) => {
+    result.push(...items);
+  });
+  return result;
 }
