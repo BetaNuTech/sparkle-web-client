@@ -14,23 +14,21 @@ export type SignaturePublishStep = {
 
 // Factory for uploading signatures
 // to Firebase Storage for inspection
-const createInspectionUploader =
-  (
-    inspectionId: string,
-    uploadBase64FileToStorage: (
-      dest: string,
-      dataUrl: string
-    ) => Promise<StorageResult>
-  ) =>
-  (signature: unpublishedSignatureModel): Promise<StorageResult> => {
-    const fileName = `${signature.createdAt}.png`;
+const createInspectionUploader = (
+  inspectionId: string,
+  uploadBase64FileToStorage: (
+    dest: string,
+    dataUrl: string
+  ) => Promise<StorageResult>
+) => (signature: unpublishedSignatureModel): Promise<StorageResult> => {
+  const fileName = `${signature.createdAt}.png`;
 
-    // Upload file to the firebase storage
-    return uploadBase64FileToStorage(
-      `inspectionItemImages/${inspectionId}/${signature.item}/${fileName}`,
-      signature.signature
-    );
-  };
+  // Upload file to the firebase storage
+  return uploadBase64FileToStorage(
+    `inspectionItemImages/${inspectionId}/${signature.item}/${fileName}`,
+    signature.signature
+  );
+};
 
 export default {
   // Upload all unpublished signatures
@@ -55,37 +53,23 @@ export default {
     );
 
     // Create all upload requests
-    const uploads = unpublishedSignatures.map(
-      (signature: unpublishedSignatureModel) =>
-        new Promise((resolve) => {
-          uploadSignature(signature)
-            .then((file) => {
-              signature.signatureDownloadURL = `${file.fileUrl}`;
-              resolve(signature);
-            })
-            .catch((err) => {
-              resolve(
-                Error(
-                  // eslint-disable-next-line max-len
-                  `${PREFIX} upload: failed to upload signature for inspection "${inspectionId}" item "${signature.item}": ${err}`
-                )
-              );
-            });
-        })
-    );
-
-    // Wait for all upload results
-    const results = await Promise.all(uploads);
-
-    // Sort results into those
-    // successfully published and errors
-    results.forEach((item) => {
-      if (item instanceof Error) {
-        result.errors.push(item);
-      } else {
-        result.successful.push(item);
+    // And upload signatures one by one
+    // eslint-disable-next-line  no-restricted-syntax
+    for (const signature of unpublishedSignatures) {
+      try {
+        // eslint-disable-next-line  no-await-in-loop
+        const file = await uploadSignature(signature);
+        signature.signatureDownloadURL = file.fileUrl;
+        result.successful.push(signature);
+      } catch (err) {
+        result.errors.push(
+          Error(
+            // eslint-disable-next-line max-len
+            `${PREFIX} upload: failed to upload signature for inspection "${inspectionId}" item "${signature.item}": ${err}`
+          )
+        );
       }
-    });
+    }
 
     return result;
   },
