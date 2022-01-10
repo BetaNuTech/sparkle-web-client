@@ -2,6 +2,7 @@ import update from './updateTemplateSection';
 import {
   singleSection,
   originalMultiSection,
+  addedMultiSection,
   unselectedCheckmarkItem
 } from '../../../__mocks__/inspections';
 import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
@@ -290,6 +291,54 @@ describe('Unit | Common | Utils | Inspection | Update Template Section', () => {
 
     // Lookup section two's updates
     const actual = (result.sections || {}).two;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should add a second multi-section after its cloned section', () => {
+    const expected = { A: 1, B: 3 };
+    const current = {} as inspectionTemplateUpdateModel;
+    let updates = {} as inspectionTemplateUpdateModel;
+    const sectionOne = {
+      ...originalMultiSection,
+      id: 'one',
+      title: 'A',
+      index: 0
+    } as inspectionTemplateSectionModel;
+    const sectionTwo = {
+      ...originalMultiSection,
+      id: 'two',
+      title: 'B',
+      index: 1
+    } as inspectionTemplateSectionModel;
+    const sectionOneItem = {
+      ...unselectedCheckmarkItem,
+      sectionId: 'one',
+      index: 0
+    } as inspectionTemplateItemModel;
+    const sectionTwoItem = {
+      ...unselectedCheckmarkItem,
+      sectionId: 'two',
+      index: 0
+    } as inspectionTemplateItemModel;
+    current.items = { sectionOneItem, sectionTwoItem };
+    current.sections = { one: sectionOne, two: sectionTwo };
+    updates.items = {};
+    updates.sections = {};
+
+    // Add 3rd section, cloned from one
+    updates = update(updates, current, { cloneOf: 'one' }, 'new');
+
+    // Add 4th section, cloned from two
+    updates = update(updates, current, { cloneOf: 'two' }, 'new');
+
+    // Collection all local section index updates
+    const actual = Object.keys(updates.sections || {})
+      .map((id) => ({ ...updates.sections[id], id }))
+      .filter((section) => section.added_multi_section)
+      .reduce((acc, section) => {
+        acc[section.title] = section.index;
+        return acc;
+      }, {});
     expect(actual).toEqual(expected);
   });
 });

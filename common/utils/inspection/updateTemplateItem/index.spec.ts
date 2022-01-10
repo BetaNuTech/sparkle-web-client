@@ -7,6 +7,7 @@ import {
   unselectedCheckedExclaimItem,
   selectedCheckedExclaimItem,
   unselectedOneActionNote,
+  unselectedSignatureInputItem,
   emptyTextInputItem
 } from '../../../../__mocks__/inspections';
 import inspectionTemplateItemModel from '../../../models/inspectionTemplateItem';
@@ -465,7 +466,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
           signatureDownloadURL: undefined,
           signatureTimestampKey: undefined
         },
-        item: { ...unselectedCheckmarkItem },
+        item: { ...unselectedSignatureInputItem },
         change: { isItemNA: true },
         msg: 'ignores unrelated update'
       },
@@ -474,7 +475,10 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
           signatureDownloadURL: undefined,
           signatureTimestampKey: undefined
         },
-        item: { ...unselectedCheckmarkItem, signatureDownloadURL: 'test.jpg' },
+        item: {
+          ...unselectedSignatureInputItem,
+          signatureDownloadURL: 'test.jpg'
+        },
         change: { signatureDownloadURL: 'test.jpg' },
         msg: 'ignores updating a signature to its remote state'
       },
@@ -483,7 +487,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
           signatureDownloadURL: 'test.jpg',
           signatureTimestampKey: '123'
         },
-        item: { ...unselectedCheckmarkItem },
+        item: { ...unselectedSignatureInputItem },
         previous: {
           signatureDownloadURL: 'test.jpg',
           signatureTimestampKey: '123'
@@ -496,7 +500,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
           signatureDownloadURL: 'test.jpg',
           signatureTimestampKey: true
         },
-        item: { ...unselectedCheckmarkItem },
+        item: { ...unselectedSignatureInputItem },
         change: { signatureDownloadURL: 'test.jpg' },
         msg: 'sets a new signature and timestamp key'
       },
@@ -506,7 +510,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
           signatureTimestampKey: true
         },
         item: {
-          ...unselectedCheckmarkItem,
+          ...unselectedSignatureInputItem,
           signatureDownloadURL: 'test.jpg',
           signatureTimestampKey: '123'
         },
@@ -518,7 +522,7 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
           signatureDownloadURL: 'test-2.jpg',
           signatureTimestampKey: true
         },
-        item: { ...unselectedCheckmarkItem },
+        item: { ...unselectedSignatureInputItem },
         previous: {
           signatureDownloadURL: 'test.jpg',
           signatureTimestampKey: '123'
@@ -716,6 +720,132 @@ describe('Unit | Common | Utils | Inspection | Update Template Item', () => {
       const userChanges = change as userUpdate;
       updatedItem = update(updatedItem, currentItem, userChanges);
       const actual = Object.keys(updatedItem || {}).length;
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
+  test('it updates a local multi-section item without modifying other attributes', () => {
+    const imgAdd = {
+      downloadURL: 'url.com/img.jpg'
+    } as inspectionTemplateItemPhotoDataModel;
+    const tests = [
+      {
+        expected: {
+          ...unselectedCheckmarkItem,
+          mainInputSelection: 0,
+          mainInputSelected: true
+        },
+        previous: {
+          ...unselectedCheckmarkItem
+        },
+        change: {
+          mainInputSelection: 0
+        },
+        msg: 'update item selection'
+      },
+      {
+        expected: {
+          ...emptyTextInputItem,
+          textInputValue: 'update'
+        },
+        previous: {
+          ...emptyTextInputItem
+        },
+        change: {
+          textInputValue: 'update'
+        },
+        msg: 'update text input value'
+      },
+      {
+        expected: {
+          ...unselectedOneActionNote,
+          mainInputNotes: 'update',
+          mainInputSelected: true
+        },
+        previous: {
+          ...unselectedOneActionNote
+        },
+        change: {
+          mainInputNotes: 'update'
+        },
+        msg: 'update one action note value'
+      },
+      {
+        expected: {
+          ...unselectedCheckmarkItem,
+          inspectorNotes: 'update'
+        },
+        previous: {
+          ...unselectedCheckmarkItem
+        },
+        change: {
+          inspectorNotes: 'update'
+        },
+        msg: 'update inspector note'
+      },
+      {
+        expected: {
+          ...unselectedCheckmarkItem,
+          isItemNA: true
+        },
+        previous: {
+          ...unselectedCheckmarkItem
+        },
+        change: {
+          isItemNA: true
+        },
+        msg: 'update item applicability'
+      },
+      {
+        expected: {
+          ...unselectedSignatureInputItem,
+          signatureDownloadURL: 'test.jpg'
+        },
+        previous: {
+          ...unselectedSignatureInputItem
+        },
+        change: {
+          signatureDownloadURL: 'test.jpg'
+        },
+        msg: 'update signature item'
+      },
+      {
+        expected: {
+          ...unselectedCheckmarkItem,
+          photosData: { '2': imgAdd }
+        },
+        previous: {
+          ...unselectedCheckmarkItem
+        },
+        change: { photosData: { '2': imgAdd } },
+        msg: 'update add photo item'
+      },
+      {
+        expected: {
+          ...unselectedCheckmarkItem
+        },
+        previous: {
+          ...unselectedCheckmarkItem,
+          photosData: { '2': imgAdd }
+        },
+        change: { photosData: { '2': null } },
+        msg: 'update remove photo item'
+      }
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, previous = {}, change, msg } = tests[i];
+      const updatedItem = previous as inspectionTemplateItemModel;
+      const currentItem = updatedItem;
+      const userChanges = change as userUpdate;
+      const result = update(updatedItem, currentItem, userChanges);
+      const actual = result || null;
+
+      // Update dynamic portion of signature item
+      if (actual.signatureTimestampKey) {
+        expected.signatureTimestampKey = actual.signatureTimestampKey;
+      }
+
       expect(actual, msg).toEqual(expected);
     }
   });

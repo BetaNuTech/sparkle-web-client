@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import {
   originalMultiSection,
-  addedMultiSecton
+  addedMultiSection
 } from '../../../../__mocks__/inspections';
 import breakpoints from '../../../../config/breakpoints';
 import SectionHeader from './index';
@@ -49,7 +49,7 @@ describe('Unit | Features | Property Update Inspection | Sections | Header', () 
 
   it('should show add section and remove section button', () => {
     const props = {
-      section: addedMultiSecton,
+      section: addedMultiSection,
       nextSectionTitle: '',
       collapsedSections: [],
       onAddSection: sinon.spy(),
@@ -101,7 +101,7 @@ describe('Unit | Features | Property Update Inspection | Sections | Header', () 
   it('should request to remove section on click on remove button', () => {
     const onRemoveSection = sinon.spy();
     const props = {
-      section: addedMultiSecton,
+      section: addedMultiSection,
       nextSectionTitle: '',
       collapsedSections: [],
       onRemoveSection,
