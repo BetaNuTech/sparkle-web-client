@@ -259,4 +259,25 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     );
     expect(pdfReportGenerating).toHaveTextContent(expected);
   });
+
+  it('should disable save button if PDF report is generating', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportGenerating: true
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).toBeDisabled();
+  });
 });

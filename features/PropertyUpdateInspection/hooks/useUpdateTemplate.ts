@@ -7,6 +7,7 @@ import * as objectHelper from '../../../common/utils/object';
 import userModel from '../../../common/models/user';
 import { getUserFullname } from '../../../common/utils/user';
 import errorReports from '../../../common/services/api/errorReports';
+import ErrorConflictingRequest from '../../../common/models/errors/conflictingRequest';
 import inspectionsApi from '../../../common/services/api/inspections';
 import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 import unpublishedPhotosModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
@@ -276,12 +277,14 @@ export default function useInspectionItemUpdate(
     const photosErrors = [];
 
     // Upload signatures
-    const { successful: signatureUploads, errors: signatureUploadErrors } =
-      await publishSignatures.upload(
-        inspectionId,
-        flattenedUnpublishedSignatures,
-        uploadBase64FileToStorage
-      );
+    const {
+      successful: signatureUploads,
+      errors: signatureUploadErrors
+    } = await publishSignatures.upload(
+      inspectionId,
+      flattenedUnpublishedSignatures,
+      uploadBase64FileToStorage
+    );
 
     // Save signature URL's to unpublished updates
     applyLatestUpdates(
@@ -294,15 +297,18 @@ export default function useInspectionItemUpdate(
     );
 
     // Remove all uploaded signatures from local database
-    const { errors: signatureRemoveErrors } =
-      await publishSignatures.removePublished(signatureUploads);
+    const {
+      errors: signatureRemoveErrors
+    } = await publishSignatures.removePublished(signatureUploads);
 
     // Combine all signature errors
     signatureErrors.push(...signatureUploadErrors, ...signatureRemoveErrors);
 
     // Upload photos
-    const { successful: photoUploads, errors: photoUploadErrors } =
-      await publishPhotos.upload(inspectionId, flattenedUnpublishedPhotos);
+    const {
+      successful: photoUploads,
+      errors: photoUploadErrors
+    } = await publishPhotos.upload(inspectionId, flattenedUnpublishedPhotos);
 
     // Save photo's data to unpublished updates
     applyLatestUpdates(
@@ -332,10 +338,18 @@ export default function useInspectionItemUpdate(
         `${PREFIX} publish: failed to publish inspection: "${inspectionId}" updates: ${err}`
       );
       sendErrorReports([wrappedErr]);
-      sendNotification(
-        'Unexpected error. Please try again, or contact an admin.',
-        { type: 'error' }
-      );
+      if (err instanceof ErrorConflictingRequest) {
+        sendNotification(
+          'Please wait to update inspection until its’ PDF report has finished generating',
+          { type: 'error' }
+        );
+      } else {
+        sendNotification(
+          'Unexpected error. Please try again, or contact an admin.',
+          { type: 'error' }
+        );
+      }
+
       throw wrappedErr;
     }
 
