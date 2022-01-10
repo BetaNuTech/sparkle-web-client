@@ -36,38 +36,25 @@ export default {
     };
 
     // Create all upload requests
-    const uploads = unpublishedPhotos.map(
-      (photo: unPublishedPhotoModel) =>
-        new Promise((resolve) => {
-          uploadPhoto(inspectionId, photo)
-            .then((file) => {
-              photo.downloadURL = file.downloadURL;
-              photo.fileId = file.id;
-              resolve(photo);
-            })
-            .catch((err) => {
-              resolve(
-                Error(
-                  // eslint-disable-next-line max-len
-                  `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
-                )
-              );
-            });
-        })
-    );
-
-    // Wait for all upload results
-    const results = await Promise.all(uploads);
-
-    // Sort results into those
-    // successfully published and errors
-    results.forEach((item) => {
-      if (item instanceof Error) {
-        result.errors.push(item);
-      } else {
-        result.successful.push(item);
+    // And upload photos one by one
+    // eslint-disable-next-line  no-restricted-syntax
+    for (const photo of unpublishedPhotos) {
+      try {
+        // eslint-disable-next-line  no-await-in-loop
+        const file = await uploadPhoto(inspectionId, photo);
+        photo.downloadURL = file.downloadURL;
+        photo.fileId = file.id;
+        result.successful.push(photo);
+      } catch (err) {
+        result.errors.push(
+          Error(
+            // eslint-disable-next-line max-len
+            `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
+          )
+        );
       }
-    });
+    }
+
     return result;
   },
 
