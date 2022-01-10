@@ -47,6 +47,9 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
   hasPdfReportGenerationFailed,
   onRegenerateReport
 }) => {
+  const isPubishingDisabled =
+    !(hasUpdates && isOnline) || isPdfReportGenerating;
+
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
     <>
@@ -87,7 +90,7 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
         <button
           type="button"
           className={headStyle.header__button}
-          disabled={!(hasUpdates && isOnline)}
+          disabled={isPubishingDisabled}
           data-testid="header-complete-button"
           onClick={onSaveInspection}
         >
@@ -98,7 +101,7 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
         <button
           type="button"
           className={headStyle.header__button}
-          disabled={!(hasUpdates && isOnline)}
+          disabled={isPubishingDisabled}
           data-testid="header-save-button"
           onClick={onSaveInspection}
         >

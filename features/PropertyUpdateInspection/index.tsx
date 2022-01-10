@@ -84,14 +84,20 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
-    useState(false);
+  const [
+    isVisibleOneActionNotesModal,
+    setIsVisibleOneActionNotesModal
+  ] = useState(false);
 
-  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
-    useState(false);
+  const [
+    isVisibleAttachmentNotesModal,
+    setIsVisibleAttachmentNotesModal
+  ] = useState(false);
 
-  const [isVisibleSignatureInputModal, setIsVisibleSignatureInputModal] =
-    useState(false);
+  const [
+    isVisibleSignatureInputModal,
+    setIsVisibleSignatureInputModal
+  ] = useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
@@ -241,8 +247,11 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     // TODO reload item photos state
   };
 
-  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
-    useInspectionSectionSort(inspection.template.sections, updates);
+  const {
+    sortedTemplateSections,
+    collapsedSections,
+    onSectionCollapseToggle
+  } = useInspectionSectionSort(inspection.template.sections, updates);
 
   // Items grouped by their section
   const { sectionItems, inspectionItems } = useInspectionItems(
@@ -252,13 +261,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
-    sendNotification('Copied to clipboard.', { type: 'success' });
+    sendNotification('Inspection URL copied to clipboard.', { type: 'info' });
   };
 
   const onCopyReportURL = () => {
     copyTextToClipboard(inspection.inspectionReportURL);
     sendNotification('Inspection Report URL copied to clipboard.', {
-      type: 'success'
+      type: 'info'
     });
   };
 

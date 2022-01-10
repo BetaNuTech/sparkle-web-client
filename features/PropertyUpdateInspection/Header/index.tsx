@@ -45,6 +45,9 @@ const Header: FunctionComponent<Props> = ({
   onRegenerateReport
 }) => {
   const propertyLink = `/properties/${property.id}/`;
+  const isPubishingDisabled =
+    !(hasUpdates && isOnline) || isPdfReportGenerating;
+
   const RightSide = () => (
     <div className={styles.header__item}>
       <button
@@ -74,7 +77,7 @@ const Header: FunctionComponent<Props> = ({
         <button
           type="button"
           className={clsx(styles.header__item__button)}
-          disabled={!(hasUpdates && isOnline)}
+          disabled={isPubishingDisabled}
           data-testid="header-complete-button"
           onClick={onSaveInspection}
         >
@@ -87,7 +90,7 @@ const Header: FunctionComponent<Props> = ({
         <button
           type="button"
           className={clsx(styles.header__item__button)}
-          disabled={!(hasUpdates && isOnline)}
+          disabled={isPubishingDisabled}
           data-testid="header-save-button"
           onClick={onSaveInspection}
         >

@@ -11,6 +11,7 @@
   background-color: $gray-5;
   border: 1px solid #cecece;
   border-radius: $global-radius;
+  max-width: rem-calc(441);
 
   &:hover,
   &:focus {

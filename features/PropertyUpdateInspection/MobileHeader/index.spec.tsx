@@ -242,4 +242,25 @@ describe('Unit | Features | Property Update Inspection | Mobile Header', () => {
     );
     expect(pdfReportGenerating).toHaveTextContent(expected);
   });
+
+  it('should disable save button if PDF report is generating', () => {
+    const props = {
+      property: fullProperty,
+      inspection: fullInspection,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: false,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportGenerating: true
+    };
+
+    render(<MobileHeader {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const saveButton = screen.queryByTestId('header-save-button');
+    expect(saveButton).toBeDisabled();
+  });
 });

@@ -132,7 +132,7 @@ const PhotosModal: FunctionComponent<Props> = ({
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: 'image/*,capture=camera',
+    accept: 'image/png, image/gif, image/jpeg ,capture=camera',
     noClick: disabled || Boolean(photoForPreview)
   });
 
