@@ -277,14 +277,12 @@ export default function useInspectionItemUpdate(
     const photosErrors = [];
 
     // Upload signatures
-    const {
-      successful: signatureUploads,
-      errors: signatureUploadErrors
-    } = await publishSignatures.upload(
-      inspectionId,
-      flattenedUnpublishedSignatures,
-      uploadBase64FileToStorage
-    );
+    const { successful: signatureUploads, errors: signatureUploadErrors } =
+      await publishSignatures.upload(
+        inspectionId,
+        flattenedUnpublishedSignatures,
+        uploadBase64FileToStorage
+      );
 
     // Save signature URL's to unpublished updates
     applyLatestUpdates(
@@ -297,18 +295,15 @@ export default function useInspectionItemUpdate(
     );
 
     // Remove all uploaded signatures from local database
-    const {
-      errors: signatureRemoveErrors
-    } = await publishSignatures.removePublished(signatureUploads);
+    const { errors: signatureRemoveErrors } =
+      await publishSignatures.removePublished(signatureUploads);
 
     // Combine all signature errors
     signatureErrors.push(...signatureUploadErrors, ...signatureRemoveErrors);
 
     // Upload photos
-    const {
-      successful: photoUploads,
-      errors: photoUploadErrors
-    } = await publishPhotos.upload(inspectionId, flattenedUnpublishedPhotos);
+    const { successful: photoUploads, errors: photoUploadErrors } =
+      await publishPhotos.upload(inspectionId, flattenedUnpublishedPhotos);
 
     // Save photo's data to unpublished updates
     applyLatestUpdates(

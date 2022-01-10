@@ -4,8 +4,9 @@ import useInspectionSections from './useInspectionSections';
 import {
   singleSection,
   originalMultiSection,
-  addedMultiSecton
+  addedMultiSection
 } from '../../../__mocks__/inspections';
+import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 
 const SECTIONS = Object.freeze({
   [singleSection.id]: { ...singleSection, index: 1, title: 'two' },
@@ -14,7 +15,7 @@ const SECTIONS = Object.freeze({
     index: 0,
     title: 'one'
   },
-  [addedMultiSecton.id]: { ...addedMultiSecton, index: 2, title: 'three' }
+  [addedMultiSection.id]: { ...addedMultiSection, index: 2, title: 'three' }
 });
 const updatedTemplate = {} as inspectionTemplateUpdateModel;
 
@@ -32,13 +33,13 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
   });
 
   test('should hide sections when collapsed', async () => {
-    const expected = `${addedMultiSecton.id} | ${singleSection.id}`;
+    const expected = `${addedMultiSection.id} | ${singleSection.id}`;
     const { result } = renderHook(() =>
       useInspectionSections(SECTIONS, updatedTemplate)
     );
 
     act(() => {
-      result.current.onSectionCollapseToggle(SECTIONS[addedMultiSecton.id]);
+      result.current.onSectionCollapseToggle(SECTIONS[addedMultiSection.id]);
     });
     act(() => {
       result.current.onSectionCollapseToggle(SECTIONS[singleSection.id]);

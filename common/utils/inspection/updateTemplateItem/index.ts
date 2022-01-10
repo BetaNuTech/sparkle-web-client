@@ -44,6 +44,7 @@ export default function updateTemplateItem(
 
   // Apply user changes
   return pipe(
+    mergeAddedMultiSectionData,
     setMainInputSelection,
     setTextInputItemValue,
     setOneActionNoteItemValue,
@@ -67,6 +68,28 @@ export default function updateTemplateItem(
     } as composableSettings
   );
 }
+
+// Merge local data from an added
+// multi-section item that has not
+// been published yet
+const mergeAddedMultiSectionData = (
+  result: inspectionTemplateItemModel,
+  settings: composableSettings
+): inspectionTemplateItemModel => {
+  const { updatedItem } = settings;
+
+  // Normally an item's title is never added to the publishable updates
+  // because it cannot be updated, however locally added multi-section
+  // items do have a cloned title that does need to be published. So
+  // it's used here to detect a multi-section item
+  const hasAddedMultiSectionAttr = Boolean(updatedItem.title);
+
+  if (hasAddedMultiSectionAttr) {
+    Object.assign(result, JSON.parse(JSON.stringify(updatedItem)));
+  }
+
+  return result;
+};
 
 // Set main input selection index
 const setMainInputSelection = (
@@ -411,10 +434,14 @@ const removePhotoData = (
     return result;
   }
 
+  // Title used to detect locally added multi-section
+  // see notes in `mergeAddedMultiSectionData` for more
+  // details about why
+  const isAddedMultiSection = Boolean(result.title);
   const isCurrentlyAdded = Boolean((currentItem.photosData || {})[photoId]);
   const isLocallyAdded = Boolean((updatedItem.photosData || {})[photoId]);
 
-  if (isCurrentlyAdded) {
+  if (!isAddedMultiSection && isCurrentlyAdded) {
     // Set publishable removal of previously published item
     result.photosData = result.photosData || {};
     result.photosData[photoId] = null;

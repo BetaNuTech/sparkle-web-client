@@ -101,6 +101,13 @@ function setAddedMultiSection(
     JSON.stringify(sectionTarget)
   ) as inspectionTemplateSectionModel;
   delete clonedSection.id;
+
+  // Lookup latest index target section
+  clonedSection.index =
+    (previousSections[userChanges.cloneOf] &&
+      previousSections[userChanges.cloneOf].index) ||
+    clonedSection.index;
+
   clonedSection.index += 1;
   clonedSection.added_multi_section = true;
   result.sections[newSectionId] = clonedSection; // Add a new section at random ID

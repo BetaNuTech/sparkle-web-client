@@ -18,7 +18,7 @@ import {
   unselectedCheckmarkItem,
   emptyTextInputItem,
   originalMultiSection,
-  addedMultiSecton,
+  addedMultiSection,
   unpublishedSignatureEntry,
   unpublishedPhotoDataEntry
 } from '../../../__mocks__/inspections';
@@ -315,7 +315,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
       addedSection: null,
       hasAddedSectionItem: false
     };
-    const addedSectionId = addedMultiSecton.id;
+    const addedSectionId = addedMultiSection.id;
     const addedSectionItem = 'item-abc-123';
     const currentTemplate = Object.freeze({
       sections: {
@@ -323,7 +323,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
           ...originalMultiSection
         } as inspectionTemplateSectionModel,
         [addedSectionId]: {
-          ...addedMultiSecton
+          ...addedMultiSection
         } as inspectionTemplateSectionModel
       },
       items: {
