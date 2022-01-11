@@ -6,7 +6,7 @@ import styles from '../styles.module.scss';
 
 interface Props {
   onClickOneActionNotes?: (any) => any;
-  selected:boolean
+  selected: boolean;
 }
 
 const OneActionNotes: FunctionComponent<Props> = ({
@@ -14,11 +14,14 @@ const OneActionNotes: FunctionComponent<Props> = ({
   selected
 }) => (
   <ul className={styles.inspection}>
-    <li className={clsx(
+    <li
+      className={clsx(
         styles.inspection__input,
         selected && styles['inspection__input--selected']
       )}
-      onClick={onClickOneActionNotes}>
+      data-testid="one-action-notes"
+      onClick={onClickOneActionNotes}
+    >
       <NoteSimpleIcon />
     </li>
   </ul>

@@ -23,6 +23,7 @@ const TextInput: FunctionComponent<Props> = ({
         type="text"
         className={styles.input}
         defaultValue={textInputValue}
+        data-testid="item-text-input"
         placeholder="Enter Text"
         onChange={(event) => onMainInputChange(event, event.target.value)}
         disabled={isDisabled}

@@ -72,6 +72,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
           styles.inspection__input,
           getSelectionStyle(selected, selectedValue, 0)
         )}
+        data-testid="control-icon-0"
         data-test-control="true"
         onClick={(event) => onInputChange(event, 0)}
       >
@@ -82,6 +83,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
           styles.inspection__input,
           getSelectionStyle(selected, selectedValue, 1)
         )}
+        data-testid="control-icon-1"
         data-test-control="true"
         onClick={(event) => onInputChange(event, 1)}
       >
@@ -92,6 +94,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
           styles.inspection__input,
           getSelectionStyle(selected, selectedValue, 2)
         )}
+        data-testid="control-icon-2"
         data-test-control="true"
         onClick={(event) => onInputChange(event, 2)}
       >
@@ -102,6 +105,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
           styles.inspection__input,
           getSelectionStyle(selected, selectedValue, 3)
         )}
+        data-testid="control-icon-3"
         data-test-control="true"
         onClick={(event) => onInputChange(event, 3)}
       >
@@ -112,6 +116,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
           styles.inspection__input,
           getSelectionStyle(selected, selectedValue, 4)
         )}
+        data-testid="control-icon-4"
         data-test-control="true"
         onClick={(event) => onInputChange(event, 4)}
       >
