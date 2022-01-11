@@ -1,13 +1,13 @@
-import deficientItemModel from '../models/deficientItem';
+import deficientItemModel from '../../../common/models/deficientItem';
 import deficienciesDb, {
-  deficiencyResult
-} from '../services/firestore/deficiencies';
+  deficientItemResult
+} from '../../../common/services/firestore/deficiencies';
 
 // Hooks for Deficient Item
-export default function useDeficiencies(
+export default function useDeficientItem(
   firestore: any, // eslint-disable-line
   deficientItemId: string
-): deficiencyResult {
+): deficientItemResult {
   // No access payload
   const payload = {
     status: 'loading',

@@ -5,11 +5,11 @@ import { useUser, useFirestore } from 'reactfire';
 import { MainLayout } from '../../../../../../common/MainLayout';
 import useFirestoreUser from '../../../../../../common/hooks/useFirestoreUser';
 import useProperty from '../../../../../../common/hooks/useProperty';
-import useDeficiency from '../../../../../../common/hooks/useDeficiency';
+import useDeficientItem from '../../../../../../features/DeficientItemEdit/hooks/useDeficientItem';
 import LoadingHud from '../../../../../../common/LoadingHud';
 import useNotifications from '../../../../../../common/hooks/useNotifications';
 import notifications from '../../../../../../common/services/notifications';
-import DeficiencyEdit from '../../../../../../features/DeficiencyEdit';
+import DeficientItemEdit from '../../../../../../features/DeficientItemEdit';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
@@ -34,8 +34,8 @@ const Page: React.FC = (): ReactElement => {
   const deficiencyId =
     typeof deficientItemId === 'string' ? deficientItemId : deficientItemId[0];
 
-  // Fetch the data of deficiency item
-  const { data: deficientItem, status: deficientItemStatus } = useDeficiency(
+  // Fetch the data of deficient item
+  const { data: deficientItem, status: deficientItemStatus } = useDeficientItem(
     firestore,
     deficiencyId
   );
@@ -60,14 +60,14 @@ const Page: React.FC = (): ReactElement => {
     deficientItemStatus === 'success' &&
     Boolean(deficientItem.sectionTitle) === false
   ) {
-    sendNotification('Could not load deficiency item.', { type: 'error' });
+    sendNotification('Could not load deficient item.', { type: 'error' });
     router.push(`/properties/${propertyId}/deficient-items`);
   }
 
   return (
     <MainLayout>
       {isLoaded ? (
-        <DeficiencyEdit
+        <DeficientItemEdit
           user={user}
           property={property}
           deficientItem={deficientItem}
