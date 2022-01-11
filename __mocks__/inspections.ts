@@ -256,7 +256,7 @@ export const unselectedOneActionNote: inspectionTemplateItemModel = {
   itemType: 'main',
   title: 'Six',
   sectionId: singleSection.id,
-  mainInputType: 'OneAction_notes',
+  mainInputType: 'oneaction_notes',
   mainInputNotes: '',
   mainInputSelected: false,
   mainInputFourValue: 0,
@@ -357,35 +357,32 @@ export const photoDataEntry: inspectionTemplateItemModelPhotoData = {
     'https://firebasestorage.googleapis.com/v0/b/test.appspot.com/o/inspectionItemImages%2Fproperty-id%2Fitem-id%2F1639158738461.jpg?alt=media&token=123' // eslint-disable-line
 };
 
-export const unpublishedSignatureEntry: inspectionTemplateItemModelUnpublishedSignature =
-  {
-    id: 'unpublised-signature-data-1',
-    createdAt: 1,
-    inspection: fullInspection.id,
-    item: unselectedSignatureInputItem.id,
-    signature:
-      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-  };
+export const unpublishedSignatureEntry: inspectionTemplateItemModelUnpublishedSignature = {
+  id: 'unpublised-signature-data-1',
+  createdAt: 1,
+  inspection: fullInspection.id,
+  item: unselectedSignatureInputItem.id,
+  signature:
+    'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+};
 
-export const unpublishedPhotoDataEntry: inspectionTemplateItemModelUnpublishedPhotoData =
-  {
-    id: 'unpublised-photo-data-1',
-    caption: 'caption-1',
-    createdAt: 1,
-    inspection: fullInspection.id,
-    item: unselectedCheckmarkItem.id,
-    photoData:
-      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-  };
-export const unpublishedPhotoDataEntryNoCaption: inspectionTemplateItemModelUnpublishedPhotoData =
-  {
-    id: 'unpublised-photo-data-2',
-    caption: '',
-    createdAt: 1,
-    inspection: fullInspection.id,
-    item: unselectedCheckmarkItem.id,
-    photoData:
-      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-  };
+export const unpublishedPhotoDataEntry: inspectionTemplateItemModelUnpublishedPhotoData = {
+  id: 'unpublised-photo-data-1',
+  caption: 'caption-1',
+  createdAt: 1,
+  inspection: fullInspection.id,
+  item: unselectedCheckmarkItem.id,
+  photoData:
+    'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+};
+export const unpublishedPhotoDataEntryNoCaption: inspectionTemplateItemModelUnpublishedPhotoData = {
+  id: 'unpublised-photo-data-2',
+  caption: '',
+  createdAt: 1,
+  inspection: fullInspection.id,
+  item: unselectedCheckmarkItem.id,
+  photoData:
+    'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+};
 
 export default [fullInspection, inspectionA, inspectionB];

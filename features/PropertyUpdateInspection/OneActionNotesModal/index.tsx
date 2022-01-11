@@ -58,6 +58,7 @@ const OneActionNotesModal: FunctionComponent<Props> = ({
           onChange={onChange}
           defaultValue={value}
           disabled={!canEdit}
+          data-testid="main-input-notes-textarea"
         ></textarea>
       </div>
     </div>
