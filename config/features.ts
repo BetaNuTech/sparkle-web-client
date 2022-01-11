@@ -19,5 +19,8 @@ export default {
       'true' || false,
   supportBetaPropertyInspectionMove: false,
   supportBetaPropertyUpdate: true,
-  supportBetaInspectionUploadPhotos: false
+  supportBetaInspectionUploadPhotos: false,
+  supportBetaDeficientItemEdit:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_PROPERTY_DEFICIENT_ITEM_EDIT ===
+      'true' || false
 };

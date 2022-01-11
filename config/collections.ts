@@ -9,5 +9,6 @@ export default {
   teams: 'teams',
   templates: 'templates',
   templateCategories: 'templateCategories',
-  users: 'users'
+  users: 'users',
+  deficiencies: 'deficiencies'
 };
