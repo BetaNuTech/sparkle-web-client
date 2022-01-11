@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useDeficiency from './useDeficiency';
-import deficienciesDb from '../services/firestore/deficiencies';
+import useDeficientItem from './useDeficientItem';
+import deficienciesDb from '../../../common/services/firestore/deficiencies';
 
 const emptyCollectionResult = {
   status: 'success',
@@ -9,7 +9,7 @@ const emptyCollectionResult = {
   data: {}
 };
 
-describe('Unit | Common | Hooks | Use Deficiency', () => {
+describe('Unit | Common | Hooks | Use Deficient Item', () => {
   afterEach(() => sinon.restore());
 
   test('should request deficiency record', () => {
@@ -17,7 +17,7 @@ describe('Unit | Common | Hooks | Use Deficiency', () => {
     const findRecord = sinon
       .stub(deficienciesDb, 'findRecord')
       .returns(emptyCollectionResult);
-    renderHook(() => useDeficiency({}, expected));
+    renderHook(() => useDeficientItem({}, expected));
 
     const result = findRecord.firstCall || { args: [] };
     const actual = result.args[1];
