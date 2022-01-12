@@ -330,7 +330,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // User updates an item's
   // unpublished photo data
   const onChangeItemsUnpublishedPhotos = async (files: Array<string>) => {
-    addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
+    return addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
   };
 
   const saveSignature = async (signatureData: string, itemId: string) => {

@@ -2,7 +2,6 @@ import update from './updateTemplateSection';
 import {
   singleSection,
   originalMultiSection,
-  addedMultiSection,
   unselectedCheckmarkItem
 } from '../../../__mocks__/inspections';
 import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
