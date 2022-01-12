@@ -62,7 +62,7 @@ export default {
     const {
       status: queryStatus,
       error: queryError,
-      data: queryData
+      data: queryData = [] as deficientItemModel[]
     } = useFirestoreCollectionData(query, {
       idField: 'id'
     });
