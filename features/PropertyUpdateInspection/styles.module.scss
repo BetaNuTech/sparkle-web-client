@@ -27,6 +27,8 @@ $incomplete-color: lighten($alert-light-color, 2);
 
 .section {
   padding: 0;
+  overflow: auto;
+
   &__list {
     @extend %list;
     @extend %stickyBoundingBox;
@@ -239,6 +241,7 @@ $incomplete-color: lighten($alert-light-color, 2);
 
   @include media-query(tablet) {
     padding: $global-lg-padding $global-padding $global-padding;
+    overflow: visible;
 
     &__list__item__header__content {
       font-size: rem-calc(22);

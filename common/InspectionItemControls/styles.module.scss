@@ -107,6 +107,10 @@
       border: 1px solid $gray-light;
       max-width: rem-calc(441);
       height: rem-calc(134);
+
+      &[disabled] {
+        cursor: not-allowed;
+      }
     }
   }
 
@@ -136,6 +140,10 @@
         cursor: default;
       }
 
+      &--isDisabled {
+        cursor: not-allowed;
+      }
+
       &--selected {
         svg {
           g,
@@ -149,6 +157,7 @@
       // add fade in out animation for required photo and notes icon
       &--isRequired {
         @extend %ani-blink;
+        animation-duration: 1s; // Keep animations in sync on every second
 
         svg {
           g,

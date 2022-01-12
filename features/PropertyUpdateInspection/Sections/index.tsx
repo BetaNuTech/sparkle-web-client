@@ -39,6 +39,7 @@ interface Props {
   isIncompleteRevealed: boolean;
   completedItems: inspectionTemplateItemModel[];
   requireDeficientItemNoteAndPhoto: boolean;
+  inspectionItemDeficientIds: string[];
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -61,41 +62,44 @@ const Sections: FunctionComponent<Props> = ({
   isMobile,
   isIncompleteRevealed,
   completedItems,
-  requireDeficientItemNoteAndPhoto
+  requireDeficientItemNoteAndPhoto,
+  inspectionItemDeficientIds
 }) => {
-  if (sections && sections.length > 0) {
-    return (
-      <ul data-testid="inspection-section" className={styles.section}>
-        {sections.map((sectionItem, idx) => (
-          <Group
-            key={sectionItem.id}
-            section={sectionItem}
-            nextSectionTitle={sections[idx + 1] && sections[idx + 1].title}
-            forceVisible={forceVisible}
-            collapsedSections={collapsedSections}
-            onSectionCollapseToggle={onSectionCollapseToggle}
-            onInputChange={onInputChange}
-            sectionItems={sectionItems}
-            onClickOneActionNotes={onClickOneActionNotes}
-            onAddSection={onAddSection}
-            onRemoveSection={onRemoveSection}
-            onItemIsNAChange={onItemIsNAChange}
-            onClickAttachmentNotes={onClickAttachmentNotes}
-            onClickSignatureInput={onClickSignatureInput}
-            onClickPhotos={onClickPhotos}
-            inspectionItemsPhotos={inspectionItemsPhotos}
-            inspectionItemsSignature={inspectionItemsSignature}
-            canEdit={canEdit}
-            isMobile={isMobile}
-            isIncompleteRevealed={isIncompleteRevealed}
-            completedItems={completedItems}
-            requireDeficientItemNoteAndPhoto={requireDeficientItemNoteAndPhoto}
-          />
-        ))}
-      </ul>
-    );
+  if (!sections || !sections.length) {
+    return <></>;
   }
-  return null;
+
+  return (
+    <ul data-testid="inspection-section" className={styles.section}>
+      {sections.map((sectionItem, index) => (
+        <Group
+          key={sectionItem.id}
+          section={sectionItem}
+          nextSectionTitle={sections[index + 1] && sections[index + 1].title}
+          forceVisible={forceVisible}
+          collapsedSections={collapsedSections}
+          onSectionCollapseToggle={onSectionCollapseToggle}
+          onInputChange={onInputChange}
+          sectionItems={sectionItems}
+          onClickOneActionNotes={onClickOneActionNotes}
+          onAddSection={onAddSection}
+          onRemoveSection={onRemoveSection}
+          onItemIsNAChange={onItemIsNAChange}
+          onClickAttachmentNotes={onClickAttachmentNotes}
+          onClickSignatureInput={onClickSignatureInput}
+          onClickPhotos={onClickPhotos}
+          inspectionItemsPhotos={inspectionItemsPhotos}
+          inspectionItemsSignature={inspectionItemsSignature}
+          canEdit={canEdit}
+          isMobile={isMobile}
+          isIncompleteRevealed={isIncompleteRevealed}
+          completedItems={completedItems}
+          requireDeficientItemNoteAndPhoto={requireDeficientItemNoteAndPhoto}
+          inspectionItemDeficientIds={inspectionItemDeficientIds}
+        />
+      ))}
+    </ul>
+  );
 };
 
 export default Sections;

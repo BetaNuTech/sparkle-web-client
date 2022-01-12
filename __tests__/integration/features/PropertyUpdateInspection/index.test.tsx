@@ -137,6 +137,8 @@ describe('Integration | Features | Property Update Inspection', () => {
 
     // Setup inspection with single section/item
     const inspection = deepClone(incompleteInspection) as inspectionModel;
+    inspection.inspectionCompleted = false;
+    inspection.inspector = user.id;
     inspection.template.sections = {
       [singleSection.id]: deepClone(singleSection)
     };

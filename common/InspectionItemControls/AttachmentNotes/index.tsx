@@ -8,29 +8,39 @@ interface Props {
   enabled: boolean;
   selected: boolean;
   onClickAttachmentNotes(): void;
-  isDeficient: boolean;
+  isDisabled: boolean;
+  isRequired: boolean;
 }
 
 const AttachmentNotes: FunctionComponent<Props> = ({
   enabled,
   selected,
   onClickAttachmentNotes,
-  isDeficient
+  isDisabled,
+  isRequired
 }) => {
-  const isRequired = isDeficient && !selected && enabled;
+  const onClick = () => {
+    if ((enabled && !isDisabled) || selected) {
+      onClickAttachmentNotes();
+    }
+  };
+
   return (
     <li
       className={clsx(
         styles.inspection__attachment__item,
         !enabled && styles['inspection__attachment__item--disabled'],
         selected && styles['inspection__attachment__item--selected'],
-        isRequired && styles['inspection__attachment__item--isRequired']
+        isRequired && styles['inspection__attachment__item--isRequired'],
+        isDisabled &&
+          !selected &&
+          styles['inspection__attachment__item--isDisabled']
       )}
       data-testid="attachment-note"
       data-test={enabled ? '' : 'disabled'}
       data-testselected={selected ? 'selected' : ''}
       data-testdeficient={isRequired ? 'deficient' : ''}
-      onClick={onClickAttachmentNotes}
+      onClick={onClick}
     >
       <PageIcon />
     </li>
@@ -39,6 +49,8 @@ const AttachmentNotes: FunctionComponent<Props> = ({
 
 AttachmentNotes.defaultProps = {
   enabled: true,
+  isRequired: false,
+  isDisabled: false,
   onClickAttachmentNotes: () => {} // eslint-disable-line
 };
 

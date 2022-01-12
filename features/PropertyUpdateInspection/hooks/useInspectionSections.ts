@@ -3,7 +3,7 @@ import deepmerge from '../../../common/utils/deepmerge';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 
-interface useInspectionSectionsResult {
+interface Result {
   sortedTemplateSections: Array<inspectionTemplateSectionModel>;
   collapsedSections: string[];
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
@@ -13,7 +13,7 @@ interface useInspectionSectionsResult {
 export default function useInspectionSections(
   sections: Record<string, inspectionTemplateSectionModel>,
   updatedTemplate: inspectionTemplateUpdateModel
-): useInspectionSectionsResult {
+): Result {
   const [memo, setMemo] = useState('[]');
 
   const mergedSections = deepmerge(
