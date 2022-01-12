@@ -10,7 +10,8 @@ export default {
   supportBetaPropertiesList: true,
   supportBetaPropertyProfile: true,
   supportBetaPropertyCreate: true,
-  supportBetaPropertyDeficient: false,
+  supportBetaPropertyDeficient:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_PROPERTY_DEFICIENT === 'true' || false,
   supportBetaPropertyYardiResident: false,
   supportBetaPropertyYardiWorkOrder: false,
   supportBetaPropertyInspectionCreate: true,

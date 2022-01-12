@@ -5,11 +5,11 @@ import { useUser, useFirestore } from 'reactfire';
 import { MainLayout } from '../../../../common/MainLayout';
 import useFirestoreUser from '../../../../common/hooks/useFirestoreUser';
 import useProperty from '../../../../common/hooks/useProperty';
-import useDeficientItemsList from '../../../../features/DeficientItemsList/hooks/useDeficientItemsList';
+import useDeficientItemsList from '../../../../features/DeficientItems/hooks/useDeficientItemsList';
 import LoadingHud from '../../../../common/LoadingHud';
 import useNotifications from '../../../../common/hooks/useNotifications';
 import notifications from '../../../../common/services/notifications';
-import DeficientItemsList from '../../../../features/DeficientItemsList';
+import DeficientItems from '../../../../features/DeficientItems';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
@@ -32,10 +32,8 @@ const Page: React.FC = (): ReactElement => {
   );
 
   // Fetch the data of deficient items list
-  const {
-    data: deficientItems,
-    status: deficientItemsStatus
-  } = useDeficientItemsList(firestore, propertyId);
+  const { data: deficientItems, status: deficientItemsStatus } =
+    useDeficientItemsList(firestore, propertyId);
 
   let isLoaded = false;
   if (
@@ -55,10 +53,10 @@ const Page: React.FC = (): ReactElement => {
   return (
     <MainLayout>
       {isLoaded ? (
-        <DeficientItemsList
+        <DeficientItems
           user={user}
           property={property}
-          deficientItemsList={deficientItems}
+          deficientItems={deficientItems}
         />
       ) : (
         <LoadingHud />

@@ -9,10 +9,8 @@ interface Props {
   deficientItem: DeficientItemModel;
 }
 
-const DeficientItemEdit: FunctionComponent<Props> = ({
-  user,
-  property,
-  deficientItem
-}) => <div>Deficient Item Form Page</div>;
+const DeficientItemEdit: FunctionComponent<Props> = () => (
+  <div>Deficient Item Form Page</div>
+);
 
 export default DeficientItemEdit;
