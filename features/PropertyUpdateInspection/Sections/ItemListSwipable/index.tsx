@@ -128,6 +128,7 @@ const ItemListSwipable: FunctionComponent<Props> = ({
                     onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
                     onClickPhotos={() => onClickPhotos(item)}
                     isDeficient={isItemDeficient}
+                    isDisabled={!canEdit}
                   />
                 )}
                 <InspectionItemControls

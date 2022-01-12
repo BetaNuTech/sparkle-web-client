@@ -13,8 +13,8 @@ interface result {
     files: Array<string>,
     itemId: string
   ): void;
-  getUnpublishedInspectionPhotos(): void;
-  removeUnpublishedInspectionItemPhoto(unpublishedPhotoId:string):void;
+  reloadPhotos(): void;
+  removeUnpublishedInspectionItemPhoto(unpublishedPhotoId: string): void;
   unpublishedInspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
   unpublishedSelectedInspectionItemsPhotos: unPublishedPhotoDataModel[];
   addUnpublishedInspectionPhotoCaption(
@@ -116,7 +116,9 @@ export default function useInspectionItemPhotos(
       handleErrorResponse(err);
     }
   };
-  const removeUnpublishedInspectionItemPhoto = async (unpublishedPhotoId: string) => {
+  const removeUnpublishedInspectionItemPhoto = async (
+    unpublishedPhotoId: string
+  ) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       await inspectionItemPhotosData.deleteRecord(unpublishedPhotoId);
@@ -135,7 +137,7 @@ export default function useInspectionItemPhotos(
 
   return {
     addUnpublishedInspectionItemPhotos,
-    getUnpublishedInspectionPhotos,
+    reloadPhotos: getUnpublishedInspectionPhotos,
     removeUnpublishedInspectionItemPhoto,
     unpublishedInspectionItemsPhotos,
     unpublishedSelectedInspectionItemsPhotos,

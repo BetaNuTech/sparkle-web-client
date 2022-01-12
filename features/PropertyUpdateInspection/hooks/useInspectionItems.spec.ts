@@ -51,7 +51,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
       items: deepClone(ITEMS)
     } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
-      useInspectionItems(updatedTemplate, currentTemplate)
+      useInspectionItems(updatedTemplate, currentTemplate, false)
     );
     const { sectionItems } = result.current;
 
@@ -73,7 +73,7 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
       items: deepClone(ITEMS)
     } as inspectionTemplateUpdateModel;
     const { result } = renderHook(() =>
-      useInspectionItems(updatedTemplate, currentTemplate)
+      useInspectionItems(updatedTemplate, currentTemplate, false)
     );
     const { sectionItems } = result.current;
 
@@ -89,4 +89,8 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
     expect(actualSectionOneTitle).toEqual(expectedSectionOneTitle);
     expect(actualSectionTwoTitle).toEqual(expectedSectionTwoTitle);
   });
+
+  // TODO
+  // eslint-disable-next-line
+  // test('should return identifiers to all deficient inspection items when inspection has required tracking enabled', () => {});
 });

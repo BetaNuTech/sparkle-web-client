@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
 import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
@@ -8,9 +8,6 @@ import ItemList from '../ItemList';
 import ItemListSwipable from '../ItemListSwipable';
 import Header from '../Header';
 import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
-import inspectionConfig from '../../../../config/inspections';
-
-const DEFICIENT_LIST_ELIGIBLE = inspectionConfig.deficientListEligible;
 
 interface Props {
   section: inspectionTemplateSectionModel;
@@ -46,6 +43,7 @@ interface Props {
   isIncompleteRevealed: boolean;
   completedItems: inspectionTemplateItemModel[];
   requireDeficientItemNoteAndPhoto: boolean;
+  inspectionItemDeficientIds: string[];
 }
 
 const Group: FunctionComponent<Props> = ({
@@ -69,37 +67,13 @@ const Group: FunctionComponent<Props> = ({
   isMobile,
   isIncompleteRevealed,
   completedItems,
-  requireDeficientItemNoteAndPhoto
+  inspectionItemDeficientIds
 }) => {
-  const [deficientItemList, setDeficientItemList] = useState([]);
-
   const listItems = useMemo(
     () => sectionItems.get(section.id) || [],
     [sectionItems, section.id]
   );
 
-  // Lookup deficient items on item change
-  useEffect(() => {
-    // Remove animation for all previously
-    // deficient items
-    setDeficientItemList([]);
-
-    // Lookup deficient ID's
-    const deficientItemsIds = listItems
-      .filter((item) => isItemDeficient(item, requireDeficientItemNoteAndPhoto))
-      .map(({ id }) => id);
-
-    // Set the deficient item ids after timeout
-    // so animation will be applied over all
-    // inspection items at the same time
-    const timeoutInstance = setTimeout(() => {
-      setDeficientItemList([...deficientItemsIds]);
-    }, 100);
-
-    // clearing timeout
-    return () => clearTimeout(timeoutInstance);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listItems]);
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
@@ -144,7 +118,7 @@ const Group: FunctionComponent<Props> = ({
               inspectionItemsSignature={inspectionItemsSignature}
               completedItems={completedItems}
               isIncompleteRevealed={isIncompleteRevealed}
-              isItemDeficient={deficientItemList.indexOf(item.id) > -1}
+              isItemDeficient={inspectionItemDeficientIds.indexOf(item.id) > -1}
             />
           ) : (
             <ItemList
@@ -162,7 +136,7 @@ const Group: FunctionComponent<Props> = ({
               inspectionItemsSignature={inspectionItemsSignature}
               completedItems={completedItems}
               isIncompleteRevealed={isIncompleteRevealed}
-              isItemDeficient={deficientItemList.indexOf(item.id) > -1}
+              isItemDeficient={inspectionItemDeficientIds.indexOf(item.id) > -1}
             />
           )
         )}
@@ -170,19 +144,6 @@ const Group: FunctionComponent<Props> = ({
     </li>
   );
 };
-
-function isItemDeficient(
-  item: inspectionTemplateItemModel,
-  requireDeficientItemNoteAndPhoto: boolean
-) {
-  if (!requireDeficientItemNoteAndPhoto) {
-    return false;
-  }
-
-  const deficientEligibles = DEFICIENT_LIST_ELIGIBLE[item?.mainInputType] || [];
-
-  return deficientEligibles[item?.mainInputSelection] || false;
-}
 
 Group.defaultProps = {};
 

@@ -84,20 +84,14 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [
-    isVisibleOneActionNotesModal,
-    setIsVisibleOneActionNotesModal
-  ] = useState(false);
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleAttachmentNotesModal,
-    setIsVisibleAttachmentNotesModal
-  ] = useState(false);
+  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleSignatureInputModal,
-    setIsVisibleSignatureInputModal
-  ] = useState(false);
+  const [isVisibleSignatureInputModal, setIsVisibleSignatureInputModal] =
+    useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
@@ -108,7 +102,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     unpublishedInspectionItemsPhotos,
     unpublishedSelectedInspectionItemsPhotos,
     addUnpublishedInspectionPhotoCaption,
-    removeUnpublishedInspectionItemPhoto
+    removeUnpublishedInspectionItemPhoto,
+    reloadPhotos
   } = useUnpublishInspectionItemPhotos(
     sendNotification,
     selectedInspectionItem,
@@ -244,20 +239,19 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     } catch (err) {}
 
     reloadSignatures();
-    // TODO reload item photos state
+    reloadPhotos();
   };
 
-  const {
-    sortedTemplateSections,
-    collapsedSections,
-    onSectionCollapseToggle
-  } = useInspectionSectionSort(inspection.template.sections, updates);
+  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
+    useInspectionSectionSort(inspection.template.sections, updates);
 
   // Items grouped by their section
-  const { sectionItems, inspectionItems } = useInspectionItems(
-    updates,
-    inspection.template
-  );
+  const { sectionItems, inspectionItems, inspectionItemDeficientIds } =
+    useInspectionItems(
+      updates,
+      inspection.template,
+      Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
+    );
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
@@ -431,6 +425,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isIncompleteRevealed={isIncompleteRevealed}
         completedItems={completedItems}
+        inspectionItemDeficientIds={inspectionItemDeficientIds}
         requireDeficientItemNoteAndPhoto={
           inspection.template.requireDeficientItemNoteAndPhoto
         }

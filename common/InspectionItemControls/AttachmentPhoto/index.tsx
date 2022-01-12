@@ -8,16 +8,22 @@ interface Props {
   enabled: boolean;
   selected: boolean;
   onClickPhotos(): void;
-  isDeficient: boolean;
+  isDisabled: boolean;
+  isRequired: boolean;
 }
 
 const AttachmentPhoto: FunctionComponent<Props> = ({
   enabled,
   selected,
   onClickPhotos,
-  isDeficient
+  isDisabled,
+  isRequired
 }) => {
-  const isRequired = isDeficient && !selected && enabled;
+  const onClick = () => {
+    if ((enabled && !isDisabled) || selected) {
+      onClickPhotos();
+    }
+  };
 
   return (
     <li
@@ -25,13 +31,16 @@ const AttachmentPhoto: FunctionComponent<Props> = ({
         styles.inspection__attachment__item,
         !enabled && styles['inspection__attachment__item--disabled'],
         selected && styles['inspection__attachment__item--selected'],
-        isRequired && styles['inspection__attachment__item--isRequired']
+        isRequired && styles['inspection__attachment__item--isRequired'],
+        isDisabled &&
+          !selected &&
+          styles['inspection__attachment__item--isDisabled']
       )}
       data-testid="attachment-photo"
       data-test={enabled ? '' : 'disabled'}
       data-testselected={selected ? 'selected' : ''}
       data-testdeficient={isRequired ? 'deficient' : ''}
-      onClick={onClickPhotos}
+      onClick={onClick}
     >
       <PhotoIcon />
     </li>

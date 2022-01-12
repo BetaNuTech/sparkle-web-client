@@ -26,7 +26,7 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     );
 
     await act(async () => {
-      await result.current.getUnpublishedInspectionPhotos();
+      await result.current.reloadPhotos();
     });
     const actual = spyFunc.called;
     expect(actual).toEqual(expected);
@@ -65,10 +65,7 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     const sendNotification = sinon.spy();
     const expected = true;
 
-    const spyFunc = sinon.spy(
-      inspectionItemPhotosData,
-      'deleteRecord'
-    );
+    const spyFunc = sinon.spy(inspectionItemPhotosData, 'deleteRecord');
     const { result } = renderHook(() =>
       useInspectionItemPhotos(
         sendNotification,
@@ -108,5 +105,4 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     const actual = spyFunc.called;
     expect(actual).toEqual(expected);
   });
-
 });
