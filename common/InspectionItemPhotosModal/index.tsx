@@ -3,7 +3,6 @@ import clsx from 'clsx';
 import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
-
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
 import IndexedDBStorage from '../IndexedDBStorage';
@@ -18,7 +17,7 @@ interface Props extends ModalProps {
   photosData: Record<string, photoDataModel>;
   unpublishedPhotosData: unPublishedPhotoDataModel[];
   title: string;
-  onChangeFiles(files: Array<string>): void;
+  onChangeFiles(files: Array<string>): Promise<void>;
   onAddCaption(unpublishedPhotoId: string, captionText: string): void;
   onRemovePhoto(unpublishedPhotoId: string): void;
   sendNotification: userNotifications;
@@ -45,16 +44,19 @@ const PhotosModal: FunctionComponent<Props> = ({
     .sort(({ id: aId }, { id: bId }) => Number(bId) - Number(aId));
 
   const [photoForPreview, setPhotoForPreview] = useState(null);
+  const [isProcessingPhotos, setIsProcessingPhotos] = useState(false);
+  const [processingPhotosCount, setProcessingPhotosCount] = useState(0);
+  const [storedPhotosCount, setStoredPhotosCount] = useState(0);
 
   const hasExistingPhotos =
     photosDataItems.length > 0 || unpublishedPhotosData.length > 0;
 
   // Promise to read file data into url
-  const fileToDataURI = (file: File) =>
+  const fileToDataURI = (file: File): Promise<string> =>
     // Read file as data URL
     new Promise((resolve, reject) => {
       const fileReader = new FileReader();
-      fileReader.onload = () => resolve(fileReader.result);
+      fileReader.onload = () => resolve(`${fileReader.result}`);
       fileReader.onerror = () =>
         reject(
           new Error(
@@ -66,15 +68,77 @@ const PhotosModal: FunctionComponent<Props> = ({
 
   // Publish all files data URL's to parent
   const processAcceptedFiles = async (files: Array<File>) => {
-    // List of promises for file data URL's
-    const filesToDataUris = files.map(async (file) => fileToDataURI(file));
-    Promise.all(filesToDataUris)
-      .then((res: string[]) => onChangeFiles(res))
-      .catch((err: Error) =>
-        sendNotification(err.message, {
+    setIsProcessingPhotos(true);
+
+    const proccessErrors = [];
+    const storageErrors = [];
+    const filesDataUri = [];
+    let processedCounter = files.length;
+    setProcessingPhotosCount(processedCounter);
+
+    // Convert file ito file data URL's one by one
+    // eslint-disable-next-line no-restricted-syntax
+    for (const file of files) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const dataUru = await fileToDataURI(file);
+        filesDataUri.push(dataUru);
+      } catch (err) {
+        proccessErrors.push(err);
+      }
+
+      // Update processed file count
+      processedCounter -= 1;
+      setProcessingPhotosCount(processedCounter);
+    }
+
+    if (proccessErrors.length > 0) {
+      const multiple = proccessErrors.length > 1;
+      sendNotification(
+        `${
+          multiple ? 'Some files' : 'One file'
+        } could not be processed, please try again or add ${
+          multiple ? 'different files' : 'a different file'
+        }`,
+        {
           type: 'error'
-        })
+        }
       );
+    }
+
+    let storedCounter = filesDataUri.length;
+    setStoredPhotosCount(storedCounter);
+
+    // Save each file to local DB
+    // eslint-disable-next-line no-restricted-syntax
+    for (const dataUri of filesDataUri) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await onChangeFiles([dataUri]);
+      } catch (err) {
+        storageErrors.push(err);
+      }
+
+      // Update stored file count
+      storedCounter -= 1;
+      setStoredPhotosCount(storedCounter);
+    }
+
+    if (storageErrors.length > 0) {
+      const multiple = storageErrors.length > 1;
+      sendNotification(
+        `${
+          multiple ? 'Some files' : 'One file'
+        } could not be stored locally, please try again or add ${
+          multiple ? 'different files' : 'a different file'
+        }`,
+        {
+          type: 'error'
+        }
+      );
+    }
+
+    setIsProcessingPhotos(false);
   };
 
   const onClickImage = (photoData: photoDataModel) => {
@@ -94,14 +158,14 @@ const PhotosModal: FunctionComponent<Props> = ({
   };
 
   const onClosePreview = (
-    ev: MouseEvent<HTMLButtonElement | HTMLDivElement>
+    evt: MouseEvent<HTMLButtonElement | HTMLDivElement>
   ) => {
-    ev.stopPropagation();
+    evt.stopPropagation();
     setPhotoForPreview(null);
   };
 
-  const onClickPhotoItem = (ev: MouseEvent<HTMLLIElement>) => {
-    ev.stopPropagation();
+  const onClickPhotoItem = (evt: MouseEvent<HTMLLIElement>) => {
+    evt.stopPropagation();
   };
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
@@ -130,11 +194,16 @@ const PhotosModal: FunctionComponent<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const disableClick =
+    disabled || Boolean(photoForPreview) || isProcessingPhotos;
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'image/png, image/gif, image/jpeg ,capture=camera',
-    noClick: disabled || Boolean(photoForPreview)
+    noClick: disableClick
   });
+
+  const disableUpload = (isDragActive && disabled) || isProcessingPhotos;
 
   return (
     <div className={styles.PhotosModal} data-testid="photos-modal">
@@ -161,7 +230,7 @@ const PhotosModal: FunctionComponent<Props> = ({
           baseStyles.modal__main,
           styles.PhotosModal__main,
           isDragActive && styles['PhotosModal__main--dragging'],
-          isDragActive && disabled && styles['PhotosModal__main--disabled']
+          disableUpload && styles['PhotosModal__main--disabled']
         )}
         data-testid="inspection-item-photos-dropzone"
         {...getRootProps()}
@@ -181,20 +250,26 @@ const PhotosModal: FunctionComponent<Props> = ({
               {unpublishedPhotosData.map((item) => (
                 <li
                   key={item.id}
-                  className={styles.PhotosModal__photos__list__item}
+                  className={clsx(
+                    styles.PhotosModal__photos__list__item,
+                    isProcessingPhotos && '-cu-not-allowed'
+                  )}
                   data-testid="photos-modal-unpublished-photo-list"
                   onClick={onClickPhotoItem}
                 >
-                  <button
-                    className={styles.PhotosModal__photos__list__item__remove}
-                    onClick={() => onClickRemovePhoto(item.id)}
-                    data-testid="photos-modal-photos-remove"
-                  >
-                    ×
-                  </button>
+                  {!isProcessingPhotos && (
+                    <button
+                      className={styles.PhotosModal__photos__list__item__remove}
+                      onClick={() => onClickRemovePhoto(item.id)}
+                      data-testid="photos-modal-photos-remove"
+                    >
+                      ×
+                    </button>
+                  )}
                   <div
                     className={styles.PhotosModal__photos__list__item__image}
                     onClick={() =>
+                      !isProcessingPhotos &&
                       onClickImage({
                         downloadURL: item.photoData,
                         ...item
@@ -212,7 +287,7 @@ const PhotosModal: FunctionComponent<Props> = ({
                       </div>
                     )}
                   </div>
-                  {!item.caption && (
+                  {!item.caption && !isProcessingPhotos && (
                     <button
                       className={
                         styles.PhotosModal__photos__list__item__caption
@@ -228,12 +303,17 @@ const PhotosModal: FunctionComponent<Props> = ({
               {photosDataItems.map((item) => (
                 <li
                   key={item.id}
-                  className={styles.PhotosModal__photos__list__item}
-                  onClick={onClickPhotoItem}
+                  className={clsx(
+                    styles.PhotosModal__photos__list__item,
+                    isProcessingPhotos && '-cu-not-allowed'
+                  )}
+                  onClick={(evt) =>
+                    !isProcessingPhotos && onClickPhotoItem(evt)
+                  }
                 >
                   <div
                     className={styles.PhotosModal__photos__list__item__image}
-                    onClick={() => onClickImage(item)}
+                    onClick={() => !isProcessingPhotos && onClickImage(item)}
                   >
                     <img src={item.downloadURL} alt={item.caption} />
                     {item.caption && (
@@ -258,10 +338,19 @@ const PhotosModal: FunctionComponent<Props> = ({
           >
             {!disabled && (
               <button
-                className={styles.PhotosModal__buttons__add}
-                disabled={disabled}
+                className={clsx(
+                  styles.PhotosModal__buttons__add,
+                  isProcessingPhotos &&
+                    styles['PhotosModal__buttons__add--isProcessing']
+                )}
+                disabled={isProcessingPhotos}
               >
-                Add Files
+                {isProcessingPhotos &&
+                  (processingPhotosCount
+                    ? `Processing ${processingPhotosCount} files`
+                    : `Storing ${storedPhotosCount} files locally`)}
+
+                {!isProcessingPhotos && 'Add Files'}
               </button>
             )}
           </div>

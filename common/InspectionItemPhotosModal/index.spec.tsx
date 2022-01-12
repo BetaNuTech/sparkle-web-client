@@ -145,10 +145,11 @@ describe('Common | Inspection Item Photos Modal', () => {
     const droppedFiles = dropzoneUtils.mockFiles([
       new File(['(⌐□_□)'], 'test.png', { type: 'image/png' })
     ]);
-
-    dropzoneUtils.dispatchEvent(dropzone, 'drop', droppedFiles);
-    await dropzoneUtils.flushPromises(rerender, ui);
-    await new Promise((resolve) => setTimeout(resolve, 100)); // wait for onchange to flush
+    await act(async () => {
+      dropzoneUtils.dispatchEvent(dropzone, 'drop', droppedFiles);
+      await dropzoneUtils.flushPromises(rerender, ui);
+      await new Promise((resolve) => setTimeout(resolve, 100)); // wait for onchange to flush
+    });
 
     expect(actual).toEqual(expected);
   });

@@ -13,7 +13,7 @@
     }
 
     &--disabled {
-      background: $gray-dark;
+      background: $gray-med-dark-2;
       cursor: no-drop;
     }
   }
@@ -105,6 +105,14 @@
 
     &__add {
       @extend %outlineButton;
+
+      &--isProcessing,
+      &--isProcessing[disabled] {
+        @extend %ani-blink;
+        color: $white;
+        border-color: transparent;
+        cursor: not-allowed;
+      }
     }
 
     &__fileInput {
