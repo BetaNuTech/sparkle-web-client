@@ -2,7 +2,7 @@ import { FunctionComponent, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
-import DeficientItemModel from '../../common/models/deficientItem';
+import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import utilArray from '../../common/utils/array';
 import ItemsStateGroup from './ItemsStateGroup';
@@ -13,7 +13,7 @@ interface Props {
   isStaging?: boolean;
   user: userModel;
   property: propertyModel;
-  deficientItems: DeficientItemModel[];
+  deficientItems: deficientItemModel[];
 }
 
 const DeficientItems: FunctionComponent<Props> = ({
@@ -23,9 +23,9 @@ const DeficientItems: FunctionComponent<Props> = ({
   property
 }) => {
   // Grouping of deficient items by state
-  const deficientItemsListByState = useMemo(
+  const deficientItemsByState = useMemo(
     () =>
-      utilArray.groupBy<string, DeficientItemModel>(
+      utilArray.groupBy<string, deficientItemModel>(
         deficientItems,
         (item) => item.state
       ),
@@ -50,7 +50,7 @@ const DeficientItems: FunctionComponent<Props> = ({
         isTablet={isTablet}
         isDesktop={isDesktop}
       />
-      <ItemsStateGroup deficientItemsListByState={deficientItemsListByState} />
+      <ItemsStateGroup deficientItemsByState={deficientItemsByState} />
     </>
   );
 };

@@ -10,7 +10,7 @@ export interface deficientItemResult {
   data: deficientItemModel;
 }
 
-export interface deficientItemsListResult {
+export interface deficientItemsCollectionResult {
   status: string;
   error?: Error;
   data: deficientItemModel[];
@@ -50,7 +50,7 @@ export default {
   queryByProperty(
     firestore: firebase.firestore.Firestore,
     propertyId: string
-  ): deficientItemsListResult {
+  ): deficientItemsCollectionResult {
     let status = 'success';
     let error = null;
     let data = null;

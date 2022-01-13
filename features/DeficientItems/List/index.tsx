@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react';
-import DeficientItemModel from '../../../common/models/deficientItem';
+import deficientItemModel from '../../../common/models/deficientItem';
 import Item from '../Item';
 
 interface Props {
-  deficientItems: DeficientItemModel[];
+  deficientItems: deficientItemModel[];
 }
 
 const List: FunctionComponent<Props> = ({ deficientItems }) => (

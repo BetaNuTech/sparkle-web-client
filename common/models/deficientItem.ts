@@ -46,6 +46,7 @@ interface DeficientItem {
   itemTitle: string;
   itemMainInputType: string;
   itemMainInputSelection: number;
+  itemPhotosData?: Record<string, DeficientItemCompletedPhoto>;
   itemScore: number;
   hasItemPhotoData: boolean;
   trelloCardURL?: string;

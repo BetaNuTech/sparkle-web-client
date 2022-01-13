@@ -11,7 +11,7 @@ interface Props {
   isOnline: boolean;
   isStaging: boolean;
   isDesktop: boolean;
-  isTablet: boolean;
+  isMobile: boolean;
   itemTitle: string;
 }
 
@@ -19,7 +19,7 @@ const Header: FunctionComponent<Props> = ({
   property,
   isOnline,
   isStaging,
-  isTablet,
+  isMobile,
   itemTitle
 }) => {
   // Mobile Header actions buttons
@@ -36,7 +36,7 @@ const Header: FunctionComponent<Props> = ({
 
   return (
     <>
-      {isTablet ? (
+      {isMobile ? (
         <>
           <MobileHeader
             isOnline={isOnline}

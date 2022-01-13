@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react';
-import DeficientItemModel from '../../../common/models/deficientItem';
+import deficientItemModel from '../../../common/models/deficientItem';
 import StateItemHeader from '../StateItemHeader';
 import List from '../List';
 
 interface Props {
   deficientItemState: string;
-  deficientItemsByState: Map<string, DeficientItemModel[]>;
+  deficientItemsByState: Map<string, deficientItemModel[]>;
 }
 
 const DeficientStateItems: FunctionComponent<Props> = ({

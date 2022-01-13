@@ -1,15 +1,18 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
-import DeficientItemModel from '../../common/models/deficientItem';
+import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import Header from './Header';
+import DeficientItemControlsDetails from '../../common/DeficientItemControls/Details';
+import styles from './styles.module.scss';
+import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
 
 interface Props {
   user: userModel;
   property: propertyModel;
-  deficientItem: DeficientItemModel;
+  deficientItem: deficientItemModel;
   isOnline?: boolean;
   isStaging?: boolean;
 }
@@ -20,23 +23,46 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging
 }) => {
+  const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
+
   // Responsive queries
-  const isTablet = useMediaQuery({
+  const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
   return (
     <>
       <Header
         property={property}
         isOnline={isOnline}
         isStaging={isStaging}
-        isTablet={isTablet}
+        isMobile={isMobile}
         isDesktop={isDesktop}
         itemTitle={deficientItem.itemTitle}
+      />
+      <div className={styles.grid}>
+        <div className={styles.grid__container}>
+          <aside className={styles.grid__sidebar}>
+            <DeficientItemControlsDetails
+              deficientItem={deficientItem}
+              isMobile={isMobile}
+              onClickViewPhotos={() => setIsVisiblePhotosModal(true)}
+            />
+          </aside>
+          <div className={styles.grid__main}>Deficient item form goes here</div>
+        </div>
+      </div>
+      <InspectionItemPhotosModal
+        photosData={deficientItem.itemPhotosData}
+        subTitle={deficientItem.itemTitle}
+        title="Item Photos"
+        isVisible={isVisiblePhotosModal}
+        onClose={() => setIsVisiblePhotosModal(false)}
+        disabled={true} // eslint-disable-line
       />
     </>
   );
