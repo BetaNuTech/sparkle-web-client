@@ -1,10 +1,10 @@
 import { FunctionComponent } from 'react';
 import LinkFeature from '../../../common/LinkFeature';
-import DeficientItemModel from '../../../common/models/deficientItem';
+import deficientItemModel from '../../../common/models/deficientItem';
 import features from '../../../config/features';
 
 interface Props {
-  deficientItem: DeficientItemModel;
+  deficientItem: deficientItemModel;
 }
 
 const Item: FunctionComponent<Props> = ({ deficientItem }) => (

@@ -84,14 +84,20 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
-    useState(false);
+  const [
+    isVisibleOneActionNotesModal,
+    setIsVisibleOneActionNotesModal
+  ] = useState(false);
 
-  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
-    useState(false);
+  const [
+    isVisibleAttachmentNotesModal,
+    setIsVisibleAttachmentNotesModal
+  ] = useState(false);
 
-  const [isVisibleSignatureInputModal, setIsVisibleSignatureInputModal] =
-    useState(false);
+  const [
+    isVisibleSignatureInputModal,
+    setIsVisibleSignatureInputModal
+  ] = useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
@@ -242,16 +248,22 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     reloadPhotos();
   };
 
-  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
-    useInspectionSectionSort(inspection.template.sections, updates);
+  const {
+    sortedTemplateSections,
+    collapsedSections,
+    onSectionCollapseToggle
+  } = useInspectionSectionSort(inspection.template.sections, updates);
 
   // Items grouped by their section
-  const { sectionItems, inspectionItems, inspectionItemDeficientIds } =
-    useInspectionItems(
-      updates,
-      inspection.template,
-      Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
-    );
+  const {
+    sectionItems,
+    inspectionItems,
+    inspectionItemDeficientIds
+  } = useInspectionItems(
+    updates,
+    inspection.template,
+    Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
+  );
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
@@ -461,7 +473,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         unpublishedPhotosData={unpublishedSelectedInspectionItemsPhotos}
         isVisible={isVisiblePhotosModal}
         onClose={closePhotosModal}
-        title={selectedInspectionItem?.title}
+        subTitle={selectedInspectionItem?.title}
         onChangeFiles={onChangeItemsUnpublishedPhotos}
         onAddCaption={addUnpublishedInspectionPhotoCaption}
         onRemovePhoto={onRemoveItemsUnpublishedPhoto}

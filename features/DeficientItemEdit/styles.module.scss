@@ -1,0 +1,39 @@
+@import '../../styles/index.scss';
+
+.grid {
+  @extend %grid;
+  padding: 0;
+  margin: 0;
+
+  &__container {
+    background-color: $white;
+    display: flex;
+    padding: 0;
+    flex-direction: column;
+  }
+
+  &__sidebar {
+    max-width: 100%;
+    flex: 1;
+  }
+
+  @include media-query(desktop) {
+    padding: 0 $global-padding;
+    margin-top: $global-padding;
+
+    &__container {
+      flex-direction: row;
+    }
+
+    &__sidebar {
+      flex: 1 1 30%;
+    }
+
+    &__main {
+      flex: 1 1 70%;
+      padding-left: $global-lg-padding;
+      padding: $global-mlg-padding;
+      border: 1px solid $gray;
+    }
+  }
+}

@@ -16,24 +16,26 @@ interface Props extends ModalProps {
   onClose: () => void;
   photosData: Record<string, photoDataModel>;
   unpublishedPhotosData: unPublishedPhotoDataModel[];
-  title: string;
   onChangeFiles(files: Array<string>): Promise<void>;
   onAddCaption(unpublishedPhotoId: string, captionText: string): void;
   onRemovePhoto(unpublishedPhotoId: string): void;
   sendNotification: userNotifications;
   disabled?: boolean;
+  title?: string;
+  subTitle?: string;
 }
 
 const PhotosModal: FunctionComponent<Props> = ({
   photosData,
   unpublishedPhotosData,
   onClose,
-  title,
   onChangeFiles,
   onAddCaption,
   onRemovePhoto,
   sendNotification,
-  disabled
+  disabled,
+  title,
+  subTitle
 }) => {
   const photosDataItems = Object.keys(photosData || {})
     .map((key) => ({
@@ -213,8 +215,8 @@ const PhotosModal: FunctionComponent<Props> = ({
           baseStyles['modal__header--blue']
         )}
       >
-        <h4 className={baseStyles.modal__heading}>Uploads</h4>
-        <h5>{title}</h5>
+        <h4 className={baseStyles.modal__heading}>{title}</h4>
+        {subTitle && <h5>{subTitle}</h5>}
       </header>
 
       <button
@@ -364,7 +366,8 @@ const PhotosModal: FunctionComponent<Props> = ({
 
 PhotosModal.defaultProps = {
   unpublishedPhotosData: [],
-  disabled: false
+  disabled: false,
+  title: 'Uploads'
 };
 
 export default Modal(PhotosModal, false, styles.PhotosModal);
