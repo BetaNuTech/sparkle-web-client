@@ -1,0 +1,26 @@
+@import '../../../styles/index.scss';
+
+.header {
+  @extend %gridMobileHeaderTopInfo;
+
+  &__propertyName {
+    @extend %gridHeaderLink;
+  }
+
+  &__breadcrumb {
+    @extend %gridHeaderLinkMain;
+  }
+
+  &__title {
+    @extend %gridHeaderSmallTitle;
+  }
+
+  @include media-query(desktop) {
+    padding: 0;
+    background-color: transparent;
+
+    &__title {
+      font-size: rem-calc(32);
+    }
+  }
+}
