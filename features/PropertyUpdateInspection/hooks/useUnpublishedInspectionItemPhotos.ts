@@ -9,9 +9,11 @@ const PREFIX =
   'features: PropertyUpdateInspection: hooks: useUnpublishedInspectionItemPhotos:';
 
 interface result {
-  addUnpublishedInspectionItemPhotos(
-    files: Array<string>,
-    itemId: string
+  addUnpublishedInspectionItemPhoto(
+    file: string,
+    size: number,
+    itemId: string,
+    propertyId: string
   ): void;
   reloadPhotos(): void;
   removeUnpublishedInspectionItemPhoto(unpublishedPhotoId: string): void;
@@ -55,16 +57,20 @@ export default function useInspectionItemPhotos(
 
   // Add a list of unpublished photos
   // to an inspection item
-  const addUnpublishedInspectionItemPhotos = async (
-    files: Array<string>,
-    itemId: string
+  const addUnpublishedInspectionItemPhoto = async (
+    file: string,
+    size: number,
+    itemId: string,
+    propertyId: string
   ) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await inspectionItemPhotosData.createMultipleRecords(
-        files,
+      await inspectionItemPhotosData.createRecord(
+        file,
+        size,
         itemId,
-        inspectionId
+        inspectionId,
+        propertyId
       );
       return getUnpublishedInspectionPhotos();
     } catch (err) {
@@ -136,7 +142,7 @@ export default function useInspectionItemPhotos(
   }, [inspectionId, selectedInspectionItem]);
 
   return {
-    addUnpublishedInspectionItemPhotos,
+    addUnpublishedInspectionItemPhoto,
     reloadPhotos: getUnpublishedInspectionPhotos,
     removeUnpublishedInspectionItemPhoto,
     unpublishedInspectionItemsPhotos,

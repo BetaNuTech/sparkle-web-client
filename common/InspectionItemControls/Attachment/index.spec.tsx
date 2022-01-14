@@ -49,17 +49,19 @@ describe('Common | Inspection Item Controls | Attachment', () => {
     const props = {
       notes: true,
       photos: true,
-      isDeficient: true
+      isDeficient: true,
+      inspectorNotes: '',
+      photosData: null
     };
 
     render(<Attachment {...props} />);
 
-    // waiting for deficientItemList to be updated in state
+    // Waiting for syncronized required classes
+    // to apply to photos and notes
     await act(async () => {
-      // need to set timeout in the same way we are doing it in component
       const now = Date.now();
       const nextSecond = Math.ceil(now / 1000) * 1000;
-      const timeout = nextSecond - now;
+      const timeout = nextSecond - now + 100; // add 100ms extra
       await new Promise((r) => setTimeout(r, timeout));
     });
 

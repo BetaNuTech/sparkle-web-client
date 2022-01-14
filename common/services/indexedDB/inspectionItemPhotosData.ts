@@ -6,25 +6,29 @@ import db from './init';
 const PREFIX = 'common: services: indexedDB:  inspectionItemPhotosData:';
 
 // add photos data to indexed db for inspection item
-export const createMultipleRecords = async (
-  files: Array<string>,
+export const createRecord = async (
+  file: string,
+  size: number,
   itemId: string,
-  inspectionId: string
+  inspectionId: string,
+  propertyId: string
 ): Promise<any> => {
-  const photosData = files.map((file) => ({
+  const photosData = {
     id: uuid(20),
     createdAt: moment().unix(),
     caption: '',
     inspection: inspectionId,
     item: itemId,
-    photoData: file
-  }));
+    photoData: file,
+    property: propertyId,
+    size
+  };
 
   try {
-    const savedItemPhotos = await db.inspectionItemPhotos.bulkAdd(photosData);
+    const savedItemPhotos = await db.inspectionItemPhotos.add(photosData);
     return savedItemPhotos;
   } catch (err) {
-    throw Error(`${PREFIX} createMultipleRecords: ${err}`);
+    throw Error(`${PREFIX} createRecord: ${err}`);
   }
 };
 
@@ -61,22 +65,22 @@ export const queryInspectionRecords = async (
 // dexie table.update returns 1 if record upate suuccessfully , otherwise 0
 // https://dexie.org/docs/Table/Table.update()#return-value
 export const updateRecord = async (
-    unpublishedPhotoId: string,
-    updates: Record<string,string>
-  ): Promise<number> => {
-    try {
-      const result = await db.inspectionItemPhotos.update(
-        unpublishedPhotoId,
-        updates
-      );
-      if (result === 1) {
-        return result;
-      }
-      throw Error(`${PREFIX} updateRecord: Data not updated in indexedDB`);
-    } catch (err) {
-      throw Error(`${PREFIX} updateRecord: ${err}`);
+  unpublishedPhotoId: string,
+  updates: Record<string, string>
+): Promise<number> => {
+  try {
+    const result = await db.inspectionItemPhotos.update(
+      unpublishedPhotoId,
+      updates
+    );
+    if (result === 1) {
+      return result;
     }
-  };
+    throw Error(`${PREFIX} updateRecord: Data not updated in indexedDB`);
+  } catch (err) {
+    throw Error(`${PREFIX} updateRecord: ${err}`);
+  }
+};
 
 export const deleteRecord = async (recordId: string): Promise<void> => {
   try {
@@ -89,7 +93,7 @@ export const deleteRecord = async (recordId: string): Promise<void> => {
 export default {
   queryItemRecords,
   queryInspectionRecords,
-  createMultipleRecords,
+  createRecord,
   updateRecord,
   deleteRecord
 };

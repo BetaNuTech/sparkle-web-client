@@ -1,8 +1,7 @@
 import sinon from 'sinon';
 import util from './publishPhotos';
 import { unpublishedPhotoDataEntry } from '../../../__mocks__/inspections';
-import deepClone from '../../../__tests__/helpers/deepClone';
-import unpublishedPhotoModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import UnpublishedPhotoModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import photosDb from '../../../common/services/indexedDB/inspectionItemPhotosData';
 import inspectionApi from '../../../common/services/api/inspections';
 
@@ -14,7 +13,7 @@ const PHOTO_ONE = Object.freeze({
   createdAt: 1,
   inspection: INSPECTION_ID,
   item: ITEM_ID
-} as unpublishedPhotoModel);
+} as UnpublishedPhotoModel);
 
 const PHOTO_TWO = Object.freeze({
   ...unpublishedPhotoDataEntry,
@@ -22,7 +21,7 @@ const PHOTO_TWO = Object.freeze({
   createdAt: 2,
   inspection: INSPECTION_ID,
   item: ITEM_ID
-} as unpublishedPhotoModel);
+} as UnpublishedPhotoModel);
 
 const INSP_UPLOAD_RESULT_PHOTO_ONE = {
   id: '123-abc',
@@ -38,7 +37,7 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Photos'
 
   test('it uploads all photos data to api', async () => {
     const photos = [PHOTO_ONE, PHOTO_TWO].map(
-      (photo) => deepClone(photo) as unpublishedPhotoModel
+      (photo) => ({ ...photo } as UnpublishedPhotoModel)
     );
     const expected = [
       INSP_UPLOAD_RESULT_PHOTO_ONE.downloadURL,
@@ -52,7 +51,12 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Photos'
       .onCall(1)
       .resolves(INSP_UPLOAD_RESULT_PHOTO_TWO);
 
-    const { successful } = await util.upload(INSPECTION_ID, photos);
+    const { successful } = await util.uploadPhotos(
+      INSPECTION_ID,
+      photos,
+      0,
+      sinon.spy()
+    );
 
     const actual = successful.map(({ downloadURL }) => downloadURL);
 
@@ -61,7 +65,7 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Photos'
 
   test('it collects errors for any failed uploads', async () => {
     const photos = [PHOTO_ONE, PHOTO_TWO].map(
-      (photo) => deepClone(photo) as unpublishedPhotoModel
+      (photo) => ({ ...photo } as UnpublishedPhotoModel)
     );
     const expected = [
       // eslint-disable-next-line max-len
@@ -75,15 +79,41 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Photos'
       .onCall(1)
       .rejects(Error('failed'));
 
-    const { errors } = await util.upload(INSPECTION_ID, photos);
+    const { errors } = await util.uploadPhotos(
+      INSPECTION_ID,
+      photos,
+      0,
+      sinon.spy()
+    );
 
     const actual = errors.map((err) => err.toString());
     expect(actual).toEqual(expected);
   });
 
+  test('it increments the total upload size of photos as they are processed', async () => {
+    const expected = 3;
+    const photos = [PHOTO_ONE, PHOTO_TWO].map(
+      (photo, i) => ({ ...photo, size: i + 1 } as UnpublishedPhotoModel)
+    );
+
+    let actual = 0;
+    sinon
+      .stub(inspectionApi, 'uploadPhotoData')
+      .onCall(0)
+      .resolves(INSP_UPLOAD_RESULT_PHOTO_ONE)
+      .onCall(1)
+      .rejects(Error('failed'));
+
+    await util.uploadPhotos(INSPECTION_ID, photos, 0, (uploadedSize) => {
+      actual = uploadedSize;
+    });
+
+    expect(actual).toEqual(expected);
+  });
+
   test('it removes all photos previously uploaded to api from local database', async () => {
     const photos = [PHOTO_ONE, PHOTO_TWO].map(
-      (photo) => deepClone(photo) as unpublishedPhotoModel
+      (photo) => ({ ...photo } as UnpublishedPhotoModel)
     );
     const expected = photos.map(({ id }) => id);
 
@@ -100,7 +130,7 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Photos'
 
   test('it collects errors for any failed photo removals', async () => {
     const photos = [PHOTO_ONE, PHOTO_TWO].map(
-      (photo) => deepClone(photo) as unpublishedPhotoModel
+      (photo) => ({ ...photo } as UnpublishedPhotoModel)
     );
     const badPhoto = photos[1];
     const expected = [

@@ -126,10 +126,12 @@ describe('Common | Inspection Item Photos Modal', () => {
   it('should publish an encoded photo dropped into the modal', async () => {
     const expected = 'data:image/png;base64,KOKMkOKWoV/ilqEp';
 
-    let actual = '';
-    const onChangeFiles = sinon.stub().callsFake((files: string[]) => {
-      actual = files[0] || '';
-    });
+    let actual = null;
+    const onChangeFiles = sinon
+      .stub()
+      .callsFake((file: Record<string, string>) => {
+        actual = file.dataUri || '';
+      });
 
     const props = {
       isVisible: true,

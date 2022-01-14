@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
 import inspectionDb, {
-  propertyResult as inspectionResult
+  DocumentResult as InspectionResult
 } from '../services/firestore/inspections';
 import inspectionModel from '../models/inspection';
 
-interface useInspectionResult extends inspectionResult {
-  memo: string;
+interface Result extends InspectionResult {
   handlers: any;
 }
 
@@ -16,33 +14,18 @@ const handlers = {};
 export default function usePropertyInspections(
   firestore: any, // eslint-disable-line
   inspectionId: string
-): useInspectionResult {
-  const [memo, setMemo] = useState('{}');
-
+): Result {
   // No inspection payload
   const payload = {
     status: 'loading',
     error: null,
     data: {} as inspectionModel,
-    handlers,
-    memo
+    handlers
   };
 
   // Load a single inspection
   const result = inspectionDb.findRecord(firestore, inspectionId);
   Object.assign(payload, result, { handlers });
-
-  // Notify of updates
-  // by updating memo
-  /* eslint-disable */
-  useEffect(() => {
-    /* eslint-enable */
-    const updated = JSON.stringify(payload.data);
-
-    if (memo !== updated) {
-      setMemo(updated);
-    }
-  });
 
   return payload;
 }

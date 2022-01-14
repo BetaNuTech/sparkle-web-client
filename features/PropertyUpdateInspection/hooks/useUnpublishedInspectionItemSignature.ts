@@ -9,7 +9,12 @@ const PREFIX =
   'features: PropertyUpdateInspection: hooks: useUnpublishedInspectionItemPhotos:';
 
 interface result {
-  saveUnpublishedInspectionSignature(file: string, itemId: string): void;
+  saveUnpublishedInspectionSignature(
+    file: string,
+    size: number,
+    itemId: string,
+    propertyId: string
+  ): void;
   reloadSignatures(): void;
   unpublishedInspectionItemsSignature: Map<string, unPublishedSignatureModel[]>;
   unpublishedSelectedInspectionItemsSignature: unPublishedSignatureModel[];
@@ -46,13 +51,20 @@ export default function useUnpublishedInspectionSignature(
   };
 
   // request inspection signature service to add signature in indexedDB
-  const addSignature = async (file: string, itemId: string) => {
+  const addSignature = async (
+    file: string,
+    size: number,
+    itemId: string,
+    propertyId: string
+  ) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       const signatureId = await inspectionSignature.createRecord(
         file,
+        size,
         itemId,
-        inspectionId
+        inspectionId,
+        propertyId
       );
       await getUnpublishedInspectionSignature();
       return signatureId;
@@ -62,12 +74,12 @@ export default function useUnpublishedInspectionSignature(
   };
 
   // request inspection signature service to update signature in indexedDB
-  const updateSignature = async (file: string) => {
+  const updateSignature = async (file: string, size: number) => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       const signatureId = await inspectionSignature.updateRecord(
         unpublishedSelectedInspectionItemsSignature[0].id,
-        { signature: file }
+        { signature: file, size }
       );
       await getUnpublishedInspectionSignature();
       return signatureId;
@@ -79,13 +91,15 @@ export default function useUnpublishedInspectionSignature(
   // Save signature data
   const saveUnpublishedInspectionSignature = async (
     file: string,
-    itemId: string
+    size: number,
+    itemId: string,
+    propertyId: string
   ) => {
     // if user have unpublished signature than update existing signature
     if (unpublishedSelectedInspectionItemsSignature.length > 0) {
-      updateSignature(file);
+      updateSignature(file, size);
     } else {
-      return addSignature(file, itemId);
+      return addSignature(file, size, itemId, propertyId);
     }
   };
 

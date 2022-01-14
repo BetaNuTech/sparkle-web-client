@@ -53,6 +53,7 @@ interface Result {
     signatures: Map<string, unpublishedSignatureModel[]>,
     unpublishedItemPhotos: Map<string, unpublishedPhotosModel[]>
   ): Promise<void>;
+  publishProgress: number;
 }
 
 export default function useInspectionItemUpdate(
@@ -72,6 +73,8 @@ export default function useInspectionItemUpdate(
   const [updates, setUpdates] = useState(
     previousUpdates ? clone(previousUpdates.template || {}) : {}
   );
+
+  const [progress, setProgress] = useState(0);
 
   //
   // Update Management
@@ -257,6 +260,16 @@ export default function useInspectionItemUpdate(
     setUpdateOption({});
   };
 
+  const calculateAndSetProgressValue = (totalBytes: number) => (
+    uploadedBytes: number
+  ) => {
+    // Add 20% for inspection publish
+    const bytesForUpload = totalBytes + totalBytes * 0.2;
+
+    const calculatedProgress = (uploadedBytes / bytesForUpload) * 100;
+    setProgress(calculatedProgress);
+  };
+
   //
   // Publishing
   //
@@ -267,22 +280,41 @@ export default function useInspectionItemUpdate(
     unpublishedItemPhotos: Map<string, unpublishedPhotosModel[]>
   ) => {
     setIsPublishing(true);
+    setProgress(0);
 
     // Create flat list of signatures & photos
     const flattenedUnpublishedSignatures = flattenMap(unpublishedSignatures);
     const flattenedUnpublishedPhotos = flattenMap(unpublishedItemPhotos);
 
+    // Calculate all files size
+    // to calculate progress
+    const totalBytes = [
+      ...flattenedUnpublishedSignatures,
+      ...flattenedUnpublishedPhotos
+    ].reduce(
+      (sum: number, file: unpublishedSignatureModel | unpublishedPhotosModel) =>
+        sum + file.size,
+      0
+    );
+
+    const uploadedBytes = 0;
+    const setProgressValue = calculateAndSetProgressValue(totalBytes);
+
     // Error collections
     const signatureErrors = [];
     const photosErrors = [];
 
-    // Upload signatures
-    const { successful: signatureUploads, errors: signatureUploadErrors } =
-      await publishSignatures.upload(
-        inspectionId,
-        flattenedUnpublishedSignatures,
-        uploadBase64FileToStorage
-      );
+    // Uploading signatures
+    const {
+      successful: signatureUploads,
+      errors: signatureUploadErrors
+    } = await publishSignatures.uploadSignatures(
+      inspectionId,
+      flattenedUnpublishedSignatures,
+      uploadBase64FileToStorage,
+      uploadedBytes,
+      setProgressValue
+    );
 
     // Save signature URL's to unpublished updates
     applyLatestUpdates(
@@ -295,15 +327,23 @@ export default function useInspectionItemUpdate(
     );
 
     // Remove all uploaded signatures from local database
-    const { errors: signatureRemoveErrors } =
-      await publishSignatures.removePublished(signatureUploads);
+    const {
+      errors: signatureRemoveErrors
+    } = await publishSignatures.removePublished(signatureUploads);
 
     // Combine all signature errors
     signatureErrors.push(...signatureUploadErrors, ...signatureRemoveErrors);
 
     // Upload photos
-    const { successful: photoUploads, errors: photoUploadErrors } =
-      await publishPhotos.upload(inspectionId, flattenedUnpublishedPhotos);
+    const {
+      successful: photoUploads,
+      errors: photoUploadErrors
+    } = await publishPhotos.uploadPhotos(
+      inspectionId,
+      flattenedUnpublishedPhotos,
+      uploadedBytes,
+      setProgressValue
+    );
 
     // Save photo's data to unpublished updates
     applyLatestUpdates(
@@ -376,7 +416,13 @@ export default function useInspectionItemUpdate(
       });
     }
 
-    setIsPublishing(false);
+    setProgress(100);
+    // Setting loader value after 100 ms
+    // so user can see progress bar moved to 100%
+    setTimeout(() => setIsPublishing(false), 200);
+
+    // Resetting progress
+    setTimeout(() => setProgress(0), 300);
   };
 
   return {
@@ -394,7 +440,8 @@ export default function useInspectionItemUpdate(
     enableAdminEditMode,
     disableAdminEditMode,
     destroyUpdates,
-    publish
+    publish,
+    publishProgress: progress
   };
 }
 

@@ -24,8 +24,10 @@ describe('Unit | Services | indexedDB | Inspection Signature', () => {
       // eslint-disable-next-line import/no-named-as-default-member
       result = await inspectionSignature.createRecord(
         file,
+        100,
         'item-1',
-        'inspection-1'
+        'inspection-1',
+        'property-1'
       );
     } catch (err) {
       result = err;

@@ -37,15 +37,10 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     const sendNotification = sinon.spy();
     const expected = true;
 
-    const files = [
-      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
-      'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-    ];
+    const files =
+      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
-    const spyFunc = sinon.spy(
-      inspectionItemPhotosData,
-      'createMultipleRecords'
-    );
+    const spyFunc = sinon.spy(inspectionItemPhotosData, 'createRecord');
     const { result } = renderHook(() =>
       useInspectionItemPhotos(
         sendNotification,
@@ -55,7 +50,12 @@ describe('Unit | Features | Inspection Edit | Hooks | Use Unpublished Inspection
     );
 
     await act(async () => {
-      await result.current.addUnpublishedInspectionItemPhotos(files, 'item-1');
+      await result.current.addUnpublishedInspectionItemPhoto(
+        files,
+        100,
+        'item-1',
+        'property-1'
+      );
     });
     const actual = spyFunc.called;
     expect(actual).toEqual(expected);

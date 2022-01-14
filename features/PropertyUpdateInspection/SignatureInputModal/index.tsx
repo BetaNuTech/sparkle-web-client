@@ -11,11 +11,12 @@ import breakpoints from '../../../config/breakpoints';
 import IndexedDBStorage from '../../../common/IndexedDBStorage';
 import baseStyles from '../../../common/Modal/styles.module.scss';
 import globalEvents from '../../../common/utils/globalEvents';
+import filesUtil from '../../../common/utils/files';
 import styles from './styles.module.scss';
 
 interface Props extends ModalProps {
   selectedInspectionItem: inspectionTemplateItemModel;
-  saveSignature(signatureData: string, itemId: string): void;
+  saveSignature(signatureData: string, size: number, itemId: string): void;
   inspectionItemsSignature: unPublishedSignatureModel[];
 }
 
@@ -115,10 +116,18 @@ const SignatureInputModal: FunctionComponent<Props> = ({
   // Save any available user signature
   // and call on close callback
   const onCloseModal = () => {
+<<<<<<< HEAD
     if (hasSignData) {
       const signDataURL = canvasRef.current.toDataURL();
-      saveSignature(signDataURL, selectedInspectionItem.id);
+      const signatureSize = unescape(encodeURIComponent(signDataURL)).length;
+      saveSignature(signDataURL, signatureSize, selectedInspectionItem.id);
     }
+=======
+    if (!hasSignData) return;
+    const signDataURL = canvasRef.current.toDataURL();
+    const signatureSize = filesUtil.estimateBase64ByteSize(signDataURL);
+    saveSignature(signDataURL, signatureSize, selectedInspectionItem.id);
+>>>>>>> b501435d93b6869573cacc46ddfd0689c79fcc14
   };
 
   // Complete on close actions when

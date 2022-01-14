@@ -18,18 +18,18 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
   });
 
   test('should call method to add inspection item photos and return last inserted id', async () => {
-    const files = [
-      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
-      'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='
-    ];
+    const file =
+      'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
     let result = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      result = await inspectionItemPhotosDataService.createMultipleRecords(
-        files,
+      result = await inspectionItemPhotosDataService.createRecord(
+        file,
+        100,
         'item-1',
-        'inspection-1'
+        'inspection-1',
+        'property-1'
       );
     } catch (err) {
       result = err;
@@ -49,7 +49,7 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
     } catch (err) {
       result = err;
     }
-    expect(result).toHaveLength(2);
+    expect(result).toHaveLength(1);
     result.forEach((item) => {
       expect(item.inspection).toEqual('inspection-1');
       expect(item.item).toEqual('item-1');
@@ -109,7 +109,7 @@ describe('Unit | Services | indexedDB | Inspection Item Photos Data', () => {
     } catch (err) {
       result = err;
     }
-    expect(result).toHaveLength(1);
+    expect(result).toHaveLength(0);
     expect(result.id).not.toEqual(photoIdFordelete);
   });
 });

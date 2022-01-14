@@ -37,10 +37,12 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Signatu
     const onUpload = (dest) =>
       Promise.resolve({ fileUrl: dest } as StorageResult);
 
-    const { successful } = await util.upload(
+    const { successful } = await util.uploadSignatures(
       INSPECTION_ID,
       signatures,
-      onUpload
+      onUpload,
+      0,
+      sinon.spy()
     );
 
     const actual = successful.map(
@@ -69,9 +71,47 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Signatu
       return Promise.resolve({ fileUrl: dest } as StorageResult);
     };
 
-    const { errors } = await util.upload(INSPECTION_ID, signatures, onUpload);
+    const { errors } = await util.uploadSignatures(
+      INSPECTION_ID,
+      signatures,
+      onUpload,
+      0,
+      sinon.spy()
+    );
 
     const actual = errors.map((err) => err.toString());
+    expect(actual).toEqual(expected);
+  });
+
+  test('it increments the total upload size of signatures as they are processed', async () => {
+    const expected = 3;
+    const signatures = [SIGNATURE_ONE, SIGNATURE_TWO].map(
+      (sig, i) => ({ ...sig, size: i + 1 } as unpublishedSignatureModel)
+    );
+
+    // Succeed one and file one
+    let invoked = 0;
+    const onUpload = (dest) => {
+      invoked += 1;
+
+      if (invoked > 1) {
+        return Promise.reject(Error('failed'));
+      }
+
+      return Promise.resolve({ fileUrl: dest } as StorageResult);
+    };
+
+    let actual = 0;
+    await util.uploadSignatures(
+      INSPECTION_ID,
+      signatures,
+      onUpload,
+      0,
+      (uploadedSize) => {
+        actual = uploadedSize;
+      }
+    );
+
     expect(actual).toEqual(expected);
   });
 
