@@ -1,24 +1,27 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, MouseEvent, ChangeEvent } from 'react';
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
-import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
-import unPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
-import Group from './Group';
-import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
+import InspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import UnPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import UnpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 import styles from '../styles.module.scss';
+import Group from './Group';
 
 interface Props {
   sections: Array<inspectionTemplateSectionModel>;
   collapsedSections: Array<string>;
   onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
-  onInputChange(
-    event:
-      | React.MouseEvent<HTMLLIElement>
-      | React.ChangeEvent<HTMLInputElement>,
-    item: inspectionTemplateItemModel,
-    value: string | number
+  onMainInputChange?(
+    event: MouseEvent<HTMLLIElement>,
+    item: InspectionTemplateItemModel,
+    value: number
   ): void;
-  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
-  sectionItems: Map<string, inspectionTemplateItemModel[]>;
+  onTextInputChange?(
+    event: ChangeEvent<HTMLInputElement>,
+    item: InspectionTemplateItemModel,
+    value: string
+  ): void;
+  onClickOneActionNotes(item: InspectionTemplateItemModel): void;
+  sectionItems: Map<string, InspectionTemplateItemModel[]>;
   forceVisible?: boolean;
   onAddSection(
     event: React.MouseEvent<HTMLButtonElement>,
@@ -29,15 +32,15 @@ interface Props {
     sectionId: string
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
-  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
-  onClickSignatureInput(item: inspectionTemplateItemModel): void;
-  onClickPhotos(item: inspectionTemplateItemModel): void;
-  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
-  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  onClickAttachmentNotes(item: InspectionTemplateItemModel): void;
+  onClickSignatureInput(item: InspectionTemplateItemModel): void;
+  onClickPhotos(item: InspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, UnPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, UnpublishedSignatureModel[]>;
   canEdit: boolean;
   isMobile: boolean;
   isIncompleteRevealed: boolean;
-  completedItems: inspectionTemplateItemModel[];
+  completedItems: InspectionTemplateItemModel[];
   requireDeficientItemNoteAndPhoto: boolean;
   inspectionItemDeficientIds: string[];
 }
@@ -46,7 +49,8 @@ const Sections: FunctionComponent<Props> = ({
   sections,
   collapsedSections,
   onSectionCollapseToggle,
-  onInputChange,
+  onMainInputChange,
+  onTextInputChange,
   onClickOneActionNotes,
   forceVisible,
   sectionItems,
@@ -79,7 +83,8 @@ const Sections: FunctionComponent<Props> = ({
           forceVisible={forceVisible}
           collapsedSections={collapsedSections}
           onSectionCollapseToggle={onSectionCollapseToggle}
-          onInputChange={onInputChange}
+          onMainInputChange={onMainInputChange}
+          onTextInputChange={onTextInputChange}
           sectionItems={sectionItems}
           onClickOneActionNotes={onClickOneActionNotes}
           onAddSection={onAddSection}

@@ -31,15 +31,8 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
   // eslint-disable-next-line max-len
   const uploadPageLink = `/properties/${propertyId}/update-inspection/${inspectionId}/uploads?item=${selectedInspectionItem.id}`;
 
-  const {
-    inspectorNotes,
-    title,
-    mainInputType,
-    mainInputSelected,
-    mainInputSelection,
-    photos,
-    photosData
-  } = selectedInspectionItem;
+  const { inspectorNotes, title, mainInputType, photos, photosData } =
+    selectedInspectionItem;
   const showInspectionItemControl = mainInputType !== 'oneaction_notes';
 
   const photosDataItems = Object.keys(photosData || {}).map((key) => ({
@@ -119,10 +112,8 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
                 Condition
               </h6>
               <InspectionItemControls
-                inputType={mainInputType}
-                selected={mainInputSelected}
-                selectedValue={mainInputSelection}
-                isDisabled
+                item={selectedInspectionItem}
+                canEdit={false}
               />
             </>
           )}

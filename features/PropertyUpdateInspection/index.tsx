@@ -132,6 +132,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     isPdfReportStatusShowing,
     isPdfReportOutOfDate,
     isPdfReportGenerating,
+    isPdfReportQueued,
+    showRequestAgainAction,
     hasPdfReportGenerationFailed
   } = usePdfReport(inspection, sendNotification, isOnline, hasUpdates);
 
@@ -165,7 +167,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   };
 
   // User updates text item value
-  const onTextInputValueChange = (
+  const onTextInputChange = (
     event:
       | React.MouseEvent<HTMLLIElement>
       | React.ChangeEvent<HTMLInputElement>,
@@ -199,22 +201,6 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     event.preventDefault();
     event.stopPropagation();
     removeSection(sectionId);
-  };
-
-  // Add main and text input updates
-  // to local, unpublished, changes
-  const onInputChange = (
-    event:
-      | React.MouseEvent<HTMLLIElement>
-      | React.ChangeEvent<HTMLInputElement>,
-    item: inspectionTemplateItemModel,
-    value: any
-  ) => {
-    if (item.itemType === 'text_input') {
-      onTextInputValueChange(event, item, value);
-    } else {
-      onMainInputChange(event, item, value);
-    }
   };
 
   const onItemIsNAChange = (itemId: string, itemIsNA: boolean) => {
@@ -379,24 +365,28 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   return (
     <>
       {isTablet || isMobile ? (
-        <MobileHeader
-          property={property}
-          inspection={inspection}
-          isOnline={isOnline}
-          hasUpdates={hasUnpublishedUpdates}
-          onShareAction={onShareAction}
-          onSaveInspection={onSaveInspection}
-          canEnableEditMode={canEnableEditMode}
-          onEnableAdminEditMode={onEnableAdminEditMode}
-          isStaging={isStaging}
-          canUpdateCompleteInspection={canUpdatesCompleteInspection}
-          onCopyReportURL={onCopyReportURL}
-          isPdfReportStatusShowing={isPdfReportStatusShowing}
-          isPdfReportOutOfDate={isPdfReportOutOfDate}
-          isPdfReportGenerating={isPdfReportGenerating}
-          hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
-          onRegenerateReport={generatePdfReport}
-        />
+        <>
+          <MobileHeader
+            property={property}
+            inspection={inspection}
+            isOnline={isOnline}
+            hasUpdates={hasUnpublishedUpdates}
+            onShareAction={onShareAction}
+            onSaveInspection={onSaveInspection}
+            canEnableEditMode={canEnableEditMode}
+            onEnableAdminEditMode={onEnableAdminEditMode}
+            isStaging={isStaging}
+            canUpdateCompleteInspection={canUpdatesCompleteInspection}
+            onCopyReportURL={onCopyReportURL}
+            isPdfReportStatusShowing={isPdfReportStatusShowing}
+            isPdfReportOutOfDate={isPdfReportOutOfDate}
+            isPdfReportGenerating={isPdfReportGenerating}
+            isPdfReportQueued={isPdfReportQueued}
+            showRequestAgainAction={showRequestAgainAction}
+            hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
+            onRegenerateReport={generatePdfReport}
+          />
+        </>
       ) : (
         <Header
           property={property}
@@ -412,6 +402,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           isPdfReportStatusShowing={isPdfReportStatusShowing}
           isPdfReportOutOfDate={isPdfReportOutOfDate}
           isPdfReportGenerating={isPdfReportGenerating}
+          isPdfReportQueued={isPdfReportQueued}
+          showRequestAgainAction={showRequestAgainAction}
           hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
           onRegenerateReport={generatePdfReport}
         />
@@ -421,7 +413,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         sections={sortedTemplateSections}
         collapsedSections={collapsedSections}
         onSectionCollapseToggle={onSectionCollapseToggle}
-        onInputChange={onInputChange}
+        onMainInputChange={onMainInputChange}
+        onTextInputChange={onTextInputChange}
         sectionItems={sectionItems}
         onClickOneActionNotes={onClickOneActionNotes}
         onAddSection={onAddSection}

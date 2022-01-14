@@ -1,13 +1,12 @@
-import sinon from 'sinon';
 import { render } from '@testing-library/react';
 import AttachmentNotes from './index';
 
-describe('Common | Inspection Item Control | Attachment Notes', () => {
+describe('Common | Inspection Item Controls | Attachment Notes', () => {
   it('should not be disabled when notes are enabled', async () => {
     const props = {
       enabled: true,
       selected: false,
-      onClickAttachmentNotes: sinon.spy()
+      onClick: () => null
     };
 
     const { container } = render(<AttachmentNotes {...props} />);
@@ -21,7 +20,7 @@ describe('Common | Inspection Item Control | Attachment Notes', () => {
     const props = {
       enabled: false,
       selected: false,
-      onClickAttachmentNotes: sinon.spy()
+      onClick: () => null
     };
 
     const { container } = render(<AttachmentNotes {...props} />);
@@ -31,11 +30,11 @@ describe('Common | Inspection Item Control | Attachment Notes', () => {
     expect(element.dataset.test).toEqual('disabled');
   });
 
-  it('should be render with an existing inspector note value', () => {
+  it('should show as selected when there are existing inspector notes', () => {
     const props = {
       selected: true,
       enabled: false,
-      onClickAttachmentNotes: sinon.spy()
+      onClick: () => null
     };
     const { container } = render(<AttachmentNotes {...props} />);
     const element = container.querySelector('li');

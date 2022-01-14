@@ -23,6 +23,8 @@ interface Props {
   isPdfReportStatusShowing: boolean;
   isPdfReportOutOfDate: boolean;
   isPdfReportGenerating: boolean;
+  isPdfReportQueued: boolean;
+  showRequestAgainAction: boolean;
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
 }
@@ -41,13 +43,14 @@ const Header: FunctionComponent<Props> = ({
   isPdfReportStatusShowing,
   isPdfReportOutOfDate,
   isPdfReportGenerating,
+  isPdfReportQueued,
+  showRequestAgainAction,
   hasPdfReportGenerationFailed,
   onRegenerateReport
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const isPubishingDisabled =
-    !(hasUpdates && isOnline) || isPdfReportGenerating;
-
+    !(hasUpdates && isOnline) || isPdfReportGenerating || isPdfReportQueued;
   const RightSide = () => (
     <div className={styles.header__item}>
       <button
@@ -101,6 +104,8 @@ const Header: FunctionComponent<Props> = ({
         isPdfReportStatusShowing={isPdfReportStatusShowing}
         isPdfReportGenerating={isPdfReportGenerating}
         isPdfReportOutOfDate={isPdfReportOutOfDate}
+        isPdfReportQueued={isPdfReportQueued}
+        showRequestAgainAction={showRequestAgainAction}
         inspectionReportURL={inspection.inspectionReportURL}
         onCopyReportURL={onCopyReportURL}
         hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}

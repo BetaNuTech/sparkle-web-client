@@ -1,4 +1,5 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, MouseEvent, ChangeEvent } from 'react';
+import InspectionTemplateItemModal from '../models/inspectionTemplateItem';
 import TwoActionCheck from './TwoActionCheck';
 import TwoActionThumb from './TwoActionThumb';
 import ThreeActionCheckExclamation from './ThreeActionCheckExclamation';
@@ -10,112 +11,113 @@ import TextInput from './TextInput';
 import Signature from './Signature';
 
 interface Props {
-  inputType: string;
-  selected?: boolean;
-  selectedValue?: number;
-  textInputValue?: string;
+  item: InspectionTemplateItemModal;
   signatureDownloadURL?: string;
-  onInputChange?(
-    event:
-      | React.MouseEvent<HTMLLIElement>
-      | React.ChangeEvent<HTMLInputElement>,
-    value: string | number
-  ): void;
+  onMainInputChange?(event: MouseEvent<HTMLLIElement>, value: number): void;
+  onTextInputChange?(event: ChangeEvent<HTMLInputElement>, value: string): void;
   onClickOneActionNotes?(): void;
   onClickSignatureInput?(): void;
-  isDisabled: boolean;
+  canEdit: boolean;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
-  inputType,
-  selected,
-  selectedValue,
-  textInputValue,
+  item,
   signatureDownloadURL,
-  onInputChange,
+  onMainInputChange,
+  onTextInputChange,
   onClickOneActionNotes,
   onClickSignatureInput,
-  isDisabled
+  canEdit
 }) => {
+  // Adding support for old item schemas
+  // when `isTextInputItem` then always make it
+  // a text input otherwise accept main input type
+  // and lastly use any available item type
+  const inputType = item.isTextInputItem
+    ? 'text_input'
+    : item.mainInputType || item.itemType;
+
+  const selected = Boolean(item.mainInputSelected);
+  const mainInputSelection =
+    typeof item.mainInputSelection === 'number' ? item.mainInputSelection : -1;
+  const textInputValue = `${item.textInputValue || ''}`;
+
   switch (inputType) {
     case 'twoactions_checkmarkx':
       return (
         <TwoActionCheck
           selected={selected}
-          selectedValue={selectedValue}
-          onMainInputChange={onInputChange}
-          isDisabled={isDisabled}
-        />
-      );
-    case 'twoactions_thumbs':
-      return (
-        <TwoActionThumb
-          selected={selected}
-          selectedValue={selectedValue}
-          onMainInputChange={onInputChange}
-          isDisabled={isDisabled}
+          value={mainInputSelection}
+          onChange={onMainInputChange}
+          canEdit={canEdit}
         />
       );
     case 'threeactions_checkmarkexclamationx':
       return (
         <ThreeActionCheckExclamation
           selected={selected}
-          selectedValue={selectedValue}
-          onMainInputChange={onInputChange}
-          isDisabled={isDisabled}
+          value={mainInputSelection}
+          onChange={onMainInputChange}
+          canEdit={canEdit}
         />
       );
     case 'threeactions_abc':
       return (
         <ThreeActionAbc
           selected={selected}
-          selectedValue={selectedValue}
-          onMainInputChange={onInputChange}
-          isDisabled={isDisabled}
+          value={mainInputSelection}
+          onChange={onMainInputChange}
+          canEdit={canEdit}
         />
       );
     case 'fiveactions_onetofive':
       return (
         <FiveActionOneToFive
           selected={selected}
-          selectedValue={selectedValue}
-          onMainInputChange={onInputChange}
-          isDisabled={isDisabled}
+          value={mainInputSelection}
+          onChange={onMainInputChange}
+          canEdit={canEdit}
         />
       );
     case 'oneaction_notes':
       return (
-        <OneActionNotes
-          onClickOneActionNotes={onClickOneActionNotes}
-          selected={selected}
-        />
+        <OneActionNotes onClick={onClickOneActionNotes} selected={selected} />
       );
     case 'text_input':
       return (
         <TextInput
           selected={selected}
-          textInputValue={textInputValue}
-          onMainInputChange={onInputChange}
-          isDisabled={isDisabled}
+          value={textInputValue}
+          onChange={onTextInputChange}
+          canEdit={canEdit}
         />
       );
     case 'signature':
       return (
         <Signature
-          signatureDownloadURL={signatureDownloadURL}
-          onClickSignatureInput={onClickSignatureInput}
-          isDisabled={isDisabled}
+          downloadURL={signatureDownloadURL}
+          onClick={onClickSignatureInput}
+          canEdit={canEdit}
         />
       );
+
+    // Rendering two action thumb as default
+    // for when item is missing main input type
+    // (assuming an item is not text input or signature)
+    // it will fallback to this input
     default:
-      return <></>;
+      return (
+        <TwoActionThumb
+          selected={selected}
+          value={mainInputSelection}
+          onChange={onMainInputChange}
+          canEdit={canEdit}
+        />
+      );
   }
 };
 
-InspectionItemControls.defaultProps = {
-  selected: false,
-  selectedValue: 0
-};
+InspectionItemControls.defaultProps = {};
 
 export { Attachment };
 

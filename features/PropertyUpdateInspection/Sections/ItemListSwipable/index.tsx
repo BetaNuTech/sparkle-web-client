@@ -1,35 +1,44 @@
-import { FunctionComponent, useRef, useState } from 'react';
 import clsx from 'clsx';
-import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
-import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import {
+  FunctionComponent,
+  useRef,
+  useState,
+  MouseEvent,
+  ChangeEvent
+} from 'react';
+import InspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import UnPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import InspectionItemControls, {
   Attachment
 } from '../../../../common/InspectionItemControls';
 import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
 import useVisibility from '../../../../common/hooks/useVisibility';
+import UnpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 import SectionItemActions from '../../SectionItemActions';
 import styles from '../../styles.module.scss';
-import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
-  item: inspectionTemplateItemModel;
-  onInputChange(
-    event:
-      | React.MouseEvent<HTMLLIElement>
-      | React.ChangeEvent<HTMLInputElement>,
-    item: inspectionTemplateItemModel,
-    value: string | number
+  item: InspectionTemplateItemModel;
+  onMainInputChange?(
+    event: MouseEvent<HTMLLIElement>,
+    item: InspectionTemplateItemModel,
+    value: number
+  ): void;
+  onTextInputChange?(
+    event: ChangeEvent<HTMLInputElement>,
+    item: InspectionTemplateItemModel,
+    value: string
   ): void;
   forceVisible: boolean;
-  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
+  onClickOneActionNotes(item: InspectionTemplateItemModel): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
-  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
-  onClickSignatureInput(item: inspectionTemplateItemModel): void;
-  onClickPhotos(item: inspectionTemplateItemModel): void;
-  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
-  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  onClickAttachmentNotes(item: InspectionTemplateItemModel): void;
+  onClickSignatureInput(item: InspectionTemplateItemModel): void;
+  onClickPhotos(item: InspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, UnPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, UnpublishedSignatureModel[]>;
   canEdit: boolean;
-  completedItems: inspectionTemplateItemModel[];
+  completedItems: InspectionTemplateItemModel[];
   isIncompleteRevealed: boolean;
   isItemDeficient: boolean;
 }
@@ -37,7 +46,8 @@ interface Props {
 const ItemListSwipable: FunctionComponent<Props> = ({
   item,
   forceVisible,
-  onInputChange,
+  onMainInputChange,
+  onTextInputChange,
   onClickOneActionNotes,
   onItemIsNAChange,
   onClickAttachmentNotes,
@@ -81,6 +91,7 @@ const ItemListSwipable: FunctionComponent<Props> = ({
     onItemIsNAChange(itemId, isItemNA);
     setIsSwipeOpen(false);
   };
+
   return (
     <li
       className={clsx(
@@ -128,21 +139,21 @@ const ItemListSwipable: FunctionComponent<Props> = ({
                     onClickAttachmentNotes={() => onClickAttachmentNotes(item)}
                     onClickPhotos={() => onClickPhotos(item)}
                     isDeficient={isItemDeficient}
-                    isDisabled={!canEdit}
+                    canEdit={canEdit}
                   />
                 )}
                 <InspectionItemControls
-                  inputType={item.mainInputType || item.itemType}
-                  selected={item.mainInputSelected}
-                  selectedValue={item.mainInputSelection}
-                  textInputValue={item.textInputValue}
+                  item={item}
                   signatureDownloadURL={signatureDownloadURL}
-                  onInputChange={(event, selectionIndex) =>
-                    onInputChange(event, item, selectionIndex)
+                  onMainInputChange={(event, selectionIndex) =>
+                    onMainInputChange(event, item, selectionIndex)
+                  }
+                  onTextInputChange={(event, textValue) =>
+                    onTextInputChange(event, item, textValue)
                   }
                   onClickOneActionNotes={() => onClickOneActionNotes(item)}
                   onClickSignatureInput={() => onClickSignatureInput(item)}
-                  isDisabled={!canEdit}
+                  canEdit={canEdit}
                 />
               </div>
             </div>

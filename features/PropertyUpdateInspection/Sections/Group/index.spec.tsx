@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
 import { originalMultiSection } from '../../../../__mocks__/inspections';
 import breakpoints from '../../../../config/breakpoints';
-import SectionItem from './index';
+import Group from './index';
 
 function render(ui: any, options: any = {}) {
   sinon.restore();
@@ -23,7 +23,8 @@ describe('Unit | Features | Property Update Inspection | Sections | Group', () =
     const onSectionCollapseToggle = sinon.spy();
     const props = {
       forceVisible: true,
-      onInputChange: sinon.spy(),
+      onMainInputChange: sinon.spy(),
+      onTextInputChange: sinon.spy(),
       onClickOneActionNotes: sinon.spy(),
       onItemIsNAChange: sinon.spy(),
       onClickAttachmentNotes: sinon.spy(),
@@ -42,7 +43,7 @@ describe('Unit | Features | Property Update Inspection | Sections | Group', () =
       isMobile: false
     };
 
-    render(<SectionItem {...props} />, {
+    render(<Group {...props} />, {
       contextWidth: breakpoints.desktop.minWidth
     });
 

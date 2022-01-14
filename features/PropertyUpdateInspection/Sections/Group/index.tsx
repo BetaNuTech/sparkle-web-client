@@ -1,28 +1,31 @@
 import clsx from 'clsx';
-import { FunctionComponent, useMemo } from 'react';
-import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
-import inspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
-import unPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import { FunctionComponent, useMemo, MouseEvent, ChangeEvent } from 'react';
+import InspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
+import InspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
+import UnPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import UnpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 import styles from '../../styles.module.scss';
 import ItemList from '../ItemList';
 import ItemListSwipable from '../ItemListSwipable';
 import Header from '../Header';
-import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
 
 interface Props {
-  section: inspectionTemplateSectionModel;
+  section: InspectionTemplateSectionModel;
   nextSectionTitle: string;
   collapsedSections: Array<string>;
-  onSectionCollapseToggle(section: inspectionTemplateSectionModel): void;
-  onInputChange(
-    event:
-      | React.MouseEvent<HTMLLIElement>
-      | React.ChangeEvent<HTMLInputElement>,
-    item: inspectionTemplateItemModel,
-    value: string | number
+  onSectionCollapseToggle(section: InspectionTemplateSectionModel): void;
+  onMainInputChange?(
+    event: MouseEvent<HTMLLIElement>,
+    item: InspectionTemplateItemModel,
+    value: number
   ): void;
-  onClickOneActionNotes(item: inspectionTemplateItemModel): void;
-  sectionItems: Map<string, inspectionTemplateItemModel[]>;
+  onTextInputChange?(
+    event: ChangeEvent<HTMLInputElement>,
+    item: InspectionTemplateItemModel,
+    value: string
+  ): void;
+  onClickOneActionNotes(item: InspectionTemplateItemModel): void;
+  sectionItems: Map<string, InspectionTemplateItemModel[]>;
   forceVisible: boolean;
   onAddSection(
     event: React.MouseEvent<HTMLButtonElement>,
@@ -33,15 +36,15 @@ interface Props {
     sectionId: string
   ): void;
   onItemIsNAChange(itemId: string, isItemNA: boolean): void;
-  onClickAttachmentNotes(item: inspectionTemplateItemModel): void;
-  onClickSignatureInput(item: inspectionTemplateItemModel): void;
-  onClickPhotos(item: inspectionTemplateItemModel): void;
-  inspectionItemsPhotos: Map<string, unPublishedPhotoDataModel[]>;
-  inspectionItemsSignature: Map<string, unpublishedSignatureModel[]>;
+  onClickAttachmentNotes(item: InspectionTemplateItemModel): void;
+  onClickSignatureInput(item: InspectionTemplateItemModel): void;
+  onClickPhotos(item: InspectionTemplateItemModel): void;
+  inspectionItemsPhotos: Map<string, UnPublishedPhotoDataModel[]>;
+  inspectionItemsSignature: Map<string, UnpublishedSignatureModel[]>;
   canEdit: boolean;
   isMobile: boolean;
   isIncompleteRevealed: boolean;
-  completedItems: inspectionTemplateItemModel[];
+  completedItems: InspectionTemplateItemModel[];
   requireDeficientItemNoteAndPhoto: boolean;
   inspectionItemDeficientIds: string[];
 }
@@ -53,7 +56,8 @@ const Group: FunctionComponent<Props> = ({
   sectionItems,
   forceVisible,
   onSectionCollapseToggle,
-  onInputChange,
+  onMainInputChange,
+  onTextInputChange,
   onClickOneActionNotes,
   onAddSection,
   onRemoveSection,
@@ -107,7 +111,8 @@ const Group: FunctionComponent<Props> = ({
               key={item.id}
               item={item}
               forceVisible={forceVisible}
-              onInputChange={onInputChange}
+              onMainInputChange={onMainInputChange}
+              onTextInputChange={onTextInputChange}
               onClickOneActionNotes={onClickOneActionNotes}
               onItemIsNAChange={onItemIsNAChange}
               onClickAttachmentNotes={onClickAttachmentNotes}
@@ -125,7 +130,8 @@ const Group: FunctionComponent<Props> = ({
               key={item.id}
               item={item}
               forceVisible={forceVisible}
-              onInputChange={onInputChange}
+              onMainInputChange={onMainInputChange}
+              onTextInputChange={onTextInputChange}
               onClickOneActionNotes={onClickOneActionNotes}
               onItemIsNAChange={onItemIsNAChange}
               onClickAttachmentNotes={onClickAttachmentNotes}

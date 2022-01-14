@@ -1,31 +1,25 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { FunctionComponent } from 'react';
 import clsx from 'clsx';
+import { FunctionComponent, MouseEvent } from 'react';
 import CheckmarkSimpleIcon from '../../../public/icons/sparkle/checkmark-simple.svg';
 import CancelSimpleIcon from '../../../public/icons/sparkle/cancel-simple.svg';
 import styles from '../styles.module.scss';
 
 interface Props {
   selected?: boolean;
-  selectedValue?: number;
-  onMainInputChange?(
-    event: React.MouseEvent<HTMLLIElement>,
-    value: string | number
-  ): void;
-  isDisabled?: boolean;
+  value?: number;
+  onChange?(event: MouseEvent<HTMLLIElement>, value: string | number): void;
+  canEdit?: boolean;
 }
 
 const TwoActionCheck: FunctionComponent<Props> = ({
   selected,
-  selectedValue,
-  onMainInputChange,
-  isDisabled
+  value,
+  onChange,
+  canEdit
 }) => {
-  const onInputChange = (
-    event: React.MouseEvent<HTMLLIElement>,
-    value: number
-  ) => {
-    if (!isDisabled) onMainInputChange(event, value);
+  const onInputChange = (event: MouseEvent<HTMLLIElement>, update: number) => {
+    onChange(event, update);
   };
 
   return (
@@ -33,28 +27,24 @@ const TwoActionCheck: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
-          selected &&
-            selectedValue === 0 &&
-            styles['inspection__input--selected']
+          selected && value === 0 && styles['inspection__input--selected']
         )}
         data-testid="control-checkmark"
-        data-test={selected && selectedValue === 0 ? 'selected' : ''}
+        data-test={selected && value === 0 ? 'selected' : ''}
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 0)}
+        onClick={(event) => canEdit && onInputChange(event, 0)}
       >
         <CheckmarkSimpleIcon />
       </li>
       <li
         className={clsx(
           styles.inspection__input,
-          selected &&
-            selectedValue === 1 &&
-            styles['inspection__input--selectedError']
+          selected && value === 1 && styles['inspection__input--selectedError']
         )}
         data-testid="control-cancel"
-        data-test={selected && selectedValue === 1 ? 'selected' : ''}
+        data-test={selected && value === 1 ? 'selected' : ''}
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 1)}
+        onClick={(event) => canEdit && onInputChange(event, 1)}
       >
         <CancelSimpleIcon />
       </li>
@@ -63,7 +53,9 @@ const TwoActionCheck: FunctionComponent<Props> = ({
 };
 
 TwoActionCheck.defaultProps = {
-  isDisabled: false
+  selected: false,
+  canEdit: false,
+  value: -1
 };
 
 export default TwoActionCheck;

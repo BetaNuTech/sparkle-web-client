@@ -3,13 +3,14 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ThreeActionCheckExclamation from './index';
 
-describe('Common | Inspection Item Control | Three Action Check Exclaimation', () => {
+describe('Common | Inspection Item Controls | Three Action Check Exclaimation', () => {
   afterEach(() => sinon.restore());
 
   it('should not select any when selected is false', async () => {
     const props = {
       selected: false,
-      selectedValue: 0
+      canEdit: true,
+      value: 0
     };
 
     const { container } = render(<ThreeActionCheckExclamation {...props} />);
@@ -22,7 +23,8 @@ describe('Common | Inspection Item Control | Three Action Check Exclaimation', (
   it('should select first option if given 0', async () => {
     const props = {
       selected: true,
-      selectedValue: 0
+      canEdit: true,
+      value: 0
     };
 
     render(<ThreeActionCheckExclamation {...props} />);
@@ -39,7 +41,8 @@ describe('Common | Inspection Item Control | Three Action Check Exclaimation', (
   it('should select second option if given 1', async () => {
     const props = {
       selected: true,
-      selectedValue: 1
+      canEdit: true,
+      value: 1
     };
 
     render(<ThreeActionCheckExclamation {...props} />);
@@ -56,7 +59,8 @@ describe('Common | Inspection Item Control | Three Action Check Exclaimation', (
   it('should select second option if given 2', async () => {
     const props = {
       selected: true,
-      selectedValue: 2
+      canEdit: true,
+      value: 2
     };
 
     render(<ThreeActionCheckExclamation {...props} />);
@@ -70,11 +74,12 @@ describe('Common | Inspection Item Control | Three Action Check Exclaimation', (
     expect(iconCancelEl.dataset.test).toEqual('selected');
   });
 
-  it('should invoke click action for all selections when not disabled', () => {
+  it('should invoke change action for all selections', () => {
     const expected = 3;
     const onClick = sinon.spy();
     const props = {
-      onMainInputChange: onClick
+      canEdit: true,
+      onChange: onClick
     };
 
     const { container } = render(<ThreeActionCheckExclamation {...props} />);
@@ -90,12 +95,12 @@ describe('Common | Inspection Item Control | Three Action Check Exclaimation', (
     expect(actual).toEqual(expected);
   });
 
-  it('should not invoke click action when disabled', () => {
+  it('should not invoke change action when not editable', () => {
     const expected = false;
     const onClick = sinon.spy();
     const props = {
-      onMainInputChange: onClick,
-      isDisabled: true
+      canEdit: false,
+      onChange: onClick
     };
 
     const { container } = render(<ThreeActionCheckExclamation {...props} />);

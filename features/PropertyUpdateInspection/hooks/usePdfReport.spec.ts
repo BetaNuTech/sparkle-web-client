@@ -49,6 +49,33 @@ describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
     expect(result.current.isPdfReportGenerating).toBeTruthy();
   });
 
+  test('should show report status queued if report status is queued', async () => {
+    const completedInspectionWithReport = {
+      ...inspectionA,
+      inspectionReportStatus: 'queued'
+    };
+    const { result } = renderHook(() =>
+      usePDFReport(completedInspectionWithReport, sinon.spy(), true, false)
+    );
+    expect(result.current.isPdfReportStatusShowing).toBeTruthy();
+    expect(result.current.isPdfReportQueued).toBeTruthy();
+  });
+
+  test('should show the request again action if the report has been queued for over 3 minutes', async () => {
+    const fourMinUnix = 60 * 4;
+    const fourMinutesAgo = Math.round(Date.now() / 1000) - fourMinUnix;
+    const completedInspectionWithReport = {
+      ...inspectionA,
+      inspectionReportLastQueued: fourMinutesAgo,
+      inspectionReportStatus: 'queued'
+    };
+    const { result } = renderHook(() =>
+      usePDFReport(completedInspectionWithReport, sinon.spy(), true, false)
+    );
+    expect(result.current.isPdfReportStatusShowing).toBeTruthy();
+    expect(result.current.showRequestAgainAction).toBeTruthy();
+  });
+
   test('should show report status as failed', async () => {
     const completedInspectionWithReport = {
       ...inspectionA,

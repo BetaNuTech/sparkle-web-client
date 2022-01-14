@@ -3,6 +3,7 @@ import inspectionApi from '../../../common/services/api/inspections';
 import inspectionModel from '../../../common/models/inspection';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import dateUtils from '../../../common/utils/date';
 
 const PREFIX = 'features: EditBid: hooks: usePDFReport:';
 
@@ -11,6 +12,8 @@ interface usePdfReportResult {
   isPdfReportStatusShowing: boolean;
   isPdfReportOutOfDate: boolean;
   isPdfReportGenerating: boolean;
+  isPdfReportQueued: boolean;
+  showRequestAgainAction: boolean;
   hasPdfReportGenerationFailed: boolean;
 }
 
@@ -60,19 +63,26 @@ export default function usePDFReport(
   };
 
   // Determine if PDF report status can be displayed
-  const isPdfReportStatusShowing =
-    inspection.inspectionCompleted &&
-    Boolean(inspection.inspectionReportURL) &&
-    isOnline;
+  const isPdfReportStatusShowing = inspection.inspectionCompleted && isOnline;
 
   // Determine if PDF report status up-to-date or not
   const isPdfReportOutOfDate =
-    inspection.inspectionReportUpdateLastDate !== inspection.updatedAt ||
+    inspection.inspectionReportUpdateLastDate > inspection.updatedLastDate ||
     hasUpdates;
 
   // Determine if PDF report is generating
   const isPdfReportGenerating =
     inspection.inspectionReportStatus === 'generating';
+
+  // Determine if PDF report is queued
+  const isPdfReportQueued = inspection.inspectionReportStatus === 'queued';
+
+  // Determine if PDF report is queued and should show request again action
+  const inspectionQueuedTimeFromNow = dateUtils.getTimeDifferenceInMinutes(
+    inspection.inspectionReportLastQueued
+  );
+  const showRequestAgainAction =
+    isPdfReportQueued && inspectionQueuedTimeFromNow < -3;
 
   // Determine if PDF report is generation failed
   const hasPdfReportGenerationFailed =
@@ -83,6 +93,8 @@ export default function usePDFReport(
     isPdfReportStatusShowing,
     isPdfReportOutOfDate,
     isPdfReportGenerating,
+    isPdfReportQueued,
+    showRequestAgainAction,
     hasPdfReportGenerationFailed
   };
 }

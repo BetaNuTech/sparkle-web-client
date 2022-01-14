@@ -3,7 +3,7 @@ import { render, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FiveActionOneToFive, { canAddClass } from './index';
 
-describe('Common | Inspection Item Control | Five Action One to Five', () => {
+describe('Common | Inspection Item Controls | Five Action One to Five', () => {
   afterEach(() => sinon.restore());
 
   it('should not select any when selected is false', async () => {
@@ -78,11 +78,12 @@ describe('Common | Inspection Item Control | Five Action One to Five', () => {
     expect(result).toEqual([true, true, true, true, true]);
   });
 
-  it('should invoke click action for all selections when not disabled', () => {
+  it('should invoke change action for all selections', () => {
     const expected = 5;
     const onClick = sinon.spy();
     const props = {
-      onMainInputChange: onClick
+      canEdit: true,
+      onChange: onClick
     };
 
     const { container } = render(<FiveActionOneToFive {...props} />);
@@ -98,12 +99,12 @@ describe('Common | Inspection Item Control | Five Action One to Five', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should not invoke click action when disabled', () => {
+  it('should not invoke change action when not editable', () => {
     const expected = false;
     const onClick = sinon.spy();
     const props = {
-      onMainInputChange: onClick,
-      isDisabled: true
+      canEdit: false,
+      onChange: onClick
     };
 
     const { container } = render(<FiveActionOneToFive {...props} />);

@@ -5,12 +5,12 @@ import Signature from './index';
 
 const DOWNLOAD_URL = 'https://dummyimage.com/600x400/000/fff';
 
-describe('Common | Inspection Item Control | Signature', () => {
+describe('Common | Inspection Item Controls | Signature', () => {
   afterEach(() => sinon.restore());
 
   it('should not render image if there is no signature', () => {
     const props = {
-      signatureDownloadURL: ''
+      downloadURL: ''
     };
 
     render(<Signature {...props} />);
@@ -21,7 +21,7 @@ describe('Common | Inspection Item Control | Signature', () => {
 
   it('should render image if there is signature', () => {
     const props = {
-      signatureDownloadURL: DOWNLOAD_URL
+      downloadURL: DOWNLOAD_URL
     };
 
     render(<Signature {...props} />);
@@ -35,8 +35,9 @@ describe('Common | Inspection Item Control | Signature', () => {
     const expected = true;
     const onClick = sinon.spy();
     const props = {
-      signatureDownloadURL: DOWNLOAD_URL,
-      onClickSignatureInput: onClick
+      downloadURL: DOWNLOAD_URL,
+      canEdit: true,
+      onClick
     };
 
     render(<Signature {...props} />);
@@ -52,13 +53,13 @@ describe('Common | Inspection Item Control | Signature', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should not invoke click action when disabled', async () => {
+  it('should not invoke click action when not editable', async () => {
     const expected = false;
     const onClick = sinon.spy();
     const props = {
-      isDisabled: true,
-      signatureDownloadURL: DOWNLOAD_URL,
-      onClickSignatureInput: onClick
+      downloadURL: DOWNLOAD_URL,
+      canEdit: false,
+      onClick
     };
 
     render(<Signature {...props} />);
