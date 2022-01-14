@@ -1,30 +1,29 @@
 import { FunctionComponent } from 'react';
-
 import parentStyles from '../styles.module.scss';
 
 interface Props {
-  signatureDownloadURL: string;
-  onClickSignatureInput(): void;
-  isDisabled?: boolean;
+  downloadURL: string;
+  onClick?(): void;
+  canEdit?: boolean;
 }
 
 const Signature: FunctionComponent<Props> = ({
-  signatureDownloadURL,
-  onClickSignatureInput,
-  isDisabled
+  downloadURL,
+  onClick,
+  canEdit
 }) => (
   <div className={parentStyles.inspection}>
     <div className={parentStyles.inspection__inputSignature}>
       <button
         className={parentStyles.inspection__inputSignature__item}
-        disabled={isDisabled}
+        disabled={!canEdit}
         data-testid="inspection-signature-button"
-        onClick={onClickSignatureInput}
+        onClick={() => canEdit && onClick()}
       >
-        {signatureDownloadURL && (
+        {downloadURL && (
           <img
             data-testid="inspection-signature-image"
-            src={signatureDownloadURL}
+            src={downloadURL}
             alt="signature"
           />
         )}
@@ -34,8 +33,8 @@ const Signature: FunctionComponent<Props> = ({
 );
 
 Signature.defaultProps = {
-  isDisabled: false,
-  onClickSignatureInput: () => {} // eslint-disable-line
+  canEdit: false,
+  onClick: () => {} // eslint-disable-line
 };
 
 export default Signature;

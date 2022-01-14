@@ -1,8 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import sinon from 'sinon';
+import { render, screen, act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import Attachment from './index';
 
-describe('Common | Inspection Item Control | Attachment', () => {
-  it('should disable when note and photo is false', async () => {
+describe('Common | Inspection Item Controls | Attachment', () => {
+  afterEach(() => sinon.restore());
+
+  it('should disable note and photo when not enabled', async () => {
     const props = {
       notes: false,
       photos: false
@@ -17,7 +21,7 @@ describe('Common | Inspection Item Control | Attachment', () => {
     expect(elAttachmentPhoto.dataset.test).toEqual('disabled');
   });
 
-  it('should not disable note element when note property is true', async () => {
+  it('should not disable note when it is enabled', async () => {
     const props = {
       notes: true,
       photos: false
@@ -26,11 +30,10 @@ describe('Common | Inspection Item Control | Attachment', () => {
     render(<Attachment {...props} />);
 
     const elAttachmentNote = screen.queryByTestId('attachment-note');
-
     expect(elAttachmentNote.dataset.test).toEqual('');
   });
 
-  it('should not disable photo element when photo property is true', async () => {
+  it('should not disable photo when it is  enabled', async () => {
     const props = {
       notes: false,
       photos: true
@@ -39,69 +42,144 @@ describe('Common | Inspection Item Control | Attachment', () => {
     render(<Attachment {...props} />);
 
     const elAttachmentPhoto = screen.queryByTestId('attachment-photo');
-
     expect(elAttachmentPhoto.dataset.test).toEqual('');
   });
 
-  // TODO: moved from features/PropertyUpdateInspection/Sections
-  // Reable and test that all required classes are added at the top of the next second
-  // it('should render notes and attachment icons with deficiency when item has deficient selection', async () => {
-  //   const onSectionCollapseToggle = sinon.spy();
+  it('should show notes and attachment icons as deficient when item has a deficient selection', async () => {
+    const props = {
+      notes: true,
+      photos: true,
+      isDeficient: true
+    };
 
-  //   const sectionItems = new Map();
-  //   sectionItems.set(singleSection.id, [
-  //     { ...unselectedCheckmarkItem, mainInputSelection: 1 },
-  //     { ...unselectedThumbsItem, mainInputSelection: 1 },
-  //     { ...unselectedAbcItem, mainInputSelection: 1 },
-  //     { ...unselectedOneToFiveItem, mainInputSelection: 1 },
-  //     { ...unselectedCheckedExclaimItem, mainInputSelection: 1 }
-  //   ]);
+    render(<Attachment {...props} />);
 
-  //   const props = {
-  //     sections: [singleSection],
-  //     forceVisible: true,
-  //     onInputChange: sinon.spy(),
-  //     onClickOneActionNotes: sinon.spy(),
-  //     onItemIsNAChange: sinon.spy(),
-  //     onClickAttachmentNotes: sinon.spy(),
-  //     onClickSignatureInput: sinon.spy(),
-  //     onClickPhotos: sinon.spy(),
-  //     inspectionItemsPhotos: new Map(),
-  //     inspectionItemsSignature: new Map(),
-  //     sectionItems,
-  //     collapsedSections: [],
-  //     onAddSection: sinon.spy(),
-  //     onRemoveSection: sinon.spy(),
-  //     onSectionCollapseToggle,
-  //     canEdit: true,
-  //     isMobile: false,
-  //     completedItems: [],
-  //     requireDeficientItemNoteAndPhoto: true,
-  //     isIncompleteRevealed: true
-  //   };
+    // waiting for deficientItemList to be updated in state
+    await act(async () => {
+      // need to set timeout in the same way we are doing it in component
+      const now = Date.now();
+      const nextSecond = Math.ceil(now / 1000) * 1000;
+      const timeout = nextSecond - now;
+      await new Promise((r) => setTimeout(r, timeout));
+    });
 
-  //   render(<Sections {...props} />, {
-  //     contextWidth: breakpoints.desktop.minWidth
-  //   });
+    const attachmentNotes = screen.queryByTestId('attachment-note');
+    const attachmentPhotos = screen.queryByTestId('attachment-photo');
+    expect(attachmentNotes.dataset.testdeficient).toEqual('deficient');
+    expect(attachmentPhotos.dataset.testdeficient).toEqual('deficient');
+  });
 
-  //   // waiting for deficientItemList to be updated in state
-  //   await act(async () => {
-  //     // need to set timeout in the same way we are doing it in component
-  //     const now = Date.now();
-  //     const nextSecond = Math.ceil(now / 1000) * 1000;
-  //     const timeout = nextSecond - now;
-  //     await new Promise((r) => setTimeout(r, timeout));
-  //   });
+  it('should not show notes and attachment icons as deficient when item has a sufficent selection', async () => {
+    const props = {
+      notes: true,
+      photos: true,
+      isDeficient: false
+    };
 
-  //   const attachmentNotes = screen.queryAllByTestId('attachment-note');
-  //   const attachmentPhotos = screen.queryAllByTestId('attachment-photo');
+    render(<Attachment {...props} />);
 
-  //   attachmentNotes.forEach((note) => {
-  //     expect(note.dataset.testdeficient).toEqual('deficient');
-  //   });
+    // waiting for deficientItemList to be updated in state
+    await act(async () => {
+      // need to set timeout in the same way we are doing it in component
+      const now = Date.now();
+      const nextSecond = Math.ceil(now / 1000) * 1000;
+      const timeout = nextSecond - now;
+      await new Promise((r) => setTimeout(r, timeout));
+    });
 
-  //   attachmentPhotos.forEach((photo) => {
-  //     expect(photo.dataset.testdeficient).toEqual('deficient');
-  //   });
-  // });
+    const attachmentNotes = screen.queryByTestId('attachment-note');
+    const attachmentPhotos = screen.queryByTestId('attachment-photo');
+    expect(attachmentNotes.dataset.testdeficient).toEqual('');
+    expect(attachmentPhotos.dataset.testdeficient).toEqual('');
+  });
+
+  it('should disable notes and photos if user is not permitted', () => {
+    const expected = false;
+    const onClickPhotos = sinon.spy();
+    const onClickAttachmentNotes = sinon.spy();
+    const props = {
+      notes: true,
+      photos: true,
+      onClickAttachmentNotes,
+      onClickPhotos,
+      canEdit: false,
+      isDeficient: false
+    };
+    render(<Attachment {...props} />);
+
+    act(() => {
+      const attachmentNotes = screen.queryByTestId('attachment-note');
+      const attachmentPhotos = screen.queryByTestId('attachment-photo');
+
+      userEvent.click(attachmentNotes);
+      userEvent.click(attachmentPhotos);
+    });
+
+    expect(onClickPhotos.called).toEqual(expected);
+    expect(onClickAttachmentNotes.called).toEqual(expected);
+  });
+
+  it('should disable note icon when not enabled', () => {
+    const expected = false;
+    const onClickAttachmentNotes = sinon.spy();
+    const props = {
+      notes: false,
+      photos: true,
+      onClickAttachmentNotes,
+      onClickPhotos: sinon.spy(),
+      canEdit: true,
+      isDeficient: false
+    };
+    render(<Attachment {...props} />);
+
+    act(() => {
+      const attachmentNotes = screen.queryByTestId('attachment-note');
+      userEvent.click(attachmentNotes);
+    });
+
+    expect(onClickAttachmentNotes.called).toEqual(expected);
+  });
+
+  it('should disable photo icon when not enabled', () => {
+    const expected = false;
+    const onClickPhotos = sinon.spy();
+    const props = {
+      notes: true,
+      photos: false,
+      onClickAttachmentNotes: sinon.spy(),
+      onClickPhotos,
+      canEdit: true,
+      isDeficient: false
+    };
+    render(<Attachment {...props} />);
+
+    act(() => {
+      const attachmentPhotos = screen.queryByTestId('attachment-photo');
+      userEvent.click(attachmentPhotos);
+    });
+
+    expect(onClickPhotos.called).toEqual(expected);
+  });
+
+  it('should enable notes icon when inspector notes are available', () => {
+    const expected = true;
+    const onClickAttachmentNotes = sinon.spy();
+    const props = {
+      notes: true,
+      photos: true,
+      onClickAttachmentNotes,
+      onClickPhotos: sinon.spy(),
+      canEdit: false,
+      isDeficient: false,
+      inspectorNotes: 'this is inspector notes'
+    };
+    render(<Attachment {...props} />);
+
+    act(() => {
+      const attachmentNotes = screen.queryByTestId('attachment-note');
+      userEvent.click(attachmentNotes);
+    });
+
+    expect(onClickAttachmentNotes.called).toEqual(expected);
+  });
 });

@@ -1,29 +1,26 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { FunctionComponent } from 'react';
 import clsx from 'clsx';
-import PhotoIcon from '../../../public/icons/sparkle/photo.svg';
-import styles from '../styles.module.scss';
+import { FunctionComponent } from 'react';
+import PageIcon from '../../../../public/icons/sparkle/page.svg';
+import styles from '../../styles.module.scss';
 
 interface Props {
   enabled: boolean;
   selected: boolean;
-  onClickPhotos(): void;
-  isDisabled: boolean;
+  onClick(): void;
+  canEdit: boolean;
   isRequired: boolean;
 }
 
-const AttachmentPhoto: FunctionComponent<Props> = ({
+const AttachmentNotes: FunctionComponent<Props> = ({
   enabled,
   selected,
-  onClickPhotos,
-  isDisabled,
+  onClick,
+  canEdit,
   isRequired
 }) => {
-  const onClick = () => {
-    if ((enabled && !isDisabled) || selected) {
-      onClickPhotos();
-    }
-  };
+  const isClickEnabled = (enabled && canEdit) || selected;
+  const clickHandler = isClickEnabled ? onClick : () => null; // Propagate or noop
 
   return (
     <li
@@ -32,24 +29,27 @@ const AttachmentPhoto: FunctionComponent<Props> = ({
         !enabled && styles['inspection__attachment__item--disabled'],
         selected && styles['inspection__attachment__item--selected'],
         isRequired && styles['inspection__attachment__item--isRequired'],
-        isDisabled &&
+        !canEdit &&
           !selected &&
           styles['inspection__attachment__item--isDisabled']
       )}
-      data-testid="attachment-photo"
+      data-testid="attachment-note"
       data-test={enabled ? '' : 'disabled'}
       data-testselected={selected ? 'selected' : ''}
       data-testdeficient={isRequired ? 'deficient' : ''}
-      onClick={onClick}
+      onClick={clickHandler}
     >
-      <PhotoIcon />
+      <PageIcon />
     </li>
   );
 };
 
-AttachmentPhoto.defaultProps = {
-  enabled: true,
-  onClickPhotos: () => {} // eslint-disable-line
+AttachmentNotes.defaultProps = {
+  enabled: false,
+  selected: false,
+  isRequired: false,
+  canEdit: false,
+  onClick: () => {} // eslint-disable-line
 };
 
-export default AttachmentPhoto;
+export default AttachmentNotes;

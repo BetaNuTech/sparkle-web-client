@@ -29,7 +29,8 @@ describe('Unit | Features | Property Update Inspection | Sections | Item List', 
     inspectionItemsSignature.set('item-1', [unpublishedSignatureEntry]);
     const props = {
       item: inspectionItem,
-      onInputChange: sinon.spy(),
+      onMainInputChange: sinon.spy(),
+      onTextInputChange: sinon.spy(),
       onClickOneActionNotes: sinon.spy(),
       onItemIsNAChange: sinon.spy(),
       onClickAttachmentNotes: sinon.spy(),

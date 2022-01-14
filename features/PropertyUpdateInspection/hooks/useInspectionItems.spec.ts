@@ -7,7 +7,9 @@ import {
   selectedCheckmarkItem,
   unselectedThumbsItem,
   selectedCheckedExclaimItem,
-  unselectedAbcItem
+  unselectedAbcItem,
+  singleSection,
+  originalMultiSection
 } from '../../../__mocks__/inspections';
 
 const ITEMS = Object.freeze({
@@ -18,6 +20,7 @@ const ITEMS = Object.freeze({
   },
   [selectedCheckmarkItem.id]: {
     ...selectedCheckmarkItem,
+    mainInputSelection: 1,
     index: 2,
     title: 'three'
   },
@@ -28,6 +31,7 @@ const ITEMS = Object.freeze({
   },
   [selectedCheckedExclaimItem.id]: {
     ...selectedCheckedExclaimItem,
+    mainInputSelection: 1,
     sectionId: 'section-2',
     index: 1,
     title: 'two'
@@ -37,6 +41,14 @@ const ITEMS = Object.freeze({
     sectionId: 'section-2',
     index: 0,
     title: 'one'
+  }
+});
+const SECTIONS = Object.freeze({
+  [singleSection.id]: {
+    ...singleSection
+  },
+  [originalMultiSection.id]: {
+    ...originalMultiSection
   }
 });
 
@@ -90,7 +102,19 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Inspection 
     expect(actualSectionTwoTitle).toEqual(expectedSectionTwoTitle);
   });
 
-  // TODO
   // eslint-disable-next-line
-  // test('should return identifiers to all deficient inspection items when inspection has required tracking enabled', () => {});
+  test('should return identifiers to all deficient inspection items when inspection has required tracking enabled', () => {
+    const expected = [selectedCheckmarkItem.id, selectedCheckedExclaimItem.id];
+
+    const updatedTemplate = {} as inspectionTemplateUpdateModel;
+    const currentTemplate = {
+      items: deepClone(ITEMS),
+      sections: deepClone(SECTIONS)
+    } as inspectionTemplateUpdateModel;
+    const { result } = renderHook(() =>
+      useInspectionItems(updatedTemplate, currentTemplate, true)
+    );
+    const { inspectionItemDeficientIds } = result.current;
+    expect(inspectionItemDeficientIds).toEqual(expected);
+  });
 });

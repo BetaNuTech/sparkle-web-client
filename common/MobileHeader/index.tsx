@@ -11,9 +11,10 @@ interface Props {
   toggleNavOpen?(): void;
   isStaging?: boolean;
   isOnline?: boolean;
+  isSticky?: boolean;
   actions?(any): React.ReactNode | React.ReactNodeArray;
   left?(any): React.ReactNode | React.ReactNodeArray;
-  className?: any;
+  className?: string;
 }
 
 const MobileHeader: FunctionComponent<Props> = ({
@@ -21,6 +22,7 @@ const MobileHeader: FunctionComponent<Props> = ({
   toggleNavOpen,
   isStaging,
   isOnline,
+  isSticky,
   actions,
   left,
   className,
@@ -32,7 +34,12 @@ const MobileHeader: FunctionComponent<Props> = ({
 
   return (
     <header
-      className={clsx(styles.header, containerTheme, className && className)}
+      className={clsx(
+        styles.header,
+        containerTheme,
+        isSticky ? styles['header--sticky'] : '',
+        className && className
+      )}
       data-testid={testid}
     >
       {/* Navigation Elements */}
@@ -79,7 +86,8 @@ const MobileHeader: FunctionComponent<Props> = ({
 };
 
 MobileHeader.defaultProps = {
-  testid: 'mobile-header'
+  testid: 'mobile-header',
+  isSticky: false
 };
 
 export default MobileHeader;

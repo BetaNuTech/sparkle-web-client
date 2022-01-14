@@ -3,13 +3,14 @@ import { render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TwoActionThumb from './index';
 
-describe('Common | Inspection Item Control | Two Action Thumb', () => {
+describe('Common | Inspection Item Controls | Two Action Thumb', () => {
   afterEach(() => sinon.restore());
 
   it('should not select any when selected is false', async () => {
     const props = {
       selected: false,
-      selectedValue: 0
+      canEdit: true,
+      value: 0
     };
 
     const { container } = render(<TwoActionThumb {...props} />);
@@ -22,7 +23,8 @@ describe('Common | Inspection Item Control | Two Action Thumb', () => {
   it('should select first option if given 0', async () => {
     const props = {
       selected: true,
-      selectedValue: 0
+      canEdit: true,
+      value: 0
     };
 
     render(<TwoActionThumb {...props} />);
@@ -37,7 +39,8 @@ describe('Common | Inspection Item Control | Two Action Thumb', () => {
   it('should select second option if given 1', async () => {
     const props = {
       selected: true,
-      selectedValue: 1
+      canEdit: true,
+      value: 1
     };
 
     render(<TwoActionThumb {...props} />);
@@ -49,11 +52,12 @@ describe('Common | Inspection Item Control | Two Action Thumb', () => {
     expect(thumbsDown.dataset.test).toEqual('selected');
   });
 
-  it('should invoke click action for all selections when not disabled', () => {
+  it('should invoke change action for all selections', () => {
     const expected = 2;
     const onClick = sinon.spy();
     const props = {
-      onMainInputChange: onClick
+      canEdit: true,
+      onChange: onClick
     };
 
     const { container } = render(<TwoActionThumb {...props} />);
@@ -69,12 +73,12 @@ describe('Common | Inspection Item Control | Two Action Thumb', () => {
     expect(actual).toEqual(expected);
   });
 
-  it('should not invoke click action when disabled', () => {
+  it('should not invoke change action when not editable', () => {
     const expected = false;
     const onClick = sinon.spy();
     const props = {
-      onMainInputChange: onClick,
-      isDisabled: true
+      canEdit: false,
+      onChange: onClick
     };
 
     const { container } = render(<TwoActionThumb {...props} />);

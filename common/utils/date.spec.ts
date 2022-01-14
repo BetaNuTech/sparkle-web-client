@@ -62,4 +62,11 @@ describe('Unit | Common | Utils | Date', () => {
     const actual = date.isoToTimestamp('2020-07-21T16:51:11+00:00');
     expect(actual).toEqual(expected);
   });
+
+  test('it converts a ISO date string to a unix timestamp', () => {
+    const expected = -5;
+    const unixTimeStamp = moment().subtract(5, 'minutes').unix();
+    const actual = date.getTimeDifferenceInMinutes(unixTimeStamp);
+    expect(actual).toEqual(expected);
+  });
 });

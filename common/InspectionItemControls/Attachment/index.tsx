@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from 'react';
-import photoDataModel from '../../models/inspectionTemplateItemPhotoData';
-import AttachmentNotes from '../AttachmentNotes';
-import AttachmentPhoto from '../AttachmentPhoto';
+import PhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
+import Notes from './Notes';
+import Photos from './Photos';
 import styles from '../styles.module.scss';
 
 interface Props {
@@ -10,10 +10,10 @@ interface Props {
   inspectorNotes?: string;
   onClickAttachmentNotes?(): void;
   onClickPhotos?(): void;
-  photosData: Record<string, photoDataModel>;
+  photosData: Record<string, PhotoDataModel>;
   unPublishedPhotosDataCount: number;
   isDeficient: boolean;
-  isDisabled: boolean;
+  canEdit: boolean;
 }
 
 const Attachment: FunctionComponent<Props> = ({
@@ -25,7 +25,7 @@ const Attachment: FunctionComponent<Props> = ({
   photosData,
   unPublishedPhotosDataCount,
   isDeficient,
-  isDisabled
+  canEdit
 }) => {
   const isSelectedNotes = Boolean(inspectorNotes);
   const isSelectedPhotos =
@@ -67,18 +67,18 @@ const Attachment: FunctionComponent<Props> = ({
 
   return (
     <ul className={styles.inspection__attachment}>
-      <AttachmentNotes
+      <Notes
         enabled={notes}
-        onClickAttachmentNotes={onClickAttachmentNotes}
+        onClick={onClickAttachmentNotes}
         selected={isSelectedNotes}
-        isDisabled={isDisabled}
+        canEdit={canEdit}
         isRequired={isSyncronizedNoteRequired}
       />
-      <AttachmentPhoto
+      <Photos
         enabled={photos}
-        onClickPhotos={onClickPhotos}
+        onClick={onClickPhotos}
         selected={isSelectedPhotos}
-        isDisabled={isDisabled}
+        canEdit={canEdit}
         isRequired={isSyncronizedPhotoRequired}
       />
     </ul>
@@ -88,6 +88,8 @@ const Attachment: FunctionComponent<Props> = ({
 Attachment.defaultProps = {
   photos: false,
   notes: false,
+  canEdit: false,
+  isDeficient: false,
   onClickAttachmentNotes: () => {}, // eslint-disable-line
   unPublishedPhotosDataCount: 0
 };

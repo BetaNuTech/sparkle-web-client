@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { FunctionComponent, MouseEvent } from 'react';
 import clsx from 'clsx';
+import { FunctionComponent, MouseEvent } from 'react';
 import OneSimpleIcon from '../../../public/icons/sparkle/one-simple.svg';
 import TwoSimpleIcon from '../../../public/icons/sparkle/two-simple.svg';
 import ThreeSimpleIcon from '../../../public/icons/sparkle/three-simple.svg';
@@ -10,12 +10,12 @@ import styles from '../styles.module.scss';
 
 interface Props {
   selected?: boolean;
-  selectedValue?: number;
-  onMainInputChange?(
+  value?: number;
+  onChange?(
     event: React.MouseEvent<HTMLLIElement>,
     value: string | number
   ): void;
-  isDisabled?: boolean;
+  canEdit?: boolean;
 }
 
 const canAddClass = (
@@ -57,12 +57,12 @@ const getSelectionStyle = (
 
 const FiveActionOneToFive: FunctionComponent<Props> = ({
   selected,
-  selectedValue,
-  onMainInputChange,
-  isDisabled
+  value,
+  onChange,
+  canEdit
 }) => {
-  const onInputChange = (event: MouseEvent<HTMLLIElement>, value: number) => {
-    if (!isDisabled) onMainInputChange(event, value);
+  const onInputChange = (event: MouseEvent<HTMLLIElement>, update: number) => {
+    onChange(event, update);
   };
 
   return (
@@ -70,55 +70,55 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
-          getSelectionStyle(selected, selectedValue, 0)
+          getSelectionStyle(selected, value, 0)
         )}
         data-testid="control-icon-0"
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 0)}
+        onClick={(event) => canEdit && onInputChange(event, 0)}
       >
         <OneSimpleIcon />
       </li>
       <li
         className={clsx(
           styles.inspection__input,
-          getSelectionStyle(selected, selectedValue, 1)
+          getSelectionStyle(selected, value, 1)
         )}
         data-testid="control-icon-1"
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 1)}
+        onClick={(event) => canEdit && onInputChange(event, 1)}
       >
         <TwoSimpleIcon />
       </li>
       <li
         className={clsx(
           styles.inspection__input,
-          getSelectionStyle(selected, selectedValue, 2)
+          getSelectionStyle(selected, value, 2)
         )}
         data-testid="control-icon-2"
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 2)}
+        onClick={(event) => canEdit && onInputChange(event, 2)}
       >
         <ThreeSimpleIcon />
       </li>
       <li
         className={clsx(
           styles.inspection__input,
-          getSelectionStyle(selected, selectedValue, 3)
+          getSelectionStyle(selected, value, 3)
         )}
         data-testid="control-icon-3"
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 3)}
+        onClick={(event) => canEdit && onInputChange(event, 3)}
       >
         <FourSimpleIcon />
       </li>
       <li
         className={clsx(
           styles.inspection__input,
-          getSelectionStyle(selected, selectedValue, 4)
+          getSelectionStyle(selected, value, 4)
         )}
         data-testid="control-icon-4"
         data-test-control="true"
-        onClick={(event) => onInputChange(event, 4)}
+        onClick={(event) => canEdit && onInputChange(event, 4)}
       >
         <FiveSimpleIcon />
       </li>
@@ -127,7 +127,9 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
 };
 
 FiveActionOneToFive.defaultProps = {
-  isDisabled: false
+  selected: false,
+  canEdit: false,
+  value: -1
 };
 
 export { canAddClass };

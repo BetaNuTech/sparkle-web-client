@@ -41,5 +41,11 @@ export default {
     }
 
     return 0;
+  },
+
+  // Returns difference between current time
+  // and a Unix timestamp
+  getTimeDifferenceInMinutes(unixtimestamp: number): number {
+    return moment.unix(unixtimestamp).diff(moment(), 'minutes');
   }
 };

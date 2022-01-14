@@ -8,6 +8,8 @@ interface Props {
   isPdfReportOutOfDate: boolean;
   isPdfReportGenerating: boolean;
   inspectionReportURL: string;
+  isPdfReportQueued: boolean;
+  showRequestAgainAction: boolean;
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
 }
@@ -17,13 +19,24 @@ const PdfReportStatus: FunctionComponent<Props> = ({
   isPdfReportStatusShowing,
   isPdfReportOutOfDate,
   isPdfReportGenerating,
+  isPdfReportQueued,
+  showRequestAgainAction,
   inspectionReportURL,
   hasPdfReportGenerationFailed,
   onRegenerateReport
 }) => {
-  const PDFStatusText = hasPdfReportGenerationFailed
-    ? 'PDF Report generation failed'
-    : `PDF Report is ${isPdfReportOutOfDate ? 'out-of-date' : 'available'}`;
+  let PDFStatusText = `PDF Report is ${
+    isPdfReportOutOfDate ? 'out-of-date' : 'available'
+  }`;
+
+  if (hasPdfReportGenerationFailed) {
+    PDFStatusText = 'PDF Report generation failed';
+  }
+
+  if (isPdfReportQueued) {
+    PDFStatusText = 'PDF report in queue';
+  }
+
   return (
     <>
       {isPdfReportStatusShowing && (
@@ -47,7 +60,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
               data-testid="header-pdf-report-text"
             >
               {PDFStatusText}&nbsp;&nbsp;
-              {hasPdfReportGenerationFailed ? (
+              {hasPdfReportGenerationFailed || showRequestAgainAction ? (
                 <span
                   className={clsx(
                     styles.pdfReport__status__action,
@@ -56,27 +69,31 @@ const PdfReportStatus: FunctionComponent<Props> = ({
                   )}
                   onClick={onRegenerateReport}
                 >
-                  Regenerate Report
+                  {showRequestAgainAction
+                    ? 'Request Again'
+                    : 'Regenerate Report'}
                 </span>
               ) : (
-                <>
-                  <span
-                    className={styles.pdfReport__status__action}
-                    onClick={onCopyReportURL}
-                  >
-                    Copy URL
-                  </span>
-                  |
-                  <span className={styles.pdfReport__status__action}>
-                    <a
-                      href={inspectionReportURL}
-                      target="_blank"
-                      rel="noreferrer"
+                !isPdfReportQueued && (
+                  <>
+                    <span
+                      className={styles.pdfReport__status__action}
+                      onClick={onCopyReportURL}
                     >
-                      View Report
-                    </a>
-                  </span>
-                </>
+                      Copy URL
+                    </span>
+                    |
+                    <span className={styles.pdfReport__status__action}>
+                      <a
+                        href={inspectionReportURL}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        View Report
+                      </a>
+                    </span>
+                  </>
+                )
               )}
             </p>
           )}

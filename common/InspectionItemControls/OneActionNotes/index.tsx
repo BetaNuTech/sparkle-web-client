@@ -1,18 +1,15 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import { FunctionComponent } from 'react';
 import clsx from 'clsx';
+import { FunctionComponent } from 'react';
 import NoteSimpleIcon from '../../../public/icons/sparkle/note-simple.svg';
 import styles from '../styles.module.scss';
 
 interface Props {
-  onClickOneActionNotes?: (any) => any;
+  onClick: (any) => void;
   selected: boolean;
 }
 
-const OneActionNotes: FunctionComponent<Props> = ({
-  onClickOneActionNotes,
-  selected
-}) => (
+const OneActionNotes: FunctionComponent<Props> = ({ onClick, selected }) => (
   <ul className={styles.inspection}>
     <li
       className={clsx(
@@ -20,13 +17,16 @@ const OneActionNotes: FunctionComponent<Props> = ({
         selected && styles['inspection__input--selected']
       )}
       data-testid="one-action-notes"
-      onClick={onClickOneActionNotes}
+      onClick={onClick}
     >
       <NoteSimpleIcon />
     </li>
   </ul>
 );
 
-OneActionNotes.defaultProps = {};
+OneActionNotes.defaultProps = {
+  selected: false,
+  onClick: () => null
+};
 
 export default OneActionNotes;
