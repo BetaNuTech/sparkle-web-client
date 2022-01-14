@@ -30,15 +30,29 @@
   margin: auto;
   text-align: center;
 
-  &__centered {
-    margin: auto;
-  }
-
   img {
     margin-bottom: 1rem;
   }
 
   &__blink {
     animation: fadeinout 1.2s linear infinite;
+  }
+
+  &__progress {
+    height: rem-calc(16);
+    width: 70%;
+    overflow: hidden;
+    position: relative;
+    background-color: lighten($gray-light, 26);
+    border-radius: $global-radius;
+
+    &__fill {
+      width: 0%;
+      max-width: 100%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.45);
+      transition: width 100ms ease-in;
+      background-color: $primary-color;
+      height: rem-calc(16);
+    }
   }
 }

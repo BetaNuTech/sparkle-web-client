@@ -1,9 +1,14 @@
+import Observable from 'zen-observable';
 import unPublishedPhotoModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import photosDb from '../../../common/services/indexedDB/inspectionItemPhotosData';
 import inspUtil from '../../../common/utils/inspection';
-import { dataURLtoFile } from '../../../common/utils/files';
 import inspectionApi from '../../../common/services/api/inspections';
+<<<<<<< HEAD
+import { dataURLtoFile } from '../../../common/utils/files';
+=======
+import filesUtil from '../../../common/utils/files';
+>>>>>>> b501435d93b6869573cacc46ddfd0689c79fcc14
 
 const PREFIX = 'features: PropertyUpdateInspection: utils: publishPhotos:';
 
@@ -13,50 +18,88 @@ export type PhotoPublishStep = {
   errors: Error[];
 };
 
+type photoStreamResult = {
+  done: boolean;
+  size?: number;
+  result: PhotoPublishStep;
+};
+
 const uploadPhoto = async (
   inspectionId: string,
   photoData: unPublishedPhotoModel
 ) => {
   const fileName = `${photoData.createdAt}.png`;
-  const file = dataURLtoFile(photoData.photoData, fileName);
+  const file = filesUtil.dataURLtoFile(photoData.photoData, fileName);
   // eslint-disable-next-line import/no-named-as-default-member
   return inspectionApi.uploadPhotoData(inspectionId, photoData.item, file);
 };
 
+// Create stream of upload photos data
+const upload = (
+  inspectionId: string,
+  unpublishedPhotos: unPublishedPhotoModel[]
+) =>
+  new Observable((observer) => {
+    (async () => {
+      const result = {
+        successful: [],
+        errors: []
+      };
+
+      // Create all upload requests
+      // And upload photo one by one
+      // eslint-disable-next-line  no-restricted-syntax
+      for (const photo of unpublishedPhotos) {
+        try {
+          // eslint-disable-next-line  no-await-in-loop
+          const file = await uploadPhoto(inspectionId, photo);
+          photo.downloadURL = file.downloadURL;
+          photo.fileId = file.id;
+          result.successful.push(photo);
+          observer.next({ done: false, size: photo.size, result });
+        } catch (err) {
+          const error = Error(
+            // eslint-disable-next-line max-len
+            `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
+          );
+          result.errors.push(error);
+          observer.next({ done: false, size: photo.size, result });
+        }
+      }
+
+      // notify subscriber that operations is completed
+      // and all files are uploaded
+      observer.next({ done: true, result });
+      observer.complete();
+    })();
+  });
+
 export default {
   // Upload all unpublished photos
   // resolving successful photos and errors
-  upload: async (
+  uploadPhotos: (
     inspectionId: string,
-    unpublishedPhotos: unPublishedPhotoModel[]
-  ): Promise<PhotoPublishStep> => {
-    const result = {
-      successful: [],
-      errors: []
-    };
-
-    // Create all upload requests
-    // And upload photos one by one
-    // eslint-disable-next-line  no-restricted-syntax
-    for (const photo of unpublishedPhotos) {
-      try {
-        // eslint-disable-next-line  no-await-in-loop
-        const file = await uploadPhoto(inspectionId, photo);
-        photo.downloadURL = file.downloadURL;
-        photo.fileId = file.id;
-        result.successful.push(photo);
-      } catch (err) {
-        result.errors.push(
-          Error(
-            // eslint-disable-next-line max-len
-            `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
-          )
-        );
-      }
-    }
-
-    return result;
-  },
+    flattenedUnpublishedPhotosFiles: unPublishedPhotoModel[],
+    uploadedBytes: number,
+    setProgressValue: (size: number) => void
+  ): Promise<PhotoPublishStep> =>
+    new Promise((resolve) => {
+      let result = {
+        successful: [],
+        errors: []
+      } as PhotoPublishStep;
+      upload(inspectionId, flattenedUnpublishedPhotosFiles).subscribe({
+        next: (response: photoStreamResult) => {
+          if (response.done) {
+            result = response.result;
+          } else {
+            uploadedBytes += response.size; // eslint-disable-line no-param-reassign
+            setProgressValue(uploadedBytes);
+          }
+        },
+        complete: () => resolve(result)
+      });
+    }),
 
   // Remove local photos data
   // that have been published

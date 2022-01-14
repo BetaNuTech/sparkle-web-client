@@ -16,7 +16,7 @@ interface Props extends ModalProps {
   onClose: () => void;
   photosData: Record<string, photoDataModel>;
   unpublishedPhotosData: unPublishedPhotoDataModel[];
-  onChangeFiles(files: Array<string>): Promise<void>;
+  onChangeFiles(files: Record<string, string | number>): Promise<void>;
   onAddCaption(unpublishedPhotoId: string, captionText: string): void;
   onRemovePhoto(unpublishedPhotoId: string): void;
   sendNotification: userNotifications;
@@ -83,8 +83,8 @@ const PhotosModal: FunctionComponent<Props> = ({
     for (const file of files) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        const dataUru = await fileToDataURI(file);
-        filesDataUri.push(dataUru);
+        const dataUri = await fileToDataURI(file);
+        filesDataUri.push({ dataUri, size: file.size });
       } catch (err) {
         proccessErrors.push(err);
       }
@@ -113,10 +113,10 @@ const PhotosModal: FunctionComponent<Props> = ({
 
     // Save each file to local DB
     // eslint-disable-next-line no-restricted-syntax
-    for (const dataUri of filesDataUri) {
+    for (const file of filesDataUri) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        await onChangeFiles([dataUri]);
+        await onChangeFiles(file);
       } catch (err) {
         storageErrors.push(err);
       }

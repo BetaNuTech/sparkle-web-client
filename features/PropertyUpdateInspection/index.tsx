@@ -71,7 +71,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     enableAdminEditMode,
     disableAdminEditMode,
     destroyUpdates,
-    publish
+    publish,
+    publishProgress
   } = useUpdateTemplate(
     property.id,
     inspection.id,
@@ -104,7 +105,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
 
   const {
-    addUnpublishedInspectionItemPhotos,
+    addUnpublishedInspectionItemPhoto,
     unpublishedInspectionItemsPhotos,
     unpublishedSelectedInspectionItemsPhotos,
     addUnpublishedInspectionPhotoCaption,
@@ -321,12 +322,26 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   // User updates an item's
   // unpublished photo data
-  const onChangeItemsUnpublishedPhotos = async (files: Array<string>) => {
-    return addUnpublishedInspectionItemPhotos(files, selectedInspectionItem.id);
+  const onChangeItemsUnpublishedPhotos = async (file: any) => {
+    return addUnpublishedInspectionItemPhoto(
+      file.dataUri,
+      file.size,
+      selectedInspectionItem.id,
+      property.id
+    );
   };
 
-  const saveSignature = async (signatureData: string, itemId: string) => {
-    saveUnpublishedInspectionSignature(signatureData, itemId);
+  const saveSignature = async (
+    signatureData: string,
+    size: number,
+    itemId: string
+  ) => {
+    saveUnpublishedInspectionSignature(
+      signatureData,
+      size,
+      itemId,
+      property.id
+    );
   };
 
   const onRemoveItemsUnpublishedPhoto = (unpublishedPhotoId: string) => {
@@ -359,7 +374,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     unpublishedInspectionItemsPhotos.size > 0;
 
   if (isPublishing) {
-    return <LoadingHud title="Saving Inspection" />;
+    return (
+      <LoadingHud
+        title="Saving Inspection"
+        hasProgress={true}
+        progressValue={publishProgress}
+      />
+    );
   }
 
   return (

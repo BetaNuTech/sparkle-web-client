@@ -1,3 +1,4 @@
+import Observable from 'zen-observable';
 import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import signatureDb from '../../../common/services/indexedDB/inspectionSignature';
@@ -10,6 +11,12 @@ const PREFIX = 'features: PropertyUpdateInspection: utils: publishSignatures:';
 export type SignaturePublishStep = {
   successful: unpublishedSignatureModel[];
   errors: Error[];
+};
+
+type signatureStreamResult = {
+  done: boolean;
+  size?: number;
+  result: SignaturePublishStep;
 };
 
 // Factory for uploading signatures
@@ -30,49 +37,90 @@ const createInspectionUploader = (
   );
 };
 
+// Create stream for upload signatures
+const upload = (
+  inspectionId: string,
+  unpublishedSignatures: unpublishedSignatureModel[],
+  uploadBase64FileToStorage: (
+    dest: string,
+    dataUrl: string
+  ) => Promise<StorageResult>
+) => {
+  // Create upload function
+  const uploadSignature = createInspectionUploader(
+    inspectionId,
+    uploadBase64FileToStorage
+  );
+  return new Observable((observer) => {
+    (async () => {
+      const result = {
+        successful: [],
+        errors: []
+      };
+
+      // Create all upload requests
+      // And upload signatures one by one
+      // eslint-disable-next-line  no-restricted-syntax
+      for (const signature of unpublishedSignatures) {
+        try {
+          // eslint-disable-next-line  no-await-in-loop
+          const file = await uploadSignature(signature);
+          signature.signatureDownloadURL = file.fileUrl;
+          result.successful.push(signature);
+          observer.next({ done: false, size: signature.size, result });
+        } catch (err) {
+          const error = Error(
+            // eslint-disable-next-line max-len
+            `${PREFIX} upload: failed to upload signature for inspection "${inspectionId}" item "${signature.item}": ${err}`
+          );
+          result.errors.push(error);
+          observer.next({ done: false, size: signature.size, result });
+        }
+      }
+
+      // notify subscriber that operations is completed
+      // and all files are uploaded
+      observer.next({ done: true, result });
+      observer.complete();
+    })();
+  });
+};
+
 export default {
   // Upload all unpublished signatures
   // resolving successful sigantures and errors
-  upload: async (
+  uploadSignatures: (
     inspectionId: string,
-    unpublishedSignatures: unpublishedSignatureModel[],
+    flattenedUnpublishedSignatures: unpublishedSignatureModel[],
     uploadBase64FileToStorage: (
       dest: string,
       dataUrl: string
-    ) => Promise<StorageResult>
-  ): Promise<SignaturePublishStep> => {
-    const result = {
-      successful: [],
-      errors: []
-    };
+    ) => Promise<StorageResult>,
+    uploadedBytes: number,
+    setProgressValue: (size: number) => void
+  ): Promise<SignaturePublishStep> =>
+    new Promise((resolve) => {
+      let result = {
+        successful: [],
+        errors: []
+      } as SignaturePublishStep;
 
-    // Create upload function
-    const uploadSignature = createInspectionUploader(
-      inspectionId,
-      uploadBase64FileToStorage
-    );
-
-    // Create all upload requests
-    // And upload signatures one by one
-    // eslint-disable-next-line  no-restricted-syntax
-    for (const signature of unpublishedSignatures) {
-      try {
-        // eslint-disable-next-line  no-await-in-loop
-        const file = await uploadSignature(signature);
-        signature.signatureDownloadURL = file.fileUrl;
-        result.successful.push(signature);
-      } catch (err) {
-        result.errors.push(
-          Error(
-            // eslint-disable-next-line max-len
-            `${PREFIX} upload: failed to upload signature for inspection "${inspectionId}" item "${signature.item}": ${err}`
-          )
-        );
-      }
-    }
-
-    return result;
-  },
+      upload(
+        inspectionId,
+        flattenedUnpublishedSignatures,
+        uploadBase64FileToStorage
+      ).subscribe({
+        next: (response: signatureStreamResult) => {
+          if (response.done) {
+            result = response.result;
+          } else {
+            uploadedBytes += response.size; // eslint-disable-line no-param-reassign
+            setProgressValue(uploadedBytes);
+          }
+        },
+        complete: () => resolve(result)
+      });
+    }),
 
   // Remove local signatures
   // that have been published

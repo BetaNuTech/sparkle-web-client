@@ -17,8 +17,10 @@ export class InitDexie extends Dexie {
     super('sparkle-database');
     // each time we update or add table, we need to update version to upgrade database
     this.version(3).stores({
-      inspectionItemPhotos: 'id, createdAt,caption,inspection,item,photoData', // Primary key and indexed props
-      inspectionSignature: 'id, createdAt,inspection,item,signature', // Primary key and indexed props
+      inspectionItemPhotos:
+        'id, createdAt,caption,inspection,item,photoData,property,size', // Primary key and indexed props
+      inspectionSignature:
+        'id, createdAt,inspection,item,signature,property,size', // Primary key and indexed props
       inspectionTemplateUpdates: 'id, inspection, property, template' // Primary key and indexed props
     });
   }

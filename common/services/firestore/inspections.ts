@@ -13,7 +13,7 @@ export interface inspectionCollectionResult {
 }
 
 // Result of inspection single document
-export interface propertyResult {
+export interface DocumentResult {
   status: string;
   error?: Error;
   data: inspectionModel;
@@ -24,7 +24,7 @@ export default {
   findRecord(
     firestore: firebase.firestore.Firestore,
     inspectionId: string
-  ): propertyResult {
+  ): DocumentResult {
     let status = 'success';
     let error = null;
     let data = {} as inspectionModel;
@@ -65,7 +65,7 @@ export default {
   queryByProperty(
     firestore: firebase.firestore.Firestore,
     propertyId: string
-  ): propertyResult {
+  ): DocumentResult {
     let status = 'success';
     let error = null;
     let data = null;

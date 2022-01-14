@@ -62,11 +62,11 @@ describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
   });
 
   test('should show the request again action if the report has been queued for over 3 minutes', async () => {
-    const fourMinUnix = 60 * 4;
-    const fourMinutesAgo = Math.round(Date.now() / 1000) - fourMinUnix;
+    const fiveMinUnix = 60 * 5;
+    const fiveMinutesAgo = Math.round(Date.now() / 1000) - fiveMinUnix;
     const completedInspectionWithReport = {
       ...inspectionA,
-      inspectionReportLastQueued: fourMinutesAgo,
+      inspectionReportLastQueued: fiveMinutesAgo,
       inspectionReportStatus: 'queued'
     };
     const { result } = renderHook(() =>

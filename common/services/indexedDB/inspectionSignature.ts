@@ -8,15 +8,19 @@ const PREFIX = 'common: services: indexedDB:  inspectionSignature:';
 // add signature data to indexed db for inspection
 export const createRecord = async (
   file: string,
+  size: number,
   itemId: string,
-  inspectionId: string
+  inspectionId: string,
+  propertyId: string
 ): Promise<any> => {
   const signatureData = {
     id: uuid(20),
     createdAt: moment().unix(),
     inspection: inspectionId,
     item: itemId,
-    signature: file
+    signature: file,
+    property: propertyId,
+    size
   };
 
   try {
@@ -47,7 +51,7 @@ export const queryRecords = async (
 // https://dexie.org/docs/Table/Table.update()#return-value
 export const updateRecord = async (
   signatureId: string,
-  signatureData: Record<string, string>
+  signatureData: Record<string, string | number>
 ): Promise<number> => {
   try {
     const result = await db.inspectionSignature.update(
