@@ -4,11 +4,7 @@ import inspectionTemplateUpdateModel from '../../../common/models/inspections/te
 import photosDb from '../../../common/services/indexedDB/inspectionItemPhotosData';
 import inspUtil from '../../../common/utils/inspection';
 import inspectionApi from '../../../common/services/api/inspections';
-<<<<<<< HEAD
-import { dataURLtoFile } from '../../../common/utils/files';
-=======
 import filesUtil from '../../../common/utils/files';
->>>>>>> b501435d93b6869573cacc46ddfd0689c79fcc14
 
 const PREFIX = 'features: PropertyUpdateInspection: utils: publishPhotos:';
 
