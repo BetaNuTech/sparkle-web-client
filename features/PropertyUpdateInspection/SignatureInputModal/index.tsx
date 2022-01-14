@@ -116,18 +116,10 @@ const SignatureInputModal: FunctionComponent<Props> = ({
   // Save any available user signature
   // and call on close callback
   const onCloseModal = () => {
-<<<<<<< HEAD
-    if (hasSignData) {
-      const signDataURL = canvasRef.current.toDataURL();
-      const signatureSize = unescape(encodeURIComponent(signDataURL)).length;
-      saveSignature(signDataURL, signatureSize, selectedInspectionItem.id);
-    }
-=======
     if (!hasSignData) return;
     const signDataURL = canvasRef.current.toDataURL();
     const signatureSize = filesUtil.estimateBase64ByteSize(signDataURL);
     saveSignature(signDataURL, signatureSize, selectedInspectionItem.id);
->>>>>>> b501435d93b6869573cacc46ddfd0689c79fcc14
   };
 
   // Complete on close actions when
