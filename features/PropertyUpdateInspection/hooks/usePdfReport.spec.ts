@@ -61,19 +61,34 @@ describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
     expect(result.current.isPdfReportQueued).toBeTruthy();
   });
 
-  test('should show the request again action if the report has been queued for over 3 minutes', async () => {
+  test('should show the restart action if the report has been queued for over 3 minutes', async () => {
     const fiveMinUnix = 60 * 5;
     const fiveMinutesAgo = Math.round(Date.now() / 1000) - fiveMinUnix;
     const completedInspectionWithReport = {
       ...inspectionA,
-      inspectionReportLastQueued: fiveMinutesAgo,
+      inspectionReportStatusChanged: fiveMinutesAgo,
       inspectionReportStatus: 'queued'
     };
     const { result } = renderHook(() =>
       usePDFReport(completedInspectionWithReport, sinon.spy(), true, false)
     );
     expect(result.current.isPdfReportStatusShowing).toBeTruthy();
-    expect(result.current.showRequestAgainAction).toBeTruthy();
+    expect(result.current.showRestartAction).toBeTruthy();
+  });
+
+  test('should show the restart action if the report has been generating for over 3 minutes', async () => {
+    const fiveMinUnix = 60 * 5;
+    const fiveMinutesAgo = Math.round(Date.now() / 1000) - fiveMinUnix;
+    const completedInspectionWithReport = {
+      ...inspectionA,
+      inspectionReportStatusChanged: fiveMinutesAgo,
+      inspectionReportStatus: 'generating'
+    };
+    const { result } = renderHook(() =>
+      usePDFReport(completedInspectionWithReport, sinon.spy(), true, false)
+    );
+    expect(result.current.isPdfReportStatusShowing).toBeTruthy();
+    expect(result.current.showRestartAction).toBeTruthy();
   });
 
   test('should show report status as failed', async () => {

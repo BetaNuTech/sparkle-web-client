@@ -15,7 +15,7 @@ interface inspection {
   // Report attributes
   inspectionReportStatus?: string;
   inspectionReportUpdateLastDate?: number;
-  inspectionReportLastQueued?: number;
+  inspectionReportStatusChanged?: number;
 
   // Relationships
   template?: inspectionTemplate;

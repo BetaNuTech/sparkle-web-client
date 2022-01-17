@@ -13,8 +13,9 @@ interface usePdfReportResult {
   isPdfReportOutOfDate: boolean;
   isPdfReportGenerating: boolean;
   isPdfReportQueued: boolean;
-  showRequestAgainAction: boolean;
+  showRestartAction: boolean;
   hasPdfReportGenerationFailed: boolean;
+  isRequestingReport: boolean;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -25,7 +26,7 @@ export default function usePDFReport(
   isOnline: boolean,
   hasUpdates: boolean
 ): usePdfReportResult {
-  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
+  const [isRequestingReport, setIsRequestingReport] = useState(false);
 
   const handleErrorResponse = (apiError: Error) => {
     if (apiError instanceof ErrorServerInternal) {
@@ -49,17 +50,14 @@ export default function usePDFReport(
   };
 
   const generatePdfReport = async () => {
-    if (isGeneratingReport) {
-      return;
-    }
-    setIsGeneratingReport(true);
+    setIsRequestingReport(true);
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       await inspectionApi.generatePdfReport(inspection.id);
     } catch (err) {
       handleErrorResponse(err);
     }
-    setIsGeneratingReport(false);
+    setIsRequestingReport(false);
   };
 
   // Determine if PDF report status can be displayed
@@ -77,16 +75,26 @@ export default function usePDFReport(
   // Determine if PDF report is queued
   const isPdfReportQueued = inspection.inspectionReportStatus === 'queued';
 
-  // Determine if PDF report is queued and should show request again action
-  const inspectionQueuedTimeFromNow = dateUtils.getTimeDifferenceInMinutes(
-    inspection.inspectionReportLastQueued
+  // Get minutes diffference from current time
+  // to  inspection seport status changed
+  // to determine if user can request agian for PDF Report
+  const reportStatusChangedTimeFromNow = dateUtils.getTimeDifferenceInMinutes(
+    inspection.inspectionReportStatusChanged
   );
-  const showRequestAgainAction =
-    isPdfReportQueued && inspectionQueuedTimeFromNow < -3;
 
   // Determine if PDF report is generation failed
   const hasPdfReportGenerationFailed =
     inspection.inspectionReportStatus === 'completed_failure';
+
+  // Determine if user can request for PDF report
+  // if PDF report is generation failed
+  // or if report is queued or generating and has been for over 3 minutes
+  // and generate request is not in flight
+  const showRestartAction =
+    !isRequestingReport &&
+    (((isPdfReportQueued || isPdfReportGenerating) &&
+      reportStatusChangedTimeFromNow < -3) ||
+      hasPdfReportGenerationFailed);
 
   return {
     generatePdfReport,
@@ -94,7 +102,8 @@ export default function usePDFReport(
     isPdfReportOutOfDate,
     isPdfReportGenerating,
     isPdfReportQueued,
-    showRequestAgainAction,
-    hasPdfReportGenerationFailed
+    showRestartAction,
+    hasPdfReportGenerationFailed,
+    isRequestingReport
   };
 }
