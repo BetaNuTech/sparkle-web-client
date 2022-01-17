@@ -26,9 +26,10 @@ interface Props {
   isPdfReportOutOfDate: boolean;
   isPdfReportGenerating: boolean;
   isPdfReportQueued: boolean;
-  showRequestAgainAction: boolean;
+  showRestartAction: boolean;
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
+  isRequestingReport: boolean;
 }
 
 const InspectionMobileHeader: FunctionComponent<Props> = ({
@@ -47,9 +48,10 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
   isPdfReportOutOfDate,
   isPdfReportGenerating,
   isPdfReportQueued,
-  showRequestAgainAction,
+  showRestartAction,
   hasPdfReportGenerationFailed,
-  onRegenerateReport
+  onRegenerateReport,
+  isRequestingReport
 }) => {
   const isPubishingDisabled =
     !(hasUpdates && isOnline) || isPdfReportGenerating || isPdfReportQueued;
@@ -142,11 +144,12 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
         isPdfReportGenerating={isPdfReportGenerating}
         isPdfReportOutOfDate={isPdfReportOutOfDate}
         isPdfReportQueued={isPdfReportQueued}
-        showRequestAgainAction={showRequestAgainAction}
+        showRestartAction={showRestartAction}
         inspectionReportURL={inspection.inspectionReportURL}
         hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
         onCopyReportURL={onCopyReportURL}
         onRegenerateReport={onRegenerateReport}
+        isRequestingReport={isRequestingReport}
       />
     </>
   );

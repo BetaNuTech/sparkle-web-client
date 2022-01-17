@@ -9,9 +9,10 @@ interface Props {
   isPdfReportGenerating: boolean;
   inspectionReportURL: string;
   isPdfReportQueued: boolean;
-  showRequestAgainAction: boolean;
+  showRestartAction: boolean;
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
+  isRequestingReport: boolean;
 }
 
 const PdfReportStatus: FunctionComponent<Props> = ({
@@ -20,22 +21,35 @@ const PdfReportStatus: FunctionComponent<Props> = ({
   isPdfReportOutOfDate,
   isPdfReportGenerating,
   isPdfReportQueued,
-  showRequestAgainAction,
+  showRestartAction,
   inspectionReportURL,
   hasPdfReportGenerationFailed,
-  onRegenerateReport
+  onRegenerateReport,
+  isRequestingReport
 }) => {
-  let PDFStatusText = `PDF Report is ${
-    isPdfReportOutOfDate ? 'out-of-date' : 'available'
-  }`;
+  let PDFStatusText = '';
+
+  if (isPdfReportOutOfDate) {
+    PDFStatusText = 'PDF Report is out-of-date';
+  }
 
   if (hasPdfReportGenerationFailed) {
-    PDFStatusText = 'PDF Report generation failed';
+    PDFStatusText = 'PDF Report failed';
   }
 
   if (isPdfReportQueued) {
     PDFStatusText = 'PDF report in queue';
   }
+
+  if (isPdfReportGenerating) {
+    PDFStatusText = 'Generating PDF';
+  }
+
+  const showActions =
+    !isPdfReportQueued &&
+    !showRestartAction &&
+    !isPdfReportGenerating &&
+    !isRequestingReport;
 
   return (
     <>
@@ -47,56 +61,47 @@ const PdfReportStatus: FunctionComponent<Props> = ({
           )}
           data-testid="header-pdf-report"
         >
-          {isPdfReportGenerating ? (
-            <p
-              data-testid="header-pdf-report-generating"
-              className={styles.pdfReport__generating}
-            >
-              Generating PDF
-            </p>
-          ) : (
-            <p
-              className={styles.pdfReport__status}
-              data-testid="header-pdf-report-text"
-            >
-              {PDFStatusText}&nbsp;&nbsp;
-              {hasPdfReportGenerationFailed || showRequestAgainAction ? (
-                <span
-                  className={clsx(
-                    styles.pdfReport__status__action,
-                    hasPdfReportGenerationFailed &&
-                      styles['pdfReport__status__action--failed']
-                  )}
-                  onClick={onRegenerateReport}
-                >
-                  {showRequestAgainAction
-                    ? 'Request Again'
-                    : 'Regenerate Report'}
+          <p
+            className={clsx(
+              styles.pdfReport__status,
+              isPdfReportGenerating && styles.pdfReport__generating
+            )}
+            data-testid="header-pdf-report-text"
+          >
+            {PDFStatusText}&nbsp;&nbsp;
+            {showRestartAction && (
+              <span
+                className={clsx(
+                  styles.pdfReport__status__action,
+                  hasPdfReportGenerationFailed &&
+                    styles['pdfReport__status__action--failed']
+                )}
+                onClick={onRegenerateReport}
+              >
+                Restart
+              </span>
+            )}
+            {showActions && (
+              <>
+                <span className={styles.pdfReport__status__action}>
+                  <a
+                    href={inspectionReportURL}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View PDF Report
+                  </a>
                 </span>
-              ) : (
-                !isPdfReportQueued && (
-                  <>
-                    <span
-                      className={styles.pdfReport__status__action}
-                      onClick={onCopyReportURL}
-                    >
-                      Copy URL
-                    </span>
-                    |
-                    <span className={styles.pdfReport__status__action}>
-                      <a
-                        href={inspectionReportURL}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        View Report
-                      </a>
-                    </span>
-                  </>
-                )
-              )}
-            </p>
-          )}
+                |
+                <span
+                  className={styles.pdfReport__status__action}
+                  onClick={onCopyReportURL}
+                >
+                  Copy PDF Link
+                </span>
+              </>
+            )}
+          </p>
         </div>
       )}
     </>

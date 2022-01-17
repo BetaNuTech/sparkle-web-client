@@ -190,7 +190,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
   });
 
   it('should show PDF report status as available', () => {
-    const expected = 'PDF Report is available';
+    const expected = 'View PDF Report|Copy PDF Link';
     const props = {
       property: fullProperty,
       inspection: fullInspection,
@@ -254,9 +254,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
       contextWidth: breakpoints.desktop.minWidth
     });
 
-    const pdfReportGenerating = screen.queryByTestId(
-      'header-pdf-report-generating'
-    );
+    const pdfReportGenerating = screen.queryByTestId('header-pdf-report-text');
     expect(pdfReportGenerating).toHaveTextContent(expected);
   });
 

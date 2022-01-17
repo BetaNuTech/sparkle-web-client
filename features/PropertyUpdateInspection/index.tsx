@@ -134,8 +134,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     isPdfReportOutOfDate,
     isPdfReportGenerating,
     isPdfReportQueued,
-    showRequestAgainAction,
-    hasPdfReportGenerationFailed
+    showRestartAction,
+    hasPdfReportGenerationFailed,
+    isRequestingReport
   } = usePdfReport(inspection, sendNotification, isOnline, hasUpdates);
 
   // Responsive queries
@@ -403,9 +404,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             isPdfReportOutOfDate={isPdfReportOutOfDate}
             isPdfReportGenerating={isPdfReportGenerating}
             isPdfReportQueued={isPdfReportQueued}
-            showRequestAgainAction={showRequestAgainAction}
+            showRestartAction={showRestartAction}
             hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
             onRegenerateReport={generatePdfReport}
+            isRequestingReport={isRequestingReport}
           />
         </>
       ) : (
@@ -424,9 +426,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           isPdfReportOutOfDate={isPdfReportOutOfDate}
           isPdfReportGenerating={isPdfReportGenerating}
           isPdfReportQueued={isPdfReportQueued}
-          showRequestAgainAction={showRequestAgainAction}
+          showRestartAction={showRestartAction}
           hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
           onRegenerateReport={generatePdfReport}
+          isRequestingReport={isRequestingReport}
         />
       )}
 
