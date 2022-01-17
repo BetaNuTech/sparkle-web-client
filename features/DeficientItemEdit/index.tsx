@@ -6,8 +6,10 @@ import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import Header from './Header';
 import DeficientItemControlsDetails from '../../common/DeficientItemControls/Details';
+import DeficientItemControlsNotes from '../../common/DeficientItemControls/Notes';
 import styles from './styles.module.scss';
 import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
+import useDeficientItemSectionVisibility from './hooks/useDeficientItemSectionVisibility';
 
 interface Props {
   user: userModel;
@@ -24,6 +26,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   isStaging
 }) => {
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
+
+  const { showNotes } = useDeficientItemSectionVisibility(deficientItem);
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -53,7 +57,12 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
               onClickViewPhotos={() => setIsVisiblePhotosModal(true)}
             />
           </aside>
-          <div className={styles.grid__main}>Deficient item form goes here</div>
+          <div className={styles.grid__main}>
+            <DeficientItemControlsNotes
+              deficientItem={deficientItem}
+              isVisible={showNotes}
+            />
+          </div>
         </div>
       </div>
       <InspectionItemPhotosModal
