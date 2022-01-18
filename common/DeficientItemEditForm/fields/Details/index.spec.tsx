@@ -1,13 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import sinon from 'sinon';
 import Details from './index';
-import dateUtils from '../../utils/date';
-import { deficientItem } from '../../../__mocks__/deficientItems';
+import dateUtils from '../../../utils/date';
+import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
 
-describe('Unit | Common | Deficient Item Controls | Details ', () => {
+describe('Unit | Common | Deficient Item Edit Form | fields | Details ', () => {
   afterEach(() => sinon.restore());
 
   it('renders the creation date in the local timezone', () => {
+    const deficientItem = createDeficientItem();
     const expected = dateUtils.toUserFullDateDisplay(deficientItem.createdAt);
     render(
       <Details
@@ -22,7 +23,8 @@ describe('Unit | Common | Deficient Item Controls | Details ', () => {
   });
 
   it('renders the item title', () => {
-    const expected = deficientItem.itemTitle;
+    const expected = 'test details title';
+    const deficientItem = createDeficientItem({ itemTitle: expected });
     render(
       <Details
         deficientItem={deficientItem}
@@ -36,7 +38,8 @@ describe('Unit | Common | Deficient Item Controls | Details ', () => {
   });
 
   it('renders the section title', () => {
-    const expected = deficientItem.sectionTitle;
+    const expected = 'test details section title';
+    const deficientItem = createDeficientItem({ sectionTitle: expected });
     render(
       <Details
         deficientItem={deficientItem}
@@ -51,9 +54,10 @@ describe('Unit | Common | Deficient Item Controls | Details ', () => {
 
   it('renders the section subtitle when present', () => {
     const expected = 'Section SubTitle';
+    const deficientItem = createDeficientItem({ sectionSubtitle: expected });
     render(
       <Details
-        deficientItem={{ ...deficientItem, sectionSubtitle: expected }}
+        deficientItem={deficientItem}
         isMobile={false}
         onClickViewPhotos={sinon.spy()}
       />
@@ -64,6 +68,7 @@ describe('Unit | Common | Deficient Item Controls | Details ', () => {
   });
 
   it('should enable view photos button if there are inspection item photos', () => {
+    const deficientItem = createDeficientItem({ hasItemPhotoData: true });
     render(
       <Details
         deficientItem={deficientItem}
@@ -77,9 +82,10 @@ describe('Unit | Common | Deficient Item Controls | Details ', () => {
   });
 
   it('should disable view photos button if there are no photos', () => {
+    const deficientItem = createDeficientItem({ hasItemPhotoData: false });
     render(
       <Details
-        deficientItem={{ ...deficientItem, hasItemPhotoData: false }}
+        deficientItem={deficientItem}
         isMobile={false}
         onClickViewPhotos={sinon.spy()}
       />

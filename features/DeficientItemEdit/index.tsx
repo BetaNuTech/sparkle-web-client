@@ -5,11 +5,8 @@ import propertyModel from '../../common/models/property';
 import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import Header from './Header';
-import DeficientItemControlsDetails from '../../common/DeficientItemControls/Details';
-import DeficientItemControlsNotes from '../../common/DeficientItemControls/Notes';
-import styles from './styles.module.scss';
 import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
-import useDeficientItemSectionVisibility from './hooks/useDeficientItemSectionVisibility';
+import DeficientItemEditForm from '../../common/DeficientItemEditForm';
 
 interface Props {
   user: userModel;
@@ -27,8 +24,6 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 }) => {
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
-  const { showNotes } = useDeficientItemSectionVisibility(deficientItem);
-
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -37,6 +32,14 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
+  const onShowHistory = () => {
+    console.log('show history action'); // eslint-disable-line
+  };
+
+  const onClickViewPhotos = () => {
+    setIsVisiblePhotosModal(true);
+  };
 
   return (
     <>
@@ -48,23 +51,14 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         isDesktop={isDesktop}
         itemTitle={deficientItem.itemTitle}
       />
-      <div className={styles.grid}>
-        <div className={styles.grid__container}>
-          <aside className={styles.grid__sidebar}>
-            <DeficientItemControlsDetails
-              deficientItem={deficientItem}
-              isMobile={isMobile}
-              onClickViewPhotos={() => setIsVisiblePhotosModal(true)}
-            />
-          </aside>
-          <div className={styles.grid__main}>
-            <DeficientItemControlsNotes
-              deficientItem={deficientItem}
-              isVisible={showNotes}
-            />
-          </div>
-        </div>
-      </div>
+
+      <DeficientItemEditForm
+        onShowHistory={onShowHistory}
+        isMobile={isMobile}
+        onClickViewPhotos={onClickViewPhotos}
+        deficientItem={deficientItem}
+      />
+
       <InspectionItemPhotosModal
         photosData={deficientItem.itemPhotosData}
         subTitle={deficientItem.itemTitle}
