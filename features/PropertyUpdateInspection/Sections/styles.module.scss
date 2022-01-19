@@ -1,0 +1,9 @@
+@import '../../../styles/index.scss';
+
+.container {
+  position: relative;
+
+  @include media-query(desktop) {
+    padding: $global-lg-padding $global-padding $global-padding;
+  }
+}

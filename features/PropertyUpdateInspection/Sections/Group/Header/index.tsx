@@ -1,11 +1,11 @@
 /* eslint-disable no-nested-ternary */
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
-import DiamondIcon from '../../../../public/icons/sparkle/diamond.svg';
-import DiamondLayersIcon from '../../../../public/icons/sparkle/diamond-layers.svg';
-import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
-import inspectionTemplateSectionModel from '../../../../common/models/inspectionTemplateSection';
-import styles from '../../styles.module.scss';
+import DiamondIcon from '../../../../../public/icons/sparkle/diamond.svg';
+import DiamondLayersIcon from '../../../../../public/icons/sparkle/diamond-layers.svg';
+import ChevronIcon from '../../../../../public/icons/ios/chevron.svg';
+import inspectionTemplateSectionModel from '../../../../../common/models/inspectionTemplateSection';
+import styles from './styles.module.scss';
 
 interface Props {
   section: inspectionTemplateSectionModel;
@@ -34,26 +34,22 @@ const Header: FunctionComponent<Props> = ({
   canEdit,
   isMobile
 }) => {
+  const isCollapsed = collapsedSections.includes(section.id);
   const showSectionButtons = canEdit && section.section_type === 'multi';
+  const isLastOfClonedMultiSectionSeries = section.title !== nextSectionTitle;
 
   return (
     <header
-      className={clsx(
-        isMobile
-          ? styles.section__list__item__header
-          : styles['section__list__item__header--grid'],
-        collapsedSections.includes(section.id) &&
-          styles['section__list__item__header--collapsed']
-      )}
+      className={clsx(isMobile ? styles.container : styles.containerGrid)}
     >
-      <div className={clsx(styles.section__list__item__header__content)}>
+      <div className={styles.container__content}>
         {section.title}
-        <div className={clsx(styles.section__list__item__footer)}>
+        <div className={styles.container__footer}>
           {showSectionButtons && !isMobile && (
-            <div className={styles.section__list__item__action}>
-              {section.title !== nextSectionTitle && (
+            <div className={styles.container__action}>
+              {isLastOfClonedMultiSectionSeries && (
                 <button
-                  className={styles['section__list__item__button--line']}
+                  className={styles['button--line']}
                   onClick={(event) => onAddSection(event, section.id)}
                   data-testid="section-list-item-add-section"
                 >
@@ -62,7 +58,7 @@ const Header: FunctionComponent<Props> = ({
               )}
               {section.added_multi_section && (
                 <button
-                  className={styles['section__list__item__button--redOutline']}
+                  className={styles['button--redOutline']}
                   onClick={(event) => onRemoveSection(event, section.id)}
                   data-testid="section-list-item-remove-section"
                 >
@@ -71,8 +67,8 @@ const Header: FunctionComponent<Props> = ({
               )}
             </div>
           )}
-          <span>
-            {collapsedSections.includes(section.id) || !isMobile ? (
+          <span className={isCollapsed ? styles['-collapsed'] : ''}>
+            {isCollapsed || !isMobile ? (
               <ChevronIcon />
             ) : section.added_multi_section ? (
               <DiamondLayersIcon />
@@ -84,10 +80,15 @@ const Header: FunctionComponent<Props> = ({
       </div>
 
       {showSectionButtons && isMobile && (
-        <footer className={styles.section__list__item__footer}>
-          {section.title !== nextSectionTitle && (
+        <footer
+          className={clsx(
+            styles.container__footer,
+            isLastOfClonedMultiSectionSeries ? '' : '-jc-flex-end'
+          )}
+        >
+          {isLastOfClonedMultiSectionSeries && (
             <button
-              className={styles.section__list__item__button}
+              className={styles.button}
               onClick={(event) => onAddSection(event, section.id)}
             >
               Add
@@ -95,7 +96,7 @@ const Header: FunctionComponent<Props> = ({
           )}
           {section.added_multi_section && (
             <button
-              className={styles['section__list__item__button--red']}
+              className={styles['button--red']}
               onClick={(event) => onRemoveSection(event, section.id)}
             >
               Remove
@@ -107,6 +108,8 @@ const Header: FunctionComponent<Props> = ({
   );
 };
 
-Header.defaultProps = {};
+Header.defaultProps = {
+  canEdit: false
+};
 
 export default Header;

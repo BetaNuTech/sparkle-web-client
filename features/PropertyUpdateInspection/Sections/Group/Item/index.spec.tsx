@@ -1,12 +1,12 @@
 import sinon from 'sinon';
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import stubIntersectionObserver from '../../../../__tests__/helpers/stubIntersectionObserver';
+import stubIntersectionObserver from '../../../../../__tests__/helpers/stubIntersectionObserver';
 import {
   unpublishedSignatureEntry,
   unselectedSignatureInputItem
-} from '../../../../__mocks__/inspections';
-import breakpoints from '../../../../config/breakpoints';
+} from '../../../../../__mocks__/inspections';
+import breakpoints from '../../../../../config/breakpoints';
 import SectionItemList from './index';
 
 function render(ui: any, options: any = {}) {
@@ -21,7 +21,7 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-describe('Unit | Features | Property Update Inspection | Sections | Item List', () => {
+describe('Unit | Features | Property Update Inspection | Sections | Group | Item', () => {
   it('should show unpublished signature', () => {
     stubIntersectionObserver();
     const inspectionItemsSignature = new Map();

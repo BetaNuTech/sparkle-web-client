@@ -85,20 +85,14 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
   // exits the update inspection page
   useEffect(() => () => disableAdminEditMode(), []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const [
-    isVisibleOneActionNotesModal,
-    setIsVisibleOneActionNotesModal
-  ] = useState(false);
+  const [isVisibleOneActionNotesModal, setIsVisibleOneActionNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleAttachmentNotesModal,
-    setIsVisibleAttachmentNotesModal
-  ] = useState(false);
+  const [isVisibleAttachmentNotesModal, setIsVisibleAttachmentNotesModal] =
+    useState(false);
 
-  const [
-    isVisibleSignatureInputModal,
-    setIsVisibleSignatureInputModal
-  ] = useState(false);
+  const [isVisibleSignatureInputModal, setIsVisibleSignatureInputModal] =
+    useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
@@ -236,22 +230,16 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     reloadPhotos();
   };
 
-  const {
-    sortedTemplateSections,
-    collapsedSections,
-    onSectionCollapseToggle
-  } = useInspectionSectionSort(inspection.template.sections, updates);
+  const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =
+    useInspectionSectionSort(inspection.template.sections, updates);
 
   // Items grouped by their section
-  const {
-    sectionItems,
-    inspectionItems,
-    inspectionItemDeficientIds
-  } = useInspectionItems(
-    updates,
-    inspection.template,
-    Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
-  );
+  const { sectionItems, inspectionItems, inspectionItemDeficientIds } =
+    useInspectionItems(
+      updates,
+      inspection.template,
+      Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
+    );
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
@@ -366,6 +354,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     };
   }, [inspectionItems]);
 
+  //Calculate percentage of completed item vs total inspection items
+  const inspCompletionPercentage = useMemo(
+    () =>
+      Math.round((completedItems.length / inspectionItems.length) * 100) || 0,
+    [completedItems, inspectionItems]
+  );
+
   // Check if inspection has any unpublished updates
   // or unpublished signatures
   // or unpublished item photos
@@ -399,15 +394,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             onEnableAdminEditMode={onEnableAdminEditMode}
             isStaging={isStaging}
             canUpdateCompleteInspection={canUpdatesCompleteInspection}
-            onCopyReportURL={onCopyReportURL}
-            isPdfReportStatusShowing={isPdfReportStatusShowing}
-            isPdfReportOutOfDate={isPdfReportOutOfDate}
             isPdfReportGenerating={isPdfReportGenerating}
             isPdfReportQueued={isPdfReportQueued}
-            showRestartAction={showRestartAction}
-            hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
-            onRegenerateReport={generatePdfReport}
-            isRequestingReport={isRequestingReport}
           />
         </>
       ) : (
@@ -458,6 +446,24 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         requireDeficientItemNoteAndPhoto={
           inspection.template.requireDeficientItemNoteAndPhoto
         }
+        showAction={isDesktop}
+        inspCompletionPercentage={inspCompletionPercentage}
+        onSaveInspection={onSaveInspection}
+        canEnableEditMode={canEnableEditMode}
+        onEnableAdminEditMode={onEnableAdminEditMode}
+        canUpdateCompleteInspection={canUpdatesCompleteInspection}
+        isOnline={isOnline}
+        hasUpdates={hasUnpublishedUpdates}
+        onCopyReportURL={onCopyReportURL}
+        isPdfReportStatusShowing={isPdfReportStatusShowing}
+        isPdfReportOutOfDate={isPdfReportOutOfDate}
+        isPdfReportGenerating={isPdfReportGenerating}
+        isPdfReportQueued={isPdfReportQueued}
+        showRestartAction={showRestartAction}
+        hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
+        onRegenerateReport={generatePdfReport}
+        inspectionReportURL={inspection.inspectionReportURL}
+        isRequestingReport={isRequestingReport}
       />
 
       <OneActionNotesModal

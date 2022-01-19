@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import SectionItemDropdown from './index';
 
-describe('Unit | Features | Property Update Inspection | Section Item Dropdown', () => {
+describe('Unit | Features | Property Update Inspection | Sections | Group | Item | Dropdown', () => {
   it('should call method to change item applicability to false ', async () => {
     const onChangeItemNA = sinon.spy();
     const props = {

@@ -4,10 +4,10 @@ import InspectionTemplateSectionModel from '../../../../common/models/inspection
 import InspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import UnPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import UnpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
-import styles from '../../styles.module.scss';
-import ItemList from '../ItemList';
-import ItemListSwipable from '../ItemListSwipable';
-import Header from '../Header';
+import Header from './Header';
+import Item from './Item';
+import ItemSwipable from './ItemSwipable';
+import styles from './styles.module.scss';
 
 interface Props {
   section: InspectionTemplateSectionModel;
@@ -77,22 +77,19 @@ const Group: FunctionComponent<Props> = ({
     () => sectionItems.get(section.id) || [],
     [sectionItems, section.id]
   );
+  const toggleCollapse = (evt: MouseEvent) => {
+    evt.preventDefault();
+    const target = evt.target as HTMLElement;
+    if (target.closest('li') === evt.currentTarget) {
+      onSectionCollapseToggle(section);
+    }
+  };
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
-      className={clsx(
-        isMobile
-          ? styles.section__list__item
-          : styles['section__list__item--grid']
-      )}
-      onClick={(event) => {
-        event.preventDefault();
-        const target = event.target as HTMLElement;
-        if (target.closest('li') === event.currentTarget) {
-          onSectionCollapseToggle(section);
-        }
-      }}
+      className={clsx(isMobile ? styles.container : styles['container--grid'])}
+      onClick={toggleCollapse}
       data-testid="section-list-item"
     >
       <Header
@@ -107,7 +104,7 @@ const Group: FunctionComponent<Props> = ({
       <ul className={clsx(collapsedSections.includes(section.id) && '-d-none')}>
         {listItems.map((item) =>
           isMobile ? (
-            <ItemListSwipable
+            <ItemSwipable
               key={item.id}
               item={item}
               forceVisible={forceVisible}
@@ -126,7 +123,7 @@ const Group: FunctionComponent<Props> = ({
               isItemDeficient={inspectionItemDeficientIds.indexOf(item.id) > -1}
             />
           ) : (
-            <ItemList
+            <Item
               key={item.id}
               item={item}
               forceVisible={forceVisible}

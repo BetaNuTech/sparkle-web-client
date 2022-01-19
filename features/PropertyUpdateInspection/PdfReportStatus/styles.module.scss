@@ -2,14 +2,9 @@
 
 .pdfReport {
   text-align: center;
-  color: $white;
-  background-color: $black;
+  color: $gray-med-dark;
   padding: rem-calc(4) 0;
   font-size: rem-calc(14);
-
-  &--failed {
-    background-color: $alert-color;
-  }
 
   &__generating {
     @extend %ani-blink;
@@ -24,33 +19,29 @@
       margin: 0 rem-calc(5);
       cursor: pointer;
       display: inline-block;
-
-      a {
-        color: $white;
-      }
-    }
-  }
-
-  @include media-query(desktop) {
-    background-color: $white;
-    color: $black;
-    margin-right: rem-calc(16);
-    text-align: right;
-
-    &--failed {
-      color: $alert-color;
-    }
-
-    &__status__action {
       color: $info-color;
-
-      &--failed {
-        color: $alert-color;
-      }
 
       a {
         color: $info-color;
       }
     }
+
+    &--failed {
+      color: $alert-color;
+    }
+
+    &--small {
+      font-size: rem-calc(14);
+    }
+
+    &--gray {
+      color: $gray-med-dark;
+    }
+  }
+
+  @include media-query(desktop) {
+    color: $black;
+    margin-right: rem-calc(16);
+    text-align: right;
   }
 }

@@ -52,6 +52,7 @@ export default function useInspectionItems(
 
   if (requireDeficientItemNoteAndPhoto) {
     Object.keys(sections)
+      .filter((sectionId) => Boolean(sections[sectionId]))
       .sort((aId, bId) => sections[aId].index - sections[bId].index)
       .map((sectionId) => sectionItems.get(sectionId)) // get section's items
       .reduce((acc, itemsSectionGroup) => {

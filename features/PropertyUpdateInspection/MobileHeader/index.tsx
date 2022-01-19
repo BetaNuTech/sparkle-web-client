@@ -7,7 +7,6 @@ import propertyModel from '../../../common/models/property';
 import FileUploadIcon from '../../../public/icons/sparkle/file-upload.svg';
 import ShareIcon from '../../../public/icons/sparkle/Ei-share-apple.svg';
 import MobileHeader from '../../../common/MobileHeader';
-import PdfReportStatus from '../PdfReportStatus';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -21,15 +20,8 @@ interface Props {
   onEnableAdminEditMode(): void;
   isStaging: boolean;
   canUpdateCompleteInspection: boolean;
-  onCopyReportURL(): void;
-  isPdfReportStatusShowing: boolean;
-  isPdfReportOutOfDate: boolean;
   isPdfReportGenerating: boolean;
   isPdfReportQueued: boolean;
-  showRestartAction: boolean;
-  hasPdfReportGenerationFailed: boolean;
-  onRegenerateReport(): void;
-  isRequestingReport: boolean;
 }
 
 const InspectionMobileHeader: FunctionComponent<Props> = ({
@@ -43,15 +35,8 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
   onEnableAdminEditMode,
   isStaging,
   canUpdateCompleteInspection,
-  onCopyReportURL,
-  isPdfReportStatusShowing,
-  isPdfReportOutOfDate,
   isPdfReportGenerating,
-  isPdfReportQueued,
-  showRestartAction,
-  hasPdfReportGenerationFailed,
-  onRegenerateReport,
-  isRequestingReport
+  isPdfReportQueued
 }) => {
   const isPubishingDisabled =
     !(hasUpdates && isOnline) || isPdfReportGenerating || isPdfReportQueued;
@@ -139,27 +124,10 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
         </div>
         <h1 className={styles.header__title}>{inspection.templateName}</h1>
       </div>
-      <PdfReportStatus
-        isPdfReportStatusShowing={isPdfReportStatusShowing}
-        isPdfReportGenerating={isPdfReportGenerating}
-        isPdfReportOutOfDate={isPdfReportOutOfDate}
-        isPdfReportQueued={isPdfReportQueued}
-        showRestartAction={showRestartAction}
-        inspectionReportURL={inspection.inspectionReportURL}
-        hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
-        onCopyReportURL={onCopyReportURL}
-        onRegenerateReport={onRegenerateReport}
-        isRequestingReport={isRequestingReport}
-      />
     </>
   );
 };
 
-InspectionMobileHeader.defaultProps = {
-  isPdfReportStatusShowing: false,
-  isPdfReportOutOfDate: false,
-  isPdfReportGenerating: false,
-  hasPdfReportGenerationFailed: false
-};
+InspectionMobileHeader.defaultProps = {};
 
 export default InspectionMobileHeader;

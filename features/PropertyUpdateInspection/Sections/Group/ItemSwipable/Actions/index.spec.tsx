@@ -1,9 +1,9 @@
 import sinon from 'sinon';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import SectionItemActions from './index';
+import Actions from './index';
 
-describe('Unit | Features | Property Update Inspection | Section Item Dropdown', () => {
+describe('Unit | Features | Property Update Inspection | Sections | Group | Item Swipable | Actions', () => {
   it('should be able to request to make an inapplicable item applicable again', async () => {
     const onChangeItemNA = sinon.spy();
     const props = {
@@ -11,7 +11,7 @@ describe('Unit | Features | Property Update Inspection | Section Item Dropdown',
       onChangeItemNA
     };
 
-    render(<SectionItemActions {...props} />);
+    render(<Actions {...props} />);
 
     const isItemNAAddBtn = screen.queryByTestId('button-change-NA-add');
 
@@ -31,7 +31,7 @@ describe('Unit | Features | Property Update Inspection | Section Item Dropdown',
       onChangeItemNA
     };
 
-    render(<SectionItemActions {...props} />);
+    render(<Actions {...props} />);
 
     const isItemNABtn = screen.queryByTestId('button-change-NA');
 

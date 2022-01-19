@@ -1,10 +1,12 @@
 import clsx from 'clsx';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import getConfig from 'next/config';
 import styles from './styles.module.scss';
 import SlideNav from '../SlideNav';
 import { useNavigatorOnline } from '../utils/getOnlineStatus';
+import globalEvents from '../utils/globalEvents';
+import debounce from '../utils/debounce';
 
 const isStaging = process.env.NEXT_PUBLIC_STAGING === 'true';
 const config = getConfig() || {};
@@ -15,6 +17,7 @@ export const MainLayout = ({ children }) => {
   const router = useRouter();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isOnline = useNavigatorOnline();
+  const containerRef = useRef();
 
   // Open & close slide navigation
   const toggleNavOpen = () => setIsNavOpen(!isNavOpen);
@@ -54,6 +57,26 @@ export const MainLayout = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // trigger container scroll event
+  // with scroll top value
+  const onScroll = debounce(
+    () => {
+      globalEvents.trigger('mainLayoutMainSideScroll', {
+        scrollTop: containerRef?.current?.scrollTop
+      });
+    },
+    30,
+    {}
+  );
+
+  // event listner to listen scroll event
+  useEffect(() => {
+    const element = containerRef.current;
+    element?.addEventListener('scroll', onScroll);
+    return () => element?.removeEventListener('scroll', onScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div
       className={
@@ -69,7 +92,9 @@ export const MainLayout = ({ children }) => {
         toggleNavOpen={toggleNavOpen}
         appVersion={APP_VERSION}
       />
-      <main className={styles.mainSide}>{childrenWithProps}</main>
+      <main className={styles.mainSide} ref={containerRef}>
+        {childrenWithProps}
+      </main>
     </div>
   );
 };
