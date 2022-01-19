@@ -23,10 +23,6 @@
       margin: 0;
       width: auto;
     }
-
-    &__container {
-      padding: $global-sm-padding $global-padding 0;
-    }
   }
 
   &__container {
@@ -63,6 +59,21 @@
 
     &--upperCase {
       text-transform: uppercase;
+    }
+  }
+
+  &__formField {
+    padding: rem-calc(3) $global-padding 0;
+    margin: 0;
+    background-color: transparent;
+    resize: none;
+    width: 100%;
+    max-width: 100%;
+
+    &--empty,
+    &--empty:focus,
+    &--empty:hover {
+      background-color: $alert-light-color;
     }
   }
 
@@ -133,11 +144,13 @@
       font-weight: normal;
     }
 
-    &__footer {
-      &__action {
-        text-align: left;
-        padding-left: 0;
-      }
+    &__formField {
+      max-width: rem-calc(300);
+    }
+
+    &__footer__action {
+      text-align: left;
+      padding-left: 0;
     }
   }
 }

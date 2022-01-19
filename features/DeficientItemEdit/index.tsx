@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { ChangeEvent, FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -33,6 +33,16 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  const onShowPlanToFix = () => {
+    console.log('triggered on show plan to fix action'); // eslint-disable-line
+  };
+
+  const onChangePlanToFix = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    // eslint-disable-next-line
+    console.log(
+      `triggered plan to fix textarea change event with value => ${evt.target.value}`
+    );
+  };
   const onShowHistory = () => {
     console.log('show history action'); // eslint-disable-line
   };
@@ -57,6 +67,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         isMobile={isMobile}
         onClickViewPhotos={onClickViewPhotos}
         deficientItem={deficientItem}
+        onShowPlanToFix={onShowPlanToFix}
+        onChangePlanToFix={onChangePlanToFix}
       />
 
       <InspectionItemPhotosModal
