@@ -1,4 +1,6 @@
 import Observable from 'zen-observable';
+import parallelLimit from 'async/parallelLimit';
+import asyncify from 'async/asyncify';
 import unpublishedSignatureModel from '../../../common/models/inspections/templateItemUnpublishedSignature';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import signatureDb from '../../../common/services/indexedDB/inspectionSignature';
@@ -21,21 +23,23 @@ type signatureStreamResult = {
 
 // Factory for uploading signatures
 // to Firebase Storage for inspection
-const createInspectionUploader = (
-  inspectionId: string,
-  uploadBase64FileToStorage: (
-    dest: string,
-    dataUrl: string
-  ) => Promise<StorageResult>
-) => (signature: unpublishedSignatureModel): Promise<StorageResult> => {
-  const fileName = `${signature.createdAt}.png`;
+const createInspectionUploader =
+  (
+    inspectionId: string,
+    uploadBase64FileToStorage: (
+      dest: string,
+      dataUrl: string
+    ) => Promise<StorageResult>
+  ) =>
+  (signature: unpublishedSignatureModel): Promise<StorageResult> => {
+    const fileName = `${signature.createdAt}.png`;
 
-  // Upload file to the firebase storage
-  return uploadBase64FileToStorage(
-    `inspectionItemImages/${inspectionId}/${signature.item}/${fileName}`,
-    signature.signature
-  );
-};
+    // Upload file to the firebase storage
+    return uploadBase64FileToStorage(
+      `inspectionItemImages/${inspectionId}/${signature.item}/${fileName}`,
+      signature.signature
+    );
+  };
 
 // Create stream for upload signatures
 const upload = (
@@ -58,30 +62,48 @@ const upload = (
         errors: []
       };
 
-      // Create all upload requests
-      // And upload signatures one by one
-      // eslint-disable-next-line  no-restricted-syntax
-      for (const signature of unpublishedSignatures) {
-        try {
-          // eslint-disable-next-line  no-await-in-loop
-          const file = await uploadSignature(signature);
-          signature.signatureDownloadURL = file.fileUrl;
-          result.successful.push(signature);
-          observer.next({ done: false, size: signature.size, result });
-        } catch (err) {
-          const error = Error(
-            // eslint-disable-next-line max-len
-            `${PREFIX} upload: failed to upload signature for inspection "${inspectionId}" item "${signature.item}": ${err}`
-          );
-          result.errors.push(error);
-          observer.next({ done: false, size: signature.size, result });
-        }
-      }
+      const uploadPromises = [];
 
-      // notify subscriber that operations is completed
-      // and all files are uploaded
-      observer.next({ done: true, result });
-      observer.complete();
+      // Create all upload requests to upload signatures
+      // and push them into array
+      // to upload them parallel with limit using
+      // async/parallelLimit
+      unpublishedSignatures.forEach(
+        async (signature: unpublishedSignatureModel) => {
+          const signatureUploadPromise = async () => {
+            try {
+              // eslint-disable-next-line  no-await-in-loop
+              const file = await uploadSignature(signature);
+              signature.signatureDownloadURL = file.fileUrl;
+              result.successful.push(signature);
+              observer.next({ done: false, size: signature.size, result });
+              return result;
+            } catch (err) {
+              const error = Error(
+                // eslint-disable-next-line max-len
+                `${PREFIX} upload: failed to upload signature for inspection "${inspectionId}" item "${signature.item}": ${err}`
+              );
+              result.errors.push(error);
+              observer.next({ done: false, size: signature.size, result });
+              return result;
+            }
+          };
+
+          // need to wrap function with asyncify as we are using transpiler
+          // as async function will be parsed
+          // to an ordinary function that returns a promise
+          // reference link https://caolan.github.io/async/v3/global.html
+          uploadPromises.push(asyncify(signatureUploadPromise));
+        }
+      );
+
+      // limit concurrent request to maximum 4
+      parallelLimit(uploadPromises, 4, () => {
+        // notify subscriber that operations is completed
+        // and all files are uploaded
+        observer.next({ done: true, result });
+        observer.complete();
+      });
     })();
   });
 };
