@@ -14,6 +14,7 @@ $quaternary-color: #531b93;
 $alert-color: #ea2e49;
 $alert-secondary-color: #960f00;
 $alert-light-color: #ffe5e5;
+$incomplete-color: lighten($alert-light-color, 2);
 $orange-color: #fe7f00;
 $light-orange-color: #fb8463;
 $info-color: #94bdf2;

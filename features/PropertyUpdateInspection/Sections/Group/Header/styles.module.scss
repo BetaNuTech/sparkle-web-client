@@ -1,0 +1,104 @@
+@import '../../../../../styles/index.scss';
+$mobileTabletOffsetTop: $mobileHeaderBaseHeight + $inspectionStatusBarHeight;
+
+.container {
+  @extend %stickyBoundingBox--header;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  text-align: left;
+  background-color: $gray-dark;
+  cursor: pointer;
+  top: $mobileTabletOffsetTop;
+  z-index: 12;
+
+  // Single/Multi-Section icons
+  svg {
+    width: rem-calc(15);
+    height: rem-calc(15);
+    path {
+      fill: $white;
+    }
+  }
+
+  &__content {
+    display: flex;
+    justify-content: space-between;
+    gap: $global-padding;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: space-between;
+    gap: $global-md-padding;
+  }
+
+  &__action {
+    display: flex;
+    gap: $global-md-padding;
+  }
+
+  @include media-query(tablet) {
+    padding: $global-lg-padding $global-padding $global-padding;
+
+    &__content {
+      font-size: rem-calc(22);
+      line-height: rem-calc(30);
+    }
+  }
+
+  @include media-query(desktop) {
+    &--sticky {
+      top: rem-calc(69);
+    }
+  }
+}
+
+.containerGrid {
+  @extend %gridTableSectionTitle--padded;
+  position: sticky;
+  top: $mobileTabletOffsetTop;
+  cursor: pointer;
+  z-index: 12;
+
+  // Collapse Chevron
+  svg {
+    width: $global-padding;
+    height: $global-padding;
+    transform: rotate(90deg);
+
+    path {
+      fill: #000;
+    }
+  }
+
+  @include media-query(desktop) {
+    top: $inspectionStatusBarHeight;
+  }
+}
+
+.button {
+  @extend %actionButton;
+  margin: 0;
+
+  &--line {
+    @extend %actionButton--line;
+    text-transform: capitalize;
+  }
+
+  &--red {
+    @extend %actionButton--red;
+
+    &Outline {
+      @extend %actionButton--redLine;
+      text-transform: capitalize;
+    }
+  }
+}
+
+// Collapse Chevron
+.-collapsed {
+  svg {
+    transform: rotate(-90deg);
+  }
+}

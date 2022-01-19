@@ -1,0 +1,134 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  @extend %stickyBoundingBox--listItem;
+  text-align: left;
+
+  &--grid {
+    @extend %gridTableSection;
+  }
+
+  &__button {
+    @extend %actionButton;
+
+    &--line {
+      @extend %actionButton--line;
+      text-transform: capitalize;
+    }
+
+    &--red {
+      @extend %actionButton--red;
+
+      &Outline {
+        @extend %actionButton--redLine;
+        text-transform: capitalize;
+      }
+    }
+  }
+}
+
+// Regular or swipable inspection items rows
+// containing title, controls, & attachments
+.item {
+  display: grid;
+  position: relative;
+  min-height: rem-calc(72);
+
+  &--grid {
+    padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
+    grid-template-columns: 0.6fr 1fr auto;
+    min-height: rem-calc(63);
+    border-bottom: rem-calc(1) solid $gray-lighter;
+  }
+
+  &--gridSignature {
+    min-height: rem-calc(128);
+    display: flex;
+    flex-direction: column;
+  }
+
+  &--incomplete {
+    background: $incomplete-color;
+  }
+
+  &__mainInput {
+    display: flex;
+    flex: 1 1 auto;
+    gap: $global-md-padding;
+
+    &--grid {
+      gap: $global-mlg-padding;
+      flex-direction: row;
+
+      ul:nth-child(1) {
+        flex: none;
+      }
+    }
+  }
+
+  &__notApplicable {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba($black, 0.38);
+
+    h3 {
+      color: $white;
+      font-weight: $font-weight-bold;
+    }
+  }
+
+  &__swipeContainer {
+    @extend %swipeReveal;
+    @extend %swipeReveal__visible;
+
+    padding: $global-sm-padding $global-padding;
+    background: $white;
+    border-bottom: rem-calc(1) solid $gray-lighter;
+
+    &--swipeOpen {
+      transform: translateX(rem-calc(-54));
+    }
+
+    &--swipeOpenNA {
+      transform: translateX(rem-calc(-66));
+    }
+
+    &--incomplete {
+      background: $incomplete-color;
+    }
+  }
+
+  &__swipeActions {
+    @extend %swipeReveal__hidden;
+    background: $primary-dark-color;
+
+    &--reveal {
+      @extend %swipeReveal__hidden--reveal;
+    }
+
+    > div {
+      display: flex;
+    }
+
+    button {
+      padding: 0 $global-padding;
+      border: none;
+      background: $primary-dark-color;
+      color: $white;
+    }
+  }
+
+  @include media-query(tablet) {
+    &--gridSignature {
+      display: grid;
+      flex-direction: row;
+      min-height: rem-calc(160);
+    }
+  }
+}

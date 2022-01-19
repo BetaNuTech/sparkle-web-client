@@ -5,8 +5,8 @@ import { Context as ResponsiveContext } from 'react-responsive';
 import {
   originalMultiSection,
   addedMultiSection
-} from '../../../../__mocks__/inspections';
-import breakpoints from '../../../../config/breakpoints';
+} from '../../../../../__mocks__/inspections';
+import breakpoints from '../../../../../config/breakpoints';
 import SectionHeader from './index';
 
 function render(ui: any, options: any = {}) {
@@ -21,7 +21,7 @@ function render(ui: any, options: any = {}) {
   );
 }
 
-describe('Unit | Features | Property Update Inspection | Sections | Header', () => {
+describe('Unit | Features | Property Update Inspection | Sections | Group | Header', () => {
   it('should not show add section button', () => {
     const props = {
       section: originalMultiSection,

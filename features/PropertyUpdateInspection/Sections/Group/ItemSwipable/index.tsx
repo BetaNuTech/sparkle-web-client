@@ -6,16 +6,16 @@ import {
   MouseEvent,
   ChangeEvent
 } from 'react';
-import InspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
-import UnPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import InspectionTemplateItemModel from '../../../../../common/models/inspectionTemplateItem';
+import UnPublishedPhotoDataModel from '../../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import InspectionItemControls, {
   Attachment
-} from '../../../../common/InspectionItemControls';
-import useSwipeReveal from '../../../../common/hooks/useSwipeReveal';
-import useVisibility from '../../../../common/hooks/useVisibility';
-import UnpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
-import SectionItemActions from '../../SectionItemActions';
-import styles from '../../styles.module.scss';
+} from '../../../../../common/InspectionItemControls';
+import useSwipeReveal from '../../../../../common/hooks/useSwipeReveal';
+import useVisibility from '../../../../../common/hooks/useVisibility';
+import UnpublishedSignatureModel from '../../../../../common/models/inspections/templateItemUnpublishedSignature';
+import Actions from './Actions';
+import groupStyles from '../styles.module.scss';
 
 interface Props {
   item: InspectionTemplateItemModel;
@@ -43,7 +43,7 @@ interface Props {
   isItemDeficient: boolean;
 }
 
-const ItemListSwipable: FunctionComponent<Props> = ({
+const ItemSwipable: FunctionComponent<Props> = ({
   item,
   forceVisible,
   onMainInputChange,
@@ -72,7 +72,11 @@ const ItemListSwipable: FunctionComponent<Props> = ({
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
   const placeholderRef = useRef(null);
-  const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
+  const { isVisible } = useVisibility(
+    placeholderRef,
+    { threshold: 0.01 },
+    forceVisible
+  );
   const unPublishedPhotosDataCount = (inspectionItemsPhotos.get(item.id) || [])
     .length;
 
@@ -95,8 +99,8 @@ const ItemListSwipable: FunctionComponent<Props> = ({
   return (
     <li
       className={clsx(
-        styles.section__list__item__row,
-        isSignature && styles['section__list__item__row--gridSignature']
+        groupStyles.item,
+        isSignature && groupStyles['item--gridSignature']
       )}
       ref={placeholderRef}
     >
@@ -105,30 +109,25 @@ const ItemListSwipable: FunctionComponent<Props> = ({
           <>
             <div
               className={clsx(
-                styles.section__list__item__row__swipeContainer,
-                isSwipeOpen &&
-                  styles['section__list__item__row__swipeContainer--swipeOpen'],
+                groupStyles.item__swipeContainer,
+                isSwipeOpen && groupStyles['item__swipeContainer--swipeOpen'],
                 isSwipeOpen &&
                   item.isItemNA &&
-                  styles[
-                    'section__list__item__row__swipeContainer--swipeOpenNA'
-                  ],
+                  groupStyles['item__swipeContainer--swipeOpenNA'],
                 !isItemCompleted &&
                   isIncompleteRevealed &&
-                  styles['section__list__item__row__swipeContainer--incomplete']
+                  groupStyles['item__swipeContainer--incomplete']
               )}
             >
               {item.isItemNA && (
-                <div
-                  className={styles['section__list__item__row--notApplicable']}
-                >
+                <div className={groupStyles.item__notApplicable}>
                   <h3>NA</h3>
                 </div>
               )}
               <div>
                 {item.itemType === 'signature' ? 'Signature' : item.title}
               </div>
-              <div className={styles['section__list__item__row--mainInput']}>
+              <div className={groupStyles.item__mainInput}>
                 {showAttachment && (
                   <Attachment
                     photos={item.photos}
@@ -159,12 +158,11 @@ const ItemListSwipable: FunctionComponent<Props> = ({
             </div>
             <div
               className={clsx(
-                styles.section__list__item__row__swipeActions,
-                isSwipeOpen &&
-                  styles['section__list__item__row__swipeActions--reveal']
+                groupStyles.item__swipeActions,
+                isSwipeOpen && groupStyles['item__swipeActions--reveal']
               )}
             >
-              <SectionItemActions
+              <Actions
                 isItemNA={item.isItemNA}
                 onChangeItemNA={(isItemNA) => onChangeNA(item.id, isItemNA)}
               />
@@ -176,6 +174,6 @@ const ItemListSwipable: FunctionComponent<Props> = ({
   );
 };
 
-ItemListSwipable.defaultProps = {};
+ItemSwipable.defaultProps = {};
 
-export default ItemListSwipable;
+export default ItemSwipable;

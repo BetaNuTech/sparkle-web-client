@@ -1,14 +1,14 @@
 import clsx from 'clsx';
 import { FunctionComponent, useRef, MouseEvent, ChangeEvent } from 'react';
-import InspectionTemplateItemModel from '../../../../common/models/inspectionTemplateItem';
-import UnPublishedPhotoDataModel from '../../../../common/models/inspections/templateItemUnpublishedPhotoData';
+import InspectionTemplateItemModel from '../../../../../common/models/inspectionTemplateItem';
+import UnPublishedPhotoDataModel from '../../../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import InspectionItemControls, {
   Attachment
-} from '../../../../common/InspectionItemControls';
-import SectionItemDropdown from '../../SectionItemDropdown';
-import useVisibility from '../../../../common/hooks/useVisibility';
-import styles from '../../styles.module.scss';
-import unpublishedSignatureModel from '../../../../common/models/inspections/templateItemUnpublishedSignature';
+} from '../../../../../common/InspectionItemControls';
+import Dropdown from './Dropdown';
+import useVisibility from '../../../../../common/hooks/useVisibility';
+import unpublishedSignatureModel from '../../../../../common/models/inspections/templateItemUnpublishedSignature';
+import groupStyles from '../styles.module.scss';
 
 interface Props {
   item: InspectionTemplateItemModel;
@@ -36,7 +36,7 @@ interface Props {
   isItemDeficient: boolean;
 }
 
-const ItemList: FunctionComponent<Props> = ({
+const Item: FunctionComponent<Props> = ({
   item,
   forceVisible,
   onMainInputChange,
@@ -56,7 +56,11 @@ const ItemList: FunctionComponent<Props> = ({
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
   const placeholderRef = useRef(null);
-  const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
+  const { isVisible } = useVisibility(
+    placeholderRef,
+    { threshold: 0.01 },
+    forceVisible
+  );
 
   const unPublishedPhotosDataCount = (inspectionItemsPhotos.get(item.id) || [])
     .length;
@@ -76,12 +80,12 @@ const ItemList: FunctionComponent<Props> = ({
   return (
     <li
       className={clsx(
-        styles.section__list__item__row,
-        styles['section__list__item__row--grid'],
-        isSignature && styles['section__list__item__row--gridSignature'],
+        groupStyles.item,
+        groupStyles['item--grid'],
+        isSignature && groupStyles['item--gridSignature'],
         !isItemCompleted &&
           isIncompleteRevealed &&
-          styles['section__list__item__row--incomplete']
+          groupStyles['item--incomplete']
       )}
       ref={placeholderRef}
       data-testid="section-list-item-row"
@@ -89,15 +93,15 @@ const ItemList: FunctionComponent<Props> = ({
       {isVisible && (
         <>
           {item.isItemNA && (
-            <div className={styles['section__list__item__row--notApplicable']}>
+            <div className={groupStyles.item__notApplicable}>
               <h3>NA</h3>
             </div>
           )}
           <div>{item.itemType === 'signature' ? 'Signature' : item.title}</div>
           <div
             className={clsx(
-              styles['section__list__item__row--mainInput'],
-              styles['section__list__item__row--mainInputGrid']
+              groupStyles.item__mainInput,
+              groupStyles['item__mainInput--grid']
             )}
           >
             {showAttachment && (
@@ -129,7 +133,7 @@ const ItemList: FunctionComponent<Props> = ({
             />
           </div>
           {canEdit && (
-            <SectionItemDropdown
+            <Dropdown
               isItemNA={item.isItemNA}
               onChangeItemNA={(isItemNA) => onItemIsNAChange(item.id, isItemNA)}
             />
@@ -140,6 +144,6 @@ const ItemList: FunctionComponent<Props> = ({
   );
 };
 
-ItemList.defaultProps = {};
+Item.defaultProps = {};
 
-export default ItemList;
+export default Item;
