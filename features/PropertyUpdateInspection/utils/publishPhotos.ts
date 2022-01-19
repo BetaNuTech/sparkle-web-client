@@ -1,4 +1,6 @@
 import Observable from 'zen-observable';
+import parallelLimit from 'async/parallelLimit';
+import asyncify from 'async/asyncify';
 import unPublishedPhotoModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import photosDb from '../../../common/services/indexedDB/inspectionItemPhotosData';
@@ -20,14 +22,15 @@ type photoStreamResult = {
   result: PhotoPublishStep;
 };
 
-const uploadPhoto = async (
-  inspectionId: string,
-  photoData: unPublishedPhotoModel
-) => {
+const uploadPhoto = async (photoData: unPublishedPhotoModel) => {
   const fileName = `${photoData.createdAt}.png`;
   const file = filesUtil.dataURLtoFile(photoData.photoData, fileName);
   // eslint-disable-next-line import/no-named-as-default-member
-  return inspectionApi.uploadPhotoData(inspectionId, photoData.item, file);
+  return inspectionApi.uploadPhotoData(
+    photoData.inspection,
+    photoData.item,
+    file
+  );
 };
 
 // Create stream of upload photos data
@@ -42,31 +45,47 @@ const upload = (
         errors: []
       };
 
-      // Create all upload requests
-      // And upload photo one by one
-      // eslint-disable-next-line  no-restricted-syntax
-      for (const photo of unpublishedPhotos) {
-        try {
-          // eslint-disable-next-line  no-await-in-loop
-          const file = await uploadPhoto(inspectionId, photo);
-          photo.downloadURL = file.downloadURL;
-          photo.fileId = file.id;
-          result.successful.push(photo);
-          observer.next({ done: false, size: photo.size, result });
-        } catch (err) {
-          const error = Error(
-            // eslint-disable-next-line max-len
-            `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
-          );
-          result.errors.push(error);
-          observer.next({ done: false, size: photo.size, result });
-        }
-      }
+      const uploadPromises = [];
 
-      // notify subscriber that operations is completed
-      // and all files are uploaded
-      observer.next({ done: true, result });
-      observer.complete();
+      // Create all upload requests to upload photos
+      // and push them into array
+      // to upload them parallel with limit using
+      // async/parallelLimit
+      unpublishedPhotos.forEach(async (photo: unPublishedPhotoModel) => {
+        const photoUploadPromise = async () => {
+          try {
+            // eslint-disable-next-line  no-await-in-loop
+            const file = await uploadPhoto(photo);
+            photo.downloadURL = file.downloadURL;
+            photo.fileId = file.id;
+            result.successful.push(photo);
+            observer.next({ done: false, size: photo.size });
+            return result;
+          } catch (err) {
+            const error = Error(
+              // eslint-disable-next-line max-len
+              `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
+            );
+            result.errors.push(error);
+            observer.next({ done: false, size: photo.size });
+            return result;
+          }
+        };
+
+        // need to wrap function with asyncify as we are using transpiler
+        // as async function will be parsed
+        // to an ordinary function that returns a promise
+        // reference link https://caolan.github.io/async/v3/global.html
+        uploadPromises.push(asyncify(photoUploadPromise));
+      });
+
+      // limit concurrent request to maximum 4
+      parallelLimit(uploadPromises, 4, () => {
+        // notify subscriber that operations is completed
+        // and all files are uploaded
+        observer.next({ done: true, result });
+        observer.complete();
+      });
     })();
   });
 
@@ -84,6 +103,7 @@ export default {
         successful: [],
         errors: []
       } as PhotoPublishStep;
+
       upload(inspectionId, flattenedUnpublishedPhotosFiles).subscribe({
         next: (response: photoStreamResult) => {
           if (response.done) {

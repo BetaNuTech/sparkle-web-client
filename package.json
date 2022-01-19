@@ -20,6 +20,7 @@
   ],
   "dependencies": {
     "@hookform/resolvers": "^2.4.0",
+    "async": "^3.2.3",
     "chart.js": "^3.4.1",
     "clsx": "^1.1.1",
     "deep-object-diff": "^1.1.0",
