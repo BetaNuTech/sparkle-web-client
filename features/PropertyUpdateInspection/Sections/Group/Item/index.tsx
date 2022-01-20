@@ -83,6 +83,7 @@ const Item: FunctionComponent<Props> = ({
         groupStyles.item,
         groupStyles['item--grid'],
         isSignature && groupStyles['item--gridSignature'],
+        canEdit && groupStyles['item--editable'],
         !isItemCompleted &&
           isIncompleteRevealed &&
           groupStyles['item--incomplete']

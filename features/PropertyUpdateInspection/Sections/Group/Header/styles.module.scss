@@ -24,18 +24,20 @@ $mobileTabletOffsetTop: $mobileHeaderBaseHeight + $inspectionStatusBarHeight;
   &__content {
     display: flex;
     justify-content: space-between;
-    gap: $global-padding;
   }
 
   &__footer {
     display: flex;
     justify-content: space-between;
-    gap: $global-md-padding;
   }
 
   &__action {
     display: flex;
-    gap: $global-md-padding;
+    margin: 0 $global-md-padding 0 $global-padding;
+
+    > *:not(:last-child) {
+      margin-right: $global-md-padding;
+    }
   }
 
   @include media-query(tablet) {

@@ -121,6 +121,10 @@
   }
 
   @include media-query(tablet) {
+    &--editable {
+      padding-right: 0;
+    }
+
     &--gridSignature {
       display: grid;
       flex-direction: row;

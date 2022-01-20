@@ -21,12 +21,29 @@ describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
     expect(result.current.isPdfReportStatusShowing).toBeTruthy();
   });
 
+  test('should show report status out-of-date if its report is older than latest updates', () => {
+    const expected = true;
+    const completedInspectionWithReport = {
+      ...inspectionA,
+      inspectionReportStatus: 'completed_success',
+      inspectionReportURL: 'https://dummyimage.com/600x400/000/fff',
+      updatedAt: 100,
+      inspectionReportUpdateLastDate: 99 // older than most recent updates
+    };
+    const { result } = renderHook(() =>
+      usePDFReport(completedInspectionWithReport, sinon.spy(), true, false)
+    );
+    expect(result.current.isPdfReportStatusShowing).toBeTruthy();
+    expect(result.current.isPdfReportOutOfDate).toEqual(expected);
+  });
+
   test('should show report status out-of-date if it has unpublished updates', async () => {
     const completedInspectionWithReport = {
       ...inspectionA,
       inspectionReportStatus: 'completed_success',
       inspectionReportURL: 'https://dummyimage.com/600x400/000/fff',
-      inspectionReportUpdateLastDate: inspectionA.updatedAt
+      updatedAt: 1,
+      inspectionReportUpdateLastDate: 1 // same age
     };
     const { result } = renderHook(() =>
       usePDFReport(completedInspectionWithReport, sinon.spy(), true, true)

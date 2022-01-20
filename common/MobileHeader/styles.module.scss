@@ -14,7 +14,7 @@
 
   // Change the background on a staging version
   &--isStaging {
-    background-image: url('../../public/img/background_assets/mobile-background-staging.svg');
+    background-image: url(../../public/img/background_assets/mobile-background-staging.svg);
   }
 
   // Change the background on a offline version
@@ -137,15 +137,6 @@
 
     svg path {
       fill: $white;
-    }
-
-    // Fix for iOS devices non-compliant
-    // sticky mode fixing to children
-    @media (max-width: #{$desktop-breakpoint}) and (orientation:landscape) {
-      &--sticky {
-        position: fixed;
-        width: 100%;
-      }
     }
   }
 
