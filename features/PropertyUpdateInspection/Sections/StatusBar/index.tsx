@@ -23,6 +23,10 @@ interface Props {
   onRegenerateReport(): void;
   inspectionReportURL: string;
   isRequestingReport: boolean;
+  searchQuery: string;
+  onSearchKeyDown: (ev: React.KeyboardEvent<HTMLInputElement>) => void;
+  onClearSearch(): void;
+  setSearchQuery(query: string): void;
 }
 
 const StatusBar: FunctionComponent<Props> = ({
@@ -43,10 +47,16 @@ const StatusBar: FunctionComponent<Props> = ({
   hasPdfReportGenerationFailed,
   onRegenerateReport,
   inspectionReportURL,
-  isRequestingReport
+  isRequestingReport,
+  searchQuery,
+  onSearchKeyDown,
+  onClearSearch,
+  setSearchQuery
 }) => {
   const isPubishingDisabled =
     !(hasUpdates && isOnline) || isPdfReportGenerating || isPdfReportQueued;
+
+  const showClearSearch = Boolean(searchQuery);
 
   return (
     <div className={styles.container}>
@@ -56,73 +66,98 @@ const StatusBar: FunctionComponent<Props> = ({
             type="search"
             className={styles.header__search__input}
             placeholder="Search"
+            value={searchQuery}
+            onKeyDown={onSearchKeyDown}
+            onChange={(evt) => setSearchQuery(evt.target.value)}
+            data-testid="status-bar-search-input"
           />
         </div>
 
-        <div className={styles.header__content}>
-          {isPdfReportStatusShowing ? (
-            <PdfReportStatus
-              isPdfReportStatusShowing={isPdfReportStatusShowing}
-              isPdfReportGenerating={isPdfReportGenerating}
-              isPdfReportOutOfDate={isPdfReportOutOfDate}
-              isPdfReportQueued={isPdfReportQueued}
-              showRestartAction={showRestartAction}
-              inspectionReportURL={inspectionReportURL}
-              onCopyReportURL={onCopyReportURL}
-              hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
-              onRegenerateReport={onRegenerateReport}
-              isRequestingReport={isRequestingReport}
-              isInStatusBar={true} // eslint-disable-line react/jsx-boolean-value
-            />
-          ) : (
-            <span data-testid="status-bar-percentage-status">
-              {inspCompletionPercentage}% Done
-            </span>
-          )}
-        </div>
-
-        {showAction ? (
-          <div className={styles.header__action}>
-            {canEnableEditMode && (
-              <button
-                type="button"
-                className={clsx(
-                  styles.header__action__button,
-                  styles['header__action__button--dark']
-                )}
-                data-testid="status-bar-edit-button"
-                onClick={onEnableAdminEditMode}
-              >
-                Edit
-              </button>
-            )}
-            {canUpdateCompleteInspection ? (
-              <button
-                type="button"
-                className={clsx(styles.header__action__button)}
-                disabled={isPubishingDisabled}
-                data-testid="status-bar-complete-button"
-                onClick={onSaveInspection}
-              >
-                Complete
-                <span>
-                  <FileUploadIcon />
-                </span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                className={clsx(styles.header__action__button)}
-                disabled={isPubishingDisabled}
-                data-testid="status-bar-save-button"
-                onClick={onSaveInspection}
-              >
-                Save
-              </button>
-            )}
+        {showClearSearch && (
+          <div className={styles.header__clear}>
+            <button
+              className={styles.header__clear__button}
+              onClick={onClearSearch}
+              data-testid="status-bar-search-clear"
+            >
+              Clear Search
+            </button>
           </div>
-        ) : (
-          <div className={styles.header__action}></div>
+        )}
+        {!showClearSearch && (
+          <>
+            <div
+              className={styles.header__content}
+              data-testid="status-bar-content"
+            >
+              {isPdfReportStatusShowing ? (
+                <PdfReportStatus
+                  isPdfReportStatusShowing={isPdfReportStatusShowing}
+                  isPdfReportGenerating={isPdfReportGenerating}
+                  isPdfReportOutOfDate={isPdfReportOutOfDate}
+                  isPdfReportQueued={isPdfReportQueued}
+                  showRestartAction={showRestartAction}
+                  inspectionReportURL={inspectionReportURL}
+                  onCopyReportURL={onCopyReportURL}
+                  hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
+                  onRegenerateReport={onRegenerateReport}
+                  isRequestingReport={isRequestingReport}
+                  isSmallGray={true} // eslint-disable-line react/jsx-boolean-value
+                />
+              ) : (
+                <span data-testid="status-bar-percentage-status">
+                  {inspCompletionPercentage}% Done
+                </span>
+              )}
+            </div>
+
+            {showAction ? (
+              <div
+                className={styles.header__action}
+                data-testid="status-bar-actions"
+              >
+                {canEnableEditMode && (
+                  <button
+                    type="button"
+                    className={clsx(
+                      styles.header__action__button,
+                      styles['header__action__button--dark']
+                    )}
+                    data-testid="status-bar-edit-button"
+                    onClick={onEnableAdminEditMode}
+                  >
+                    Edit
+                  </button>
+                )}
+                {canUpdateCompleteInspection ? (
+                  <button
+                    type="button"
+                    className={clsx(styles.header__action__button)}
+                    disabled={isPubishingDisabled}
+                    data-testid="status-bar-complete-button"
+                    onClick={onSaveInspection}
+                  >
+                    Complete
+                    <span>
+                      <FileUploadIcon />
+                    </span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className={clsx(styles.header__action__button)}
+                    disabled={isPubishingDisabled}
+                    data-testid="status-bar-save-button"
+                    onClick={onSaveInspection}
+                  >
+                    Save
+                  </button>
+                )}
+              </div>
+            ) : (
+              <div className={styles.header__action}></div>
+            )}
+          </>
         )}
       </div>
       <div className={styles.progress}>

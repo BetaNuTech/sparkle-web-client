@@ -234,12 +234,18 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     useInspectionSectionSort(inspection.template.sections, updates);
 
   // Items grouped by their section
-  const { sectionItems, inspectionItems, inspectionItemDeficientIds } =
-    useInspectionItems(
-      updates,
-      inspection.template,
-      Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
-    );
+  const {
+    sectionItems,
+    inspectionItems,
+    inspectionItemDeficientIds,
+    searchParam,
+    onSearchKeyDown,
+    onClearSearch
+  } = useInspectionItems(
+    updates,
+    inspection.template,
+    Boolean(inspection.template.requireDeficientItemNoteAndPhoto)
+  );
 
   const onShareAction = () => {
     copyTextToClipboard(window.location.href);
@@ -464,6 +470,9 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onRegenerateReport={generatePdfReport}
         inspectionReportURL={inspection.inspectionReportURL}
         isRequestingReport={isRequestingReport}
+        searchParam={searchParam}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
       />
 
       <OneActionNotesModal

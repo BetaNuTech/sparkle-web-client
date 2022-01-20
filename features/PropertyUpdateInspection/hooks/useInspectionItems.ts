@@ -5,6 +5,7 @@ import inspectionTemplateItemModel from '../../../common/models/inspectionTempla
 import inspectionTemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import utilArray from '../../../common/utils/array';
 import inspectionConfig from '../../../config/inspections';
+import useSearching from '../../../common/hooks/useSearching';
 
 const DEFICIENT_LIST_ELIGIBLE = inspectionConfig.deficientListEligible;
 
@@ -12,6 +13,9 @@ interface Result {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   inspectionItems: inspectionTemplateItemModel[];
   inspectionItemDeficientIds: string[];
+  searchParam: string;
+  onSearchKeyDown(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onClearSearch(): void;
 }
 
 // Hooks for filtering inspections list
@@ -37,9 +41,19 @@ export default function useInspectionItems(
     ...items[id]
   }));
 
+  // using useSearching hook for searching
+  // as we have inspection items array
+  // and its grouping already here
+  const { onSearchKeyDown, filteredItems, searchParam, onClearSearch } =
+    useSearching(itemsList, ['title']);
+
+  const filteredInspectionItems = filteredItems.map(
+    (itm) => itm as inspectionTemplateItemModel
+  );
+
   // Grouping of section by section id
   const sectionItems = utilArray.groupBy<string, inspectionTemplateItemModel>(
-    itemsList,
+    filteredInspectionItems,
     (item) => item.sectionId
   );
 
@@ -56,7 +70,7 @@ export default function useInspectionItems(
       .sort((aId, bId) => sections[aId].index - sections[bId].index)
       .map((sectionId) => sectionItems.get(sectionId)) // get section's items
       .reduce((acc, itemsSectionGroup) => {
-        acc.push(...itemsSectionGroup);
+        acc.push(...(itemsSectionGroup || []));
         return acc;
       }, [])
       .filter((item) => item.id && isItemDeficient(item))
@@ -79,7 +93,10 @@ export default function useInspectionItems(
   return {
     sectionItems,
     inspectionItems: itemsList,
-    inspectionItemDeficientIds
+    inspectionItemDeficientIds,
+    searchParam,
+    onSearchKeyDown,
+    onClearSearch
   };
 }
 

@@ -1,5 +1,8 @@
 import sinon from 'sinon';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
+
 import StatusBar from './index';
 
 describe('Unit | Features | Property Update Inspection | Status Bar', () => {
@@ -186,5 +189,178 @@ describe('Unit | Features | Property Update Inspection | Status Bar', () => {
     const completeButton = screen.queryByTestId('status-bar-save-button');
 
     expect(completeButton).toBeDisabled();
+  });
+
+  it('should request to update search query on search input key press', () => {
+    const onSearchKeyDown = sinon.spy();
+    const props = {
+      showAction: true,
+      inspCompletionPercentage: 100,
+      showStatusBar: true,
+      onSaveInspection: sinon.spy(),
+      canEnableEditMode: false,
+      onEnableAdminEditMode: sinon.spy(),
+      canUpdateCompleteInspection: false,
+      hasUpdates: false,
+      isOnline: true,
+      onCopyReportURL: sinon.spy(),
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: false,
+      isPdfReportGenerating: false,
+      isPdfReportQueued: false,
+      showRestartAction: false,
+      hasPdfReportGenerationFailed: false,
+      onRegenerateReport: sinon.spy(),
+      inspectionReportURL: '',
+      isRequestingReport: false,
+      searchQuery: '',
+      setSearchQuery: sinon.spy(),
+      onSearchKeyDown
+    };
+
+    render(<StatusBar {...props} />);
+
+    const searchInput = screen.queryByTestId('status-bar-search-input');
+    act(() => {
+      fireEvent.keyDown(searchInput, { target: { value: 'search' } });
+    });
+    expect(onSearchKeyDown.called).toBeTruthy();
+  });
+
+  it('should render clear search button if there is search query ', () => {
+    const onClearSearch = sinon.spy();
+    const props = {
+      showAction: true,
+      inspCompletionPercentage: 100,
+      showStatusBar: true,
+      onSaveInspection: sinon.spy(),
+      canEnableEditMode: false,
+      onEnableAdminEditMode: sinon.spy(),
+      canUpdateCompleteInspection: false,
+      hasUpdates: false,
+      isOnline: true,
+      onCopyReportURL: sinon.spy(),
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: false,
+      isPdfReportGenerating: false,
+      isPdfReportQueued: false,
+      showRestartAction: false,
+      hasPdfReportGenerationFailed: false,
+      onRegenerateReport: sinon.spy(),
+      inspectionReportURL: '',
+      isRequestingReport: false,
+      searchQuery: 'one',
+      setSearchQuery: sinon.spy(),
+      onSearchKeyDown: sinon.spy(),
+      onClearSearch
+    };
+
+    render(<StatusBar {...props} />);
+    const clearBtn = screen.queryByTestId('status-bar-search-clear');
+    expect(clearBtn).toBeTruthy();
+  });
+
+  it('should request to clear search query', () => {
+    const onClearSearch = sinon.spy();
+    const props = {
+      showAction: true,
+      inspCompletionPercentage: 100,
+      showStatusBar: true,
+      onSaveInspection: sinon.spy(),
+      canEnableEditMode: false,
+      onEnableAdminEditMode: sinon.spy(),
+      canUpdateCompleteInspection: false,
+      hasUpdates: false,
+      isOnline: true,
+      onCopyReportURL: sinon.spy(),
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: false,
+      isPdfReportGenerating: false,
+      isPdfReportQueued: false,
+      showRestartAction: false,
+      hasPdfReportGenerationFailed: false,
+      onRegenerateReport: sinon.spy(),
+      inspectionReportURL: '',
+      isRequestingReport: false,
+      searchQuery: 'one',
+      setSearchQuery: sinon.spy(),
+      onSearchKeyDown: sinon.spy(),
+      onClearSearch
+    };
+
+    render(<StatusBar {...props} />);
+    const clearBtn = screen.queryByTestId('status-bar-search-clear');
+    act(() => {
+      userEvent.click(clearBtn);
+    });
+    expect(onClearSearch.called).toBeTruthy();
+  });
+
+  it('should not render PDF report status and inspection status if there is a search query ', () => {
+    const onClearSearch = sinon.spy();
+    const props = {
+      showAction: true,
+      inspCompletionPercentage: 100,
+      showStatusBar: true,
+      onSaveInspection: sinon.spy(),
+      canEnableEditMode: false,
+      onEnableAdminEditMode: sinon.spy(),
+      canUpdateCompleteInspection: false,
+      hasUpdates: false,
+      isOnline: true,
+      onCopyReportURL: sinon.spy(),
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: false,
+      isPdfReportGenerating: false,
+      isPdfReportQueued: false,
+      showRestartAction: false,
+      hasPdfReportGenerationFailed: false,
+      onRegenerateReport: sinon.spy(),
+      inspectionReportURL: '',
+      isRequestingReport: false,
+      searchQuery: 'one',
+      setSearchQuery: sinon.spy(),
+      onSearchKeyDown: sinon.spy(),
+      onClearSearch
+    };
+
+    render(<StatusBar {...props} />);
+    const statusContent = screen.queryByTestId('status-bar-content');
+
+    expect(statusContent).toBeNull();
+  });
+
+  it('should not render inspection actions if there is a search query ', () => {
+    const onClearSearch = sinon.spy();
+    const props = {
+      showAction: true,
+      inspCompletionPercentage: 100,
+      showStatusBar: true,
+      onSaveInspection: sinon.spy(),
+      canEnableEditMode: false,
+      onEnableAdminEditMode: sinon.spy(),
+      canUpdateCompleteInspection: false,
+      hasUpdates: false,
+      isOnline: true,
+      onCopyReportURL: sinon.spy(),
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: false,
+      isPdfReportGenerating: false,
+      isPdfReportQueued: false,
+      showRestartAction: false,
+      hasPdfReportGenerationFailed: false,
+      onRegenerateReport: sinon.spy(),
+      inspectionReportURL: '',
+      isRequestingReport: false,
+      searchQuery: 'one',
+      setSearchQuery: sinon.spy(),
+      onSearchKeyDown: sinon.spy(),
+      onClearSearch
+    };
+
+    render(<StatusBar {...props} />);
+    const statusActions = screen.queryByTestId('status-bar-actions');
+
+    expect(statusActions).toBeNull();
   });
 });

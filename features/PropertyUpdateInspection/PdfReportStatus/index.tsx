@@ -12,7 +12,7 @@ interface Props {
   showRestartAction: boolean;
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
-  isInStatusBar?: boolean;
+  isSmallGray?: boolean;
   isRequestingReport: boolean;
 }
 
@@ -26,7 +26,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
   inspectionReportURL,
   hasPdfReportGenerationFailed,
   onRegenerateReport,
-  isInStatusBar,
+  isSmallGray,
   isRequestingReport
 }) => {
   let PDFStatusText = '';
@@ -58,11 +58,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
     <>
       {isPdfReportStatusShowing && (
         <div
-          className={clsx(
-            styles.pdfReport,
-
-            isInStatusBar && styles['pdfReport--bgTransparent']
-          )}
+          className={clsx(styles.pdfReport, isSmallGray ? '-mr-none' : '')}
           data-testid="header-pdf-report"
         >
           <p
@@ -71,8 +67,8 @@ const PdfReportStatus: FunctionComponent<Props> = ({
               isPdfReportGenerating && styles.pdfReport__generating,
               hasPdfReportGenerationFailed &&
                 styles['pdfReport__status--failed'],
-              isInStatusBar && styles['pdfReport__status--small'],
-              isInStatusBar && styles['pdfReport__status--gray']
+              isSmallGray ? styles['pdfReport__status--small'] : '',
+              isSmallGray ? styles['pdfReport__status--gray'] : ''
             )}
             data-testid="header-pdf-report-text"
           >
@@ -83,7 +79,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
                   styles.pdfReport__status__action,
                   hasPdfReportGenerationFailed &&
                     styles['pdfReport__status--failed'],
-                  isInStatusBar && styles['pdfReport__status--gray']
+                  isSmallGray ? styles['pdfReport__status--gray'] : ''
                 )}
                 onClick={onRegenerateReport}
               >
@@ -98,7 +94,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
                   rel="noreferrer"
                   className={clsx(
                     styles.pdfReport__status__action,
-                    isInStatusBar && styles['pdfReport__status--gray']
+                    isSmallGray ? styles['pdfReport__status--gray'] : ''
                   )}
                 >
                   View PDF Report
@@ -107,7 +103,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
                 <span
                   className={clsx(
                     styles.pdfReport__status__action,
-                    isInStatusBar && styles['pdfReport__status--gray']
+                    isSmallGray ? styles['pdfReport__status--gray'] : ''
                   )}
                   onClick={onCopyReportURL}
                 >
@@ -127,7 +123,7 @@ PdfReportStatus.defaultProps = {
   isPdfReportOutOfDate: false,
   isPdfReportGenerating: false,
   hasPdfReportGenerationFailed: false,
-  isInStatusBar: false
+  isSmallGray: false
 };
 
 export default PdfReportStatus;
