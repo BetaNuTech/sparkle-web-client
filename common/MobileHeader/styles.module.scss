@@ -1,11 +1,6 @@
 @import '../../styles/index.scss';
 
 .header {
-  background-image: url("data:image/svg+xml,%3Csvg width='75' height='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='nonzero' fill='none' style='transform: translate(-1px, -1px);'%3E%3Cpath fill='%232970A2' d='M32.91.85L20.17 2.81l8.74 2.38L44.57.85z'/%3E%3Cpath fill='%23005288' d='M12.99.85l7.18 1.96L32.91.85zM44.57.85L28.91 5.19l21.44 5.84L75 1l-.37-.15z'/%3E%3Cpath fill='%23003870' d='M50.35 11.03L75 18V1z'/%3E%3Cpath fill='%2308588E' d='M.14 5.88v3.79l5.49 1.97 23.28-6.45-8.74-2.38z'/%3E%3Cpath fill='%2300437A' d='M.14.85v5.03l20.03-3.07L12.99.85zM5.63 11.64L23.35 18h10.22l16.78-6.97-21.44-5.84z'/%3E%3Cpath fill='%23002D67' d='M33.57 18H75l-24.65-6.97z'/%3E%3Cpath fill='%23003F77' d='M.14 13.16l5.49-1.52L.14 9.67z'/%3E%3Cpath fill='%23003069' d='M.14 13.16V18h23.21L5.63 11.64z'/%3E%3C/g%3E%3C/svg%3E");
-  background-position: auto;
-  background-size: 103%;
-  background-repeat: no-repeat;
-
   display: grid;
   grid-gap: 0 $global-padding;
   grid-template-columns: 30% 1fr 30%;
@@ -13,6 +8,9 @@
     'left center right'
     'bottom bottom bottom'
     'sub-bottom sub-bottom sub-bottom';
+  background-image: url("data:image/svg+xml,%3Csvg width='75' height='18' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill-rule='nonzero' fill='none' style='transform: translate(-1px, -1px);'%3E%3Cpath fill='%232970A2' d='M32.91.85L20.17 2.81l8.74 2.38L44.57.85z'/%3E%3Cpath fill='%23005288' d='M12.99.85l7.18 1.96L32.91.85zM44.57.85L28.91 5.19l21.44 5.84L75 1l-.37-.15z'/%3E%3Cpath fill='%23003870' d='M50.35 11.03L75 18V1z'/%3E%3Cpath fill='%2308588E' d='M.14 5.88v3.79l5.49 1.97 23.28-6.45-8.74-2.38z'/%3E%3Cpath fill='%2300437A' d='M.14.85v5.03l20.03-3.07L12.99.85zM5.63 11.64L23.35 18h10.22l16.78-6.97-21.44-5.84z'/%3E%3Cpath fill='%23002D67' d='M33.57 18H75l-24.65-6.97z'/%3E%3Cpath fill='%23003F77' d='M.14 13.16l5.49-1.52L.14 9.67z'/%3E%3Cpath fill='%23003069' d='M.14 13.16V18h23.21L5.63 11.64z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 103%;
+  background-repeat: no-repeat;
 
   // Change the background on a staging version
   &--isStaging {
@@ -139,6 +137,15 @@
 
     svg path {
       fill: $white;
+    }
+
+    // Fix for iOS devices non-compliant
+    // sticky mode fixing to children
+    @media (max-width: #{$desktop-breakpoint}) and (orientation:landscape) {
+      &--sticky {
+        position: fixed;
+        width: 100%;
+      }
     }
   }
 

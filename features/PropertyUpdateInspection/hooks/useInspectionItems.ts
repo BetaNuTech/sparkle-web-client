@@ -14,7 +14,7 @@ interface Result {
   inspectionItems: inspectionTemplateItemModel[];
   inspectionItemDeficientIds: string[];
   searchParam: string;
-  onSearchKeyDown(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onSearchKeyDown(evt: React.KeyboardEvent<HTMLInputElement>): void;
   onClearSearch(): void;
 }
 

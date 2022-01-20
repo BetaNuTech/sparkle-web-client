@@ -35,7 +35,8 @@
   min-height: rem-calc(72);
 
   &--grid {
-    padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
+    padding: $global-sm-padding $global-lg-padding $global-sm-padding
+      $global-lg-padding;
     grid-template-columns: 0.6fr 1fr auto;
     min-height: rem-calc(63);
     border-bottom: rem-calc(1) solid $gray-lighter;
@@ -52,17 +53,12 @@
   }
 
   &__mainInput {
-    display: flex;
-    flex: 1 1 auto;
-    gap: $global-md-padding;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: $global-padding;
 
-    &--grid {
-      gap: $global-mlg-padding;
-      flex-direction: row;
-
-      ul:nth-child(1) {
-        flex: none;
-      }
+    &--singleColumn {
+      grid-template-columns: 1fr;
     }
   }
 
@@ -129,6 +125,12 @@
       display: grid;
       flex-direction: row;
       min-height: rem-calc(160);
+    }
+  }
+
+  @include media-query(desktop) {
+    &__mainInput {
+      gap: $global-mlg-padding;
     }
   }
 }

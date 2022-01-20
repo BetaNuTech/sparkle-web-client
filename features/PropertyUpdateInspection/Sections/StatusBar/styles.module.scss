@@ -27,113 +27,66 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
   &__search,
   &__content,
   &__action {
-    flex: 1;
     display: flex;
     align-items: center;
     height: $elementHeight;
   }
 
-  // search section
-  &__search {
-    padding-left: $global-padding;
-
-    &__input[type='search'],
-    &__input[type='search']:hover {
-      @extend %searchInput;
-      @extend %searchInputBackgound;
-      margin: 0;
-      color: $gray-light;
-
-      &:focus {
-        color: $gray-light;
-      }
-
-      &::placeholder {
-        color: $gray-light;
-      }
-    }
+  // Minimize mobile left column
+  &__search,
+  &__action {
+    flex: 0 1 32%;
   }
 
-  &__clear {
-    padding-right: $global-padding;
-
-    &__button {
-      @extend %actionButton--black;
-      font-size: $paragraph-font-size;
-      text-transform: none;
-      padding: $global-sm-padding $global-mlg-padding;
-    }
-  }
-
-  // status section
+  // Maximize mobile right column
   &__content {
-    color: $gray-light-5;
-    font-size: rem-calc(14);
-    padding: 0;
-    justify-content: right;
-    padding-right: $global-padding;
-    flex: 2;
+    flex: 2 1 auto;
   }
 
-  // actions sections
+  // Hide mobile actions
   &__action {
     display: none;
+  }
+
+  &__search {
+    padding-left: $global-padding;
+  }
+
+  &__content {
+    padding: 0 $global-padding 0 0;
+    justify-content: flex-end;
+    color: $gray-light-5;
+    font-size: rem-calc(14);
+    white-space: nowrap;
+  }
+
+  &__action {
     padding: 0;
     justify-content: flex-end;
     align-items: stretch;
-    flex: 0 0 rem-calc(200);
-
-    &__button {
-      @extend %actionButton--line;
-      color: $primary-color;
-      display: inline-flex;
-      line-height: $elementHeight;
-      padding: 0 $global-sm-padding;
-      font-size: $paragraph-font-size;
-      border: none;
-
-      &:last-child {
-        padding-right: $global-padding;
-      }
-
-      &:disabled {
-        opacity: 0.32;
-      }
-
-      &--dark {
-        color: $primary-xdark-color;
-      }
-
-      // Icon of Complete button
-      svg {
-        margin-left: rem-calc(4);
-        width: rem-calc(14);
-        height: rem-calc(14);
-
-        path {
-          fill: $primary-color;
-        }
-      }
-    }
   }
 
   @include media-query(desktop) {
+    // Apply global desktop padding to left
     &__search {
-      padding-left: $global-lg-padding;
-      flex: 0 0 rem-calc(200);
+      padding-left: $global-lg-padding - rem-calc(5);
     }
 
-    &__action__button:last-child {
-      padding-right: $global-lg-padding;
-    }
-
+    // Shift content to center
     &__content {
       justify-content: center;
       padding-right: 0;
     }
 
+    // Reveal actions
     &__action {
       display: flex;
+
+      // Apply global desktop padding to right
+      > *:last-child {
+        margin-right: 0;
+        padding-right: $global-lg-padding !important;
+      }
     }
   }
 }
@@ -148,5 +101,68 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
     background-color: $info-color;
     transition: width 200ms ease-in;
     width: 0%;
+  }
+}
+
+.button {
+  @extend %actionButton--line;
+  display: inline-flex;
+  padding: 0;
+  margin-bottom: 0;
+  font-size: $paragraph-font-size;
+  line-height: $elementHeight;
+  color: $primary-color;
+  border: none;
+
+  &:last-child {
+    padding-right: $global-padding;
+  }
+
+  &:hover {
+    color: $primary-color;
+    background-color: transparent;
+  }
+
+  &:disabled {
+    opacity: 0.32;
+  }
+
+  &--dark,
+  &--dark:hover {
+    color: $primary-xdark-color;
+  }
+
+  // Icon of Complete button
+  svg {
+    margin-left: rem-calc(4);
+    width: rem-calc(14);
+    height: rem-calc(14);
+
+    path {
+      fill: $primary-color;
+    }
+  }
+}
+
+.clearButton {
+  @extend %actionButton--black;
+  font-size: $paragraph-font-size;
+  text-transform: none;
+  padding: $global-sm-padding $global-mlg-padding;
+}
+
+.searchInput[type='search'],
+.searchInput[type='search']:hover {
+  @extend %searchInput;
+  @extend %searchInputBackgound;
+  margin: 0;
+  color: $gray-light;
+
+  &:focus {
+    color: $gray-light;
+  }
+
+  &::placeholder {
+    color: $gray-light;
   }
 }
