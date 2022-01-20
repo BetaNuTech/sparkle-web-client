@@ -2,8 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
-import CurrentState from './index';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
+import CurrentState from './index';
 
 describe('Unit | Common | Deficient Item Edit Form | fields | Current State ', () => {
   afterEach(() => sinon.restore());

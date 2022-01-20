@@ -1,68 +1,11 @@
 @import '../../../styles/index.scss';
 
 .field {
-  display: block;
-
-  &__label {
-    text-align: center;
-    color: $white;
-    background-color: $gray-dark;
-    padding: rem-calc(4) 0;
-    font-size: rem-calc(14);
-    text-transform: uppercase;
-
-    &__heading {
-      color: $white;
-      font-size: rem-calc(14);
-      text-transform: uppercase;
-    }
-
-    &__action {
-      @extend %hollowButton;
-      border: none;
-      margin: 0;
-      width: auto;
-    }
-  }
-
-  &__container {
+  &__main {
     padding: $global-sm-padding $global-padding $global-sm-padding;
   }
 
-  &__createdAt {
-    color: $gray-light;
-    font-size: rem-calc(12);
-  }
-
-  &__itemTitle {
-    margin: $global-sm-padding 0;
-    font-size: rem-calc(14);
-  }
-
-  &__sectionTitle {
-    font-size: rem-calc(12);
-    color: $gray-med-dark;
-  }
-
-  &__richText {
-    font-size: rem-calc(14);
-    font-weight: bold;
-  }
-
-  &__currentState {
-    font-size: rem-calc(14);
-    font-weight: bold;
-    max-width: rem-calc(300);
-    text-align: center;
-    display: block;
-    margin: auto;
-
-    &--upperCase {
-      text-transform: uppercase;
-    }
-  }
-
-  &__formField {
+  &__textarea {
     padding: rem-calc(3) $global-padding 0;
     margin: 0;
     background-color: transparent;
@@ -79,78 +22,77 @@
 
   &__footer {
     margin-top: $global-padding;
-
-    &__action {
-      @extend %hollowButton;
-      border: none;
-      margin: 0;
-
-      &[disabled] {
-        color: $gray-light;
-        cursor: not-allowed;
-      }
-    }
   }
 
   @include media-query(desktop) {
     margin-bottom: $global-lg-padding;
 
-    &__container {
+    &__main {
       padding: 0;
     }
 
-    &__viewPhotos {
-      text-align: left;
-      padding-left: 0;
-    }
-
-    &__itemTitle {
-      font-size: rem-calc(24);
-    }
-
-    &__sectionTitle {
-      font-size: rem-calc(14);
-    }
-
-    &__label {
-      text-align: left;
-      color: $black;
-      margin-bottom: $global-padding;
-      background-color: transparent;
-      font-size: rem-calc(22);
-      border-bottom: 1px solid $gray-lighter;
-      text-transform: none;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      &__heading {
-        font-size: rem-calc(22);
-        color: $black;
-        white-space: nowrap;
-        text-transform: none;
-      }
-    }
-
-    &__currentState {
-      font-size: rem-calc(16);
-      font-weight: normal;
-      max-width: rem-calc(450);
-      text-align: left;
-      margin: 0;
-    }
-
-    &__richText {
-      font-weight: normal;
-    }
-
-    &__formField {
+    &__textarea {
       max-width: rem-calc(300);
     }
+  }
+}
 
-    &__footer__action {
-      text-align: left;
-      padding-left: 0;
-    }
+.label {
+  text-align: center;
+  color: $white;
+  background-color: $gray-dark;
+  padding: rem-calc(4) 0;
+  font-size: rem-calc(14);
+  text-transform: uppercase;
+
+  @include media-query(desktop) {
+    text-align: left;
+    color: $black;
+    margin-bottom: $global-padding;
+    background-color: transparent;
+    font-size: rem-calc(22);
+    border-bottom: 1px solid $gray-lighter;
+    text-transform: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.heading {
+  color: $white;
+  font-size: rem-calc(14);
+  text-transform: uppercase;
+
+  @include media-query(desktop) {
+    font-size: rem-calc(22);
+    color: $black;
+    white-space: nowrap;
+    text-transform: none;
+  }
+}
+
+.textButton {
+  @extend %hollowButton;
+  border: none;
+  margin: 0;
+
+  &[disabled] {
+    color: $gray-light;
+    cursor: not-allowed;
+  }
+
+  @include media-query(desktop) {
+    text-align: left;
+    padding-left: 0;
+    width: auto;
+  }
+}
+
+.richText {
+  font-size: rem-calc(14);
+
+  @include media-query(desktop) {
+    font-weight: normal;
   }
 }

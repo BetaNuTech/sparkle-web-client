@@ -4,9 +4,9 @@ import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
-import Header from './Header';
 import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
 import DeficientItemEditForm from '../../common/DeficientItemEditForm';
+import Header from './Header';
 
 interface Props {
   user: userModel;

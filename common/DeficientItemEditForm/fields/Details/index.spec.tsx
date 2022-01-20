@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import sinon from 'sinon';
-import Details from './index';
 import dateUtils from '../../../utils/date';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
+import Details from './index';
 
 describe('Unit | Common | Deficient Item Edit Form | fields | Details ', () => {
   afterEach(() => sinon.restore());

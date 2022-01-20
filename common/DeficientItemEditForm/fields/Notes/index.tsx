@@ -13,12 +13,9 @@ const DeficientItemEditFormNotes: FunctionComponent<Props> = ({
 }) =>
   isVisible ? (
     <section className={styles.field} data-testid="item-notes">
-      <header className={styles.field__label}>Item Notes</header>
-      <div className={styles.field__container}>
-        <strong
-          className={styles.field__richText}
-          data-testid="item-inspector-notes"
-        >
+      <header className={styles.label}>Item Notes</header>
+      <div className={styles.field__main}>
+        <strong className={styles.richText} data-testid="item-inspector-notes">
           {deficientItem.itemInspectorNotes}
         </strong>
       </div>
