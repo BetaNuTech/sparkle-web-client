@@ -64,7 +64,7 @@ const StatusBar: FunctionComponent<Props> = ({
         <div className={styles.header__search}>
           <input
             type="search"
-            className={styles.header__search__input}
+            className={styles.searchInput}
             placeholder="Search"
             value={searchQuery}
             onKeyDown={onSearchKeyDown}
@@ -74,9 +74,9 @@ const StatusBar: FunctionComponent<Props> = ({
         </div>
 
         {showClearSearch && (
-          <div className={styles.header__clear}>
+          <div className="-pr">
             <button
-              className={styles.header__clear__button}
+              className={styles.clearButton}
               onClick={onClearSearch}
               data-testid="status-bar-search-clear"
             >
@@ -119,10 +119,7 @@ const StatusBar: FunctionComponent<Props> = ({
                 {canEnableEditMode && (
                   <button
                     type="button"
-                    className={clsx(
-                      styles.header__action__button,
-                      styles['header__action__button--dark']
-                    )}
+                    className={clsx(styles.button, styles['button--dark'])}
                     data-testid="status-bar-edit-button"
                     onClick={onEnableAdminEditMode}
                   >
@@ -132,7 +129,7 @@ const StatusBar: FunctionComponent<Props> = ({
                 {canUpdateCompleteInspection ? (
                   <button
                     type="button"
-                    className={clsx(styles.header__action__button)}
+                    className={clsx(styles.button)}
                     disabled={isPubishingDisabled}
                     data-testid="status-bar-complete-button"
                     onClick={onSaveInspection}
@@ -145,7 +142,7 @@ const StatusBar: FunctionComponent<Props> = ({
                 ) : (
                   <button
                     type="button"
-                    className={clsx(styles.header__action__button)}
+                    className={clsx(styles.button)}
                     disabled={isPubishingDisabled}
                     data-testid="status-bar-save-button"
                     onClick={onSaveInspection}

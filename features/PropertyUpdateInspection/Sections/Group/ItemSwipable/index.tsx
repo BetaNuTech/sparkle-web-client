@@ -127,7 +127,14 @@ const ItemSwipable: FunctionComponent<Props> = ({
               <div>
                 {item.itemType === 'signature' ? 'Signature' : item.title}
               </div>
-              <div className={groupStyles.item__mainInput}>
+              <div
+                className={clsx(
+                  groupStyles.item__mainInput,
+                  showAttachment
+                    ? ''
+                    : groupStyles['item__mainInput--singleColumn']
+                )}
+              >
                 {showAttachment && (
                   <Attachment
                     photos={item.photos}

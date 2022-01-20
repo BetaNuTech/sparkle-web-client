@@ -70,7 +70,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   );
   const templateCategory =
     filteredCategory.length > 0 ? filteredCategory[0].name : 'Uncategorized';
-  const { isVisible } = useVisibility(ref, {}, forceVisible);
+  const { isVisible } = useVisibility(ref, { threshold: 0.01 }, forceVisible);
 
   const inspectionUpdateUrl = `/properties/${propertyId}/inspections/edit/${inspection.id}`;
   const legacyInspectionUpdateUrl = `/properties/${propertyId}/update-inspection/${inspection.id}`;

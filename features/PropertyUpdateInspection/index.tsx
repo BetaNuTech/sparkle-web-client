@@ -445,6 +445,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         inspectionItemsPhotos={unpublishedInspectionItemsPhotos}
         inspectionItemsSignature={unpublishedInspectionItemsSignature}
         canEdit={canEdit}
+        isDesktop={isDesktop}
         isMobile={isMobile}
         isIncompleteRevealed={isIncompleteRevealed}
         completedItems={completedItems}

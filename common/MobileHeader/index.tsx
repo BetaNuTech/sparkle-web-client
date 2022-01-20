@@ -1,6 +1,5 @@
-import { FunctionComponent } from 'react';
 import clsx from 'clsx';
-
+import { FunctionComponent } from 'react';
 import HamburgerIcon from '../../public/icons/ios/hamburger.svg';
 import WarningIcon from '../../public/icons/sparkle/warning.svg';
 import styles from './styles.module.scss';

@@ -22,9 +22,9 @@ export default function useSearching(
   const [memo, setMemo] = useState('[]');
   const [searchParam, setSearchParam] = useState<string[]>(defaultQuery || []);
 
-  const onSearchChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
+  const onSearchChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     // Get the keywords from inputs
-    const query = utilString.getSearchKeywords(ev.target.value);
+    const query = utilString.getSearchKeywords(evt.target.value);
     setSearchParam(query);
   };
 

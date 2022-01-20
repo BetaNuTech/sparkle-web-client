@@ -162,8 +162,9 @@
 // Buttons
 .modal__closeButton {
   position: absolute;
+  padding: 0;
   color: $gray-light;
-  top: $global-padding;
+  top: $global-sm-padding;
   right: $global-sm-padding;
   font-size: 2.5em;
   line-height: 0.5;

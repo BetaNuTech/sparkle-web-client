@@ -37,6 +37,7 @@
     display: flex;
     position: relative;
     overflow-x: hidden;
+    padding-bottom: $global-sm-padding;
   }
 
   &__preview {
@@ -45,7 +46,7 @@
     max-width: rem-calc(600);
     left: 0;
     right: 0;
-    bottom: rem-calc(77);
+    bottom: rem-calc(52);
     margin: 0 auto;
     z-index: 10;
     cursor: pointer;
@@ -131,12 +132,18 @@
   // devices in portrait mode
   @media (max-width: #{rem-calc(600)}) and (orientation:portrait) {
     &__canvas {
-      background-image: url(../../../public/icons/sparkle/rotate-text.svg);
-      background-repeat: no-repeat;
-      background-position: center;
-      -ms-transform: rotate(90deg);
-      transform: rotateZ(90deg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       height: 100%;
+
+      &::before {
+        content: 'Rotate to Sign';
+        display: inline-block;
+        font-size: rem-calc(11);
+        text-transform: uppercase;
+      }
 
       &__body {
         display: none;

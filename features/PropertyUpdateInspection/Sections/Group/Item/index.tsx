@@ -101,7 +101,7 @@ const Item: FunctionComponent<Props> = ({
           <div
             className={clsx(
               groupStyles.item__mainInput,
-              groupStyles['item__mainInput--grid']
+              showAttachment ? '' : groupStyles['item__mainInput--singleColumn']
             )}
           >
             {showAttachment && (

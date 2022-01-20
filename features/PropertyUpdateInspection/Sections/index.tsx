@@ -49,6 +49,7 @@ interface Props {
   inspectionItemsSignature: Map<string, UnpublishedSignatureModel[]>;
   canEdit: boolean;
   isMobile: boolean;
+  isDesktop: boolean;
   isIncompleteRevealed: boolean;
   completedItems: InspectionTemplateItemModel[];
   requireDeficientItemNoteAndPhoto: boolean;
@@ -94,6 +95,7 @@ const Sections: FunctionComponent<Props> = ({
   inspectionItemsPhotos,
   inspectionItemsSignature,
   canEdit,
+  isDesktop,
   isMobile,
   isIncompleteRevealed,
   completedItems,
@@ -125,6 +127,11 @@ const Sections: FunctionComponent<Props> = ({
     useState(false);
 
   const [searchQuery, setSearchQuery] = useState(searchParam);
+
+  const isPdfReportVisible =
+    isPdfReportStatusShowing && isDesktop
+      ? isDuplicateActionsNotInView // only show on desktop when not duplicat
+      : true; // always show if possible on mobile
 
   // this will help to clear search input text
   useEffect(() => {
@@ -162,9 +169,7 @@ const Sections: FunctionComponent<Props> = ({
         isOnline={isOnline}
         hasUpdates={hasUpdates}
         onCopyReportURL={onCopyReportURL}
-        isPdfReportStatusShowing={
-          isPdfReportStatusShowing && isDuplicateActionsNotInView
-        }
+        isPdfReportStatusShowing={isPdfReportVisible}
         isPdfReportOutOfDate={isPdfReportOutOfDate}
         isPdfReportGenerating={isPdfReportGenerating}
         isPdfReportQueued={isPdfReportQueued}
