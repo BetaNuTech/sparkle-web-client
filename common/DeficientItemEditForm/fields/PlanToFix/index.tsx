@@ -1,8 +1,7 @@
-import clsx from 'clsx';
 import { ChangeEvent, FunctionComponent } from 'react';
+import clsx from 'clsx';
 import DeficientItemModel from '../../../models/deficientItem';
-
-import styles from '../styles.module.scss';
+import fieldStyles from '../styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
@@ -27,13 +26,13 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
   }
 
   return (
-    <section className={styles.item} data-testid="item-plan-to-fix">
-      <header className={styles.field__label}>
-        <h4 className={styles.field__label__heading}>Plan To Fix</h4>
+    <section className={fieldStyles.item} data-testid="item-plan-to-fix">
+      <header className={fieldStyles.label}>
+        <h4 className={fieldStyles.heading}>Plan To Fix</h4>
         {showHeaderAction && (
           <button
             onClick={onShowPlanToFix}
-            className={styles.field__label__action}
+            className={fieldStyles.textButton}
             data-testid="show-previous-plan-to-fix-btn"
           >
             Show Previous
@@ -42,13 +41,13 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
       </header>
       <div
         className={clsx(
-          styles.field__container,
+          fieldStyles.field__main,
           !deficientItem.currentPlanToFix && '-p-none'
         )}
       >
         {deficientItem.currentPlanToFix ? (
           <strong
-            className={styles.field__richText}
+            className={fieldStyles.richText}
             data-testid="item-plan-to-fix-text"
           >
             {deficientItem.currentPlanToFix}
@@ -57,9 +56,9 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
           <textarea
             placeholder="NOT SET"
             className={clsx(
-              styles.field__formField,
+              fieldStyles.field__textarea,
               !deficientItem.currentPlanToFix &&
-                styles['field__formField--empty']
+                fieldStyles['field__textarea--empty']
             )}
             onChange={onChangePlanToFix}
             data-testid="item-plan-to-fix-textarea"
@@ -67,10 +66,10 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
         )}
       </div>
       {showFooterAction && (
-        <footer className={styles.field__footer}>
+        <footer className={fieldStyles.field__footer}>
           <button
             onClick={onShowPlanToFix}
-            className={styles.field__footer__action}
+            className={fieldStyles.textButton}
             data-testid="show-previous-plan-to-fix-btn"
           >
             Show Previous Plan to Fix

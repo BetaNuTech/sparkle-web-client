@@ -1,7 +1,9 @@
 import { FunctionComponent } from 'react';
 import DeficientItemModel from '../../../models/deficientItem';
 import { deficientItemCurrentStateDescriptions } from '../../../../config/deficientItems';
-import styles from '../styles.module.scss';
+
+import fieldStyles from '../styles.module.scss';
+import styles from './styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
@@ -14,25 +16,22 @@ const DeficientItemEditFormCurrentState: FunctionComponent<Props> = ({
   onShowHistory,
   isMobile
 }) => (
-  <section className={styles.field} data-testid="item-current-state">
-    <header className={styles.field__label}>
-      <h4 className={styles.field__label__heading}>Current State</h4>
+  <section className={fieldStyles.field} data-testid="item-current-state">
+    <header className={fieldStyles.label}>
+      <h4 className={fieldStyles.heading}>Current State</h4>
       {deficientItem.stateHistory && !isMobile && (
         <button
           onClick={onShowHistory}
-          className={styles.field__label__action}
+          className={fieldStyles.textButton}
           data-testid="show-history-button"
         >
           Show History
         </button>
       )}
     </header>
-    <div className={styles.field__container}>
-      <strong
-        className={styles.field__currentState}
-        data-testid="item-current-state-text"
-      >
-        <span className={styles['item__currentState--upperCase']}>
+    <div className={fieldStyles.field__main}>
+      <strong className={styles.strong} data-testid="item-current-state-text">
+        <span className="-tt-uppercase">
           {deficientItem.state === 'requires-action'
             ? 'New'
             : deficientItem.state}
@@ -42,10 +41,10 @@ const DeficientItemEditFormCurrentState: FunctionComponent<Props> = ({
       </strong>
     </div>
     {deficientItem.stateHistory && isMobile && (
-      <footer className={styles.field__footer}>
+      <footer className={fieldStyles.field__footer}>
         <button
           onClick={onShowHistory}
-          className={styles.field__footer__action}
+          className={fieldStyles.textButton}
           data-testid="show-history-button"
         >
           Show State History
