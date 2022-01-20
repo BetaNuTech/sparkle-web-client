@@ -44,9 +44,24 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
       margin: 0;
       color: $gray-light;
 
+      &:focus {
+        color: $gray-light;
+      }
+
       &::placeholder {
         color: $gray-light;
       }
+    }
+  }
+
+  &__clear {
+    padding-right: $global-padding;
+
+    &__button {
+      @extend %actionButton--black;
+      font-size: $paragraph-font-size;
+      text-transform: none;
+      padding: $global-sm-padding $global-mlg-padding;
     }
   }
 
@@ -55,6 +70,9 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
     color: $gray-light-5;
     font-size: rem-calc(14);
     padding: 0;
+    justify-content: right;
+    padding-right: $global-padding;
+    flex: 2;
   }
 
   // actions sections
@@ -63,6 +81,7 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
     padding: 0;
     justify-content: flex-end;
     align-items: stretch;
+    flex: 0 0 rem-calc(200);
 
     &__button {
       @extend %actionButton--line;
@@ -101,6 +120,7 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
   @include media-query(desktop) {
     &__search {
       padding-left: $global-lg-padding;
+      flex: 0 0 rem-calc(200);
     }
 
     &__action__button:last-child {
@@ -109,6 +129,7 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
 
     &__content {
       justify-content: center;
+      padding-right: 0;
     }
 
     &__action {

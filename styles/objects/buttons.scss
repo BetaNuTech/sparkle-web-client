@@ -102,9 +102,20 @@
   border-radius: rem-calc(3);
 }
 
+%actionButton--black {
+  @extend %actionButton;
+  background-color: $black;
+  color: $white;
+}
+
+%actionButton--blackText {
+  @extend %actionButton;
+  background: transparent;
+  color: $black;
+}
+
 %baseButton__chevron {
   display: inline-block;
-  width: rem-calc(6);
   height: rem-calc(12);
   transform: translateY(#{rem-calc(2)});
 }

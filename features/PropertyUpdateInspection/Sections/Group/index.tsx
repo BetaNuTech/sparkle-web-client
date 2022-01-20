@@ -84,6 +84,9 @@ const Group: FunctionComponent<Props> = ({
       onSectionCollapseToggle(section);
     }
   };
+  if (!listItems || !listItems.length) {
+    return <></>;
+  }
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions

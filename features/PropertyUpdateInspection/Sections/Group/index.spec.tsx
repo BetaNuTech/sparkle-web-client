@@ -2,8 +2,12 @@ import sinon from 'sinon';
 import { act, render as rtlRender, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
-import { originalMultiSection } from '../../../../__mocks__/inspections';
+import {
+  originalMultiSection,
+  emptyTextInputItem
+} from '../../../../__mocks__/inspections';
 import breakpoints from '../../../../config/breakpoints';
+import stubIntersectionObserver from '../../../../__tests__/helpers/stubIntersectionObserver';
 import Group from './index';
 
 function render(ui: any, options: any = {}) {
@@ -19,7 +23,12 @@ function render(ui: any, options: any = {}) {
 }
 
 describe('Unit | Features | Property Update Inspection | Sections | Group', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should request to add section on click on add button', () => {
+    const sectionItems = new Map();
+    sectionItems.set(originalMultiSection.id, [emptyTextInputItem]);
+
     const onSectionCollapseToggle = sinon.spy();
     const props = {
       forceVisible: true,
@@ -32,7 +41,6 @@ describe('Unit | Features | Property Update Inspection | Sections | Group', () =
       onClickPhotos: sinon.spy(),
       inspectionItemsPhotos: new Map(),
       inspectionItemsSignature: new Map(),
-      sectionItems: new Map(),
       section: originalMultiSection,
       nextSectionTitle: '',
       collapsedSections: [],
@@ -40,7 +48,10 @@ describe('Unit | Features | Property Update Inspection | Sections | Group', () =
       onRemoveSection: sinon.spy(),
       onSectionCollapseToggle,
       canEdit: true,
-      isMobile: false
+      isMobile: false,
+      inspectionItemDeficientIds: [],
+      completedItems: [],
+      sectionItems
     };
 
     render(<Group {...props} />, {
@@ -48,6 +59,7 @@ describe('Unit | Features | Property Update Inspection | Sections | Group', () =
     });
 
     const sectionItemList = screen.queryByTestId('section-list-item');
+
     act(() => {
       userEvent.click(sectionItemList);
     });

@@ -71,6 +71,9 @@ interface Props {
   inspectionReportURL: string;
   isRequestingReport: boolean;
   showAction: boolean;
+  searchParam: string;
+  onSearchKeyDown(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onClearSearch(): void;
 }
 
 const Sections: FunctionComponent<Props> = ({
@@ -113,10 +116,20 @@ const Sections: FunctionComponent<Props> = ({
   onRegenerateReport,
   inspectionReportURL,
   isRequestingReport,
-  showAction
+  showAction,
+  searchParam,
+  onSearchKeyDown,
+  onClearSearch
 }) => {
   const [isDuplicateActionsNotInView, setIsDuplicateActionsNotInView] =
     useState(false);
+
+  const [searchQuery, setSearchQuery] = useState(searchParam);
+
+  // this will help to clear search input text
+  useEffect(() => {
+    setSearchQuery(searchParam);
+  }, [searchParam]);
 
   // Reveal duplicate header actions
   // once user scrolled down past the primary header
@@ -149,7 +162,9 @@ const Sections: FunctionComponent<Props> = ({
         isOnline={isOnline}
         hasUpdates={hasUpdates}
         onCopyReportURL={onCopyReportURL}
-        isPdfReportStatusShowing={isPdfReportStatusShowing}
+        isPdfReportStatusShowing={
+          isPdfReportStatusShowing && isDuplicateActionsNotInView
+        }
         isPdfReportOutOfDate={isPdfReportOutOfDate}
         isPdfReportGenerating={isPdfReportGenerating}
         isPdfReportQueued={isPdfReportQueued}
@@ -158,37 +173,61 @@ const Sections: FunctionComponent<Props> = ({
         onRegenerateReport={onRegenerateReport}
         inspectionReportURL={inspectionReportURL}
         isRequestingReport={isRequestingReport}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
       />
-      <ul data-testid="inspection-section">
-        {sections.map((sectionItem, index) => (
-          <Group
-            key={sectionItem.id}
-            section={sectionItem}
-            nextSectionTitle={sections[index + 1] && sections[index + 1].title}
-            forceVisible={forceVisible}
-            collapsedSections={collapsedSections}
-            onSectionCollapseToggle={onSectionCollapseToggle}
-            onMainInputChange={onMainInputChange}
-            onTextInputChange={onTextInputChange}
-            sectionItems={sectionItems}
-            onClickOneActionNotes={onClickOneActionNotes}
-            onAddSection={onAddSection}
-            onRemoveSection={onRemoveSection}
-            onItemIsNAChange={onItemIsNAChange}
-            onClickAttachmentNotes={onClickAttachmentNotes}
-            onClickSignatureInput={onClickSignatureInput}
-            onClickPhotos={onClickPhotos}
-            inspectionItemsPhotos={inspectionItemsPhotos}
-            inspectionItemsSignature={inspectionItemsSignature}
-            canEdit={canEdit}
-            isMobile={isMobile}
-            isIncompleteRevealed={isIncompleteRevealed}
-            completedItems={completedItems}
-            requireDeficientItemNoteAndPhoto={requireDeficientItemNoteAndPhoto}
-            inspectionItemDeficientIds={inspectionItemDeficientIds}
-          />
-        ))}
-      </ul>
+      {sectionItems.size ? (
+        <ul data-testid="inspection-section">
+          {sections.map((sectionItem, index) => (
+            <Group
+              key={sectionItem.id}
+              section={sectionItem}
+              nextSectionTitle={
+                sections[index + 1] && sections[index + 1].title
+              }
+              forceVisible={forceVisible}
+              collapsedSections={collapsedSections}
+              onSectionCollapseToggle={onSectionCollapseToggle}
+              onMainInputChange={onMainInputChange}
+              onTextInputChange={onTextInputChange}
+              sectionItems={sectionItems}
+              onClickOneActionNotes={onClickOneActionNotes}
+              onAddSection={onAddSection}
+              onRemoveSection={onRemoveSection}
+              onItemIsNAChange={onItemIsNAChange}
+              onClickAttachmentNotes={onClickAttachmentNotes}
+              onClickSignatureInput={onClickSignatureInput}
+              onClickPhotos={onClickPhotos}
+              inspectionItemsPhotos={inspectionItemsPhotos}
+              inspectionItemsSignature={inspectionItemsSignature}
+              canEdit={canEdit}
+              isMobile={isMobile}
+              isIncompleteRevealed={isIncompleteRevealed}
+              completedItems={completedItems}
+              requireDeficientItemNoteAndPhoto={
+                requireDeficientItemNoteAndPhoto
+              }
+              inspectionItemDeficientIds={inspectionItemDeficientIds}
+            />
+          ))}
+        </ul>
+      ) : (
+        <h3 className="-c-gray-light -pt-sm -pl-sm -pb-sm -ta-center">
+          No items found
+        </h3>
+      )}
+      {searchParam && (
+        <div className={styles.container__clear}>
+          <button
+            className={styles.container__clear__action}
+            onClick={onClearSearch}
+          >
+            Clear Search
+          </button>
+        </div>
+      )}
     </div>
   );
 };

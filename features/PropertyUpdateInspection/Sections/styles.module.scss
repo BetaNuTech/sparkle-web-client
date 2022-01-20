@@ -3,6 +3,16 @@
 .container {
   position: relative;
 
+  &__clear {
+    margin-top: $global-padding;
+    display: flex;
+    justify-content: center;
+
+    &__action {
+      @extend %actionButton--blackText;
+    }
+  }
+
   @include media-query(desktop) {
     padding: $global-lg-padding $global-padding $global-padding;
   }
