@@ -100,6 +100,7 @@ const ItemSwipable: FunctionComponent<Props> = ({
     <li
       className={clsx(
         groupStyles.item,
+        canEdit && groupStyles['item--editable'],
         isSignature && groupStyles['item--gridSignature']
       )}
       ref={placeholderRef}

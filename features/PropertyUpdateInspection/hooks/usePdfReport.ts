@@ -65,8 +65,8 @@ export default function usePDFReport(
 
   // Determine if PDF report status up-to-date or not
   const isPdfReportOutOfDate =
-    inspection.inspectionReportUpdateLastDate > inspection.updatedAt ||
-    hasUpdates;
+    hasUpdates ||
+    inspection.updatedAt > inspection.inspectionReportUpdateLastDate;
 
   // Determine if PDF report is generating
   const isPdfReportGenerating =
