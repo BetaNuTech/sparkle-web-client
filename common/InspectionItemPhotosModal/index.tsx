@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import clsx from 'clsx';
 import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
-import { useDropzone, FileRejection } from 'react-dropzone';
+import { useDropzone, FileRejection, FileError } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
 import Modal, { Props as ModalProps } from '../Modal';
@@ -170,21 +170,31 @@ const PhotosModal: FunctionComponent<Props> = ({
     evt.stopPropagation();
   };
 
-  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-    if (disabled) return;
-    processAcceptedFiles(acceptedFiles);
-
+  // show in app error based on
+  // rejected files type and size
+  const processRejectedFiles = (rejectedFiles: FileRejection[]) => {
     if (rejectedFiles.length > 0) {
-      const rejectedFileTypes = Array.from(
-        new Set<string>(
-          rejectedFiles.map(
-            (rejectedFile: FileRejection) =>
-              rejectedFile?.file?.type?.split('/')[1] || ''
-          )
-        )
-      ) as Array<string>;
+      let hasSizeError = false;
+      const rejectedFileTypes = [];
 
-      rejectedFileTypes.map((type: string) =>
+      rejectedFiles.forEach((rejectedFile: FileRejection) => {
+        if (
+          rejectedFile.errors.some(
+            (error: FileError) => error.code === 'file-too-large'
+          )
+        ) {
+          hasSizeError = true;
+        }
+        if (
+          rejectedFile.errors.some(
+            (error: FileError) => error.code === 'file-invalid-type'
+          )
+        ) {
+          rejectedFileTypes.push(rejectedFile?.file?.type || '');
+        }
+      });
+
+      Array.from(new Set<string>(rejectedFileTypes)).map((type: string) =>
         sendNotification(
           `File format ${type.toUpperCase()} is not supported, please try a different file`,
           {
@@ -192,7 +202,19 @@ const PhotosModal: FunctionComponent<Props> = ({
           }
         )
       );
+
+      if (hasSizeError) {
+        sendNotification('Photos larger than 10mb is not supported', {
+          type: 'error'
+        });
+      }
     }
+  };
+
+  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
+    if (disabled) return;
+    processAcceptedFiles(acceptedFiles);
+    processRejectedFiles(rejectedFiles);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -202,7 +224,9 @@ const PhotosModal: FunctionComponent<Props> = ({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'image/png, image/gif, image/jpeg ,capture=camera',
-    noClick: disableClick
+    noClick: disableClick,
+    // maximum file upload limit 9.9MB
+    maxSize: 9900000
   });
 
   const disableUpload = (isDragActive && disabled) || isProcessingPhotos;
