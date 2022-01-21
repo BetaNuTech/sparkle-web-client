@@ -129,9 +129,10 @@ const Sections: FunctionComponent<Props> = ({
   const [searchQuery, setSearchQuery] = useState(searchParam);
 
   const isPdfReportVisible =
-    isPdfReportStatusShowing && isDesktop
+    isPdfReportStatusShowing &&
+    (isDesktop
       ? isDuplicateActionsNotInView // only show on desktop when not duplicat
-      : true; // always show if possible on mobile
+      : true); // always show if possible on mobile
 
   // this will help to clear search input text
   useEffect(() => {
