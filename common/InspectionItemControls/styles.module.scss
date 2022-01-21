@@ -21,7 +21,6 @@
     border-left-width: 1px;
     background-color: $gray-4;
     max-width: rem-calc(85);
-    cursor: pointer;
 
     // Left-most selection value container
     &:first-child {
@@ -35,6 +34,10 @@
       border-top-right-radius: rem-calc(24);
       border-bottom-right-radius: rem-calc(24);
       border-right-width: 0;
+    }
+
+    &--canEdit {
+      cursor: pointer;
     }
 
     // Control selection value icons

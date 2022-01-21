@@ -29,6 +29,7 @@ const ThreeActionAbc: FunctionComponent<Props> = ({
         <li
           className={clsx(
             styles.inspection__input,
+            canEdit ? styles['inspection__input--canEdit'] : '',
             selected && value === 0 && styles['inspection__input--selected']
           )}
           data-testid="control-icon-a"
@@ -41,6 +42,7 @@ const ThreeActionAbc: FunctionComponent<Props> = ({
         <li
           className={clsx(
             styles.inspection__input,
+            canEdit ? styles['inspection__input--canEdit'] : '',
             selected && value === 1 && styles['inspection__input--selectedOk']
           )}
           data-testid="control-icon-b"
@@ -53,6 +55,7 @@ const ThreeActionAbc: FunctionComponent<Props> = ({
         <li
           className={clsx(
             styles.inspection__input,
+            canEdit ? styles['inspection__input--canEdit'] : '',
             selected &&
               value === 2 &&
               styles['inspection__input--selectedError']

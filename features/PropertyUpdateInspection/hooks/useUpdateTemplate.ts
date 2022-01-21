@@ -260,15 +260,14 @@ export default function useInspectionItemUpdate(
     setUpdateOption({});
   };
 
-  const calculateAndSetProgressValue = (totalBytes: number) => (
-    uploadedBytes: number
-  ) => {
-    // Add 20% for inspection publish
-    const bytesForUpload = totalBytes + totalBytes * 0.2;
+  const calculateAndSetProgressValue =
+    (totalBytes: number) => (uploadedBytes: number) => {
+      // Add 20% for inspection publish
+      const bytesForUpload = totalBytes + totalBytes * 0.2;
 
-    const calculatedProgress = (uploadedBytes / bytesForUpload) * 100;
-    setProgress(calculatedProgress);
-  };
+      const calculatedProgress = (uploadedBytes / bytesForUpload) * 100;
+      setProgress(calculatedProgress);
+    };
 
   //
   // Publishing
@@ -305,16 +304,14 @@ export default function useInspectionItemUpdate(
     const photosErrors = [];
 
     // Uploading signatures
-    const {
-      successful: signatureUploads,
-      errors: signatureUploadErrors
-    } = await publishSignatures.uploadSignatures(
-      inspectionId,
-      flattenedUnpublishedSignatures,
-      uploadBase64FileToStorage,
-      uploadedBytes,
-      setProgressValue
-    );
+    const { successful: signatureUploads, errors: signatureUploadErrors } =
+      await publishSignatures.uploadSignatures(
+        inspectionId,
+        flattenedUnpublishedSignatures,
+        uploadBase64FileToStorage,
+        uploadedBytes,
+        setProgressValue
+      );
 
     // Save signature URL's to unpublished updates
     applyLatestUpdates(
@@ -327,23 +324,20 @@ export default function useInspectionItemUpdate(
     );
 
     // Remove all uploaded signatures from local database
-    const {
-      errors: signatureRemoveErrors
-    } = await publishSignatures.removePublished(signatureUploads);
+    const { errors: signatureRemoveErrors } =
+      await publishSignatures.removePublished(signatureUploads);
 
     // Combine all signature errors
     signatureErrors.push(...signatureUploadErrors, ...signatureRemoveErrors);
 
     // Upload photos
-    const {
-      successful: photoUploads,
-      errors: photoUploadErrors
-    } = await publishPhotos.uploadPhotos(
-      inspectionId,
-      flattenedUnpublishedPhotos,
-      uploadedBytes,
-      setProgressValue
-    );
+    const { successful: photoUploads, errors: photoUploadErrors } =
+      await publishPhotos.uploadPhotos(
+        inspectionId,
+        flattenedUnpublishedPhotos,
+        uploadedBytes,
+        setProgressValue
+      );
 
     // Save photo's data to unpublished updates
     applyLatestUpdates(

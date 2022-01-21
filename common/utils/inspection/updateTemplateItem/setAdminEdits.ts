@@ -68,8 +68,8 @@ function setInspectorNotesAdminEdit(
     result.adminEdits = result.adminEdits || {};
     result.adminEdits[entryId] = copyEntry(previousEntry);
     delete result.adminEdits[entryId].id; // sanity check
-  } else if (isChanging && isDifferentThanCurrent && !previousEntry) {
-    // Add new admin edit
+  } else if (isChanging && isDifferentThanCurrent) {
+    // Add or replace inspector note admin edit
     result.adminEdits = result.adminEdits || {};
     result.adminEdits[uuid(20)] = createAdminEditEntry(
       'updated creator notes',
@@ -102,8 +102,8 @@ function setOneActionNoteItemAdminEdit(
   if (!isChanging && hasPreviousEntry) {
     result.adminEdits = result.adminEdits || {};
     result.adminEdits[entryId] = copyEntry(previousEntry);
-  } else if (isChanging && isDifferentThanCurrent && !previousEntry) {
-    // Add new admin edit
+  } else if (isChanging && isDifferentThanCurrent) {
+    // Add or replace main note admin edit
     result.adminEdits = result.adminEdits || {};
     result.adminEdits[uuid(20)] = createAdminEditEntry(
       'updated main notes',
@@ -169,7 +169,7 @@ function setTextInputItemValueAdminEdit(
   if (!isChanging && hasPreviousEntry) {
     result.adminEdits = result.adminEdits || {};
     result.adminEdits[entryId] = copyEntry(previousEntry);
-  } else if (isChanging && isDifferentThanCurrent && !previousEntry) {
+  } else if (isChanging && isDifferentThanCurrent) {
     // Add new admin edit
     result.adminEdits = result.adminEdits || {};
     result.adminEdits[uuid(20)] = createAdminEditEntry(

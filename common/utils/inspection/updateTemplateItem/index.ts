@@ -159,8 +159,8 @@ function setTextInputItemValue(
   const isChanging = typeof userChanges.textInputValue === 'string';
   const isTextInputItem = Boolean(currentItem.isTextInputItem);
   const hasPreviousUpdate = typeof updatedItem.textInputValue === 'string';
-  const isDifferentThanCurrent =
-    userChanges.textInputValue !== currentItem.textInputValue;
+  const value = `${userChanges.textInputValue || ''}`.trim();
+  const isDifferentThanCurrent = value !== currentItem.textInputValue;
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
@@ -169,7 +169,7 @@ function setTextInputItemValue(
 
   // Add user change to updates
   if (isChanging && isTextInputItem && isDifferentThanCurrent) {
-    result.textInputValue = userChanges.textInputValue;
+    result.textInputValue = value;
   }
 
   // Remove undifferentiated change from updates

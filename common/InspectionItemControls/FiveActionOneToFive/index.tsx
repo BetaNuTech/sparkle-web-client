@@ -70,6 +70,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           getSelectionStyle(selected, value, 0)
         )}
         data-testid="control-icon-0"
@@ -81,6 +82,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           getSelectionStyle(selected, value, 1)
         )}
         data-testid="control-icon-1"
@@ -92,6 +94,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           getSelectionStyle(selected, value, 2)
         )}
         data-testid="control-icon-2"
@@ -103,6 +106,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           getSelectionStyle(selected, value, 3)
         )}
         data-testid="control-icon-3"
@@ -114,6 +118,7 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           getSelectionStyle(selected, value, 4)
         )}
         data-testid="control-icon-4"
