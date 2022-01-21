@@ -224,6 +224,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         unpublishedInspectionItemsPhotos
       );
       destroyUpdates();
+      disableAdminEditMode();
     } catch (err) {}
 
     reloadSignatures();

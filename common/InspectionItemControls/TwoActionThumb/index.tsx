@@ -27,6 +27,7 @@ const TwoActionThumb: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           selected && value === 0 && styles['inspection__input--selected']
         )}
         data-testid="control-thumbs-up"
@@ -39,6 +40,7 @@ const TwoActionThumb: FunctionComponent<Props> = ({
       <li
         className={clsx(
           styles.inspection__input,
+          canEdit ? styles['inspection__input--canEdit'] : '',
           selected && value === 1 && styles['inspection__input--selectedError']
         )}
         data-testid="control-thumbs-down"

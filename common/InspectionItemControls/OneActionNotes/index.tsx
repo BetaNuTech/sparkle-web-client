@@ -14,6 +14,7 @@ const OneActionNotes: FunctionComponent<Props> = ({ onClick, selected }) => (
     <li
       className={clsx(
         styles.inspection__input,
+        selected ? '-cu-pointer' : '',
         selected && styles['inspection__input--selected']
       )}
       data-testid="one-action-notes"
