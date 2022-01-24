@@ -55,6 +55,17 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     setIsVisiblePhotosModal(true);
   };
 
+  const onShowDueDates = () => {
+    console.log('triggered on show previous due dates action'); // eslint-disable-line
+  };
+
+  const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
+    // eslint-disable-next-line
+    console.log(
+      `triggered due date change event with value => ${evt.target.value}`
+    );
+  };
+
   const onShowResponsibilityGroups = () => {
     console.log('triggered on show responsibility groups action'); // eslint-disable-line
   };
@@ -86,6 +97,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         deficientItem={deficientItem}
         onShowPlanToFix={onShowPlanToFix}
         onChangePlanToFix={onChangePlanToFix}
+        onShowDueDates={onShowDueDates}
+        onChangeDueDate={onChangeDueDate}
         onShowResponsibilityGroups={onShowResponsibilityGroups}
         onChangeResponsibilityGroup={onChangeResponsibilityGroup}
       />
