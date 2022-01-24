@@ -2,7 +2,7 @@ import { useState } from 'react';
 import inspectionApi from '../../../common/services/api/inspections';
 import inspectionModel from '../../../common/models/inspection';
 import errorReports from '../../../common/services/api/errorReports';
-import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
 import dateUtils from '../../../common/utils/date';
 
 const PREFIX = 'features: EditBid: hooks: usePDFReport:';
@@ -29,19 +29,19 @@ export default function usePDFReport(
   const [isRequestingReport, setIsRequestingReport] = useState(false);
 
   const handleErrorResponse = (apiError: Error) => {
-    if (apiError instanceof ErrorServerInternal) {
+    if (apiError instanceof ErrorForbidden) {
+      // User not allowed to request to generate PDF report
+      sendNotification('You are not allowed to generate PDF', {
+        type: 'error'
+      });
+    } else {
       sendNotification(
         'Unexpected error. Please try again, or contact an admin.',
         {
           type: 'error'
         }
       );
-    } else {
-      sendNotification(apiError.message, {
-        type: 'error'
-      });
       // Log issue and send error report
-      // of user's missing properties
       // eslint-disable-next-line no-case-declarations
       const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${apiError}`);
       // eslint-disable-next-line import/no-named-as-default-member
