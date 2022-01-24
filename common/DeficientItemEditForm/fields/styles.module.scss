@@ -106,7 +106,7 @@
   &--empty,
   &--empty:focus,
   &--empty:hover {
-    background-color: $alert-light-color;
+    background-color: $alert-light-color !important;
   }
 
   @include media-query(desktop) {

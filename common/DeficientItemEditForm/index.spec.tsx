@@ -7,6 +7,7 @@ import DeficientItemEditForm from './index';
 const DEF_ITEM_STATES = settings.deficientItemStates;
 const PLANS_TO_FIX_EDIT_STATES = settings.plansToFixEditStates;
 const RESP_GROUP_EDIT_STATES = settings.respGroupEditStates;
+const DUE_DATE_EDIT_STATES = settings.dueDateEditStates;
 
 describe('Unit | Common | Deficient Item Edit Form', () => {
   afterEach(() => sinon.restore());
@@ -23,6 +24,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangePlanToFix: sinon.spy(),
       onShowResponsibilityGroups: sinon.spy(),
       onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -44,6 +47,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangePlanToFix: sinon.spy(),
       onShowResponsibilityGroups: sinon.spy(),
       onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -63,6 +68,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangePlanToFix: sinon.spy(),
       onShowResponsibilityGroups: sinon.spy(),
       onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -101,6 +108,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangePlanToFix: sinon.spy(),
       onShowResponsibilityGroups: sinon.spy(),
       onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -167,6 +176,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangePlanToFix: sinon.spy(),
       onShowResponsibilityGroups: sinon.spy(),
       onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -203,6 +214,112 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangePlanToFix: sinon.spy(),
       onShowResponsibilityGroups: sinon.spy(),
       onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false
+    };
+
+    const tests = [
+      {
+        isUpdatingDeferredDate: true,
+        isUpdatingCurrentCompleteNowReason: false,
+        data: createDeficientItem({ state: 'requires-action' }),
+        expected: false
+      },
+      {
+        isUpdatingDeferredDate: false,
+        isUpdatingCurrentCompleteNowReason: true,
+        data: createDeficientItem({ state: 'requires-action' }),
+        expected: false
+      },
+      {
+        isUpdatingDeferredDate: false,
+        isUpdatingCurrentCompleteNowReason: false,
+        data: createDeficientItem({ state: 'closed' }),
+        expected: false
+      },
+      {
+        isUpdatingDeferredDate: false,
+        isUpdatingCurrentCompleteNowReason: false,
+        data: createDeficientItem({ state: 'requires-action' }),
+        expected: true
+      }
+    ];
+
+    const { rerender } = render(<DeficientItemEditForm {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const {
+        data,
+        expected,
+        isUpdatingDeferredDate,
+        isUpdatingCurrentCompleteNowReason
+      } = test;
+      const componentProps = {
+        ...props,
+        deficientItem: data,
+        isUpdatingDeferredDate,
+        isUpdatingCurrentCompleteNowReason
+      };
+      rerender(<DeficientItemEditForm {...componentProps} />);
+      const planToFixSection = screen.queryByTestId('item-plan-to-fix');
+
+      expect(Boolean(planToFixSection)).toEqual(expected);
+    }
+  });
+
+  it('it renders due date section for all expected deficient item states', () => {
+    const props = {
+      deficientItem: createDeficientItem(),
+      isMobile: false,
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false
+    };
+
+    const tests = DEF_ITEM_STATES.map((state) => {
+      const expected = DUE_DATE_EDIT_STATES.includes(state);
+
+      return {
+        // previous plans to fix required for closed state
+        data: createDeficientItem({ state }, { dueDates: 1 }),
+        expected
+      };
+    });
+
+    const { rerender } = render(<DeficientItemEditForm {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const { data, expected } = test;
+      const componentProps = { ...props, deficientItem: data };
+      rerender(<DeficientItemEditForm {...componentProps} />);
+      const planToFixSection = screen.queryByTestId('item-due-date');
+      expect(Boolean(planToFixSection)).toEqual(expected);
+    }
+  });
+
+  it('it hides current due date section when not relevant', () => {
+    const props = {
+      deficientItem: createDeficientItem(),
+      isMobile: false,
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
