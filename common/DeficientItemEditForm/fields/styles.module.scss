@@ -1,23 +1,8 @@
 @import '../../../styles/index.scss';
 
-.field {
+.section {
   &__main {
     padding: $global-sm-padding $global-padding $global-sm-padding;
-  }
-
-  &__textarea {
-    padding: rem-calc(3) $global-padding 0;
-    margin: 0;
-    background-color: transparent;
-    resize: none;
-    width: 100%;
-    max-width: 100%;
-
-    &--empty,
-    &--empty:focus,
-    &--empty:hover {
-      background-color: $alert-light-color;
-    }
   }
 
   &__footer {
@@ -30,32 +15,28 @@
     &__main {
       padding: 0;
     }
-
-    &__textarea {
-      max-width: rem-calc(300);
-    }
   }
 }
 
 .label {
-  text-align: center;
-  color: $white;
   background-color: $gray-dark;
   padding: rem-calc(4) 0;
   font-size: rem-calc(14);
+  text-align: center;
+  color: $white;
   text-transform: uppercase;
 
   @include media-query(desktop) {
-    text-align: left;
-    color: $black;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     margin-bottom: $global-padding;
+    border-bottom: 1px solid $gray-lighter;
     background-color: transparent;
     font-size: rem-calc(22);
-    border-bottom: 1px solid $gray-lighter;
     text-transform: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    text-align: left;
+    color: $black;
   }
 }
 
@@ -83,9 +64,9 @@
   }
 
   @include media-query(desktop) {
-    text-align: left;
     padding-left: 0;
     width: auto;
+    text-align: left;
   }
 }
 
@@ -94,5 +75,41 @@
 
   @include media-query(desktop) {
     font-weight: normal;
+  }
+}
+
+.strong {
+  display: block;
+  margin: auto;
+  max-width: rem-calc(300);
+  font-size: rem-calc(14);
+  font-weight: bold;
+  text-align: center;
+
+  @include media-query(desktop) {
+    max-width: rem-calc(450);
+    font-size: rem-calc(16);
+    margin: 0;
+    font-weight: normal;
+    text-align: left;
+  }
+}
+
+.formInput {
+  padding: rem-calc(3) $global-padding 0;
+  margin: 0;
+  background-color: transparent;
+  resize: none;
+  width: 100%;
+  max-width: 100%;
+
+  &--empty,
+  &--empty:focus,
+  &--empty:hover {
+    background-color: $alert-light-color;
+  }
+
+  @include media-query(desktop) {
+    max-width: rem-calc(300);
   }
 }
