@@ -17,7 +17,7 @@ const DeficientItemEditFormDetails: FunctionComponent<Props> = ({
 }) => (
   <section data-testid="item-details">
     {isMobile && <header className={fieldStyles.label}>ITEM DETAILS</header>}
-    <hgroup className={fieldStyles.field__main}>
+    <hgroup className={fieldStyles.section__main}>
       <small data-testid="created-at" className={styles.subHeading}>
         {dateUtil.toUserFullDateDisplay(deficientItem.createdAt)}
       </small>
@@ -31,7 +31,7 @@ const DeficientItemEditFormDetails: FunctionComponent<Props> = ({
         <h6 data-testid="section-subtitle">{deficientItem.sectionSubtitle}</h6>
       )}
     </hgroup>
-    <footer className={fieldStyles.field__footer}>
+    <footer className={fieldStyles.section__footer}>
       <button
         onClick={onClickViewPhotos}
         disabled={!deficientItem.hasItemPhotoData}

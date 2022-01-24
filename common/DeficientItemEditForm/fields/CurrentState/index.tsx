@@ -3,7 +3,6 @@ import DeficientItemModel from '../../../models/deficientItem';
 import { deficientItemCurrentStateDescriptions } from '../../../../config/deficientItems';
 
 import fieldStyles from '../styles.module.scss';
-import styles from './styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
@@ -16,7 +15,7 @@ const DeficientItemEditFormCurrentState: FunctionComponent<Props> = ({
   onShowHistory,
   isMobile
 }) => (
-  <section className={fieldStyles.field} data-testid="item-current-state">
+  <section className={fieldStyles.section} data-testid="item-current-state">
     <header className={fieldStyles.label}>
       <h4 className={fieldStyles.heading}>Current State</h4>
       {deficientItem.stateHistory && !isMobile && (
@@ -29,8 +28,11 @@ const DeficientItemEditFormCurrentState: FunctionComponent<Props> = ({
         </button>
       )}
     </header>
-    <div className={fieldStyles.field__main}>
-      <strong className={styles.strong} data-testid="item-current-state-text">
+    <div className={fieldStyles.section__main}>
+      <strong
+        className={fieldStyles.strong}
+        data-testid="item-current-state-text"
+      >
         <span className="-tt-uppercase">
           {deficientItem.state === 'requires-action'
             ? 'New'
@@ -41,7 +43,7 @@ const DeficientItemEditFormCurrentState: FunctionComponent<Props> = ({
       </strong>
     </div>
     {deficientItem.stateHistory && isMobile && (
-      <footer className={fieldStyles.field__footer}>
+      <footer className={fieldStyles.section__footer}>
         <button
           onClick={onShowHistory}
           className={fieldStyles.textButton}

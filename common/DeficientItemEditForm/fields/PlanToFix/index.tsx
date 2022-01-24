@@ -22,11 +22,11 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
   const showFooterAction = deficientItem.plansToFix && isMobile;
 
   if (!isVisible) {
-    return null;
+    return <></>;
   }
 
   return (
-    <section className={fieldStyles.item} data-testid="item-plan-to-fix">
+    <section className={fieldStyles.section} data-testid="item-plan-to-fix">
       <header className={fieldStyles.label}>
         <h4 className={fieldStyles.heading}>Plan To Fix</h4>
         {showHeaderAction && (
@@ -41,7 +41,7 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
       </header>
       <div
         className={clsx(
-          fieldStyles.field__main,
+          fieldStyles.section__main,
           !deficientItem.currentPlanToFix && '-p-none'
         )}
       >
@@ -56,9 +56,8 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
           <textarea
             placeholder="NOT SET"
             className={clsx(
-              fieldStyles.field__textarea,
-              !deficientItem.currentPlanToFix &&
-                fieldStyles['field__textarea--empty']
+              fieldStyles.formInput,
+              !deficientItem.currentPlanToFix && fieldStyles['formInput--empty']
             )}
             onChange={onChangePlanToFix}
             data-testid="item-plan-to-fix-textarea"
@@ -66,7 +65,7 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
         )}
       </div>
       {showFooterAction && (
-        <footer className={fieldStyles.field__footer}>
+        <footer className={fieldStyles.section__footer}>
           <button
             onClick={onShowPlanToFix}
             className={fieldStyles.textButton}

@@ -40,8 +40,14 @@ export const deficientItemResponsibilityGroups = [
   }
 ];
 
+export const deficientItemProgressNoteEditStates = [
+  'pending',
+  'requires-progress-update'
+];
+
 export default {
   deficientItemStateOrder,
   deficientItemCurrentStateDescriptions,
-  deficientItemResponsibilityGroups
+  deficientItemResponsibilityGroups,
+  deficientItemProgressNoteEditStates
 };

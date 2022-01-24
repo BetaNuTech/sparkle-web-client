@@ -33,6 +33,10 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  const isUpdatingCurrentCompleteNowReason = false;
+
+  const isUpdatingDeferredDate = false;
+
   const onShowPlanToFix = () => {
     console.log('triggered on show plan to fix action'); // eslint-disable-line
   };
@@ -51,6 +55,17 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     setIsVisiblePhotosModal(true);
   };
 
+  const onShowResponsibilityGroups = () => {
+    console.log('triggered on show responsibility groups action'); // eslint-disable-line
+  };
+
+  const onChangeResponsibilityGroup = (evt: ChangeEvent<HTMLSelectElement>) => {
+    // eslint-disable-next-line
+    console.log(
+      `triggered responsibility group change event with value => ${evt.target.value}`
+    );
+  };
+
   return (
     <>
       <Header
@@ -65,10 +80,14 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
       <DeficientItemEditForm
         onShowHistory={onShowHistory}
         isMobile={isMobile}
+        isUpdatingCurrentCompleteNowReason={isUpdatingCurrentCompleteNowReason}
+        isUpdatingDeferredDate={isUpdatingDeferredDate}
         onClickViewPhotos={onClickViewPhotos}
         deficientItem={deficientItem}
         onShowPlanToFix={onShowPlanToFix}
         onChangePlanToFix={onChangePlanToFix}
+        onShowResponsibilityGroups={onShowResponsibilityGroups}
+        onChangeResponsibilityGroup={onChangeResponsibilityGroup}
       />
 
       <InspectionItemPhotosModal
