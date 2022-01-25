@@ -9,8 +9,15 @@
     @extend %gridHeaderLinkMain;
   }
 
+  &__heading {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &__item {
     text-align: right;
+    min-width: rem-calc(280);
 
     &__button {
       @extend %gridHeaderCreateButton;

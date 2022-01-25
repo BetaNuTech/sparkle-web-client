@@ -24,6 +24,7 @@ $mobileTabletOffsetTop: $mobileHeaderBaseHeight + $inspectionStatusBarHeight;
   &__content {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   &__footer {

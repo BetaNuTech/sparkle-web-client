@@ -56,11 +56,7 @@ const Item: FunctionComponent<Props> = ({
   const showAttachment = typeof item.mainInputType !== 'undefined';
   const isSignature = item.itemType === 'signature';
   const placeholderRef = useRef(null);
-  const { isVisible } = useVisibility(
-    placeholderRef,
-    { threshold: 0.01 },
-    forceVisible
-  );
+  const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
 
   const unPublishedPhotosDataCount = (inspectionItemsPhotos.get(item.id) || [])
     .length;

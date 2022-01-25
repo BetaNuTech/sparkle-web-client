@@ -9,7 +9,7 @@ type config = {
 };
 const defaultConfig = {
   root: null,
-  threshold: 0.5, // 50% of element is visible
+  threshold: 0.01, // 1% of element is visible
   rootMargin: '0px'
 };
 
