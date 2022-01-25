@@ -64,8 +64,11 @@ const upload = (
           } catch (err) {
             const error = Error(
               // eslint-disable-next-line max-len
-              `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${photo.item}": ${err}`
+              `${PREFIX} upload: failed to upload photo for inspection "${inspectionId}" item "${
+                photo.item
+              }": ${err.toString()}`
             );
+
             result.errors.push(error);
             observer.next({ done: false, size: photo.size });
             return result;

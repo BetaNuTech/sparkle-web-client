@@ -2,6 +2,8 @@ import { useState } from 'react';
 import inspectionApi from '../../../common/services/api/inspections';
 import inspectionModel from '../../../common/models/inspection';
 import errorReports from '../../../common/services/api/errorReports';
+import BaseError from '../../../common/models/errors/baseError';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import dateUtils from '../../../common/utils/date';
 
@@ -28,25 +30,27 @@ export default function usePDFReport(
 ): usePdfReportResult {
   const [isRequestingReport, setIsRequestingReport] = useState(false);
 
-  const handleErrorResponse = (apiError: Error) => {
+  const handleErrorResponse = (apiError: BaseError) => {
+    let errorMessage =
+      'Unexpected error. Please try again, or contact an admin.';
     if (apiError instanceof ErrorForbidden) {
       // User not allowed to request to generate PDF report
-      sendNotification('You are not allowed to generate PDF', {
-        type: 'error'
-      });
-    } else {
-      sendNotification(
-        'Unexpected error. Please try again, or contact an admin.',
-        {
-          type: 'error'
-        }
-      );
-      // Log issue and send error report
-      // eslint-disable-next-line no-case-declarations
-      const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${apiError}`);
-      // eslint-disable-next-line import/no-named-as-default-member
-      errorReports.send(wrappedErr);
+      errorMessage = 'You are not allowed to generate a PDF';
+    } else if (apiError instanceof ErrorBadRequest) {
+      errorMessage =
+        'Bad request, there was an issue regenerating the PDF Report, please contact an admin';
     }
+
+    sendNotification(errorMessage, {
+      type: 'error'
+    });
+
+    // eslint-disable-next-line no-case-declarations
+    const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${apiError}`);
+
+    // Log issue and send error report
+    // eslint-disable-next-line import/no-named-as-default-member
+    errorReports.send(wrappedErr);
   };
 
   const generatePdfReport = async () => {
