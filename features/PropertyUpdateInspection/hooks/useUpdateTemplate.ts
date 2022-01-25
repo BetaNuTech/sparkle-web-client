@@ -14,6 +14,10 @@ import unpublishedPhotosModel from '../../../common/models/inspections/templateI
 import inspectionTemplateUpdates from '../../../common/services/indexedDB/inspectionTemplateUpdates';
 import publishSignatures from '../utils/publishSignatures';
 import publishPhotos from '../utils/publishPhotos';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import BaseError from '../../../common/models/errors/baseError';
 
 const PREFIX = 'features: PropertyUpdateInspection: hooks: useUpdateTemplate:';
 
@@ -255,6 +259,32 @@ export default function useInspectionItemUpdate(
     });
   };
 
+  // handle inspection publishing errors
+  const handleErrorResponse = (err: BaseError) => {
+    let errorMessage =
+      'Unexpected error. Please try again, or contact an admin.';
+    if (err instanceof ErrorBadRequest) {
+      errorMessage = 'Bad request, please contact an admin';
+    } else if (err instanceof ErrorConflictingRequest) {
+      errorMessage =
+        'Please wait to update inspection until its’ PDF report has finished generating';
+    } else if (
+      err instanceof ErrorUnauthorized ||
+      err instanceof ErrorForbidden
+    ) {
+      errorMessage =
+        // eslint-disable-next-line max-len
+        'Unauthorized, please login again or confirm you have been given the necessary permissions to update this inspection';
+    }
+
+    sendNotification(errorMessage, { type: 'error' });
+
+    const wrappedErr = Error(
+      `${PREFIX} publish: failed to publish inspection: "${inspectionId}" updates: ${err}`
+    );
+    sendErrorReports([wrappedErr]);
+  };
+
   const disableAdminEditMode = () => {
     setIsAdminEditModeEnabled(false);
     setUpdateOption({});
@@ -363,23 +393,7 @@ export default function useInspectionItemUpdate(
       await inspectionsApi.updateInspectionTemplate(inspectionId, updates);
     } catch (err) {
       setIsPublishing(false);
-      const wrappedErr = Error(
-        `${PREFIX} publish: failed to publish inspection: "${inspectionId}" updates: ${err}`
-      );
-      sendErrorReports([wrappedErr]);
-      if (err instanceof ErrorConflictingRequest) {
-        sendNotification(
-          'Please wait to update inspection until its’ PDF report has finished generating',
-          { type: 'error' }
-        );
-      } else {
-        sendNotification(
-          'Unexpected error. Please try again, or contact an admin.',
-          { type: 'error' }
-        );
-      }
-
-      throw wrappedErr;
+      handleErrorResponse(err);
     }
 
     // Combine all errors

@@ -5,9 +5,8 @@ import propertyModel from '../../../common/models/property';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorServerInternal from '../../../common/models/errors/serverInternal';
-import ErrorBadRequest, {
-  BadRequestItem
-} from '../../../common/models/errors/badRequest';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import ErrorItem from '../../../common/models/errors/item';
 import formValidationErrors from '../errors';
 
 const PREFIX = 'features: EditProperty: hooks: usePropertyForm:';
@@ -32,7 +31,7 @@ interface usePropertyFormResult {
     property: propertyModel,
     filePayload: any
   ): void;
-  errors: BadRequestItem[];
+  errors: ErrorItem[];
   formErrors: any;
 }
 
@@ -41,7 +40,7 @@ export default function usePropertyForm(
 ): usePropertyFormResult {
   const [isLoading, setIsLoading] = useState(false);
   const [property, setProperty] = useState(null);
-  const [errors, setErrors] = useState<BadRequestItem[]>([]);
+  const [errors, setErrors] = useState<ErrorItem[]>([]);
   const [formErrors, setFormErrors] = useState({});
 
   const handleSuccessResponse = (

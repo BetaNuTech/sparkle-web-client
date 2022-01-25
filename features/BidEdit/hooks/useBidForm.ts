@@ -4,10 +4,8 @@ import bidsApi from '../../../common/services/api/bids';
 import bidModel from '../../../common/models/bid';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
-
-import ErrorBadRequest, {
-  BadRequestItem
-} from '../../../common/models/errors/badRequest';
+import ErrorItem from '../../../common/models/errors/item';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
 
 const PREFIX = 'features: EditBid: hooks: useBidForm:';
 
@@ -27,7 +25,7 @@ interface useBidFormResult {
     action: string,
     isNewBid: boolean
   ): void;
-  errors: BadRequestItem[];
+  errors: ErrorItem[];
   isLoading: boolean;
   formFieldsError: Record<string, any>;
   generalFormErrors: Array<string>;
@@ -45,7 +43,7 @@ export default function useBidForm(
     bid: null
   });
 
-  const [errors, setErrors] = useState<BadRequestItem[]>([]);
+  const [errors, setErrors] = useState<ErrorItem[]>([]);
 
   const handleSuccessResponse = (
     bidId: string,

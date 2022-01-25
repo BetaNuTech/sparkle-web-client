@@ -40,22 +40,38 @@ const createError = (
 
     // Unauthenticated / Unauthorized
     if (responseStatus === 401) {
-      return new ErrorUnauthorized(`${prefix} ${errorMessages[401]}`);
+      const unauthorizedRequest = new ErrorUnauthorized(
+        `${prefix} ${errorMessages[401]}`
+      );
+      unauthorizedRequest.addErrors(apiErrors);
+      return unauthorizedRequest;
     }
 
     // Unauthenticated / Forbidden
     if (responseStatus === 403) {
-      return new ErrorForbidden(`${prefix} ${errorMessages[403]}`);
+      const forbiddenRequest = new ErrorForbidden(
+        `${prefix} ${errorMessages[403]}`
+      );
+      forbiddenRequest.addErrors(apiErrors);
+      return forbiddenRequest;
     }
 
     // Record(s) not found
     if (responseStatus === 404) {
-      return new ErrorNotFound(`${prefix} ${errorMessages[404]}`);
+      const notFoundRequest = new ErrorNotFound(
+        `${prefix} ${errorMessages[404]}`
+      );
+      notFoundRequest.addErrors(apiErrors);
+      return notFoundRequest;
     }
 
     // Proxy service was unable to auth request
     if (responseStatus === 407) {
-      return new ErrorProxyForbidden(`${prefix} ${errorMessages[407]}`);
+      const proxyForbiddenRequest = new ErrorProxyForbidden(
+        `${prefix} ${errorMessages[407]}`
+      );
+      proxyForbiddenRequest.addErrors(apiErrors);
+      return proxyForbiddenRequest;
     }
 
     // Database state conflicts with request
@@ -69,7 +85,11 @@ const createError = (
 
     // Unexpected internal error
     if (responseStatus === 500) {
-      return new ErrorServerInternal(`${prefix} ${errorMessages[500]}`);
+      const serverInternalRequest = new ErrorServerInternal(
+        `${prefix} ${errorMessages[500]}`
+      );
+      serverInternalRequest.addErrors(apiErrors);
+      return serverInternalRequest;
     }
 
     return null;

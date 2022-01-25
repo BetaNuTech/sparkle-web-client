@@ -4,6 +4,7 @@ import { unpublishedPhotoDataEntry } from '../../../__mocks__/inspections';
 import UnpublishedPhotoModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
 import photosDb from '../../../common/services/indexedDB/inspectionItemPhotosData';
 import inspectionApi from '../../../common/services/api/inspections';
+import BaseError from '../../../common/models/errors/baseError';
 
 const INSPECTION_ID = '123';
 const ITEM_ID = 'abc';
@@ -67,17 +68,26 @@ describe('Unit | Features | Property Update Inspection | Utils | Publish Photos'
     const photos = [PHOTO_ONE, PHOTO_TWO].map(
       (photo) => ({ ...photo } as UnpublishedPhotoModel)
     );
+
+    const mockError = {
+      title: 'upload error title',
+      detail: 'upload error detail'
+    };
+
     const expected = [
       // eslint-disable-next-line max-len
-      `Error: features: PropertyUpdateInspection: utils: publishPhotos: upload: failed to upload photo for inspection "${INSPECTION_ID}" item "${ITEM_ID}": Error: failed`
+      `Error: features: PropertyUpdateInspection: utils: publishPhotos: upload: failed to upload photo for inspection "${INSPECTION_ID}" item "${ITEM_ID}": failed: ${mockError.title},${mockError.detail}`
     ];
+
+    const error = new BaseError('failed');
+    error.addErrors([mockError]);
 
     sinon
       .stub(inspectionApi, 'uploadPhotoData')
       .onCall(0)
       .resolves(INSP_UPLOAD_RESULT_PHOTO_ONE)
       .onCall(1)
-      .rejects(Error('failed'));
+      .rejects(error);
 
     const { errors } = await util.uploadPhotos(
       INSPECTION_ID,
