@@ -5,9 +5,14 @@ import Details from './fields/Details';
 import Notes from './fields/Notes';
 import CurrentState from './fields/CurrentState';
 import PlanToFix from './fields/PlanToFix';
+import ReasonIncomplete from './fields/ReasonIncomplete';
+
 import DueDate from './fields/DueDate';
 import ResponsibilityGroups from './fields/ResponsibilityGroups';
 import styles from './styles.module.scss';
+
+const REASON_INCOMPLETE_STATES = ['overdue', 'incomplete', 'closed'];
+const REASON_INCOMPLETE_EDIT_STATES = ['overdue', 'incomplete'];
 
 interface Props {
   onShowHistory(): void;
@@ -18,6 +23,8 @@ interface Props {
   deficientItem: deficientItemModel;
   onShowPlanToFix(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowReasonIncomplete(): void;
+  onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onShowDueDates(): void;
   onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
   onShowResponsibilityGroups(): void;
@@ -33,6 +40,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onClickViewPhotos,
   onShowPlanToFix,
   onChangePlanToFix,
+  onShowReasonIncomplete,
+  onChangeReasonIncomplete,
   onShowDueDates,
   onChangeDueDate,
   onShowResponsibilityGroups,
@@ -55,6 +64,12 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
       : !isDeferred &&
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
+
+  // Determine to show/hide reason incomplete section
+  const showReasonIncompleteSection =
+    REASON_INCOMPLETE_STATES.includes(deficientItem.state) &&
+    (Boolean(deficientItem.reasonsIncomplete) ||
+      REASON_INCOMPLETE_EDIT_STATES.includes(deficientItem.state));
 
   // Determine to show/hide due date section
   const showCurrentDueDateSection =
@@ -110,6 +125,13 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
           isVisible={showCurrentDueDateSection}
           defaultDate={defaultDate}
           maxDate={maxDate}
+        />
+        <ReasonIncomplete
+          onShowReasonIncomplete={onShowReasonIncomplete}
+          onChangeReasonIncomplete={onChangeReasonIncomplete}
+          deficientItem={deficientItem}
+          isMobile={isMobile}
+          isVisible={showReasonIncompleteSection}
         />
       </div>
     </div>

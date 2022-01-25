@@ -8,6 +8,7 @@ const DEF_ITEM_STATES = settings.deficientItemStates;
 const PLANS_TO_FIX_EDIT_STATES = settings.plansToFixEditStates;
 const RESP_GROUP_EDIT_STATES = settings.respGroupEditStates;
 const DUE_DATE_EDIT_STATES = settings.dueDateEditStates;
+const REASON_INCOMPLETE_STATES = settings.reasonIncompleteStates;
 
 describe('Unit | Common | Deficient Item Edit Form', () => {
   afterEach(() => sinon.restore());
@@ -26,6 +27,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -49,6 +52,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -70,6 +75,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -110,6 +117,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -178,6 +187,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -216,6 +227,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -282,6 +295,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -320,6 +335,8 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       onChangeResponsibilityGroup: sinon.spy(),
       onShowDueDates: sinon.spy(),
       onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
       isUpdatingCurrentCompleteNowReason: false
     };
@@ -370,6 +387,46 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       rerender(<DeficientItemEditForm {...componentProps} />);
       const planToFixSection = screen.queryByTestId('item-plan-to-fix');
 
+      expect(Boolean(planToFixSection)).toEqual(expected);
+    }
+  });
+
+  it('it renders reason incomplete section for expected deficient item states', () => {
+    const props = {
+      deficientItem: createDeficientItem(),
+      isMobile: false,
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false
+    };
+
+    const tests = DEF_ITEM_STATES.map((state) => {
+      const expected = REASON_INCOMPLETE_STATES.includes(state);
+
+      return {
+        // previous plans to fix required for closed state
+        data: createDeficientItem({ state }, { reasonsIncomplete: 1 }),
+        expected
+      };
+    });
+
+    const { rerender } = render(<DeficientItemEditForm {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const { data, expected } = test;
+      const componentProps = { ...props, deficientItem: data };
+      rerender(<DeficientItemEditForm {...componentProps} />);
+      const planToFixSection = screen.queryByTestId('item-reason-incomplete');
       expect(Boolean(planToFixSection)).toEqual(expected);
     }
   });
