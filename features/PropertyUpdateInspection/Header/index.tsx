@@ -132,7 +132,12 @@ const Header: FunctionComponent<Props> = ({
               &nbsp;&nbsp;/&nbsp;&nbsp;Inspection
             </span>
           </div>
-          <div>{inspection.templateName}</div>
+          <div
+            className={styles.header__heading}
+            title={inspection.templateName}
+          >
+            {inspection.templateName}
+          </div>
         </>
       }
       isOnline={isOnline}

@@ -74,15 +74,6 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
             >
               <MiniPreviewGallery photos={photosDataItems} />
             </LinkFeature>
-            {canEdit && (
-              <LinkFeature
-                featureEnabled={features.supportBetaInspectionUploadPhotos}
-                href={uploadPageLink}
-                className={styles.AttachmentNoteModal__addButton}
-              >
-                Add More Images
-              </LinkFeature>
-            )}
           </aside>
         )}
         <div className={clsx(baseStyles.modal__main__content)}>

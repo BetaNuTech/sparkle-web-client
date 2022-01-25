@@ -21,7 +21,8 @@ export const getChartOptions = (): any => ({
   plugins: {
     legend: { display: false },
     tooltip: { enabled: false }
-  }
+  },
+  animation: false
 });
 
 // Get Chart.js Legend config

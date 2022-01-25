@@ -40,6 +40,7 @@
     grid-template-columns: 0.6fr 1fr auto;
     min-height: rem-calc(63);
     border-bottom: rem-calc(1) solid $gray-lighter;
+    gap: $global-padding;
   }
 
   &--gridSignature {

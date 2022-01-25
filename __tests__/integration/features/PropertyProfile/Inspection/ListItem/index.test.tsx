@@ -1,11 +1,9 @@
 import { render as rtlRender, screen } from '@testing-library/react';
 import { Context as ResponsiveContext } from 'react-responsive';
-import moment from 'moment';
 import { fullInspection } from '../../../../../../__mocks__/inspections';
 import templateCategories from '../../../../../../__mocks__/templateCategories';
 import ListItem from '../../../../../../features/PropertyProfile/Inspection/ListItem';
 import breakpoints from '../../../../../../config/breakpoints';
-import formats from '../../../../../../config/formats';
 import deepClone from '../../../../../helpers/deepClone';
 
 function render(ui: any, options = {}) {
@@ -117,9 +115,8 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
-  it('defaults to current date time if creation date not valid', () => {
-    const expected = moment().format(formats.userDateTimeDisplay);
-    const expectedLength = expected.length;
+  it('defaults to -- if creation date not valid', () => {
+    const expected = '--';
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.creationDate = 0;
     const forceVisible = true;
@@ -138,12 +135,10 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     );
     const actual = items.textContent;
     expect(actual).toEqual(expected);
-    expect(actual.length).toEqual(expectedLength);
   });
 
-  it('defaults to current date time if update date not valid', () => {
-    const expected = moment().format(formats.userDateTimeDisplay);
-    const expectedLength = expected.length;
+  it('defaults to -- if update date not valid', () => {
+    const expected = '--';
     const inspectionItem = deepClone(fullInspection);
     inspectionItem.updatedAt = 0;
     const forceVisible = true;
@@ -162,7 +157,6 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     );
     const actual = items.textContent;
     expect(actual).toEqual(expected);
-    expect(actual.length).toEqual(expectedLength);
   });
 
   it('score is colored red if inspection has deficiencies', () => {
