@@ -77,6 +77,17 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     );
   };
 
+  const onShowReasonIncomplete = () => {
+    console.log('triggered on show reason incomplete action'); // eslint-disable-line
+  };
+
+  const onChangeReasonIncomplete = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    // eslint-disable-next-line
+    console.log(
+      `triggered reason incomplete change event with value => ${evt.target.value}`
+    );
+  };
+
   return (
     <>
       <Header
@@ -97,6 +108,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         deficientItem={deficientItem}
         onShowPlanToFix={onShowPlanToFix}
         onChangePlanToFix={onChangePlanToFix}
+        onShowReasonIncomplete={onShowReasonIncomplete}
+        onChangeReasonIncomplete={onChangeReasonIncomplete}
         onShowDueDates={onShowDueDates}
         onChangeDueDate={onChangeDueDate}
         onShowResponsibilityGroups={onShowResponsibilityGroups}
