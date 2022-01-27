@@ -48,6 +48,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
   }
 
   const showActions =
+    inspectionReportURL &&
     !isPdfReportQueued &&
     !showRestartAction &&
     !isPdfReportGenerating &&
@@ -81,6 +82,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
                     styles['pdfReport__status--failed'],
                   isSmallGray ? styles['pdfReport__status--gray'] : ''
                 )}
+                data-testid="pdf-report-restart-action"
                 onClick={onRegenerateReport}
               >
                 Restart
@@ -105,6 +107,7 @@ const PdfReportStatus: FunctionComponent<Props> = ({
                     styles.pdfReport__status__action,
                     isSmallGray ? styles['pdfReport__status--gray'] : ''
                   )}
+                  data-testid="pdf-report-copy-url-action"
                   onClick={onCopyReportURL}
                 >
                   Copy PDF Link
