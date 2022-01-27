@@ -3,7 +3,7 @@
 .header {
   @extend %gridMobileHeaderTopInfo;
 
-  &__propertyName {
+  &__link {
     @extend %gridHeaderLink;
   }
 

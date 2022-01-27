@@ -985,4 +985,43 @@ describe('Unit | Common | Utils | User Permissions', () => {
     ];
     expect(actual).toEqual(expected);
   });
+
+  test('it should only allow admins, corporate users to close a deficient item', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canCloseDeficientItem(admin),
+      util.canCloseDeficientItem(corporate),
+      util.canCloseDeficientItem(teamLead),
+      util.canCloseDeficientItem(propertyMember),
+      util.canCloseDeficientItem(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users to send back a deficient item', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canGoBackDeficientItem(admin),
+      util.canGoBackDeficientItem(corporate),
+      util.canGoBackDeficientItem(teamLead),
+      util.canGoBackDeficientItem(propertyMember),
+      util.canGoBackDeficientItem(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users to defer a deficient item', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canDeferDeficientItem(admin),
+      util.canDeferDeficientItem(corporate),
+      util.canDeferDeficientItem(teamLead),
+      util.canDeferDeficientItem(propertyMember),
+      util.canDeferDeficientItem(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
 });

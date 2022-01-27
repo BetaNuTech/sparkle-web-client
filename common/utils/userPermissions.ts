@@ -300,3 +300,15 @@ export const canAccessCreateTeam = (user: userModel): boolean => user.admin;
 // Checks that the user can update a team
 export const canAccessUpdateTeam = (user: userModel): boolean =>
   user.admin || user.corporate;
+
+// Checks that the user can close a deficient item
+export const canCloseDeficientItem = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks that the user can send back a deficient item
+export const canGoBackDeficientItem = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks that the user can defer a deficient item
+export const canDeferDeficientItem = (user: userModel): boolean =>
+  user.admin || user.corporate;

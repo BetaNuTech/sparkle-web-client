@@ -401,7 +401,7 @@ function createProgressNotesTree(
     result[id] = {
       startDate: currentDueDate - i * 10000,
       progressNote: getRandom(PROGRESS_NOTES),
-      createdAt: Math.round((now + i) / 1000) // UNIX timestamp
+      createdAt: Math.round(now / 1000) + i // UNIX timestamp
     };
 
     // Add optional user reference

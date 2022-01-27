@@ -1,51 +1,109 @@
 import { ChangeEvent, FunctionComponent } from 'react';
 import moment from 'moment';
-import deficientItemModel from '../models/deficientItem';
+import DeficientItemModel from '../models/deficientItem';
+
+import UserModel from '../models/user';
 import Details from './fields/Details';
 import Notes from './fields/Notes';
 import CurrentState from './fields/CurrentState';
 import PlanToFix from './fields/PlanToFix';
+import ProgressNotes from './fields/ProgressNotes';
 import ReasonIncomplete from './fields/ReasonIncomplete';
-
 import DueDate from './fields/DueDate';
 import ResponsibilityGroups from './fields/ResponsibilityGroups';
+import Actions from './fields/Actions';
+
 import styles from './styles.module.scss';
 
+const PROGRESS_NOTE_STATES = [
+  'requires-progress-update',
+  'pending',
+  'incomplete',
+  'completed',
+  'closed',
+  'deferred'
+];
+
+const PROGRESS_NOTE_EDIT_STATES = ['pending', 'requires-progress-update'];
 const REASON_INCOMPLETE_STATES = ['overdue', 'incomplete', 'closed'];
 const REASON_INCOMPLETE_EDIT_STATES = ['overdue', 'incomplete'];
 
 interface Props {
+  user: UserModel;
   onShowHistory(): void;
   isMobile: boolean;
+  isSaving: boolean;
+  deficientItemUpdates: DeficientItemModel;
   isUpdatingCurrentCompleteNowReason: boolean;
   isUpdatingDeferredDate: boolean;
   onClickViewPhotos(): void;
-  deficientItem: deficientItemModel;
+  deficientItem: DeficientItemModel;
   onShowPlanToFix(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowProgressNotes(): void;
+  onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onShowReasonIncomplete(): void;
   onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onShowDueDates(): void;
   onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
   onShowResponsibilityGroups(): void;
   onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
+  onUpdatePending(): void;
+  onUnpermittedPending(): void;
+  onAddProgressNote(): void;
+  onUpdateIncomplete(): void;
+  onComplete(): void;
+  onGoBack(): void;
+  onCloseDuplicate(): void;
+  onUnpermittedDuplicate(): void;
+  onClose(): void;
+  onCancelCompleteNow(): void;
+  onConfirmCompleteNow(): void;
+  onCompleteNow(): void;
+  onCancelDefer(): void;
+  onConfirmDefer(): void;
+  onInitiateDefer(): void;
+  onUnpermittedDefer(): void;
+  onShowCompletedPhotos(): void;
 }
 
 const DeficientItemEditForm: FunctionComponent<Props> = ({
+  user,
   deficientItem,
   isMobile,
+  isSaving,
+  deficientItemUpdates,
   isUpdatingCurrentCompleteNowReason,
   isUpdatingDeferredDate,
   onShowHistory,
   onClickViewPhotos,
   onShowPlanToFix,
   onChangePlanToFix,
+  onShowProgressNotes,
+  onChangeProgressNote,
   onShowReasonIncomplete,
   onChangeReasonIncomplete,
   onShowDueDates,
   onChangeDueDate,
   onShowResponsibilityGroups,
-  onChangeResponsibilityGroup
+  onChangeResponsibilityGroup,
+  onUpdatePending,
+  onUnpermittedPending,
+  onAddProgressNote,
+  onUpdateIncomplete,
+  onComplete,
+  onGoBack,
+  onCloseDuplicate,
+  onUnpermittedDuplicate,
+  onClose,
+  onCancelCompleteNow,
+  onConfirmCompleteNow,
+  onCompleteNow,
+  onCancelDefer,
+  onConfirmDefer,
+  onInitiateDefer,
+  onUnpermittedDefer,
+  onShowCompletedPhotos
 }) => {
   // set default date to tomorrow
   const defaultDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -65,6 +123,13 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
 
+  const hasEditableProgressNotes = PROGRESS_NOTE_EDIT_STATES.includes(
+    deficientItem.state
+  );
+  const showProgressNotesSection =
+    PROGRESS_NOTE_STATES.includes(deficientItem.state) &&
+    !isUpdatingDeferredDate &&
+    (hasEditableProgressNotes || Boolean(deficientItem.progressNotes));
   // Determine to show/hide reason incomplete section
   const showReasonIncompleteSection =
     REASON_INCOMPLETE_STATES.includes(deficientItem.state) &&
@@ -126,6 +191,14 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
           defaultDate={defaultDate}
           maxDate={maxDate}
         />
+        <ProgressNotes
+          onShowProgressNotes={onShowProgressNotes}
+          onChangeProgressNote={onChangeProgressNote}
+          deficientItem={deficientItem}
+          isMobile={isMobile}
+          isVisible={showProgressNotesSection}
+          isEditable={hasEditableProgressNotes}
+        />
         <ReasonIncomplete
           onShowReasonIncomplete={onShowReasonIncomplete}
           onChangeReasonIncomplete={onChangeReasonIncomplete}
@@ -133,6 +206,35 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
           isMobile={isMobile}
           isVisible={showReasonIncompleteSection}
         />
+        {isMobile && (
+          <Actions
+            user={user}
+            deficientItem={deficientItem}
+            deficientItemUpdates={deficientItemUpdates}
+            isSaving={isSaving}
+            isUpdatingCurrentCompleteNowReason={
+              isUpdatingCurrentCompleteNowReason
+            }
+            isUpdatingDeferredDate={isUpdatingDeferredDate}
+            onUpdatePending={onUpdatePending}
+            onUnpermittedPending={onUnpermittedPending}
+            onAddProgressNote={onAddProgressNote}
+            onUpdateIncomplete={onUpdateIncomplete}
+            onComplete={onComplete}
+            onGoBack={onGoBack}
+            onCloseDuplicate={onCloseDuplicate}
+            onUnpermittedDuplicate={onUnpermittedDuplicate}
+            onClose={onClose}
+            onCancelCompleteNow={onCancelCompleteNow}
+            onConfirmCompleteNow={onConfirmCompleteNow}
+            onCompleteNow={onCompleteNow}
+            onCancelDefer={onCancelDefer}
+            onConfirmDefer={onConfirmDefer}
+            onInitiateDefer={onInitiateDefer}
+            onUnpermittedDefer={onUnpermittedDefer}
+            onShowCompletedPhotos={onShowCompletedPhotos}
+          />
+        )}
       </div>
     </div>
   );

@@ -45,6 +45,13 @@ export const deficientItemProgressNoteEditStates = [
   'requires-progress-update'
 ];
 
+export const deficientItemPendingEligibleStates = [
+  'go-back',
+  'deferred',
+  'requires-action',
+  'requires-progress-update'
+];
+
 export default {
   deficientItemStateOrder,
   deficientItemCurrentStateDescriptions,
