@@ -2,11 +2,13 @@
 import {
   deficientItemStateOrder,
   deficientItemResponsibilityGroups,
-  deficientItemProgressNoteEditStates
+  deficientItemProgressNoteEditStates,
+  deficientItemPendingEligibleStates
 } from '../../config/deficientItems';
 
 export default {
   deficientItemStates: deficientItemStateOrder,
+  deficientItemPendingEligibleStates,
   plansToFixEditStates: [
     'completed',
     'incomplete',

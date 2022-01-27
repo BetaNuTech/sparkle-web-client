@@ -13,11 +13,11 @@ const Breadcrumbs: FunctionComponent<Props> = ({ property, itemTitle }) => (
   <div className={styles.header}>
     <div className={styles.header__breadcrumb}>
       <Link href={`/properties/${property.id}`}>
-        <a className={styles.header__propertyName}>{`${property.name}`}</a>
+        <a className={styles.header__link}>{`${property.name}`}</a>
       </Link>
       <span>&nbsp;&nbsp;/&nbsp;&nbsp;</span>
       <Link href={`/properties/${property.id}/deficient-items`}>
-        <a className={styles.header__propertyName}>Deficient Items</a>
+        <a className={styles.header__link}>Deficient Items</a>
       </Link>
 
       <span className={styles.header__breadcrumb}>

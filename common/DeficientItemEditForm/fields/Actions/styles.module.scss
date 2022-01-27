@@ -1,0 +1,36 @@
+@import '../../../../styles/index.scss';
+
+.main {
+  display: flex;
+  flex-direction: column;
+  padding-top: $global-padding;
+  padding-bottom: 0;
+  align-items: center;
+
+  &--grid {
+    flex-direction: row;
+  }
+}
+
+.action {
+  @extend %actionButton;
+  font-size: rem-calc(14);
+  color: $white;
+  font-weight: bold;
+  margin-bottom: $global-padding;
+  padding: rem-calc(6) $global-padding;
+  max-width: rem-calc(260);
+  width: 100%;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include media-query(desktop) {
+    margin: 0 0 0 $global-sm-padding;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+}

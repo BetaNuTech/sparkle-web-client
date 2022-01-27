@@ -32,6 +32,7 @@ interface DeficientItem {
   responsibilityGroups?: Record<string, DeficientItemResponsibilityGroup>;
   currentResponsibilityGroup?: string;
   progressNotes?: Record<string, DeficientItemProgressNote>;
+  progressNote?: string;
   reasonsIncomplete?: Record<string, DeficientItemReasonIncomplete>;
   currentReasonIncomplete?: string;
   completedPhotos?: Record<string, DeficientItemCompletedPhoto>;
