@@ -168,6 +168,7 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     expect(saveButton).not.toBeDisabled();
   });
 
+<<<<<<< HEAD
   it('should show PDF report status', () => {
     const props = {
       property: fullProperty,
@@ -189,11 +190,37 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     expect(pdfReport).toBeTruthy();
   });
 
-  it('should show PDF report status as available', () => {
+  it('should show PDF report view and copy action as available if it has inspection report url', () => {
     const expected = 'View PDF Report|Copy PDF Link';
     const props = {
       property: fullProperty,
-      inspection: fullInspection,
+      inspection: {
+        ...fullInspection,
+        inspectionReportURL: 'https://google.com'
+      },
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onShareAction: () => {},
+      isOnline: true,
+      hasUpdates: true,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      onSaveInspection: () => {},
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: false
+    };
+
+    render(<Header {...props} />, {
+      contextWidth: breakpoints.desktop.minWidth
+    });
+
+    const pdfReportText = screen.queryByTestId('header-pdf-report-text');
+    expect(pdfReportText).toHaveTextContent(expected);
+  });
+
+  it('should now show PDF report view and copy action as available if does not have inspection report url', () => {
+    const expected = '';
+    const props = {
+      property: fullProperty,
+      inspection: { ...fullInspection, inspectionReportURL: '' },
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       onShareAction: () => {},
       isOnline: true,
@@ -258,6 +285,8 @@ describe('Unit | Features | Property Update Inspection | Desktop Header', () => 
     expect(pdfReportGenerating).toHaveTextContent(expected);
   });
 
+=======
+>>>>>>> e753cef570b0bf5dba14480cc81d943b556bd677
   it('should disable save button if PDF report is generating', () => {
     const props = {
       property: fullProperty,
