@@ -168,7 +168,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
       >
         {showCompletedPhotosAction && !inline && (
           <button
-            className={clsx(styles.action, '-bgc-success')}
+            className={clsx(fieldStyles.action, '-bgc-success')}
             disabled={isSaving}
             data-testid="action-show-completed-photos"
             onClick={onShowCompletedPhotos}
@@ -180,7 +180,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showUpdateToPendingActions &&
           (isAbleToTransitionToPending ? (
             <button
-              className={clsx(styles.action, '-bgc-success')}
+              className={clsx(fieldStyles.action, '-bgc-success')}
               disabled={isSaving}
               data-testid="action-update-pending"
               onClick={onUpdatePending}
@@ -189,7 +189,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           ) : (
             <button
-              className={clsx(styles.action, '-bgc-success')}
+              className={clsx(fieldStyles.action, '-bgc-success')}
               disabled={isSaving}
               data-testid="action-unpermitted-pending"
               onClick={onUnpermittedPending}
@@ -200,7 +200,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {showUpdateAddProgressNoteAction && (
           <button
-            className={clsx(styles.action, '-bgc-success')}
+            className={clsx(fieldStyles.action, '-bgc-success')}
             disabled={isSaving}
             data-testid="action-add-progress-note"
             onClick={onAddProgressNote}
@@ -211,7 +211,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {showUpdateToIncompleteAction && (
           <button
-            className={clsx(styles.action, '-bgc-success')}
+            className={clsx(fieldStyles.action, '-bgc-success')}
             disabled={isSaving}
             data-testid="action-update-incomplete"
             onClick={onUpdateIncomplete}
@@ -222,7 +222,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {showCompletedAction && (
           <button
-            className={clsx(styles.action, '-bgc-primary')}
+            className={clsx(fieldStyles.action, '-bgc-primary')}
             disabled={isSaving}
             data-testid="action-completed"
             onClick={onComplete}
@@ -234,7 +234,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showGoBackAction && (
           <button
             className={clsx(
-              styles.action,
+              fieldStyles.action,
               deficientItem.state === 'completed'
                 ? '-bgc-alert'
                 : '-bgc-primary'
@@ -250,7 +250,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showDuplicateAction &&
           (canClose ? (
             <button
-              className={clsx(styles.action, '-bgc-gray-light')}
+              className={clsx(fieldStyles.action, '-bgc-gray-light')}
               disabled={isSaving}
               data-testid="action-duplicate"
               onClick={onCloseDuplicate}
@@ -259,7 +259,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           ) : (
             <button
-              className={clsx(styles.action, '-bgc-gray-light')}
+              className={clsx(fieldStyles.action, '-bgc-gray-light')}
               disabled={isSaving}
               data-testid="action-unpermitted-duplicate"
               onClick={onUnpermittedDuplicate}
@@ -270,7 +270,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {/* Transition to Closed */}
         {showCloseAction && (
           <button
-            className={clsx(styles.action, '-bgc-success')}
+            className={clsx(fieldStyles.action, '-bgc-success')}
             disabled={isSaving}
             data-testid="action-close"
             onClick={onClose}
@@ -285,7 +285,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           (isUpdatingCurrentCompleteNowReason ? (
             <>
               <button
-                className={clsx(styles.action, '-bgc-med-dark')}
+                className={clsx(fieldStyles.action, '-bgc-med-dark')}
                 disabled={isSaving}
                 data-testid="action-cancel-complete-now"
                 onClick={onCancelCompleteNow}
@@ -294,7 +294,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               </button>
               <button
                 className={clsx(
-                  styles.action,
+                  fieldStyles.action,
                   isSaving || !deficientItemUpdates.currentCompleteNowReason
                     ? '-bgc-gray'
                     : '-bgc-primary-dark'
@@ -310,7 +310,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </>
           ) : (
             <button
-              className={clsx(styles.action, '-bgc-primary-dark')}
+              className={clsx(fieldStyles.action, '-bgc-primary-dark')}
               disabled={isSaving}
               data-testid="action-complete-now"
               onClick={onCompleteNow}
@@ -324,7 +324,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showDeferAction && isUpdatingDeferredDate && (
           <>
             <button
-              className={clsx(styles.action, '-bgc-med-dark')}
+              className={clsx(fieldStyles.action, '-bgc-med-dark')}
               disabled={isSaving}
               data-testid="action-cancel-defer"
               onClick={onCancelDefer}
@@ -333,7 +333,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
             <button
               className={clsx(
-                styles.action,
+                fieldStyles.action,
                 isSaving || !deficientItemUpdates.currentDeferredDate
                   ? '-bgc-gray'
                   : '-bgc-orange'
@@ -350,7 +350,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showDefer &&
           (canDefer ? (
             <button
-              className={clsx(styles.action, '-bgc-orange')}
+              className={clsx(fieldStyles.action, '-bgc-orange')}
               disabled={isSaving}
               data-testid="action-defer"
               onClick={onInitiateDefer}
@@ -359,7 +359,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           ) : (
             <button
-              className={clsx(styles.action, '-bgc-orange')}
+              className={clsx(fieldStyles.action, '-bgc-orange')}
               disabled={isSaving}
               data-testid="action-unpermitted-defer"
               onClick={onUnpermittedDefer}
@@ -370,7 +370,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {showCompletedPhotosAction && inline && (
           <button
-            className={clsx(styles.action, '-bgc-success')}
+            className={clsx(fieldStyles.action, '-bgc-success')}
             disabled={isSaving}
             data-testid="action-show-completed-photos"
             onClick={onShowCompletedPhotos}

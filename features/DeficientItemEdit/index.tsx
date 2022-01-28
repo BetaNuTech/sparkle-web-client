@@ -5,6 +5,7 @@ import propertyModel from '../../common/models/property';
 import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
+import PropertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
 import DeficientItemEditForm from '../../common/DeficientItemEditForm';
 import Header from './Header';
 
@@ -12,6 +13,7 @@ interface Props {
   user: userModel;
   property: propertyModel;
   deficientItem: deficientItemModel;
+  propertyIntegration: PropertyTrelloIntegrationModel;
   isOnline?: boolean;
   isStaging?: boolean;
 }
@@ -20,6 +22,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   user,
   property,
   deficientItem,
+  propertyIntegration,
   isOnline,
   isStaging
 }) => {
@@ -173,6 +176,10 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     );
   };
 
+  const onCreateTrelloCard = () => {
+    console.log('triggered on create trello card  action'); // eslint-disable-line
+  };
+
   const onShowCompleteNowReason = () => {
     console.log('triggered on show complete now reason action'); // eslint-disable-line
   };
@@ -228,6 +235,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         isUpdatingDeferredDate={isUpdatingDeferredDate}
         onClickViewPhotos={onClickViewPhotos}
         deficientItem={deficientItem}
+        propertyIntegration={propertyIntegration}
         onShowPlanToFix={onShowPlanToFix}
         onChangePlanToFix={onChangePlanToFix}
         onShowCompleteNowReason={onShowCompleteNowReason}
@@ -240,6 +248,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onChangeDueDate={onChangeDueDate}
         onShowResponsibilityGroups={onShowResponsibilityGroups}
         onChangeResponsibilityGroup={onChangeResponsibilityGroup}
+        onCreateTrelloCard={onCreateTrelloCard}
         onUpdatePending={onUpdatePending}
         onUnpermittedPending={onUnpermittedPending}
         onAddProgressNote={onAddProgressNote}

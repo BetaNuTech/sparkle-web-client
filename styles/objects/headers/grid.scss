@@ -160,24 +160,5 @@
 }
 
 %gridHeaderButtonIcon {
-  width: rem-calc(16);
-  height: rem-calc(16);
-  margin-top: rem-calc(-1);
-  margin-left: rem-calc(8);
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  vertical-align: middle;
-  border-radius: 100%;
-  background-color: $white;
-
-  svg {
-    max-width: 50%;
-    max-height: 50%;
-    stroke-width: 0;
-
-    path {
-      fill: $primary-color;
-    }
-  }
+  @extend %actionButtonIcon;
 }

@@ -8,7 +8,7 @@ import useProperty from '../../../../../common/hooks/useProperty';
 import propertyModel from '../../../../../common/models/property';
 import useTrelloBoards from '../../../../../features/PropertyEditTrello/hooks/useTrelloBoards';
 import useTrelloUser from '../../../../../features/PropertyEditTrello/hooks/useTrelloUser';
-import useTrelloProperty from '../../../../../features/PropertyEditTrello/hooks/useTrelloProperty';
+import useTrelloProperty from '../../../../../common/hooks/useTrelloProperty';
 import { canUpdateCompanySettings } from '../../../../../common/utils/userPermissions';
 import { MainLayout } from '../../../../../common/MainLayout/index';
 import PropertyEditTrello from '../../../../../features/PropertyEditTrello/index';

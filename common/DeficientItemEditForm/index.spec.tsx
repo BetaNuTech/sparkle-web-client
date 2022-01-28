@@ -626,4 +626,79 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       expect(Boolean(completeNowReasonSection)).toEqual(expected);
     }
   });
+
+  it('it reveals Trello section only when necessary', () => {
+    const props = {
+      deficientItem: createDeficientItem(),
+      isMobile: false,
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false
+    };
+
+    const tests = [
+      {
+        data: createDeficientItem({ state: 'closed' }),
+        expected: false
+      },
+      {
+        data: createDeficientItem({ state: 'closed' }),
+        propertyIntegration: { openList: 'valid' },
+        expected: false
+      },
+      {
+        data: createDeficientItem({
+          state: 'closed',
+          trelloCardURL: 'http://google.com'
+        }),
+        expected: true
+      }
+    ];
+
+    const states = DEF_ITEM_STATES.filter((state) => state !== 'closed');
+    states.forEach((state) => {
+      tests.push(
+        {
+          data: createDeficientItem({ state }),
+          expected: false
+        },
+        {
+          data: createDeficientItem({ state }),
+          propertyIntegration: { openList: 'valid' },
+          expected: true
+        },
+        {
+          data: createDeficientItem({
+            state,
+            trelloCardURL: 'http://google.com'
+          }),
+          expected: true
+        }
+      );
+    });
+
+    const { rerender } = render(<DeficientItemEditForm {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const { data, propertyIntegration, expected } = test;
+      const componentProps = {
+        ...props,
+        deficientItem: data,
+        propertyIntegration
+      };
+      rerender(<DeficientItemEditForm {...componentProps} />);
+      const trelloSection = screen.queryByTestId('item-trello');
+      expect(Boolean(trelloSection)).toEqual(expected);
+    }
+  });
 });

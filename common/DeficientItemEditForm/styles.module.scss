@@ -20,6 +20,16 @@
       padding-left: $global-lg-padding;
       padding: $global-mlg-padding;
       border: 1px solid $gray;
+      display: flex;
+    }
+
+    &__formSidebar {
+      flex: 0 1 auto;
+      max-width: 40%;
+    }
+
+    &__form {
+      flex: 1 1 60%;
     }
   }
 }
