@@ -173,6 +173,17 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     );
   };
 
+  const onShowCompleteNowReason = () => {
+    console.log('triggered on show complete now reason action'); // eslint-disable-line
+  };
+
+  const onChangeCompleteNowReason = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    // eslint-disable-next-line
+    console.log(
+      `triggered complete now reason textarea change event with value => ${evt.target.value}`
+    );
+  };
+
   return (
     <>
       <Header
@@ -219,6 +230,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         deficientItem={deficientItem}
         onShowPlanToFix={onShowPlanToFix}
         onChangePlanToFix={onChangePlanToFix}
+        onShowCompleteNowReason={onShowCompleteNowReason}
+        onChangeCompleteNowReason={onChangeCompleteNowReason}
         onShowProgressNotes={onShowProgressNotes}
         onChangeProgressNote={onChangeProgressNote}
         onShowReasonIncomplete={onShowReasonIncomplete}
