@@ -563,4 +563,67 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
     const progressNoteSection = screen.queryByTestId('item-progress-note');
     expect(Boolean(progressNoteSection)).toBeFalsy();
   });
+
+  it('it hides completed details section when not relevant', () => {
+    const props = {
+      deficientItem: createDeficientItem(),
+      isMobile: false,
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false
+    };
+
+    const createdAt = new Date();
+    const tests = [
+      {
+        isUpdatingCurrentCompleteNowReason: false,
+        data: createDeficientItem({ state: 'requires-action', createdAt }),
+        expected: false
+      },
+      {
+        isUpdatingCurrentCompleteNowReason: true,
+        data: createDeficientItem({ state: 'requires-action', createdAt }),
+        expected: true
+      },
+      {
+        isUpdatingCurrentCompleteNowReason: false,
+        data: createDeficientItem({ state: 'closed' }),
+        expected: false
+      },
+      {
+        isUpdatingCurrentCompleteNowReason: false,
+        data: createDeficientItem(
+          { state: 'closed' },
+          { completeNowReasons: 1 }
+        ),
+        expected: true
+      }
+    ];
+
+    const { rerender } = render(<DeficientItemEditForm {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const { data, isUpdatingCurrentCompleteNowReason, expected } = test;
+      const componentProps = {
+        ...props,
+        deficientItem: data,
+        isUpdatingCurrentCompleteNowReason
+      };
+      rerender(<DeficientItemEditForm {...componentProps} />);
+      const completeNowReasonSection = screen.queryByTestId(
+        'item-complete-now-reason'
+      );
+      expect(Boolean(completeNowReasonSection)).toEqual(expected);
+    }
+  });
 });

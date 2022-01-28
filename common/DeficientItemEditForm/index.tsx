@@ -7,6 +7,7 @@ import Details from './fields/Details';
 import Notes from './fields/Notes';
 import CurrentState from './fields/CurrentState';
 import PlanToFix from './fields/PlanToFix';
+import CompleteNowReason from './fields/CompleteNowReason';
 import ProgressNotes from './fields/ProgressNotes';
 import ReasonIncomplete from './fields/ReasonIncomplete';
 import DueDate from './fields/DueDate';
@@ -40,6 +41,8 @@ interface Props {
   deficientItem: DeficientItemModel;
   onShowPlanToFix(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowCompleteNowReason(): void;
+  onChangeCompleteNowReason(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onShowProgressNotes(): void;
   onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onShowReasonIncomplete(): void;
@@ -79,6 +82,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onClickViewPhotos,
   onShowPlanToFix,
   onChangePlanToFix,
+  onShowCompleteNowReason,
+  onChangeCompleteNowReason,
   onShowProgressNotes,
   onChangeProgressNote,
   onShowReasonIncomplete,
@@ -122,6 +127,14 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
       : !isDeferred &&
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
+
+  const showCompleteNowReasonSection =
+    deficientItem.state === 'closed'
+      ? Boolean(deficientItem.completeNowReasons)
+      : isUpdatingCurrentCompleteNowReason;
+
+  const hasEditableCompleteNowReason =
+    deficientItem.state === 'requires-action';
 
   const hasEditableProgressNotes = PROGRESS_NOTE_EDIT_STATES.includes(
     deficientItem.state
@@ -205,6 +218,14 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
           deficientItem={deficientItem}
           isMobile={isMobile}
           isVisible={showReasonIncompleteSection}
+        />
+        <CompleteNowReason
+          onShowCompleteNowReason={onShowCompleteNowReason}
+          onChangeCompleteNowReason={onChangeCompleteNowReason}
+          deficientItem={deficientItem}
+          isMobile={isMobile}
+          isVisible={showCompleteNowReasonSection}
+          isEditable={hasEditableCompleteNowReason}
         />
         {isMobile && (
           <Actions
