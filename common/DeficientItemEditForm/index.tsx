@@ -1,7 +1,7 @@
 import { ChangeEvent, FunctionComponent } from 'react';
 import moment from 'moment';
+import PropertyTrelloIntegrationModal from '../models/propertyTrelloIntegration';
 import DeficientItemModel from '../models/deficientItem';
-
 import UserModel from '../models/user';
 import Details from './fields/Details';
 import Notes from './fields/Notes';
@@ -12,6 +12,7 @@ import ProgressNotes from './fields/ProgressNotes';
 import ReasonIncomplete from './fields/ReasonIncomplete';
 import DueDate from './fields/DueDate';
 import ResponsibilityGroups from './fields/ResponsibilityGroups';
+import TrelloCard from './fields/TrelloCard';
 import Actions from './fields/Actions';
 
 import styles from './styles.module.scss';
@@ -28,6 +29,7 @@ const PROGRESS_NOTE_STATES = [
 const PROGRESS_NOTE_EDIT_STATES = ['pending', 'requires-progress-update'];
 const REASON_INCOMPLETE_STATES = ['overdue', 'incomplete', 'closed'];
 const REASON_INCOMPLETE_EDIT_STATES = ['overdue', 'incomplete'];
+const HIDE_CREATE_CARD_STATES = ['closed'];
 
 interface Props {
   user: UserModel;
@@ -38,6 +40,7 @@ interface Props {
   isUpdatingCurrentCompleteNowReason: boolean;
   isUpdatingDeferredDate: boolean;
   onClickViewPhotos(): void;
+  propertyIntegration: PropertyTrelloIntegrationModal;
   deficientItem: DeficientItemModel;
   onShowPlanToFix(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
@@ -51,6 +54,7 @@ interface Props {
   onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
   onShowResponsibilityGroups(): void;
   onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
+  onCreateTrelloCard(): void;
   onUpdatePending(): void;
   onUnpermittedPending(): void;
   onAddProgressNote(): void;
@@ -73,6 +77,7 @@ interface Props {
 const DeficientItemEditForm: FunctionComponent<Props> = ({
   user,
   deficientItem,
+  propertyIntegration,
   isMobile,
   isSaving,
   deficientItemUpdates,
@@ -92,6 +97,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onChangeDueDate,
   onShowResponsibilityGroups,
   onChangeResponsibilityGroup,
+  onCreateTrelloCard,
   onUpdatePending,
   onUnpermittedPending,
   onAddProgressNote,
@@ -165,6 +171,12 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
 
+  const canCreateTrelloCard = Boolean(propertyIntegration?.openList);
+
+  const showTrelloCard = HIDE_CREATE_CARD_STATES.includes(deficientItem.state)
+    ? Boolean(deficientItem.trelloCardURL)
+    : canCreateTrelloCard || Boolean(deficientItem?.trelloCardURL);
+
   return (
     <div className={styles.container}>
       <aside className={styles.container__sidebar}>
@@ -175,87 +187,108 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         />
       </aside>
       <div className={styles.container__main}>
-        <Notes deficientItem={deficientItem} isVisible={showNotes} />
-        <CurrentState
-          deficientItem={deficientItem}
-          onShowHistory={onShowHistory}
-          isMobile={isMobile}
-        />
-        <PlanToFix
-          onShowPlanToFix={onShowPlanToFix}
-          onChangePlanToFix={onChangePlanToFix}
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          isVisible={showCurrentPlanToFixSection}
-        />
-        <ResponsibilityGroups
-          onShowResponsibilityGroups={onShowResponsibilityGroups}
-          onChangeResponsibilityGroup={onChangeResponsibilityGroup}
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          isVisible={showResponsibilityGroupSection}
-        />
-        <DueDate
-          onShowDueDates={onShowDueDates}
-          onChangeDueDate={onChangeDueDate}
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          isVisible={showCurrentDueDateSection}
-          defaultDate={defaultDate}
-          maxDate={maxDate}
-        />
-        <ProgressNotes
-          onShowProgressNotes={onShowProgressNotes}
-          onChangeProgressNote={onChangeProgressNote}
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          isVisible={showProgressNotesSection}
-          isEditable={hasEditableProgressNotes}
-        />
-        <ReasonIncomplete
-          onShowReasonIncomplete={onShowReasonIncomplete}
-          onChangeReasonIncomplete={onChangeReasonIncomplete}
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          isVisible={showReasonIncompleteSection}
-        />
-        <CompleteNowReason
-          onShowCompleteNowReason={onShowCompleteNowReason}
-          onChangeCompleteNowReason={onChangeCompleteNowReason}
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          isVisible={showCompleteNowReasonSection}
-          isEditable={hasEditableCompleteNowReason}
-        />
-        {isMobile && (
-          <Actions
-            user={user}
+        <aside className={styles.container__formSidebar}>
+          {!isMobile && (
+            <TrelloCard
+              isVisible={showTrelloCard}
+              deficientItem={deficientItem}
+              isLoading={false} // TODO: need to replace when implement api
+              onCreateTrelloCard={onCreateTrelloCard}
+              isPill={true} // eslint-disable-line react/jsx-boolean-value
+            />
+          )}
+        </aside>
+        <div className={styles.container__form}>
+          <Notes deficientItem={deficientItem} isVisible={showNotes} />
+          <CurrentState
             deficientItem={deficientItem}
-            deficientItemUpdates={deficientItemUpdates}
-            isSaving={isSaving}
-            isUpdatingCurrentCompleteNowReason={
-              isUpdatingCurrentCompleteNowReason
-            }
-            isUpdatingDeferredDate={isUpdatingDeferredDate}
-            onUpdatePending={onUpdatePending}
-            onUnpermittedPending={onUnpermittedPending}
-            onAddProgressNote={onAddProgressNote}
-            onUpdateIncomplete={onUpdateIncomplete}
-            onComplete={onComplete}
-            onGoBack={onGoBack}
-            onCloseDuplicate={onCloseDuplicate}
-            onUnpermittedDuplicate={onUnpermittedDuplicate}
-            onClose={onClose}
-            onCancelCompleteNow={onCancelCompleteNow}
-            onConfirmCompleteNow={onConfirmCompleteNow}
-            onCompleteNow={onCompleteNow}
-            onCancelDefer={onCancelDefer}
-            onConfirmDefer={onConfirmDefer}
-            onInitiateDefer={onInitiateDefer}
-            onUnpermittedDefer={onUnpermittedDefer}
-            onShowCompletedPhotos={onShowCompletedPhotos}
+            onShowHistory={onShowHistory}
+            isMobile={isMobile}
           />
-        )}
+          <PlanToFix
+            onShowPlanToFix={onShowPlanToFix}
+            onChangePlanToFix={onChangePlanToFix}
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            isVisible={showCurrentPlanToFixSection}
+          />
+          <ResponsibilityGroups
+            onShowResponsibilityGroups={onShowResponsibilityGroups}
+            onChangeResponsibilityGroup={onChangeResponsibilityGroup}
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            isVisible={showResponsibilityGroupSection}
+          />
+          <DueDate
+            onShowDueDates={onShowDueDates}
+            onChangeDueDate={onChangeDueDate}
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            isVisible={showCurrentDueDateSection}
+            defaultDate={defaultDate}
+            maxDate={maxDate}
+          />
+          <ProgressNotes
+            onShowProgressNotes={onShowProgressNotes}
+            onChangeProgressNote={onChangeProgressNote}
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            isVisible={showProgressNotesSection}
+            isEditable={hasEditableProgressNotes}
+          />
+          <ReasonIncomplete
+            onShowReasonIncomplete={onShowReasonIncomplete}
+            onChangeReasonIncomplete={onChangeReasonIncomplete}
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            isVisible={showReasonIncompleteSection}
+          />
+          <CompleteNowReason
+            onShowCompleteNowReason={onShowCompleteNowReason}
+            onChangeCompleteNowReason={onChangeCompleteNowReason}
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            isVisible={showCompleteNowReasonSection}
+            isEditable={hasEditableCompleteNowReason}
+          />
+          {isMobile && (
+            <Actions
+              user={user}
+              deficientItem={deficientItem}
+              deficientItemUpdates={deficientItemUpdates}
+              isSaving={isSaving}
+              isUpdatingCurrentCompleteNowReason={
+                isUpdatingCurrentCompleteNowReason
+              }
+              isUpdatingDeferredDate={isUpdatingDeferredDate}
+              onUpdatePending={onUpdatePending}
+              onUnpermittedPending={onUnpermittedPending}
+              onAddProgressNote={onAddProgressNote}
+              onUpdateIncomplete={onUpdateIncomplete}
+              onComplete={onComplete}
+              onGoBack={onGoBack}
+              onCloseDuplicate={onCloseDuplicate}
+              onUnpermittedDuplicate={onUnpermittedDuplicate}
+              onClose={onClose}
+              onCancelCompleteNow={onCancelCompleteNow}
+              onConfirmCompleteNow={onConfirmCompleteNow}
+              onCompleteNow={onCompleteNow}
+              onCancelDefer={onCancelDefer}
+              onConfirmDefer={onConfirmDefer}
+              onInitiateDefer={onInitiateDefer}
+              onUnpermittedDefer={onUnpermittedDefer}
+              onShowCompletedPhotos={onShowCompletedPhotos}
+            />
+          )}
+          {isMobile && (
+            <TrelloCard
+              isVisible={showTrelloCard}
+              deficientItem={deficientItem}
+              isLoading={false} // TODO: need to replace when implement api
+              onCreateTrelloCard={onCreateTrelloCard}
+            />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -1,12 +1,21 @@
 @import '../../../styles/index.scss';
 
 .section {
+  &--pill {
+    padding: $global-padding;
+    margin-right: $global-lg-padding;
+    border: 1px solid $gray-lighter;
+    border-radius: $global-radius;
+  }
+
   &__main {
     padding: $global-sm-padding $global-padding $global-sm-padding;
   }
 
   &__footer {
     margin-top: $global-padding;
+    display: flex;
+    justify-content: center;
   }
 
   @include media-query(desktop) {
@@ -14,6 +23,10 @@
 
     &__main {
       padding: 0;
+    }
+
+    &__footer {
+      justify-content: flex-start;
     }
   }
 }
@@ -37,6 +50,11 @@
     text-transform: none;
     text-align: left;
     color: $black;
+
+    &--pill {
+      border: none;
+      font-size: rem-calc(17);
+    }
   }
 }
 
@@ -111,5 +129,39 @@
 
   @include media-query(desktop) {
     max-width: rem-calc(300);
+  }
+}
+
+.action {
+  @extend %actionButton;
+  font-size: rem-calc(14);
+  color: $white;
+  font-weight: bold;
+  margin-bottom: $global-padding;
+  padding: rem-calc(6) $global-padding;
+  max-width: rem-calc(260);
+  width: 100%;
+
+  &__icon {
+    @extend %actionButtonIcon;
+  }
+
+  &--pill {
+    width: auto;
+    margin: 0;
+    text-transform: none;
+    font-weight: normal;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include media-query(desktop) {
+    margin: 0 0 0 $global-sm-padding;
+
+    &:first-child {
+      margin: 0;
+    }
   }
 }

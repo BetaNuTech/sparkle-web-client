@@ -6,6 +6,7 @@ import { MainLayout } from '../../../../../../common/MainLayout';
 import useFirestoreUser from '../../../../../../common/hooks/useFirestoreUser';
 import useProperty from '../../../../../../common/hooks/useProperty';
 import useDeficientItem from '../../../../../../features/DeficientItemEdit/hooks/useDeficientItem';
+import useTrelloProperty from '../../../../../../common/hooks/useTrelloProperty';
 import LoadingHud from '../../../../../../common/LoadingHud';
 import useNotifications from '../../../../../../common/hooks/useNotifications';
 import notifications from '../../../../../../common/services/notifications';
@@ -40,11 +41,16 @@ const Page: React.FC = (): ReactElement => {
     deficiencyId
   );
 
+  // Fetch the data of property trello integration
+  const { data: propertyIntegration, status: propertyIntegrationStatus } =
+    useTrelloProperty(firestore, propertyId);
+
   let isLoaded = false;
   if (
     propertyStatus === 'success' &&
     userStatus === 'success' &&
-    deficientItemStatus === 'success'
+    deficientItemStatus === 'success' &&
+    propertyIntegrationStatus === 'success'
   ) {
     isLoaded = true;
   }
@@ -71,6 +77,7 @@ const Page: React.FC = (): ReactElement => {
           user={user}
           property={property}
           deficientItem={deficientItem}
+          propertyIntegration={propertyIntegration}
         />
       ) : (
         <LoadingHud />

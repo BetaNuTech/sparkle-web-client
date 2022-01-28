@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import trelloIntegrationDb, {
   trelloIntegrationResult
-} from '../../../common/services/firestore/trello';
-import propertyTrelloIntegrationModel from '../../../common/models/propertyTrelloIntegration';
+} from '../services/firestore/trello';
+import propertyTrelloIntegrationModel from '../models/propertyTrelloIntegration';
 
 interface useTrelloIntegrationResult extends trelloIntegrationResult {
   memo: string;

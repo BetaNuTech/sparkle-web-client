@@ -1,7 +1,7 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import useTrelloProperty from './useTrelloProperty';
-import trelloDb from '../../../common/services/firestore/trello';
+import trelloDb from '../services/firestore/trello';
 
 const emptyCollectionResult = {
   status: 'success',
