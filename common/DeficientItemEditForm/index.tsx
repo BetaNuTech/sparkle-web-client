@@ -1,6 +1,7 @@
 import { ChangeEvent, FunctionComponent } from 'react';
 import moment from 'moment';
 import PropertyTrelloIntegrationModal from '../models/propertyTrelloIntegration';
+import PropertyModel from '../models/property';
 import DeficientItemModel from '../models/deficientItem';
 import UserModel from '../models/user';
 import Details from './fields/Details';
@@ -16,6 +17,7 @@ import TrelloCard from './fields/TrelloCard';
 import Actions from './fields/Actions';
 
 import styles from './styles.module.scss';
+import { canCreateTrelloCard } from '../utils/userPermissions';
 
 const PROGRESS_NOTE_STATES = [
   'requires-progress-update',
@@ -33,6 +35,7 @@ const HIDE_CREATE_CARD_STATES = ['closed'];
 
 interface Props {
   user: UserModel;
+  property: PropertyModel;
   onShowHistory(): void;
   isMobile: boolean;
   isSaving: boolean;
@@ -72,10 +75,12 @@ interface Props {
   onInitiateDefer(): void;
   onUnpermittedDefer(): void;
   onShowCompletedPhotos(): void;
+  isCreatingTrelloCard: boolean;
 }
 
 const DeficientItemEditForm: FunctionComponent<Props> = ({
   user,
+  property,
   deficientItem,
   propertyIntegration,
   isMobile,
@@ -114,7 +119,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onConfirmDefer,
   onInitiateDefer,
   onUnpermittedDefer,
-  onShowCompletedPhotos
+  onShowCompletedPhotos,
+  isCreatingTrelloCard
 }) => {
   // set default date to tomorrow
   const defaultDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -171,11 +177,13 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
 
-  const canCreateTrelloCard = Boolean(propertyIntegration?.openList);
+  const canCreateTrello = canCreateTrelloCard(user);
+  const hasOpenList = Boolean(propertyIntegration?.openList);
 
   const showTrelloCard = HIDE_CREATE_CARD_STATES.includes(deficientItem.state)
     ? Boolean(deficientItem.trelloCardURL)
-    : canCreateTrelloCard || Boolean(deficientItem?.trelloCardURL);
+    : canCreateTrello || Boolean(deficientItem?.trelloCardURL);
+  // console.log(showTrelloCard)
 
   return (
     <div className={styles.container}>
@@ -192,8 +200,10 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             <TrelloCard
               isVisible={showTrelloCard}
               deficientItem={deficientItem}
-              isLoading={false} // TODO: need to replace when implement api
+              isLoading={isCreatingTrelloCard}
               onCreateTrelloCard={onCreateTrelloCard}
+              propertyId={property.id}
+              hasOpenList={hasOpenList}
               isPill={true} // eslint-disable-line react/jsx-boolean-value
             />
           )}
@@ -284,8 +294,10 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             <TrelloCard
               isVisible={showTrelloCard}
               deficientItem={deficientItem}
-              isLoading={false} // TODO: need to replace when implement api
+              isLoading={isCreatingTrelloCard}
               onCreateTrelloCard={onCreateTrelloCard}
+              propertyId={property.id}
+              hasOpenList={hasOpenList}
             />
           )}
         </div>

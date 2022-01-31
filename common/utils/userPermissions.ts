@@ -312,3 +312,7 @@ export const canGoBackDeficientItem = (user: userModel): boolean =>
 // Checks that the user can defer a deficient item
 export const canDeferDeficientItem = (user: userModel): boolean =>
   user.admin || user.corporate;
+
+// Checks that the user can create trello card for a deficient item
+export const canCreateTrelloCard = (user: userModel): boolean =>
+  user.admin || user.corporate;

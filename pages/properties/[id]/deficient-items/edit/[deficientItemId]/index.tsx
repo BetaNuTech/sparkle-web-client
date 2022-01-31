@@ -78,6 +78,7 @@ const Page: React.FC = (): ReactElement => {
           property={property}
           deficientItem={deficientItem}
           propertyIntegration={propertyIntegration}
+          sendNotification={sendNotification}
         />
       ) : (
         <LoadingHud />

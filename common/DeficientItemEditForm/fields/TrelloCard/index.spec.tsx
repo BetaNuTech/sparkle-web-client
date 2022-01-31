@@ -17,6 +17,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        hasOpenList={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
 
@@ -36,6 +37,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        hasOpenList={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
 
@@ -44,6 +46,30 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
 
     expect(trelloCardLink).toBeFalsy();
     expect(trelloCardAction).toBeTruthy();
+  });
+
+  it('it reveals configure trello action when property has not integrated with trello', () => {
+    render(
+      <TrelloCard
+        deficientItem={createDeficientItem({
+          state: 'pending',
+          trelloCardURL: ''
+        })}
+        onCreateTrelloCard={sinon.spy()}
+        isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        hasOpenList={false}
+      />
+    );
+
+    const trelloCardLink = screen.queryByTestId('trello-card-link');
+    const trelloCardAction = screen.queryByTestId('trello-card-action');
+    const configureTrelloAction = screen.queryByTestId(
+      'configure-trello-action'
+    );
+
+    expect(trelloCardLink).toBeFalsy();
+    expect(trelloCardAction).toBeFalsy();
+    expect(configureTrelloAction).toBeTruthy();
   });
 
   it('it triggers create trello card action', () => {
@@ -57,6 +83,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={onCreateTrelloCard}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        hasOpenList={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
 
