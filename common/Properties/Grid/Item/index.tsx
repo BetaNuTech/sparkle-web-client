@@ -91,7 +91,7 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
               className={styles.item__link}
               featureEnabled={features.supportBetaPropertyDeficient}
             >
-              Deficient Items
+              <span className="-mr-sm">Deficient Items</span>
               <TeamValues
                 numOfDeficientItems={property.numOfDeficientItems}
                 numOfFollowUpActionsForDeficientItems={

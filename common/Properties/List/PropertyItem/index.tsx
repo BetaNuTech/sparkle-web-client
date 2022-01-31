@@ -121,7 +121,7 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
                 className={parentStyles.itemResult__metadata}
                 featureEnabled={features.supportBetaPropertyDeficient}
               >
-                Deficient Itemsss
+                Deficient Items
                 <TeamValues
                   numOfDeficientItems={property.numOfDeficientItems}
                   numOfFollowUpActionsForDeficientItems={
