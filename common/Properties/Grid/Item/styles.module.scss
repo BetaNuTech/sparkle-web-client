@@ -34,7 +34,8 @@
   // Profile description
   &__main {
     padding: $global-sm-padding;
-    flex: 1 1 auto;
+    flex: 1 1 70%;
+    overflow: hidden;
 
     p {
       margin: 0;
@@ -62,6 +63,7 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     color: $gray-med-dark-2;
+    overflow: hidden;
   }
 
   // Metadata and Edit button
@@ -88,7 +90,6 @@
     width: 100%;
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-between;
     align-items: center;
     line-height: rem-calc(22);
     text-decoration: none;

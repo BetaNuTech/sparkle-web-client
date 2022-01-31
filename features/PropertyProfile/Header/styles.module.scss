@@ -33,7 +33,7 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
     }
 
     &__image {
-      max-height: inherit;
+      max-height: rem-calc(250);
     }
 
     &__headline {
@@ -112,6 +112,13 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
   }
 
   @include media-query(tablet) {
+    &__banner__image {
+      max-height: inherit;
+      height: rem-calc(375);
+    }
+  }
+
+  @include media-query(desktop) {
     &__banner {
 
       &__wrapper {
@@ -124,6 +131,8 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
 
       &__image {
         width: 100%;
+        max-height: inherit;
+        height: auto;
       }
     }
   }
