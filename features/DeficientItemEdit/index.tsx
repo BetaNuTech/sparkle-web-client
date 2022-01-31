@@ -8,7 +8,9 @@ import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
 import PropertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
 import DeficientItemEditForm from '../../common/DeficientItemEditForm';
 import Header from './Header';
+import useTrelloCard from './hooks/useTrelloCard';
 
+type userNotifications = (message: string, options?: any) => any;
 interface Props {
   user: userModel;
   property: propertyModel;
@@ -16,6 +18,7 @@ interface Props {
   propertyIntegration: PropertyTrelloIntegrationModel;
   isOnline?: boolean;
   isStaging?: boolean;
+  sendNotification: userNotifications;
 }
 
 const DeficientItemEdit: FunctionComponent<Props> = ({
@@ -24,7 +27,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   deficientItem,
   propertyIntegration,
   isOnline,
-  isStaging
+  isStaging,
+  sendNotification
 }) => {
   // placeholder for update state
   const deficientItemUpdates = {} as deficientItemModel;
@@ -32,6 +36,11 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const isSaving = false;
+
+  const { onCreateTrelloCard, isLoading: isCreatingTrelloCard } = useTrelloCard(
+    sendNotification,
+    deficientItem.id
+  );
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -176,10 +185,6 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     );
   };
 
-  const onCreateTrelloCard = () => {
-    console.log('triggered on create trello card  action'); // eslint-disable-line
-  };
-
   const onShowCompleteNowReason = () => {
     console.log('triggered on show complete now reason action'); // eslint-disable-line
   };
@@ -227,6 +232,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
       <DeficientItemEditForm
         user={user}
+        property={property}
         onShowHistory={onShowHistory}
         isMobile={isMobile}
         isSaving={isSaving}
@@ -266,6 +272,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onInitiateDefer={onInitiateDefer}
         onUnpermittedDefer={onUnpermittedDefer}
         onShowCompletedPhotos={onShowCompletedPhotos}
+        isCreatingTrelloCard={isCreatingTrelloCard}
       />
 
       <InspectionItemPhotosModal

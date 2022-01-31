@@ -134,23 +134,50 @@
 
 .action {
   @extend %actionButton;
-  font-size: rem-calc(14);
-  color: $white;
-  font-weight: bold;
-  margin-bottom: $global-padding;
   padding: rem-calc(6) $global-padding;
   max-width: rem-calc(260);
   width: 100%;
+  margin-bottom: $global-padding;
+  font-size: rem-calc(14);
+  color: $white;
+  font-weight: bold;
+  text-align: center;
+  border-width: 0;
 
   &__icon {
     @extend %actionButtonIcon;
   }
 
-  &--pill {
+  &--fullButton {
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding-left: rem-calc(10);
+    padding-right: rem-calc(10);
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    text-transform: none;
+  }
+
+  &--pill,
+  &--paddedPill {
     width: auto;
     margin: 0;
-    text-transform: none;
-    font-weight: normal;
+    display: flex;
+    align-items: center;
+    border: rem-calc(1) solid $gray-lighter;
+    border-radius: $global-radius;
+    background-color: transparent;
+  }
+
+  &--paddedPill {
+    padding: $global-sm-padding rem-calc(12);
+    max-width: 100%;
+
+    @include media-query(large-desktop) {
+      padding: $global-md-padding $global-padding;
+    }
   }
 
   &:disabled {
@@ -164,4 +191,8 @@
       margin: 0;
     }
   }
+}
+
+.aniblink {
+  @extend %ani-blink;
 }
