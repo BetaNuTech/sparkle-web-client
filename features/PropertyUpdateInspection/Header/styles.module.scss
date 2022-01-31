@@ -44,14 +44,20 @@
       }
 
       &__share {
-        @extend %gridHeaderButtonIcon;
+        background-color: $white;
+        justify-content: center;
+        vertical-align: middle;
         padding: 0;
         height: auto;
         width: auto;
 
         svg {
           width: $global-lg-padding;
+          max-width: 50%;
           height: auto;
+          path {
+            fill: $primary-color;
+          }
         }
       }
     }
