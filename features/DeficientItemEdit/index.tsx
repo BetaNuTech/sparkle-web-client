@@ -2,23 +2,26 @@ import { ChangeEvent, FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
-import deficientItemModel from '../../common/models/deficientItem';
+import DeficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
 import PropertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
 import DeficientItemEditForm from '../../common/DeficientItemEditForm';
+import dateUtil from '../../common/utils/date';
 import Header from './Header';
 import useTrelloCard from './hooks/useTrelloCard';
+import useUpdateItem from './hooks/useUpdateItem';
 
 type userNotifications = (message: string, options?: any) => any;
 interface Props {
   user: userModel;
   property: propertyModel;
-  deficientItem: deficientItemModel;
+  deficientItem: DeficientItemModel;
   propertyIntegration: PropertyTrelloIntegrationModel;
   isOnline?: boolean;
   isStaging?: boolean;
   sendNotification: userNotifications;
+  unpublishedItemUpdates: DeficientItemModel;
 }
 
 const DeficientItemEdit: FunctionComponent<Props> = ({
@@ -28,11 +31,9 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   propertyIntegration,
   isOnline,
   isStaging,
-  sendNotification
+  sendNotification,
+  unpublishedItemUpdates
 }) => {
-  // placeholder for update state
-  const deficientItemUpdates = {} as deficientItemModel;
-
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
   const isSaving = false;
@@ -41,6 +42,16 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     sendNotification,
     deficientItem.id
   );
+
+  const {
+    updates: deficientItemUpdates,
+    updateCurrentDueDate,
+    updateCurrentPlanToFix,
+    updateCurrentResponsibilityGroup,
+    updateProgressNote,
+    updateCurrentReasonIncomplete,
+    updateCurrentCompleteNowReason
+  } = useUpdateItem(unpublishedItemUpdates, deficientItem);
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -51,19 +62,18 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
-  const isUpdatingCurrentCompleteNowReason = false;
-
-  const isUpdatingDeferredDate = false;
+  const [
+    isUpdatingCurrentCompleteNowReason,
+    setIsUpdatingCurrentCompleteNowReason
+  ] = useState(false);
+  const [isUpdatingDeferredDate, setIsUpdatingDeferredDate] = useState(false);
 
   const onShowPlanToFix = () => {
     console.log('triggered on show plan to fix action'); // eslint-disable-line
   };
 
   const onChangePlanToFix = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-    // eslint-disable-next-line
-    console.log(
-      `triggered plan to fix textarea change event with value => ${evt.target.value}`
-    );
+    updateCurrentPlanToFix(evt.target.value);
   };
   const onShowHistory = () => {
     console.log('show history action'); // eslint-disable-line
@@ -78,10 +88,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
-    // eslint-disable-next-line
-    console.log(
-      `triggered due date change event with value => ${evt.target.value}`
-    );
+    updateCurrentDueDate(dateUtil.isoToTimestamp(evt.target.value));
   };
 
   const onShowResponsibilityGroups = () => {
@@ -89,10 +96,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onChangeResponsibilityGroup = (evt: ChangeEvent<HTMLSelectElement>) => {
-    // eslint-disable-next-line
-    console.log(
-      `triggered responsibility group change event with value => ${evt.target.value}`
-    );
+    updateCurrentResponsibilityGroup(evt.target.value);
   };
 
   const onShowReasonIncomplete = () => {
@@ -100,10 +104,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onChangeReasonIncomplete = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-    // eslint-disable-next-line
-    console.log(
-      `triggered reason incomplete change event with value => ${evt.target.value}`
-    );
+    updateCurrentReasonIncomplete(evt.target.value);
   };
 
   const onShowCompletedPhotos = () => {
@@ -147,7 +148,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onCancelCompleteNow = () => {
-    console.log('triggered on cancel complete now action'); // eslint-disable-line
+    setIsUpdatingCurrentCompleteNowReason(false);
   };
 
   const onConfirmCompleteNow = () => {
@@ -155,11 +156,11 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onCompleteNow = () => {
-    console.log('triggered on complete now action'); // eslint-disable-line
+    setIsUpdatingCurrentCompleteNowReason(true);
   };
 
   const onCancelDefer = () => {
-    console.log('triggered on cancel defer action'); // eslint-disable-line
+    setIsUpdatingDeferredDate(false);
   };
 
   const onConfirmDefer = () => {
@@ -167,7 +168,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onInitiateDefer = () => {
-    console.log('triggered on initiate defer action'); // eslint-disable-line
+    setIsUpdatingDeferredDate(true);
   };
 
   const onUnpermittedDefer = () => {
@@ -179,10 +180,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onChangeProgressNote = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-    // eslint-disable-next-line
-    console.log(
-      `triggered progress notes textarea change event with value => ${evt.target.value}`
-    );
+    updateProgressNote(evt.target.value);
   };
 
   const onShowCompleteNowReason = () => {
@@ -190,10 +188,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onChangeCompleteNowReason = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-    // eslint-disable-next-line
-    console.log(
-      `triggered complete now reason textarea change event with value => ${evt.target.value}`
-    );
+    updateCurrentCompleteNowReason(evt.target.value);
   };
 
   return (
