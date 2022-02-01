@@ -76,7 +76,9 @@ describe('Integration | Features | Properties | Profile', () => {
     const mobileInspections = screen.queryByTestId(
       'property-profile-mobile-inspections'
     );
-    const mobileFooter = screen.queryByTestId('property-profile-mobile-footer');
+    const mobileSubHeader = screen.queryByTestId(
+      'property-profile-mobile-subHeader'
+    );
 
     expect(desktopHeader).toBeNull();
     expect(propertyProfileOverview).toBeNull();
@@ -84,7 +86,7 @@ describe('Integration | Features | Properties | Profile', () => {
 
     expect(mobileHeader).toBeTruthy();
     expect(mobileInspections).toBeTruthy();
-    expect(mobileFooter).toBeTruthy();
+    expect(mobileSubHeader).toBeTruthy();
   });
 
   it('renders only desktop content for desktop devices', () => {
@@ -112,7 +114,9 @@ describe('Integration | Features | Properties | Profile', () => {
     const mobileInspections = screen.queryByTestId(
       'property-profile-mobile-inspections'
     );
-    const mobileFooter = screen.queryByTestId('property-profile-mobile-footer');
+    const mobileSubHeader = screen.queryByTestId(
+      'property-profile-mobile-subHeader'
+    );
 
     expect(desktopHeader).toBeTruthy();
     expect(propertyProfileOverview).toBeTruthy();
@@ -121,7 +125,7 @@ describe('Integration | Features | Properties | Profile', () => {
     // Should be null as it is desktop
     expect(mobileHeader).toBeNull();
     expect(mobileInspections).toBeNull();
-    expect(mobileFooter).toBeNull();
+    expect(mobileSubHeader).toBeNull();
   });
 
   it('should show only completed inspections for desktop devices', () => {

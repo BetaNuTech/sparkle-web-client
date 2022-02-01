@@ -27,15 +27,8 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-header'
     );
-    const footer: Array<HTMLElement> = screen.queryAllByTestId(
-      'property-profile-mobile-footer'
-    );
     const actual = items.length;
     expect(actual).toEqual(expected);
-
-    // For desktop it should not be visible
-    const actualFooter = footer.length;
-    expect(actualFooter).toEqual(0);
   });
 
   it('shows mobile UI to mobile users', () => {
@@ -52,15 +45,9 @@ describe('Integration | Features | Properties | Profile | Header', () => {
     const items: Array<HTMLElement> = screen.queryAllByTestId(
       'property-profile-header-mobile'
     );
-    const footer: Array<HTMLElement> = screen.queryAllByTestId(
-      'property-profile-mobile-footer'
-    );
+
     const actual = items.length;
     expect(actual).toEqual(expected);
-
-    // For mobile it should be visible
-    const actualFooter = footer.length;
-    expect(actualFooter).toEqual(expected);
   });
 
   it('shows property name if it does not have a usable photo', () => {

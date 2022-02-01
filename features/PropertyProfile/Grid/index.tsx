@@ -9,8 +9,8 @@ import List from './List';
 interface Props {
   user: userModel;
   propertyId: string;
-  inspections: Array<inspectionModel>;
-  templateCategories: Array<templateCategoryModel>;
+  inspections: inspectionModel[];
+  templateCategories: templateCategoryModel[];
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
   onSortChange?(sortKey: string): void;
   sortBy?: string;
@@ -29,27 +29,28 @@ const Grid: FunctionComponent<Props> = ({
   sortDir,
   forceVisible
 }) => {
-  if (inspections) {
-    return (
-      <>
-        <GridHeader
-          user={user}
-          onSortChange={onSortChange}
-          sortBy={sortBy}
-          sortDir={sortDir}
-        />
-        <List
-          user={user}
-          propertyId={propertyId}
-          inspections={inspections}
-          templateCategories={templateCategories}
-          openInspectionDeletePrompt={openInspectionDeletePrompt}
-          forceVisible={forceVisible}
-        />
-      </>
-    );
+  if (!inspections) {
+    return <></>;
   }
-  return null;
+
+  return (
+    <>
+      <GridHeader
+        user={user}
+        onSortChange={onSortChange}
+        sortBy={sortBy}
+        sortDir={sortDir}
+      />
+      <List
+        user={user}
+        propertyId={propertyId}
+        inspections={inspections}
+        templateCategories={templateCategories}
+        openInspectionDeletePrompt={openInspectionDeletePrompt}
+        forceVisible={forceVisible}
+      />
+    </>
+  );
 };
 
 export default Grid;

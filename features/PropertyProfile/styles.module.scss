@@ -6,10 +6,9 @@
   overflow: auto;
   background-color: $gray-2;
   height: 100%;
+  overflow-y: auto;
 
   &__main {
-    @extend %stickyBoundingBox;
-
     display: flex;
     flex-flow: column nowrap;
     align-items: stretch;
@@ -18,12 +17,15 @@
     backface-visibility: hidden;
     flex: 1 1 auto;
     order: 0;
-    overflow-y: auto;
   }
 
   &__footer {
     @extend %footer;
+    position: sticky;
+    bottom: 0;
+    z-index: 3;
   }
+
   &__filter__icon {
     @extend %unstyledButton;
   }
@@ -37,9 +39,24 @@
     @extend %profile-list--item;
   }
 
-  @include media-query(tablet) {
+  @include media-query(desktop) {
     display: block;
   }
+}
+
+.subHeader {
+  padding: 0 nth($global-padding, 1);
+  display: flex;
+  flex: 0 1 auto;
+  flex-flow: column nowrap;
+  background-color: $info-color;
+  color: $white;
+  font-size: ($small-font-size * 1.25);
+  line-height: 1.4rem;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 3;
 }
 
 // Fixes for Progress Chart bugs
