@@ -155,7 +155,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
       {isMobileorTablet && (
         <>
           <MobileHeader
-            title=""
+            title={property.name}
             toggleNavOpen={toggleNavOpen}
             isOnline={isOnline}
             isStaging={isStaging}
@@ -167,9 +167,13 @@ const PropertyProfile: FunctionComponent<Props> = ({
               property={property}
               isYardiConfigured={isYardiConfigured}
               isMobile
-              sortBy={sortBy}
-              activeInspectionSortFilter={activeInspectionSortFilter}
             />
+            <div
+              className={clsx(styles.subHeader)}
+              data-testid="property-profile-mobile-subHeader"
+            >
+              Sorted by {`${activeInspectionSortFilter(sortBy)}`}
+            </div>
             <div className={clsx(styles.propertyProfile__main)}>
               {noFilteredInspectionText ? (
                 <h4

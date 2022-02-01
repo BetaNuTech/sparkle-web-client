@@ -70,19 +70,6 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
     }
   }
 
-  &__subMenu {
-    padding: 0 nth($global-padding, 1);
-    display: flex;
-    flex: 0 1 auto;
-    flex-flow: column nowrap;
-
-    background-color: $info-color;
-    color: $white;
-    font-size: ($small-font-size * 1.25);
-    line-height: 1.4rem;
-    white-space: nowrap;
-  }
-
   &__deficientItems {
     display: flex;
     flex-wrap: wrap;
@@ -120,7 +107,6 @@ $property-profile-tablet-avatar-offset: $global-xxlg-padding + $global-padding;
 
   @include media-query(desktop) {
     &__banner {
-
       &__wrapper {
         width: 100%;
         max-width: rem-calc(720) + $property-profile-tablet-avatar-offset;

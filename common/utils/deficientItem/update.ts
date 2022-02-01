@@ -101,8 +101,8 @@ const setCurrentDeferredDate = (
     userChanges.currentDeferredDate &&
     moment.unix(userChanges.currentDeferredDate).isValid();
   const hasPreviousUpdate =
-    updatedItem.currentDueDate &&
-    moment.unix(updatedItem.currentDueDate).isValid();
+    updatedItem.currentDeferredDate &&
+    moment.unix(updatedItem.currentDeferredDate).isValid();
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {

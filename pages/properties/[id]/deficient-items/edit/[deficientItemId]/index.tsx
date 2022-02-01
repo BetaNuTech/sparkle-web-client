@@ -11,6 +11,7 @@ import LoadingHud from '../../../../../../common/LoadingHud';
 import useNotifications from '../../../../../../common/hooks/useNotifications';
 import notifications from '../../../../../../common/services/notifications';
 import DeficientItemEdit from '../../../../../../features/DeficientItemEdit';
+import DeficientItemModel from '../../../../../../common/models/deficientItem';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
@@ -44,6 +45,9 @@ const Page: React.FC = (): ReactElement => {
   // Fetch the data of property trello integration
   const { data: propertyIntegration, status: propertyIntegrationStatus } =
     useTrelloProperty(firestore, propertyId);
+
+  // Unpublished updates
+  const unpublishedItemUpdates = {} as DeficientItemModel;
 
   let isLoaded = false;
   if (
@@ -79,6 +83,7 @@ const Page: React.FC = (): ReactElement => {
           deficientItem={deficientItem}
           propertyIntegration={propertyIntegration}
           sendNotification={sendNotification}
+          unpublishedItemUpdates={unpublishedItemUpdates}
         />
       ) : (
         <LoadingHud />
