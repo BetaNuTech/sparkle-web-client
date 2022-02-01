@@ -12,17 +12,13 @@ interface Props {
   property: propertyModel;
   isMobile?: boolean;
   isYardiConfigured: boolean;
-  activeInspectionSortFilter?(string): string;
-  sortBy?: string;
 }
 
 const getMobileExtra: FunctionComponent<Props> = ({
   canUserAccessJob,
   property,
   isMobile,
-  isYardiConfigured,
-  activeInspectionSortFilter,
-  sortBy
+  isYardiConfigured
 }) => {
   const jobLink = `/properties/${property.id}/jobs`;
   const residentsLink = `/properties/${property.id}/yardi-residents`;
@@ -120,13 +116,6 @@ const getMobileExtra: FunctionComponent<Props> = ({
             </li>
           </ol>
         </LinkFeature>
-
-        <footer
-          className={clsx(styles.propertyProfile__header__subMenu)}
-          data-testid="property-profile-mobile-footer"
-        >
-          Sorted by {`${activeInspectionSortFilter(sortBy)}`}
-        </footer>
       </>
     );
   }
@@ -137,9 +126,7 @@ const Header: FunctionComponent<Props> = ({
   canUserAccessJob,
   property,
   isMobile,
-  isYardiConfigured,
-  activeInspectionSortFilter,
-  sortBy
+  isYardiConfigured
 }) => {
   if (property) {
     return (
@@ -183,9 +170,7 @@ const Header: FunctionComponent<Props> = ({
           canUserAccessJob,
           property,
           isMobile,
-          isYardiConfigured,
-          activeInspectionSortFilter,
-          sortBy
+          isYardiConfigured
         })}
       </header>
     );
