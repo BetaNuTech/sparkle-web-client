@@ -1,0 +1,55 @@
+@import '../../../styles/index.scss';
+
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: $global-lg-padding $global-lg-padding;
+  flex-direction: column;
+
+  &__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $black;
+    z-index: 1;
+  }
+
+  &__content {
+    z-index: 2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  &__close {
+    align-self: flex-end;
+    color: $white;
+    font-size: rem-calc(14);
+    text-decoration: underline;
+    z-index: 2;
+  }
+
+  &__image {
+    max-height: 100%;
+    width: auto;
+    z-index: 2;
+    position: relative;
+  }
+
+  &__caption {
+    position: relative;
+    color: $white;
+    padding: $global-sm-padding $global-padding;
+    z-index: 2;
+  }
+}

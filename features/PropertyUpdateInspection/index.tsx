@@ -27,7 +27,7 @@ import {
   canEnableOverwriteMode,
   canEditInspection
 } from '../../common/utils/userPermissions';
-import PhotosModal from '../../common/InspectionItemPhotosModal';
+import PhotosModal from '../../common/PhotosModal';
 
 interface Props {
   user: userModel;

@@ -1,0 +1,16 @@
+@import '../../../styles/index.scss';
+
+.remove {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  font-size: rem-calc(40);
+  line-height: 0.5;
+  background-color: transparent;
+  border-width: 0;
+  color: $gray-light;
+}
+
+.captionAction {
+  @extend %tooltip;
+}
