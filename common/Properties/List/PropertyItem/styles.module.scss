@@ -18,7 +18,7 @@
     width: rem-calc(104);
     height: rem-calc(78);
     margin-bottom: rem-calc(10);
-    flex: 0 1 auto;
+    flex: 0 0 rem-calc(104);
     border-radius: rem-calc(4);
     background: url('../../../../public/img/apartments_icon/apartments_icon@3x.png');
     background-color: $gray-lighter;
@@ -31,8 +31,9 @@
     margin-bottom: rem-calc(8);
     padding-left: rem-calc(8);
     display: flex;
-    flex: 1 0 auto;
+    flex: 1;
     flex-direction: column;
+    overflow: hidden;
   }
 
   &__name {
@@ -42,6 +43,9 @@
     font-size: rem-calc(16);
     font-weight: 700;
     color: $black;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__addr1 {
@@ -51,6 +55,9 @@
     font-weight: 100;
     color: $gray-dark;
     font-family: $helvetica-font-family;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   &__mailingAddr2,
