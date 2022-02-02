@@ -9,7 +9,7 @@ import {
 } from '../../__mocks__/inspections';
 import * as dropzoneUtils from '../../__tests__/helpers/dropzone';
 
-describe('Common | Inspection Item Photos Modal', () => {
+describe('Common | Photos Modal', () => {
   afterEach(() => sinon.restore());
 
   it('triggers close action when close button clicked', () => {

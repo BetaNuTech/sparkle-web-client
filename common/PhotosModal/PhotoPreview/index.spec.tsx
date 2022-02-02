@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import PhotoPreview from './index';
 import { photoDataEntry } from '../../../__mocks__/inspections';
 
-describe('Common | Inspection Item Photos Modal | Photo Preview', () => {
+describe('Common | Photos Modal | Photo Preview', () => {
   afterEach(() => sinon.restore());
 
   it('should not show preview if no photo selected for preview', () => {

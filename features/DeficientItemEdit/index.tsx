@@ -4,7 +4,7 @@ import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import DeficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
-import InspectionItemPhotosModal from '../../common/InspectionItemPhotosModal';
+import PhotosModal from '../../common/PhotosModal';
 import PropertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
 import DeficientItemEditForm from '../../common/DeficientItemEditForm';
 import dateUtil from '../../common/utils/date';
@@ -35,6 +35,9 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   unpublishedItemUpdates
 }) => {
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
+
+  const [isVisibleCompletedPhotosModal, setIsVisibleCompletedPhotosModal] =
+    useState(false);
 
   const isSaving = false;
 
@@ -128,7 +131,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onComplete = () => {
-    console.log('triggered on complete action'); // eslint-disable-line
+    setIsVisibleCompletedPhotosModal(true);
   };
 
   const onGoBack = () => {
@@ -189,6 +192,11 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
   const onChangeCompleteNowReason = (evt: ChangeEvent<HTMLTextAreaElement>) => {
     updateCurrentCompleteNowReason(evt.target.value);
+  };
+
+  const onChangeFiles = (files: Record<string, string | number>) => {
+    // eslint-disable-next-line
+    console.log('triggered on file change', files);
   };
 
   return (
@@ -270,13 +278,23 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         isCreatingTrelloCard={isCreatingTrelloCard}
       />
 
-      <InspectionItemPhotosModal
+      <PhotosModal
         photosData={deficientItem.itemPhotosData}
         subTitle={deficientItem.itemTitle}
         title="Item Photos"
         isVisible={isVisiblePhotosModal}
         onClose={() => setIsVisiblePhotosModal(false)}
         disabled={true} // eslint-disable-line
+      />
+
+      <PhotosModal
+        completedPhotos={deficientItem.completedPhotos}
+        subTitle="Completed Photo(s)"
+        isVisible={isVisibleCompletedPhotosModal}
+        onClose={() => setIsVisibleCompletedPhotosModal(false)}
+        showCompletedList={true} // eslint-disable-line
+        sendNotification={sendNotification}
+        onChangeFiles={onChangeFiles}
       />
     </>
   );

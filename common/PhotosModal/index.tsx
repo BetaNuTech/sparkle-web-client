@@ -4,9 +4,15 @@ import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
 import { useDropzone, FileRejection, FileError } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
+import DeficientItemCompletedPhoto from '../models/deficientItems/deficientItemCompletedPhoto';
 import Modal, { Props as ModalProps } from '../Modal';
+
 import IndexedDBStorage from '../IndexedDBStorage';
 import PhotoPreview from './PhotoPreview';
+import UnpublishedPhotoItem from './UnpublishedPhotoItem';
+import PublishedPhotoItem from './PublishedPhotoItem';
+import CompletedPhotosList from './CompletedPhotosList';
+
 import baseStyles from '../Modal/styles.module.scss';
 import styles from './styles.module.scss';
 
@@ -23,6 +29,8 @@ interface Props extends ModalProps {
   disabled?: boolean;
   title?: string;
   subTitle?: string;
+  completedPhotos?: DeficientItemCompletedPhoto;
+  showCompletedList?: boolean;
 }
 
 const PhotosModal: FunctionComponent<Props> = ({
@@ -35,7 +43,9 @@ const PhotosModal: FunctionComponent<Props> = ({
   sendNotification,
   disabled,
   title,
-  subTitle
+  subTitle,
+  completedPhotos,
+  showCompletedList
 }) => {
   const photosDataItems = Object.keys(photosData || {})
     .map((key) => ({
@@ -51,7 +61,9 @@ const PhotosModal: FunctionComponent<Props> = ({
   const [storedPhotosCount, setStoredPhotosCount] = useState(0);
 
   const hasExistingPhotos =
-    photosDataItems.length > 0 || unpublishedPhotosData.length > 0;
+    photosDataItems.length > 0 ||
+    unpublishedPhotosData.length > 0 ||
+    completedPhotos;
 
   // Promise to read file data into url
   const fileToDataURI = (file: File): Promise<string> =>
@@ -166,7 +178,7 @@ const PhotosModal: FunctionComponent<Props> = ({
     setPhotoForPreview(null);
   };
 
-  const onClickPhotoItem = (evt: MouseEvent<HTMLLIElement>) => {
+  const onClickPhotoItem = (evt: MouseEvent<HTMLElement>) => {
     evt.stopPropagation();
   };
 
@@ -232,7 +244,7 @@ const PhotosModal: FunctionComponent<Props> = ({
   const disableUpload = (isDragActive && disabled) || isProcessingPhotos;
 
   return (
-    <div className={styles.PhotosModal} data-testid="photos-modal">
+    <div className={styles.photosModal} data-testid="photos-modal">
       <header
         className={clsx(
           baseStyles.modal__header,
@@ -254,7 +266,7 @@ const PhotosModal: FunctionComponent<Props> = ({
       <div
         className={clsx(
           baseStyles.modal__main,
-          styles.PhotosModal__main,
+          styles.photosModal__main,
           isDragActive && styles['PhotosModal__main--dragging'],
           disableUpload && styles['PhotosModal__main--disabled']
         )}
@@ -264,110 +276,48 @@ const PhotosModal: FunctionComponent<Props> = ({
         <div
           className={clsx(
             baseStyles.modal__main__content,
-            styles.PhotosModal__content
+            styles.photosModal__content
           )}
         >
+          {showCompletedList && (
+            <h5 className={styles.groupHeading}>New Completed Photo(s)</h5>
+          )}
           <input {...getInputProps()} />
           {hasExistingPhotos && (
-            <ul
-              className={styles.PhotosModal__photos__list}
-              data-testid="photos-modal-photos"
-            >
+            <ul className={styles.list} data-testid="photos-modal-photos">
               {unpublishedPhotosData.map((item) => (
-                <li
+                <UnpublishedPhotoItem
                   key={item.id}
-                  className={clsx(
-                    styles.PhotosModal__photos__list__item,
-                    isProcessingPhotos && '-cu-not-allowed'
-                  )}
-                  data-testid="photos-modal-unpublished-photo-list"
+                  photoData={item}
                   onClick={onClickPhotoItem}
-                >
-                  {!isProcessingPhotos && (
-                    <button
-                      className={styles.PhotosModal__photos__list__item__remove}
-                      onClick={() => onClickRemovePhoto(item.id)}
-                      data-testid="photos-modal-photos-remove"
-                    >
-                      ×
-                    </button>
-                  )}
-                  <div
-                    className={styles.PhotosModal__photos__list__item__image}
-                    onClick={() =>
-                      !isProcessingPhotos &&
-                      onClickImage({
-                        downloadURL: item.photoData,
-                        ...item
-                      })
-                    }
-                  >
-                    <img src={item.photoData} alt={item.caption} />
-                    {item.caption && (
-                      <div
-                        className={
-                          styles.PhotosModal__photos__list__item__image__caption
-                        }
-                      >
-                        {item.caption}
-                      </div>
-                    )}
-                  </div>
-                  {!item.caption && !isProcessingPhotos && (
-                    <button
-                      className={
-                        styles.PhotosModal__photos__list__item__caption
-                      }
-                      onClick={() => onClickAddCaption(item.id)}
-                      data-testid="photo-modal-photo-add-caption"
-                    >
-                      Add Caption
-                    </button>
-                  )}
-                </li>
+                  isProcessingPhotos={isProcessingPhotos}
+                  onClickRemovePhoto={onClickRemovePhoto}
+                  onClickImage={onClickImage}
+                  onClickAddCaption={onClickAddCaption}
+                />
               ))}
               {photosDataItems.map((item) => (
-                <li
+                <PublishedPhotoItem
                   key={item.id}
-                  className={clsx(
-                    styles.PhotosModal__photos__list__item,
-                    isProcessingPhotos && '-cu-not-allowed'
-                  )}
-                  onClick={(evt) =>
-                    !isProcessingPhotos && onClickPhotoItem(evt)
-                  }
-                >
-                  <div
-                    className={styles.PhotosModal__photos__list__item__image}
-                    onClick={() => !isProcessingPhotos && onClickImage(item)}
-                  >
-                    <img src={item.downloadURL} alt={item.caption} />
-                    {item.caption && (
-                      <div
-                        className={
-                          styles.PhotosModal__photos__list__item__image__caption
-                        }
-                      >
-                        {item.caption}
-                      </div>
-                    )}
-                  </div>
-                </li>
+                  photoData={item}
+                  onClick={onClickPhotoItem}
+                  isProcessingPhotos={isProcessingPhotos}
+                  onClickImage={onClickImage}
+                />
               ))}
             </ul>
           )}
           <div
             className={clsx(
-              styles.PhotosModal__buttons,
-              !hasExistingPhotos && styles['PhotosModal__buttons--noPhotos']
+              styles.actionWrapper,
+              !hasExistingPhotos && styles['actionWrapper--noPhotos']
             )}
           >
             {!disabled && (
               <button
                 className={clsx(
-                  styles.PhotosModal__buttons__add,
-                  isProcessingPhotos &&
-                    styles['PhotosModal__buttons__add--isProcessing']
+                  styles.addAction,
+                  isProcessingPhotos && styles['addAction--isProcessing']
                 )}
                 disabled={isProcessingPhotos}
               >
@@ -380,9 +330,20 @@ const PhotosModal: FunctionComponent<Props> = ({
               </button>
             )}
           </div>
+
+          {showCompletedList && (
+            <CompletedPhotosList
+              completedPhotos={completedPhotos}
+              onClickPhotoItem={onClickPhotoItem}
+              isProcessingPhotos={isProcessingPhotos}
+              onClickImage={onClickImage}
+            />
+          )}
         </div>
+
         <PhotoPreview photoData={photoForPreview} onClose={onClosePreview} />
       </div>
+
       <IndexedDBStorage hiddenUntil={75} />
     </div>
   );
@@ -391,7 +352,8 @@ const PhotosModal: FunctionComponent<Props> = ({
 PhotosModal.defaultProps = {
   unpublishedPhotosData: [],
   disabled: false,
-  title: 'Uploads'
+  title: 'Uploads',
+  showCompletedList: false
 };
 
-export default Modal(PhotosModal, false, styles.PhotosModal);
+export default Modal(PhotosModal, false, styles.photosModal);
