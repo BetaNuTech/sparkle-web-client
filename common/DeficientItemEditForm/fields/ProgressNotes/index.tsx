@@ -5,6 +5,7 @@ import fieldStyles from '../styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
+  updates: DeficientItemModel;
   onShowProgressNotes(): void;
   onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
@@ -14,6 +15,7 @@ interface Props {
 
 const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
   deficientItem,
+  updates,
   onShowProgressNotes,
   onChangeProgressNote,
   isMobile,
@@ -63,9 +65,10 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
             className={clsx(
               fieldStyles.formInput,
               deficientItem.state === 'requires-progress-update' &&
-                !deficientItem.progressNotes &&
+                !updates?.progressNotes &&
                 fieldStyles['field__textarea--empty']
             )}
+            defaultValue={updates?.progressNote || ''}
             onChange={onChangeProgressNote}
             data-testid="item-progress-note-textarea"
           />

@@ -39,22 +39,27 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   const [isVisibleCompletedPhotosModal, setIsVisibleCompletedPhotosModal] =
     useState(false);
 
-  const isSaving = false;
-
   const { onCreateTrelloCard, isLoading: isCreatingTrelloCard } = useTrelloCard(
     sendNotification,
     deficientItem.id
   );
 
   const {
-    updates: deficientItemUpdates,
+    updates,
+    isSaving,
     updateCurrentDueDate,
     updateCurrentPlanToFix,
     updateCurrentResponsibilityGroup,
     updateProgressNote,
     updateCurrentReasonIncomplete,
-    updateCurrentCompleteNowReason
-  } = useUpdateItem(unpublishedItemUpdates, deficientItem);
+    updateCurrentCompleteNowReason,
+    publish
+  } = useUpdateItem(
+    deficientItem.id,
+    sendNotification,
+    unpublishedItemUpdates,
+    deficientItem
+  );
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -123,7 +128,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onAddProgressNote = () => {
-    console.log('triggered on add progress note action'); // eslint-disable-line
+    publish();
   };
 
   const onUpdateIncomplete = () => {
@@ -211,7 +216,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         itemTitle={deficientItem.itemTitle}
         deficientItem={deficientItem}
         isSaving={isSaving}
-        deficientItemUpdates={deficientItemUpdates}
+        updates={updates}
         isUpdatingCurrentCompleteNowReason={isUpdatingCurrentCompleteNowReason}
         isUpdatingDeferredDate={isUpdatingDeferredDate}
         onUpdatePending={onUpdatePending}
@@ -239,7 +244,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onShowHistory={onShowHistory}
         isMobile={isMobile}
         isSaving={isSaving}
-        deficientItemUpdates={deficientItemUpdates}
+        updates={updates}
         isUpdatingCurrentCompleteNowReason={isUpdatingCurrentCompleteNowReason}
         isUpdatingDeferredDate={isUpdatingDeferredDate}
         onClickViewPhotos={onClickViewPhotos}

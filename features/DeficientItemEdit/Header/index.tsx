@@ -19,7 +19,7 @@ interface Props {
   itemTitle: string;
   deficientItem: DeficientItemModel;
   user: UserModel;
-  deficientItemUpdates: DeficientItemModel;
+  updates: DeficientItemModel;
   isSaving: boolean;
   isUpdatingCurrentCompleteNowReason: boolean;
   isUpdatingDeferredDate: boolean;
@@ -50,7 +50,7 @@ const Header: FunctionComponent<Props> = ({
   itemTitle,
   deficientItem,
   user,
-  deficientItemUpdates,
+  updates,
   isSaving,
   isUpdatingCurrentCompleteNowReason,
   isUpdatingDeferredDate,
@@ -105,7 +105,7 @@ const Header: FunctionComponent<Props> = ({
             <Actions
               user={user}
               deficientItem={deficientItem}
-              deficientItemUpdates={deficientItemUpdates}
+              updates={updates}
               isSaving={isSaving}
               isUpdatingCurrentCompleteNowReason={
                 isUpdatingCurrentCompleteNowReason

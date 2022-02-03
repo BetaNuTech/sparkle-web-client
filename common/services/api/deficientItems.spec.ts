@@ -1,7 +1,8 @@
 import sinon from 'sinon';
-import deficientItemsApi from './deficientItems';
+import service from './deficientItems';
 import currentUser from '../../utils/currentUser';
 import ErrorUnauthorized from '../../models/errors/unauthorized';
+import DeficientItem from '../../models/deficientItem';
 
 const API_DI_TRELLO_CARD_RESULT = {
   data: {
@@ -11,6 +12,10 @@ const API_DI_TRELLO_CARD_RESULT = {
       shortUrl: 'https://trello.com'
     }
   }
+};
+
+const API_DI_UPDATE_RESULT = {
+  data: []
 };
 
 const jsonOK = (body) => {
@@ -43,7 +48,7 @@ describe('Unit | Services | API | Deficient Items', () => {
     let result = null;
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await deficientItemsApi.createTrelloCard('deficient-item-1');
+      await service.createTrelloCard('deficient-item-1');
     } catch (err) {
       result = err;
     }
@@ -59,7 +64,40 @@ describe('Unit | Services | API | Deficient Items', () => {
     sinon.stub(currentUser, 'getIdToken').resolves('token');
 
     // eslint-disable-next-line import/no-named-as-default-member
-    const actual = await deficientItemsApi.createTrelloCard('deficient-item-1');
+    const actual = await service.createTrelloCard('deficient-item-1');
+    expect(actual).toEqual(expected);
+  });
+
+  test('it rejects with unauthorized error when update deficient request not allowed', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonErr());
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    let result = null;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await service.update(['deficient-item-1'], {
+        currentPlanToFix: 'progress note'
+      } as DeficientItem);
+    } catch (err) {
+      result = err;
+    }
+
+    const actual = result instanceof ErrorUnauthorized;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves successful update deficient item request', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonOK(API_DI_UPDATE_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    const actual = await service.update(['deficient-item-1'], {
+      currentPlanToFix: 'progress note'
+    } as DeficientItem);
     expect(actual).toEqual(expected);
   });
 });

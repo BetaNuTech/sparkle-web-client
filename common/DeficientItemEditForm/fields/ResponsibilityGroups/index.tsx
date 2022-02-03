@@ -6,6 +6,7 @@ import fieldStyles from '../styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
+  updates: DeficientItemModel;
   onShowResponsibilityGroups(): void;
   onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
   isMobile: boolean;
@@ -14,6 +15,7 @@ interface Props {
 
 const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
   deficientItem,
+  updates,
   onShowResponsibilityGroups,
   onChangeResponsibilityGroup,
   isMobile,
@@ -66,12 +68,14 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
           <select
             className={clsx(
               fieldStyles.formInput,
-              !deficientItem.currentResponsibilityGroup &&
+              !updates?.currentResponsibilityGroup &&
                 fieldStyles['formInput--empty']
             )}
             onChange={onChangeResponsibilityGroup}
             data-testid="item-responsibility-group-select"
-            defaultValue=""
+            defaultValue={
+              updates?.currentResponsibilityGroup || ''
+            }
           >
             <option value="">NOT SET</option>
             {deficientItemResponsibilityGroups.map((item) => (
