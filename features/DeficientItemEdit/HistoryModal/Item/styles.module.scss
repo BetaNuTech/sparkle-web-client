@@ -1,0 +1,45 @@
+@import '../../../../styles/index.scss';
+
+.item {
+  display: block;
+  padding: $global-sm-padding 0;
+  border-bottom: 1px solid $gray-5;
+
+  &:last-child {
+    border-width: 0;
+  }
+}
+
+.heading {
+  display: inline-block;
+  min-width: rem-calc(175);
+  margin-bottom: 0;
+  font-weight: bold;
+  color: $gray-dark;
+  line-height: 1.2;
+  font-size: rem-calc(14);
+
+  &--loading {
+    @extend %ani-loading;
+  }
+}
+
+.date {
+  display: block;
+  color: $gray-light;
+  margin-bottom: $global-sm-padding;
+}
+
+.details {
+  display: block;
+  text-align: center;
+  font-weight: bold;
+  font-size: rem-calc(14);
+  max-width: rem-calc(300);
+  margin: 0 auto;
+
+  &__richText {
+    text-align: left;
+    max-width: 100%;
+  }
+}

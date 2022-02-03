@@ -33,6 +33,24 @@ $loading-gray-accent: lighten($loading-gray-light, 3);
   }
 }
 
+%ani-loading--white {
+  @extend %ani-loading;
+
+  &:before {
+    background-image: linear-gradient(
+      110deg,
+      $white 73%,
+      $loading-gray-accent 75%,
+      $white 77%,
+      $white 78%,
+      $loading-gray-accent 84%,
+      $loading-gray-accent 88%,
+      $white 94%,
+      $white 100%
+    );
+  }
+}
+
 @keyframes loader {
   0% {
     background-position-x: 0;

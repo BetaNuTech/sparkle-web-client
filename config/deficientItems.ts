@@ -16,7 +16,7 @@ export const deficientItemCurrentStateDescriptions = {
   incomplete:
     'The Deficient Item was not completed on-time, and now needs to be Extended (Go Back), or Closed.',
   overdue:
-    'The Deficient Item is now past due.  A Reason Incomplete is now required, before an extension can be granted.',
+    'The Deficient Item is now past due. A Reason Incomplete is now required, before an extension can be granted.',
   'requires-action':
     'Initial Due Date, Plan to Fix, and Responsibility Group required.',
   'go-back':
@@ -25,6 +25,10 @@ export const deficientItemCurrentStateDescriptions = {
     'Deficient Item currently requires a Progress Note.',
   pending: 'Deficient Item needs to be completed before set Due Date.',
   deferred: 'Deficient Item has been deferred to a later date.'
+};
+
+export const deficientItemsHistoryTitles = {
+  stateHistory: 'State History'
 };
 
 export const deficientItemResponsibilityGroups = [

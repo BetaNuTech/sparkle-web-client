@@ -10,6 +10,7 @@ import { Context as ResponsiveContext } from 'react-responsive';
 import { FirebaseAppProvider } from 'reactfire';
 import userEvent from '@testing-library/user-event';
 import { ToastContainer } from 'react-toastify';
+import FDBFactory from 'fake-indexeddb/lib/FDBFactory';
 import { admin as user } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
 import {
@@ -85,7 +86,12 @@ incompleteInspection.template = {
 describe('Integration | Features | Property Update Inspection', () => {
   beforeEach(() => stubIntersectionObserver());
 
-  afterEach(() => sinon.restore());
+  afterEach(() => {
+    sinon.restore();
+    // Wipe fake Indexed DB
+    new FDBFactory(); // eslint-disable-line
+    return wait(600);
+  });
 
   it('should publish a inspection item update', async () => {
     const expected = true;
