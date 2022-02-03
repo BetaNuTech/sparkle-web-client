@@ -84,6 +84,7 @@ const Page: React.FC = (): ReactElement => {
           propertyIntegration={propertyIntegration}
           sendNotification={sendNotification}
           unpublishedItemUpdates={unpublishedItemUpdates}
+          firestore={firestore}
         />
       ) : (
         <LoadingHud />

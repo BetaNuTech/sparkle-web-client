@@ -1,4 +1,5 @@
 import { ChangeEvent, FunctionComponent, useState } from 'react';
+import firebase from 'firebase/app';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -7,6 +8,7 @@ import userModel from '../../common/models/user';
 import PhotosModal from '../../common/PhotosModal';
 import PropertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
 import DeficientItemEditForm from '../../common/DeficientItemEditForm';
+import HistoryModal from './HistoryModal';
 import dateUtil from '../../common/utils/date';
 import Header from './Header';
 import useTrelloCard from './hooks/useTrelloCard';
@@ -22,6 +24,7 @@ interface Props {
   isStaging?: boolean;
   sendNotification: userNotifications;
   unpublishedItemUpdates: DeficientItemModel;
+  firestore: firebase.firestore.Firestore;
 }
 
 const DeficientItemEdit: FunctionComponent<Props> = ({
@@ -32,10 +35,12 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   sendNotification,
-  unpublishedItemUpdates
+  unpublishedItemUpdates,
+  firestore
 }) => {
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
+  const [historyType, setHistoryType] = useState(null);
   const [isVisibleCompletedPhotosModal, setIsVisibleCompletedPhotosModal] =
     useState(false);
 
@@ -84,7 +89,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     updateCurrentPlanToFix(evt.target.value);
   };
   const onShowHistory = () => {
-    console.log('show history action'); // eslint-disable-line
+    setHistoryType('stateHistory');
   };
 
   const onClickViewPhotos = () => {
@@ -300,6 +305,14 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         showCompletedList={true} // eslint-disable-line
         sendNotification={sendNotification}
         onChangeFiles={onChangeFiles}
+      />
+
+      <HistoryModal
+        onClose={() => setHistoryType(null)}
+        isVisible={Boolean(historyType)}
+        historyType={historyType}
+        deficientItem={deficientItem}
+        firestore={firestore}
       />
     </>
   );
