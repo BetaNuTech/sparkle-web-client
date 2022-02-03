@@ -39,7 +39,7 @@ interface Props {
   onShowHistory(): void;
   isMobile: boolean;
   isSaving: boolean;
-  deficientItemUpdates: DeficientItemModel;
+  updates: DeficientItemModel;
   isUpdatingCurrentCompleteNowReason: boolean;
   isUpdatingDeferredDate: boolean;
   onClickViewPhotos(): void;
@@ -85,7 +85,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   propertyIntegration,
   isMobile,
   isSaving,
-  deficientItemUpdates,
+  updates,
   isUpdatingCurrentCompleteNowReason,
   isUpdatingDeferredDate,
   onShowHistory,
@@ -183,7 +183,6 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   const showTrelloCard = HIDE_CREATE_CARD_STATES.includes(deficientItem.state)
     ? Boolean(deficientItem.trelloCardURL)
     : canCreateTrello || Boolean(deficientItem?.trelloCardURL);
-  // console.log(showTrelloCard)
 
   return (
     <div className={styles.container}>
@@ -219,6 +218,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             onShowPlanToFix={onShowPlanToFix}
             onChangePlanToFix={onChangePlanToFix}
             deficientItem={deficientItem}
+            updates={updates}
             isMobile={isMobile}
             isVisible={showCurrentPlanToFixSection}
           />
@@ -226,6 +226,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             onShowResponsibilityGroups={onShowResponsibilityGroups}
             onChangeResponsibilityGroup={onChangeResponsibilityGroup}
             deficientItem={deficientItem}
+            updates={updates}
             isMobile={isMobile}
             isVisible={showResponsibilityGroupSection}
           />
@@ -242,6 +243,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             onShowProgressNotes={onShowProgressNotes}
             onChangeProgressNote={onChangeProgressNote}
             deficientItem={deficientItem}
+            updates={updates}
             isMobile={isMobile}
             isVisible={showProgressNotesSection}
             isEditable={hasEditableProgressNotes}
@@ -250,6 +252,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             onShowReasonIncomplete={onShowReasonIncomplete}
             onChangeReasonIncomplete={onChangeReasonIncomplete}
             deficientItem={deficientItem}
+            updates={updates}
             isMobile={isMobile}
             isVisible={showReasonIncompleteSection}
           />
@@ -257,6 +260,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             onShowCompleteNowReason={onShowCompleteNowReason}
             onChangeCompleteNowReason={onChangeCompleteNowReason}
             deficientItem={deficientItem}
+            updates={updates}
             isMobile={isMobile}
             isVisible={showCompleteNowReasonSection}
             isEditable={hasEditableCompleteNowReason}
@@ -265,7 +269,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             <Actions
               user={user}
               deficientItem={deficientItem}
-              deficientItemUpdates={deficientItemUpdates}
+              updates={updates}
               isSaving={isSaving}
               isUpdatingCurrentCompleteNowReason={
                 isUpdatingCurrentCompleteNowReason

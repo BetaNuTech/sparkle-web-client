@@ -5,6 +5,7 @@ import fieldStyles from '../styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
+  updates: DeficientItemModel;
   onShowReasonIncomplete(): void;
   onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
@@ -13,6 +14,7 @@ interface Props {
 
 const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
   deficientItem,
+  updates,
   onShowReasonIncomplete,
   onChangeReasonIncomplete,
   isMobile,
@@ -60,10 +62,11 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
             placeholder="NOT SET"
             className={clsx(
               fieldStyles.formInput,
-              !deficientItem.currentReasonIncomplete &&
+              !updates?.currentReasonIncomplete &&
                 fieldStyles['formInput--empty']
             )}
             onChange={onChangeReasonIncomplete}
+            defaultValue={updates?.currentReasonIncomplete || ''}
             data-testid="item-reason-incomplete-textarea"
           />
         )}

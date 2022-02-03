@@ -20,7 +20,7 @@ import styles from './styles.module.scss';
 interface Props {
   deficientItem: DeficientItemModel;
   user: UserModel;
-  deficientItemUpdates: DeficientItemModel;
+  updates: DeficientItemModel;
   isSaving: boolean;
   isUpdatingCurrentCompleteNowReason: boolean;
   isUpdatingDeferredDate: boolean;
@@ -48,7 +48,7 @@ interface Props {
 const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   deficientItem,
   user,
-  deficientItemUpdates,
+  updates,
   isSaving,
   isUpdatingCurrentCompleteNowReason,
   isUpdatingDeferredDate,
@@ -90,17 +90,17 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
   const showUpdateToPendingActions =
     deficientItemPendingEligibleStates.includes(deficientItem.state) &&
-    (Boolean(deficientItemUpdates.currentPlanToFix) ||
-      Boolean(deficientItemUpdates.currentResponsibilityGroup) ||
-      Boolean(deficientItemUpdates.currentDueDate));
+    (Boolean(updates.currentPlanToFix) ||
+      Boolean(updates.currentResponsibilityGroup) ||
+      Boolean(updates.currentDueDate));
 
   const showUpdateAddProgressNoteAction =
     deficientItemProgressNoteEditStates.includes(deficientItem.state) &&
-    Boolean(deficientItemUpdates.progressNote);
+    Boolean(updates.progressNote);
 
   const showUpdateToIncompleteAction =
     deficientItem.state === 'overdue' &&
-    Boolean(deficientItemUpdates.currentReasonIncomplete);
+    Boolean(updates.currentReasonIncomplete);
 
   const showDeferAction =
     !isUpdatingCurrentCompleteNowReason &&
@@ -133,9 +133,9 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
     deficientItem.state !== 'go-back';
 
   const isAbleToTransitionToPending =
-    Boolean(deficientItemUpdates.currentPlanToFix) &&
-    Boolean(deficientItemUpdates.currentResponsibilityGroup) &&
-    Boolean(deficientItemUpdates.currentDueDate);
+    Boolean(updates.currentPlanToFix) &&
+    Boolean(updates.currentResponsibilityGroup) &&
+    Boolean(updates.currentDueDate);
   const showDuplicateAction = isDeferred;
 
   const showDefer = showDeferAction && !isUpdatingDeferredDate;
@@ -295,12 +295,12 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               <button
                 className={clsx(
                   fieldStyles.action,
-                  isSaving || !deficientItemUpdates.currentCompleteNowReason
+                  isSaving || !updates.currentCompleteNowReason
                     ? '-bgc-gray'
                     : '-bgc-primary-dark'
                 )}
                 disabled={
-                  isSaving || !deficientItemUpdates.currentCompleteNowReason
+                  isSaving || !updates.currentCompleteNowReason
                 }
                 data-testid="action-confirm-complete-now"
                 onClick={onConfirmCompleteNow}
@@ -334,11 +334,11 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             <button
               className={clsx(
                 fieldStyles.action,
-                isSaving || !deficientItemUpdates.currentDeferredDate
+                isSaving || !updates.currentDeferredDate
                   ? '-bgc-gray'
                   : '-bgc-orange'
               )}
-              disabled={isSaving || !deficientItemUpdates.currentDeferredDate}
+              disabled={isSaving || !updates.currentDeferredDate}
               data-testid="action-confirm-defer"
               onClick={onConfirmDefer}
             >

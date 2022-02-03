@@ -5,6 +5,7 @@ import fieldStyles from '../styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
+  updates: DeficientItemModel;
   onShowCompleteNowReason(): void;
   onChangeCompleteNowReason(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
@@ -14,6 +15,7 @@ interface Props {
 
 const DeficientItemEditFormCompleteNowReason: FunctionComponent<Props> = ({
   deficientItem,
+  updates,
   onShowCompleteNowReason,
   onChangeCompleteNowReason,
   isMobile,
@@ -56,9 +58,10 @@ const DeficientItemEditFormCompleteNowReason: FunctionComponent<Props> = ({
             placeholder="Enter reason complete"
             className={clsx(
               fieldStyles.formInput,
-              !deficientItem.currentCompleteNowReason &&
+              !updates?.currentCompleteNowReason &&
                 fieldStyles['formInput--empty']
             )}
+            defaultValue={updates?.currentCompleteNowReason}
             onChange={onChangeCompleteNowReason}
             data-testid="item-complete-now-reason-textarea"
           />

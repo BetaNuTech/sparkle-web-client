@@ -4,6 +4,9 @@ import { act } from '@testing-library/react';
 import moment from 'moment';
 import DeficientItemModel from '../../../common/models/deficientItem';
 import createDeficientItem from '../../../__tests__/helpers/createDeficientItem';
+import deficientItemsApi from '../../../common/services/api/deficientItems';
+import currentUser from '../../../common/utils/currentUser';
+import errorReports from '../../../common/services/api/errorReports';
 import useUpdateItem from './useUpdateItem';
 
 const deficientItem = createDeficientItem({ state: 'require-action' });
@@ -12,13 +15,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   afterEach(() => sinon.restore());
 
   test('should update state value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       state: 'go-back'
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -35,13 +44,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update current due date value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       currentDueDate: moment().unix()
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -58,13 +73,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update current deferred date value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       currentDeferredDate: moment().unix()
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -81,13 +102,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update current plan to fix value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       currentPlanToFix: 'plan to fix'
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -104,13 +131,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update current responsibility group value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       currentResponsibilityGroup: 'site_level_in-house'
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -129,13 +162,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update progress note value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       progressNote: 'progress note'
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -152,13 +191,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update current reason incomplete value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       currentReasonIncomplete: 'current reason for incomplete'
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -177,13 +222,19 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
   });
 
   test('should update current complete now reason value', () => {
+    const sendNotification = sinon.spy();
     const expected = {
       hasUpdates: true,
       currentCompleteNowReason: 'current reason for incomplete'
     };
 
     const { result } = renderHook(() =>
-      useUpdateItem({} as DeficientItemModel, deficientItem)
+      useUpdateItem(
+        'deficiency-1',
+        sendNotification,
+        {} as DeficientItemModel,
+        deficientItem
+      )
     );
 
     act(() => {
@@ -198,6 +249,56 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       currentCompleteNowReason: updates.currentCompleteNowReason
     };
 
+    expect(actual).toEqual(expected);
+  });
+
+  test('should call the update deficient item method of api', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    sinon.stub(errorReports, 'send').callsFake(() => true);
+
+    // Stub update response
+    const update = sinon.stub(deficientItemsApi, 'update').resolves(true);
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateItem(
+          'deficiency-1',
+          sendNotification,
+          {} as DeficientItemModel,
+          deficientItem
+        )
+      );
+      await result.current.publish();
+    });
+
+    const actual = update.called;
+    expect(actual).toEqual(expected);
+  });
+
+  test('should send error notification if update request unsuccessful', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    sinon.stub(errorReports, 'send').callsFake(() => true);
+
+    // Stub update response
+    sinon.stub(deficientItemsApi, 'update').rejects();
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateItem(
+          'deficiency-1',
+          sendNotification,
+          {} as DeficientItemModel,
+          deficientItem
+        )
+      );
+      await result.current.publish();
+    });
+
+    const actual = sendNotification.called;
     expect(actual).toEqual(expected);
   });
 });

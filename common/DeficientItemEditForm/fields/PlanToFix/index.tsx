@@ -5,6 +5,7 @@ import fieldStyles from '../styles.module.scss';
 
 interface Props {
   deficientItem: DeficientItemModel;
+  updates: DeficientItemModel;
   onShowPlanToFix(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
@@ -13,6 +14,7 @@ interface Props {
 
 const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
   deficientItem,
+  updates,
   onShowPlanToFix,
   onChangePlanToFix,
   isMobile,
@@ -50,15 +52,17 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
             className={fieldStyles.richText}
             data-testid="item-plan-to-fix-text"
           >
-            {deficientItem.currentPlanToFix}
+            {deficientItem?.currentPlanToFix}
           </strong>
         ) : (
           <textarea
             placeholder="NOT SET"
             className={clsx(
               fieldStyles.formInput,
-              !deficientItem.currentPlanToFix && fieldStyles['formInput--empty']
+              !updates?.currentPlanToFix &&
+                fieldStyles['formInput--empty']
             )}
+            defaultValue={updates?.currentPlanToFix || ''}
             onChange={onChangePlanToFix}
             data-testid="item-plan-to-fix-textarea"
           />

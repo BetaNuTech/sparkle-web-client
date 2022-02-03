@@ -24,7 +24,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -66,7 +66,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -106,7 +106,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -156,7 +156,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -205,7 +205,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -251,7 +251,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -293,7 +293,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: teamMember,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -326,7 +326,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -363,7 +363,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       user: admin,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       showDeferAction: true,
-      deficientItemUpdates: { currentDeferredDate: new Date() },
+      updates: { currentDeferredDate: new Date() },
       isUpdatingDeferredDate: true,
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
@@ -397,7 +397,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -440,7 +440,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: teamMember,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -519,7 +519,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: corporate,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -577,7 +577,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -638,7 +638,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       user: admin,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       showCompleteNowAction: true,
-      deficientItemUpdates: {},
+      updates: {},
       isUpdatingCurrentCompleteNowReason: true,
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
@@ -671,7 +671,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {
+      updates: {
         currentPlanToFix: 'valid',
         currentResponsibilityGroup: 'valid',
         currentDueDate: 'date'
@@ -715,7 +715,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -746,7 +746,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -789,7 +789,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const test of tests) {
       const { data, expected } = test;
-      const componentProps = { ...props, deficientItemUpdates: data };
+      const componentProps = { ...props, updates: data };
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId('action-unpermitted-pending');
 
@@ -809,7 +809,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: {
+      updates: {
         progressNote: 'valid'
       },
       onShowHistory: sinon.spy(),
@@ -854,7 +854,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       deficientItem: createDeficientItem({
         state: PROGRESS_NOTE_EDIT_STATES[0]
       }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -888,7 +888,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const test of tests) {
       const { data, expected } = test;
-      const componentProps = { ...props, deficientItemUpdates: data };
+      const componentProps = { ...props, updates: data };
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId('action-add-progress-note');
 
@@ -908,7 +908,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: { currentReasonIncomplete: 'valid' },
+      updates: { currentReasonIncomplete: 'valid' },
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -951,7 +951,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       deficientItem: createDeficientItem({
         state: INCOMPLETE_UPDATE_STATES[0]
       }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -985,7 +985,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const test of tests) {
       const { data, expected } = test;
-      const componentProps = { ...props, deficientItemUpdates: data };
+      const componentProps = { ...props, updates: data };
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId('action-update-incomplete');
 
@@ -1011,7 +1011,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       deficientItem: createDeficientItem({
         state: PROGRESS_NOTE_EDIT_STATES[0]
       }),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -1062,7 +1062,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     // eslint-disable-next-line no-restricted-syntax
     for (const test of tests) {
       const { data, selector, method, expected } = test;
-      const componentProps = { ...props, deficientItemUpdates: data };
+      const componentProps = { ...props, updates: data };
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId(selector);
 
@@ -1082,7 +1082,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
-      deficientItemUpdates: { currentReasonIncomplete: 'valid' },
+      updates: { currentReasonIncomplete: 'valid' },
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
@@ -1133,7 +1133,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
         { state: 'pending' },
         { completedPhotos: 1 }
       ),
-      deficientItemUpdates: {},
+      updates: {},
       onShowHistory: sinon.spy(),
       onClickViewPhotos: sinon.spy(),
       onShowPlanToFix: sinon.spy(),
