@@ -4,6 +4,8 @@ import deficientItemUtils from '../../../common/utils/deficientItem';
 import deficientItemsApi from '../../../common/services/api/deficientItems';
 import errorReports from '../../../common/services/api/errorReports';
 import BaseError from '../../../common/models/errors/baseError';
+import deficientItemUpdates from '../../../common/services/indexedDB/deficientItemUpdates';
+import DeficientItemLocalUpdates from '../../../common/models/deficientItems/unpublishedUpdates';
 
 const PREFIX = 'features: DeficientItemEdit: hooks: useUpdateItem:';
 
@@ -32,8 +34,9 @@ interface useUpdateItemResult {
 
 export default function useUpdateItem(
   deficiencyId: string,
+  propertyId: string,
   sendNotification: userNotifications,
-  previousUpdates: DeficientItemModel,
+  previousUpdates: DeficientItemLocalUpdates,
   currentItem: DeficientItemModel
 ): useUpdateItemResult {
   const [isSaving, setIsSaving] = useState(false);
@@ -45,7 +48,6 @@ export default function useUpdateItem(
   const [updates, setUpdates] = useState(
     previousUpdates ? clone(previousUpdates || {}) : {}
   );
-
   //
   // Update Management
   //
@@ -58,7 +60,36 @@ export default function useUpdateItem(
     // In memory save
     setUpdates({ ...latestUpdates });
 
+    // Local database save
+    persistUnpublishedUpdates({ ...latestUpdates });
+
     return latestUpdates;
+  };
+
+  // Create, update, or remove a local
+  // deficient item update record based on
+  // user's updates
+  const persistUnpublishedUpdates = async (data: DeficientItemModel) => {
+    const hasAnyUpdates = isDeficientItemUpdated(data);
+    try {
+      if (hasAnyUpdates) {
+        // Create or add local template updates record
+        await deficientItemUpdates.upsertRecord(
+          propertyId,
+          deficiencyId,
+          currentItem.inspection,
+          {
+            ...data,
+            createdAt: currentItem.updatedAt
+          }
+        );
+      } else {
+        // Remove unneeded/empty local template updates record
+        await deficientItemUpdates.deleteRecord(deficiencyId);
+      }
+    } catch (err) {
+      sendErrorReports([Error(`${PREFIX} persistUnpublishedUpdates: ${err}`)]);
+    }
   };
 
   const updateState = (state: string): DeficientItemModel =>
@@ -121,12 +152,7 @@ export default function useUpdateItem(
     sendNotification('Failed to update deficient item, please try again', {
       type: 'error'
     });
-
-    // Log issue and send error report
-    // eslint-disable-next-line no-case-declarations
-    const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${error}`);
-    // eslint-disable-next-line import/no-named-as-default-member
-    errorReports.send(wrappedErr);
+    sendErrorReports([Error(`${PREFIX} handleErrorResponse: ${error}`)]);
   };
 
   const publish = async () => {
@@ -164,11 +190,16 @@ export default function useUpdateItem(
 // Check if updates contain any
 // relevant user update data
 function isDeficientItemUpdated(updates?: any) {
-  if (!updates) return false;
-
   return Object.keys(updates || {}).length > 0;
 }
 // Deep clone an object
 function clone(obj: any): any {
   return JSON.parse(JSON.stringify(obj));
+}
+
+function sendErrorReports(errors: Error[]) {
+  errors.forEach((err) => {
+    // eslint-disable-next-line import/no-named-as-default-member
+    errorReports.send(err);
+  });
 }

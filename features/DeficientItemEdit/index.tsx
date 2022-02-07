@@ -13,6 +13,7 @@ import dateUtil from '../../common/utils/date';
 import Header from './Header';
 import useTrelloCard from './hooks/useTrelloCard';
 import useUpdateItem from './hooks/useUpdateItem';
+import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
 
 type userNotifications = (message: string, options?: any) => any;
 interface Props {
@@ -23,7 +24,7 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   sendNotification: userNotifications;
-  unpublishedItemUpdates: DeficientItemModel;
+  unpublishedUpdates: DeficientItemLocalUpdates;
   firestore: firebase.firestore.Firestore;
 }
 
@@ -35,7 +36,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   sendNotification,
-  unpublishedItemUpdates,
+  unpublishedUpdates,
   firestore
 }) => {
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
@@ -61,8 +62,9 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     publish
   } = useUpdateItem(
     deficientItem.id,
+    property.id,
     sendNotification,
-    unpublishedItemUpdates,
+    unpublishedUpdates,
     deficientItem
   );
 
