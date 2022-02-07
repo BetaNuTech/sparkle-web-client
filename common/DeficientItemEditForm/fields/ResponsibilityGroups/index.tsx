@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import DeficientItemModel from '../../../models/deficientItem';
 import { deficientItemResponsibilityGroups } from '../../../../config/deficientItems';
 import fieldStyles from '../styles.module.scss';
+import getResponsibilityGroup from '../../../utils/deficientItem/getResponsibilityGroup';
 
 interface Props {
   deficientItem: DeficientItemModel;
@@ -24,11 +25,9 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
   const showHeaderAction = deficientItem.responsibilityGroups && !isMobile;
   const showFooterAction = deficientItem.responsibilityGroups && isMobile;
 
-  const currentResponsibilityGroupLabel = (
-    deficientItemResponsibilityGroups.find(
-      (item) => item.value === deficientItem.currentResponsibilityGroup
-    ) || {}
-  ).label;
+  const currentResponsibilityGroupLabel = getResponsibilityGroup(
+    deficientItem.currentResponsibilityGroup
+  );
 
   if (!isVisible) {
     return <></>;
@@ -73,9 +72,7 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
             )}
             onChange={onChangeResponsibilityGroup}
             data-testid="item-responsibility-group-select"
-            defaultValue={
-              updates?.currentResponsibilityGroup || ''
-            }
+            defaultValue={updates?.currentResponsibilityGroup || ''}
           >
             <option value="">NOT SET</option>
             {deficientItemResponsibilityGroups.map((item) => (

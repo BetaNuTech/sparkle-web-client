@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react';
 import { deficientItemCurrentStateDescriptions } from '../../../../config/deficientItems';
+import getResponsibilityGroup from '../../../../common/utils/deficientItem/getResponsibilityGroup';
 
 interface Props {
   history: any;
@@ -17,6 +18,14 @@ const HistoryItemDetails: FunctionComponent<Props> = ({
           <span className="-tt-uppercase">{history.state}</span>{' '}
           {deficientItemCurrentStateDescriptions[history.state] &&
             ` - ${deficientItemCurrentStateDescriptions[history.state]}`}
+        </span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
+    case 'responsibilityGroups':
+      return history.groupResponsible ? (
+        <span data-testid="history-details">
+          {getResponsibilityGroup(history.groupResponsible)}
         </span>
       ) : (
         <span data-testid="history-details">Data missing</span>

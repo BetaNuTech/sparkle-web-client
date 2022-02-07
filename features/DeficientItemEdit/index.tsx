@@ -107,7 +107,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowResponsibilityGroups = () => {
-    console.log('triggered on show responsibility groups action'); // eslint-disable-line
+    setHistoryType('responsibilityGroups');
   };
 
   const onChangeResponsibilityGroup = (evt: ChangeEvent<HTMLSelectElement>) => {
