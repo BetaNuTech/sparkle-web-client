@@ -2,12 +2,12 @@ import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
 import { act } from '@testing-library/react';
 import moment from 'moment';
-import DeficientItemModel from '../../../common/models/deficientItem';
 import createDeficientItem from '../../../__tests__/helpers/createDeficientItem';
 import deficientItemsApi from '../../../common/services/api/deficientItems';
 import currentUser from '../../../common/utils/currentUser';
 import errorReports from '../../../common/services/api/errorReports';
 import useUpdateItem from './useUpdateItem';
+import DeficientItemLocalUpdates from '../../../common/models/deficientItems/unpublishedUpdates';
 
 const deficientItem = createDeficientItem({ state: 'require-action' });
 
@@ -24,8 +24,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -34,7 +35,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       result.current.updateState(expected.state);
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       state: updates.state
@@ -53,8 +54,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -63,7 +65,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       result.current.updateCurrentDueDate(expected.currentDueDate);
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       currentDueDate: updates.currentDueDate
@@ -82,8 +84,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -92,7 +95,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       result.current.updateCurrentDeferredDate(expected.currentDeferredDate);
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       currentDeferredDate: updates.currentDeferredDate
@@ -111,8 +114,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -121,7 +125,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       result.current.updateCurrentPlanToFix(expected.currentPlanToFix);
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       currentPlanToFix: updates.currentPlanToFix
@@ -140,8 +144,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -152,7 +157,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       );
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       currentResponsibilityGroup: updates.currentResponsibilityGroup
@@ -171,8 +176,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -181,7 +187,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       result.current.updateProgressNote(expected.progressNote);
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       progressNote: updates.progressNote
@@ -200,8 +206,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -212,7 +219,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       );
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       currentReasonIncomplete: updates.currentReasonIncomplete
@@ -231,8 +238,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     const { result } = renderHook(() =>
       useUpdateItem(
         'deficiency-1',
+        'property-1',
         sendNotification,
-        {} as DeficientItemModel,
+        {} as DeficientItemLocalUpdates,
         deficientItem
       )
     );
@@ -243,7 +251,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       );
     });
 
-    const updates = result.current.updates || ({} as DeficientItemModel);
+    const updates = result.current.updates || ({} as DeficientItemLocalUpdates);
     const actual = {
       hasUpdates: result.current.hasUpdates,
       currentCompleteNowReason: updates.currentCompleteNowReason
@@ -265,8 +273,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       const { result } = renderHook(() =>
         useUpdateItem(
           'deficiency-1',
+          'property-1',
           sendNotification,
-          {} as DeficientItemModel,
+          {} as DeficientItemLocalUpdates,
           deficientItem
         )
       );
@@ -290,8 +299,9 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
       const { result } = renderHook(() =>
         useUpdateItem(
           'deficiency-1',
+          'property-1',
           sendNotification,
-          {} as DeficientItemModel,
+          {} as DeficientItemLocalUpdates,
           deficientItem
         )
       );
