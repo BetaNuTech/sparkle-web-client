@@ -1,6 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
-import { deficientItemCurrentStateDescriptions } from '../../../../config/deficientItems';
+import {
+  deficientItemCurrentStateDescriptions,
+  deficientItemsHistoryTitles
+} from '../../../../config/deficientItems';
+import getResponsibilityGroup from '../../../../common/utils/deficientItem/getResponsibilityGroup';
+
 import ItemDetails from './index';
 
 describe('Unit | features | Deficient Item Edit | History Modal | Item Details', () => {
@@ -20,7 +25,7 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
       { state: 'pending' },
       { stateHistory: 1 }
     );
-    const stateHistoryKeys = Object.keys(deficientItem.stateHistory)[0];
+    const stateHistoryKeys = Object.keys(deficientItem.stateHistory);
     const history = deficientItem.stateHistory[stateHistoryKeys[0]];
 
     const historyDescription =
@@ -40,24 +45,12 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
     expect(detailEl).toHaveTextContent(expected);
   });
 
-  it('should render fallback message "Data missing"', () => {
-    const expected = 'Data missing';
-    const props = {
-      historyType: 'stateHistory',
-      history: {}
-    };
-    render(<ItemDetails {...props} />);
-
-    const detailEl = screen.queryByTestId('history-details');
-    expect(detailEl).toHaveTextContent(expected);
-  });
-
   it('should render plans to fix if history type is "plansToFix" and item has plans to fix', () => {
     const deficientItem = createDeficientItem(
       { state: 'pending' },
       { plansToFix: 1 }
     );
-    const plansToFixKeys = Object.keys(deficientItem.plansToFix)[0];
+    const plansToFixKeys = Object.keys(deficientItem.plansToFix);
     const history = deficientItem.plansToFix[plansToFixKeys[0]];
     const expected = history.planToFix;
 
@@ -71,15 +64,44 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
     expect(detailEl).toHaveTextContent(expected);
   });
 
-  it('should render fallback message "Data missing"', () => {
-    const expected = 'Data missing';
+  it('should render responsible group if history type is "responsibilityGroups"', () => {
+    const deficientItem = createDeficientItem(
+      { state: 'pending' },
+      { responsibilityGroups: 1 }
+    );
+    const responsibilityGroupsKeys = Object.keys(
+      deficientItem.responsibilityGroups
+    );
+    const history =
+      deficientItem.responsibilityGroups[responsibilityGroupsKeys[0]];
+
+    const expected = getResponsibilityGroup(history.groupResponsible);
+
     const props = {
-      historyType: 'plansToFix',
-      history: {}
+      historyType: 'responsibilityGroups',
+      history
     };
     render(<ItemDetails {...props} />);
 
     const detailEl = screen.queryByTestId('history-details');
     expect(detailEl).toHaveTextContent(expected);
+  });
+
+  it('should render fallback message "Data missing"', () => {
+    const expected = 'Data missing';
+    const historyTypes = Object.keys(deficientItemsHistoryTitles);
+    const props = {
+      historyType: 'responsibilityGroups',
+      history: {}
+    };
+    const { rerender } = render(<ItemDetails {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const historyType of historyTypes) {
+      const componentProps = { ...props, historyType };
+      rerender(<ItemDetails {...componentProps} />);
+      const detailEl = screen.queryByTestId('history-details');
+      expect(detailEl).toHaveTextContent(expected);
+    }
   });
 });

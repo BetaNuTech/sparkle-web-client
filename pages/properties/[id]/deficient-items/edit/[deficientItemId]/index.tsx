@@ -11,7 +11,8 @@ import LoadingHud from '../../../../../../common/LoadingHud';
 import useNotifications from '../../../../../../common/hooks/useNotifications';
 import notifications from '../../../../../../common/services/notifications';
 import DeficientItemEdit from '../../../../../../features/DeficientItemEdit';
-import DeficientItemModel from '../../../../../../common/models/deficientItem';
+// eslint-disable-next-line max-len
+import useUnpublishedDeficiencyUpdates from '../../../../../../features/DeficientItemEdit/hooks/useUnpublishedDeficiencyUpdates';
 
 const Page: React.FC = (): ReactElement => {
   const firestore = useFirestore();
@@ -46,15 +47,17 @@ const Page: React.FC = (): ReactElement => {
   const { data: propertyIntegration, status: propertyIntegrationStatus } =
     useTrelloProperty(firestore, propertyId);
 
-  // Unpublished updates
-  const unpublishedItemUpdates = {} as DeficientItemModel;
+  // Locally stored user updates to deficient item
+  const { data: unpublishedUpdates, status: deficientItemsStatus } =
+    useUnpublishedDeficiencyUpdates(deficiencyId, deficientItem?.updatedAt);
 
   let isLoaded = false;
   if (
     propertyStatus === 'success' &&
     userStatus === 'success' &&
     deficientItemStatus === 'success' &&
-    propertyIntegrationStatus === 'success'
+    propertyIntegrationStatus === 'success' &&
+    deficientItemsStatus === 'success'
   ) {
     isLoaded = true;
   }
@@ -83,7 +86,7 @@ const Page: React.FC = (): ReactElement => {
           deficientItem={deficientItem}
           propertyIntegration={propertyIntegration}
           sendNotification={sendNotification}
-          unpublishedItemUpdates={unpublishedItemUpdates}
+          unpublishedUpdates={unpublishedUpdates}
           firestore={firestore}
         />
       ) : (

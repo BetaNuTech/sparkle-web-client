@@ -25,7 +25,6 @@ const HistoryModal: FunctionComponent<Props> = ({
   firestore
 }) => {
   const historyItems = deficientItem[historyType];
-
   const userIds = [];
 
   const flattenedHistoryItems = Object.keys(historyItems || {})
