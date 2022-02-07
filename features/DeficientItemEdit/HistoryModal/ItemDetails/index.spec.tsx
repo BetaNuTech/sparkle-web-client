@@ -51,4 +51,35 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
     const detailEl = screen.queryByTestId('history-details');
     expect(detailEl).toHaveTextContent(expected);
   });
+
+  it('should render plans to fix if history type is "plansToFix" and item has plans to fix', () => {
+    const deficientItem = createDeficientItem(
+      { state: 'pending' },
+      { plansToFix: 1 }
+    );
+    const plansToFixKeys = Object.keys(deficientItem.plansToFix)[0];
+    const history = deficientItem.plansToFix[plansToFixKeys[0]];
+    const expected = history.planToFix;
+
+    const props = {
+      historyType: 'plansToFix',
+      history
+    };
+    render(<ItemDetails {...props} />);
+
+    const detailEl = screen.queryByTestId('history-details');
+    expect(detailEl).toHaveTextContent(expected);
+  });
+
+  it('should render fallback message "Data missing"', () => {
+    const expected = 'Data missing';
+    const props = {
+      historyType: 'plansToFix',
+      history: {}
+    };
+    render(<ItemDetails {...props} />);
+
+    const detailEl = screen.queryByTestId('history-details');
+    expect(detailEl).toHaveTextContent(expected);
+  });
 });

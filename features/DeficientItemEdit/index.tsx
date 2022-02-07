@@ -82,7 +82,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   const [isUpdatingDeferredDate, setIsUpdatingDeferredDate] = useState(false);
 
   const onShowPlanToFix = () => {
-    console.log('triggered on show plan to fix action'); // eslint-disable-line
+    setHistoryType('plansToFix');
   };
 
   const onChangePlanToFix = (evt: ChangeEvent<HTMLTextAreaElement>) => {

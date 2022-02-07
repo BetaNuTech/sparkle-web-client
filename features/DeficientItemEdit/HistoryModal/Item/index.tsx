@@ -7,6 +7,8 @@ import { getUserFullname } from '../../../../common/utils/user';
 
 import styles from './styles.module.scss';
 
+const richTextTypes = ['plansToFix'];
+
 interface Props {
   history: any;
   historyType: string;
@@ -32,6 +34,8 @@ const HistoryItem: FunctionComponent<Props> = ({
     }
   }
 
+  const isRichText = richTextTypes.indexOf(historyType) > -1;
+
   return (
     <li className={styles.item}>
       <header>
@@ -49,7 +53,9 @@ const HistoryItem: FunctionComponent<Props> = ({
           {dateUtils.toUserTimeDisplay(history.createdAt)}
         </small>
       </header>
-      <div className={styles.details}>
+      <div
+        className={clsx(styles.details, isRichText && styles.details__richText)}
+      >
         <HistoryItemDetails history={history} historyType={historyType} />
       </div>
     </li>

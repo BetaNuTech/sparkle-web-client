@@ -22,7 +22,13 @@ const HistoryItemDetails: FunctionComponent<Props> = ({
         <span data-testid="history-details">Data missing</span>
       );
       break;
-
+    case 'plansToFix':
+      return history.planToFix ? (
+        <span data-testid="history-details">{history.planToFix}</span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
+      break;
     default:
       return <></>;
       break;

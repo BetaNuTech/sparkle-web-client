@@ -28,7 +28,8 @@ export const deficientItemCurrentStateDescriptions = {
 };
 
 export const deficientItemsHistoryTitles = {
-  stateHistory: 'State History'
+  stateHistory: 'State History',
+  plansToFix: 'Plans to Fix - History'
 };
 
 export const deficientItemResponsibilityGroups = [
