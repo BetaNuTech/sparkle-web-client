@@ -108,10 +108,6 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     console.log('triggered on show previous deferred dates action'); // eslint-disable-line
   };
 
-  const onShowDeferredDates = () => {
-    console.log('triggered on show previous deferred dates action'); // eslint-disable-line
-  };
-
   const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
     updateCurrentDueDate(dateUtil.isoToTimestamp(evt.target.value));
   };
@@ -129,7 +125,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowReasonIncomplete = () => {
-    console.log('triggered on show reason incomplete action'); // eslint-disable-line
+    setHistoryType('reasonsIncomplete');
   };
 
   const onChangeReasonIncomplete = (evt: ChangeEvent<HTMLTextAreaElement>) => {
@@ -222,7 +218,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowCompleteNowReason = () => {
-    console.log('triggered on show complete now reason action'); // eslint-disable-line
+    setHistoryType('completeNowReasons');
   };
 
   const onChangeCompleteNowReason = (evt: ChangeEvent<HTMLTextAreaElement>) => {

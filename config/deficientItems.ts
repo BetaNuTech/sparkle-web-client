@@ -31,6 +31,8 @@ export const deficientItemsHistoryTitles = {
   stateHistory: 'State History',
   responsibilityGroups: 'Responsibility Groups - History',
   plansToFix: 'Plans to Fix - History',
+  completeNowReasons: 'Complete Now Reason - History',
+  reasonsIncomplete: 'Reasons Incomplete - History',
   dueDates: 'Due Dates - History'
 };
 

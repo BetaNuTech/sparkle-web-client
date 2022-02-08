@@ -48,6 +48,22 @@ const HistoryItemDetails: FunctionComponent<Props> = ({
         <span data-testid="history-details">Data missing</span>
       );
       break;
+
+    case 'reasonsIncomplete':
+      return history.reasonIncomplete ? (
+        <span data-testid="history-details">{history.reasonIncomplete}</span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
+      break;
+
+    case 'completeNowReasons':
+      return history.completeNowReason ? (
+        <span data-testid="history-details">{history.completeNowReason}</span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
+      break;
     default:
       return <></>;
       break;
