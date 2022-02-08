@@ -14,8 +14,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
       <ResponsibilityGroup
         deficientItem={createDeficientItem({})}
         isMobile={false}
-        onShowResponsibilityGroups={sinon.spy()}
-        onChangeResponsibilityGroup={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={false} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -31,8 +31,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
       <ResponsibilityGroup
         deficientItem={createDeficientItem({})}
         isMobile={false}
-        onShowResponsibilityGroups={sinon.spy()}
-        onChangeResponsibilityGroup={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -48,8 +48,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
       <ResponsibilityGroup
         deficientItem={createDeficientItem({ currentResponsibilityGroup: '' })}
         isMobile={false}
-        onShowResponsibilityGroups={sinon.spy()}
-        onChangeResponsibilityGroup={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -72,8 +72,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
           currentResponsibilityGroup: responsibilityGroup.value
         })}
         isMobile={false}
-        onShowResponsibilityGroups={sinon.spy()}
-        onChangeResponsibilityGroup={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -88,13 +88,13 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
   });
 
   it('should only reveals show state history button when deficient item has previous history', () => {
-    const onShowResponsibilityGroups = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <ResponsibilityGroup
         deficientItem={createDeficientItem({}, { responsibilityGroups: 1 })}
         isMobile={false}
-        onShowResponsibilityGroups={onShowResponsibilityGroups}
-        onChangeResponsibilityGroup={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -107,13 +107,13 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
 
   it('should trigger request to show previous responsibility group', () => {
     const expected = true;
-    const onShowResponsibilityGroups = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <ResponsibilityGroup
         deficientItem={createDeficientItem({}, { responsibilityGroups: 1 })}
         isMobile={false}
-        onShowResponsibilityGroups={onShowResponsibilityGroups}
-        onChangeResponsibilityGroup={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -125,21 +125,21 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
     act(() => {
       userEvent.click(showPreviousBtn);
     });
-    const actual = onShowResponsibilityGroups.called;
+    const actual = onShowHistory.called;
     expect(actual).toBe(expected);
   });
 
   it('should request to update responsibility group', () => {
     const expected = true;
-    const onChangeResponsibilityGroup = sinon.spy();
+    const onChange = sinon.spy();
     const responsibilityGroup = deficientItemResponsibilityGroups[0];
 
     render(
       <ResponsibilityGroup
         deficientItem={createDeficientItem({ currentResponsibilityGroup: '' })}
         isMobile={false}
-        onShowResponsibilityGroups={sinon.spy()}
-        onChangeResponsibilityGroup={onChangeResponsibilityGroup}
+        onShowHistory={sinon.spy()}
+        onChange={onChange}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -151,7 +151,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
         target: { value: responsibilityGroup.value }
       });
     });
-    const actual = onChangeResponsibilityGroup.called;
+    const actual = onChange.called;
     expect(actual).toBe(expected);
   });
 });

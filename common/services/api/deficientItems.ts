@@ -92,7 +92,6 @@ const update = async (
   updates: DeficientItemModel
 ): Promise<boolean> => {
   let authToken = '';
-
   try {
     authToken = await currentUser.getIdToken();
   } catch (tokenErr) {

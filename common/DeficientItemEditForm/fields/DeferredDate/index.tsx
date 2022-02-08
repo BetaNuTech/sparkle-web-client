@@ -12,35 +12,33 @@ interface Props {
   isMobile: boolean;
   isVisible: boolean;
   defaultDate: string;
-  maxDate: string;
 }
 
-const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
+const DeficientItemEditFormDeferredDate: FunctionComponent<Props> = ({
   deficientItem,
   updates,
   onShowHistory,
   onChange,
   isMobile,
   isVisible,
-  defaultDate,
-  maxDate
+  defaultDate
 }) => {
-  const showHeaderAction = deficientItem.dueDates && !isMobile;
-  const showFooterAction = deficientItem.dueDates && isMobile;
+  const showHeaderAction = deficientItem.deferredDates && !isMobile;
+  const showFooterAction = deficientItem.deferredDates && isMobile;
 
   if (!isVisible) {
     return <></>;
   }
 
   return (
-    <section className={fieldStyles.section} data-testid="item-due-date">
+    <section className={fieldStyles.section} data-testid="item-deferred-date">
       <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Due Date</h4>
+        <h4 className={fieldStyles.heading}>Deferred Date</h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}
             className={fieldStyles.textButton}
-            data-testid="show-previous-due-date-btn"
+            data-testid="show-previous-deferred-date-btn"
           >
             Show Previous
           </button>
@@ -49,30 +47,29 @@ const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
       <div
         className={clsx(
           fieldStyles.section__main,
-          !deficientItem.currentDueDate && '-p-none'
+          !deficientItem.currentDeferredDate && '-p-none'
         )}
       >
-        {deficientItem.currentDueDate ? (
+        {deficientItem.currentDeferredDate ? (
           <strong
             className={fieldStyles.strong}
-            data-testid="item-due-date-text"
+            data-testid="item-deferred-date-text"
           >
-            {dateUtil.toUserFullDateDisplay(deficientItem.currentDueDate)} at{' '}
-            {dateUtil.toUserTimeDisplay(deficientItem.currentDueDate)}
+            {dateUtil.toUserFullDateDisplay(deficientItem.currentDeferredDate)}{' '}
+            at {dateUtil.toUserTimeDisplay(deficientItem.currentDeferredDate)}
           </strong>
         ) : (
           <input
             type="date"
             defaultValue={defaultDate}
             min={defaultDate}
-            max={maxDate}
             className={clsx(
               fieldStyles.formInput,
-              !updates?.currentDueDate && fieldStyles['formInput--empty'],
+              !updates?.currentDeferredDate && fieldStyles['formInput--empty'],
               '-mb-none'
             )}
             onChange={onChange}
-            data-testid="item-due-date-input"
+            data-testid="item-deferred-date-input"
           />
         )}
       </div>
@@ -81,9 +78,9 @@ const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
           <button
             onClick={onShowHistory}
             className={fieldStyles.textButton}
-            data-testid="show-previous-due-date-btn"
+            data-testid="show-previous-deferred-date-btn"
           >
-            Show Previous Due Dates
+            Show Previous Deferred Dates
           </button>
         </footer>
       )}
@@ -91,4 +88,4 @@ const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
   );
 };
 
-export default DeficientItemEditFormDueDate;
+export default DeficientItemEditFormDeferredDate;
