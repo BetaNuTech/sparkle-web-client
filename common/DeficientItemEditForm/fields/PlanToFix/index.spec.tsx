@@ -14,8 +14,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
       <PlanToFix
         deficientItem={createDeficientItem({})}
         isMobile={false}
-        onShowPlanToFix={sinon.spy()}
-        onChangePlanToFix={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -31,8 +31,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
       <PlanToFix
         deficientItem={createDeficientItem({ currentPlanToFix: '' })}
         isMobile={false}
-        onShowPlanToFix={sinon.spy()}
-        onChangePlanToFix={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -51,8 +51,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
       <PlanToFix
         deficientItem={createDeficientItem({ currentPlanToFix: expected })}
         isMobile={false}
-        onShowPlanToFix={sinon.spy()}
-        onChangePlanToFix={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -63,13 +63,13 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
   });
 
   it('should render show previous plans to fix button when deficient item has past plans to fix', async () => {
-    const onShowPlanToFix = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <PlanToFix
         deficientItem={createDeficientItem({}, { plansToFix: 1 })}
         isMobile={false}
-        onShowPlanToFix={onShowPlanToFix}
-        onChangePlanToFix={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -82,13 +82,13 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
 
   it('should trigger request to show previous plans to fix when deficient item has previous plans', async () => {
     const expected = true;
-    const onShowPlanToFix = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <PlanToFix
         deficientItem={createDeficientItem({}, { plansToFix: 1 })}
         isMobile={false}
-        onShowPlanToFix={onShowPlanToFix}
-        onChangePlanToFix={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -100,21 +100,21 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
     act(() => {
       userEvent.click(showPreviousBtn);
     });
-    const actual = onShowPlanToFix.called;
+    const actual = onShowHistory.called;
     expect(actual).toBe(expected);
   });
 
   // eslint-disable-next-line max-len
   it('should trigger update to plans to fix on user changes in textarea when item has no current plans to fix', async () => {
     const expected = true;
-    const onChangePlanToFix = sinon.spy();
+    const onChange = sinon.spy();
 
     render(
       <PlanToFix
         deficientItem={createDeficientItem({ currentPlanToFix: '' })}
         isMobile={false}
-        onShowPlanToFix={sinon.spy()}
-        onChangePlanToFix={onChangePlanToFix}
+        onShowHistory={sinon.spy()}
+        onChange={onChange}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -124,7 +124,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
     act(() => {
       fireEvent.change(textareaEl, { target: { value: expected } });
     });
-    const actual = onChangePlanToFix.called;
+    const actual = onChange.called;
     expect(actual).toBe(expected);
   });
 });

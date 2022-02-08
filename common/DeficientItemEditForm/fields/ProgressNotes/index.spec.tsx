@@ -13,8 +13,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
       <ProgressNotes
         deficientItem={createDeficientItem({ state: 'pending' })}
         isMobile={false}
-        onShowProgressNotes={sinon.spy()}
-        onChangeProgressNote={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={false} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -29,8 +29,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
       <ProgressNotes
         deficientItem={createDeficientItem({ state: 'pending' })}
         isMobile={false}
-        onShowProgressNotes={sinon.spy()}
-        onChangeProgressNote={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={false} // eslint-disable-line react/jsx-boolean-value
         isEditable={false} // eslint-disable-line react/jsx-boolean-value
       />
@@ -45,8 +45,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
       <ProgressNotes
         deficientItem={createDeficientItem({ state: 'pending' })}
         isMobile={false}
-        onShowProgressNotes={sinon.spy()}
-        onChangeProgressNote={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -74,8 +74,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
       <ProgressNotes
         deficientItem={deficientItem}
         isMobile={false}
-        onShowProgressNotes={sinon.spy()}
-        onChangeProgressNote={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -87,7 +87,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
   });
 
   it('should only reveals show all button when deficient item has progress notes', () => {
-    const onShowProgressNotes = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <ProgressNotes
         deficientItem={createDeficientItem(
@@ -95,8 +95,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
           { progressNotes: 1 }
         )}
         isMobile={false}
-        onShowProgressNotes={onShowProgressNotes}
-        onChangeProgressNote={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -110,7 +110,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
 
   it('should trigger request to show all progress notes', () => {
     const expected = true;
-    const onShowProgressNotes = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <ProgressNotes
         deficientItem={createDeficientItem(
@@ -118,8 +118,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
           { progressNotes: 1 }
         )}
         isMobile={false}
-        onShowProgressNotes={onShowProgressNotes}
-        onChangeProgressNote={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -132,20 +132,20 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
     act(() => {
       userEvent.click(showPreviousBtn);
     });
-    const actual = onShowProgressNotes.called;
+    const actual = onShowHistory.called;
     expect(actual).toBe(expected);
   });
 
   it('should request to update progress notes', () => {
     const expected = true;
-    const onChangeProgressNote = sinon.spy();
+    const onChange = sinon.spy();
 
     render(
       <ProgressNotes
         deficientItem={createDeficientItem({ state: 'pending' })}
         isMobile={false}
-        onShowProgressNotes={sinon.spy()}
-        onChangeProgressNote={onChangeProgressNote}
+        onShowHistory={sinon.spy()}
+        onChange={onChange}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -158,7 +158,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Progress Notes', (
         target: { value: 'progress notes' }
       });
     });
-    const actual = onChangeProgressNote.called;
+    const actual = onChange.called;
     expect(actual).toBe(expected);
   });
 });

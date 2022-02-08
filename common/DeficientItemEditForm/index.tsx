@@ -12,6 +12,7 @@ import CompleteNowReason from './fields/CompleteNowReason';
 import ProgressNotes from './fields/ProgressNotes';
 import ReasonIncomplete from './fields/ReasonIncomplete';
 import DueDate from './fields/DueDate';
+import DeferredDate from './fields/DeferredDate';
 import ResponsibilityGroups from './fields/ResponsibilityGroups';
 import TrelloCard from './fields/TrelloCard';
 import Actions from './fields/Actions';
@@ -55,6 +56,8 @@ interface Props {
   onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onShowDueDates(): void;
   onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
+  onChangeDeferredDate(evt: ChangeEvent<HTMLInputElement>): void;
+  onShowDeferredDates(): void;
   onShowResponsibilityGroups(): void;
   onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
   onCreateTrelloCard(): void;
@@ -100,6 +103,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onChangeReasonIncomplete,
   onShowDueDates,
   onChangeDueDate,
+  onChangeDeferredDate,
+  onShowDeferredDates,
   onShowResponsibilityGroups,
   onChangeResponsibilityGroup,
   onCreateTrelloCard,
@@ -169,6 +174,10 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
 
+  // Determine to show/hide due date section
+  const showCurrentDeferredDateSection =
+    deficientItem.state === 'deferred' || isUpdatingDeferredDate;
+
   // Determine to show/hide responsibility section
   const showResponsibilityGroupSection =
     deficientItem.state === 'closed'
@@ -215,33 +224,43 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             isMobile={isMobile}
           />
           <PlanToFix
-            onShowPlanToFix={onShowPlanToFix}
-            onChangePlanToFix={onChangePlanToFix}
+            onShowHistory={onShowPlanToFix}
+            onChange={onChangePlanToFix}
             deficientItem={deficientItem}
             updates={updates}
             isMobile={isMobile}
             isVisible={showCurrentPlanToFixSection}
           />
           <ResponsibilityGroups
-            onShowResponsibilityGroups={onShowResponsibilityGroups}
-            onChangeResponsibilityGroup={onChangeResponsibilityGroup}
+            onShowHistory={onShowResponsibilityGroups}
+            onChange={onChangeResponsibilityGroup}
             deficientItem={deficientItem}
             updates={updates}
             isMobile={isMobile}
             isVisible={showResponsibilityGroupSection}
           />
           <DueDate
-            onShowDueDates={onShowDueDates}
-            onChangeDueDate={onChangeDueDate}
+            onShowHistory={onShowDueDates}
+            onChange={onChangeDueDate}
             deficientItem={deficientItem}
+            updates={updates}
             isMobile={isMobile}
             isVisible={showCurrentDueDateSection}
             defaultDate={defaultDate}
             maxDate={maxDate}
           />
+          <DeferredDate
+            onShowHistory={onShowDeferredDates}
+            onChange={onChangeDeferredDate}
+            deficientItem={deficientItem}
+            updates={updates}
+            isMobile={isMobile}
+            isVisible={showCurrentDeferredDateSection}
+            defaultDate={defaultDate}
+          />
           <ProgressNotes
-            onShowProgressNotes={onShowProgressNotes}
-            onChangeProgressNote={onChangeProgressNote}
+            onShowHistory={onShowProgressNotes}
+            onChange={onChangeProgressNote}
             deficientItem={deficientItem}
             updates={updates}
             isMobile={isMobile}
@@ -249,16 +268,16 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
             isEditable={hasEditableProgressNotes}
           />
           <ReasonIncomplete
-            onShowReasonIncomplete={onShowReasonIncomplete}
-            onChangeReasonIncomplete={onChangeReasonIncomplete}
+            onShowHistory={onShowReasonIncomplete}
+            onChange={onChangeReasonIncomplete}
             deficientItem={deficientItem}
             updates={updates}
             isMobile={isMobile}
             isVisible={showReasonIncompleteSection}
           />
           <CompleteNowReason
-            onShowCompleteNowReason={onShowCompleteNowReason}
-            onChangeCompleteNowReason={onChangeCompleteNowReason}
+            onShowHistory={onShowCompleteNowReason}
+            onChange={onChangeCompleteNowReason}
             deficientItem={deficientItem}
             updates={updates}
             isMobile={isMobile}

@@ -6,8 +6,8 @@ import fieldStyles from '../styles.module.scss';
 interface Props {
   deficientItem: DeficientItemModel;
   updates: DeficientItemModel;
-  onShowPlanToFix(): void;
-  onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowHistory(): void;
+  onChange(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
   isVisible: boolean;
 }
@@ -15,8 +15,8 @@ interface Props {
 const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
   deficientItem,
   updates,
-  onShowPlanToFix,
-  onChangePlanToFix,
+  onShowHistory,
+  onChange,
   isMobile,
   isVisible
 }) => {
@@ -33,7 +33,7 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
         <h4 className={fieldStyles.heading}>Plan To Fix</h4>
         {showHeaderAction && (
           <button
-            onClick={onShowPlanToFix}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-plan-to-fix-btn"
           >
@@ -59,11 +59,10 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
             placeholder="NOT SET"
             className={clsx(
               fieldStyles.formInput,
-              !updates?.currentPlanToFix &&
-                fieldStyles['formInput--empty']
+              !updates?.currentPlanToFix && fieldStyles['formInput--empty']
             )}
             defaultValue={updates?.currentPlanToFix || ''}
-            onChange={onChangePlanToFix}
+            onChange={onChange}
             data-testid="item-plan-to-fix-textarea"
           />
         )}
@@ -71,7 +70,7 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
       {showFooterAction && (
         <footer className={fieldStyles.section__footer}>
           <button
-            onClick={onShowPlanToFix}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-plan-to-fix-btn"
           >

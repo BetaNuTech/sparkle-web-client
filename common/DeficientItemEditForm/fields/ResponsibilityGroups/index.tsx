@@ -8,8 +8,8 @@ import getResponsibilityGroup from '../../../utils/deficientItem/getResponsibili
 interface Props {
   deficientItem: DeficientItemModel;
   updates: DeficientItemModel;
-  onShowResponsibilityGroups(): void;
-  onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
+  onShowHistory(): void;
+  onChange(evt: ChangeEvent<HTMLSelectElement>): void;
   isMobile: boolean;
   isVisible: boolean;
 }
@@ -17,8 +17,8 @@ interface Props {
 const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
   deficientItem,
   updates,
-  onShowResponsibilityGroups,
-  onChangeResponsibilityGroup,
+  onShowHistory,
+  onChange,
   isMobile,
   isVisible
 }) => {
@@ -42,7 +42,7 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
         <h4 className={fieldStyles.heading}>Responsibility Groups</h4>
         {showHeaderAction && (
           <button
-            onClick={onShowResponsibilityGroups}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-responsibility-group-btn"
           >
@@ -70,7 +70,7 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
               !updates?.currentResponsibilityGroup &&
                 fieldStyles['formInput--empty']
             )}
-            onChange={onChangeResponsibilityGroup}
+            onChange={onChange}
             data-testid="item-responsibility-group-select"
             defaultValue={updates?.currentResponsibilityGroup || ''}
           >
@@ -86,7 +86,7 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
       {showFooterAction && (
         <footer className={fieldStyles.section__footer}>
           <button
-            onClick={onShowResponsibilityGroups}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-responsibility-group-btn"
           >
