@@ -88,6 +88,26 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
     expect(detailEl).toHaveTextContent(expected);
   });
 
+  it('should render reason incomplete if history type is "reasonsIncomplete"', () => {
+    const deficientItem = createDeficientItem(
+      { state: 'pending' },
+      { reasonsIncomplete: 1 }
+    );
+    const reasonsIncompleteKeys = Object.keys(deficientItem.reasonsIncomplete);
+    const history = deficientItem.reasonsIncomplete[reasonsIncompleteKeys[0]];
+
+    const expected = history.reasonIncomplete;
+
+    const props = {
+      historyType: 'reasonsIncomplete',
+      history
+    };
+    render(<ItemDetails {...props} />);
+
+    const detailEl = screen.queryByTestId('history-details');
+    expect(detailEl).toHaveTextContent(expected);
+  });
+
   it('should render due date if history type is "dueDates"', () => {
     const deficientItem = createDeficientItem(
       { state: 'pending' },
