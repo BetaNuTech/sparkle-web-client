@@ -30,7 +30,8 @@ export const deficientItemCurrentStateDescriptions = {
 export const deficientItemsHistoryTitles = {
   stateHistory: 'State History',
   responsibilityGroups: 'Responsibility Groups - History',
-  plansToFix: 'Plans to Fix - History'
+  plansToFix: 'Plans to Fix - History',
+  dueDates: 'Due Dates - History'
 };
 
 export const deficientItemResponsibilityGroups = [
