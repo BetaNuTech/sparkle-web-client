@@ -15,8 +15,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
       <CompleteNowReason
         deficientItem={createDeficientItem({ state: 'requires-action' })}
         isMobile={false}
-        onShowCompleteNowReason={sinon.spy()}
-        onChangeCompleteNowReason={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -36,8 +36,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
           currentCompleteNowReason: ''
         })}
         isMobile={false}
-        onShowCompleteNowReason={sinon.spy()}
-        onChangeCompleteNowReason={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -50,7 +50,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
   });
 
   it('should render show complete now reasons button when deficient item has past complete now reasons', () => {
-    const onShowCompleteNowReason = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <CompleteNowReason
         deficientItem={createDeficientItem(
@@ -58,8 +58,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
           { completeNowReasons: 1 }
         )}
         isMobile={false}
-        onShowCompleteNowReason={onShowCompleteNowReason}
-        onChangeCompleteNowReason={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -74,7 +74,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
   // eslint-disable-next-line max-len
   it('should trigger request to show previous complete now reason when deficient item has past complete now reasons', () => {
     const expected = true;
-    const onShowCompleteNowReason = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <CompleteNowReason
         deficientItem={createDeficientItem(
@@ -82,8 +82,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
           { completeNowReasons: 1 }
         )}
         isMobile={false}
-        onShowCompleteNowReason={onShowCompleteNowReason}
-        onChangeCompleteNowReason={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -96,14 +96,14 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
     act(() => {
       userEvent.click(showCompleteNowReasonBtn);
     });
-    const actual = onShowCompleteNowReason.called;
+    const actual = onShowHistory.called;
     expect(actual).toBe(expected);
   });
 
   // eslint-disable-next-line max-len
   it('should trigger update to complete now reason on user changes in textarea when item has no current complete now reason', () => {
     const expected = true;
-    const onChangeCompleteNowReason = sinon.spy();
+    const onChange = sinon.spy();
 
     render(
       <CompleteNowReason
@@ -112,8 +112,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
           currentCompleteNowReason: ''
         })}
         isMobile={false}
-        onShowCompleteNowReason={sinon.spy()}
-        onChangeCompleteNowReason={onChangeCompleteNowReason}
+        onShowHistory={sinon.spy()}
+        onChange={onChange}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
         isEditable={true} // eslint-disable-line react/jsx-boolean-value
       />
@@ -126,7 +126,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
     act(() => {
       fireEvent.change(textareaEl, { target: { value: expected } });
     });
-    const actual = onChangeCompleteNowReason.called;
+    const actual = onChange.called;
     expect(actual).toBe(expected);
   });
 });

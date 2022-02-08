@@ -4,6 +4,7 @@ import {
   deficientItemCurrentStateDescriptions,
   deficientItemsHistoryTitles
 } from '../../../../config/deficientItems';
+import dateUtils from '../../../../common/utils/date';
 import getResponsibilityGroup from '../../../../common/utils/deficientItem/getResponsibilityGroup';
 
 import ItemDetails from './index';
@@ -79,6 +80,26 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
 
     const props = {
       historyType: 'responsibilityGroups',
+      history
+    };
+    render(<ItemDetails {...props} />);
+
+    const detailEl = screen.queryByTestId('history-details');
+    expect(detailEl).toHaveTextContent(expected);
+  });
+
+  it('should render due date if history type is "dueDates"', () => {
+    const deficientItem = createDeficientItem(
+      { state: 'pending' },
+      { dueDates: 1 }
+    );
+    const dueDatesKeys = Object.keys(deficientItem.dueDates);
+    const history = deficientItem.dueDates[dueDatesKeys[0]];
+
+    const expected = dateUtils.toUserDateDisplay(history.dueDate);
+
+    const props = {
+      historyType: 'dueDates',
       history
     };
     render(<ItemDetails {...props} />);

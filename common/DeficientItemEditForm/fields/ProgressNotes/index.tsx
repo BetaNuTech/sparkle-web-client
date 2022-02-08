@@ -6,8 +6,8 @@ import fieldStyles from '../styles.module.scss';
 interface Props {
   deficientItem: DeficientItemModel;
   updates: DeficientItemModel;
-  onShowProgressNotes(): void;
-  onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowHistory(): void;
+  onChange(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
   isVisible: boolean;
   isEditable: boolean;
@@ -16,8 +16,8 @@ interface Props {
 const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
   deficientItem,
   updates,
-  onShowProgressNotes,
-  onChangeProgressNote,
+  onShowHistory,
+  onChange,
   isMobile,
   isVisible,
   isEditable
@@ -50,7 +50,7 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
         <h4 className={fieldStyles.heading}>Progress Note(s)</h4>
         {showHeaderAction && (
           <button
-            onClick={onShowProgressNotes}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-progress-note-btn"
           >
@@ -69,7 +69,7 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
                 fieldStyles['field__textarea--empty']
             )}
             defaultValue={updates?.progressNote || ''}
-            onChange={onChangeProgressNote}
+            onChange={onChange}
             data-testid="item-progress-note-textarea"
           />
         )}
@@ -85,7 +85,7 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
       {showFooterAction && (
         <footer className={fieldStyles.section__footer}>
           <button
-            onClick={onShowProgressNotes}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-progress-note-btn"
           >

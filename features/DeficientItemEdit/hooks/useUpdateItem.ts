@@ -29,7 +29,7 @@ interface useUpdateItemResult {
   updateCurrentCompleteNowReason(
     currentCompleteNowReason: string
   ): DeficientItemModel;
-  publish(): void;
+  publish(itemUpdates: DeficientItemModel): Promise<boolean>;
 }
 
 export default function useUpdateItem(
@@ -155,11 +155,11 @@ export default function useUpdateItem(
     sendErrorReports([Error(`${PREFIX} handleErrorResponse: ${error}`)]);
   };
 
-  const publish = async () => {
+  const publish = async (itemUpdates: DeficientItemModel) => {
     setIsSaving(true);
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await deficientItemsApi.update([deficiencyId], updates);
+      await deficientItemsApi.update([deficiencyId], itemUpdates);
 
       sendNotification('Deficient item updated successfully', {
         type: 'success'
@@ -169,6 +169,7 @@ export default function useUpdateItem(
     }
     applyLatestUpdates({} as DeficientItemModel);
     setIsSaving(false);
+    return true;
   };
 
   return {

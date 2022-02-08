@@ -53,7 +53,9 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   const {
     updates,
     isSaving,
+    updateState,
     updateCurrentDueDate,
+    updateCurrentDeferredDate,
     updateCurrentPlanToFix,
     updateCurrentResponsibilityGroup,
     updateProgressNote,
@@ -99,11 +101,19 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowDueDates = () => {
-    console.log('triggered on show previous due dates action'); // eslint-disable-line
+    setHistoryType('dueDates');
+  };
+
+  const onShowDeferredDates = () => {
+    console.log('triggered on show previous deferred dates action'); // eslint-disable-line
   };
 
   const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
     updateCurrentDueDate(dateUtil.isoToTimestamp(evt.target.value));
+  };
+
+  const onChangeDeferredDate = (evt: ChangeEvent<HTMLInputElement>) => {
+    updateCurrentDeferredDate(dateUtil.isoToTimestamp(evt.target.value));
   };
 
   const onShowResponsibilityGroups = () => {
@@ -127,7 +137,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onUpdatePending = () => {
-    console.log('triggered on update pending action'); // eslint-disable-line
+    const stateUpdates = updateState('pending');
+    publish({ ...stateUpdates });
   };
 
   const onUnpermittedPending = () => {
@@ -135,11 +146,12 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onAddProgressNote = () => {
-    publish();
+    publish({ ...updates });
   };
 
   const onUpdateIncomplete = () => {
-    console.log('triggered on update incomplete action'); // eslint-disable-line
+    const stateUpdates = updateState('incomplete');
+    publish({ ...stateUpdates });
   };
 
   const onComplete = () => {
@@ -147,11 +159,13 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onGoBack = () => {
-    console.log('triggered on go back action'); // eslint-disable-line
+    const stateUpdates = updateState('go-back');
+    publish({ ...stateUpdates });
   };
 
   const onCloseDuplicate = () => {
-    console.log('triggered on close duplicate action'); // eslint-disable-line
+    const stateUpdates = updateState('closed');
+    publish({ ...stateUpdates });
   };
 
   const onUnpermittedDuplicate = () => {
@@ -159,15 +173,18 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onClose = () => {
-    console.log('triggered on close action'); // eslint-disable-line
+    const stateUpdates = updateState('closed');
+    publish({ ...stateUpdates });
   };
 
   const onCancelCompleteNow = () => {
     setIsUpdatingCurrentCompleteNowReason(false);
   };
 
-  const onConfirmCompleteNow = () => {
-    console.log('triggered on confirm complete now action'); // eslint-disable-line
+  const onConfirmCompleteNow = async () => {
+    const stateUpdates = updateState('closed');
+    await publish({ ...stateUpdates });
+    setIsUpdatingCurrentCompleteNowReason(false);
   };
 
   const onCompleteNow = () => {
@@ -178,8 +195,10 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     setIsUpdatingDeferredDate(false);
   };
 
-  const onConfirmDefer = () => {
-    console.log('triggered on confirm defer action'); // eslint-disable-line
+  const onConfirmDefer = async () => {
+    const stateUpdates = updateState('deferred');
+    await publish({ ...stateUpdates });
+    setIsUpdatingDeferredDate(false);
   };
 
   const onInitiateDefer = () => {
@@ -265,6 +284,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onChangeProgressNote={onChangeProgressNote}
         onShowReasonIncomplete={onShowReasonIncomplete}
         onChangeReasonIncomplete={onChangeReasonIncomplete}
+        onChangeDeferredDate={onChangeDeferredDate}
+        onShowDeferredDates={onShowDeferredDates}
         onShowDueDates={onShowDueDates}
         onChangeDueDate={onChangeDueDate}
         onShowResponsibilityGroups={onShowResponsibilityGroups}

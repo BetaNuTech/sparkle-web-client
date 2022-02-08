@@ -15,8 +15,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
       <ReasonIncomplete
         deficientItem={createDeficientItem({ state: STATE })}
         isMobile={false}
-        onShowReasonIncomplete={sinon.spy()}
-        onChangeReasonIncomplete={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={false} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -32,8 +32,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
       <ReasonIncomplete
         deficientItem={createDeficientItem({ state: STATE })}
         isMobile={false}
-        onShowReasonIncomplete={sinon.spy()}
-        onChangeReasonIncomplete={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -52,8 +52,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
           state: STATE
         })}
         isMobile={false}
-        onShowReasonIncomplete={sinon.spy()}
-        onChangeReasonIncomplete={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -79,8 +79,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
           state: STATE
         })}
         isMobile={false}
-        onShowReasonIncomplete={sinon.spy()}
-        onChangeReasonIncomplete={sinon.spy()}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -93,7 +93,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
   });
 
   it('should render show previous button when deficient item has reasons incomplete', () => {
-    const onShowReasonIncomplete = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <ReasonIncomplete
         deficientItem={createDeficientItem(
@@ -101,8 +101,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
           { reasonsIncomplete: 1 }
         )}
         isMobile={false}
-        onShowReasonIncomplete={onShowReasonIncomplete}
-        onChangeReasonIncomplete={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -115,7 +115,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
 
   it('should trigger request to show previous reasons incomplete', () => {
     const expected = true;
-    const onShowReasonIncomplete = sinon.spy();
+    const onShowHistory = sinon.spy();
     render(
       <ReasonIncomplete
         deficientItem={createDeficientItem(
@@ -123,8 +123,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
           { reasonsIncomplete: 1 }
         )}
         isMobile={false}
-        onShowReasonIncomplete={onShowReasonIncomplete}
-        onChangeReasonIncomplete={sinon.spy()}
+        onShowHistory={onShowHistory}
+        onChange={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -136,13 +136,13 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
     act(() => {
       userEvent.click(showPreviousBtn);
     });
-    const actual = onShowReasonIncomplete.called;
+    const actual = onShowHistory.called;
     expect(actual).toBe(expected);
   });
 
   it('should request to update reason incomplete', () => {
     const expected = true;
-    const onChangeReasonIncomplete = sinon.spy();
+    const onChange = sinon.spy();
 
     render(
       <ReasonIncomplete
@@ -151,8 +151,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
           state: STATE
         })}
         isMobile={false}
-        onShowReasonIncomplete={sinon.spy()}
-        onChangeReasonIncomplete={onChangeReasonIncomplete}
+        onShowHistory={sinon.spy()}
+        onChange={onChange}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -166,7 +166,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
         target: { value: 'reason' }
       });
     });
-    const actual = onChangeReasonIncomplete.called;
+    const actual = onChange.called;
     expect(actual).toBe(expected);
   });
 });

@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import { deficientItemCurrentStateDescriptions } from '../../../../config/deficientItems';
 import getResponsibilityGroup from '../../../../common/utils/deficientItem/getResponsibilityGroup';
+import dateUtils from '../../../../common/utils/date';
 
 interface Props {
   history: any;
@@ -34,6 +35,15 @@ const HistoryItemDetails: FunctionComponent<Props> = ({
     case 'plansToFix':
       return history.planToFix ? (
         <span data-testid="history-details">{history.planToFix}</span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
+
+    case 'dueDates':
+      return history.dueDate ? (
+        <span data-testid="history-details">
+          {dateUtils.toUserDateDisplay(history.dueDate)}
+        </span>
       ) : (
         <span data-testid="history-details">Data missing</span>
       );

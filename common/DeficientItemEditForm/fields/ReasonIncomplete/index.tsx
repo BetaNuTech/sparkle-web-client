@@ -6,8 +6,8 @@ import fieldStyles from '../styles.module.scss';
 interface Props {
   deficientItem: DeficientItemModel;
   updates: DeficientItemModel;
-  onShowReasonIncomplete(): void;
-  onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowHistory(): void;
+  onChange(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
   isVisible: boolean;
 }
@@ -15,8 +15,8 @@ interface Props {
 const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
   deficientItem,
   updates,
-  onShowReasonIncomplete,
-  onChangeReasonIncomplete,
+  onShowHistory,
+  onChange,
   isMobile,
   isVisible
 }) => {
@@ -36,7 +36,7 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
         <h4 className={fieldStyles.heading}>Reason Incomplete</h4>
         {showHeaderAction && (
           <button
-            onClick={onShowReasonIncomplete}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-reason-incomplete-btn"
           >
@@ -65,7 +65,7 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
               !updates?.currentReasonIncomplete &&
                 fieldStyles['formInput--empty']
             )}
-            onChange={onChangeReasonIncomplete}
+            onChange={onChange}
             defaultValue={updates?.currentReasonIncomplete || ''}
             data-testid="item-reason-incomplete-textarea"
           />
@@ -74,7 +74,7 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
       {showFooterAction && (
         <footer className={fieldStyles.section__footer}>
           <button
-            onClick={onShowReasonIncomplete}
+            onClick={onShowHistory}
             className={fieldStyles.textButton}
             data-testid="show-previous-reason-incomplete-btn"
           >
