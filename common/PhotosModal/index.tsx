@@ -61,9 +61,7 @@ const PhotosModal: FunctionComponent<Props> = ({
   const [storedPhotosCount, setStoredPhotosCount] = useState(0);
 
   const hasExistingPhotos =
-    photosDataItems.length > 0 ||
-    unpublishedPhotosData.length > 0 ||
-    completedPhotos;
+    photosDataItems.length > 0 || unpublishedPhotosData.length > 0;
 
   // Promise to read file data into url
   const fileToDataURI = (file: File): Promise<string> =>
@@ -267,8 +265,8 @@ const PhotosModal: FunctionComponent<Props> = ({
         className={clsx(
           baseStyles.modal__main,
           styles.photosModal__main,
-          isDragActive && styles['PhotosModal__main--dragging'],
-          disableUpload && styles['PhotosModal__main--disabled']
+          isDragActive && styles['photosModal__main--dragging'],
+          disableUpload && styles['photosModal__main--disabled']
         )}
         data-testid="inspection-item-photos-dropzone"
         {...getRootProps()}
@@ -279,7 +277,7 @@ const PhotosModal: FunctionComponent<Props> = ({
             styles.photosModal__content
           )}
         >
-          {showCompletedList && (
+          {showCompletedList && !disabled && (
             <h5 className={styles.groupHeading}>New Completed Photo(s)</h5>
           )}
           <input {...getInputProps()} />
@@ -307,13 +305,15 @@ const PhotosModal: FunctionComponent<Props> = ({
               ))}
             </ul>
           )}
-          <div
-            className={clsx(
-              styles.actionWrapper,
-              !hasExistingPhotos && styles['actionWrapper--noPhotos']
-            )}
-          >
-            {!disabled && (
+          {!disabled && (
+            <div
+              className={clsx(
+                styles.actionWrapper,
+                !hasExistingPhotos &&
+                  !completedPhotos &&
+                  styles['actionWrapper--noPhotos']
+              )}
+            >
               <button
                 className={clsx(
                   styles.addAction,
@@ -328,8 +328,8 @@ const PhotosModal: FunctionComponent<Props> = ({
 
                 {!isProcessingPhotos && 'Add Files'}
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           {showCompletedList && (
             <CompletedPhotosList

@@ -13,6 +13,7 @@ import dateUtil from '../../common/utils/date';
 import Header from './Header';
 import useTrelloCard from './hooks/useTrelloCard';
 import useUpdateItem from './hooks/useUpdateItem';
+import useUnpublishedDeficiencyPhotos from './hooks/useUnpublishedDeficiencyPhotos';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
 
 type userNotifications = (message: string, options?: any) => any;
@@ -69,6 +70,13 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     unpublishedUpdates,
     deficientItem
   );
+
+  const {
+    addUnpublishedDeficiencyPhoto,
+    unpublishedDeficiencyPhotos,
+    addUnpublishedDeficiencyPhotoCaption,
+    removedUnpubilshedDeficiencyPhoto
+  } = useUnpublishedDeficiencyPhotos(sendNotification, deficientItem.id);
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -133,7 +141,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowCompletedPhotos = () => {
-    console.log('triggered on show completed photos action'); // eslint-disable-line
+    setIsVisibleCompletedPhotosModal(true);
   };
 
   const onUpdatePending = () => {
@@ -225,10 +233,17 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     updateCurrentCompleteNowReason(evt.target.value);
   };
 
-  const onChangeFiles = (files: Record<string, string | number>) => {
-    // eslint-disable-next-line
-    console.log('triggered on file change', files);
-  };
+  const onChangeFiles = async (file: Record<string, string | number>) =>
+    addUnpublishedDeficiencyPhoto(
+      file.dataUri as string,
+      file.size as number,
+      deficientItem.item,
+      deficientItem.inspection,
+      property.id,
+      deficientItem.currentStartDate
+    );
+
+  const hasUnpublishedPhotos = unpublishedDeficiencyPhotos.length > 0;
 
   return (
     <>
@@ -262,6 +277,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onInitiateDefer={onInitiateDefer}
         onUnpermittedDefer={onUnpermittedDefer}
         onShowCompletedPhotos={onShowCompletedPhotos}
+        hasUnpublishedPhotos={hasUnpublishedPhotos}
       />
 
       <DeficientItemEditForm
@@ -309,6 +325,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onUnpermittedDefer={onUnpermittedDefer}
         onShowCompletedPhotos={onShowCompletedPhotos}
         isCreatingTrelloCard={isCreatingTrelloCard}
+        hasUnpublishedPhotos={hasUnpublishedPhotos}
       />
 
       <PhotosModal
@@ -328,6 +345,10 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         showCompletedList={true} // eslint-disable-line
         sendNotification={sendNotification}
         onChangeFiles={onChangeFiles}
+        unpublishedPhotosData={unpublishedDeficiencyPhotos}
+        onAddCaption={addUnpublishedDeficiencyPhotoCaption}
+        onRemovePhoto={removedUnpubilshedDeficiencyPhoto}
+        disabled={deficientItem.state !== 'pending'}
       />
 
       <HistoryModal

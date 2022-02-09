@@ -10,7 +10,8 @@ import {
   canGoBackDeficientItem,
   canCloseDeficientItem,
   canDeferDeficientItem,
-  getLevelName
+  getLevelName,
+  canCompleteDeficientItem
 } from '../../../utils/userPermissions';
 import dateUtil from '../../../utils/date';
 
@@ -43,6 +44,7 @@ interface Props {
   onShowCompletedPhotos(): void;
   inline?: boolean;
   showHeader?: boolean;
+  hasUnpublishedPhotos: boolean;
 }
 
 const DeficientItemEditFormActions: FunctionComponent<Props> = ({
@@ -70,14 +72,16 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   onUnpermittedDefer,
   onShowCompletedPhotos,
   inline,
-  showHeader
+  showHeader,
+  hasUnpublishedPhotos
 }) => {
   const permissionLevel = getLevelName(user);
 
   const canClose = canCloseDeficientItem(user);
   const canDefer = canDeferDeficientItem(user);
+  const canComplete = canCompleteDeficientItem(user, deficientItem.property);
 
-  const showCompletedAction = deficientItem.state === 'pending';
+  const showCompletedAction = deficientItem.state === 'pending' && canComplete;
 
   const isDeferred = deficientItem.state === 'deferred';
 
@@ -126,11 +130,12 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   }, [deficientItem, isUpdatingDeferredDate, permissionLevel]);
 
   const showCompletedPhotosAction =
-    deficientItem.completedPhotos &&
-    !isUpdatingDeferredDate &&
-    !isUpdatingCurrentCompleteNowReason &&
-    !isDeferred &&
-    deficientItem.state !== 'go-back';
+    (deficientItem.completedPhotos &&
+      !isUpdatingDeferredDate &&
+      !isUpdatingCurrentCompleteNowReason &&
+      !isDeferred &&
+      deficientItem.state !== 'go-back') ||
+    (deficientItem.state === 'pending' && hasUnpublishedPhotos);
 
   const isAbleToTransitionToPending =
     Boolean(updates.currentPlanToFix) &&
@@ -299,9 +304,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
                     ? '-bgc-gray'
                     : '-bgc-primary-dark'
                 )}
-                disabled={
-                  isSaving || !updates.currentCompleteNowReason
-                }
+                disabled={isSaving || !updates.currentCompleteNowReason}
                 data-testid="action-confirm-complete-now"
                 onClick={onConfirmCompleteNow}
               >
