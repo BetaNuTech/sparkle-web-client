@@ -49,6 +49,7 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
                 <h6
                   className={styles.item__heading}
                   data-testid="property-name"
+                  title={property.name}
                 >
                   {property.name}
                 </h6>
@@ -56,6 +57,7 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
                   <p
                     className={styles.item__subHeading}
                     data-testid="property-addr1"
+                    title={property.addr1}
                   >
                     {property.addr1}
                   </p>
