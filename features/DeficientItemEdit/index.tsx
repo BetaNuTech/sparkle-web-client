@@ -105,7 +105,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowDeferredDates = () => {
-    console.log('triggered on show previous deferred dates action'); // eslint-disable-line
+    setHistoryType('deferredDates');
   };
 
   const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
