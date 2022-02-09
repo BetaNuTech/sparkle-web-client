@@ -33,7 +33,8 @@ export const deficientItemsHistoryTitles = {
   plansToFix: 'Plans to Fix - History',
   completeNowReasons: 'Complete Now Reason - History',
   reasonsIncomplete: 'Reasons Incomplete - History',
-  dueDates: 'Due Dates - History'
+  dueDates: 'Due Dates - History',
+  deferredDates: 'Deferred Dates - History'
 };
 
 export const deficientItemResponsibilityGroups = [

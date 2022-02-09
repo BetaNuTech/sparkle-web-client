@@ -150,6 +150,28 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
     expect(detailEl).toHaveTextContent(expected);
   });
 
+  it('should render deferred date if history type is "deferredDates"', () => {
+    const deficientItem = createDeficientItem(
+      { state: 'deferred' },
+      { deferredDates: 1 }
+    );
+    const deferredDatesKeys = Object.keys(deficientItem.deferredDates);
+    const history = deficientItem.deferredDates[deferredDatesKeys[0]];
+
+    const expected = `${dateUtils.toUserFullDateDisplay(
+      history.deferredDate
+    )} at ${dateUtils.toUserTimeDisplay(history.deferredDate)}`;
+
+    const props = {
+      historyType: 'deferredDates',
+      history
+    };
+    render(<ItemDetails {...props} />);
+
+    const detailEl = screen.queryByTestId('history-details');
+    expect(detailEl).toHaveTextContent(expected);
+  });
+
   it('should render fallback message "Data missing"', () => {
     const expected = 'Data missing';
     const historyTypes = Object.keys(deficientItemsHistoryTitles);

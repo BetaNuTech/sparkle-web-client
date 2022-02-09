@@ -64,6 +64,17 @@ const HistoryItemDetails: FunctionComponent<Props> = ({
         <span data-testid="history-details">Data missing</span>
       );
       break;
+
+    case 'deferredDates':
+      return history.deferredDate ? (
+        <span data-testid="history-details">
+          {dateUtils.toUserFullDateDisplay(history.deferredDate)} at{' '}
+          {dateUtils.toUserTimeDisplay(history.deferredDate)}
+        </span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
+      break;
     default:
       return <></>;
       break;
