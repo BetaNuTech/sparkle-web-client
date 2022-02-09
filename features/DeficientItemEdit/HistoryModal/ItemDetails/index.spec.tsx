@@ -88,6 +88,28 @@ describe('Unit | features | Deficient Item Edit | History Modal | Item Details',
     expect(detailEl).toHaveTextContent(expected);
   });
 
+  it('should render complete now reason if history type is "completeNowReasons"', () => {
+    const deficientItem = createDeficientItem(
+      { state: 'pending' },
+      { completeNowReasons: 1 }
+    );
+    const completeNowReasonsKeys = Object.keys(
+      deficientItem.completeNowReasons
+    );
+    const history = deficientItem.completeNowReasons[completeNowReasonsKeys[0]];
+
+    const expected = history.completeNowReason;
+
+    const props = {
+      historyType: 'completeNowReasons',
+      history
+    };
+    render(<ItemDetails {...props} />);
+
+    const detailEl = screen.queryByTestId('history-details');
+    expect(detailEl).toHaveTextContent(expected);
+  });
+
   it('should render reason incomplete if history type is "reasonsIncomplete"', () => {
     const deficientItem = createDeficientItem(
       { state: 'pending' },

@@ -12,7 +12,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
   it('should not show previous plans to fix button when deficient item has past plans to fix', () => {
     render(
       <PlanToFix
-        deficientItem={createDeficientItem({})}
+        deficientItem={createDeficientItem({ state: 'requires-action' })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={sinon.spy()}
@@ -29,7 +29,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
   it('should allows updating a plan to fix when deficient item has no current plan', () => {
     render(
       <PlanToFix
-        deficientItem={createDeficientItem({ currentPlanToFix: '' })}
+        deficientItem={createDeficientItem({
+          state: 'requires-action',
+          currentPlanToFix: ''
+        })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={sinon.spy()}
@@ -49,7 +52,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
 
     render(
       <PlanToFix
-        deficientItem={createDeficientItem({ currentPlanToFix: expected })}
+        deficientItem={createDeficientItem({
+          state: 'requires-action',
+          currentPlanToFix: expected
+        })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={sinon.spy()}
@@ -66,7 +72,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
     const onShowHistory = sinon.spy();
     render(
       <PlanToFix
-        deficientItem={createDeficientItem({}, { plansToFix: 1 })}
+        deficientItem={createDeficientItem(
+          { state: 'requires-action' },
+          { plansToFix: 1 }
+        )}
         isMobile={false}
         onShowHistory={onShowHistory}
         onChange={sinon.spy()}
@@ -85,7 +94,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
     const onShowHistory = sinon.spy();
     render(
       <PlanToFix
-        deficientItem={createDeficientItem({}, { plansToFix: 1 })}
+        deficientItem={createDeficientItem(
+          { state: 'requires-action' },
+          { plansToFix: 1 }
+        )}
         isMobile={false}
         onShowHistory={onShowHistory}
         onChange={sinon.spy()}
@@ -111,7 +123,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Plan To Fix', () =
 
     render(
       <PlanToFix
-        deficientItem={createDeficientItem({ currentPlanToFix: '' })}
+        deficientItem={createDeficientItem({
+          state: 'requires-action',
+          currentPlanToFix: ''
+        })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={onChange}

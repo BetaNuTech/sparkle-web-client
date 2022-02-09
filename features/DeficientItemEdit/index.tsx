@@ -218,7 +218,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onShowCompleteNowReason = () => {
-    console.log('triggered on show complete now reason action'); // eslint-disable-line
+    setHistoryType('completeNowReasons');
   };
 
   const onChangeCompleteNowReason = (evt: ChangeEvent<HTMLTextAreaElement>) => {

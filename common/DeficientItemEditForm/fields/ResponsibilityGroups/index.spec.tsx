@@ -12,7 +12,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
   it('should hides current responsibility group section when not relevant', () => {
     render(
       <ResponsibilityGroup
-        deficientItem={createDeficientItem({})}
+        deficientItem={createDeficientItem({ state: 'requires-action' })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={sinon.spy()}
@@ -29,7 +29,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
   it('should not render show previous button when deficient item does not have previous history', () => {
     render(
       <ResponsibilityGroup
-        deficientItem={createDeficientItem({})}
+        deficientItem={createDeficientItem({ state: 'requires-action' })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={sinon.spy()}
@@ -46,7 +46,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
   it('should allows updating a responsibility group when deficient item has no current responsiblity group', () => {
     render(
       <ResponsibilityGroup
-        deficientItem={createDeficientItem({ currentResponsibilityGroup: '' })}
+        deficientItem={createDeficientItem({
+          state: 'requires-action',
+          currentResponsibilityGroup: ''
+        })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={sinon.spy()}
@@ -69,6 +72,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
     render(
       <ResponsibilityGroup
         deficientItem={createDeficientItem({
+          state: 'requires-action',
           currentResponsibilityGroup: responsibilityGroup.value
         })}
         isMobile={false}
@@ -91,7 +95,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
     const onShowHistory = sinon.spy();
     render(
       <ResponsibilityGroup
-        deficientItem={createDeficientItem({}, { responsibilityGroups: 1 })}
+        deficientItem={createDeficientItem(
+          { state: 'requires-action' },
+          { responsibilityGroups: 1 }
+        )}
         isMobile={false}
         onShowHistory={onShowHistory}
         onChange={sinon.spy()}
@@ -110,7 +117,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
     const onShowHistory = sinon.spy();
     render(
       <ResponsibilityGroup
-        deficientItem={createDeficientItem({}, { responsibilityGroups: 1 })}
+        deficientItem={createDeficientItem(
+          { state: 'requires-action' },
+          { responsibilityGroups: 1 }
+        )}
         isMobile={false}
         onShowHistory={onShowHistory}
         onChange={sinon.spy()}
@@ -136,7 +146,10 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Responsibility Gro
 
     render(
       <ResponsibilityGroup
-        deficientItem={createDeficientItem({ currentResponsibilityGroup: '' })}
+        deficientItem={createDeficientItem({
+          state: 'requires-action',
+          currentResponsibilityGroup: ''
+        })}
         isMobile={false}
         onShowHistory={sinon.spy()}
         onChange={onChange}
