@@ -316,3 +316,9 @@ export const canDeferDeficientItem = (user: userModel): boolean =>
 // Checks that the user can create trello card for a deficient item
 export const canCreateTrelloCard = (user: userModel): boolean =>
   user.admin || user.corporate;
+
+export const canCompleteDeficientItem = (
+  user: userModel,
+  propertyId: string
+): boolean =>
+  user.admin || user.corporate || hasPropertyAccess(user, propertyId);

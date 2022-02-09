@@ -4,6 +4,7 @@ import UnpublishedPhotoDataModal from '../../models/inspections/templateItemUnpu
 import unpublishedSignature from '../../models/inspections/templateItemUnpublishedSignature';
 import unpublishedTemplateUpdate from '../../models/inspections/unpublishedTemplateUpdate';
 import DeficientItemLocalUpdates from '../../models/deficientItems/unpublishedUpdates';
+import DeficientItemLocalPhotos from '../../models/deficientItems/unpublishedPhotos';
 
 export class InitDexie extends Dexie {
   // 'inspectionItemPhotos' is added by dexie when declaring the stores()
@@ -16,10 +17,12 @@ export class InitDexie extends Dexie {
 
   deficientItemUpdates!: Table<DeficientItemLocalUpdates>;
 
+  deficientItemPhotos!: Table<DeficientItemLocalPhotos>;
+
   constructor() {
     super('sparkle-database');
     // each time we update or add table, we need to update version to upgrade database
-    this.version(4).stores({
+    this.version(5).stores({
       inspectionItemPhotos:
         'id, createdAt,caption,inspection,item,photoData,property,size', // Primary key and indexed props
       inspectionSignature:
@@ -28,7 +31,10 @@ export class InitDexie extends Dexie {
 
       deficientItemUpdates: `id,createdAt, property, inspection, deficiency, state, currentDueDate, 
         currentReasonIncomplete, currentDeferredDate, currentPlanToFix, 
-        currentCompleteNowReason, currentResponsibilityGroup, currentStartDate` // Primary key and indexed props
+        currentCompleteNowReason, currentResponsibilityGroup, currentStartDate`, // Primary key and indexed props
+
+      deficientItemPhotos: `id, createdAt,caption,property,deficiency,inspection,
+        item,startDate,photoData,size` // Primary key and indexed props
     });
   }
 }

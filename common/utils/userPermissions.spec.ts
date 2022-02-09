@@ -1037,4 +1037,17 @@ describe('Unit | Common | Utils | User Permissions', () => {
     ];
     expect(actual).toEqual(expected);
   });
+
+  test('it should only allow admins, corporate users and property level users to complete deficient item', () => {
+    const expected = [true, true, true, true, false];
+
+    const actual = [
+      util.canCompleteDeficientItem(admin, 'property-1'),
+      util.canCompleteDeficientItem(corporate, 'property-1'),
+      util.canCompleteDeficientItem(teamLead, 'property-1'),
+      util.canCompleteDeficientItem(propertyMember, 'property-1'),
+      util.canCompleteDeficientItem(noAccess, 'property-1')
+    ];
+    expect(actual).toEqual(expected);
+  });
 });

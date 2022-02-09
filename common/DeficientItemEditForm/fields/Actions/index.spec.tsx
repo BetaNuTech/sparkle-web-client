@@ -3,7 +3,13 @@ import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
 import sinon from 'sinon';
 import moment from 'moment';
-import { admin, corporate, teamMember } from '../../../../__mocks__/users';
+import {
+  admin,
+  corporate,
+  noAccess,
+  propertyMember,
+  teamMember
+} from '../../../../__mocks__/users';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
 import settings from '../../settings';
 import Actions from './index';
@@ -20,7 +26,7 @@ const INCOMPLETE_UPDATE_STATES = ['overdue'];
 describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   afterEach(() => sinon.restore());
 
-  it('it only reveals "COMPLETED" button when deficient item is pending', () => {
+  it('only reveals "COMPLETED" button when deficient item is pending', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -62,7 +68,66 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "GO BACK" action when expected', () => {
+  // eslint-disable-next-line max-len
+  it('only reveals "COMPLETE" button to admin, corporate, or property level users when deficient item state is pending', () => {
+    const deficientItem = createDeficientItem({
+      state: 'pending',
+      property: 'property-1'
+    });
+    const props = {
+      user: admin,
+      deficientItem,
+      updates: {},
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false
+    };
+
+    const tests = [
+      {
+        user: noAccess,
+        expected: false,
+        message: 'should not render COMPLETE button'
+      },
+      {
+        user: admin,
+        expected: true,
+        message: 'should render COMPLETE button for admin user'
+      },
+      {
+        user: corporate,
+        expected: true,
+        message: 'should render COMPLETE button for corporate user'
+      },
+      {
+        user: propertyMember,
+        expected: true,
+        message: 'should render COMPLETE button for property level user'
+      }
+    ];
+
+    const { rerender } = render(<Actions {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const { user, expected, message } = test;
+      const componentProps = { ...props, user };
+      rerender(<Actions {...componentProps} />);
+      const action = screen.queryByTestId('action-completed');
+      expect(Boolean(action), message).toEqual(expected);
+    }
+  });
+
+  it('only reveals "GO BACK" action when expected', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -102,7 +167,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "DUPLICATE" button when deficient item is deferred', () => {
+  it('only reveals "DUPLICATE" button when deficient item is deferred', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -152,7 +217,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "DUPLICATE" permission warning button when lacking permissions', () => {
+  it('only reveals "DUPLICATE" permission warning button when lacking permissions', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -201,7 +266,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "CLOSE" button when deficient item is completed or incomplete', () => {
+  it('only reveals "CLOSE" button when deficient item is completed or incomplete', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -247,7 +312,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "DEFER" action when expected', () => {
+  it('only reveals "DEFER" action when expected', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -287,7 +352,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it triggers an unpermitted defer when initiating defer without permission', () => {
+  it('triggers an unpermitted defer when initiating defer without permission', () => {
     const expected = true;
     const onUnpermittedDefer = sinon.spy();
     const props = {
@@ -320,7 +385,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     expect(actual).toBe(expected);
   });
 
-  it('it allows user to cancel selecting a deferred date', () => {
+  it('allows user to cancel selecting a deferred date', () => {
     const expected = true;
     const onCancelDefer = sinon.spy();
     const props = {
@@ -356,7 +421,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     expect(actual).toBe(expected);
   });
 
-  it('it allows completing defer once a defer date is set', () => {
+  it('allows completing defer once a defer date is set', () => {
     const expected = true;
     const onConfirmDefer = sinon.spy();
     const props = {
@@ -393,7 +458,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     expect(actual).toBe(expected);
   });
 
-  it('it only reveals "COMPLETE NOW" action for expected states', () => {
+  it('only reveals "COMPLETE NOW" action for expected states', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -436,7 +501,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "COMPLETE NOW" action for 72 hours for normal users', () => {
+  it('only reveals "COMPLETE NOW" action for 72 hours for normal users', () => {
     const props = {
       user: teamMember,
       deficientItem: createDeficientItem(),
@@ -515,7 +580,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals "COMPLETE NOW" action for 7 days for corporate users', () => {
+  it('only reveals "COMPLETE NOW" action for 7 days for corporate users', () => {
     const props = {
       user: corporate,
       deficientItem: createDeficientItem(),
@@ -573,7 +638,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it always reveals "COMPLETE NOW" action for admin users', () => {
+  it('always reveals "COMPLETE NOW" action for admin users', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -631,7 +696,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it allows user to trigger canceling a complete now', () => {
+  it('allows user to trigger canceling a complete now', () => {
     const expected = true;
     const onCancelCompleteNow = sinon.spy();
     const props = {
@@ -667,7 +732,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     expect(actual).toBe(expected);
   });
 
-  it('it only reveals pending "UPDATE" action for expected states', () => {
+  it('only reveals pending "UPDATE" action for expected states', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -711,7 +776,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it does not reveal any update pending actions before user has made any updates', () => {
+  it('does not reveal any update pending actions before user has made any updates', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
@@ -741,7 +806,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     expect(updatePendingUnpermittedAction).toBeNull();
   });
 
-  it('it triggers unpermitted pending when lacking required user updates', () => {
+  it('triggers unpermitted pending when lacking required user updates', () => {
     const onUnpermittedPending = sinon.spy();
     const props = {
       user: admin,
@@ -805,7 +870,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals add progress note action when expected', () => {
+  it('only reveals add progress note action when expected', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -847,7 +912,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it allows adding a progress note after user provides valid update', () => {
+  it('allows adding a progress note after user provides valid update', () => {
     const onAddProgressNote = sinon.spy();
     const props = {
       user: admin,
@@ -904,7 +969,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals incomplete "UPDATE" action for expected states', () => {
+  it('only reveals incomplete "UPDATE" action for expected states', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -944,7 +1009,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it allows transitioning to incomplete after user provides valid reason', () => {
+  it('allows transitioning to incomplete after user provides valid reason', () => {
     const onUpdateIncomplete = sinon.spy();
     const props = {
       user: admin,
@@ -1001,7 +1066,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it triggers each actions for each relvant DI state', () => {
+  it('triggers each actions for each relvant DI state', () => {
     const onComplete = sinon.spy();
     const onGoBack = sinon.spy();
     const onClose = sinon.spy();
@@ -1078,7 +1143,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('it only reveals show completed photos button when deficient item has completed photos', () => {
+  // eslint-disable-next-line max-len
+  it('only reveals show completed photos button when deficient item has completed photos, or state is pending with unpublished photos', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -1100,15 +1166,25 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const tests = [
       {
         data: createDeficientItem({ state: 'pending' }), // no completed photos
-        expected: false
+        expected: false,
+        message: 'should not render show completed photos button'
       },
       {
         data: createDeficientItem({ state: 'pending' }, { completedPhotos: 1 }), // has completed photos
-        expected: true
+        expected: true,
+        message: 'should render show completed photos button'
       },
       {
         data: createDeficientItem({ state: 'closed' }, { completedPhotos: 1 }), // has completed photos
-        expected: true
+        expected: true,
+        message: 'should render show completed photos button'
+      },
+      {
+        data: createDeficientItem({ state: 'pending' }), // has completed photos,
+        hasUnpublishedPhotos: true,
+        expected: true,
+        message:
+          'should render show completed photos button if item has unpublished photos'
       }
     ];
 
@@ -1116,15 +1192,19 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const test of tests) {
-      const { data, expected } = test;
-      const componentProps = { ...props, deficientItem: data };
+      const { data, expected, message, hasUnpublishedPhotos } = test;
+      const componentProps = {
+        ...props,
+        deficientItem: data,
+        hasUnpublishedPhotos
+      };
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId('action-show-completed-photos');
-      expect(Boolean(action)).toEqual(expected);
+      expect(Boolean(action), message).toEqual(expected);
     }
   });
 
-  it('it triggers request to show completed photos when present', () => {
+  it('triggers request to show completed photos when present', () => {
     const expected = true;
     const onShowCompletedPhotos = sinon.spy();
     const props = {

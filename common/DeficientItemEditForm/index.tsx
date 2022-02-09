@@ -16,9 +16,9 @@ import DeferredDate from './fields/DeferredDate';
 import ResponsibilityGroups from './fields/ResponsibilityGroups';
 import TrelloCard from './fields/TrelloCard';
 import Actions from './fields/Actions';
+import { canCreateTrelloCard } from '../utils/userPermissions';
 
 import styles from './styles.module.scss';
-import { canCreateTrelloCard } from '../utils/userPermissions';
 
 const PROGRESS_NOTE_STATES = [
   'requires-progress-update',
@@ -79,6 +79,7 @@ interface Props {
   onUnpermittedDefer(): void;
   onShowCompletedPhotos(): void;
   isCreatingTrelloCard: boolean;
+  hasUnpublishedPhotos: boolean;
 }
 
 const DeficientItemEditForm: FunctionComponent<Props> = ({
@@ -125,7 +126,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onInitiateDefer,
   onUnpermittedDefer,
   onShowCompletedPhotos,
-  isCreatingTrelloCard
+  isCreatingTrelloCard,
+  hasUnpublishedPhotos
 }) => {
   // set default date to tomorrow
   const defaultDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -311,6 +313,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
               onInitiateDefer={onInitiateDefer}
               onUnpermittedDefer={onUnpermittedDefer}
               onShowCompletedPhotos={onShowCompletedPhotos}
+              hasUnpublishedPhotos={hasUnpublishedPhotos}
             />
           )}
           {isMobile && (
