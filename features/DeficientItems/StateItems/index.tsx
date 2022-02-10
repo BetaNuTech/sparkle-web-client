@@ -18,13 +18,13 @@ const DeficientStateItems: FunctionComponent<Props> = ({
   }
 
   return (
-    <div>
+    <>
       <StateItemHeader
         state={deficientItemState}
         itemCount={deficientItems.length}
       />
       <List deficientItems={deficientItems} />
-    </div>
+    </>
   );
 };
 

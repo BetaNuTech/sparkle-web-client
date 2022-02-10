@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import Dropdown from '../../../features/Properties/DropdownAdd';
 
-interface PropertiesHeaderModel {
+interface Props {
   sortBy: string;
   sortDir: string;
   onSortChange: any;
@@ -13,7 +13,7 @@ interface PropertiesHeaderModel {
   headerTitle?: string;
 }
 
-const Header: FunctionComponent<PropertiesHeaderModel> = ({
+const Header: FunctionComponent<Props> = ({
   sortBy,
   sortDir,
   onSortChange,
