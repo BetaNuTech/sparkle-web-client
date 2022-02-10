@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo } from 'react';
+import { ChangeEvent, FunctionComponent, useMemo, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -22,6 +22,9 @@ const DeficientItems: FunctionComponent<Props> = ({
   deficientItems,
   property
 }) => {
+  const [sortBy, setSortBy] = useState('updatedAt');
+  const [sortDir, setSortDir] = useState('asc');
+
   // Grouping of deficient items by state
   const deficientItemsByState = useMemo(
     () =>
@@ -41,14 +44,26 @@ const DeficientItems: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  const onSortChange = (key: string, evt?: ChangeEvent<HTMLSelectElement>) => {
+    if (key === 'sortBy') {
+      setSortBy(evt.target.value);
+    }
+    if (key === 'sortDir') {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    }
+  };
+
   return (
     <>
       <Header
-        propertyId={property.id}
+        property={property}
         isOnline={isOnline}
         isStaging={isStaging}
         isTablet={isTablet}
         isDesktop={isDesktop}
+        sortBy={sortBy}
+        sortDir={sortDir}
+        onSortChange={onSortChange}
       />
       <ItemsStateGroup deficientItemsByState={deficientItemsByState} />
     </>
