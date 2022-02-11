@@ -159,6 +159,20 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
             />
           </div>
         </div>
+
+        <div className={styles.propertyEditMobile__formGroup}>
+          <div className={styles.propertyEditMobile__formGroup__control}>
+            <label htmlFor="slackChannel">Slack Channel</label>
+            <input
+              id="slackChannel"
+              type="text"
+              name="slackChannel"
+              onChange={handleChange}
+              value={formState.slackChannel || ''}
+              placeholder="#slack-channel"
+            />
+          </div>
+        </div>
         {/* Address */}
         <div className={styles.propertyEditMobile__formGroup}>
           <div className={styles.propertyEditMobile__formGroup__control}>
