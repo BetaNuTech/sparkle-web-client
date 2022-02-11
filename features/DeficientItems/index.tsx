@@ -5,7 +5,7 @@ import propertyModel from '../../common/models/property';
 import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import utilArray from '../../common/utils/array';
-import ItemsStateGroup from './ItemsStateGroup';
+import StateGroups from './StateGroups';
 import Header from './Header';
 
 interface Props {
@@ -14,13 +14,15 @@ interface Props {
   user: userModel;
   property: propertyModel;
   deficientItems: deficientItemModel[];
+  forceVisible?: boolean;
 }
 
 const DeficientItems: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   deficientItems,
-  property
+  property,
+  forceVisible
 }) => {
   const [sortBy, setSortBy] = useState('updatedAt');
   const [sortDir, setSortDir] = useState('asc');
@@ -65,7 +67,10 @@ const DeficientItems: FunctionComponent<Props> = ({
         sortDir={sortDir}
         onSortChange={onSortChange}
       />
-      <ItemsStateGroup deficientItemsByState={deficientItemsByState} />
+      <StateGroups
+        deficientItemsByState={deficientItemsByState}
+        forceVisible={forceVisible}
+      />
     </>
   );
 };

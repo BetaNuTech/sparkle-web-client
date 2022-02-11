@@ -27,6 +27,13 @@ describe('Unit | Common | Utils | Date', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it converts a timestamp to user date display format with full year', () => {
+    const expected = true;
+    const result = date.toUserDateDisplayWithFullYear(1622676604);
+    const actual = /\d\d\/\d\d\/\d\d\d\d/.test(result);
+    expect(actual).toEqual(expected);
+  });
+
   test('it creates user date display formatted date from current timestamp when none provided', () => {
     const expected = false;
     const sinonUnix = sinon.stub(moment, 'unix').callThrough();
