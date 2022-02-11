@@ -322,6 +322,19 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
                 />
               </div>
             </div>
+            <div className={styles.propertyEditDesktop__formGroup}>
+              <div className={styles.propertyEditDesktop__formGroup__control}>
+                <label htmlFor="slackChannel">Slack Channel</label>
+                <input
+                  id="slackChannel"
+                  type="text"
+                  name="slackChannel"
+                  onChange={handleChange}
+                  value={formState.slackChannel || ''}
+                  placeholder="#slack-channel"
+                />
+              </div>
+            </div>
             {/* Address */}
             <div className={styles.propertyEditDesktop__formGroup}>
               <div className={styles.propertyEditDesktop__formGroup__control}>
