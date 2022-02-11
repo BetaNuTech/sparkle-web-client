@@ -18,6 +18,14 @@ export default {
       : moment().format(formats.userDateDisplay);
   },
 
+  // Convert a UNIX timestamp to app's
+  // User Date Display format with full year
+  toUserDateDisplayWithFullYear(unixtimestamp?: number): string {
+    return unixtimestamp
+      ? moment.unix(unixtimestamp).format(formats.userDateDisplayFullYear)
+      : moment().format(formats.userDateDisplayFullYear);
+  },
+
   // Create a date string in "MMMM D, YYYY" format
   toUserFullDateDisplay(unixtimestamp?: number): string {
     return unixtimestamp

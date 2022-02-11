@@ -1,0 +1,87 @@
+@import '../../../../../styles/index.scss';
+
+.container {
+  min-height: rem-calc(82);
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  padding: $global-sm-padding $global-padding;
+  border-bottom: 1px solid $gray-lighter;
+
+  &__left,
+  &__right {
+    display: flex;
+    flex-direction: column;
+    flex: 0 1 auto;
+  }
+
+  &__right {
+    align-items: flex-end;
+  }
+}
+
+.badge {
+  font-weight: 300;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  background-color: $gray-darker;
+  padding: 0 rem-calc(4);
+  color: $white;
+  border-radius: $global-radius;
+  line-height: 1.4;
+  margin-bottom: $global-xsm-padding;
+
+  &--corporate,
+  &--corporate_manages_vendor,
+  &--completed,
+  &--deferred,
+  &--requires-progress-update,
+  &--pending {
+    background-color: $info-color;
+  }
+
+  &--site_level_in-house {
+    background-color: $black;
+  }
+
+  &--incomplete,
+  &--overdue,
+  &--requires-action,
+  &--go-back {
+    background-color: $alert-color;
+  }
+
+  &--closed {
+    background-color: $gray-light;
+  }
+}
+
+.icon {
+  background-color: $gray;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: rem-calc(40);
+  height: rem-calc(40);
+  border-radius: 50%;
+
+  svg {
+    max-width: rem-calc(24);
+    max-height: rem-calc(24);
+
+    path,
+    g,
+    poligon {
+      fill: $gray-6;
+    }
+  }
+}
+
+.title {
+  font-weight: bold;
+  font-size: rem-calc(14);
+  line-height: 1.3;
+  color: $black;
+}
