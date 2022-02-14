@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import React, { FunctionComponent, Fragment } from 'react';
 import deficientItemModel from '../../../common/models/deficientItem';
 import { deficientItemStateOrder } from '../../../config/deficientItems';
 import Header from './Header';
@@ -20,17 +20,17 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
         deficientItemsByState.get(deficientItemState) || [];
 
       if (deficientItems.length === 0) {
-        return <></>;
+        return <Fragment key={deficientItemState}></Fragment>;
       }
 
       return (
-        <>
+        <Fragment key={deficientItemState}>
           <Header
             state={deficientItemState}
             itemCount={deficientItems.length}
           />
           <List deficientItems={deficientItems} forceVisible={forceVisible} />
-        </>
+        </Fragment>
       );
     })}
   </div>

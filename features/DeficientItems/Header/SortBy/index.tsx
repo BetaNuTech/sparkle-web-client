@@ -5,13 +5,15 @@ import styles from './styles.module.scss';
 interface Props {
   sortBy: string;
   sortDir: string;
-  onSortChange(key: string, evt?: ChangeEvent<HTMLSelectElement>): void;
+  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
+  onSortDirChange(): void;
 }
 
 const SortBy: FunctionComponent<Props> = ({
   sortBy,
   sortDir,
-  onSortChange
+  onSortChange,
+  onSortDirChange
 }) => (
   <div className={styles.sortBy}>
     <div className={styles.sortBy__item}>
@@ -19,7 +21,7 @@ const SortBy: FunctionComponent<Props> = ({
 
       <select
         value={sortBy}
-        onChange={(evt) => onSortChange('sortBy', evt)}
+        onChange={onSortChange}
         className={styles.sortBy__menu}
       >
         <option value="updatedAt">Last Update</option>
@@ -31,7 +33,7 @@ const SortBy: FunctionComponent<Props> = ({
     </div>
     <div className={styles.sortBy__item}>
       <button
-        onClick={() => onSortChange('sortDir')}
+        onClick={onSortDirChange}
         className={clsx(styles.sortBy__sortDirButton, styles[`-${sortDir}`])}
       />
     </div>
