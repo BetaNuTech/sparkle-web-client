@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import Link from 'next/link';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
@@ -14,20 +14,26 @@ interface Props {
   isOnline: boolean;
   isStaging: boolean;
   isDesktop: boolean;
-  isTablet: boolean;
+  isMobile: boolean;
   sortBy: string;
   sortDir: string;
-  onSortChange(key: string): void;
+  userFacingSortBy: string;
+  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
+  onSortDirChange(): void;
+  nextDeficientItemSort(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
   property,
   isOnline,
   isStaging,
-  isTablet,
+  isMobile,
   sortBy,
   sortDir,
-  onSortChange
+  onSortChange,
+  onSortDirChange,
+  nextDeficientItemSort,
+  userFacingSortBy
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -46,7 +52,7 @@ const Header: FunctionComponent<Props> = ({
     <>
       <button
         className={headStyle.header__button}
-        onClick={() => onSortChange('sortDir')}
+        onClick={() => nextDeficientItemSort()}
       >
         <FolderIcon />
       </button>
@@ -55,7 +61,7 @@ const Header: FunctionComponent<Props> = ({
 
   return (
     <>
-      {isTablet ? (
+      {isMobile ? (
         <>
           <MobileHeader
             isOnline={isOnline}
@@ -68,7 +74,9 @@ const Header: FunctionComponent<Props> = ({
           <div className={styles.search}>
             <input className={styles.search__input} type="search" />
           </div>
-          <div className={styles.sortInfoLine}>Sorted by Due/Deferred Date</div>
+          <div className={styles.sortInfoLine}>
+            Sorted by {userFacingSortBy}
+          </div>
         </>
       ) : (
         <DesktopHeader
@@ -77,6 +85,7 @@ const Header: FunctionComponent<Props> = ({
           right={
             <SortBy
               onSortChange={onSortChange}
+              onSortDirChange={onSortDirChange}
               sortBy={sortBy}
               sortDir={sortDir}
             />

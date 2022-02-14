@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent, useMemo, useState } from 'react';
+import { FunctionComponent, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -7,6 +7,7 @@ import userModel from '../../common/models/user';
 import utilArray from '../../common/utils/array';
 import StateGroups from './StateGroups';
 import Header from './Header';
+import useSorting from './hooks/useSorting';
 
 interface Props {
   isOnline?: boolean;
@@ -24,21 +25,8 @@ const DeficientItems: FunctionComponent<Props> = ({
   property,
   forceVisible
 }) => {
-  const [sortBy, setSortBy] = useState('updatedAt');
-  const [sortDir, setSortDir] = useState('asc');
-
-  // Grouping of deficient items by state
-  const deficientItemsByState = useMemo(
-    () =>
-      utilArray.groupBy<string, deficientItemModel>(
-        deficientItems,
-        (item) => item.state
-      ),
-    [deficientItems]
-  );
-
   // Responsive queries
-  const isTablet = useMediaQuery({
+  const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
@@ -46,14 +34,26 @@ const DeficientItems: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
-  const onSortChange = (key: string, evt?: ChangeEvent<HTMLSelectElement>) => {
-    if (key === 'sortBy') {
-      setSortBy(evt.target.value);
-    }
-    if (key === 'sortDir') {
-      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
-    }
-  };
+  // Sort properties
+  const {
+    sortedDeficientItems,
+    sortDir,
+    sortBy,
+    userFacingSortBy,
+    nextDeficientItemSort,
+    onSortChange,
+    onSortDirChange
+  } = useSorting(deficientItems, isMobile ? 'asc' : 'desc');
+
+  // Grouping of deficient items by state
+  const deficientItemsByState = useMemo(
+    () =>
+      utilArray.groupBy<string, deficientItemModel>(
+        sortedDeficientItems,
+        (item) => item.state
+      ),
+    [sortedDeficientItems]
+  );
 
   return (
     <>
@@ -61,11 +61,14 @@ const DeficientItems: FunctionComponent<Props> = ({
         property={property}
         isOnline={isOnline}
         isStaging={isStaging}
-        isTablet={isTablet}
+        isMobile={isMobile}
         isDesktop={isDesktop}
         sortBy={sortBy}
         sortDir={sortDir}
+        nextDeficientItemSort={nextDeficientItemSort}
+        userFacingSortBy={userFacingSortBy}
         onSortChange={onSortChange}
+        onSortDirChange={onSortDirChange}
       />
       <StateGroups
         deficientItemsByState={deficientItemsByState}
