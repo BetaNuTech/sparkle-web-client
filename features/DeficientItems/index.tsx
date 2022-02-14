@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo } from 'react';
+import { FunctionComponent, useEffect, useMemo, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -7,6 +7,7 @@ import userModel from '../../common/models/user';
 import utilArray from '../../common/utils/array';
 import StateGroups from './StateGroups';
 import Header from './Header';
+import useSearching from '../../common/hooks/useSearching';
 import useSorting from './hooks/useSorting';
 
 interface Props {
@@ -45,14 +46,31 @@ const DeficientItems: FunctionComponent<Props> = ({
     onSortDirChange
   } = useSorting(deficientItems, isMobile ? 'asc' : 'desc');
 
+  const { onSearchKeyDown, filteredItems, searchParam, onClearSearch } =
+    useSearching(sortedDeficientItems, [
+      'itemTitle',
+      'sectionTitle',
+      'sectionSubTitle'
+    ]);
+
+  const filteredDeficientItems = filteredItems.map(
+    (item) => item as deficientItemModel
+  );
+
+  const [searchQuery, setSearchQuery] = useState(searchParam);
+
+  useEffect(() => {
+    setSearchQuery(searchParam);
+  }, [searchParam]);
+
   // Grouping of deficient items by state
   const deficientItemsByState = useMemo(
     () =>
       utilArray.groupBy<string, deficientItemModel>(
-        sortedDeficientItems,
+        filteredDeficientItems,
         (item) => item.state
       ),
-    [sortedDeficientItems]
+    [filteredDeficientItems]
   );
 
   return (
@@ -69,10 +87,18 @@ const DeficientItems: FunctionComponent<Props> = ({
         userFacingSortBy={userFacingSortBy}
         onSortChange={onSortChange}
         onSortDirChange={onSortDirChange}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSearchKeyDown={onSearchKeyDown}
       />
       <StateGroups
         deficientItemsByState={deficientItemsByState}
         forceVisible={forceVisible}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
+        isMobile={isMobile}
       />
     </>
   );
