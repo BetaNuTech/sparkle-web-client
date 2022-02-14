@@ -21,6 +21,9 @@ interface Props {
   onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
   onSortDirChange(): void;
   nextDeficientItemSort(): void;
+  searchQuery: string;
+  setSearchQuery(query: string): void;
+  onSearchKeyDown: any;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -33,7 +36,10 @@ const Header: FunctionComponent<Props> = ({
   onSortChange,
   onSortDirChange,
   nextDeficientItemSort,
-  userFacingSortBy
+  userFacingSortBy,
+  searchQuery,
+  onSearchKeyDown,
+  setSearchQuery
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -72,7 +78,13 @@ const Header: FunctionComponent<Props> = ({
           />
           <Breadcrumbs property={property} />
           <div className={styles.search}>
-            <input className={styles.search__input} type="search" />
+            <input
+              className={styles.search__input}
+              type="search"
+              value={searchQuery}
+              onKeyDown={onSearchKeyDown}
+              onChange={(evt) => setSearchQuery(evt.target.value)}
+            />
           </div>
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}

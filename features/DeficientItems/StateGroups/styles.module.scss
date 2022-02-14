@@ -2,4 +2,19 @@
 
 .container {
   @extend %stickyBoundingBox;
+
+  @include media-query(desktop) {
+    overflow: visible;
+    padding: $global-padding;
+  }
+}
+
+.action {
+  margin: $global-padding 0;
+  display: flex;
+  justify-content: center;
+
+  &__clear {
+    @extend %actionButton--blackText;
+  }
 }
