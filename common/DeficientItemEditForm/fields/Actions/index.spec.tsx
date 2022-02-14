@@ -26,7 +26,7 @@ const INCOMPLETE_UPDATE_STATES = ['overdue'];
 describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   afterEach(() => sinon.restore());
 
-  it('only reveals "COMPLETED" button when deficient item is pending', () => {
+  it('only reveals "COMPLETED" button when deficient item is pending and has unpublished photos', () => {
     const props = {
       user: admin,
       deficientItem: createDeficientItem(),
@@ -42,7 +42,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       onShowReasonIncomplete: sinon.spy(),
       onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
-      isUpdatingCurrentCompleteNowReason: false
+      isUpdatingCurrentCompleteNowReason: false,
+      hasUnpublishedPhotos: true
     };
 
     const tests = [
@@ -89,7 +90,8 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       onShowReasonIncomplete: sinon.spy(),
       onChangeReasonIncomplete: sinon.spy(),
       isUpdatingDeferredDate: false,
-      isUpdatingCurrentCompleteNowReason: false
+      isUpdatingCurrentCompleteNowReason: false,
+      hasUnpublishedPhotos: true
     };
 
     const tests = [
@@ -1068,6 +1070,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
 
   it('triggers each actions for each relvant DI state', () => {
     const onComplete = sinon.spy();
+    const onAddCompletionPhotos = sinon.spy();
     const onGoBack = sinon.spy();
     const onClose = sinon.spy();
     const onInitiateDefer = sinon.spy();
@@ -1092,33 +1095,45 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       onComplete,
       onGoBack,
       onClose,
-      onInitiateDefer
+      onInitiateDefer,
+      onAddCompletionPhotos
     };
 
     const tests = [
       {
         data: createDeficientItem({ state: 'pending' }),
+        selector: 'action-add-completion-photos',
+        expected: true,
+        method: onAddCompletionPhotos
+      },
+
+      {
+        data: createDeficientItem({ state: 'pending' }),
         selector: 'action-completed',
         expected: true,
-        method: onComplete
+        method: onComplete,
+        message: 'should render COMPLETE button'
       },
       {
         data: createDeficientItem({ state: 'completed' }),
         selector: 'action-go-back',
         expected: false,
-        method: onGoBack
+        method: onGoBack,
+        message: 'should render GO BACK button'
       },
       {
         data: createDeficientItem({ state: 'incomplete' }),
         selector: 'action-close',
         expected: false,
-        method: onClose
+        method: onClose,
+        message: 'should render CLOSE button'
       },
       {
         data: createDeficientItem({ state: 'requires-action' }),
         selector: 'action-defer',
         expected: true,
-        method: onInitiateDefer
+        method: onInitiateDefer,
+        message: 'should render DEFER button'
       }
     ];
 
@@ -1126,19 +1141,20 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const test of tests) {
-      const { data, selector, method, expected } = test;
-      const componentProps = { ...props, updates: data };
+      const { data, selector, method, expected, message } = test;
+      const hasUnpublishedPhotos = selector === 'action-completed';
+      const componentProps = { ...props, updates: data, hasUnpublishedPhotos };
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId(selector);
 
-      expect(Boolean(action)).toEqual(expected);
+      expect(Boolean(action), message).toEqual(expected);
       if (action) {
         act(() => {
           userEvent.click(action);
         });
 
         const actual = method.called;
-        expect(actual).toBeTruthy();
+        expect(actual, message).toBeTruthy();
       }
     }
   });

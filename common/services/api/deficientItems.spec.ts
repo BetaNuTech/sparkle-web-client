@@ -89,15 +89,20 @@ describe('Unit | Services | API | Deficient Items', () => {
   });
 
   test('it resolves successful update deficient item request', async () => {
-    const expected = true;
+    const expected = null;
 
     sinon.stub(window, 'fetch').resolves(jsonOK(API_DI_UPDATE_RESULT));
     sinon.stub(currentUser, 'getIdToken').resolves('token');
 
     // eslint-disable-next-line import/no-named-as-default-member
-    const actual = await service.update(['deficient-item-1'], {
-      currentPlanToFix: 'progress note'
-    } as DeficientItem);
+    let actual = null;
+    try {
+      await service.update(['deficient-item-1'], {
+        currentPlanToFix: 'progress note'
+      } as DeficientItem);
+    } catch (err) {
+      actual = err;
+    }
     expect(actual).toEqual(expected);
   });
 });

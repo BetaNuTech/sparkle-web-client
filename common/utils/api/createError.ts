@@ -19,7 +19,7 @@ export const DEFAULT_ERROR_MESSAGES = Object.freeze({
 const createError = (
   prefix: string,
   customMessages: Record<number, string> = {}
-): ((s: number, j: any) => void) => {
+): ((s: number, j: any) => void | Error) => {
   // Merge default errors with
   // any custom error messages
   const errorMessages = {

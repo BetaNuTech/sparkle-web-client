@@ -43,6 +43,7 @@ import inspectionTemplateUpdateModel from '../../../../common/models/inspections
 import inspectionItemPhotosData from '../../../../common/services/indexedDB/inspectionItemPhotosData';
 import inspectionTemplateUpdates from '../../../../common/services/indexedDB/inspectionTemplateUpdates';
 import deepClone from '../../../helpers/deepClone';
+import wait from '../../../helpers/wait';
 import inspectionSignature from '../../../../common/services/indexedDB/inspectionSignature';
 
 const FORCE_VISIBLE = true;
@@ -762,8 +763,3 @@ describe('Integration | Features | Property Update Inspection', () => {
     expect(localInspectionData).toBeUndefined();
   });
 });
-
-// Promise for given timeout
-function wait(timeout = 100): Promise<void> {
-  return new Promise((r) => setTimeout(r, timeout));
-}
