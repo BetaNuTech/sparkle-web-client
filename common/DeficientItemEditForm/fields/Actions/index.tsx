@@ -45,6 +45,7 @@ interface Props {
   inline?: boolean;
   showHeader?: boolean;
   hasUnpublishedPhotos: boolean;
+  onAddCompletionPhotos(): void;
 }
 
 const DeficientItemEditFormActions: FunctionComponent<Props> = ({
@@ -73,7 +74,8 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   onShowCompletedPhotos,
   inline,
   showHeader,
-  hasUnpublishedPhotos
+  hasUnpublishedPhotos,
+  onAddCompletionPhotos
 }) => {
   const permissionLevel = getLevelName(user);
 
@@ -81,7 +83,10 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   const canDefer = canDeferDeficientItem(user);
   const canComplete = canCompleteDeficientItem(user, deficientItem.property);
 
-  const showCompletedAction = deficientItem.state === 'pending' && canComplete;
+  const showCompletedAction =
+    deficientItem.state === 'pending' && canComplete && hasUnpublishedPhotos;
+  const showAddCompletionPhotos =
+    deficientItem.state === 'pending' && canComplete && !hasUnpublishedPhotos;
 
   const isDeferred = deficientItem.state === 'deferred';
 
@@ -225,6 +230,16 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           </button>
         )}
 
+        {showAddCompletionPhotos && (
+          <button
+            className={clsx(fieldStyles.action, '-bgc-primary')}
+            disabled={isSaving}
+            data-testid="action-add-completion-photos"
+            onClick={onAddCompletionPhotos}
+          >
+            Add Completion Photos
+          </button>
+        )}
         {showCompletedAction && (
           <button
             className={clsx(fieldStyles.action, '-bgc-primary')}

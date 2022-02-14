@@ -1,4 +1,5 @@
 import DeficientItemModel from '../../models/deficientItem';
+import DeficientItemCompletedPhoto from '../../models/deficientItems/deficientItemCompletedPhoto';
 
 export interface UserChanges {
   state?: string;
@@ -10,11 +11,12 @@ export interface UserChanges {
   currentResponsibilityGroup?: string;
   currentStartDate?: number;
   progressNote?: string;
+  completedPhoto?: Record<string, DeficientItemCompletedPhoto>;
 }
 
 export default interface ComposableSettings {
   updatedItem: DeficientItemModel;
   currentItem: DeficientItemModel;
-  userChanges: DeficientItemModel;
+  userChanges: UserChanges;
   // eslint-disable-next-line semi
 }

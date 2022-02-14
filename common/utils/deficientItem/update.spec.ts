@@ -3,6 +3,7 @@ import createDeficientItem from '../../../__tests__/helpers/createDeficientItem'
 import DeficientItemModel from '../../models/deficientItem';
 import { deficientItemResponsibilityGroups } from '../../../config/deficientItems';
 import updateItem from './update'; // using main update method
+import DeficientItemCompletedPhoto from '../../models/deficientItems/deficientItemCompletedPhoto';
 
 describe('Unit | Common | Utils | Defifcient Item | Update', () => {
   test('it sets an items current due date', () => {
@@ -465,6 +466,53 @@ describe('Unit | Common | Utils | Defifcient Item | Update', () => {
         userChanges
       );
       const actual = result ? result.currentCompleteNowReason : undefined;
+      expect(actual, msg).toEqual(expected);
+    }
+  });
+
+  test('it adds a photo to completed photos', () => {
+    const imgOnlyAdd = {
+      downloadURL: 'url.com/img.jpg'
+    } as DeficientItemCompletedPhoto;
+    const imgCaptionAdd = {
+      downloadURL: 'app.com/img.jpg',
+      caption: 'test'
+    } as DeficientItemCompletedPhoto;
+
+    const tests = [
+      {
+        expected: undefined,
+        userChanges: { progressNote: 'progress note ' },
+        msg: 'ignores unrelated update'
+      },
+      {
+        expected: { '1': imgOnlyAdd },
+        userChanges: { completedPhoto: { 1: imgOnlyAdd } },
+        msg: 'add a new photo data image update'
+      },
+      {
+        expected: { '1': imgCaptionAdd },
+        userChanges: { completedPhoto: { 1: imgCaptionAdd } },
+        msg: 'add a new photo data image/caption update'
+      },
+      {
+        expected: { '1': imgOnlyAdd, '2': imgCaptionAdd },
+        updatedItem: { completedPhotos: { '1': imgOnlyAdd } },
+        userChanges: { completedPhoto: { '2': imgCaptionAdd } },
+        msg: 'appends new photo updates to existing ones'
+      }
+    ];
+
+    const currentItem = createDeficientItem({ state: 'pending' });
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, updatedItem = {}, userChanges, msg } = tests[i];
+      const result = updateItem(
+        updatedItem as DeficientItemModel,
+        currentItem,
+        userChanges
+      );
+      const actual = result.completedPhotos || undefined;
       expect(actual, msg).toEqual(expected);
     }
   });

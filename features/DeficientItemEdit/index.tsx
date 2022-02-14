@@ -15,6 +15,7 @@ import useTrelloCard from './hooks/useTrelloCard';
 import useUpdateItem from './hooks/useUpdateItem';
 import useUnpublishedDeficiencyPhotos from './hooks/useUnpublishedDeficiencyPhotos';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
+import LoadingHud from '../../common/LoadingHud';
 
 type userNotifications = (message: string, options?: any) => any;
 interface Props {
@@ -62,13 +63,15 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     updateProgressNote,
     updateCurrentReasonIncomplete,
     updateCurrentCompleteNowReason,
-    publish
+    publish,
+    publishProgress
   } = useUpdateItem(
     deficientItem.id,
     property.id,
     sendNotification,
     unpublishedUpdates,
-    deficientItem
+    deficientItem,
+    user
   );
 
   const {
@@ -145,8 +148,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onUpdatePending = () => {
-    const stateUpdates = updateState('pending');
-    publish({ ...stateUpdates });
+    updateState('pending');
+    publish();
   };
 
   const onUnpermittedPending = () => {
@@ -154,26 +157,31 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onAddProgressNote = () => {
-    publish({ ...updates });
+    publish();
   };
 
   const onUpdateIncomplete = () => {
-    const stateUpdates = updateState('incomplete');
-    publish({ ...stateUpdates });
+    updateState('incomplete');
+    publish();
   };
 
   const onComplete = () => {
+    updateState('completed');
+    publish(unpublishedDeficiencyPhotos);
+  };
+
+  const onAddCompletionPhotos = () => {
     setIsVisibleCompletedPhotosModal(true);
   };
 
   const onGoBack = () => {
-    const stateUpdates = updateState('go-back');
-    publish({ ...stateUpdates });
+    updateState('go-back');
+    publish();
   };
 
   const onCloseDuplicate = () => {
-    const stateUpdates = updateState('closed');
-    publish({ ...stateUpdates });
+    updateState('closed');
+    publish();
   };
 
   const onUnpermittedDuplicate = () => {
@@ -181,8 +189,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onClose = () => {
-    const stateUpdates = updateState('closed');
-    publish({ ...stateUpdates });
+    updateState('closed');
+    publish();
   };
 
   const onCancelCompleteNow = () => {
@@ -190,8 +198,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onConfirmCompleteNow = async () => {
-    const stateUpdates = updateState('closed');
-    await publish({ ...stateUpdates });
+    updateState('closed');
+    await publish();
     setIsUpdatingCurrentCompleteNowReason(false);
   };
 
@@ -204,8 +212,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onConfirmDefer = async () => {
-    const stateUpdates = updateState('deferred');
-    await publish({ ...stateUpdates });
+    updateState('deferred');
+    await publish();
     setIsUpdatingDeferredDate(false);
   };
 
@@ -245,6 +253,16 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
   const hasUnpublishedPhotos = unpublishedDeficiencyPhotos.length > 0;
 
+  if (isSaving) {
+    return (
+      <LoadingHud
+        title="Saving Deficient Item"
+        hasProgress={true} // eslint-disable-line react/jsx-boolean-value
+        progressValue={publishProgress}
+      />
+    );
+  }
+
   return (
     <>
       <Header
@@ -278,6 +296,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onUnpermittedDefer={onUnpermittedDefer}
         onShowCompletedPhotos={onShowCompletedPhotos}
         hasUnpublishedPhotos={hasUnpublishedPhotos}
+        onAddCompletionPhotos={onAddCompletionPhotos}
       />
 
       <DeficientItemEditForm
@@ -326,6 +345,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onShowCompletedPhotos={onShowCompletedPhotos}
         isCreatingTrelloCard={isCreatingTrelloCard}
         hasUnpublishedPhotos={hasUnpublishedPhotos}
+        onAddCompletionPhotos={onAddCompletionPhotos}
       />
 
       <PhotosModal

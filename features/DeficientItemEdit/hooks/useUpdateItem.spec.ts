@@ -1,6 +1,6 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import moment from 'moment';
 import createDeficientItem from '../../../__tests__/helpers/createDeficientItem';
 import deficientItemsApi from '../../../common/services/api/deficientItems';
@@ -8,6 +8,9 @@ import currentUser from '../../../common/utils/currentUser';
 import errorReports from '../../../common/services/api/errorReports';
 import useUpdateItem from './useUpdateItem';
 import DeficientItemLocalUpdates from '../../../common/models/deficientItems/unpublishedUpdates';
+import { admin } from '../../../__mocks__/users';
+import DeficientItem from '../../../common/models/deficientItem';
+import { unpublishedPhotoDataEntry } from '../../../__mocks__/deficientItems';
 
 const deficientItem = createDeficientItem({ state: 'require-action' });
 
@@ -27,7 +30,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -57,7 +61,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -87,7 +92,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -117,7 +123,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -147,7 +154,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -179,7 +187,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -209,7 +218,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -241,7 +251,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         'property-1',
         sendNotification,
         {} as DeficientItemLocalUpdates,
-        deficientItem
+        deficientItem,
+        admin
       )
     );
 
@@ -269,14 +280,21 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     // Stub update response
     const update = sinon.stub(deficientItemsApi, 'update').resolves(true);
 
+    const deficientItemUpdates = {
+      currentPlanToFix: 'plan to fix',
+      currentResponsibilityGroup: 'site_level_in-house',
+      currentDueDate: moment().unix()
+    } as DeficientItemLocalUpdates;
+
     await act(async () => {
       const { result } = renderHook(() =>
         useUpdateItem(
           'deficiency-1',
           'property-1',
           sendNotification,
-          {} as DeficientItemLocalUpdates,
-          deficientItem
+          deficientItemUpdates,
+          deficientItem,
+          admin
         )
       );
       await result.current.publish();
@@ -295,14 +313,21 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     // Stub update response
     sinon.stub(deficientItemsApi, 'update').rejects();
 
+    const deficientItemUpdates = {
+      currentPlanToFix: 'plan to fix',
+      currentResponsibilityGroup: 'site_level_in-house',
+      currentDueDate: moment().unix()
+    } as DeficientItemLocalUpdates;
+
     await act(async () => {
       const { result } = renderHook(() =>
         useUpdateItem(
           'deficiency-1',
           'property-1',
           sendNotification,
-          {} as DeficientItemLocalUpdates,
-          deficientItem
+          deficientItemUpdates,
+          deficientItem,
+          admin
         )
       );
       await result.current.publish();
@@ -310,5 +335,46 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
 
     const actual = sendNotification.called;
     expect(actual).toEqual(expected);
+  });
+
+  test('should request to upload photos and publish deficiency', async () => {
+    const expected = true;
+    const sendNotification = sinon.spy();
+    const updates = { state: 'closed' } as DeficientItemLocalUpdates;
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+
+    const photoUploadData = [unpublishedPhotoDataEntry];
+
+    // Creates spy for method in deficientItemsApi to upload photo
+    const uploadPhoto = sinon
+      .stub(deficientItemsApi, 'uploadPhoto')
+      .resolves(true);
+
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    // Creates spy for method in deficientItemsApi to update deficiency
+    const updateDeficiencyFn = sinon
+      .stub(deficientItemsApi, 'update')
+      .resolves(true);
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateItem(
+          'deficiency-1',
+          'property-1',
+          sendNotification,
+          updates,
+          deficientItem,
+          admin
+        )
+      );
+      await result.current.publish(photoUploadData);
+    });
+
+    await waitFor(() => uploadPhoto.called);
+
+    const actual = uploadPhoto.called;
+    expect(actual).toEqual(expected);
+    expect(updateDeficiencyFn.called).toBeTruthy();
   });
 });

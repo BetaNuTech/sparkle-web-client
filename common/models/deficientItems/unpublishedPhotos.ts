@@ -10,6 +10,8 @@ interface DeficientItemLocalPhotos {
   startDate: number;
   photoData: string;
   size: number;
+  downloadURL?: string; // temporary placeholder for the uploaded photo location
+  fileId?: string; // temporary placeholder for uploaded photo id
 }
 
 export default DeficientItemLocalPhotos;

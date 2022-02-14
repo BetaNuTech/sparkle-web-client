@@ -41,6 +41,7 @@ interface Props {
   onUnpermittedDefer(): void;
   onShowCompletedPhotos(): void;
   hasUnpublishedPhotos: boolean;
+  onAddCompletionPhotos(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -72,7 +73,8 @@ const Header: FunctionComponent<Props> = ({
   onInitiateDefer,
   onUnpermittedDefer,
   onShowCompletedPhotos,
-  hasUnpublishedPhotos
+  hasUnpublishedPhotos,
+  onAddCompletionPhotos
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -133,6 +135,7 @@ const Header: FunctionComponent<Props> = ({
               inline={true} // eslint-disable-line react/jsx-boolean-value
               showHeader={false}
               hasUnpublishedPhotos={hasUnpublishedPhotos}
+              onAddCompletionPhotos={onAddCompletionPhotos}
             />
           }
         />

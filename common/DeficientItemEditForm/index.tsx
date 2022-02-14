@@ -80,6 +80,7 @@ interface Props {
   onShowCompletedPhotos(): void;
   isCreatingTrelloCard: boolean;
   hasUnpublishedPhotos: boolean;
+  onAddCompletionPhotos(): void;
 }
 
 const DeficientItemEditForm: FunctionComponent<Props> = ({
@@ -127,7 +128,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onUnpermittedDefer,
   onShowCompletedPhotos,
   isCreatingTrelloCard,
-  hasUnpublishedPhotos
+  hasUnpublishedPhotos,
+  onAddCompletionPhotos
 }) => {
   // set default date to tomorrow
   const defaultDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -314,6 +316,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
               onUnpermittedDefer={onUnpermittedDefer}
               onShowCompletedPhotos={onShowCompletedPhotos}
               hasUnpublishedPhotos={hasUnpublishedPhotos}
+              onAddCompletionPhotos={onAddCompletionPhotos}
             />
           )}
           {isMobile && (

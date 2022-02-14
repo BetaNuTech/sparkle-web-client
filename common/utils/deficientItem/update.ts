@@ -2,6 +2,7 @@ import moment from 'moment';
 import pipe from '../pipe';
 import DeficientItemModel from '../../models/deficientItem';
 import ComposableSettings, { UserChanges } from './composableSettings';
+import DeficientItemCompletedPhoto from '../../models/deficientItems/deficientItemCompletedPhoto';
 
 const PREFIX = 'utils: deficientItem: update';
 
@@ -30,7 +31,9 @@ export default function deficientItemSave(
     setCurrentResponsibilityGroup,
     setProgressNote,
     setCurrentReasonIncomplete,
-    setCurrentCompleteNowReason
+    setCurrentCompleteNowReason,
+    mergeExistingPhotoData,
+    appendCompletedPhoto
   )(
     {} as DeficientItemModel, // result
     {
@@ -274,6 +277,54 @@ const setCurrentCompleteNowReason = (
   if (isChanging && !isDifferentThanCurrent) {
     delete result.currentCompleteNowReason;
   }
+
+  return result;
+};
+
+// Add any previous photo data updates
+const mergeExistingPhotoData = (
+  result: DeficientItemModel,
+  settings: ComposableSettings
+) => {
+  const { updatedItem } = settings;
+  const hasPreviousUpdate = typeof updatedItem.completedPhotos !== 'undefined';
+  if (hasPreviousUpdate) {
+    result.completedPhotos = JSON.parse(
+      JSON.stringify(updatedItem.completedPhotos)
+    );
+    Object.keys(result.completedPhotos).forEach((id) => {
+      result.completedPhotos[id] = result.completedPhotos[
+        id
+      ] as DeficientItemCompletedPhoto;
+    });
+  }
+
+  return result;
+};
+
+// append completed photo
+const appendCompletedPhoto = (
+  result: DeficientItemModel,
+  settings: ComposableSettings
+) => {
+  const { userChanges } = settings;
+
+  const hasPhotoDataUpdates = typeof userChanges.completedPhoto !== 'undefined';
+  const [photoDataId, photoDataUpdate] = hasPhotoDataUpdates
+    ? Object.entries(userChanges.completedPhoto)[0] || []
+    : [];
+
+  const isAddingPhoto = Boolean(photoDataUpdate);
+
+  if (!isAddingPhoto) {
+    return result;
+  }
+
+  // Append photo data entry
+  result.completedPhotos = result.completedPhotos || {};
+  result.completedPhotos[photoDataId] = {
+    ...photoDataUpdate
+  } as DeficientItemCompletedPhoto;
 
   return result;
 };
