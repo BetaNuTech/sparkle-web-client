@@ -9,7 +9,6 @@ import errorReports from '../../../common/services/api/errorReports';
 import useUpdateItem from './useUpdateItem';
 import DeficientItemLocalUpdates from '../../../common/models/deficientItems/unpublishedUpdates';
 import { admin } from '../../../__mocks__/users';
-import DeficientItem from '../../../common/models/deficientItem';
 import { unpublishedPhotoDataEntry } from '../../../__mocks__/deficientItems';
 
 const deficientItem = createDeficientItem({ state: 'require-action' });

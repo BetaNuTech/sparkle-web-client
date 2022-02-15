@@ -48,7 +48,11 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
             state={deficientItemState}
             itemCount={deficientItems.length}
           />
-          <List deficientItems={deficientItems} forceVisible={forceVisible} />
+          <List
+            deficientItems={deficientItems}
+            forceVisible={forceVisible}
+            isMobile={isMobile}
+          />
         </Fragment>
       );
     })}
