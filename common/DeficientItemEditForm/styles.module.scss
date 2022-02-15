@@ -1,6 +1,7 @@
 @import '../../styles/index.scss';
 
 .container {
+  overflow: auto;
   &__sidebar {
     max-width: 100%;
     flex: 1;
@@ -8,8 +9,7 @@
 
   @include media-query(desktop) {
     display: flex;
-    padding: 0 $global-padding;
-    margin-top: $global-padding;
+    padding: $global-lg-padding $global-padding;
 
     &__sidebar {
       flex: 1 1 30%;
@@ -21,6 +21,7 @@
       padding: $global-mlg-padding;
       border: 1px solid $gray;
       display: flex;
+      margin-left: $global-lg-padding;
     }
 
     &__formSidebar {
@@ -31,5 +32,9 @@
     &__form {
       flex: 1 1 60%;
     }
+  }
+
+  @include media-query(desktop) {
+    overflow: visible;
   }
 }

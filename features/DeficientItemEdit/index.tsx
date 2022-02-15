@@ -64,7 +64,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     updateCurrentReasonIncomplete,
     updateCurrentCompleteNowReason,
     publish,
-    publishProgress
+    publishProgress,
+    handlePermissionWarning
   } = useUpdateItem(
     deficientItem.id,
     property.id,
@@ -88,6 +89,10 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
+  });
+
+  const isLargeDesktop = useMediaQuery({
+    minWidth: breakpoints.largeDesktop.minWidth
   });
 
   const [
@@ -154,6 +159,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
   const onUnpermittedPending = () => {
     console.log('triggered on unpermitted  pending action'); // eslint-disable-line
+    handlePermissionWarning('pending');
   };
 
   const onAddProgressNote = () => {
@@ -186,6 +192,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
   const onUnpermittedDuplicate = () => {
     console.log('triggered on unpermittd duplicate action'); // eslint-disable-line
+    handlePermissionWarning('duplicate');
   };
 
   const onClose = () => {
@@ -223,6 +230,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
 
   const onUnpermittedDefer = () => {
     console.log('triggered on unpermitted defer action'); // eslint-disable-line
+    handlePermissionWarning('defer');
   };
 
   const onShowProgressNotes = () => {
@@ -304,6 +312,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         property={property}
         onShowHistory={onShowHistory}
         isMobile={isMobile}
+        isLargeDesktop={isLargeDesktop}
+        isOnline={isOnline}
         isSaving={isSaving}
         updates={updates}
         isUpdatingCurrentCompleteNowReason={isUpdatingCurrentCompleteNowReason}

@@ -34,6 +34,7 @@ interface useUpdateItemResult {
   ): DeficientItemModel;
   publish(unpublishedPhotos?: DeficientItemLocalPhotos[]): Promise<boolean>;
   publishProgress: number;
+  handlePermissionWarning(nextState: string): void;
 }
 
 export default function useUpdateItem(
@@ -158,6 +159,29 @@ export default function useUpdateItem(
       })
     );
 
+  // prompt validation error
+  // based on next state of deficient item
+  // and updates
+  const handlePermissionWarning = (nextState: string) => {
+    if (nextState === 'defer' || nextState === 'duplicate') {
+      // eslint-disable-next-line no-alert
+      alert(
+        'Permission Denied: This action requires a corporate or admin user.'
+      );
+    } else if (nextState === 'pending') {
+      let msg = 'Missing required information';
+      if (!updates.currentPlanToFix) {
+        msg = 'Current Plan to Fix is NOT SET';
+      } else if (!updates.currentResponsibilityGroup) {
+        msg = 'Current Responsibility Group is NOT SET';
+      } else if (!updates.currentDueDate) {
+        msg = 'Current Due Date is NOT SET';
+      }
+      // eslint-disable-next-line no-alert
+      alert(`Save Error: ${msg}`);
+    }
+  };
+
   const calculateAndSetProgressValue =
     (totalBytes: number) => (uploadedBytes: number) => {
       // Add 20% for deficient item publish
@@ -279,7 +303,8 @@ export default function useUpdateItem(
     updateCurrentReasonIncomplete,
     updateCurrentCompleteNowReason,
     publish,
-    publishProgress: progress
+    publishProgress: progress,
+    handlePermissionWarning
   };
 }
 

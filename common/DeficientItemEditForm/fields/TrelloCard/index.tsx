@@ -10,6 +10,7 @@ import styles from './styles.module.scss';
 interface Props {
   deficientItem: DeficientItemModel;
   isVisible: boolean;
+  isOnline: boolean;
   onCreateTrelloCard(): void;
   propertyId: string;
   isLoading: boolean;
@@ -20,6 +21,7 @@ interface Props {
 const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
   deficientItem,
   isVisible,
+  isOnline,
   onCreateTrelloCard,
   propertyId,
   isLoading,
@@ -42,8 +44,8 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
     >
       <header
         className={clsx(
-          fieldStyles.label,
-          isPill && fieldStyles['label--pill']
+          isPill ? fieldStyles.heading : fieldStyles.label,
+          isPill && fieldStyles['heading--pill']
         )}
       >
         Trello Card
@@ -74,7 +76,7 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
               '-bgc-primary',
               isPill && fieldStyles['action--fullButton']
             )}
-            disabled={isLoading}
+            disabled={isLoading || !isOnline}
             data-testid="trello-card-action"
           >
             {isLoading ? (

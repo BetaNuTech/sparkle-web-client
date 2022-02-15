@@ -376,4 +376,64 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     expect(actual).toEqual(expected);
     expect(updateDeficiencyFn.called).toBeTruthy();
   });
+
+  test('should show alert with relevant message', () => {
+    const alertMock = sinon.stub(window, 'alert');
+    const sendNotification = sinon.spy();
+    const expected = [
+      'Save Error: Current Plan to Fix is NOT SET',
+      'Save Error: Current Responsibility Group is NOT SET',
+      'Save Error: Current Due Date is NOT SET',
+      'Save Error: Missing required information'
+    ];
+
+    const { result } = renderHook(() =>
+      useUpdateItem(
+        'deficiency-1',
+        'property-1',
+        sendNotification,
+        {} as DeficientItemLocalUpdates,
+        deficientItem,
+        admin
+      )
+    );
+
+    act(() => {
+      result.current.handlePermissionWarning('pending');
+    });
+
+    let alertMessage = alertMock.getCall(0).args[0];
+    expect(alertMock.called).toBeTruthy();
+    expect(alertMessage).toEqual(expected[0]);
+
+    act(() => {
+      result.current.updateCurrentPlanToFix('current plan to fix');
+      result.current.handlePermissionWarning('pending');
+    });
+
+    // eslint-disable-next-line prefer-destructuring
+    alertMessage = alertMock.getCall(1).args[0];
+    expect(alertMock.called).toBeTruthy();
+    expect(alertMessage).toEqual(expected[1]);
+
+    act(() => {
+      result.current.updateCurrentResponsibilityGroup('site_level_in-house');
+      result.current.handlePermissionWarning('pending');
+    });
+
+    // eslint-disable-next-line prefer-destructuring
+    alertMessage = alertMock.getCall(2).args[0];
+    expect(alertMock.called).toBeTruthy();
+    expect(alertMessage).toEqual(expected[2]);
+
+    act(() => {
+      result.current.updateCurrentDueDate(moment().unix());
+      result.current.handlePermissionWarning('pending');
+    });
+
+    // eslint-disable-next-line prefer-destructuring
+    alertMessage = alertMock.getCall(3).args[0];
+    expect(alertMock.called).toBeTruthy();
+    expect(alertMessage).toEqual(expected[3]);
+  });
 });

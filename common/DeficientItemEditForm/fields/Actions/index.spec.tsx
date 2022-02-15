@@ -29,6 +29,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "COMPLETED" button when deficient item is pending and has unpublished photos', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -77,6 +78,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     });
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem,
       updates: {},
       onShowHistory: sinon.spy(),
@@ -132,6 +134,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "GO BACK" action when expected', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -172,6 +175,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "DUPLICATE" button when deficient item is deferred', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -222,6 +226,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "DUPLICATE" permission warning button when lacking permissions', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -271,6 +276,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "CLOSE" button when deficient item is completed or incomplete', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -317,6 +323,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "DEFER" action when expected', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -359,6 +366,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onUnpermittedDefer = sinon.spy();
     const props = {
       user: teamMember,
+      isOnline: true,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -392,6 +400,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onCancelDefer = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -428,6 +437,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onConfirmDefer = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       showDeferAction: true,
       updates: { currentDeferredDate: new Date() },
@@ -463,6 +473,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals "COMPLETE NOW" action for expected states', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -643,6 +654,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('always reveals "COMPLETE NOW" action for admin users', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -703,6 +715,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onCancelCompleteNow = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       showCompleteNowAction: true,
       updates: {},
@@ -737,6 +750,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals pending "UPDATE" action for expected states', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {
         currentPlanToFix: 'valid',
@@ -781,6 +795,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('does not reveal any update pending actions before user has made any updates', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -812,6 +827,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onUnpermittedPending = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({ state: 'requires-action' }),
       updates: {},
       onShowHistory: sinon.spy(),
@@ -875,6 +891,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals add progress note action when expected', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: {
         progressNote: 'valid'
@@ -918,6 +935,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onAddProgressNote = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({
         state: PROGRESS_NOTE_EDIT_STATES[0]
       }),
@@ -974,6 +992,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals incomplete "UPDATE" action for expected states', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: { currentReasonIncomplete: 'valid' },
       onShowHistory: sinon.spy(),
@@ -1015,6 +1034,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onUpdateIncomplete = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({
         state: INCOMPLETE_UPDATE_STATES[0]
       }),
@@ -1076,6 +1096,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onInitiateDefer = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem({
         state: PROGRESS_NOTE_EDIT_STATES[0]
       }),
@@ -1163,6 +1184,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
   it('only reveals show completed photos button when deficient item has completed photos, or state is pending with unpublished photos', () => {
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(),
       updates: { currentReasonIncomplete: 'valid' },
       onShowHistory: sinon.spy(),
@@ -1225,6 +1247,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     const onShowCompletedPhotos = sinon.spy();
     const props = {
       user: admin,
+      isOnline: true,
       deficientItem: createDeficientItem(
         { state: 'pending' },
         { completedPhotos: 1 }

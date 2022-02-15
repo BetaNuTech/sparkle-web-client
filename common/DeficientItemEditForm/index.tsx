@@ -19,6 +19,8 @@ import Actions from './fields/Actions';
 import { canCreateTrelloCard } from '../utils/userPermissions';
 
 import styles from './styles.module.scss';
+import DueDatePill from './fields/DueDatePill';
+import ResponsibilityGroupPill from './fields/ResponsibilityGroupPill';
 
 const PROGRESS_NOTE_STATES = [
   'requires-progress-update',
@@ -39,6 +41,8 @@ interface Props {
   property: PropertyModel;
   onShowHistory(): void;
   isMobile: boolean;
+  isLargeDesktop: boolean;
+  isOnline: boolean;
   isSaving: boolean;
   updates: DeficientItemModel;
   isUpdatingCurrentCompleteNowReason: boolean;
@@ -89,6 +93,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   deficientItem,
   propertyIntegration,
   isMobile,
+  isLargeDesktop,
+  isOnline,
   isSaving,
   updates,
   isUpdatingCurrentCompleteNowReason,
@@ -197,27 +203,52 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
     ? Boolean(deficientItem.trelloCardURL)
     : canCreateTrello || Boolean(deficientItem?.trelloCardURL);
 
+  const showDueDatePill = Boolean(deficientItem.currentDueDate);
+  const showResponsibilityGroupPill = Boolean(
+    deficientItem.currentResponsibilityGroup
+  );
+
   return (
     <div className={styles.container}>
-      <aside className={styles.container__sidebar}>
-        <Details
-          deficientItem={deficientItem}
-          isMobile={isMobile}
-          onClickViewPhotos={onClickViewPhotos}
-        />
-      </aside>
+      {(isMobile || isLargeDesktop) && (
+        <aside className={styles.container__sidebar}>
+          <Details
+            deficientItem={deficientItem}
+            isMobile={isMobile}
+            onClickViewPhotos={onClickViewPhotos}
+          />
+        </aside>
+      )}
       <div className={styles.container__main}>
         <aside className={styles.container__formSidebar}>
           {!isMobile && (
-            <TrelloCard
-              isVisible={showTrelloCard}
-              deficientItem={deficientItem}
-              isLoading={isCreatingTrelloCard}
-              onCreateTrelloCard={onCreateTrelloCard}
-              propertyId={property.id}
-              hasOpenList={hasOpenList}
-              isPill={true} // eslint-disable-line react/jsx-boolean-value
-            />
+            <>
+              {!isLargeDesktop && (
+                <Details
+                  deficientItem={deficientItem}
+                  isMobile={isMobile}
+                  onClickViewPhotos={onClickViewPhotos}
+                />
+              )}
+              <DueDatePill
+                isVisible={showDueDatePill}
+                deficientItem={deficientItem}
+              />
+              <ResponsibilityGroupPill
+                isVisible={showResponsibilityGroupPill}
+                deficientItem={deficientItem}
+              />
+              <TrelloCard
+                isVisible={showTrelloCard}
+                isOnline={isOnline}
+                deficientItem={deficientItem}
+                isLoading={isCreatingTrelloCard}
+                onCreateTrelloCard={onCreateTrelloCard}
+                propertyId={property.id}
+                hasOpenList={hasOpenList}
+                isPill={true} // eslint-disable-line react/jsx-boolean-value
+              />
+            </>
           )}
         </aside>
         <div className={styles.container__form}>
@@ -294,6 +325,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
               deficientItem={deficientItem}
               updates={updates}
               isSaving={isSaving}
+              isOnline={isOnline}
               isUpdatingCurrentCompleteNowReason={
                 isUpdatingCurrentCompleteNowReason
               }
@@ -322,6 +354,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
           {isMobile && (
             <TrelloCard
               isVisible={showTrelloCard}
+              isOnline={isOnline}
               deficientItem={deficientItem}
               isLoading={isCreatingTrelloCard}
               onCreateTrelloCard={onCreateTrelloCard}
