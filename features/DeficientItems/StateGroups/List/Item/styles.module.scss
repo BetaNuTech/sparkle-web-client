@@ -3,13 +3,30 @@
 .container {
   min-height: rem-calc(82);
   display: block;
+  border-bottom: 1px solid $gray-lighter;
 }
 
 .main {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   padding: $global-sm-padding $global-padding;
-  border-bottom: 1px solid $gray-lighter;
+
+  @include media-query(desktop) {
+    flex-direction: row-reverse;
+    padding: $global-padding;
+    justify-content: space-between;
+  }
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+
+  &--reverse {
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
 
   &__left,
   &__right {
@@ -20,6 +37,12 @@
 
   &__right {
     align-items: flex-end;
+  }
+
+  @include media-query(desktop) {
+    &__right {
+      align-items: flex-start;
+    }
   }
 }
 
@@ -57,6 +80,18 @@
   &--closed {
     background-color: $gray-light;
   }
+
+  @include media-query(desktop) {
+    background-color: $gray;
+    padding: rem-calc(10) rem-calc(20);
+    margin-right: $global-padding;
+    color: $black;
+
+    &--corporate,
+    &--corporate_manages_vendor {
+      color: $secondary-color;
+    }
+  }
 }
 
 .icon {
@@ -85,4 +120,17 @@
   font-size: rem-calc(14);
   line-height: 1.3;
   color: $black;
+
+  @include media-query(desktop) {
+    font-size: rem-calc(16);
+    line-height: 1.3;
+    color: $black;
+    font-weight: normal;
+  }
+}
+
+.sectionTitle {
+  line-height: 1.3;
+  color: $gray-dark;
+  font-size: rem-calc(14);
 }

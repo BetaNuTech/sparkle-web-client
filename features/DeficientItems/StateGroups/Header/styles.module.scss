@@ -2,4 +2,64 @@
 
 .container {
   @extend %stickyBoundingBox--header;
+
+  &--completed,
+  &--incomplete {
+    background: $quaternary-color;
+  }
+
+  &--overdue,
+  &--requires-action,
+  &--go-back,
+  &--requires-progress-update {
+    background: $alert-secondary-color;
+  }
+
+  &--deferred {
+    background: $orange-color;
+  }
+
+  &--pending {
+    background: $gray-dark;
+  }
+
+  &--closed {
+    background: $gray-light;
+  }
+
+  @include media-query(desktop) {
+    padding: $global-padding $global-lg-padding;
+    background: $gray;
+    color: $gray-dark;
+    text-align: left;
+    font-size: rem-calc(22);
+    text-transform: none;
+    font-weight: 400;
+    line-height: 1;
+    top: $inspectionStatusBarHeight;
+
+    &--completed,
+    &--incomplete {
+      border-bottom: 5px solid $quaternary-color;
+    }
+
+    &--overdue,
+    &--requires-action,
+    &--go-back,
+    &--requires-progress-update {
+      border-bottom: 5px solid $alert-secondary-color;
+    }
+
+    &--deferred {
+      border-bottom: 5px solid $orange-color;
+    }
+
+    &--pending {
+      border-bottom: 5px solid $gray-dark;
+    }
+
+    &--closed {
+      border-bottom: 5px solid $gray-light;
+    }
+  }
 }

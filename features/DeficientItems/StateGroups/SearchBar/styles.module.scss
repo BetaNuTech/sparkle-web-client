@@ -10,6 +10,7 @@ $elementHeight: $inspectionStatusBarHeight;
   top: 0;
   transition: top 200ms ease-in;
   border-top: 1px solid $gray-lighter;
+  border-bottom: 1px solid $gray-lighter;
   z-index: 13;
 
   @include media-query(desktop) {

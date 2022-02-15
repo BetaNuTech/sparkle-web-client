@@ -58,13 +58,14 @@ interface Props {
   itemMainInputSelection: number;
 }
 
-const DeficientItemsStateGroupsListItemSelectionIcon: FunctionComponent<Props> =
-  ({ itemMainInputType, itemMainInputSelection }) => {
-    const icon =
-      (iconsList[itemMainInputType] &&
-        iconsList[itemMainInputType][itemMainInputSelection]) ||
-      '';
-    return <>{icon}</>;
-  };
+const DeficientItemsStateGroupsListItemSelectionIcon: FunctionComponent<
+  Props
+> = ({ itemMainInputType, itemMainInputSelection }) => {
+  const icon =
+    (iconsList[itemMainInputType] &&
+      iconsList[itemMainInputType][itemMainInputSelection]) ||
+    '';
+  return <>{icon}</>;
+};
 
 export default DeficientItemsStateGroupsListItemSelectionIcon;
