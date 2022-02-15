@@ -19,14 +19,17 @@ const postTrelloCardRequest = (
   authToken: string,
   deficiencyId: string
 ): Promise<Response> =>
-  fetch(`${API_DOMAIN}/api/v0/deficiencies/${deficiencyId}/trello/card`, {
-    method: 'POST',
-    headers: {
-      Authorization: `FB-JWT ${authToken}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({})
-  });
+  fetch(
+    `${API_DOMAIN}/api/v0/deficiencies/${deficiencyId}/trello/card?notify=true`,
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `FB-JWT ${authToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    }
+  );
 
 const createTrelloCard = async (deficiencyId: string): Promise<boolean> => {
   let authToken = '';

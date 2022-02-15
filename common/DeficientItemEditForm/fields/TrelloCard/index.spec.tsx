@@ -17,6 +17,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        isOnline={true} // eslint-disable-line react/jsx-boolean-value
         hasOpenList={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -37,6 +38,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        isOnline={true} // eslint-disable-line react/jsx-boolean-value
         hasOpenList={true} // eslint-disable-line react/jsx-boolean-value
       />
     );
@@ -57,6 +59,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        isOnline={true} // eslint-disable-line react/jsx-boolean-value
         hasOpenList={false}
       />
     );
@@ -83,6 +86,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Trello Card ', () 
         })}
         onCreateTrelloCard={onCreateTrelloCard}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        isOnline={true} // eslint-disable-line react/jsx-boolean-value
         hasOpenList={true} // eslint-disable-line react/jsx-boolean-value
       />
     );

@@ -1,5 +1,14 @@
 @import '../../../../styles/index.scss';
 
+.section {
+  margin-bottom: $global-sm-padding;
+  display: flex;
+  flex-direction: column;
+
+  @include media-query(desktop) {
+    align-items: flex-end;
+  }
+}
 .main {
   display: flex;
   flex-direction: column;

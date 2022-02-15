@@ -110,6 +110,7 @@ const Header: FunctionComponent<Props> = ({
               user={user}
               deficientItem={deficientItem}
               updates={updates}
+              isOnline={isOnline}
               isSaving={isSaving}
               isUpdatingCurrentCompleteNowReason={
                 isUpdatingCurrentCompleteNowReason
