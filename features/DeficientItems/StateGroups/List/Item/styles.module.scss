@@ -1,9 +1,13 @@
 @import '../../../../../styles/index.scss';
 
 .container {
-  min-height: rem-calc(82);
   display: block;
   border-bottom: 1px solid $gray-lighter;
+  min-height: rem-calc(81);
+
+  @include media-query(desktop) {
+    min-height: rem-calc(91);
+  }
 }
 
 .main {
@@ -13,8 +17,9 @@
 
   @include media-query(desktop) {
     flex-direction: row-reverse;
-    padding: $global-padding;
     justify-content: space-between;
+    min-height: rem-calc(91);
+    padding: $global-sm-padding $global-lg-padding;
   }
 }
 
@@ -26,6 +31,7 @@
   &--reverse {
     flex-direction: row-reverse;
     justify-content: flex-start;
+    align-self: flex-end;
   }
 
   &__left,
@@ -110,7 +116,7 @@
     path,
     g,
     poligon {
-      fill: $gray-6;
+      fill: darken($gray-light-2, 15);
     }
   }
 }
@@ -120,12 +126,14 @@
   font-size: rem-calc(14);
   line-height: 1.3;
   color: $black;
+  margin-left: $global-padding;
 
   @include media-query(desktop) {
     font-size: rem-calc(16);
     line-height: 1.3;
     color: $black;
     font-weight: normal;
+    margin-left: 0;
   }
 }
 

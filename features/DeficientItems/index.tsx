@@ -17,6 +17,7 @@ interface Props {
   property: propertyModel;
   deficientItems: deficientItemModel[];
   forceVisible?: boolean;
+  toggleNavOpen?(): void;
 }
 
 const DeficientItems: FunctionComponent<Props> = ({
@@ -24,7 +25,8 @@ const DeficientItems: FunctionComponent<Props> = ({
   isStaging,
   deficientItems,
   property,
-  forceVisible
+  forceVisible,
+  toggleNavOpen
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -60,7 +62,9 @@ const DeficientItems: FunctionComponent<Props> = ({
   const [searchQuery, setSearchQuery] = useState(searchParam);
 
   useEffect(() => {
-    setSearchQuery(searchParam);
+    if (!searchParam) {
+      setSearchQuery('');
+    }
   }, [searchParam]);
 
   // Grouping of deficient items by state
@@ -90,6 +94,8 @@ const DeficientItems: FunctionComponent<Props> = ({
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
+        toggleNavOpen={toggleNavOpen}
       />
       <StateGroups
         deficientItemsByState={deficientItemsByState}
@@ -102,6 +108,13 @@ const DeficientItems: FunctionComponent<Props> = ({
       />
     </>
   );
+};
+
+DeficientItems.defaultProps = {
+  isOnline: false,
+  isStaging: false,
+  toggleNavOpen: () => {}, // eslint-disable-line
+  forceVisible: false
 };
 
 export default DeficientItems;

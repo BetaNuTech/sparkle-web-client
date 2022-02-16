@@ -1,6 +1,4 @@
 import { ChangeEvent, FunctionComponent } from 'react';
-import Link from 'next/link';
-import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
 import MobileHeader from '../../../common/MobileHeader';
 import DesktopHeader from '../../../common/DesktopHeader';
@@ -24,6 +22,8 @@ interface Props {
   searchQuery: string;
   setSearchQuery(query: string): void;
   onSearchKeyDown: any;
+  onClearSearch(): void;
+  toggleNavOpen?(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -39,20 +39,10 @@ const Header: FunctionComponent<Props> = ({
   userFacingSortBy,
   searchQuery,
   onSearchKeyDown,
-  setSearchQuery
+  setSearchQuery,
+  onClearSearch,
+  toggleNavOpen
 }) => {
-  // Mobile Header actions buttons
-  const mobileHeaderLeft = (headStyle) => (
-    <>
-      <Link href={`/properties/${property.id}/`}>
-        <a className={headStyle.header__back}>
-          <ChevronIcon />
-          Property
-        </a>
-      </Link>
-    </>
-  );
-
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
@@ -72,7 +62,7 @@ const Header: FunctionComponent<Props> = ({
           <MobileHeader
             isOnline={isOnline}
             isStaging={isStaging}
-            left={mobileHeaderLeft}
+            toggleNavOpen={toggleNavOpen}
             title="Deficient Items"
             actions={mobileHeaderActions}
           />
@@ -85,6 +75,12 @@ const Header: FunctionComponent<Props> = ({
               onKeyDown={onSearchKeyDown}
               onChange={(evt) => setSearchQuery(evt.target.value)}
             />
+            {searchQuery && (
+              <button
+                className={styles.search__clear}
+                onClick={onClearSearch}
+              />
+            )}
           </div>
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}

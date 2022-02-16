@@ -50,6 +50,7 @@
 %mobileSearchInputMain {
   background-color: $gray-lighter;
   padding: rem-calc(10) rem-calc(15);
+  position: relative;
 }
 
 %mobileSearchInput {
@@ -74,6 +75,39 @@
 
   &::placeholder {
     color: rgba($black, 0.6);
+  }
+}
+
+%mobileSearchClear {
+  padding: 0;
+  width: rem-calc(14);
+  height: rem-calc(14);
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  right: rem-calc(24);
+  left: auto;
+  border: none;
+  background-color: $gray-light;
+  border-radius: 100%;
+  cursor: pointer;
+
+  &:before,
+  &:after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1px;
+    height: rem-calc(8);
+    background-color: $white;
+    transform: rotate(45deg) translate(-50%, -50%);
+    transform-origin: top left;
+    content: '';
+  }
+
+  &:after {
+    transform: rotate(-45deg) translate(-50%, -50%);
   }
 }
 
