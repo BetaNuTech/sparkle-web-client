@@ -1,14 +1,15 @@
-import { FunctionComponent, useEffect, useMemo, useState } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
 import deficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
-import utilArray from '../../common/utils/array';
 import StateGroups from './StateGroups';
 import Header from './Header';
-import useSearching from '../../common/hooks/useSearching';
 import useSorting from './hooks/useSorting';
+import useSelectionsAndSearch from './hooks/useSelectionsAndSearch';
+
+type userNotifications = (message: string, options?: any) => any;
 
 interface Props {
   isOnline?: boolean;
@@ -17,6 +18,7 @@ interface Props {
   property: propertyModel;
   deficientItems: deficientItemModel[];
   forceVisible?: boolean;
+  sendNotification: userNotifications;
   toggleNavOpen?(): void;
 }
 
@@ -26,6 +28,7 @@ const DeficientItems: FunctionComponent<Props> = ({
   deficientItems,
   property,
   forceVisible,
+  sendNotification,
   toggleNavOpen
 }) => {
   // Responsive queries
@@ -48,15 +51,18 @@ const DeficientItems: FunctionComponent<Props> = ({
     onSortDirChange
   } = useSorting(deficientItems, isMobile ? 'asc' : 'desc');
 
-  const { onSearchKeyDown, filteredItems, searchParam, onClearSearch } =
-    useSearching(sortedDeficientItems, [
-      'itemTitle',
-      'sectionTitle',
-      'sectionSubTitle'
-    ]);
-
-  const filteredDeficientItems = filteredItems.map(
-    (item) => item as deficientItemModel
+  const {
+    selectedDeficiencies,
+    onGroupSelection,
+    onSelectDeficiency,
+    onSearchKeyDown,
+    deficientItemsByState,
+    searchParam,
+    onClearSearch
+  } = useSelectionsAndSearch(
+    sortedDeficientItems,
+    property.id,
+    sendNotification
   );
 
   const [searchQuery, setSearchQuery] = useState(searchParam);
@@ -66,16 +72,6 @@ const DeficientItems: FunctionComponent<Props> = ({
       setSearchQuery('');
     }
   }, [searchParam]);
-
-  // Grouping of deficient items by state
-  const deficientItemsByState = useMemo(
-    () =>
-      utilArray.groupBy<string, deficientItemModel>(
-        filteredDeficientItems,
-        (item) => item.state
-      ),
-    [filteredDeficientItems]
-  );
 
   return (
     <>
@@ -105,6 +101,9 @@ const DeficientItems: FunctionComponent<Props> = ({
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
         isMobile={isMobile}
+        onGroupSelection={onGroupSelection}
+        onSelectDeficiency={onSelectDeficiency}
+        selectedDeficiencies={selectedDeficiencies}
       />
     </>
   );

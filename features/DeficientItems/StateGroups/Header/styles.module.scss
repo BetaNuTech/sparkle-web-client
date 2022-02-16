@@ -1,7 +1,13 @@
 @import '../../../../styles/index.scss';
 
+$selected-count-bg-color: #3071ef;
+$selected-count-border-color: #133e86;
+
 .container {
   @extend %stickyBoundingBox--header;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &--completed,
   &--incomplete {
@@ -37,6 +43,8 @@
     font-weight: 400;
     line-height: 1;
     top: $inspectionStatusBarHeight;
+    justify-content: flex-start;
+    min-height: rem-calc(65);
 
     &--completed,
     &--incomplete {
@@ -61,5 +69,41 @@
     &--closed {
       border-bottom: 5px solid $gray-light;
     }
+  }
+}
+
+.selectedCount {
+  position: relative;
+  padding: 0 $global-sm-padding;
+  margin-left: $global-sm-padding;
+  margin-right: rem-calc(10);
+  margin-bottom: 0;
+  line-height: rem-calc(26);
+  vertical-align: top;
+  font-weight: bold;
+  font-size: 0.75rem;
+  color: $white;
+  background-color: $selected-count-bg-color;
+  border: 1px solid $selected-count-border-color;
+  border-right-width: 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 100%;
+    border-width: rem-calc(14) 0 rem-calc(14) rem-calc(13);
+    border-style: solid;
+    border-color: transparent $selected-count-border-color;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 100%;
+    border-width: rem-calc(13) 0 rem-calc(13) rem-calc(12);
+    border-style: solid;
+    border-color: transparent $selected-count-bg-color;
   }
 }

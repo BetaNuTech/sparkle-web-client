@@ -1,15 +1,23 @@
 import clsx from 'clsx';
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 
 interface Props {
   state: string;
   itemCount: number;
+  onGroupSelection(state: string, evt: ChangeEvent<HTMLInputElement>): void;
+  checked: boolean;
+  isMobile: boolean;
+  selectedCount: number;
 }
 
 const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
   state,
-  itemCount
+  itemCount,
+  onGroupSelection,
+  checked,
+  isMobile,
+  selectedCount
 }) => {
   let title = '';
 
@@ -46,13 +54,30 @@ const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
       title = state;
       break;
   }
-
+  const showCheckBox = !isMobile && state !== 'closed';
+  const showSelectedCount = !isMobile && Boolean(selectedCount);
   return (
     <h3
       data-testid="state-item-title"
       className={clsx(styles.container, styles[`container--${state}`])}
     >
-      {title}
+      {showCheckBox && (
+        <input
+          className="-mr"
+          type="checkbox"
+          onChange={(evt) => onGroupSelection(state, evt)}
+          checked={checked}
+        />
+      )}
+      <span>{title}</span> {/* NOTE: span removes cascading base form styles */}
+      {showSelectedCount && (
+        <label
+          className={styles.selectedCount}
+          data-testid="selected-items-count"
+        >
+          {selectedCount} Selected
+        </label>
+      )}
     </h3>
   );
 };

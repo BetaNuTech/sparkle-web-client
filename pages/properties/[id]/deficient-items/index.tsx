@@ -57,6 +57,7 @@ const Page: React.FC = (): ReactElement => {
           user={user}
           property={property}
           deficientItems={deficientItems}
+          sendNotification={sendNotification}
         />
       ) : (
         <LoadingHud />

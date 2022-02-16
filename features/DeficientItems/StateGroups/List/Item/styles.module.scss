@@ -17,6 +17,7 @@
 
   @include media-query(desktop) {
     flex-direction: row-reverse;
+    padding: $global-padding $global-lg-padding;
     justify-content: space-between;
     min-height: rem-calc(91);
     padding: $global-sm-padding $global-lg-padding;
@@ -26,7 +27,7 @@
 .row {
   display: flex;
   justify-content: space-between;
-  flex: 1;
+  flex: 1 1 auto;
 
   &--reverse {
     flex-direction: row-reverse;
