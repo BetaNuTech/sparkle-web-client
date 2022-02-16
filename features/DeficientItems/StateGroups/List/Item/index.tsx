@@ -15,12 +15,16 @@ interface Props {
   deficientItem: deficientItemModel;
   forceVisible?: boolean;
   isMobile: boolean;
+  onSelectDeficiency(state: string, deficiencyId: string): void;
+  selectedDeficiencies: string[];
 }
 
 const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
   deficientItem,
   forceVisible,
-  isMobile
+  isMobile,
+  onSelectDeficiency,
+  selectedDeficiencies
 }) => {
   const placeholderRef = useRef(null);
 
@@ -142,6 +146,22 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
                   )}
                   data-testid="item-title"
                 >
+                  {!isMobile && !isClosed && (
+                    <input
+                      type="checkbox"
+                      checked={
+                        selectedDeficiencies.indexOf(deficientItem.id) > -1
+                      }
+                      className="-mr"
+                      onChange={() =>
+                        onSelectDeficiency(
+                          deficientItem.state,
+                          deficientItem.id
+                        )
+                      }
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  )}
                   {deficientItem.itemTitle}
                 </span>
                 <span

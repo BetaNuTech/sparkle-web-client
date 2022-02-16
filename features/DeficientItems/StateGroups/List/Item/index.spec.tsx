@@ -15,7 +15,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       currentResponsibilityGroup: null
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const currentResponsibilityGroupEl = screen.queryByTestId(
       'current-responsibility-group'
     );
@@ -29,7 +35,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       currentResponsibilityGroup: 'site_level_in-house'
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const currentResponsibilityGroupEl = screen.queryByTestId(
       'current-responsibility-group'
     );
@@ -47,7 +59,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       isDuplicate: true
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const badgeEl = screen.queryByTestId('item-right-badge');
 
     expect(badgeEl).toHaveTextContent('Duplicate');
@@ -62,7 +80,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       currentDeferredDate
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const badgeEl = screen.queryByTestId('item-right-badge');
 
     expect(badgeEl).toHaveTextContent(expected);
@@ -76,7 +100,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       currentDueDate
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const badgeEl = screen.queryByTestId('item-right-badge');
 
     expect(badgeEl).toHaveTextContent(expected);
@@ -87,7 +117,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       state: 'pending'
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const titleEl = screen.queryByTestId('item-title');
 
     expect(titleEl).toHaveTextContent(deficientItem.itemTitle);
@@ -98,7 +134,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       state: 'pending'
     });
 
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const sectionTitleEl = screen.queryByTestId('section-title');
 
     expect(sectionTitleEl).toHaveTextContent(deficientItem.sectionTitle);
@@ -109,7 +151,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       state: 'pending',
       sectionSubtitle: 'section sub title'
     });
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const sectionTitleEl = screen.queryByTestId('section-sub-title');
 
     expect(sectionTitleEl).toHaveTextContent(deficientItem.sectionSubtitle);
@@ -120,7 +168,13 @@ describe('Unit | Features | Deficient Items | State Groups | List | Item', () =>
       state: 'pending',
       sectionSubtitle: ''
     });
-    render(<ItemIcon deficientItem={deficientItem} forceVisible />);
+    render(
+      <ItemIcon
+        deficientItem={deficientItem}
+        selectedDeficiencies={[]}
+        forceVisible
+      />
+    );
     const sectionTitleEl = screen.queryByTestId('section-sub-title');
 
     expect(sectionTitleEl).toBeNull();

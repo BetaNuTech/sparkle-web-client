@@ -1,4 +1,4 @@
-import React, { FunctionComponent, Fragment } from 'react';
+import React, { FunctionComponent, Fragment, ChangeEvent } from 'react';
 import deficientItemModel from '../../../common/models/deficientItem';
 import { deficientItemStateOrder } from '../../../config/deficientItems';
 import Header from './Header';
@@ -14,6 +14,9 @@ interface Props {
   onSearchKeyDown(evt: React.KeyboardEvent<HTMLInputElement>): void;
   onClearSearch(): void;
   isMobile: boolean;
+  onGroupSelection(state: string, evt: ChangeEvent<HTMLInputElement>): void;
+  onSelectDeficiency(state: string, deficiencyId: string): void;
+  selectedDeficiencies: Record<string, string[]>;
 }
 
 const DeficientItemsStateGroups: FunctionComponent<Props> = ({
@@ -23,7 +26,10 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
   onSearchKeyDown,
   onClearSearch,
   forceVisible,
-  isMobile
+  isMobile,
+  onGroupSelection,
+  onSelectDeficiency,
+  selectedDeficiencies
 }) => (
   <div className={styles.container}>
     {!isMobile && (
@@ -41,19 +47,30 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
       if (deficientItems.length === 0) {
         return <Fragment key={deficientItemState}></Fragment>;
       }
+      const groupSelections = selectedDeficiencies[deficientItemState] || [];
+      const firstTenDIs = deficientItems.slice(0, 10);
+      const isChecked = firstTenDIs.every((item) =>
+        groupSelections.includes(item.id)
+      );
 
       return (
-        <Fragment key={deficientItemState}>
+        <div key={deficientItemState} className={styles.main}>
           <Header
             state={deficientItemState}
             itemCount={deficientItems.length}
+            onGroupSelection={onGroupSelection}
+            checked={isChecked}
+            isMobile={isMobile}
+            selectedCount={groupSelections.length}
           />
           <List
             deficientItems={deficientItems}
             forceVisible={forceVisible}
             isMobile={isMobile}
+            onSelectDeficiency={onSelectDeficiency}
+            selectedDeficiencies={groupSelections}
           />
-        </Fragment>
+        </div>
       );
     })}
 
