@@ -154,8 +154,14 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
                   data-testid="section-title"
                 >
                   {deficientItem.sectionTitle}
+                  {deficientItem.sectionSubtitle && !isMobile && (
+                    <span data-testid="section-sub-title">
+                      {' '}
+                      / {deficientItem.sectionSubtitle}
+                    </span>
+                  )}
                 </span>
-                {deficientItem.sectionSubtitle && (
+                {deficientItem.sectionSubtitle && isMobile && (
                   <span
                     className={clsx(
                       styles.title,

@@ -11,4 +11,8 @@
   &__input[type='search'] {
     @extend %mobileSearchInput;
   }
+
+  &__clear {
+    @extend %mobileSearchClear;
+  }
 }
