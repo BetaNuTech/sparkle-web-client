@@ -61,10 +61,25 @@ export const deficientItemPendingEligibleStates = [
   'requires-action',
   'requires-progress-update'
 ];
+export const deficientItemTransitions = {
+  'requires-action': [{ value: 'pending' }, { value: 'deferred' }],
+  deferred: [
+    { value: 'go-back' },
+    { value: 'closed', label: 'Close (Duplicate)' }
+  ],
+  closed: [],
+  pending: [{ value: 'deferred' } /* Disabled: 'completed' */],
+  'requires-progress-update': [{ value: 'pending' }],
+  overdue: [{ value: 'incomplete' }],
+  incomplete: [{ value: 'go-back' }, { value: 'closed', label: 'close' }],
+  'go-back': [{ value: 'pending' }, { value: 'deferred' }],
+  completed: [{ value: 'go-back' }, { value: 'closed', label: 'close' }]
+};
 
 export default {
   deficientItemStateOrder,
   deficientItemCurrentStateDescriptions,
   deficientItemResponsibilityGroups,
-  deficientItemProgressNoteEditStates
+  deficientItemProgressNoteEditStates,
+  deficientItemTransitions
 };

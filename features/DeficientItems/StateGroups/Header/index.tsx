@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { ChangeEvent, FunctionComponent } from 'react';
+import MoveToDropDown from './MoveToDropdown';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -9,6 +10,10 @@ interface Props {
   checked: boolean;
   isMobile: boolean;
   selectedCount: number;
+  onMoveToState(currentState: string, nextState: string): void;
+  canGoBack: boolean;
+  canClose: boolean;
+  canDefer: boolean;
 }
 
 const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
@@ -17,7 +22,11 @@ const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
   onGroupSelection,
   checked,
   isMobile,
-  selectedCount
+  selectedCount,
+  onMoveToState,
+  canGoBack,
+  canClose,
+  canDefer
 }) => {
   let title = '';
 
@@ -54,14 +63,14 @@ const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
       title = state;
       break;
   }
-  const showCheckBox = !isMobile && state !== 'closed';
+  const hasBulkUpdate = !isMobile && state !== 'closed';
   const showSelectedCount = !isMobile && Boolean(selectedCount);
   return (
     <h3
       data-testid="state-item-title"
       className={clsx(styles.container, styles[`container--${state}`])}
     >
-      {showCheckBox && (
+      {hasBulkUpdate && (
         <input
           className="-mr"
           type="checkbox"
@@ -77,6 +86,16 @@ const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
         >
           {selectedCount} Selected
         </label>
+      )}
+      {hasBulkUpdate && (
+        <MoveToDropDown
+          currentState={state}
+          isEnabled={Boolean(selectedCount)}
+          onClick={onMoveToState}
+          canGoBack={canGoBack}
+          canClose={canClose}
+          canDefer={canDefer}
+        />
       )}
     </h3>
   );
