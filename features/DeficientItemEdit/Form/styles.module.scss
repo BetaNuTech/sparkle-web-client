@@ -1,0 +1,149 @@
+@import '../../../styles/index.scss';
+
+.container {
+  overflow: auto;
+  &__sidebar {
+    max-width: 100%;
+    flex: 1;
+  }
+
+  @include media-query(desktop) {
+    display: flex;
+    padding: $global-lg-padding $global-padding;
+
+    &__sidebar {
+      flex: 1 1 30%;
+    }
+
+    &__main {
+      flex: 1 1 70%;
+      padding-left: $global-lg-padding;
+      padding: $global-mlg-padding;
+      border: 1px solid $gray;
+      display: flex;
+      margin-left: $global-lg-padding;
+    }
+
+    &__formSidebar {
+      flex: 0 1 auto;
+      max-width: 40%;
+    }
+
+    &__form {
+      flex: 1 1 60%;
+    }
+  }
+
+  @include media-query(desktop) {
+    overflow: visible;
+  }
+}
+
+.section {
+  &--twoColumn {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  &__footer {
+    @extend %deficientItemSection--footer;
+  }
+
+  @include media-query(desktop) {
+    margin-bottom: $global-lg-padding;
+    padding: $global-padding;
+    margin-right: $global-lg-padding;
+    border: 1px solid $gray-lighter;
+    border-radius: $global-radius;
+  }
+}
+
+.label {
+  @extend %deficientItemSection--label;
+
+  &--pill {
+    @extend %deficientItemSection--label--pill;
+  }
+}
+
+.heading {
+  @extend %deficientItemSection--heading;
+
+  &--pill {
+    @extend %deficientItemSection--heading--pill;
+  }
+}
+.subHeading {
+  @extend %deficientItemSection--subHeading;
+}
+
+.action {
+  @extend %actionButton;
+  padding: rem-calc(6) $global-padding;
+  max-width: rem-calc(260);
+  width: 100%;
+  margin-bottom: $global-padding;
+  font-size: rem-calc(14);
+  color: $white;
+  font-weight: bold;
+  text-align: center;
+  border-width: 0;
+
+  &__icon {
+    @extend %actionButtonIcon;
+  }
+
+  &--fullButton {
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding-left: rem-calc(10);
+    padding-right: rem-calc(10);
+    display: flex;
+    align-items: center;
+    font-weight: normal;
+    text-transform: none;
+  }
+
+  &--pill,
+  &--paddedPill {
+    width: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    border: rem-calc(1) solid $gray-lighter;
+    border-radius: $global-radius;
+    background-color: transparent;
+    padding: $global-sm-padding rem-calc(12);
+    max-width: 100%;
+
+    @include media-query(large-desktop) {
+      padding: $global-md-padding $global-padding;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include media-query(desktop) {
+    margin: 0 0 0 $global-sm-padding;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+}
+
+.textButton {
+  @extend %deficientItemSection--textButton;
+}
+
+.aniblink {
+  @extend %ani-blink;
+}
+
+.icon {
+  max-width: $global-mlg-padding;
+  max-height: $global-mlg-padding;
+}

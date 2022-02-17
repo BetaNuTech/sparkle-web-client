@@ -8,6 +8,7 @@ import StateGroups from './StateGroups';
 import Header from './Header';
 import useSorting from './hooks/useSorting';
 import useSelectionsAndSearch from './hooks/useSelectionsAndSearch';
+import BulkUpdateModal from './BulkUpdateModal';
 import {
   canGoBackDeficientItem,
   canCloseDeficientItem,
@@ -72,6 +73,7 @@ const DeficientItems: FunctionComponent<Props> = ({
   );
 
   const [searchQuery, setSearchQuery] = useState(searchParam);
+  const [moveToStates, setMoveToStates] = useState(null);
 
   useEffect(() => {
     if (!searchParam) {
@@ -81,7 +83,13 @@ const DeficientItems: FunctionComponent<Props> = ({
 
   const onMoveToState = (currentState: string, nextState: string) => {
     console.log(currentState, nextState); // eslint-disable-line no-console
+    setMoveToStates({ currentState, nextState });
   };
+
+  const movingItemsLength = (
+    selectedDeficiencies[moveToStates?.currentState] || []
+  ).length;
+
   const canGoBack = canGoBackDeficientItem(user);
   const canClose = canCloseDeficientItem(user);
   const canDefer = canDeferDeficientItem(user);
@@ -121,6 +129,13 @@ const DeficientItems: FunctionComponent<Props> = ({
         canGoBack={canGoBack}
         canClose={canClose}
         canDefer={canDefer}
+      />
+
+      <BulkUpdateModal
+        isVisible={Boolean(moveToStates)}
+        onClose={() => setMoveToStates(null)}
+        movingItemsLength={movingItemsLength}
+        nextState={moveToStates?.nextState}
       />
     </>
   );

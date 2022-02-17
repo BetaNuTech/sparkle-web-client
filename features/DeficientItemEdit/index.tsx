@@ -7,7 +7,6 @@ import DeficientItemModel from '../../common/models/deficientItem';
 import userModel from '../../common/models/user';
 import PhotosModal from '../../common/PhotosModal';
 import PropertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
-import DeficientItemEditForm from '../../common/DeficientItemEditForm';
 import HistoryModal from './HistoryModal';
 import dateUtil from '../../common/utils/date';
 import Header from './Header';
@@ -16,6 +15,7 @@ import useUpdateItem from './hooks/useUpdateItem';
 import useUnpublishedDeficiencyPhotos from './hooks/useUnpublishedDeficiencyPhotos';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
 import LoadingHud from '../../common/LoadingHud';
+import Form from './Form';
 
 type userNotifications = (message: string, options?: any) => any;
 interface Props {
@@ -307,7 +307,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onAddCompletionPhotos={onAddCompletionPhotos}
       />
 
-      <DeficientItemEditForm
+      <Form
         user={user}
         property={property}
         onShowHistory={onShowHistory}

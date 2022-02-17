@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import moment from 'moment';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
-import dateUtils from '../../../utils/date';
+import dateUtils from '../../../../common/utils/date';
 import DueDatePill from './index';
 
 describe('Unit | Common | Deficient Item Edit Form | fields | Due Date Pill', () => {

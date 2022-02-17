@@ -11,7 +11,7 @@ import {
   teamMember
 } from '../../../../__mocks__/users';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
-import settings from '../../settings';
+import settings from '../../../../common/DeficientItemEditForm/settings';
 import Actions from './index';
 
 const DEF_ITEM_STATES = settings.deficientItemStates;
