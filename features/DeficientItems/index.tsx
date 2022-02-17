@@ -8,6 +8,11 @@ import StateGroups from './StateGroups';
 import Header from './Header';
 import useSorting from './hooks/useSorting';
 import useSelectionsAndSearch from './hooks/useSelectionsAndSearch';
+import {
+  canGoBackDeficientItem,
+  canCloseDeficientItem,
+  canDeferDeficientItem
+} from '../../common/utils/userPermissions';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -23,6 +28,7 @@ interface Props {
 }
 
 const DeficientItems: FunctionComponent<Props> = ({
+  user,
   isOnline,
   isStaging,
   deficientItems,
@@ -73,6 +79,13 @@ const DeficientItems: FunctionComponent<Props> = ({
     }
   }, [searchParam]);
 
+  const onMoveToState = (currentState: string, nextState: string) => {
+    console.log(currentState, nextState); // eslint-disable-line no-console
+  };
+  const canGoBack = canGoBackDeficientItem(user);
+  const canClose = canCloseDeficientItem(user);
+  const canDefer = canDeferDeficientItem(user);
+
   return (
     <>
       <Header
@@ -104,6 +117,10 @@ const DeficientItems: FunctionComponent<Props> = ({
         onGroupSelection={onGroupSelection}
         onSelectDeficiency={onSelectDeficiency}
         selectedDeficiencies={selectedDeficiencies}
+        onMoveToState={onMoveToState}
+        canGoBack={canGoBack}
+        canClose={canClose}
+        canDefer={canDefer}
       />
     </>
   );

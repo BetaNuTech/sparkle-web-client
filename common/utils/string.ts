@@ -24,12 +24,17 @@ export default {
     );
   },
 
-  // Limite the length of string adding any delimiter
+  // Limit the length of string adding any delimiter
   truncate(str: string, length: number, delimiter = ''): string {
     if (str.length > length) {
       return `${str.slice(0, length)}${delimiter}`;
     }
 
     return str;
+  },
+
+  // Replace all "-" dash characters with spaces
+  dedash(params?: string): string {
+    return `${params || ''}`.replace(/-/g, ' ');
   }
 };

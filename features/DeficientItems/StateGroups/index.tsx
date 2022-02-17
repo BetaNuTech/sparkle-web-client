@@ -17,6 +17,10 @@ interface Props {
   onGroupSelection(state: string, evt: ChangeEvent<HTMLInputElement>): void;
   onSelectDeficiency(state: string, deficiencyId: string): void;
   selectedDeficiencies: Record<string, string[]>;
+  onMoveToState(currentState: string, nextState: string): void;
+  canGoBack: boolean;
+  canClose: boolean;
+  canDefer: boolean;
 }
 
 const DeficientItemsStateGroups: FunctionComponent<Props> = ({
@@ -29,7 +33,11 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
   isMobile,
   onGroupSelection,
   onSelectDeficiency,
-  selectedDeficiencies
+  selectedDeficiencies,
+  onMoveToState,
+  canGoBack,
+  canClose,
+  canDefer
 }) => (
   <div className={styles.container}>
     {!isMobile && (
@@ -62,6 +70,10 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
             checked={isChecked}
             isMobile={isMobile}
             selectedCount={groupSelections.length}
+            onMoveToState={onMoveToState}
+            canGoBack={canGoBack}
+            canClose={canClose}
+            canDefer={canDefer}
           />
           <List
             deficientItems={deficientItems}
