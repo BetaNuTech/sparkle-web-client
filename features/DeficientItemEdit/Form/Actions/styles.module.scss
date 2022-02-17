@@ -19,4 +19,8 @@
   &--grid {
     flex-direction: row;
   }
+
+  @include media-query(desktop) {
+    padding: 0;
+  }
 }

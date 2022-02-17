@@ -1,0 +1,85 @@
+%deficientItemSection--footer {
+  margin-top: $global-padding;
+  display: flex;
+  justify-content: center;
+
+  @include media-query(desktop) {
+    justify-content: flex-start;
+  }
+}
+
+%deficientItemSection--label {
+  background-color: $gray-dark;
+  padding: rem-calc(4) 0;
+  font-size: rem-calc(14);
+  text-align: center;
+  color: $white;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+
+  @include media-query(desktop) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $global-padding;
+    border-bottom: 1px solid $gray-lighter;
+    background-color: transparent;
+    font-size: rem-calc(22);
+    text-transform: none;
+    text-align: left;
+    color: $black;
+    position: static;
+  }
+}
+
+%deficientItemSection--label--pill {
+  border: none;
+  font-size: rem-calc(17);
+  flex-direction: column;
+  flex: 0 1 auto;
+  align-items: flex-start;
+  margin-left: 1rem;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+%deficientItemSection--heading {
+  color: $white;
+  font-size: rem-calc(14);
+  text-transform: uppercase;
+
+  @include media-query(desktop) {
+    font-size: rem-calc(22);
+    color: $black;
+    white-space: nowrap;
+    text-transform: none;
+  }
+}
+
+%deficientItemSection--heading--pill {
+  font-size: rem-calc(17);
+}
+
+%deficientItemSection--subHeading {
+  font-size: rem-calc(14);
+  line-height: 1.3;
+  color: $gray-3;
+}
+
+%deficientItemSection--textButton {
+  @extend %hollowButton;
+  border: none;
+  margin: 0;
+
+  &[disabled] {
+    color: $gray-light;
+    cursor: not-allowed;
+  }
+
+  @include media-query(desktop) {
+    padding: $global-sm-padding rem-calc(6);
+    width: auto;
+    text-align: left;
+  }
+}

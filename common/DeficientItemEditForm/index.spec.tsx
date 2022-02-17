@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import sinon from 'sinon';
 import createDeficientItem from '../../__tests__/helpers/createDeficientItem';
-import { admin, teamMember } from '../../__mocks__/users';
+import { admin } from '../../__mocks__/users';
 import { fullProperty } from '../../__mocks__/properties';
 import settings from './settings';
 import DeficientItemEditForm from './index';
@@ -642,92 +642,4 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
     }
   });
 
-  it('it reveals Trello section only when necessary', () => {
-    const props = {
-      user: admin,
-      property: fullProperty,
-      deficientItem: createDeficientItem(),
-      isMobile: false,
-      onShowHistory: sinon.spy(),
-      onClickViewPhotos: sinon.spy(),
-      onShowPlanToFix: sinon.spy(),
-      onChangePlanToFix: sinon.spy(),
-      onShowResponsibilityGroups: sinon.spy(),
-      onChangeResponsibilityGroup: sinon.spy(),
-      onShowDueDates: sinon.spy(),
-      onChangeDueDate: sinon.spy(),
-      onShowReasonIncomplete: sinon.spy(),
-      onChangeReasonIncomplete: sinon.spy(),
-      isUpdatingDeferredDate: false,
-      isUpdatingCurrentCompleteNowReason: false
-    };
-
-    const tests = [
-      {
-        data: createDeficientItem({ state: 'closed' }),
-        user: teamMember,
-        expected: false
-      },
-      {
-        data: createDeficientItem({ state: 'closed' }),
-        user: admin,
-        propertyIntegration: { openList: 'valid' },
-        expected: false
-      },
-      {
-        data: createDeficientItem({
-          state: 'closed',
-          trelloCardURL: 'http://google.com'
-        }),
-        user: admin,
-        expected: true
-      }
-    ];
-
-    const states = DEF_ITEM_STATES.filter((state) => state !== 'closed');
-    states.forEach((state) => {
-      tests.push(
-        {
-          data: createDeficientItem({ state }),
-          user: teamMember, // should not render section if user is not admin or corporate
-          expected: false
-        },
-        {
-          data: createDeficientItem({ state }),
-          user: admin,
-          expected: true
-        },
-        {
-          data: createDeficientItem({ state }),
-          user: admin,
-          propertyIntegration: { openList: 'valid' },
-          expected: true
-        },
-        {
-          data: createDeficientItem({
-            state,
-            trelloCardURL: 'http://google.com'
-          }),
-          user: admin,
-          expected: true
-        }
-      );
-    });
-
-    const { rerender } = render(<DeficientItemEditForm {...props} />);
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const test of tests) {
-      const { data, propertyIntegration, expected, user } = test;
-      const componentProps = {
-        ...props,
-        user,
-        deficientItem: data,
-        propertyIntegration
-      };
-      rerender(<DeficientItemEditForm {...componentProps} />);
-      const trelloSection = screen.queryByTestId('item-trello');
-      expect(Boolean(trelloSection)).toEqual(expected);
-    }
-  });
 });

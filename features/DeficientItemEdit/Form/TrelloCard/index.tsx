@@ -2,9 +2,9 @@ import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import AddIcon from '../../../../public/icons/ios/add.svg';
 import AlbumIcon from '../../../../public/icons/sparkle/album.svg';
-import LinkFeature from '../../../LinkFeature';
-import DeficientItemModel from '../../../models/deficientItem';
-import fieldStyles from '../styles.module.scss';
+import LinkFeature from '../../../../common/LinkFeature';
+import DeficientItemModel from '../../../../common/models/deficientItem';
+import formStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -35,32 +35,21 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
     return <></>;
   }
   return (
-    <section
-      className={clsx(
-        fieldStyles.section,
-        isPill && fieldStyles['section--pill']
-      )}
-      data-testid="item-trello"
-    >
-      <header
-        className={clsx(
-          isPill ? fieldStyles.heading : fieldStyles.label,
-          isPill && fieldStyles['heading--pill']
-        )}
-      >
+    <section className={formStyles.section} data-testid="item-trello">
+      <header className={clsx(isPill ? formStyles.heading : formStyles.label)}>
         Trello Card
       </header>
 
-      <footer className={fieldStyles.section__footer}>
+      <footer className={formStyles.section__footer}>
         {showTrelloCardUrl && (
           <a
             href={deficientItem.trelloCardURL}
             target="_blank"
             rel="noreferrer"
             className={clsx(
-              !isPill && fieldStyles.action,
+              !isPill && formStyles.action,
               !isPill && '-bgc-primary',
-              isPill && fieldStyles['action--paddedPill']
+              isPill && formStyles['action--paddedPill']
             )}
             data-testid="trello-card-link"
           >
@@ -72,20 +61,20 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
           <button
             onClick={onCreateTrelloCard}
             className={clsx(
-              fieldStyles.action,
+              formStyles.action,
               '-bgc-primary',
-              isPill && fieldStyles['action--fullButton']
+              isPill && formStyles['action--fullButton']
             )}
             disabled={isLoading || !isOnline}
             data-testid="trello-card-action"
           >
             {isLoading ? (
-              <span className={fieldStyles.aniBlink}>Creating card...</span>
+              <span className={formStyles.aniBlink}>Creating card...</span>
             ) : (
               'Create Card'
             )}
             {isPill && !isLoading && (
-              <span className={fieldStyles.action__icon}>
+              <span className={formStyles.action__icon}>
                 <AddIcon />
               </span>
             )}
@@ -94,9 +83,9 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
         {!hasOpenList && (
           <LinkFeature
             className={clsx(
-              fieldStyles.action,
+              formStyles.action,
               '-bgc-primary',
-              isPill && fieldStyles['action--pill']
+              isPill && formStyles['action--pill']
             )}
             href={`/properties/edit/${propertyId}/trello`}
             featureEnabled={true} // eslint-disable-line react/jsx-boolean-value
