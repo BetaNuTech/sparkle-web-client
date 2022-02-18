@@ -1,21 +1,20 @@
 import { FunctionComponent, useMemo } from 'react';
 import clsx from 'clsx';
-import DeficientItemModel from '../../../../common/models/deficientItem';
-import UserModel from '../../../../common/models/user';
+import DeficientItemModel from '../../models/deficientItem';
+import UserModel from '../../models/user';
 import {
   deficientItemPendingEligibleStates,
   deficientItemProgressNoteEditStates
-} from '../../../../config/deficientItems';
+} from '../../../config/deficientItems';
 import {
   canGoBackDeficientItem,
   canCloseDeficientItem,
   canDeferDeficientItem,
   getLevelName,
   canCompleteDeficientItem
-} from '../../../../common/utils/userPermissions';
-import dateUtil from '../../../../common/utils/date';
-
-import formStyles from '../styles.module.scss';
+} from '../../utils/userPermissions';
+import dateUtil from '../../utils/date';
+import fieldStyles from '../fields/styles.module.scss';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -24,29 +23,31 @@ interface Props {
   updates: DeficientItemModel;
   isSaving: boolean;
   isOnline: boolean;
-  isUpdatingCurrentCompleteNowReason: boolean;
-  isUpdatingDeferredDate: boolean;
-  onUpdatePending(): void;
-  onUnpermittedPending(): void;
-  onAddProgressNote(): void;
-  onUpdateIncomplete(): void;
-  onComplete(): void;
-  onGoBack(): void;
-  onCloseDuplicate(): void;
-  onUnpermittedDuplicate(): void;
-  onClose(): void;
-  onCancelCompleteNow(): void;
-  onConfirmCompleteNow(): void;
-  onCompleteNow(): void;
-  onCancelDefer(): void;
-  onConfirmDefer(): void;
-  onInitiateDefer(): void;
-  onUnpermittedDefer(): void;
-  onShowCompletedPhotos(): void;
+  isUpdatingCurrentCompleteNowReason?: boolean;
+  isUpdatingDeferredDate?: boolean;
+  onUpdatePending?(): void;
+  onUnpermittedPending?(): void;
+  onAddProgressNote?(): void;
+  onUpdateIncomplete?(): void;
+  onComplete?(): void;
+  onGoBack?(): void;
+  onCloseDuplicate?(): void;
+  onUnpermittedDuplicate?(): void;
+  onClose?(): void;
+  onCancelCompleteNow?(): void;
+  onConfirmCompleteNow?(): void;
+  onCompleteNow?(): void;
+  onCancelDefer?(): void;
+  onConfirmDefer?(): void;
+  onInitiateDefer?(): void;
+  onUnpermittedDefer?(): void;
+  onShowCompletedPhotos?(): void;
   inline?: boolean;
   showHeader?: boolean;
-  hasUnpublishedPhotos: boolean;
-  onAddCompletionPhotos(): void;
+  hasUnpublishedPhotos?: boolean;
+  onAddCompletionPhotos?(): void;
+  isBulkUpdate?: boolean;
+  nextState?: string;
 }
 
 const DeficientItemEditFormActions: FunctionComponent<Props> = ({
@@ -77,7 +78,9 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   inline,
   showHeader,
   hasUnpublishedPhotos,
-  onAddCompletionPhotos
+  onAddCompletionPhotos,
+  isBulkUpdate,
+  nextState
 }) => {
   const permissionLevel = getLevelName(user);
 
@@ -94,10 +97,13 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
   const showGoBackAction =
     canGoBackDeficientItem(user) &&
-    ['completed', 'incomplete', 'deferred'].includes(deficientItem.state);
+    ['completed', 'incomplete', 'deferred'].includes(deficientItem.state) &&
+    (nextState ? nextState === 'go-back' : true);
 
   const showCloseAction =
-    canClose && ['completed', 'incomplete'].includes(deficientItem.state);
+    canClose &&
+    ['completed', 'incomplete'].includes(deficientItem.state) &&
+    (nextState ? nextState === 'closed' : true);
 
   const showUpdateToPendingActions =
     deficientItemPendingEligibleStates.includes(deficientItem.state) &&
@@ -141,6 +147,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
       !isUpdatingDeferredDate &&
       !isUpdatingCurrentCompleteNowReason &&
       !isDeferred &&
+      !isBulkUpdate &&
       deficientItem.state !== 'go-back') ||
     (deficientItem.state === 'pending' && hasUnpublishedPhotos);
 
@@ -148,7 +155,8 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
     Boolean(updates.currentPlanToFix) &&
     Boolean(updates.currentResponsibilityGroup) &&
     Boolean(updates.currentDueDate);
-  const showDuplicateAction = isDeferred;
+  const showDuplicateAction =
+    isDeferred && (nextState ? nextState === 'closed' : true);
 
   const showDefer = showDeferAction && !isUpdatingDeferredDate;
 
@@ -172,11 +180,11 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
   return (
     <section className={styles.section} data-testid="action-item-actions">
-      {showHeader && <header className={formStyles.label}>Action(s)</header>}
+      {showHeader && <header className={fieldStyles.label}>Action(s)</header>}
       <div className={clsx(styles.main, inline && styles['main--grid'])}>
         {showCompletedPhotosAction && !inline && (
           <button
-            className={clsx(formStyles.textButton)}
+            className={clsx(fieldStyles.textButton)}
             disabled={isDisabled}
             data-testid="action-show-completed-photos"
             onClick={onShowCompletedPhotos}
@@ -188,7 +196,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showUpdateToPendingActions &&
           (isAbleToTransitionToPending ? (
             <button
-              className={clsx(formStyles.action, '-bgc-success')}
+              className={clsx(styles.action, '-bgc-success')}
               disabled={isDisabled}
               data-testid="action-update-pending"
               onClick={onUpdatePending}
@@ -197,7 +205,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           ) : (
             <button
-              className={clsx(formStyles.action, '-bgc-success')}
+              className={clsx(styles.action, '-bgc-success')}
               disabled={isDisabled}
               data-testid="action-unpermitted-pending"
               onClick={onUnpermittedPending}
@@ -208,7 +216,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {showUpdateAddProgressNoteAction && (
           <button
-            className={clsx(formStyles.action, '-bgc-success')}
+            className={clsx(styles.action, '-bgc-success')}
             disabled={isDisabled}
             data-testid="action-add-progress-note"
             onClick={onAddProgressNote}
@@ -219,18 +227,22 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {showUpdateToIncompleteAction && (
           <button
-            className={clsx(formStyles.action, '-bgc-success')}
+            className={clsx(styles.action, '-bgc-success')}
             disabled={isDisabled}
             data-testid="action-update-incomplete"
             onClick={onUpdateIncomplete}
           >
-            Save
+            {isSaving ? (
+              <span className={styles.aniBlink}>Loading...</span>
+            ) : (
+              'Save'
+            )}
           </button>
         )}
 
         {showAddCompletionPhotos && (
           <button
-            className={clsx(formStyles.action, '-bgc-primary')}
+            className={clsx(styles.action, '-bgc-primary')}
             disabled={isDisabled}
             data-testid="action-add-completion-photos"
             onClick={onAddCompletionPhotos}
@@ -240,7 +252,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         )}
         {showCompletedAction && (
           <button
-            className={clsx(formStyles.action, '-bgc-primary')}
+            className={clsx(styles.action, '-bgc-primary')}
             disabled={isDisabled}
             data-testid="action-completed"
             onClick={onComplete}
@@ -252,7 +264,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showGoBackAction && (
           <button
             className={clsx(
-              formStyles.action,
+              styles.action,
               deficientItem.state === 'completed'
                 ? '-bgc-alert'
                 : '-bgc-primary'
@@ -261,14 +273,18 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             data-testid="action-go-back"
             onClick={onGoBack}
           >
-            Go Back
+            {isSaving ? (
+              <span className={styles.aniBlink}>Loading...</span>
+            ) : (
+              'Go Back'
+            )}
           </button>
         )}
         {/* Transition to Closed (as duplicate) */}
         {showDuplicateAction &&
           (canClose ? (
             <button
-              className={clsx(formStyles.action, '-bgc-gray-light')}
+              className={clsx(styles.action, '-bgc-gray-light')}
               disabled={isDisabled}
               data-testid="action-duplicate"
               onClick={onCloseDuplicate}
@@ -277,7 +293,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           ) : (
             <button
-              className={clsx(formStyles.action, '-bgc-gray-light')}
+              className={clsx(styles.action, '-bgc-gray-light')}
               disabled={isDisabled}
               data-testid="action-unpermitted-duplicate"
               onClick={onUnpermittedDuplicate}
@@ -288,12 +304,16 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {/* Transition to Closed */}
         {showCloseAction && (
           <button
-            className={clsx(formStyles.action, '-bgc-success')}
+            className={clsx(styles.action, '-bgc-success')}
             disabled={isDisabled}
             data-testid="action-close"
             onClick={onClose}
           >
-            Close
+            {isSaving ? (
+              <span className={styles.aniBlink}>Loading...</span>
+            ) : (
+              'Close'
+            )}
           </button>
         )}
 
@@ -303,7 +323,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           (isUpdatingCurrentCompleteNowReason ? (
             <>
               <button
-                className={clsx(formStyles.action, '-bgc-med-dark')}
+                className={clsx(styles.action, '-bgc-med-dark')}
                 disabled={isDisabled}
                 data-testid="action-cancel-complete-now"
                 onClick={onCancelCompleteNow}
@@ -312,7 +332,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               </button>
               <button
                 className={clsx(
-                  formStyles.action,
+                  styles.action,
                   isDisabled || !updates.currentCompleteNowReason
                     ? '-bgc-gray'
                     : '-bgc-primary-dark'
@@ -326,7 +346,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </>
           ) : (
             <button
-              className={clsx(formStyles.action, '-bgc-primary-dark')}
+              className={clsx(styles.action, '-bgc-primary-dark')}
               disabled={isDisabled}
               data-testid="action-complete-now"
               onClick={onCompleteNow}
@@ -340,7 +360,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showDeferAction && isUpdatingDeferredDate && (
           <>
             <button
-              className={clsx(formStyles.action, '-bgc-med-dark')}
+              className={clsx(styles.action, '-bgc-med-dark')}
               disabled={isDisabled}
               data-testid="action-cancel-defer"
               onClick={onCancelDefer}
@@ -349,7 +369,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
             <button
               className={clsx(
-                formStyles.action,
+                styles.action,
                 isDisabled || !updates.currentDeferredDate
                   ? '-bgc-gray'
                   : '-bgc-orange'
@@ -366,7 +386,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showDefer &&
           (canDefer ? (
             <button
-              className={clsx(formStyles.action, '-bgc-orange')}
+              className={clsx(styles.action, '-bgc-orange')}
               disabled={isDisabled}
               data-testid="action-defer"
               onClick={onInitiateDefer}
@@ -375,7 +395,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           ) : (
             <button
-              className={clsx(formStyles.action, '-bgc-orange')}
+              className={clsx(styles.action, '-bgc-orange')}
               disabled={isDisabled}
               data-testid="action-unpermitted-defer"
               onClick={onUnpermittedDefer}
@@ -386,7 +406,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
       </div>
       {showCompletedPhotosAction && inline && (
         <button
-          className={clsx(formStyles.textButton)}
+          className={clsx(fieldStyles.textButton)}
           disabled={isDisabled}
           data-testid="action-show-completed-photos"
           onClick={onShowCompletedPhotos}
@@ -400,7 +420,30 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
 DeficientItemEditFormActions.defaultProps = {
   inline: false,
-  showHeader: true
+  showHeader: true,
+  isBulkUpdate: false,
+  nextState: null,
+  isUpdatingDeferredDate: false,
+  isUpdatingCurrentCompleteNowReason: false,
+  hasUnpublishedPhotos: false,
+  onAddCompletionPhotos: () => {}, // eslint-disable-line
+  onUpdatePending: () => {}, // eslint-disable-line
+  onUnpermittedPending: () => {}, // eslint-disable-line
+  onAddProgressNote: () => {}, // eslint-disable-line
+  onUpdateIncomplete: () => {}, // eslint-disable-line
+  onComplete: () => {}, // eslint-disable-line
+  onGoBack: () => {}, // eslint-disable-line
+  onCloseDuplicate: () => {}, // eslint-disable-line
+  onUnpermittedDuplicate: () => {}, // eslint-disable-line
+  onClose: () => {}, // eslint-disable-line
+  onCancelCompleteNow: () => {}, // eslint-disable-line
+  onConfirmCompleteNow: () => {}, // eslint-disable-line
+  onCompleteNow: () => {}, // eslint-disable-line
+  onCancelDefer: () => {}, // eslint-disable-line
+  onConfirmDefer: () => {}, // eslint-disable-line
+  onInitiateDefer: () => {}, // eslint-disable-line
+  onUnpermittedDefer: () => {}, // eslint-disable-line
+  onShowCompletedPhotos: () => {} // eslint-disable-line
 };
 
 export default DeficientItemEditFormActions;

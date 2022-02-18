@@ -10,6 +10,7 @@ interface Props {
   onChange(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
   isVisible: boolean;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
@@ -18,9 +19,11 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
   onShowHistory,
   onChange,
   isMobile,
-  isVisible
+  isVisible,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.reasonsIncomplete && !isMobile;
+  const showHeaderAction =
+    deficientItem.reasonsIncomplete && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.reasonsIncomplete && isMobile;
 
   if (!isVisible) {
@@ -32,8 +35,21 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
       className={fieldStyles.section}
       data-testid="item-reason-incomplete"
     >
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Reason Incomplete</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Reason Incomplete
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

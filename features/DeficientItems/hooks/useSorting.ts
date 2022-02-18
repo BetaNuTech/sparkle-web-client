@@ -73,7 +73,7 @@ export default function useSorting(
     }
 
     resortDeficientItem();
-  }, [sortBy, sortDir]); // eslint-disable-line
+  }, [sortBy, sortDir, deficientItems]); // eslint-disable-line
 
   // Loop deficient item sorting options
   const nextDeficientItemSort = (customSortBy?: string) => {

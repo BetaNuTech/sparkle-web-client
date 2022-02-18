@@ -9,9 +9,9 @@ import {
   noAccess,
   propertyMember,
   teamMember
-} from '../../../../__mocks__/users';
-import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
-import settings from '../../../../common/DeficientItemEditForm/settings';
+} from '../../../__mocks__/users';
+import createDeficientItem from '../../../__tests__/helpers/createDeficientItem';
+import settings from '../settings';
 import Actions from './index';
 
 const DEF_ITEM_STATES = settings.deficientItemStates;
@@ -131,7 +131,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('only reveals "GO BACK" action when expected', () => {
+  it('reveals "GO BACK" action for expected deficiency states', () => {
     const props = {
       user: admin,
       isOnline: true,
@@ -170,6 +170,36 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       const action = screen.queryByTestId('action-go-back');
       expect(Boolean(action)).toEqual(expected);
     }
+  });
+
+  it('reveals "GO BACK" action when user requests to move to go back', () => {
+    const expected = true;
+    const state = GO_BACK_ACTION_STATES[0];
+    const props = {
+      user: admin,
+      isOnline: true,
+      deficientItem: createDeficientItem({ state }),
+      updates: {},
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false,
+      nextState: 'go-back' // requested state
+    };
+
+    render(<Actions {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    const actual = Boolean(screen.queryByTestId('action-go-back'));
+    expect(actual).toEqual(expected);
   });
 
   it('only reveals "DUPLICATE" button when deficient item is deferred', () => {
@@ -318,6 +348,35 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       const action = screen.queryByTestId('action-close');
       expect(Boolean(action)).toEqual(expected);
     }
+  });
+
+  it('reveals "CLOSE" action when user requests to move to closed', () => {
+    const expected = true;
+    const props = {
+      user: admin,
+      isOnline: true,
+      deficientItem: createDeficientItem({ state: 'completed' }),
+      updates: {},
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false,
+      nextState: 'closed' // requested state
+    };
+
+    render(<Actions {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    const actual = Boolean(screen.queryByTestId('action-close'));
+    expect(actual).toEqual(expected);
   });
 
   it('only reveals "DEFER" action when expected', () => {

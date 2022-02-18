@@ -13,6 +13,7 @@ interface Props {
   isVisible: boolean;
   defaultDate: string;
   maxDate: string;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
@@ -23,9 +24,10 @@ const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
   isMobile,
   isVisible,
   defaultDate,
-  maxDate
+  maxDate,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.dueDates && !isMobile;
+  const showHeaderAction = deficientItem.dueDates && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.dueDates && isMobile;
 
   if (!isVisible) {
@@ -34,8 +36,21 @@ const DeficientItemEditFormDueDate: FunctionComponent<Props> = ({
 
   return (
     <section className={fieldStyles.section} data-testid="item-due-date">
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Due Date</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Due Date
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

@@ -12,6 +12,7 @@ interface Props {
   isMobile: boolean;
   isVisible: boolean;
   defaultDate: string;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormDeferredDate: FunctionComponent<Props> = ({
@@ -21,9 +22,11 @@ const DeficientItemEditFormDeferredDate: FunctionComponent<Props> = ({
   onChange,
   isMobile,
   isVisible,
-  defaultDate
+  defaultDate,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.deferredDates && !isMobile;
+  const showHeaderAction =
+    deficientItem.deferredDates && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.deferredDates && isMobile;
 
   if (!isVisible) {
@@ -32,8 +35,21 @@ const DeficientItemEditFormDeferredDate: FunctionComponent<Props> = ({
 
   return (
     <section className={fieldStyles.section} data-testid="item-deferred-date">
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Deferred Date</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Deferred Date
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

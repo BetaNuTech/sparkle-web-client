@@ -25,26 +25,27 @@ const REASON_INCOMPLETE_STATES = ['overdue', 'incomplete', 'closed'];
 const REASON_INCOMPLETE_EDIT_STATES = ['overdue', 'incomplete'];
 
 interface Props {
-  onShowHistory(): void;
-  isMobile: boolean;
+  onShowHistory?(): void;
+  isMobile?: boolean;
   updates: DeficientItemModel;
-  isUpdatingCurrentCompleteNowReason: boolean;
-  isUpdatingDeferredDate: boolean;
+  isUpdatingCurrentCompleteNowReason?: boolean;
+  isUpdatingDeferredDate?: boolean;
   deficientItem: DeficientItemModel;
-  onShowPlanToFix(): void;
-  onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
-  onShowCompleteNowReason(): void;
-  onChangeCompleteNowReason(evt: ChangeEvent<HTMLTextAreaElement>): void;
-  onShowProgressNotes(): void;
-  onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
-  onShowReasonIncomplete(): void;
-  onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
-  onShowDueDates(): void;
-  onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
-  onChangeDeferredDate(evt: ChangeEvent<HTMLInputElement>): void;
-  onShowDeferredDates(): void;
-  onShowResponsibilityGroups(): void;
-  onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
+  onShowPlanToFix?(): void;
+  onChangePlanToFix?(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowCompleteNowReason?(): void;
+  onChangeCompleteNowReason?(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowProgressNotes?(): void;
+  onChangeProgressNote?(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowReasonIncomplete?(): void;
+  onChangeReasonIncomplete?(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onShowDueDates?(): void;
+  onChangeDueDate?(evt: ChangeEvent<HTMLInputElement>): void;
+  onChangeDeferredDate?(evt: ChangeEvent<HTMLInputElement>): void;
+  onShowDeferredDates?(): void;
+  onShowResponsibilityGroups?(): void;
+  onChangeResponsibilityGroup?(evt: ChangeEvent<HTMLSelectElement>): void;
+  isBulkUpdate?: boolean;
 }
 
 const DeficientItemEditForm: FunctionComponent<Props> = ({
@@ -67,7 +68,8 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   onChangeDeferredDate,
   onShowDeferredDates,
   onShowResponsibilityGroups,
-  onChangeResponsibilityGroup
+  onChangeResponsibilityGroup,
+  isBulkUpdate
 }) => {
   // set default date to tomorrow
   const defaultDate = moment().add(1, 'days').format('YYYY-MM-DD');
@@ -75,7 +77,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   // set maximum selectable date to 2 weeks from current date
   const maxDate = moment().add(14, 'days').format('YYYY-MM-DD');
 
-  const showNotes = Boolean(deficientItem.itemInspectorNotes);
+  const showNotes = Boolean(deficientItem.itemInspectorNotes) && !isBulkUpdate;
 
   const isDeferred = deficientItem.state === 'deferred';
 
@@ -135,6 +137,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         deficientItem={deficientItem}
         onShowHistory={onShowHistory}
         isMobile={isMobile}
+        isVisible={!isBulkUpdate}
       />
       <PlanToFix
         onShowHistory={onShowPlanToFix}
@@ -143,6 +146,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         updates={updates}
         isMobile={isMobile}
         isVisible={showCurrentPlanToFixSection}
+        isBulkUpdate={isBulkUpdate}
       />
       <ResponsibilityGroups
         onShowHistory={onShowResponsibilityGroups}
@@ -151,6 +155,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         updates={updates}
         isMobile={isMobile}
         isVisible={showResponsibilityGroupSection}
+        isBulkUpdate={isBulkUpdate}
       />
       <DueDate
         onShowHistory={onShowDueDates}
@@ -161,6 +166,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         isVisible={showCurrentDueDateSection}
         defaultDate={defaultDate}
         maxDate={maxDate}
+        isBulkUpdate={isBulkUpdate}
       />
       <DeferredDate
         onShowHistory={onShowDeferredDates}
@@ -170,6 +176,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isVisible={showCurrentDeferredDateSection}
         defaultDate={defaultDate}
+        isBulkUpdate={isBulkUpdate}
       />
       <ProgressNotes
         onShowHistory={onShowProgressNotes}
@@ -179,6 +186,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isVisible={showProgressNotesSection}
         isEditable={hasEditableProgressNotes}
+        isBulkUpdate={isBulkUpdate}
       />
       <ReasonIncomplete
         onShowHistory={onShowReasonIncomplete}
@@ -187,6 +195,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         updates={updates}
         isMobile={isMobile}
         isVisible={showReasonIncompleteSection}
+        isBulkUpdate={isBulkUpdate}
       />
       <CompleteNowReason
         onShowHistory={onShowCompleteNowReason}
@@ -196,9 +205,32 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isVisible={showCompleteNowReasonSection}
         isEditable={hasEditableCompleteNowReason}
+        isBulkUpdate={isBulkUpdate}
       />
     </>
   );
+};
+
+DeficientItemEditForm.defaultProps = {
+  isBulkUpdate: false,
+  isMobile: false,
+  isUpdatingDeferredDate: false,
+  isUpdatingCurrentCompleteNowReason: false,
+  onShowHistory: () => {}, // eslint-disable-line
+  onShowPlanToFix: () => {}, // eslint-disable-line
+  onShowCompleteNowReason: () => {}, // eslint-disable-line
+  onShowProgressNotes: () => {}, // eslint-disable-line
+  onShowReasonIncomplete: () => {}, // eslint-disable-line
+  onShowDueDates: () => {}, // eslint-disable-line
+  onShowDeferredDates: () => {}, // eslint-disable-line
+  onShowResponsibilityGroups: () => {}, // eslint-disable-line
+  onChangePlanToFix: () => {}, // eslint-disable-line
+  onChangeCompleteNowReason: () => {}, // eslint-disable-line
+  onChangeProgressNote: () => {}, // eslint-disable-line
+  onChangeReasonIncomplete: () => {}, // eslint-disable-line
+  onChangeDueDate: () => {}, // eslint-disable-line
+  onChangeDeferredDate: () => {}, // eslint-disable-line
+  onChangeResponsibilityGroup: () => {} // eslint-disable-line
 };
 
 export default DeficientItemEditForm;

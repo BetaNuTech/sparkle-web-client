@@ -12,6 +12,7 @@ interface Props {
   onChange(evt: ChangeEvent<HTMLSelectElement>): void;
   isMobile: boolean;
   isVisible: boolean;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
@@ -20,9 +21,11 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
   onShowHistory,
   onChange,
   isMobile,
-  isVisible
+  isVisible,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.responsibilityGroups && !isMobile;
+  const showHeaderAction =
+    deficientItem.responsibilityGroups && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.responsibilityGroups && isMobile;
 
   const currentResponsibilityGroupLabel = getResponsibilityGroup(
@@ -38,8 +41,21 @@ const DeficientItemEditFormResponsibilityGroups: FunctionComponent<Props> = ({
       className={fieldStyles.section}
       data-testid="item-responsibility-group"
     >
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Responsibility Groups</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Responsibility Groups
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

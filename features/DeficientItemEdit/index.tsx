@@ -11,7 +11,7 @@ import HistoryModal from './HistoryModal';
 import dateUtil from '../../common/utils/date';
 import Header from './Header';
 import useTrelloCard from './hooks/useTrelloCard';
-import useUpdateItem from './hooks/useUpdateItem';
+import useUpdateItem from '../../common/hooks/deficientItems/useUpdateItem';
 import useUnpublishedDeficiencyPhotos from './hooks/useUnpublishedDeficiencyPhotos';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
 import LoadingHud from '../../common/LoadingHud';

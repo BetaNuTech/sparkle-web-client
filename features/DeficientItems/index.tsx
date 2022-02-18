@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { ChangeEvent, FunctionComponent, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import propertyModel from '../../common/models/property';
@@ -14,6 +14,9 @@ import {
   canCloseDeficientItem,
   canDeferDeficientItem
 } from '../../common/utils/userPermissions';
+import useUpdateItem from '../../common/hooks/deficientItems/useUpdateItem';
+import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
+import DeficientItem from '../../common/models/deficientItem';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -61,6 +64,7 @@ const DeficientItems: FunctionComponent<Props> = ({
   const {
     selectedDeficiencies,
     onGroupSelection,
+    onClearGroupSelection,
     onSelectDeficiency,
     onSearchKeyDown,
     deficientItemsByState,
@@ -86,13 +90,59 @@ const DeficientItems: FunctionComponent<Props> = ({
     setMoveToStates({ currentState, nextState });
   };
 
-  const movingItemsLength = (
-    selectedDeficiencies[moveToStates?.currentState] || []
-  ).length;
+  const movingItems = selectedDeficiencies[moveToStates?.currentState] || [];
+
+  const {
+    updates,
+    isSaving,
+    updateState,
+    updateCurrentReasonIncomplete,
+    publish
+  } = useUpdateItem(
+    '',
+    property.id,
+    sendNotification,
+    {} as DeficientItemLocalUpdates,
+    {} as DeficientItem,
+    user,
+    true,
+    movingItems
+  );
 
   const canGoBack = canGoBackDeficientItem(user);
   const canClose = canCloseDeficientItem(user);
   const canDefer = canDeferDeficientItem(user);
+
+  const onChangeReasonIncomplete = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    updateCurrentReasonIncomplete(evt.target.value);
+  };
+
+  const onGoBack = async () => {
+    updateState('go-back');
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
+  };
+
+  const onUpdateIncomplete = async () => {
+    updateState('incomplete');
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
+  };
+
+  const onCloseDI = async () => {
+    updateState('closed');
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
+  };
+
+  const onCloseBulkUpdateModal = () => {
+    if (!isSaving) {
+      setMoveToStates(null);
+    }
+  };
 
   return (
     <>
@@ -133,9 +183,18 @@ const DeficientItems: FunctionComponent<Props> = ({
 
       <BulkUpdateModal
         isVisible={Boolean(moveToStates)}
-        onClose={() => setMoveToStates(null)}
-        movingItemsLength={movingItemsLength}
+        onClose={onCloseBulkUpdateModal}
+        movingItems={movingItems}
         nextState={moveToStates?.nextState}
+        deficientItems={deficientItems}
+        user={user}
+        isOnline={isOnline}
+        updates={updates}
+        isSaving={isSaving}
+        onChangeReasonIncomplete={onChangeReasonIncomplete}
+        onGoBack={onGoBack}
+        onUpdateIncomplete={onUpdateIncomplete}
+        onCloseDI={onCloseDI}
       />
     </>
   );

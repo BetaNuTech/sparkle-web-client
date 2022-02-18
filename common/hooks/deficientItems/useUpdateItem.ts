@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import DeficientItemModel from '../../../common/models/deficientItem';
-import deficientItemUtils from '../../../common/utils/deficientItem';
-import deficientItemsApi from '../../../common/services/api/deficientItems';
-import errorReports from '../../../common/services/api/errorReports';
-import deficientItemUpdates from '../../../common/services/indexedDB/deficientItemUpdates';
-import DeficientItemLocalUpdates from '../../../common/models/deficientItems/unpublishedUpdates';
-import DeficientItemLocalPhotos from '../../../common/models/deficientItems/unpublishedPhotos';
-import publishPhotos from '../utils/publishPhotos';
-import * as objectHelper from '../../../common/utils/object';
-import UserModal from '../../../common/models/user';
+import DeficientItemModel from '../../models/deficientItem';
+import deficientItemUtils from '../../utils/deficientItem';
+import deficientItemsApi from '../../services/api/deficientItems';
+import errorReports from '../../services/api/errorReports';
+import deficientItemUpdates from '../../services/indexedDB/deficientItemUpdates';
+import DeficientItemLocalUpdates from '../../models/deficientItems/unpublishedUpdates';
+import DeficientItemLocalPhotos from '../../models/deficientItems/unpublishedPhotos';
+import publishPhotos from '../../../features/DeficientItemEdit/utils/publishPhotos';
+import * as objectHelper from '../../utils/object';
+import UserModal from '../../models/user';
+import utilString from '../../utils/string';
 
 const PREFIX = 'features: DeficientItemEdit: hooks: useUpdateItem:';
 
@@ -43,7 +44,9 @@ export default function useUpdateItem(
   sendNotification: userNotifications,
   previousUpdates: DeficientItemLocalUpdates,
   currentItem: DeficientItemModel,
-  user: UserModal
+  user: UserModal,
+  isBulkUpdate?: boolean,
+  bulkUpdateIds: string[] = []
 ): useUpdateItemResult {
   const [isSaving, setIsSaving] = useState(false);
 
@@ -73,7 +76,9 @@ export default function useUpdateItem(
     setUpdates({ ...updates });
 
     // Local database save
-    persistUnpublishedUpdates(updates);
+    if (!isBulkUpdate) {
+      persistUnpublishedUpdates(updates);
+    }
     return latestUpdates;
   };
 
@@ -247,7 +252,10 @@ export default function useUpdateItem(
     if (!hasUnpublishedPhotos || !haveAllPhotosFailed) {
       try {
         // eslint-disable-next-line import/no-named-as-default-member
-        await deficientItemsApi.update([deficiencyId], updates);
+        await deficientItemsApi.update(
+          isBulkUpdate ? bulkUpdateIds : [deficiencyId],
+          updates
+        );
       } catch (err) {
         setIsSaving(false);
         publishUpdatesError.push(Error(`${PREFIX} publish: ${err}`));
@@ -273,10 +281,21 @@ export default function useUpdateItem(
       );
     }
 
-    if (publishUpdatesError.length > 0) {
+    if (publishUpdatesError.length > 0 && !isBulkUpdate) {
       sendNotification('Failed to update deficient item, please try again', {
         type: 'error'
       });
+    }
+
+    if (publishUpdatesError.length > 0 && isBulkUpdate) {
+      sendNotification(
+        `Failed to update the selected deficient item${
+          bulkUpdateIds.length > 1 && 's'
+        } to ${utilString.dedash(updates?.state)}`,
+        {
+          type: 'error'
+        }
+      );
     }
 
     applyLatestUpdates({} as DeficientItemModel);
