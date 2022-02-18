@@ -11,6 +11,7 @@ interface Props {
   isMobile: boolean;
   isVisible: boolean;
   isEditable: boolean;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormCompleteNowReason: FunctionComponent<Props> = ({
@@ -20,9 +21,11 @@ const DeficientItemEditFormCompleteNowReason: FunctionComponent<Props> = ({
   onChange,
   isMobile,
   isVisible,
-  isEditable
+  isEditable,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.completeNowReasons && !isMobile;
+  const showHeaderAction =
+    deficientItem.completeNowReasons && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.completeNowReasons && isMobile;
   const showTextArea = !deficientItem.currentCompleteNowReason && isEditable;
 
@@ -35,8 +38,21 @@ const DeficientItemEditFormCompleteNowReason: FunctionComponent<Props> = ({
       className={fieldStyles.section}
       data-testid="item-complete-now-reason"
     >
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Completed Details</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Completed Details
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

@@ -12,7 +12,7 @@ import DeficientItemEditForm from '../../../common/DeficientItemEditForm';
 import DueDatePill from './DueDatePill';
 import ResponsibilityGroupPill from './ResponsibilityGroupPill';
 
-import Actions from './Actions';
+import Actions from '../../../common/DeficientItemEditForm/Actions';
 
 const HIDE_CREATE_CARD_STATES = ['closed'];
 

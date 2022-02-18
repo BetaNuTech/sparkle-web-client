@@ -24,6 +24,10 @@
 
 .heading {
   @extend %deficientItemSection--heading;
+
+  &--small {
+    font-size: rem-calc(14);
+  }
 }
 
 .subHeading {

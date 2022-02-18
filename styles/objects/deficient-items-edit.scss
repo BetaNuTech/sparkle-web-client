@@ -83,3 +83,16 @@
     text-align: left;
   }
 }
+
+%deficientItemSection--action {
+  @extend %actionButton;
+  padding: rem-calc(6) $global-padding;
+  max-width: rem-calc(260);
+  width: 100%;
+  margin-bottom: $global-padding;
+  font-size: rem-calc(14);
+  color: $white;
+  font-weight: bold;
+  text-align: center;
+  border-width: 0;
+}

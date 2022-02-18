@@ -10,6 +10,7 @@ type userNotifications = (message: string, options?: any) => any;
 export interface Params {
   selectedDeficiencies: Record<string, string[]>;
   onGroupSelection(state: string, evt: ChangeEvent<HTMLInputElement>): void;
+  onClearGroupSelection(state: string): void;
   onSelectDeficiency(state: string, deficiencyId: string): void;
   deficientItemsByState: Map<string, deficientItemModel[]>;
   searchParam: string;
@@ -74,6 +75,10 @@ export default function useSelectionsAndSearch(
     }
   };
 
+  const onClearGroupSelection = (state: string) => {
+    setSelectedDeficiencies({ ...selectedDeficiencies, [state]: [] });
+  };
+
   const onSelectDeficiency = (state: string, deficiencyId: string) => {
     let selectedIds = selectedDeficiencies[state] || [];
 
@@ -119,6 +124,7 @@ export default function useSelectionsAndSearch(
   return {
     selectedDeficiencies,
     onGroupSelection,
+    onClearGroupSelection,
     onSelectDeficiency,
     onSearchKeyDown,
     deficientItemsByState,

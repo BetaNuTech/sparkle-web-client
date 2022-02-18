@@ -1,4 +1,4 @@
-@import '../../../../styles/index.scss';
+@import '../../../styles/index.scss';
 
 .section {
   margin-bottom: $global-sm-padding;
@@ -23,4 +23,24 @@
   @include media-query(desktop) {
     padding: 0;
   }
+}
+
+.action {
+  @extend %deficientItemSection--action;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+
+  @include media-query(desktop) {
+    margin: 0 0 0 $global-sm-padding;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+}
+
+.aniBlink {
+  @extend %ani-blink;
 }

@@ -3,11 +3,11 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act, waitFor } from '@testing-library/react';
 import moment from 'moment';
 import createDeficientItem from '../../../__tests__/helpers/createDeficientItem';
-import deficientItemsApi from '../../../common/services/api/deficientItems';
-import currentUser from '../../../common/utils/currentUser';
-import errorReports from '../../../common/services/api/errorReports';
+import deficientItemsApi from '../../services/api/deficientItems';
+import currentUser from '../../utils/currentUser';
+import errorReports from '../../services/api/errorReports';
 import useUpdateItem from './useUpdateItem';
-import DeficientItemLocalUpdates from '../../../common/models/deficientItems/unpublishedUpdates';
+import DeficientItemLocalUpdates from '../../models/deficientItems/unpublishedUpdates';
 import { admin } from '../../../__mocks__/users';
 import { unpublishedPhotoDataEntry } from '../../../__mocks__/deficientItems';
 

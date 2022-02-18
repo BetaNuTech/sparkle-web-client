@@ -7,7 +7,7 @@ import UserModel from '../../../common/models/user';
 import MobileHeader from '../../../common/MobileHeader';
 import DesktopHeader from '../../../common/DesktopHeader';
 import PropertyModel from '../../../common/models/property';
-import Actions from '../Form/Actions';
+import Actions from '../../../common/DeficientItemEditForm/Actions';
 import Breadcrumbs from './Breadcrumbs';
 
 interface Props {

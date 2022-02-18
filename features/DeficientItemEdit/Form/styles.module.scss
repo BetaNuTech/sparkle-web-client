@@ -78,16 +78,7 @@
 }
 
 .action {
-  @extend %actionButton;
-  padding: rem-calc(6) $global-padding;
-  max-width: rem-calc(260);
-  width: 100%;
-  margin-bottom: $global-padding;
-  font-size: rem-calc(14);
-  color: $white;
-  font-weight: bold;
-  text-align: center;
-  border-width: 0;
+  @extend %deficientItemSection--action;
 
   &__icon {
     @extend %actionButtonIcon;
@@ -96,7 +87,6 @@
   &--fullButton {
     width: auto;
     max-width: 100%;
-    margin: 0;
     padding-left: rem-calc(10);
     padding-right: rem-calc(10);
     display: flex;
@@ -108,7 +98,6 @@
   &--pill,
   &--paddedPill {
     width: auto;
-    margin: 0;
     display: flex;
     align-items: center;
     border: rem-calc(1) solid $gray-lighter;

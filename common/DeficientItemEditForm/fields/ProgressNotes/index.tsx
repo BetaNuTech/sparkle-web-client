@@ -11,6 +11,7 @@ interface Props {
   isMobile: boolean;
   isVisible: boolean;
   isEditable: boolean;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
@@ -20,9 +21,11 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
   onChange,
   isMobile,
   isVisible,
-  isEditable
+  isEditable,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.progressNotes && !isMobile;
+  const showHeaderAction =
+    deficientItem.progressNotes && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.progressNotes && isMobile;
   const { progressNotes } = deficientItem;
 
@@ -46,8 +49,21 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
 
   return (
     <section className={fieldStyles.section} data-testid="item-progress-note">
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Progress Note(s)</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Progress Note(s)
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

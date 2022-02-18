@@ -15,6 +15,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Current State ', (
         deficientItem={createDeficientItem({}, { stateHistory: 0 })}
         isMobile={false}
         onShowHistory={onShowHistory}
+        isVisible
       />
     );
 
@@ -30,6 +31,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Current State ', (
         deficientItem={createDeficientItem({}, { stateHistory: 1 })}
         isMobile={false}
         onShowHistory={onShowHistory}
+        isVisible
       />
     );
 

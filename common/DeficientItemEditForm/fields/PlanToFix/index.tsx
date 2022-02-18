@@ -10,6 +10,7 @@ interface Props {
   onChange(evt: ChangeEvent<HTMLTextAreaElement>): void;
   isMobile: boolean;
   isVisible: boolean;
+  isBulkUpdate: boolean;
 }
 
 const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
@@ -18,9 +19,11 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
   onShowHistory,
   onChange,
   isMobile,
-  isVisible
+  isVisible,
+  isBulkUpdate
 }) => {
-  const showHeaderAction = deficientItem.plansToFix && !isMobile;
+  const showHeaderAction =
+    deficientItem.plansToFix && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.plansToFix && isMobile;
 
   if (!isVisible) {
@@ -29,8 +32,21 @@ const DeficientItemEditFormPlanToFix: FunctionComponent<Props> = ({
 
   return (
     <section className={fieldStyles.section} data-testid="item-plan-to-fix">
-      <header className={fieldStyles.label}>
-        <h4 className={fieldStyles.heading}>Plan To Fix</h4>
+      <header
+        className={clsx(
+          fieldStyles.label,
+          isBulkUpdate && '-br-bottom-none -mb-sm -p-none'
+        )}
+      >
+        <h4
+          className={clsx(
+            fieldStyles.heading,
+            isBulkUpdate && fieldStyles['heading--small'],
+            isBulkUpdate && '-fw-bold'
+          )}
+        >
+          Plan To Fix
+        </h4>
         {showHeaderAction && (
           <button
             onClick={onShowHistory}

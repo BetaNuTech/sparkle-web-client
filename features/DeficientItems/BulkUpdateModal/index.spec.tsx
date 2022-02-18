@@ -2,6 +2,8 @@ import sinon from 'sinon';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import BulkUpdateModal from './index';
+import createDeficientItem from '../../../__tests__/helpers/createDeficientItem';
+import { admin } from '../../../__mocks__/users';
 
 describe('Unit | Features | Deficient Item List | Bulk Update Modal', () => {
   afterEach(() => sinon.restore());
@@ -12,8 +14,13 @@ describe('Unit | Features | Deficient Item List | Bulk Update Modal', () => {
     const props = {
       isVisible: true,
       onClose,
-      movingItemsLength: 2,
-      nextState: 'go-back'
+      movingItems: ['deficiency-1', 'deficiency-2'],
+      nextState: 'go-back',
+      deficientItems: [
+        createDeficientItem({ state: 'pending', id: 'deficiency-1' })
+      ],
+      user: admin,
+      updates: {}
     };
     render(<BulkUpdateModal {...props} />);
 
@@ -30,8 +37,13 @@ describe('Unit | Features | Deficient Item List | Bulk Update Modal', () => {
     const props = {
       isVisible: true,
       onClose,
-      movingItemsLength: 2,
-      nextState: 'go-back'
+      movingItems: ['deficiency-1', 'deficiency-2'],
+      nextState: 'go-back',
+      deficientItems: [
+        createDeficientItem({ state: 'pending', id: 'deficiency-1' })
+      ],
+      user: admin,
+      updates: {}
     };
     render(<BulkUpdateModal {...props} />);
 
@@ -48,8 +60,13 @@ describe('Unit | Features | Deficient Item List | Bulk Update Modal', () => {
     const props = {
       isVisible: true,
       onClose,
-      movingItemsLength: 2,
-      nextState: 'go-back'
+      movingItems: ['deficiency-1', 'deficiency-2'],
+      nextState: 'go-back',
+      deficientItems: [
+        createDeficientItem({ state: 'pending', id: 'deficiency-1' })
+      ],
+      user: admin,
+      updates: {}
     };
     render(<BulkUpdateModal {...props} />);
 
