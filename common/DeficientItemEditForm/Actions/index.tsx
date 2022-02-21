@@ -90,8 +90,12 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
   const showCompletedAction =
     deficientItem.state === 'pending' && canComplete && hasUnpublishedPhotos;
+
   const showAddCompletionPhotos =
-    deficientItem.state === 'pending' && canComplete && !hasUnpublishedPhotos;
+    deficientItem.state === 'pending' &&
+    canComplete &&
+    !hasUnpublishedPhotos &&
+    !isBulkUpdate;
 
   const isDeferred = deficientItem.state === 'deferred';
 
@@ -119,7 +123,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
     deficientItem.state === 'overdue' &&
     Boolean(updates.currentReasonIncomplete);
 
-  const showDeferAction =
+  const showDeferConfirmAction =
     !isUpdatingCurrentCompleteNowReason &&
     ['requires-action', 'pending', 'go-back'].includes(deficientItem.state);
 
@@ -158,7 +162,10 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   const showDuplicateAction =
     isDeferred && (nextState ? nextState === 'closed' : true);
 
-  const showDefer = showDeferAction && !isUpdatingDeferredDate;
+  const showDeferAction =
+    showDeferConfirmAction &&
+    !isUpdatingDeferredDate &&
+    (nextState ? nextState === 'deferred' : true);
 
   const isVisible =
     showCompletedPhotosAction ||
@@ -170,7 +177,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
     showDuplicateAction ||
     showCloseAction ||
     showCompleteNowAction ||
-    showDeferAction;
+    showDeferConfirmAction;
 
   const isDisabled = isSaving || !isOnline;
 
@@ -201,7 +208,11 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               data-testid="action-update-pending"
               onClick={onUpdatePending}
             >
-              Save
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Save'
+              )}
             </button>
           ) : (
             <button
@@ -221,7 +232,11 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             data-testid="action-add-progress-note"
             onClick={onAddProgressNote}
           >
-            Save
+            {isSaving ? (
+              <span className={styles.aniBlink}>Loading...</span>
+            ) : (
+              'Save'
+            )}
           </button>
         )}
 
@@ -357,7 +372,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
         {/* Defer Now Action */}
 
-        {showDeferAction && isUpdatingDeferredDate && (
+        {showDeferConfirmAction && isUpdatingDeferredDate && (
           <>
             <button
               className={clsx(styles.action, '-bgc-med-dark')}
@@ -383,7 +398,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           </>
         )}
 
-        {showDefer &&
+        {showDeferAction &&
           (canDefer ? (
             <button
               className={clsx(styles.action, '-bgc-orange')}

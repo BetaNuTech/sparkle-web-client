@@ -18,9 +18,16 @@ interface Props extends ModalProps {
   updates: DeficientItemModel;
   isSaving: boolean;
   onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
+  onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
+  onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onGoBack(): void;
   onUpdateIncomplete(): void;
   onCloseDI(): void;
+  onUnpermittedPending(): void;
+  onUpdatePending(): void;
+  onAddProgressNote(): void;
 }
 
 const BulkUpdateModal: FunctionComponent<Props> = ({
@@ -33,9 +40,16 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
   updates,
   isSaving,
   onChangeReasonIncomplete,
+  onChangePlanToFix,
+  onChangeDueDate,
+  onChangeResponsibilityGroup,
+  onChangeProgressNote,
   onGoBack,
   onUpdateIncomplete,
-  onCloseDI
+  onCloseDI,
+  onUnpermittedPending,
+  onUpdatePending,
+  onAddProgressNote
 }) => {
   const movingItemsLength = movingItems.length;
   const deficientItem =
@@ -70,6 +84,10 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
             isBulkUpdate={true} // eslint-disable-line react/jsx-boolean-value
             updates={updates}
             onChangeReasonIncomplete={onChangeReasonIncomplete}
+            onChangePlanToFix={onChangePlanToFix}
+            onChangeDueDate={onChangeDueDate}
+            onChangeResponsibilityGroup={onChangeResponsibilityGroup}
+            onChangeProgressNote={onChangeProgressNote}
           />
         </div>
         <footer className={baseStyles.modal__main__footer}>
@@ -93,6 +111,9 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
             onGoBack={onGoBack}
             onUpdateIncomplete={onUpdateIncomplete}
             onClose={onCloseDI}
+            onUnpermittedPending={onUnpermittedPending}
+            onUpdatePending={onUpdatePending}
+            onAddProgressNote={onAddProgressNote}
           />
         </footer>
       </div>

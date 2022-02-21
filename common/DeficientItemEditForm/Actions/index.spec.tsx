@@ -420,6 +420,35 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
+  it('reveals "DEFER" action when user requests to move to deferred', () => {
+    const expected = true;
+    const props = {
+      user: admin,
+      isOnline: true,
+      deficientItem: createDeficientItem({ state: DEFER_ACTION_STATES[0] }),
+      updates: {},
+      onShowHistory: sinon.spy(),
+      onClickViewPhotos: sinon.spy(),
+      onShowPlanToFix: sinon.spy(),
+      onChangePlanToFix: sinon.spy(),
+      onShowResponsibilityGroups: sinon.spy(),
+      onChangeResponsibilityGroup: sinon.spy(),
+      onShowDueDates: sinon.spy(),
+      onChangeDueDate: sinon.spy(),
+      onShowReasonIncomplete: sinon.spy(),
+      onChangeReasonIncomplete: sinon.spy(),
+      isUpdatingDeferredDate: false,
+      isUpdatingCurrentCompleteNowReason: false,
+      nextState: 'deferred' // requested state
+    };
+
+    render(<Actions {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    const actual = Boolean(screen.queryByTestId('action-defer'));
+    expect(actual).toEqual(expected);
+  });
+
   it('triggers an unpermitted defer when initiating defer without permission', () => {
     const expected = true;
     const onUnpermittedDefer = sinon.spy();
