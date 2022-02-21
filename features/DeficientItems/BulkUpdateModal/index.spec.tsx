@@ -63,7 +63,7 @@ describe('Unit | Features | Deficient Item List | Bulk Update Modal', () => {
       movingItems: ['deficiency-1', 'deficiency-2'],
       nextState: 'go-back',
       deficientItems: [
-        createDeficientItem({ state: 'pending', id: 'deficiency-1' })
+        createDeficientItem({ state: 'incomplete', id: 'deficiency-1' })
       ],
       user: admin,
       updates: {}

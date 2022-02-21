@@ -33,6 +33,7 @@ interface useUpdateItemResult {
   updateCurrentCompleteNowReason(
     currentCompleteNowReason: string
   ): DeficientItemModel;
+  markAsDuplicate(): DeficientItemModel;
   publish(unpublishedPhotos?: DeficientItemLocalPhotos[]): Promise<boolean>;
   publishProgress: number;
   handlePermissionWarning(nextState: string): void;
@@ -164,6 +165,13 @@ export default function useUpdateItem(
       })
     );
 
+  const markAsDuplicate = (): DeficientItemModel =>
+    applyLatestUpdates(
+      deficientItemUtils.update(updates, currentItem, {
+        isDuplicate: true
+      })
+    );
+
   // prompt validation error
   // based on next state of deficient item
   // and updates
@@ -290,8 +298,10 @@ export default function useUpdateItem(
     if (publishUpdatesError.length > 0 && isBulkUpdate) {
       sendNotification(
         `Failed to update the selected deficient item${
-          bulkUpdateIds.length > 1 ? 's' : ''
-        } to ${utilString.dedash(updates?.state)}`,
+          bulkUpdateIds.length > 1 && 's'
+        } to ${utilString.dedash(updates?.state)} ${
+          updates?.isDuplicate ? 'as duplicate' : ''
+        }`,
         {
           type: 'error'
         }
@@ -321,6 +331,7 @@ export default function useUpdateItem(
     updateProgressNote,
     updateCurrentReasonIncomplete,
     updateCurrentCompleteNowReason,
+    markAsDuplicate,
     publish,
     publishProgress: progress,
     handlePermissionWarning

@@ -33,7 +33,8 @@ export default function deficientItemSave(
     setCurrentReasonIncomplete,
     setCurrentCompleteNowReason,
     mergeExistingPhotoData,
-    appendCompletedPhoto
+    appendCompletedPhoto,
+    markAsDuplicate
   )(
     {} as DeficientItemModel, // result
     {
@@ -61,7 +62,6 @@ const setState = (result: DeficientItemModel, settings: ComposableSettings) => {
   } else if (isChanging) {
     delete result.state;
   }
-
   return result;
 };
 
@@ -325,6 +325,27 @@ const appendCompletedPhoto = (
   result.completedPhotos[photoDataId] = {
     ...photoDataUpdate
   } as DeficientItemCompletedPhoto;
+
+  return result;
+};
+
+const markAsDuplicate = (
+  result: DeficientItemModel,
+  settings: ComposableSettings
+) => {
+  const { userChanges, updatedItem } = settings;
+  const isChanging = typeof userChanges.isDuplicate === 'boolean';
+  const hasPreviousUpdate = typeof updatedItem.isDuplicate === 'boolean';
+
+  // Provide previous update
+  if (!isChanging && hasPreviousUpdate) {
+    result.isDuplicate = updatedItem.isDuplicate;
+  }
+
+  // Add user unselected change to updates
+  if (isChanging) {
+    result.isDuplicate = userChanges.isDuplicate;
+  }
 
   return result;
 };

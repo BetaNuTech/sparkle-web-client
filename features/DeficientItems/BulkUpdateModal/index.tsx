@@ -7,6 +7,7 @@ import DeficientItemEditForm from '../../../common/DeficientItemEditForm';
 import DeficientItemModel from '../../../common/models/deficientItem';
 import Actions from '../../../common/DeficientItemEditForm/Actions';
 import UserModel from '../../../common/models/user';
+import { deficientItemTransitions } from '../../../config/deficientItems';
 
 interface Props extends ModalProps {
   onClose: () => void;
@@ -22,6 +23,7 @@ interface Props extends ModalProps {
   onGoBack(): void;
   onUpdateIncomplete(): void;
   onCloseDI(): void;
+  onCloseDuplicate(): void;
   onConfirmDefer(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
@@ -31,6 +33,11 @@ interface Props extends ModalProps {
   onUpdatePending(): void;
   onAddProgressNote(): void;
 }
+
+type DeficientItemTransitionsType = {
+  label?: string;
+  value: string;
+};
 
 const BulkUpdateModal: FunctionComponent<Props> = ({
   onClose,
@@ -51,6 +58,7 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
   onGoBack,
   onUpdateIncomplete,
   onCloseDI,
+  onCloseDuplicate,
   onUnpermittedPending,
   onUpdatePending,
   onAddProgressNote
@@ -59,6 +67,14 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
   const deficientItem =
     deficientItems.find((item) => item.id === movingItems[0]) ||
     ({} as DeficientItemModel);
+
+  const stateTransitionOptions = deficientItemTransitions[deficientItem.state];
+
+  const currentTransitionOption =
+    stateTransitionOptions.find(
+      (item: DeficientItemTransitionsType) => item.value === nextState
+    ) || {};
+
   return (
     <div className={styles.modal} data-testid="bulk-update-modal">
       <button
@@ -73,7 +89,12 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
           className={baseStyles.modal__heading}
           data-testid="bulk-update-modal-heading"
         >
-          Move To {utilString.titleize(utilString.dedash(nextState))}
+          Move To{' '}
+          {utilString.titleize(
+            utilString.dedash(
+              currentTransitionOption.label || currentTransitionOption.value
+            )
+          )}
         </h4>
       </header>
 
@@ -117,6 +138,7 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
             onGoBack={onGoBack}
             onUpdateIncomplete={onUpdateIncomplete}
             onClose={onCloseDI}
+            onCloseDuplicate={onCloseDuplicate}
             onConfirmDefer={onConfirmDefer}
             isUpdatingDeferredDate={nextState === 'deferred'}
             onUnpermittedPending={onUnpermittedPending}
