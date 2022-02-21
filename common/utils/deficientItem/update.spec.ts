@@ -516,4 +516,45 @@ describe('Unit | Common | Utils | Defifcient Item | Update', () => {
       expect(actual, msg).toEqual(expected);
     }
   });
+
+  test('it sets an item as duplicate', () => {
+    const tests = [
+      {
+        expected: undefined,
+        currentItem: createDeficientItem({ state: 'deferred' }),
+        userChanges: { currentPlanToFix: 'plan to fix' },
+        msg: 'ignores unrelated update'
+      },
+      {
+        expected: true,
+        currentItem: createDeficientItem({ state: 'deferred' }),
+        updatedItem: { isDuplicate: true },
+        userChanges: { currentPlanToFix: 'plan to fix' },
+        msg: 'uses previous update when no user changes apply'
+      },
+      {
+        expected: true,
+        currentItem: createDeficientItem({ state: 'deferred' }),
+        userChanges: { isDuplicate: true },
+        msg: 'mark item as duplicate '
+      }
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const {
+        expected,
+        currentItem,
+        updatedItem = {},
+        userChanges,
+        msg
+      } = tests[i];
+      const result = updateItem(
+        updatedItem as DeficientItemModel,
+        currentItem,
+        userChanges
+      );
+      const actual = result ? result.isDuplicate : undefined;
+      expect(actual, msg).toEqual(expected);
+    }
+  });
 });

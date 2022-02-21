@@ -12,6 +12,7 @@ export interface UserChanges {
   currentStartDate?: number;
   progressNote?: string;
   completedPhoto?: Record<string, DeficientItemCompletedPhoto>;
+  isDuplicate?: boolean;
 }
 
 export default interface ComposableSettings {

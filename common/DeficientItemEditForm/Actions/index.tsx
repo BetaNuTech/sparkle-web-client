@@ -304,7 +304,11 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               data-testid="action-duplicate"
               onClick={onCloseDuplicate}
             >
-              Close (Duplicate)
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Close (Duplicate)'
+              )}
             </button>
           ) : (
             <button

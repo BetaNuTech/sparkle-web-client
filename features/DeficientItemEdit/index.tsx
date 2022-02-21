@@ -63,6 +63,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     updateProgressNote,
     updateCurrentReasonIncomplete,
     updateCurrentCompleteNowReason,
+    markAsDuplicate,
     publish,
     publishProgress,
     handlePermissionWarning
@@ -158,7 +159,6 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onUnpermittedPending = () => {
-    console.log('triggered on unpermitted  pending action'); // eslint-disable-line
     handlePermissionWarning('pending');
   };
 
@@ -186,6 +186,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onCloseDuplicate = () => {
+    markAsDuplicate();
     updateState('closed');
     publish();
   };

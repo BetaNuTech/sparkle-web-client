@@ -86,7 +86,6 @@ const DeficientItemsList: FunctionComponent<Props> = ({
   }, [searchParam]);
 
   const onMoveToState = (currentState: string, nextState: string) => {
-    console.log(currentState, nextState); // eslint-disable-line no-console
     setMoveToStates({ currentState, nextState });
   };
 
@@ -97,6 +96,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
     isSaving,
     updateState,
     updateCurrentReasonIncomplete,
+    markAsDuplicate,
     updateCurrentDeferredDate,
     updateCurrentDueDate,
     updateCurrentPlanToFix,
@@ -162,6 +162,12 @@ const DeficientItemsList: FunctionComponent<Props> = ({
     await publish();
     onClearGroupSelection(moveToStates.currentState);
     onCloseBulkUpdateModal();
+  };
+
+  const onCloseDuplicate = () => {
+    markAsDuplicate();
+    updateState('closed');
+    publish();
   };
 
   const onConfirmDefer = async () => {
@@ -251,6 +257,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
         onUpdateIncomplete={onUpdateIncomplete}
         onConfirmDefer={onConfirmDefer}
         onCloseDI={onCloseDI}
+        onCloseDuplicate={onCloseDuplicate}
         onUnpermittedPending={onUnpermittedPending}
         onUpdatePending={onUpdatePending}
         onAddProgressNote={onAddProgressNote}
