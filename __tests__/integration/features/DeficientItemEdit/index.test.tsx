@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import moment from 'moment';
@@ -188,13 +188,24 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
-    act(() => {
+    await act(async () => {
       const completeNowAction = screen.queryByTestId('action-complete-now');
       userEvent.click(completeNowAction);
+      await wait(100);
+    });
+
+    act(() => {
+      const completeNowReasonTextarea = screen.queryByTestId(
+        'item-complete-now-reason-textarea'
+      );
+      fireEvent.change(completeNowReasonTextarea, {
+        target: { value: 'complete now reason' }
+      });
     });
 
     const action = screen.queryByTestId('action-confirm-complete-now');
     expect(action).toBeTruthy();
+    expect(action).toBeEnabled();
 
     let actual = null;
     await act(async () => {
@@ -211,7 +222,12 @@ describe('Unit | features | Deficient Item Edit', () => {
     // Stub update
     const update = sinon.stub(deficientItemsApi, 'update').resolves();
 
-    const unpublishedUpdates = { currentDeferredDate: moment().unix() };
+    const deferredDate = moment().add(2, 'days');
+    const formatedDeferredDate = deferredDate.format('YYYY-MM-DD');
+
+    const unpublishedUpdates = {
+      currentDeferredDate: moment(formatedDeferredDate).unix()
+    };
     const expected = { ...unpublishedUpdates, state: 'deferred' };
     const props = {
       user: admin,
@@ -229,9 +245,19 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
-    act(() => {
+    await act(async () => {
       const deferAction = screen.queryByTestId('action-defer');
       userEvent.click(deferAction);
+      await wait(100);
+    });
+
+    act(() => {
+      const deferredDateInput = screen.queryByTestId(
+        'item-deferred-date-input'
+      );
+      fireEvent.change(deferredDateInput, {
+        target: { value: formatedDeferredDate }
+      });
     });
 
     const action = screen.queryByTestId('action-confirm-defer');

@@ -66,7 +66,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     markAsDuplicate,
     publish,
     publishProgress,
-    handlePermissionWarning
+    handlePermissionWarning,
+    clearUpdates
   } = useUpdateItem(
     deficientItem.id,
     property.id,
@@ -80,7 +81,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     addUnpublishedDeficiencyPhoto,
     unpublishedDeficiencyPhotos,
     addUnpublishedDeficiencyPhotoCaption,
-    removedUnpubilshedDeficiencyPhoto
+    removedUnpubilshedDeficiencyPhoto,
+    clearUnpubilshedDeficiencyPhotos
   } = useUnpublishedDeficiencyPhotos(sendNotification, deficientItem.id);
 
   // Responsive queries
@@ -177,6 +179,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onAddCompletionPhotos = () => {
+    clearUpdates();
     setIsVisibleCompletedPhotosModal(true);
   };
 
@@ -202,6 +205,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onCancelCompleteNow = () => {
+    clearUpdates();
     setIsUpdatingCurrentCompleteNowReason(false);
   };
 
@@ -212,10 +216,12 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onCompleteNow = () => {
+    clearUpdates();
     setIsUpdatingCurrentCompleteNowReason(true);
   };
 
   const onCancelDefer = () => {
+    clearUpdates();
     setIsUpdatingDeferredDate(false);
   };
 
@@ -226,6 +232,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onInitiateDefer = () => {
+    clearUpdates();
+    clearUnpubilshedDeficiencyPhotos();
     setIsUpdatingDeferredDate(true);
   };
 

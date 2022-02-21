@@ -22,6 +22,7 @@ interface result {
     unpublishedPhotoId: string,
     captionText: string
   ): void;
+  clearUnpubilshedDeficiencyPhotos(): void;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -125,6 +126,17 @@ export default function useUnpublishedDeficiencyPhotos(
     }
   };
 
+  const clearUnpubilshedDeficiencyPhotos = async () => {
+    const recordIds = [...unpublishedDeficiencyPhotos].map((photo) => photo.id);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await deficientItemPhotos.deleteMultipleRecords(recordIds);
+      return getUnpublishedDeficiencyPhotos();
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+  };
+
   // Request all photos on load
   useEffect(() => {
     getUnpublishedDeficiencyPhotos();
@@ -136,6 +148,7 @@ export default function useUnpublishedDeficiencyPhotos(
     reloadPhotos: getUnpublishedDeficiencyPhotos,
     removedUnpubilshedDeficiencyPhoto,
     unpublishedDeficiencyPhotos,
-    addUnpublishedDeficiencyPhotoCaption
+    addUnpublishedDeficiencyPhotoCaption,
+    clearUnpubilshedDeficiencyPhotos
   };
 }

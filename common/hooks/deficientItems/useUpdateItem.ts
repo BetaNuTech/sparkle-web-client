@@ -37,6 +37,7 @@ interface useUpdateItemResult {
   publish(unpublishedPhotos?: DeficientItemLocalPhotos[]): Promise<boolean>;
   publishProgress: number;
   handlePermissionWarning(nextState: string): void;
+  clearUpdates(): void;
 }
 
 export default function useUpdateItem(
@@ -107,6 +108,10 @@ export default function useUpdateItem(
     } catch (err) {
       sendErrorReports([Error(`${PREFIX} persistUnpublishedUpdates: ${err}`)]);
     }
+  };
+
+  const clearUpdates = () => {
+    applyLatestUpdates({} as DeficientItemModel);
   };
 
   const updateState = (state: string): DeficientItemModel =>
@@ -334,7 +339,8 @@ export default function useUpdateItem(
     markAsDuplicate,
     publish,
     publishProgress: progress,
-    handlePermissionWarning
+    handlePermissionWarning,
+    clearUpdates
   };
 }
 

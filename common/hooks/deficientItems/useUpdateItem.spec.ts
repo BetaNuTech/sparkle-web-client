@@ -297,6 +297,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         )
       );
       await result.current.publish();
+      // wait 300 ms for state transition
+      await new Promise((resolve) => setTimeout(resolve, 300));
     });
 
     const actual = update.called;
@@ -330,6 +332,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         )
       );
       await result.current.publish();
+      // wait 300 ms for state transition
+      await new Promise((resolve) => setTimeout(resolve, 300));
     });
 
     const actual = sendNotification.called;
@@ -368,6 +372,8 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
         )
       );
       await result.current.publish(photoUploadData);
+      // wait 300 ms for state transition
+      await new Promise((resolve) => setTimeout(resolve, 300));
     });
 
     await waitFor(() => uploadPhoto.called);
@@ -377,7 +383,7 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     expect(updateDeficiencyFn.called).toBeTruthy();
   });
 
-  test('should show alert with relevant message', () => {
+  test('should show alert with relevant message', async () => {
     const alertMock = sinon.stub(window, 'alert');
     const sendNotification = sinon.spy();
     const expected = [
@@ -406,7 +412,10 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     expect(alertMock.called).toBeTruthy();
     expect(alertMessage).toEqual(expected[0]);
 
-    act(() => {
+    await act(async () => {
+      // wait for 100 ms for state update
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       result.current.updateCurrentPlanToFix('current plan to fix');
       result.current.handlePermissionWarning('pending');
     });
@@ -416,7 +425,10 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     expect(alertMock.called).toBeTruthy();
     expect(alertMessage).toEqual(expected[1]);
 
-    act(() => {
+    await act(async () => {
+      // wait for 100 ms for state update
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       result.current.updateCurrentResponsibilityGroup('site_level_in-house');
       result.current.handlePermissionWarning('pending');
     });
@@ -426,7 +438,10 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     expect(alertMock.called).toBeTruthy();
     expect(alertMessage).toEqual(expected[2]);
 
-    act(() => {
+    await act(async () => {
+      // wait for 100 ms for state update
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       result.current.updateCurrentDueDate(moment().unix());
       result.current.handlePermissionWarning('pending');
     });
@@ -435,5 +450,33 @@ describe('Unit | Features | Deficient Item Edit | Hooks | Use Update Item', () =
     alertMessage = alertMock.getCall(3).args[0];
     expect(alertMock.called).toBeTruthy();
     expect(alertMessage).toEqual(expected[3]);
+  });
+
+  test('should clear all the updates of deficient item', async () => {
+    const expected = {};
+    const sendNotification = sinon.spy();
+
+    const deficientItemUpdates = {
+      currentPlanToFix: 'plan to fix',
+      currentResponsibilityGroup: 'site_level_in-house',
+      currentDueDate: moment().unix()
+    } as DeficientItemLocalUpdates;
+
+    const { result } = renderHook(() =>
+      useUpdateItem(
+        'deficiency-1',
+        'property-1',
+        sendNotification,
+        deficientItemUpdates,
+        deficientItem,
+        admin
+      )
+    );
+
+    await act(async () => {
+      result.current.clearUpdates();
+    });
+
+    expect(result.current.updates).toMatchObject(expected);
   });
 });
