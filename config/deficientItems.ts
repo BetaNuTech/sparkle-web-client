@@ -69,7 +69,7 @@ export const deficientItemTransitions = {
   ],
   closed: [],
   pending: [{ value: 'deferred' } /* Disabled: 'completed' */],
-  'requires-progress-update': [{ value: 'pending' }],
+  'requires-progress-update': [{ value: 'add-progress-note' }],
   overdue: [{ value: 'incomplete' }],
   incomplete: [{ value: 'go-back' }, { value: 'closed', label: 'close' }],
   'go-back': [{ value: 'pending' }, { value: 'deferred' }],

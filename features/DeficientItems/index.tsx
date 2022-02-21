@@ -1,9 +1,9 @@
 import { ChangeEvent, FunctionComponent, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
-import propertyModel from '../../common/models/property';
-import deficientItemModel from '../../common/models/deficientItem';
-import userModel from '../../common/models/user';
+import PropertyModel from '../../common/models/property';
+import DeficientItemModel from '../../common/models/deficientItem';
+import UserModel from '../../common/models/user';
 import StateGroups from './StateGroups';
 import Header from './Header';
 import useSorting from './hooks/useSorting';
@@ -16,16 +16,16 @@ import {
 } from '../../common/utils/userPermissions';
 import useUpdateItem from '../../common/hooks/deficientItems/useUpdateItem';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
-import DeficientItem from '../../common/models/deficientItem';
+import dateUtil from '../../common/utils/date';
 
 type userNotifications = (message: string, options?: any) => any;
 
 interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
-  user: userModel;
-  property: propertyModel;
-  deficientItems: deficientItemModel[];
+  user: UserModel;
+  property: PropertyModel;
+  deficientItems: DeficientItemModel[];
   forceVisible?: boolean;
   sendNotification: userNotifications;
   toggleNavOpen?(): void;
@@ -97,13 +97,18 @@ const DeficientItems: FunctionComponent<Props> = ({
     isSaving,
     updateState,
     updateCurrentReasonIncomplete,
+    updateCurrentDueDate,
+    updateCurrentPlanToFix,
+    updateCurrentResponsibilityGroup,
+    updateProgressNote,
+    handlePermissionWarning,
     publish
   } = useUpdateItem(
     '',
     property.id,
     sendNotification,
     {} as DeficientItemLocalUpdates,
-    {} as DeficientItem,
+    {} as DeficientItemModel,
     user,
     true,
     movingItems
@@ -115,6 +120,22 @@ const DeficientItems: FunctionComponent<Props> = ({
 
   const onChangeReasonIncomplete = (evt: ChangeEvent<HTMLTextAreaElement>) => {
     updateCurrentReasonIncomplete(evt.target.value);
+  };
+
+  const onChangePlanToFix = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    updateCurrentPlanToFix(evt.target.value);
+  };
+
+  const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
+    updateCurrentDueDate(dateUtil.isoToTimestamp(evt.target.value));
+  };
+
+  const onChangeResponsibilityGroup = (evt: ChangeEvent<HTMLSelectElement>) => {
+    updateCurrentResponsibilityGroup(evt.target.value);
+  };
+
+  const onChangeProgressNote = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    updateProgressNote(evt.target.value);
   };
 
   const onGoBack = async () => {
@@ -142,6 +163,23 @@ const DeficientItems: FunctionComponent<Props> = ({
     if (!isSaving) {
       setMoveToStates(null);
     }
+  };
+
+  const onUnpermittedPending = () => {
+    handlePermissionWarning('pending');
+  };
+
+  const onUpdatePending = async () => {
+    updateState('pending');
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
+  };
+
+  const onAddProgressNote = async () => {
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
   };
 
   return (
@@ -192,9 +230,16 @@ const DeficientItems: FunctionComponent<Props> = ({
         updates={updates}
         isSaving={isSaving}
         onChangeReasonIncomplete={onChangeReasonIncomplete}
+        onChangePlanToFix={onChangePlanToFix}
+        onChangeDueDate={onChangeDueDate}
+        onChangeResponsibilityGroup={onChangeResponsibilityGroup}
+        onChangeProgressNote={onChangeProgressNote}
         onGoBack={onGoBack}
         onUpdateIncomplete={onUpdateIncomplete}
         onCloseDI={onCloseDI}
+        onUnpermittedPending={onUnpermittedPending}
+        onUpdatePending={onUpdatePending}
+        onAddProgressNote={onAddProgressNote}
       />
     </>
   );

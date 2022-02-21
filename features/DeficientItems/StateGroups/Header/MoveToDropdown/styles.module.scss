@@ -99,6 +99,7 @@
 
   &--overdue,
   &--requires-action,
+  &--add-progress-note,
   &--go-back,
   &--requires-progress-update {
     background: $alert-secondary-color;

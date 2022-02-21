@@ -290,7 +290,7 @@ export default function useUpdateItem(
     if (publishUpdatesError.length > 0 && isBulkUpdate) {
       sendNotification(
         `Failed to update the selected deficient item${
-          bulkUpdateIds.length > 1 && 's'
+          bulkUpdateIds.length > 1 ? 's' : ''
         } to ${utilString.dedash(updates?.state)}`,
         {
           type: 'error'
