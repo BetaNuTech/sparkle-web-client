@@ -80,9 +80,20 @@ export const deleteRecord = async (recordId: string): Promise<void> => {
   }
 };
 
+export const deleteMultipleRecords = async (
+  recordIds: string[]
+): Promise<void> => {
+  try {
+    await db.deficientItemPhotos.bulkDelete(recordIds);
+  } catch (err) {
+    throw Error(`${PREFIX} deleteRecord: ${err}`);
+  }
+};
+
 export default {
   query,
   createRecord,
   updateRecord,
-  deleteRecord
+  deleteRecord,
+  deleteMultipleRecords
 };
