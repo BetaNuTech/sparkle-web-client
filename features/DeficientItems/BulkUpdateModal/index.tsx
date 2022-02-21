@@ -18,13 +18,15 @@ interface Props extends ModalProps {
   updates: DeficientItemModel;
   isSaving: boolean;
   onChangeReasonIncomplete(evt: ChangeEvent<HTMLTextAreaElement>): void;
+  onChangeDeferredDate(evt: ChangeEvent<HTMLInputElement>): void;
+  onGoBack(): void;
+  onUpdateIncomplete(): void;
+  onCloseDI(): void;
+  onConfirmDefer(): void;
   onChangePlanToFix(evt: ChangeEvent<HTMLTextAreaElement>): void;
   onChangeDueDate(evt: ChangeEvent<HTMLInputElement>): void;
   onChangeResponsibilityGroup(evt: ChangeEvent<HTMLSelectElement>): void;
   onChangeProgressNote(evt: ChangeEvent<HTMLTextAreaElement>): void;
-  onGoBack(): void;
-  onUpdateIncomplete(): void;
-  onCloseDI(): void;
   onUnpermittedPending(): void;
   onUpdatePending(): void;
   onAddProgressNote(): void;
@@ -40,6 +42,8 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
   updates,
   isSaving,
   onChangeReasonIncomplete,
+  onChangeDeferredDate,
+  onConfirmDefer,
   onChangePlanToFix,
   onChangeDueDate,
   onChangeResponsibilityGroup,
@@ -84,6 +88,8 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
             isBulkUpdate={true} // eslint-disable-line react/jsx-boolean-value
             updates={updates}
             onChangeReasonIncomplete={onChangeReasonIncomplete}
+            onChangeDeferredDate={onChangeDeferredDate}
+            isUpdatingDeferredDate={nextState === 'deferred'}
             onChangePlanToFix={onChangePlanToFix}
             onChangeDueDate={onChangeDueDate}
             onChangeResponsibilityGroup={onChangeResponsibilityGroup}
@@ -111,6 +117,8 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
             onGoBack={onGoBack}
             onUpdateIncomplete={onUpdateIncomplete}
             onClose={onCloseDI}
+            onConfirmDefer={onConfirmDefer}
+            isUpdatingDeferredDate={nextState === 'deferred'}
             onUnpermittedPending={onUnpermittedPending}
             onUpdatePending={onUpdatePending}
             onAddProgressNote={onAddProgressNote}

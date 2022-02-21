@@ -371,7 +371,6 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           ))}
 
         {/* Defer Now Action */}
-
         {showDeferConfirmAction && isUpdatingDeferredDate && (
           <>
             <button
@@ -393,7 +392,11 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               data-testid="action-confirm-defer"
               onClick={onConfirmDefer}
             >
-              Confirm Defer
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Complete Defer'
+              )}
             </button>
           </>
         )}
