@@ -16,7 +16,7 @@ import {
 } from '../../common/utils/userPermissions';
 import useUpdateItem from '../../common/hooks/deficientItems/useUpdateItem';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
-import dateUtil from '../../common/utils/date';
+import dateUtils from '../../common/utils/date';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -31,7 +31,7 @@ interface Props {
   toggleNavOpen?(): void;
 }
 
-const DeficientItems: FunctionComponent<Props> = ({
+const DeficientItemsList: FunctionComponent<Props> = ({
   user,
   isOnline,
   isStaging,
@@ -97,6 +97,7 @@ const DeficientItems: FunctionComponent<Props> = ({
     isSaving,
     updateState,
     updateCurrentReasonIncomplete,
+    updateCurrentDeferredDate,
     updateCurrentDueDate,
     updateCurrentPlanToFix,
     updateCurrentResponsibilityGroup,
@@ -122,12 +123,16 @@ const DeficientItems: FunctionComponent<Props> = ({
     updateCurrentReasonIncomplete(evt.target.value);
   };
 
+  const onChangeDeferredDate = (evt: ChangeEvent<HTMLInputElement>) => {
+    updateCurrentDeferredDate(dateUtils.isoToTimestamp(evt.target.value));
+  };
+
   const onChangePlanToFix = (evt: ChangeEvent<HTMLTextAreaElement>) => {
     updateCurrentPlanToFix(evt.target.value);
   };
 
   const onChangeDueDate = (evt: ChangeEvent<HTMLInputElement>) => {
-    updateCurrentDueDate(dateUtil.isoToTimestamp(evt.target.value));
+    updateCurrentDueDate(dateUtils.isoToTimestamp(evt.target.value));
   };
 
   const onChangeResponsibilityGroup = (evt: ChangeEvent<HTMLSelectElement>) => {
@@ -154,6 +159,13 @@ const DeficientItems: FunctionComponent<Props> = ({
 
   const onCloseDI = async () => {
     updateState('closed');
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
+  };
+
+  const onConfirmDefer = async () => {
+    updateState('deferred');
     await publish();
     onClearGroupSelection(moveToStates.currentState);
     onCloseBulkUpdateModal();
@@ -230,12 +242,14 @@ const DeficientItems: FunctionComponent<Props> = ({
         updates={updates}
         isSaving={isSaving}
         onChangeReasonIncomplete={onChangeReasonIncomplete}
+        onChangeDeferredDate={onChangeDeferredDate}
         onChangePlanToFix={onChangePlanToFix}
         onChangeDueDate={onChangeDueDate}
         onChangeResponsibilityGroup={onChangeResponsibilityGroup}
         onChangeProgressNote={onChangeProgressNote}
         onGoBack={onGoBack}
         onUpdateIncomplete={onUpdateIncomplete}
+        onConfirmDefer={onConfirmDefer}
         onCloseDI={onCloseDI}
         onUnpermittedPending={onUnpermittedPending}
         onUpdatePending={onUpdatePending}
@@ -245,11 +259,11 @@ const DeficientItems: FunctionComponent<Props> = ({
   );
 };
 
-DeficientItems.defaultProps = {
+DeficientItemsList.defaultProps = {
   isOnline: false,
   isStaging: false,
   toggleNavOpen: () => {}, // eslint-disable-line
   forceVisible: false
 };
 
-export default DeficientItems;
+export default DeficientItemsList;
