@@ -97,9 +97,14 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
     const tests = DEF_ITEM_STATES.map((state) => {
       const expected = RESP_GROUP_EDIT_STATES.includes(state);
 
+      const currentResponsibilityGroup =
+        state === 'closed' ? 'current responsibility group' : null;
       return {
         // requires previous responsiblity group for closed state
-        data: createDeficientItem({ state }, { responsibilityGroups: 1 }),
+        data: createDeficientItem(
+          { state, currentResponsibilityGroup },
+          { responsibilityGroups: 1 }
+        ),
         expected
       };
     });
@@ -215,9 +220,13 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
     const tests = DEF_ITEM_STATES.map((state) => {
       const expected = PLANS_TO_FIX_EDIT_STATES.includes(state);
 
+      const currentPlanToFix = state === 'closed' ? 'Plan to fix' : null;
       return {
         // previous plans to fix required for closed state
-        data: createDeficientItem({ state }, { plansToFix: 1 }),
+        data: createDeficientItem(
+          { state, currentPlanToFix },
+          { plansToFix: 1 }
+        ),
         expected
       };
     });
@@ -442,10 +451,14 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
 
     const tests = DEF_ITEM_STATES.map((state) => {
       const expected = REASON_INCOMPLETE_STATES.includes(state);
-
+      const currentReasonIncomplete =
+        state === 'closed' ? 'reason incomplete' : null;
       return {
         // previous plans to fix required for closed state
-        data: createDeficientItem({ state }, { reasonsIncomplete: 1 }),
+        data: createDeficientItem(
+          { state, currentReasonIncomplete },
+          { reasonsIncomplete: 1 }
+        ),
         expected
       };
     });
@@ -641,5 +654,4 @@ describe('Unit | Common | Deficient Item Edit Form', () => {
       expect(Boolean(completeNowReasonSection)).toEqual(expected);
     }
   });
-
 });

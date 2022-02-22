@@ -69,6 +69,14 @@ const DeficientItemEditFormCompleteNowReason: FunctionComponent<Props> = ({
           !deficientItem.currentCompleteNowReason && '-p-none'
         )}
       >
+        {deficientItem.currentCompleteNowReason && (
+          <strong
+            className={fieldStyles.richText}
+            data-testid="item-current-completed-now-reason-text"
+          >
+            {deficientItem?.currentCompleteNowReason}
+          </strong>
+        )}
         {showTextArea && (
           <textarea
             placeholder="Enter reason complete"

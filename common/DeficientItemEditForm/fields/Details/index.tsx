@@ -27,7 +27,12 @@ const DeficientItemEditFormDetails: FunctionComponent<Props> = ({
   return (
     <section data-testid="item-details" className={fieldStyles.section}>
       {isMobile && <header className={fieldStyles.label}>ITEM DETAILS</header>}
-      {showPhotoPreview && <MiniPreviewGallery photos={photosDataItems} />}
+      {showPhotoPreview && (
+        <MiniPreviewGallery
+          photos={photosDataItems}
+          onClick={onClickViewPhotos}
+        />
+      )}
       <hgroup className={fieldStyles.section__main}>
         <small data-testid="created-at" className={styles.subHeading}>
           {dateUtil.toUserFullDateDisplay(deficientItem.createdAt)}

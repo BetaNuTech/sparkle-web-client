@@ -111,17 +111,18 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
   const showUpdateToPendingActions =
     deficientItemPendingEligibleStates.includes(deficientItem.state) &&
-    (Boolean(updates.currentPlanToFix) ||
-      Boolean(updates.currentResponsibilityGroup) ||
-      Boolean(updates.currentDueDate));
+    !isUpdatingDeferredDate;
+
+  const isDisableUpdateToPending =
+    !updates.currentPlanToFix &&
+    !updates.currentResponsibilityGroup &&
+    !updates.currentDueDate;
 
   const showUpdateAddProgressNoteAction =
     deficientItemProgressNoteEditStates.includes(deficientItem.state) &&
-    Boolean(updates.progressNote);
+    (nextState ? nextState === 'add-progress-note' : true);
 
-  const showUpdateToIncompleteAction =
-    deficientItem.state === 'overdue' &&
-    Boolean(updates.currentReasonIncomplete);
+  const showUpdateToIncompleteAction = deficientItem.state === 'overdue';
 
   const showDeferConfirmAction =
     !isUpdatingCurrentCompleteNowReason &&
@@ -133,6 +134,9 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
     );
     const dayHours = 24;
     const daysDifferenceFromCreated = hoursDifferenceFromCreated / dayHours;
+    if (nextState) {
+      return false;
+    }
     if (isUpdatingDeferredDate || deficientItem.state !== 'requires-action') {
       return false;
     }
@@ -144,7 +148,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
       return true;
     }
     return daysDifferenceFromCreated >= -3;
-  }, [deficientItem, isUpdatingDeferredDate, permissionLevel]);
+  }, [deficientItem, isUpdatingDeferredDate, permissionLevel, nextState]);
 
   const showCompletedPhotosAction =
     (deficientItem.completedPhotos &&
@@ -191,7 +195,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
       <div className={clsx(styles.main, inline && styles['main--grid'])}>
         {showCompletedPhotosAction && !inline && (
           <button
-            className={clsx(fieldStyles.textButton)}
+            className={clsx(fieldStyles.textButton, '-mb')}
             disabled={isDisabled}
             data-testid="action-show-completed-photos"
             onClick={onShowCompletedPhotos}
@@ -204,7 +208,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           (isAbleToTransitionToPending ? (
             <button
               className={clsx(styles.action, '-bgc-success')}
-              disabled={isDisabled}
+              disabled={isDisabled || isDisableUpdateToPending}
               data-testid="action-update-pending"
               onClick={onUpdatePending}
             >
@@ -217,7 +221,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           ) : (
             <button
               className={clsx(styles.action, '-bgc-success')}
-              disabled={isDisabled}
+              disabled={isDisabled || isDisableUpdateToPending}
               data-testid="action-unpermitted-pending"
               onClick={onUnpermittedPending}
             >
@@ -228,7 +232,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showUpdateAddProgressNoteAction && (
           <button
             className={clsx(styles.action, '-bgc-success')}
-            disabled={isDisabled}
+            disabled={isDisabled || !updates.progressNote}
             data-testid="action-add-progress-note"
             onClick={onAddProgressNote}
           >
@@ -243,7 +247,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
         {showUpdateToIncompleteAction && (
           <button
             className={clsx(styles.action, '-bgc-success')}
-            disabled={isDisabled}
+            disabled={isDisabled || !updates.currentReasonIncomplete}
             data-testid="action-update-incomplete"
             onClick={onUpdateIncomplete}
           >
@@ -375,7 +379,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           ))}
 
         {/* Defer Now Action */}
-        {showDeferConfirmAction && isUpdatingDeferredDate && (
+        {showDeferConfirmAction && isUpdatingDeferredDate && !nextState && (
           <>
             <button
               className={clsx(styles.action, '-bgc-med-dark')}
@@ -389,7 +393,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               className={clsx(
                 styles.action,
                 isDisabled || !updates.currentDeferredDate
-                  ? '-bgc-gray'
+                  ? '-bgc-dark-gray'
                   : '-bgc-orange'
               )}
               disabled={isDisabled || !updates.currentDeferredDate}
@@ -404,6 +408,22 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
             </button>
           </>
         )}
+        {showDeferConfirmAction &&
+          isUpdatingDeferredDate &&
+          nextState === 'deferred' && (
+            <button
+              className={clsx(styles.action, '-bgc-orange')}
+              disabled={isDisabled || !updates.currentDeferredDate}
+              data-testid="action-complete-defer"
+              onClick={onConfirmDefer}
+            >
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Complete Defer'
+              )}
+            </button>
+          )}
 
         {showDeferAction &&
           (canDefer ? (

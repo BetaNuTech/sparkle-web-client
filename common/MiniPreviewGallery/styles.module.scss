@@ -8,6 +8,10 @@
 
   &__list {
     @extend %gallery;
+
+    &--oneRow {
+      @extend %gallery--oneRow;
+    }
   }
 
   &__item {

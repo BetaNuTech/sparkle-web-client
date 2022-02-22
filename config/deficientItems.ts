@@ -34,7 +34,8 @@ export const deficientItemsHistoryTitles = {
   completeNowReasons: 'Complete Now Reason - History',
   reasonsIncomplete: 'Reasons Incomplete - History',
   dueDates: 'Due Dates - History',
-  deferredDates: 'Deferred Dates - History'
+  deferredDates: 'Deferred Dates - History',
+  progressNotes: 'Progress Notes - History'
 };
 
 export const deficientItemResponsibilityGroups = [
@@ -57,9 +58,7 @@ export const deficientItemProgressNoteEditStates = [
 
 export const deficientItemPendingEligibleStates = [
   'go-back',
-  'deferred',
-  'requires-action',
-  'requires-progress-update'
+  'requires-action'
 ];
 export const deficientItemTransitions = {
   'requires-action': [{ value: 'pending' }, { value: 'deferred' }],
