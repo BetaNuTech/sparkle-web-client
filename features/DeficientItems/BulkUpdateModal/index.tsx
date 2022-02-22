@@ -68,7 +68,8 @@ const BulkUpdateModal: FunctionComponent<Props> = ({
     deficientItems.find((item) => item.id === movingItems[0]) ||
     ({} as DeficientItemModel);
 
-  const stateTransitionOptions = deficientItemTransitions[deficientItem.state];
+  const stateTransitionOptions =
+    deficientItemTransitions[deficientItem.state] || [];
 
   const currentTransitionOption =
     stateTransitionOptions.find(

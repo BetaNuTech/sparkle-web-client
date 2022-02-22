@@ -313,6 +313,24 @@ export default function useUpdateItem(
       );
     }
 
+    // send state transition notification
+    // if DI state updated
+    if (
+      !isBulkUpdate &&
+      publishUpdatesError.length < 1 &&
+      updates.state &&
+      updates.state !== currentItem.state
+    ) {
+      sendNotification(
+        `Deficient item was moved from ${utilString.titleize(
+          utilString.dedash(currentItem?.state)
+        )} to ${utilString.titleize(utilString.dedash(updates?.state))}`,
+        {
+          type: 'info'
+        }
+      );
+    }
+
     applyLatestUpdates({} as DeficientItemModel);
     setProgress(100);
     // Setting loader value after 100 ms
