@@ -1,6 +1,4 @@
 import { FunctionComponent } from 'react';
-import Link from 'next/link';
-import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import DeficientItemModel from '../../../common/models/deficientItem';
 import UserModel from '../../../common/models/user';
 
@@ -9,6 +7,8 @@ import DesktopHeader from '../../../common/DesktopHeader';
 import PropertyModel from '../../../common/models/property';
 import Actions from '../../../common/DeficientItemEditForm/Actions';
 import Breadcrumbs from './Breadcrumbs';
+
+import styles from './styles.module.scss';
 
 interface Props {
   property: PropertyModel;
@@ -42,6 +42,7 @@ interface Props {
   onShowCompletedPhotos(): void;
   hasUnpublishedPhotos: boolean;
   onAddCompletionPhotos(): void;
+  toggleNavOpen?(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -74,76 +75,65 @@ const Header: FunctionComponent<Props> = ({
   onUnpermittedDefer,
   onShowCompletedPhotos,
   hasUnpublishedPhotos,
-  onAddCompletionPhotos
-}) => {
-  // Mobile Header actions buttons
-  const mobileHeaderLeft = (headStyle) => (
-    <>
-      <Link href={`/properties/${property.id}/deficient-items`}>
-        <a className={headStyle.header__back}>
-          <ChevronIcon />
-          All
-        </a>
-      </Link>
-    </>
-  );
-
-  return (
-    <>
-      {isMobile ? (
-        <>
-          <MobileHeader
-            isOnline={isOnline}
-            isStaging={isStaging}
-            left={mobileHeaderLeft}
-            title="Deficient Item"
-          />
-          <Breadcrumbs property={property} itemTitle={itemTitle} />
-        </>
-      ) : (
-        <DesktopHeader
+  onAddCompletionPhotos,
+  toggleNavOpen
+}) => (
+  <>
+    {isMobile ? (
+      <>
+        <MobileHeader
           isOnline={isOnline}
-          isColumnTitle
-          title={<Breadcrumbs property={property} itemTitle={itemTitle} />}
-          right={
-            <Actions
-              user={user}
-              deficientItem={deficientItem}
-              updates={updates}
-              isOnline={isOnline}
-              isSaving={isSaving}
-              isUpdatingCurrentCompleteNowReason={
-                isUpdatingCurrentCompleteNowReason
-              }
-              isUpdatingDeferredDate={isUpdatingDeferredDate}
-              onUpdatePending={onUpdatePending}
-              onUnpermittedPending={onUnpermittedPending}
-              onAddProgressNote={onAddProgressNote}
-              onUpdateIncomplete={onUpdateIncomplete}
-              onComplete={onComplete}
-              onGoBack={onGoBack}
-              onCloseDuplicate={onCloseDuplicate}
-              onUnpermittedDuplicate={onUnpermittedDuplicate}
-              onClose={onClose}
-              onCancelCompleteNow={onCancelCompleteNow}
-              onConfirmCompleteNow={onConfirmCompleteNow}
-              onCompleteNow={onCompleteNow}
-              onCancelDefer={onCancelDefer}
-              onConfirmDefer={onConfirmDefer}
-              onInitiateDefer={onInitiateDefer}
-              onUnpermittedDefer={onUnpermittedDefer}
-              onShowCompletedPhotos={onShowCompletedPhotos}
-              inline={true} // eslint-disable-line react/jsx-boolean-value
-              showHeader={false}
-              hasUnpublishedPhotos={hasUnpublishedPhotos}
-              onAddCompletionPhotos={onAddCompletionPhotos}
-            />
-          }
+          isStaging={isStaging}
+          toggleNavOpen={toggleNavOpen}
+          title="Deficient Item"
         />
-      )}
-    </>
-  );
-};
+        <div className={styles.header}>
+          <Breadcrumbs property={property} itemTitle={itemTitle} />
+        </div>
+      </>
+    ) : (
+      <DesktopHeader
+        isOnline={isOnline}
+        isColumnTitle
+        title={<Breadcrumbs property={property} itemTitle={itemTitle} />}
+        right={
+          <Actions
+            user={user}
+            deficientItem={deficientItem}
+            updates={updates}
+            isOnline={isOnline}
+            isSaving={isSaving}
+            isUpdatingCurrentCompleteNowReason={
+              isUpdatingCurrentCompleteNowReason
+            }
+            isUpdatingDeferredDate={isUpdatingDeferredDate}
+            onUpdatePending={onUpdatePending}
+            onUnpermittedPending={onUnpermittedPending}
+            onAddProgressNote={onAddProgressNote}
+            onUpdateIncomplete={onUpdateIncomplete}
+            onComplete={onComplete}
+            onGoBack={onGoBack}
+            onCloseDuplicate={onCloseDuplicate}
+            onUnpermittedDuplicate={onUnpermittedDuplicate}
+            onClose={onClose}
+            onCancelCompleteNow={onCancelCompleteNow}
+            onConfirmCompleteNow={onConfirmCompleteNow}
+            onCompleteNow={onCompleteNow}
+            onCancelDefer={onCancelDefer}
+            onConfirmDefer={onConfirmDefer}
+            onInitiateDefer={onInitiateDefer}
+            onUnpermittedDefer={onUnpermittedDefer}
+            onShowCompletedPhotos={onShowCompletedPhotos}
+            inline={true} // eslint-disable-line react/jsx-boolean-value
+            showHeader={false}
+            hasUnpublishedPhotos={hasUnpublishedPhotos}
+            onAddCompletionPhotos={onAddCompletionPhotos}
+          />
+        }
+      />
+    )}
+  </>
+);
 
 Header.defaultProps = {};
 

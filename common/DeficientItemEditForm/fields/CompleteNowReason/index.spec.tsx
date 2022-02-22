@@ -129,4 +129,28 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Complete Now Reaso
     const actual = onChange.called;
     expect(actual).toBe(expected);
   });
+
+  it('should render currnet complete now reason', () => {
+    const expected = 'Current Plan To Fix';
+
+    render(
+      <CompleteNowReason
+        deficientItem={createDeficientItem({
+          state: 'requires-action',
+          currentCompleteNowReason: expected
+        })}
+        isMobile={false}
+        onShowHistory={sinon.spy()}
+        onChange={sinon.spy()}
+        isVisible={true} // eslint-disable-line react/jsx-boolean-value
+        isEditable={false}
+      />
+    );
+
+    const currentCompletedNowReasonText = screen.queryByTestId(
+      'item-current-completed-now-reason-text'
+    );
+    expect(currentCompletedNowReasonText).toBeTruthy();
+    expect(currentCompletedNowReasonText).toHaveTextContent(expected);
+  });
 });

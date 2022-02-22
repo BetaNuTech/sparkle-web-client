@@ -1,4 +1,9 @@
-import React, { FunctionComponent, Fragment, ChangeEvent } from 'react';
+import React, {
+  FunctionComponent,
+  Fragment,
+  ChangeEvent,
+  RefObject
+} from 'react';
 import deficientItemModel from '../../../common/models/deficientItem';
 import { deficientItemStateOrder } from '../../../config/deficientItems';
 import Header from './Header';
@@ -21,6 +26,7 @@ interface Props {
   canGoBack: boolean;
   canClose: boolean;
   canDefer: boolean;
+  containerRef: RefObject<HTMLDivElement>;
 }
 
 const DeficientItemsStateGroups: FunctionComponent<Props> = ({
@@ -37,9 +43,10 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
   onMoveToState,
   canGoBack,
   canClose,
-  canDefer
+  canDefer,
+  containerRef
 }) => (
-  <div className={styles.container}>
+  <div className={styles.container} ref={containerRef}>
     {!isMobile && (
       <SearchBar
         searchQuery={searchQuery}

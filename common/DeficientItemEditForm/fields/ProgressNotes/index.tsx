@@ -81,8 +81,9 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
             className={clsx(
               fieldStyles.formInput,
               deficientItem.state === 'requires-progress-update' &&
-                !updates?.progressNotes &&
-                fieldStyles['field__textarea--empty']
+                !updates?.progressNote &&
+                fieldStyles['formInput--empty'],
+              fieldStyles['formInput--progressNote']
             )}
             defaultValue={updates?.progressNote || ''}
             onChange={onChange}
@@ -91,7 +92,11 @@ const DeficientItemEditFormProgressNotes: FunctionComponent<Props> = ({
         )}
         {latestProgressNote && (
           <strong
-            className={clsx(fieldStyles.richText, '-pl -pr -pt-sm -d-block')}
+            className={clsx(
+              fieldStyles.richText,
+              '-pt-sm -d-block',
+              isMobile && '-pl'
+            )}
             data-testid="item-progress-note-text"
           >
             {latestProgressNote}

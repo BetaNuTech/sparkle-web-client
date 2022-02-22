@@ -28,6 +28,7 @@ interface Props {
   sendNotification: userNotifications;
   unpublishedUpdates: DeficientItemLocalUpdates;
   firestore: firebase.firestore.Firestore;
+  toggleNavOpen?(): void;
 }
 
 const DeficientItemEdit: FunctionComponent<Props> = ({
@@ -39,7 +40,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   isStaging,
   sendNotification,
   unpublishedUpdates,
-  firestore
+  firestore,
+  toggleNavOpen
 }) => {
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
 
@@ -195,7 +197,6 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onUnpermittedDuplicate = () => {
-    console.log('triggered on unpermittd duplicate action'); // eslint-disable-line
     handlePermissionWarning('duplicate');
   };
 
@@ -238,12 +239,11 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onUnpermittedDefer = () => {
-    console.log('triggered on unpermitted defer action'); // eslint-disable-line
     handlePermissionWarning('defer');
   };
 
   const onShowProgressNotes = () => {
-    console.log('triggered on show all progress notes action'); // eslint-disable-line
+    setHistoryType('progressNotes');
   };
 
   const onChangeProgressNote = (evt: ChangeEvent<HTMLTextAreaElement>) => {
@@ -314,6 +314,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         onShowCompletedPhotos={onShowCompletedPhotos}
         hasUnpublishedPhotos={hasUnpublishedPhotos}
         onAddCompletionPhotos={onAddCompletionPhotos}
+        toggleNavOpen={toggleNavOpen}
       />
 
       <Form

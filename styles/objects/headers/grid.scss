@@ -92,6 +92,9 @@
 }
 
 %gridHeaderSmallTitle {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: rem-calc(20);
 }
 

@@ -1,4 +1,5 @@
 import { ChangeEvent, FunctionComponent } from 'react';
+import clsx from 'clsx';
 import PropertyTrelloIntegrationModal from '../../../common/models/propertyTrelloIntegration';
 import PropertyModel from '../../../common/models/property';
 import DeficientItemModel from '../../../common/models/deficientItem';
@@ -140,7 +141,9 @@ const DeficientItemForm: FunctionComponent<Props> = ({
           />
         </aside>
       )}
-      <div className={styles.container__main}>
+      <div
+        className={clsx(styles.container__main, !isLargeDesktop && '-ml-none')}
+      >
         <aside className={styles.container__formSidebar}>
           {!isMobile && (
             <>
@@ -197,38 +200,40 @@ const DeficientItemForm: FunctionComponent<Props> = ({
             onShowResponsibilityGroups={onShowResponsibilityGroups}
             onChangeResponsibilityGroup={onChangeResponsibilityGroup}
           />
-          {isMobile && (
-            <Actions
-              user={user}
-              deficientItem={deficientItem}
-              updates={updates}
-              isSaving={isSaving}
-              isOnline={isOnline}
-              isUpdatingCurrentCompleteNowReason={
-                isUpdatingCurrentCompleteNowReason
-              }
-              isUpdatingDeferredDate={isUpdatingDeferredDate}
-              onUpdatePending={onUpdatePending}
-              onUnpermittedPending={onUnpermittedPending}
-              onAddProgressNote={onAddProgressNote}
-              onUpdateIncomplete={onUpdateIncomplete}
-              onComplete={onComplete}
-              onGoBack={onGoBack}
-              onCloseDuplicate={onCloseDuplicate}
-              onUnpermittedDuplicate={onUnpermittedDuplicate}
-              onClose={onClose}
-              onCancelCompleteNow={onCancelCompleteNow}
-              onConfirmCompleteNow={onConfirmCompleteNow}
-              onCompleteNow={onCompleteNow}
-              onCancelDefer={onCancelDefer}
-              onConfirmDefer={onConfirmDefer}
-              onInitiateDefer={onInitiateDefer}
-              onUnpermittedDefer={onUnpermittedDefer}
-              onShowCompletedPhotos={onShowCompletedPhotos}
-              hasUnpublishedPhotos={hasUnpublishedPhotos}
-              onAddCompletionPhotos={onAddCompletionPhotos}
-            />
-          )}
+
+          <Actions
+            user={user}
+            deficientItem={deficientItem}
+            updates={updates}
+            isSaving={isSaving}
+            isOnline={isOnline}
+            isUpdatingCurrentCompleteNowReason={
+              isUpdatingCurrentCompleteNowReason
+            }
+            isUpdatingDeferredDate={isUpdatingDeferredDate}
+            onUpdatePending={onUpdatePending}
+            onUnpermittedPending={onUnpermittedPending}
+            onAddProgressNote={onAddProgressNote}
+            onUpdateIncomplete={onUpdateIncomplete}
+            onComplete={onComplete}
+            onGoBack={onGoBack}
+            onCloseDuplicate={onCloseDuplicate}
+            onUnpermittedDuplicate={onUnpermittedDuplicate}
+            onClose={onClose}
+            onCancelCompleteNow={onCancelCompleteNow}
+            onConfirmCompleteNow={onConfirmCompleteNow}
+            onCompleteNow={onCompleteNow}
+            onCancelDefer={onCancelDefer}
+            onConfirmDefer={onConfirmDefer}
+            onInitiateDefer={onInitiateDefer}
+            onUnpermittedDefer={onUnpermittedDefer}
+            onShowCompletedPhotos={onShowCompletedPhotos}
+            hasUnpublishedPhotos={hasUnpublishedPhotos}
+            onAddCompletionPhotos={onAddCompletionPhotos}
+            inline={!isMobile}
+            showHeader={isMobile}
+          />
+
           {isMobile && (
             <TrelloCard
               isVisible={showTrelloCard}

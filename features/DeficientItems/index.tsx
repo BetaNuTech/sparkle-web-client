@@ -1,4 +1,10 @@
-import { ChangeEvent, FunctionComponent, useEffect, useState } from 'react';
+import {
+  ChangeEvent,
+  FunctionComponent,
+  useEffect,
+  useRef,
+  useState
+} from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import PropertyModel from '../../common/models/property';
@@ -17,6 +23,7 @@ import {
 import useUpdateItem from '../../common/hooks/deficientItems/useUpdateItem';
 import DeficientItemLocalUpdates from '../../common/models/deficientItems/unpublishedUpdates';
 import dateUtils from '../../common/utils/date';
+import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 
 type userNotifications = (message: string, options?: any) => any;
 
@@ -75,6 +82,10 @@ const DeficientItemsList: FunctionComponent<Props> = ({
     property.id,
     sendNotification
   );
+
+  const containerRef = useRef();
+
+  usePreserveScrollPosition(`DIScroll-${property.id}`, containerRef, isMobile);
 
   const [searchQuery, setSearchQuery] = useState(searchParam);
   const [moveToStates, setMoveToStates] = useState(null);
@@ -199,7 +210,6 @@ const DeficientItemsList: FunctionComponent<Props> = ({
     onClearGroupSelection(moveToStates.currentState);
     onCloseBulkUpdateModal();
   };
-
   return (
     <>
       <Header
@@ -235,6 +245,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
         canGoBack={canGoBack}
         canClose={canClose}
         canDefer={canDefer}
+        containerRef={containerRef}
       />
 
       <BulkUpdateModal

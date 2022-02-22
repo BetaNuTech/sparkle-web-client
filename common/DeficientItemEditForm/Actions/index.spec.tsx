@@ -880,7 +880,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     }
   });
 
-  it('does not reveal any update pending actions before user has made any updates', () => {
+  it('does not enable any update pending actions before user has made any updates', () => {
     const props = {
       user: admin,
       isOnline: true,
@@ -908,7 +908,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
     );
 
     expect(updatePendingAction).toBeNull();
-    expect(updatePendingUnpermittedAction).toBeNull();
+    expect(updatePendingUnpermittedAction).toBeDisabled();
   });
 
   it('triggers unpermitted pending when lacking required user updates', () => {
@@ -1065,7 +1065,12 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId('action-add-progress-note');
 
-      expect(Boolean(action)).toEqual(expected);
+      if (expected) {
+        expect(action).toBeEnabled();
+      } else {
+        expect(action).toBeDisabled();
+      }
+
       if (action) {
         act(() => {
           userEvent.click(action);
@@ -1164,7 +1169,12 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Actions ', () => {
       rerender(<Actions {...componentProps} />);
       const action = screen.queryByTestId('action-update-incomplete');
 
-      expect(Boolean(action)).toEqual(expected);
+      if (expected) {
+        expect(action).toBeEnabled();
+      } else {
+        expect(action).toBeDisabled();
+      }
+
       if (action) {
         act(() => {
           userEvent.click(action);

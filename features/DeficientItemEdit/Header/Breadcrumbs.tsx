@@ -10,8 +10,8 @@ interface Props {
 }
 
 const Breadcrumbs: FunctionComponent<Props> = ({ property, itemTitle }) => (
-  <div className={styles.header}>
-    <div className={styles.header__breadcrumb}>
+  <>
+    <div className={styles.header__breadcrumbs}>
       <Link href={`/properties/${property.id}`}>
         <a className={styles.header__link}>{`${property.name}`}</a>
       </Link>
@@ -19,13 +19,11 @@ const Breadcrumbs: FunctionComponent<Props> = ({ property, itemTitle }) => (
       <Link href={`/properties/${property.id}/deficient-items`}>
         <a className={styles.header__link}>Deficient Items</a>
       </Link>
-
-      <span className={styles.header__breadcrumb}>
-        &nbsp;&nbsp;/&nbsp;&nbsp;{itemTitle}
-      </span>
     </div>
-    <div className={styles.header__title}>{itemTitle}</div>
-  </div>
+    <div className={styles.header__title} title={itemTitle}>
+      {itemTitle}
+    </div>
+  </>
 );
 
 export default Breadcrumbs;

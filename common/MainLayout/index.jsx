@@ -77,6 +77,21 @@ export const MainLayout = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // scroll top to the given value
+  const setScrollPosition = (event) => {
+    containerRef.current.scrollTop = event?.detail?.scrollTop;
+  };
+
+  // event subscriber for main side scroll
+  useEffect(() => {
+    const unsubscribe = globalEvents.subscribe(
+      'mainLayoutSetMainSideScroll',
+      setScrollPosition
+    );
+    return () => unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div
       className={

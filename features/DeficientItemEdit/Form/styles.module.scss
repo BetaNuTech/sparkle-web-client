@@ -27,6 +27,7 @@
     &__formSidebar {
       flex: 0 1 auto;
       max-width: 40%;
+      padding-right: $global-mlg-padding;
     }
 
     &__form {
@@ -52,7 +53,6 @@
   @include media-query(desktop) {
     margin-bottom: $global-lg-padding;
     padding: $global-padding;
-    margin-right: $global-lg-padding;
     border: 1px solid $gray-lighter;
     border-radius: $global-radius;
   }
@@ -97,7 +97,7 @@
 
   &--pill,
   &--paddedPill {
-    width: auto;
+    width: 100%;
     display: flex;
     align-items: center;
     border: rem-calc(1) solid $gray-lighter;
