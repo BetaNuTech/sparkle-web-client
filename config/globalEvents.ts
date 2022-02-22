@@ -3,5 +3,6 @@ const PREFIX = 'sparkle';
 export default {
   visibilityForceCheck: `${PREFIX}:visibilityForceCheck`,
   modalClose: `${PREFIX}:modalClose`,
-  mainLayoutMainSideScroll: `${PREFIX}:mainLayoutMainSideScroll`
+  mainLayoutMainSideScroll: `${PREFIX}:mainLayoutMainSideScroll`,
+  mainLayoutSetMainSideScroll: `${PREFIX}:mainLayoutSetMainSideScroll`
 };
