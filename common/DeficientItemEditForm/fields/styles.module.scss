@@ -77,7 +77,25 @@
     background-color: $alert-light-color !important;
   }
 
+  &--progressNote {
+    &::placeholder {
+      padding-top: rem-calc(10);
+      color: $primary-color;
+      text-align: center;
+    }
+    // Hide placeholder text on focus
+    &:focus::placeholder {
+      color: transparent;
+    }
+  }
+
   @include media-query(desktop) {
     max-width: rem-calc(300);
+
+    &--progressNote {
+      &::placeholder {
+        text-align: left;
+      }
+    }
   }
 }

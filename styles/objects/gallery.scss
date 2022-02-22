@@ -7,10 +7,10 @@
   list-style: none;
   padding: 0;
   margin: 0;
+}
 
-  &.-oneRow {
-    grid-template-rows: rem-calc(240);
-  }
+%gallery--oneRow {
+  grid-template-rows: rem-calc(240);
 }
 
 %galleryItem {

@@ -75,6 +75,12 @@ const HistoryItemDetails: FunctionComponent<Props> = ({
         <span data-testid="history-details">Data missing</span>
       );
       break;
+    case 'progressNotes':
+      return history.progressNote ? (
+        <span data-testid="history-details">{history.progressNote}</span>
+      ) : (
+        <span data-testid="history-details">Data missing</span>
+      );
     default:
       return <></>;
       break;

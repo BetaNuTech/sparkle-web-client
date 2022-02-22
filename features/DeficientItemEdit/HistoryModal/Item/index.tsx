@@ -7,7 +7,12 @@ import { getUserFullname } from '../../../../common/utils/user';
 
 import styles from './styles.module.scss';
 
-const richTextTypes = ['plansToFix', 'completeNowReasons', 'reasonsIncomplete'];
+const richTextTypes = [
+  'plansToFix',
+  'completeNowReasons',
+  'reasonsIncomplete',
+  'progressNotes'
+];
 
 interface Props {
   history: any;

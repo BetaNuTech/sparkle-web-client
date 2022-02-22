@@ -84,7 +84,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   // Determine to show/hide plan to fix section
   const showCurrentPlanToFixSection =
     deficientItem.state === 'closed'
-      ? Boolean(deficientItem.plansToFix)
+      ? Boolean(deficientItem.currentPlanToFix)
       : !isDeferred &&
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
@@ -106,14 +106,16 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
     (hasEditableProgressNotes || Boolean(deficientItem.progressNotes));
   // Determine to show/hide reason incomplete section
   const showReasonIncompleteSection =
-    REASON_INCOMPLETE_STATES.includes(deficientItem.state) &&
-    (Boolean(deficientItem.reasonsIncomplete) ||
-      REASON_INCOMPLETE_EDIT_STATES.includes(deficientItem.state));
+    deficientItem.state === 'closed'
+      ? Boolean(deficientItem.currentReasonIncomplete)
+      : REASON_INCOMPLETE_STATES.includes(deficientItem.state) &&
+        (Boolean(deficientItem.reasonsIncomplete) ||
+          REASON_INCOMPLETE_EDIT_STATES.includes(deficientItem.state));
 
   // Determine to show/hide due date section
   const showCurrentDueDateSection =
     deficientItem.state === 'closed'
-      ? Boolean(deficientItem.dueDates)
+      ? Boolean(deficientItem.currentDueDate)
       : !isDeferred &&
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;
@@ -125,7 +127,7 @@ const DeficientItemEditForm: FunctionComponent<Props> = ({
   // Determine to show/hide responsibility section
   const showResponsibilityGroupSection =
     deficientItem.state === 'closed'
-      ? Boolean(deficientItem.responsibilityGroups)
+      ? Boolean(deficientItem.currentResponsibilityGroup)
       : !isDeferred &&
         !isUpdatingDeferredDate &&
         !isUpdatingCurrentCompleteNowReason;

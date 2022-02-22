@@ -5,6 +5,7 @@
   display: flex;
   height: 100%;
   flex-direction: column;
+  max-width: rem-calc(500);
 
   &__main {
     padding: $global-padding $global-lg-padding 0;

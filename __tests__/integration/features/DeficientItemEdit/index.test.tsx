@@ -40,7 +40,9 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
-    const updatePendingAction = screen.queryByTestId('action-update-pending');
+    const updatePendingAction = screen.queryAllByTestId(
+      'action-update-pending'
+    )[0];
     expect(updatePendingAction).toBeTruthy();
 
     let actual = null;
@@ -78,7 +80,7 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
-    const action = screen.queryByTestId('action-update-incomplete');
+    const action = screen.queryAllByTestId('action-update-incomplete')[0];
     expect(action).toBeTruthy();
 
     let actual = null;
@@ -114,7 +116,7 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
-    const action = screen.queryByTestId('action-go-back');
+    const action = screen.queryAllByTestId('action-go-back')[0];
     expect(action).toBeTruthy();
 
     let actual = null;
@@ -150,7 +152,7 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
-    const action = screen.queryByTestId('action-duplicate');
+    const action = screen.queryAllByTestId('action-duplicate')[0];
     expect(action).toBeTruthy();
 
     let actual = null;
@@ -189,7 +191,9 @@ describe('Unit | features | Deficient Item Edit', () => {
     render(<DeficientItemEdit {...props} />);
 
     await act(async () => {
-      const completeNowAction = screen.queryByTestId('action-complete-now');
+      const completeNowAction = screen.queryAllByTestId(
+        'action-complete-now'
+      )[0];
       userEvent.click(completeNowAction);
       await wait(100);
     });
@@ -203,7 +207,7 @@ describe('Unit | features | Deficient Item Edit', () => {
       });
     });
 
-    const action = screen.queryByTestId('action-confirm-complete-now');
+    const action = screen.queryAllByTestId('action-confirm-complete-now')[0];
     expect(action).toBeTruthy();
     expect(action).toBeEnabled();
 
@@ -246,21 +250,21 @@ describe('Unit | features | Deficient Item Edit', () => {
     render(<DeficientItemEdit {...props} />);
 
     await act(async () => {
-      const deferAction = screen.queryByTestId('action-defer');
+      const deferAction = screen.queryAllByTestId('action-defer')[0];
       userEvent.click(deferAction);
       await wait(100);
     });
 
     act(() => {
-      const deferredDateInput = screen.queryByTestId(
+      const deferredDateInput = screen.queryAllByTestId(
         'item-deferred-date-input'
-      );
+      )[0];
       fireEvent.change(deferredDateInput, {
         target: { value: formatedDeferredDate }
       });
     });
 
-    const action = screen.queryByTestId('action-confirm-defer');
+    const action = screen.queryAllByTestId('action-confirm-defer')[0];
     expect(action).toBeTruthy();
 
     let actual = null;
