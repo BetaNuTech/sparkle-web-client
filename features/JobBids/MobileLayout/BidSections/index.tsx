@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, RefObject } from 'react';
 import jobModel from '../../../../common/models/job';
 import bidModel from '../../../../common/models/bid';
 import useBidSections from '../../hooks/useBidSections';
@@ -13,6 +13,7 @@ interface Props {
   configBids: Record<string, Record<string, string>>;
   searchParam?: string;
   forceVisible?: boolean;
+  scrollElementRef: RefObject<HTMLDivElement>;
 }
 
 const BidSections: FunctionComponent<Props> = ({
@@ -21,11 +22,16 @@ const BidSections: FunctionComponent<Props> = ({
   propertyId,
   colors,
   configBids,
-  forceVisible
+  forceVisible,
+  scrollElementRef
 }) => {
   const { sections } = useBidSections(bids, '');
   return (
-    <div className={styles.bidList__box} data-testid="bid-sections-main-mobile">
+    <div
+      className={styles.bidList__box}
+      data-testid="bid-sections-main-mobile"
+      ref={scrollElementRef}
+    >
       <ul className={styles.bidList__box__list}>
         {sections.map((s) => (
           <Section

@@ -7,7 +7,7 @@ const getScrollPosition = (sessionKey: string): number =>
 // set scroll position
 // for particular key
 const setItem = (sessionKey: string, scrollPosition: number): number => {
-  sessionStorage.setItem(sessionKey, scrollPosition.toString());
+  sessionStorage.setItem(sessionKey, (scrollPosition || 0).toString());
   return scrollPosition;
 };
 

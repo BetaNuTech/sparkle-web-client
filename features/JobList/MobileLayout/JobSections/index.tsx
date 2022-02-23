@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, RefObject } from 'react';
 import jobModel from '../../../../common/models/job';
 import Section from './Section';
 import useJobSections from '../../hooks/useJobSections';
@@ -11,6 +11,7 @@ interface Props {
   configJobs: Record<string, Record<string, string>>;
   searchParam?: string;
   forceVisible?: boolean;
+  scrollElementRef: RefObject<HTMLDivElement>;
 }
 
 const JobSections: FunctionComponent<Props> = ({
@@ -19,12 +20,17 @@ const JobSections: FunctionComponent<Props> = ({
   colors,
   configJobs,
   searchParam,
-  forceVisible
+  forceVisible,
+  scrollElementRef
 }) => {
   const { sections } = useJobSections(jobs, '');
 
   return (
-    <div className={styles.jobList__box} data-testid="job-sections-main-mobile">
+    <div
+      className={styles.jobList__box}
+      data-testid="job-sections-main-mobile"
+      ref={scrollElementRef}
+    >
       <ul className={styles.jobList__box__list}>
         {sections.map((s) => (
           <Section

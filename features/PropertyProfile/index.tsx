@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { useFirestore } from 'reactfire';
 import clsx from 'clsx';
@@ -33,6 +33,7 @@ import styles from './styles.module.scss';
 import propertyModel from '../../common/models/property';
 import templateCategoryModel from '../../common/models/templateCategory';
 import inspectionModel from '../../common/models/inspection';
+import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 
 interface Props {
   user: userModel;
@@ -89,6 +90,14 @@ const PropertyProfile: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
+  const scrollElementRef = useRef(null);
+
+  usePreserveScrollPosition(
+    `PropertyProfileScroll-${property.id}`,
+    scrollElementRef,
+    true
+  );
 
   // Queue and Delete Inspection
   const [isDeleteInspectionPromptVisible, setDeleteInspectionPromptVisible] =
@@ -161,7 +170,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
             isStaging={isStaging}
             actions={mobileHeaderActions}
           />
-          <div className={styles.propertyProfile}>
+          <div className={styles.propertyProfile} ref={scrollElementRef}>
             <Header
               canUserAccessJob={canUserAccessJob}
               property={property}
@@ -219,7 +228,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
 
       {/* Desktop Header & Content */}
       {isDesktop && (
-        <div className={styles.propertyProfile}>
+        <div className={styles.propertyProfile} ref={scrollElementRef}>
           <Header
             canUserAccessJob={canUserAccessJob}
             property={property}
