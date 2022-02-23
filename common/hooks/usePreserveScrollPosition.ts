@@ -53,7 +53,7 @@ export default function usePreserveScrollPosition(
   useEffect(() => {
     const scrollTopValue = scrollPosition.getScrollPosition(sessionKey);
     setTimeout(() => {
-      if (isCustomRef) {
+      if (isCustomRef && scrollElementRef && scrollElementRef.current) {
         scrollElementRef.current.scrollTop = scrollTopValue;
       } else {
         globalEvents.trigger('mainLayoutSetMainSideScroll', {

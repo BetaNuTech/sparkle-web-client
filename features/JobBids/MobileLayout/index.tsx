@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, RefObject } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
@@ -27,6 +27,7 @@ interface Props {
   configBids: Record<string, Record<string, string>>;
   forceVisible?: boolean;
   bidsRequired?: number;
+  scrollElementRef: RefObject<HTMLDivElement>;
 }
 
 // Mobile layout
@@ -41,7 +42,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   colors,
   configBids,
   forceVisible,
-  bidsRequired
+  bidsRequired,
+  scrollElementRef
 }) => {
   const newBidLink = `/properties/${propertyId}/jobs/${job.id}/bids/new`;
   const jobListLink = `/properties/${propertyId}/jobs/`;
@@ -235,6 +237,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         colors={colors}
         configBids={configBids}
         forceVisible={forceVisible}
+        scrollElementRef={scrollElementRef}
       />
     </>
   );

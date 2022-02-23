@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import useFilterState from '../../common/hooks/useFilterState';
 import configBids from '../../config/bids';
@@ -11,6 +11,7 @@ import useBidSorting from './hooks/useBidSorting';
 import MobileLayout from './MobileLayout';
 import Header from './Header';
 import Grid from './Grid';
+import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 
 interface Props {
   user: userModel;
@@ -66,6 +67,14 @@ const JobBids: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  const scrollElementRef = useRef();
+
+  usePreserveScrollPosition(
+    `BidScroll-${job.id}`,
+    scrollElementRef,
+    isMobileorTablet
+  );
+
   // Job sorting setup
   const { sortedBids, sortBy, sortDir, onSortChange } = useBidSorting(
     stateItems,
@@ -89,6 +98,7 @@ const JobBids: FunctionComponent<Props> = ({
           configBids={configBids}
           forceVisible={forceVisible}
           bidsRequired={bidsRequired}
+          scrollElementRef={scrollElementRef}
         />
       )}
 

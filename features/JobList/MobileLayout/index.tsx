@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, RefObject } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
@@ -24,6 +24,7 @@ interface Props {
   sortBy?: string;
   searchParam?: string;
   forceVisible?: boolean;
+  scrollElementRef: RefObject<HTMLDivElement>;
 }
 
 // Mobile layout
@@ -40,7 +41,8 @@ const MobileLayout: FunctionComponent<Props> = ({
   onSearchKeyDown,
   sortBy,
   searchParam,
-  forceVisible
+  forceVisible,
+  scrollElementRef
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -93,6 +95,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         configJobs={configJobs}
         searchParam={searchParam}
         forceVisible={forceVisible}
+        scrollElementRef={scrollElementRef}
       />
     </>
   );

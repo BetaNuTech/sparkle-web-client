@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import styles from './styles.module.scss';
 import userModel from '../../common/models/user';
@@ -12,6 +12,7 @@ import useJobSorting from './hooks/useJobSorting';
 import Header from './Header';
 import MobileLayout from './MobileLayout';
 import Grid from './Grid';
+import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 
 interface Props {
   user: userModel;
@@ -78,6 +79,14 @@ const JobList: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
+  const scrollElementRef = useRef();
+
+  usePreserveScrollPosition(
+    `PropertyJobsScroll-${property.id}`,
+    scrollElementRef,
+    isMobileorTablet
+  );
+
   return (
     <>
       {isMobileorTablet && (
@@ -95,6 +104,7 @@ const JobList: FunctionComponent<Props> = ({
           onSearchKeyDown={onSearchKeyDown}
           searchParam={searchParam}
           forceVisible={forceVisible}
+          scrollElementRef={scrollElementRef}
         />
       )}
 
