@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import clsx from 'clsx';
-import { FunctionComponent, MouseEvent } from 'react';
+import { FunctionComponent, memo, MouseEvent } from 'react';
 import inspectionTemplateItemLocalPhotoData from '../../models/inspections/templateItemUnpublishedPhotoData';
 import PhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
 
@@ -14,6 +14,8 @@ interface Props {
   onClickRemovePhoto(itemId: string): void;
   onClickImage(photoData: PhotoDataModel): void;
   onClickAddCaption(itemId: string): void;
+  onRender(string): void;
+  canRender: boolean;
 }
 
 const UnpublishedPhotoItem: FunctionComponent<Props> = ({
@@ -22,7 +24,9 @@ const UnpublishedPhotoItem: FunctionComponent<Props> = ({
   isProcessingPhotos,
   onClickRemovePhoto,
   onClickImage,
-  onClickAddCaption
+  onClickAddCaption,
+  onRender,
+  canRender
 }) => (
   <li
     className={clsx(
@@ -32,7 +36,7 @@ const UnpublishedPhotoItem: FunctionComponent<Props> = ({
     data-testid="photos-modal-unpublished-photo-list"
     onClick={onClick}
   >
-    {!isProcessingPhotos && (
+    {!isProcessingPhotos && canRender && (
       <button
         className={styles.remove}
         onClick={() => onClickRemovePhoto(photoData.id)}
@@ -42,7 +46,7 @@ const UnpublishedPhotoItem: FunctionComponent<Props> = ({
       </button>
     )}
     <div
-      className={parentStyles.image}
+      className={clsx(parentStyles.image, !canRender && styles.loading)}
       onClick={() =>
         !isProcessingPhotos &&
         onClickImage({
@@ -51,12 +55,19 @@ const UnpublishedPhotoItem: FunctionComponent<Props> = ({
         })
       }
     >
-      <img src={photoData.photoData} alt={photoData.caption} />
+      {canRender && (
+        <img
+          src={photoData?.photoData}
+          alt={photoData.caption}
+          onLoad={() => onRender(photoData.id)}
+          data-testid="photos-modal-unpublished-photo-list-image"
+        />
+      )}
       {photoData.caption && (
         <div className={parentStyles.image__caption}>{photoData.caption}</div>
       )}
     </div>
-    {!photoData.caption && !isProcessingPhotos && (
+    {!photoData.caption && !isProcessingPhotos && canRender && (
       <button
         className={styles.captionAction}
         onClick={() => onClickAddCaption(photoData.id)}
@@ -68,4 +79,4 @@ const UnpublishedPhotoItem: FunctionComponent<Props> = ({
   </li>
 );
 
-export default UnpublishedPhotoItem;
+export default memo(UnpublishedPhotoItem);

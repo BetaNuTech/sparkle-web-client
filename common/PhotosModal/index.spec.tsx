@@ -1,5 +1,11 @@
 import sinon from 'sinon';
-import { render, screen, act, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  act,
+  waitFor,
+  fireEvent
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import PhotosModal from './index';
 import {
@@ -96,6 +102,40 @@ describe('Common | Photos Modal', () => {
     const removeButton = screen.queryByTestId('photos-modal-photos-remove');
 
     expect(removeButton).toBeTruthy();
+  });
+
+  it('should render all unpublished photos one by one', () => {
+    const unpublishedPhotosData = [
+      { ...unpublishedPhotoDataEntry, id: 1 },
+
+      { ...unpublishedPhotoDataEntryNoCaption, id: 2 },
+      { ...unpublishedPhotoDataEntry, id: 3 }
+    ];
+
+    const onClose = sinon.spy();
+    const props = {
+      isVisible: true,
+      onClose,
+      title: 'One',
+      onChangeFiles: sinon.spy(),
+      photosData: [],
+      unpublishedPhotosData
+    };
+    render(<PhotosModal {...props} />);
+
+    let photosImageElement = screen.queryAllByTestId(
+      'photos-modal-unpublished-photo-list-image'
+    );
+
+    // eslint-disable-next-line
+    for (const i in unpublishedPhotosData) {
+      photosImageElement = screen.queryAllByTestId(
+        'photos-modal-unpublished-photo-list-image'
+      );
+      fireEvent.load(photosImageElement[i]);
+    }
+
+    expect(photosImageElement.length).toEqual(unpublishedPhotosData.length);
   });
 
   it('should request to remove a photo on remove button click', async () => {

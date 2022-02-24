@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import DeficientItemModel from '../../models/deficientItem';
 import deficientItemUtils from '../../utils/deficientItem';
 import deficientItemsApi from '../../services/api/deficientItems';
@@ -56,33 +56,12 @@ export default function useUpdateItem(
     isDeficientItemUpdated(previousUpdates || {})
   );
 
-  const [updates, setUpdates] = useState(
-    previousUpdates ? clone(previousUpdates || {}) : {}
-  );
-
+  const [updates, setUpdates] = useState({} as DeficientItemModel);
   const [progress, setProgress] = useState(0);
 
   //
   // Update Management
   //
-
-  // Set latest deficient item updates in memory
-  const applyLatestUpdates = (
-    latestUpdates: DeficientItemModel
-  ): DeficientItemModel => {
-    // Updated item has publishable state
-    setHasUpdates(isDeficientItemUpdated(latestUpdates));
-
-    // In memory save
-    objectHelper.replaceContent(updates, latestUpdates || {});
-    setUpdates({ ...updates });
-
-    // Local database save
-    if (!isBulkUpdate) {
-      persistUnpublishedUpdates(updates);
-    }
-    return latestUpdates;
-  };
 
   // Create, update, or remove a local
   // deficient item update record based on
@@ -109,6 +88,35 @@ export default function useUpdateItem(
       sendErrorReports([Error(`${PREFIX} persistUnpublishedUpdates: ${err}`)]);
     }
   };
+
+  // Set latest deficient item updates in memory
+  const applyLatestUpdates = (
+    latestUpdates: DeficientItemModel
+  ): DeficientItemModel => {
+    // Updated item has publishable state
+    setHasUpdates(isDeficientItemUpdated(latestUpdates));
+
+    // In memory save
+    objectHelper.replaceContent(updates, latestUpdates || {});
+    setUpdates({ ...updates });
+
+    // Local database save
+    if (!isBulkUpdate) {
+      persistUnpublishedUpdates(updates);
+    }
+    return latestUpdates;
+  };
+
+  // Apply local updates
+  // to global updates once
+  // NOTE: use effect fixes inconsistent
+  //       rendering issues with history
+  useEffect(() => {
+    if (previousUpdates) {
+      applyLatestUpdates(clone(previousUpdates || {}));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${previousUpdates}`]);
 
   const clearUpdates = () => {
     applyLatestUpdates({} as DeficientItemModel);

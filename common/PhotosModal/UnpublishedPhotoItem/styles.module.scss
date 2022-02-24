@@ -14,3 +14,10 @@
 .captionAction {
   @extend %tooltip;
 }
+
+.loading {
+  @extend %ani-loading;
+  &::before {
+    z-index: 1;
+  }
+}

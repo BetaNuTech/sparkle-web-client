@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import errorReports from '../../../common/services/api/errorReports';
 import inspectionTemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import unPublishedPhotoDataModel from '../../../common/models/inspections/templateItemUnpublishedPhotoData';
@@ -37,10 +37,6 @@ export default function useInspectionItemPhotos(
     unpublishedInspectionItemsPhotos,
     setUnpublishedInspectionItemsPhotos
   ] = useState(new Map());
-  const [
-    unpublishedSelectedInspectionItemsPhotos,
-    setUnpublishedSelectedInspectionItemsPhotos
-  ] = useState([]);
 
   const handleErrorResponse = (err) => {
     sendNotification(
@@ -101,12 +97,8 @@ export default function useInspectionItemPhotos(
     // Set all items' unpublished photos
     setUnpublishedInspectionItemsPhotos(photos);
 
-    // Set selected inspection item's unpublished photos
-    setUnpublishedSelectedInspectionItemsPhotos(
-      (selectedInspectionItem && photos.get(selectedInspectionItem.id)) || []
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedInspectionItem]);
+  }, [inspectionId]);
 
   const addUnpublishedInspectionPhotoCaption = async (
     unpublishedPhotoId: string,
@@ -135,11 +127,18 @@ export default function useInspectionItemPhotos(
   };
 
   // Request all photos on load
-  // and when selected item changes
   useEffect(() => {
     getUnpublishedInspectionPhotos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inspectionId, selectedInspectionItem]);
+  }, [inspectionId]);
+
+  const unpublishedSelectedInspectionItemsPhotos = useMemo(
+    () =>
+      (selectedInspectionItem &&
+        unpublishedInspectionItemsPhotos.get(selectedInspectionItem.id)) ||
+      [],
+    [selectedInspectionItem, unpublishedInspectionItemsPhotos]
+  );
 
   return {
     addUnpublishedInspectionItemPhoto,

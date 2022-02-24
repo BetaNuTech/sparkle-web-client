@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useStorage from '../../../common/hooks/useStorage';
 import inspectionTemplateUpdateModel from '../../../common/models/inspections/templateUpdate';
 import unpublishedTemplateUpdatesModel from '../../../common/models/inspections/unpublishedTemplateUpdate';
@@ -74,15 +74,39 @@ export default function useInspectionItemUpdate(
   const [hasUpdates, setHasUpdates] = useState(
     isInspectionTemplateUpdated(previousUpdates ? previousUpdates.template : {})
   );
-  const [updates, setUpdates] = useState(
-    previousUpdates ? clone(previousUpdates.template || {}) : {}
-  );
-
+  const [updates, setUpdates] = useState({} as inspectionTemplateUpdateModel);
   const [progress, setProgress] = useState(0);
 
   //
   // Update Management
   //
+
+  // Create, update, or remove a local
+  // template update record based on user's
+  // updates to the inspection
+  const persistUnpublishedTemplateUpdates = async (
+    data: inspectionTemplateUpdateModel
+  ) => {
+    const hasAnyUpdates = isInspectionTemplateUpdated(data);
+
+    try {
+      if (hasAnyUpdates) {
+        // Create or add local template updates record
+        await inspectionTemplateUpdates.upsertRecord(
+          propertyId,
+          inspectionId,
+          data
+        );
+      } else {
+        // Remove unneeded/empty local template updates record
+        await inspectionTemplateUpdates.deleteRecordForInspection(inspectionId);
+      }
+    } catch (err) {
+      sendErrorReports([
+        Error(`${PREFIX} persistUnpublishedTemplateUpdates: ${err}`)
+      ]);
+    }
+  };
 
   // Set latest inpsection updates
   // in memory and save them locally
@@ -113,32 +137,16 @@ export default function useInspectionItemUpdate(
     return updates;
   };
 
-  // Create, update, or remove a local
-  // template update record based on user's
-  // updates to the inspection
-  const persistUnpublishedTemplateUpdates = async (
-    data: inspectionTemplateUpdateModel
-  ) => {
-    const hasAnyUpdates = isInspectionTemplateUpdated(data);
-
-    try {
-      if (hasAnyUpdates) {
-        // Create or add local template updates record
-        await inspectionTemplateUpdates.upsertRecord(
-          propertyId,
-          inspectionId,
-          data
-        );
-      } else {
-        // Remove unneeded/empty local template updates record
-        await inspectionTemplateUpdates.deleteRecordForInspection(inspectionId);
-      }
-    } catch (err) {
-      sendErrorReports([
-        Error(`${PREFIX} persistUnpublishedTemplateUpdates: ${err}`)
-      ]);
+  // Apply local updates
+  // to global updates once
+  // NOTE: use effect fixes inconsistent
+  //       rendering issues with history
+  useEffect(() => {
+    if (previousUpdates) {
+      applyLatestUpdates(clone(previousUpdates.template || {}));
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${previousUpdates}`]);
 
   // Remove template updates from
   // memory and local database

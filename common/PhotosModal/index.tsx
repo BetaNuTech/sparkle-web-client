@@ -1,6 +1,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 import clsx from 'clsx';
-import { FunctionComponent, useState, MouseEvent, useCallback } from 'react';
+import {
+  FunctionComponent,
+  useState,
+  MouseEvent,
+  useCallback,
+  useEffect
+} from 'react';
 import { useDropzone, FileRejection, FileError } from 'react-dropzone';
 import photoDataModel from '../models/inspectionTemplateItemPhotoData';
 import unPublishedPhotoDataModel from '../models/inspections/templateItemUnpublishedPhotoData';
@@ -62,6 +68,17 @@ const PhotosModal: FunctionComponent<Props> = ({
 
   const hasExistingPhotos =
     photosDataItems.length > 0 || unpublishedPhotosData.length > 0;
+
+  const [renderedPhotos, setRenderedPhotos] = useState([]);
+  const [unrenderedPhotos, setUnrenderedPhotos] = useState([]);
+
+  useEffect(() => {
+    const unrenderedIds = unpublishedPhotosData
+      .map(({ id }) => id)
+      .filter((id) => !renderedPhotos.includes(id));
+    setUnrenderedPhotos([...unrenderedIds]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [`${unpublishedPhotosData}`, renderedPhotos.join()]);
 
   // Promise to read file data into url
   const fileToDataURI = (file: File): Promise<string> =>
@@ -241,6 +258,12 @@ const PhotosModal: FunctionComponent<Props> = ({
 
   const disableUpload = (isDragActive && disabled) || isProcessingPhotos;
 
+  // Add item to rendered photos
+  const onUnpublishedPhotoRender = (id: string) => {
+    renderedPhotos.push(id);
+    setRenderedPhotos([...renderedPhotos]);
+  };
+
   return (
     <div className={styles.photosModal} data-testid="photos-modal">
       <header
@@ -283,17 +306,25 @@ const PhotosModal: FunctionComponent<Props> = ({
           <input {...getInputProps()} />
           {hasExistingPhotos && (
             <ul className={styles.list} data-testid="photos-modal-photos">
-              {unpublishedPhotosData.map((item) => (
-                <UnpublishedPhotoItem
-                  key={item.id}
-                  photoData={item}
-                  onClick={onClickPhotoItem}
-                  isProcessingPhotos={isProcessingPhotos}
-                  onClickRemovePhoto={onClickRemovePhoto}
-                  onClickImage={onClickImage}
-                  onClickAddCaption={onClickAddCaption}
-                />
-              ))}
+              {unpublishedPhotosData.map((item) => {
+                const canRender =
+                  unrenderedPhotos[0] === item.id ||
+                  renderedPhotos.includes(item.id);
+
+                return (
+                  <UnpublishedPhotoItem
+                    key={item.id}
+                    photoData={item}
+                    onClick={onClickPhotoItem}
+                    isProcessingPhotos={isProcessingPhotos}
+                    onClickRemovePhoto={onClickRemovePhoto}
+                    onClickImage={onClickImage}
+                    onClickAddCaption={onClickAddCaption}
+                    onRender={onUnpublishedPhotoRender}
+                    canRender={canRender}
+                  />
+                );
+              })}
               {photosDataItems.map((item) => (
                 <PublishedPhotoItem
                   key={item.id}
