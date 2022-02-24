@@ -5,6 +5,7 @@
   flex-wrap: wrap;
   background-color: $white;
   border: rem-calc(1) solid $gray-lighter;
+  min-height: rem-calc(130);
 
   //Optional layout wrapper for the image/main elements
   &__wrapper {
