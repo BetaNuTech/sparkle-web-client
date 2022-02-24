@@ -7,6 +7,8 @@ interface template {
   properties?: Array<string>;
   sections?: any;
   items?: any;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export default template;

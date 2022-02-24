@@ -72,7 +72,7 @@ const Page: React.FC = (): ReactElement => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <JobBids
           user={user}

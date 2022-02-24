@@ -9,19 +9,23 @@ import styles from './styles.module.scss';
 import Logo from '../../public/icons/sparkle/logo.svg';
 import BusinessLogo from '../../public/icons/sparkle/bluestone-logo.svg';
 import CancelIcon from '../../public/icons/sparkle/cancel-simple.svg';
+import UserModel from '../models/user';
+import { canViewTemplates } from '../utils/userPermissions';
 
 interface Props {
   toggleNavOpen?(): void;
   isStaging?: boolean;
   isOnline?: boolean;
   appVersion?: string;
+  user: UserModel;
 }
 
 const SlideNav: FunctionComponent<Props> = ({
   toggleNavOpen,
   isStaging,
   isOnline,
-  appVersion
+  appVersion,
+  user
 }) => {
   const { userId, signOut } = useAuth();
   const offlineTheme = isOnline === false ? styles['slideNav--isOffline'] : '';
@@ -36,6 +40,8 @@ const SlideNav: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
+  const hasTemplateViewAccess = canViewTemplates(user);
 
   return (
     <nav className={clsx(styles.slideNav, containerTheme)}>
@@ -72,14 +78,19 @@ const SlideNav: FunctionComponent<Props> = ({
                 Properties
               </LinkFeature>
             </div>
-            <div className={styles.slideNav__links__link}>
-              <LinkFeature
-                featureEnabled={features.supportBetaTemplatesList}
-                href="/templates"
+            {hasTemplateViewAccess && (
+              <div
+                className={styles.slideNav__links__link}
+                data-testid="templates-link"
               >
-                Templates
-              </LinkFeature>
-            </div>
+                <LinkFeature
+                  featureEnabled={features.supportBetaTemplatesList}
+                  href="/templates"
+                >
+                  Templates
+                </LinkFeature>
+              </div>
+            )}
             <div className={styles.slideNav__links__link}>
               <LinkFeature
                 featureEnabled={features.supportBetaUsers}

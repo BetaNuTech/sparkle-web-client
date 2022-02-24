@@ -49,7 +49,7 @@ const Page: React.FC = (): ReactElement => {
     isLoaded = true;
   }
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <PropertyProfile
           user={user}

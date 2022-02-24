@@ -105,7 +105,7 @@ const Page: React.FC = (): ReactElement => {
   }, [finalInspectionId, isLoaded]);
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <PropertyUpdateInspection
           user={user}
