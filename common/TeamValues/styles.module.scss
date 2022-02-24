@@ -27,6 +27,10 @@
       margin-right: 0;
       background-color: $quaternary-color;
     }
+
+    @include media-query(desktop) {
+      padding: 0 rem-calc(5) 0;
+    }
   }
 
   &--narrow {
