@@ -84,7 +84,8 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
     unpublishedDeficiencyPhotos,
     addUnpublishedDeficiencyPhotoCaption,
     removedUnpubilshedDeficiencyPhoto,
-    clearUnpubilshedDeficiencyPhotos
+    clearUnpubilshedDeficiencyPhotos,
+    isLoading: isLoadingUnpublishedPhotos
   } = useUnpublishedDeficiencyPhotos(sendNotification, deficientItem.id);
 
   // Responsive queries
@@ -278,6 +279,10 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
         progressValue={publishProgress}
       />
     );
+  }
+
+  if (isLoadingUnpublishedPhotos) {
+    return <LoadingHud />;
   }
 
   return (

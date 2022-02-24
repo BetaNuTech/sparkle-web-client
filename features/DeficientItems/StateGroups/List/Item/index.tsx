@@ -152,6 +152,7 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
                       checked={
                         selectedDeficiencies.indexOf(deficientItem.id) > -1
                       }
+                      data-testid="item-checkbox"
                       className="-mr"
                       onChange={() =>
                         onSelectDeficiency(
