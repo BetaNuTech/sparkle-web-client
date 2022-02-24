@@ -8,6 +8,7 @@
 
   &__list {
     @extend %gallery;
+    cursor: pointer;
 
     &--oneRow {
       @extend %gallery--oneRow;

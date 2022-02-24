@@ -23,6 +23,7 @@ interface result {
     captionText: string
   ): void;
   clearUnpubilshedDeficiencyPhotos(): void;
+  isLoading: boolean;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -36,6 +37,7 @@ export default function useUnpublishedDeficiencyPhotos(
 ): result {
   const [unpublishedDeficiencyPhotos, setUnpublishedDeficiencyPhotos] =
     useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleErrorResponse = (err) => {
     sendNotification(
@@ -99,6 +101,14 @@ export default function useUnpublishedDeficiencyPhotos(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deficiencyId]);
 
+  // load unpublished photos
+  // and also set loading state
+  const loadUnpublishedDeficiencyPhotos = async () => {
+    setIsLoading(true);
+    await getUnpublishedDeficiencyPhotos();
+    setIsLoading(false);
+  };
+
   const addUnpublishedDeficiencyPhotoCaption = async (
     unpublishedPhotoId: string,
     captionText: string
@@ -139,7 +149,7 @@ export default function useUnpublishedDeficiencyPhotos(
 
   // Request all photos on load
   useEffect(() => {
-    getUnpublishedDeficiencyPhotos();
+    loadUnpublishedDeficiencyPhotos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deficiencyId]);
 
@@ -149,6 +159,7 @@ export default function useUnpublishedDeficiencyPhotos(
     removedUnpubilshedDeficiencyPhoto,
     unpublishedDeficiencyPhotos,
     addUnpublishedDeficiencyPhotoCaption,
-    clearUnpubilshedDeficiencyPhotos
+    clearUnpubilshedDeficiencyPhotos,
+    isLoading
   };
 }

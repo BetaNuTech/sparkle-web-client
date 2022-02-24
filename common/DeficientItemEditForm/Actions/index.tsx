@@ -89,13 +89,17 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
   const canComplete = canCompleteDeficientItem(user, deficientItem.property);
 
   const showCompletedAction =
-    deficientItem.state === 'pending' && canComplete && hasUnpublishedPhotos;
+    deficientItem.state === 'pending' &&
+    canComplete &&
+    hasUnpublishedPhotos &&
+    !isUpdatingDeferredDate;
 
   const showAddCompletionPhotos =
     deficientItem.state === 'pending' &&
     canComplete &&
     !hasUnpublishedPhotos &&
-    !isBulkUpdate;
+    !isBulkUpdate &&
+    !isUpdatingDeferredDate;
 
   const isDeferred = deficientItem.state === 'deferred';
 
@@ -111,7 +115,8 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
 
   const showUpdateToPendingActions =
     deficientItemPendingEligibleStates.includes(deficientItem.state) &&
-    !isUpdatingDeferredDate;
+    !isUpdatingDeferredDate &&
+    !isUpdatingCurrentCompleteNowReason;
 
   const isDisableUpdateToPending =
     !updates.currentPlanToFix &&
@@ -119,6 +124,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
     !updates.currentDueDate;
 
   const showUpdateAddProgressNoteAction =
+    !isUpdatingDeferredDate &&
     deficientItemProgressNoteEditStates.includes(deficientItem.state) &&
     (nextState ? nextState === 'add-progress-note' : true);
 
@@ -204,6 +210,134 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           </button>
         )}
 
+        {showGoBackAction && (
+          <button
+            className={clsx(
+              styles.action,
+              deficientItem.state === 'completed'
+                ? '-bgc-alert'
+                : '-bgc-primary'
+            )}
+            disabled={isDisabled}
+            data-testid="action-go-back"
+            onClick={onGoBack}
+          >
+            {isSaving ? (
+              <span className={styles.aniBlink}>Loading...</span>
+            ) : (
+              'Go Back'
+            )}
+          </button>
+        )}
+        {/* Transition to Closed (as duplicate) */}
+        {showDuplicateAction &&
+          (canClose ? (
+            <button
+              className={clsx(styles.action, '-bgc-gray-light')}
+              disabled={isDisabled}
+              data-testid="action-duplicate"
+              onClick={onCloseDuplicate}
+            >
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Close (Duplicate)'
+              )}
+            </button>
+          ) : (
+            <button
+              className={clsx(styles.action, '-bgc-gray-light')}
+              disabled={isDisabled}
+              data-testid="action-unpermitted-duplicate"
+              onClick={onUnpermittedDuplicate}
+            >
+              Close (Duplicate)
+            </button>
+          ))}
+        {/* Transition to Closed */}
+        {showCloseAction && (
+          <button
+            className={clsx(styles.action, '-bgc-success')}
+            disabled={isDisabled}
+            data-testid="action-close"
+            onClick={onClose}
+          >
+            {isSaving ? (
+              <span className={styles.aniBlink}>Loading...</span>
+            ) : (
+              'Close'
+            )}
+          </button>
+        )}
+
+        {/* Defer Now Action */}
+        {showDeferConfirmAction && isUpdatingDeferredDate && !nextState && (
+          <>
+            <button
+              className={clsx(styles.action, '-bgc-med-dark')}
+              disabled={isDisabled}
+              data-testid="action-cancel-defer"
+              onClick={onCancelDefer}
+            >
+              Cancel Defer
+            </button>
+            <button
+              className={clsx(
+                styles.action,
+                isDisabled || !updates.currentDeferredDate
+                  ? '-bgc-dark-gray'
+                  : '-bgc-orange'
+              )}
+              disabled={isDisabled || !updates.currentDeferredDate}
+              data-testid="action-confirm-defer"
+              onClick={onConfirmDefer}
+            >
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Complete Defer'
+              )}
+            </button>
+          </>
+        )}
+        {showDeferConfirmAction &&
+          isUpdatingDeferredDate &&
+          nextState === 'deferred' && (
+            <button
+              className={clsx(styles.action, '-bgc-orange')}
+              disabled={isDisabled || !updates.currentDeferredDate}
+              data-testid="action-complete-defer"
+              onClick={onConfirmDefer}
+            >
+              {isSaving ? (
+                <span className={styles.aniBlink}>Loading...</span>
+              ) : (
+                'Complete Defer'
+              )}
+            </button>
+          )}
+
+        {showDeferAction &&
+          (canDefer ? (
+            <button
+              className={clsx(styles.action, '-bgc-orange')}
+              disabled={isDisabled}
+              data-testid="action-defer"
+              onClick={onInitiateDefer}
+            >
+              Defer
+            </button>
+          ) : (
+            <button
+              className={clsx(styles.action, '-bgc-orange')}
+              disabled={isDisabled}
+              data-testid="action-unpermitted-defer"
+              onClick={onUnpermittedDefer}
+            >
+              Defer
+            </button>
+          ))}
+
         {showUpdateToPendingActions &&
           (isAbleToTransitionToPending ? (
             <button
@@ -280,66 +414,6 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
           </button>
         )}
 
-        {showGoBackAction && (
-          <button
-            className={clsx(
-              styles.action,
-              deficientItem.state === 'completed'
-                ? '-bgc-alert'
-                : '-bgc-primary'
-            )}
-            disabled={isDisabled}
-            data-testid="action-go-back"
-            onClick={onGoBack}
-          >
-            {isSaving ? (
-              <span className={styles.aniBlink}>Loading...</span>
-            ) : (
-              'Go Back'
-            )}
-          </button>
-        )}
-        {/* Transition to Closed (as duplicate) */}
-        {showDuplicateAction &&
-          (canClose ? (
-            <button
-              className={clsx(styles.action, '-bgc-gray-light')}
-              disabled={isDisabled}
-              data-testid="action-duplicate"
-              onClick={onCloseDuplicate}
-            >
-              {isSaving ? (
-                <span className={styles.aniBlink}>Loading...</span>
-              ) : (
-                'Close (Duplicate)'
-              )}
-            </button>
-          ) : (
-            <button
-              className={clsx(styles.action, '-bgc-gray-light')}
-              disabled={isDisabled}
-              data-testid="action-unpermitted-duplicate"
-              onClick={onUnpermittedDuplicate}
-            >
-              Close (Duplicate)
-            </button>
-          ))}
-        {/* Transition to Closed */}
-        {showCloseAction && (
-          <button
-            className={clsx(styles.action, '-bgc-success')}
-            disabled={isDisabled}
-            data-testid="action-close"
-            onClick={onClose}
-          >
-            {isSaving ? (
-              <span className={styles.aniBlink}>Loading...</span>
-            ) : (
-              'Close'
-            )}
-          </button>
-        )}
-
         {/* Complete Now Action */}
 
         {showCompleteNowAction &&
@@ -357,7 +431,7 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
                 className={clsx(
                   styles.action,
                   isDisabled || !updates.currentCompleteNowReason
-                    ? '-bgc-gray'
+                    ? '-bgc-dark-gray'
                     : '-bgc-primary-dark'
                 )}
                 disabled={isDisabled || !updates.currentCompleteNowReason}
@@ -375,74 +449,6 @@ const DeficientItemEditFormActions: FunctionComponent<Props> = ({
               onClick={onCompleteNow}
             >
               Complete Now
-            </button>
-          ))}
-
-        {/* Defer Now Action */}
-        {showDeferConfirmAction && isUpdatingDeferredDate && !nextState && (
-          <>
-            <button
-              className={clsx(styles.action, '-bgc-med-dark')}
-              disabled={isDisabled}
-              data-testid="action-cancel-defer"
-              onClick={onCancelDefer}
-            >
-              Cancel Defer
-            </button>
-            <button
-              className={clsx(
-                styles.action,
-                isDisabled || !updates.currentDeferredDate
-                  ? '-bgc-dark-gray'
-                  : '-bgc-orange'
-              )}
-              disabled={isDisabled || !updates.currentDeferredDate}
-              data-testid="action-confirm-defer"
-              onClick={onConfirmDefer}
-            >
-              {isSaving ? (
-                <span className={styles.aniBlink}>Loading...</span>
-              ) : (
-                'Complete Defer'
-              )}
-            </button>
-          </>
-        )}
-        {showDeferConfirmAction &&
-          isUpdatingDeferredDate &&
-          nextState === 'deferred' && (
-            <button
-              className={clsx(styles.action, '-bgc-orange')}
-              disabled={isDisabled || !updates.currentDeferredDate}
-              data-testid="action-complete-defer"
-              onClick={onConfirmDefer}
-            >
-              {isSaving ? (
-                <span className={styles.aniBlink}>Loading...</span>
-              ) : (
-                'Complete Defer'
-              )}
-            </button>
-          )}
-
-        {showDeferAction &&
-          (canDefer ? (
-            <button
-              className={clsx(styles.action, '-bgc-orange')}
-              disabled={isDisabled}
-              data-testid="action-defer"
-              onClick={onInitiateDefer}
-            >
-              Defer
-            </button>
-          ) : (
-            <button
-              className={clsx(styles.action, '-bgc-orange')}
-              disabled={isDisabled}
-              data-testid="action-unpermitted-defer"
-              onClick={onUnpermittedDefer}
-            >
-              Defer
             </button>
           ))}
       </div>

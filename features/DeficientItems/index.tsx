@@ -175,10 +175,12 @@ const DeficientItemsList: FunctionComponent<Props> = ({
     onCloseBulkUpdateModal();
   };
 
-  const onCloseDuplicate = () => {
+  const onCloseDuplicate = async () => {
     markAsDuplicate();
     updateState('closed');
-    publish();
+    await publish();
+    onClearGroupSelection(moveToStates.currentState);
+    onCloseBulkUpdateModal();
   };
 
   const onConfirmDefer = async () => {

@@ -40,6 +40,10 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
+    await act(async () => {
+      await wait(100);
+    });
+
     const updatePendingAction = screen.queryAllByTestId(
       'action-update-pending'
     )[0];
@@ -80,6 +84,9 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
+    await act(async () => {
+      await wait(100);
+    });
     const action = screen.queryAllByTestId('action-update-incomplete')[0];
     expect(action).toBeTruthy();
 
@@ -116,6 +123,9 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
+    await act(async () => {
+      await wait(100);
+    });
     const action = screen.queryAllByTestId('action-go-back')[0];
     expect(action).toBeTruthy();
 
@@ -152,6 +162,9 @@ describe('Unit | features | Deficient Item Edit', () => {
     };
     render(<DeficientItemEdit {...props} />);
 
+    await act(async () => {
+      await wait(100);
+    });
     const action = screen.queryAllByTestId('action-duplicate')[0];
     expect(action).toBeTruthy();
 
@@ -191,6 +204,7 @@ describe('Unit | features | Deficient Item Edit', () => {
     render(<DeficientItemEdit {...props} />);
 
     await act(async () => {
+      await wait(100);
       const completeNowAction = screen.queryAllByTestId(
         'action-complete-now'
       )[0];
@@ -250,6 +264,7 @@ describe('Unit | features | Deficient Item Edit', () => {
     render(<DeficientItemEdit {...props} />);
 
     await act(async () => {
+      await wait(100);
       const deferAction = screen.queryAllByTestId('action-defer')[0];
       userEvent.click(deferAction);
       await wait(100);

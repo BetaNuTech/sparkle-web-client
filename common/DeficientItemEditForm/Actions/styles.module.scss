@@ -29,7 +29,7 @@
   @extend %deficientItemSection--action;
 
   &:disabled {
-    opacity: 0.5;
+    opacity: 0.23;
   }
 
   @include media-query(desktop) {

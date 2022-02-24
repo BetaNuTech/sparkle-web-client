@@ -55,7 +55,7 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
         onClearSearch={onClearSearch}
       />
     )}
-    {deficientItemStateOrder.map((deficientItemState) => {
+    {deficientItemStateOrder.map((deficientItemState, index) => {
       const deficientItems =
         deficientItemsByState.get(deficientItemState) || [];
 
@@ -69,7 +69,11 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
       );
 
       return (
-        <div key={deficientItemState} className={styles.main}>
+        <div
+          key={deficientItemState}
+          className={styles.main}
+          style={{ zIndex: deficientItemStateOrder.length - index }}
+        >
           <Header
             state={deficientItemState}
             itemCount={deficientItems.length}

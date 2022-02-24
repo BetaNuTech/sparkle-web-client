@@ -76,6 +76,7 @@ const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
           type="checkbox"
           onChange={(evt) => onGroupSelection(state, evt)}
           checked={checked}
+          data-testid="header-checkbox"
         />
       )}
       <span>{title}</span> {/* NOTE: span removes cascading base form styles */}
