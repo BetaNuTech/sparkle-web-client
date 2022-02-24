@@ -13,12 +13,11 @@ const config = getConfig() || {};
 const publicRuntimeConfig = config.publicRuntimeConfig || {};
 const APP_VERSION = publicRuntimeConfig.appVersion || '';
 
-export const MainLayout = ({ children }) => {
+export const MainLayout = ({ user = {}, children }) => {
   const router = useRouter();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isOnline = useNavigatorOnline();
   const containerRef = useRef();
-
   // Open & close slide navigation
   const toggleNavOpen = () => setIsNavOpen(!isNavOpen);
 
@@ -106,6 +105,7 @@ export const MainLayout = ({ children }) => {
         isStaging={isStaging}
         toggleNavOpen={toggleNavOpen}
         appVersion={APP_VERSION}
+        user={user}
       />
       <main className={styles.mainSide} ref={containerRef}>
         {childrenWithProps}

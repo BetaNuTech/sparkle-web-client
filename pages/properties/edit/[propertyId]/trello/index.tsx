@@ -92,7 +92,7 @@ const Page: FunctionComponent = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <PropertyEditTrello
           property={property}

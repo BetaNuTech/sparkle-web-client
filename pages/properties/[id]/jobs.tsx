@@ -56,7 +56,7 @@ const Page: React.FC = (): ReactElement => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <JobList
           user={user}

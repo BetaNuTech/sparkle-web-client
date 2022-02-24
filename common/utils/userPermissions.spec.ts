@@ -1050,4 +1050,17 @@ describe('Unit | Common | Utils | User Permissions', () => {
     ];
     expect(actual).toEqual(expected);
   });
+
+  test('it should only allow admins, corporate users to view templates', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canCreateTrelloCard(admin),
+      util.canCreateTrelloCard(corporate),
+      util.canCreateTrelloCard(teamLead),
+      util.canCreateTrelloCard(propertyMember),
+      util.canCreateTrelloCard(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
 });

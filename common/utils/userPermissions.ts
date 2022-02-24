@@ -322,3 +322,7 @@ export const canCompleteDeficientItem = (
   propertyId: string
 ): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
+
+// Checks that the user have access to view template
+export const canViewTemplates = (user: userModel): boolean =>
+  user.admin || user.corporate;

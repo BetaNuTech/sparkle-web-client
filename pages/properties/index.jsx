@@ -38,7 +38,7 @@ export default function PropertiesPage() {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <Properties
           user={user}

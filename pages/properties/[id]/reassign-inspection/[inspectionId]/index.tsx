@@ -91,7 +91,7 @@ const Page: React.FC = (): ReactElement => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded && hasAssignableProperties ? (
         <ReasignInspection
           user={user}

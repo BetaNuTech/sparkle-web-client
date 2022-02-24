@@ -22,7 +22,7 @@ const Page: React.FC = (): ReactElement => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {user && <CreateInspection user={user} propertyId={propertyId} />}
     </MainLayout>
   );

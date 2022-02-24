@@ -59,7 +59,7 @@ const Page: FunctionComponent = () => {
   }
 
   return (
-    <MainLayout>
+    <MainLayout user={user}>
       {isLoaded ? (
         <Teams
           user={user}
