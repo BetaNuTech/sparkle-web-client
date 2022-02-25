@@ -23,17 +23,6 @@ export class InitDexie extends Dexie {
     super('sparkle-database');
     // each time we update or add table, we need to update version to upgrade database
     this.version(6).stores({
-<<<<<<< HEAD
-      inspectionItemPhotos: 'id, createdAt,inspection,item,property', // Primary key and indexed props
-
-      inspectionSignature: 'id, createdAt,inspection,item,property', // Primary key and indexed props
-
-      inspectionTemplateUpdates: 'id, inspection, property', // Primary key and indexed props
-
-      deficientItemUpdates: `id,createdAt, property, inspection, deficiency`, // Primary key and indexed props
-
-      deficientItemPhotos: `id, createdAt,property,deficiency,inspection, item` // Primary key and indexed props
-=======
       inspectionItemPhotos: 'id, createdAt, inspection, item, property', // Primary key and indexed props
 
       inspectionSignature: 'id, createdAt, inspection, item, property', // Primary key and indexed props
@@ -44,7 +33,6 @@ export class InitDexie extends Dexie {
 
       deficientItemPhotos:
         'id, createdAt, property, deficiency, inspection, item' // Primary key and indexed props
->>>>>>> 9ef84cae8bee0d9a286bdc13f2ed6a7606bdb4c0
     });
   }
 }
