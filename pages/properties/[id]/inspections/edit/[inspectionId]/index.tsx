@@ -12,8 +12,17 @@ import useNotifications from '../../../../../../common/hooks/useNotifications';
 import notifications from '../../../../../../common/services/notifications';
 // eslint-disable-next-line max-len
 import useUnpublishedTemplateUpdates from '../../../../../../features/PropertyUpdateInspection/hooks/useUnpublishedTemplateUpdates';
+<<<<<<< HEAD
+import initStorageManager from '../../../../../../common/utils/storageManager';
 
 const Page: React.FC = (): ReactElement => {
+  initStorageManager();
+=======
+import storageManager from '../../../../../../common/utils/storageManager';
+
+const Page: React.FC = (): ReactElement => {
+  storageManager.setupPersistentStorage();
+>>>>>>> 9ef84cae8bee0d9a286bdc13f2ed6a7606bdb4c0
   const firestore = useFirestore();
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());

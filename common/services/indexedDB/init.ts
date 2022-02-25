@@ -22,19 +22,29 @@ export class InitDexie extends Dexie {
   constructor() {
     super('sparkle-database');
     // each time we update or add table, we need to update version to upgrade database
-    this.version(5).stores({
-      inspectionItemPhotos:
-        'id, createdAt,caption,inspection,item,photoData,property,size', // Primary key and indexed props
-      inspectionSignature:
-        'id, createdAt,inspection,item,signature,property,size', // Primary key and indexed props
-      inspectionTemplateUpdates: 'id, inspection, property, template', // Primary key and indexed props
+    this.version(6).stores({
+<<<<<<< HEAD
+      inspectionItemPhotos: 'id, createdAt,inspection,item,property', // Primary key and indexed props
 
-      deficientItemUpdates: `id,createdAt, property, inspection, deficiency, state, currentDueDate, 
-        currentReasonIncomplete, currentDeferredDate, currentPlanToFix, 
-        currentCompleteNowReason, currentResponsibilityGroup, currentStartDate`, // Primary key and indexed props
+      inspectionSignature: 'id, createdAt,inspection,item,property', // Primary key and indexed props
 
-      deficientItemPhotos: `id, createdAt,caption,property,deficiency,inspection,
-        item,startDate,photoData,size` // Primary key and indexed props
+      inspectionTemplateUpdates: 'id, inspection, property', // Primary key and indexed props
+
+      deficientItemUpdates: `id,createdAt, property, inspection, deficiency`, // Primary key and indexed props
+
+      deficientItemPhotos: `id, createdAt,property,deficiency,inspection, item` // Primary key and indexed props
+=======
+      inspectionItemPhotos: 'id, createdAt, inspection, item, property', // Primary key and indexed props
+
+      inspectionSignature: 'id, createdAt, inspection, item, property', // Primary key and indexed props
+
+      inspectionTemplateUpdates: 'id, inspection, property', // Primary key and indexed props
+
+      deficientItemUpdates: 'id, createdAt, property, inspection, deficiency', // Primary key and indexed props
+
+      deficientItemPhotos:
+        'id, createdAt, property, deficiency, inspection, item' // Primary key and indexed props
+>>>>>>> 9ef84cae8bee0d9a286bdc13f2ed6a7606bdb4c0
     });
   }
 }

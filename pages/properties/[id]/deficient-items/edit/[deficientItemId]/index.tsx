@@ -13,8 +13,17 @@ import notifications from '../../../../../../common/services/notifications';
 import DeficientItemEdit from '../../../../../../features/DeficientItemEdit';
 // eslint-disable-next-line max-len
 import useUnpublishedDeficiencyUpdates from '../../../../../../features/DeficientItemEdit/hooks/useUnpublishedDeficiencyUpdates';
+<<<<<<< HEAD
+import initStorageManager from '../../../../../../common/utils/storageManager';
 
 const Page: React.FC = (): ReactElement => {
+  initStorageManager();
+=======
+import storageManager from '../../../../../../common/utils/storageManager';
+
+const Page: React.FC = (): ReactElement => {
+  storageManager.setupPersistentStorage();
+>>>>>>> 9ef84cae8bee0d9a286bdc13f2ed6a7606bdb4c0
   const firestore = useFirestore();
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
