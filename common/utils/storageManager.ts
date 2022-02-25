@@ -26,7 +26,7 @@ const isStoragePersistent = async (): Promise<boolean> => {
   return false;
 };
 
-const setupPersistentStorage = async (): void => {
+const setupPersistentStorage = async () => {
   if (requestedPersistentStorageThisSession) return;
   const isPersisted = await isStoragePersistent();
 
