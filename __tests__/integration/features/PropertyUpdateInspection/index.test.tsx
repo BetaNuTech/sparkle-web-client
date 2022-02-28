@@ -236,7 +236,8 @@ describe('Integration | Features | Property Update Inspection', () => {
     expect(localInspectionData.inspection).toBe(inspection.id);
   });
 
-  // TODO: correct failing assertion and re-enable
+  // eslint-disable-next-line max-len
+  // TODO : Need to fix
   // it('should delete local updates record when all changes are reverted', async () => {
   //   const inspection = deepClone(inspectionB) as inspectionModel;
   //   inspection.template = {

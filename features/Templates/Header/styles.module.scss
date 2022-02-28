@@ -1,0 +1,41 @@
+@import '../../../styles/index.scss';
+
+.sortInfoLine {
+  @extend %sortInfo;
+  justify-content: center;
+}
+
+.search {
+  @extend %mobileSearchInputMain;
+
+  &__input[type='search'] {
+    @extend %mobileSearchInput;
+  }
+
+  &__clear {
+    @extend %mobileSearchClear;
+  }
+}
+
+.actions {
+  text-align: right;
+  min-width: rem-calc(280);
+
+  &__button {
+    @extend %gridHeaderCreateButton;
+    display: inline-flex;
+    margin: 0 rem-calc(16) 0 0;
+
+    &--dark {
+      background-color: $primary-xdark-color;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
+
+.addIcon {
+  @extend %gridHeaderButtonIcon;
+}

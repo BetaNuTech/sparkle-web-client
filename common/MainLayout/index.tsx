@@ -1,5 +1,11 @@
 import clsx from 'clsx';
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  FunctionComponent,
+  ReactElement
+} from 'react';
 import { useRouter } from 'next/router';
 import getConfig from 'next/config';
 import styles from './styles.module.scss';
@@ -7,13 +13,22 @@ import SlideNav from '../SlideNav';
 import { useNavigatorOnline } from '../utils/getOnlineStatus';
 import globalEvents from '../utils/globalEvents';
 import debounce from '../utils/debounce';
+import UserModel from '../models/user';
 
 const isStaging = process.env.NEXT_PUBLIC_STAGING === 'true';
 const config = getConfig() || {};
 const publicRuntimeConfig = config.publicRuntimeConfig || {};
 const APP_VERSION = publicRuntimeConfig.appVersion || '';
 
-export const MainLayout = ({ user = {}, children }) => {
+interface Props {
+  user?: UserModel;
+  children: ReactElement | ReactElement[];
+}
+
+export const MainLayout: FunctionComponent<Props> = ({
+  user = {} as UserModel,
+  children
+}) => {
   const router = useRouter();
   const [isNavOpen, setIsNavOpen] = useState(false);
   const isOnline = useNavigatorOnline();
@@ -28,13 +43,15 @@ export const MainLayout = ({ user = {}, children }) => {
 
   // Expose main layout
   // values to children
-  const childrenWithProps = React.Children.map(filteredChildren, (child) =>
-    React.cloneElement(child, {
-      isNavOpen,
-      toggleNavOpen,
-      isOnline,
-      isStaging
-    })
+  const childrenWithProps = React.Children.map(
+    filteredChildren,
+    (child: ReactElement) =>
+      React.cloneElement(child, {
+        isNavOpen,
+        toggleNavOpen,
+        isOnline,
+        isStaging
+      })
   );
 
   useEffect(() => {
@@ -60,8 +77,9 @@ export const MainLayout = ({ user = {}, children }) => {
   // with scroll top value
   const onScroll = debounce(
     () => {
+      const element = containerRef.current as HTMLDivElement;
       globalEvents.trigger('mainLayoutMainSideScroll', {
-        scrollTop: containerRef?.current?.scrollTop
+        scrollTop: element?.scrollTop
       });
     },
     30,
@@ -70,7 +88,7 @@ export const MainLayout = ({ user = {}, children }) => {
 
   // event listner to listen scroll event
   useEffect(() => {
-    const element = containerRef.current;
+    const element = containerRef.current as HTMLDivElement;
     element?.addEventListener('scroll', onScroll);
     return () => element?.removeEventListener('scroll', onScroll);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,7 +96,8 @@ export const MainLayout = ({ user = {}, children }) => {
 
   // scroll top to the given value
   const setScrollPosition = (event) => {
-    containerRef.current.scrollTop = event?.detail?.scrollTop;
+    const element = containerRef.current as HTMLDivElement;
+    element.scrollTop = event?.detail?.scrollTop;
   };
 
   // event subscriber for main side scroll
@@ -100,7 +119,6 @@ export const MainLayout = ({ user = {}, children }) => {
       }
     >
       <SlideNav
-        isNavOpen={isNavOpen}
         isOnline={isOnline}
         isStaging={isStaging}
         toggleNavOpen={toggleNavOpen}
