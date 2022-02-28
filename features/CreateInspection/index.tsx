@@ -11,7 +11,7 @@ import useNotifications from '../../common/hooks/useNotifications'; // eslint-di
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import inspectionService from './services/inspection';
 import usePropertyTemplates from './hooks/usePropertyTemplates';
-import useCategorizedTemplates from './hooks/useCategorizedTemplates';
+import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
 import CategoryItem from './CategoryItem';
 import styles from './styles.module.scss';
 import features from '../../config/features';

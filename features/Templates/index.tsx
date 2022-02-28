@@ -1,19 +1,30 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 import TemplateModel from '../../common/models/template';
 import TemplateCategoryModel from '../../common/models/templateCategory';
+import UserModel from '../../common/models/user';
+import { canUpdateTemplate } from '../../common/utils/userPermissions';
 import breakpoints from '../../config/breakpoints';
 import Header from './Header';
+import TemplatesGroup from './Group';
+import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
 
 interface Props {
+  user: UserModel;
+  templates: TemplateModel[];
+  templateCategories: TemplateCategoryModel[];
+  forceVisible?: boolean;
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
-  templates: TemplateModel[];
-  templateCategories: TemplateCategoryModel[];
 }
 
 const Templates: FunctionComponent<Props> = ({
+  user,
+  templates,
+  templateCategories,
+  forceVisible,
   isOnline,
   isStaging,
   toggleNavOpen
@@ -26,6 +37,18 @@ const Templates: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
+  const scrollElementRef = useRef();
+
+  usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
+
+  const { categories: categorizedTemplate } = useCategorizedTemplates(
+    templateCategories,
+    templates
+  );
+
+  const canEdit = canUpdateTemplate(user);
+
   return (
     <>
       <Header
@@ -34,6 +57,12 @@ const Templates: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isDesktop={isDesktop}
         toggleNavOpen={toggleNavOpen}
+      />
+      <TemplatesGroup
+        categorizedTemplate={categorizedTemplate}
+        canEdit={canEdit}
+        forceVisible={forceVisible}
+        scrollElementRef={scrollElementRef}
       />
     </>
   );

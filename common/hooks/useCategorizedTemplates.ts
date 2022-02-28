@@ -1,12 +1,10 @@
-import { useEffect, useState } from 'react';
-import categoryModel from '../models/category';
-import templateModel from '../../../common/models/template';
-import templateCategoryModel from '../../../common/models/templateCategory';
+import CategorizedTemplates from '../models/templates/categorizedTemplates';
+import templateModel from '../models/template';
+import templateCategoryModel from '../models/templateCategory';
 
-interface useCategorizedTemplateResult {
-  memo: string;
+interface Result {
   handlers: any;
-  categories: Array<categoryModel>;
+  categories: CategorizedTemplates[];
 }
 
 // Actions
@@ -14,29 +12,14 @@ const handlers = {};
 
 // Hooks for loading all templates for a property
 export default function useCategorizedTemplates(
-  templateCategories: Array<templateCategoryModel>,
-  templates: Array<templateModel>
-): useCategorizedTemplateResult {
-  const [memo, setMemo] = useState('[]');
-
+  templateCategories: templateCategoryModel[],
+  templates: templateModel[]
+): Result {
   // No templates payload
   const payload = {
-    categories: <categoryModel[]>[],
-    handlers,
-    memo
+    categories: <CategorizedTemplates[]>[],
+    handlers
   };
-
-  // Notify of updates
-  // by updating memo
-  /* eslint-disable */
-  useEffect(() => {
-    /* eslint-enable */
-    const updated = JSON.stringify(payload.categories);
-
-    if (memo !== updated) {
-      setMemo(updated);
-    }
-  });
 
   // If we do not have templates
   if (templates.length === 0) {

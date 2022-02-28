@@ -41,7 +41,7 @@ describe('Unit | features | Deficient Item Edit', () => {
     render(<DeficientItemEdit {...props} />);
 
     await act(async () => {
-      await wait(100);
+      await wait(200);
     });
 
     const updatePendingAction = screen.queryAllByTestId(

@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react';
-import CategoryModel from '../../../CreateInspection/models/category';
+import CategorizedTemplates from '../../../../common/models/templates/categorizedTemplates';
 import ListItem from './ListItem/index';
 import styles from '../styles.module.scss';
 
 interface Props {
-  category: CategoryModel;
-  selectedTemplates: Array<string>;
+  category: CategorizedTemplates;
+  selectedTemplates: string[];
   updateTempatesList: (string) => void;
 }
 

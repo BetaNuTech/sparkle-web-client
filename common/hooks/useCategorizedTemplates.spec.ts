@@ -1,22 +1,19 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import mockTemplateCategories from '../../../__mocks__/templateCategories';
-import mockTemplates, {
-  templateB,
-  templateE
-} from '../../../__mocks__/templates';
-import categoryModel from '../models/category';
-import templateModel from '../../../common/models/template';
+import mockTemplateCategories from '../../__mocks__/templateCategories';
+import mockTemplates, { templateB, templateE } from '../../__mocks__/templates';
+import CategorizedTemplates from '../models/templates/categorizedTemplates';
+import templateModel from '../models/template';
 import useCategorizedTemplates from './useCategorizedTemplates';
 
 // Compare array map by value as string
-const toCompare = (arr: Array<categoryModel>, attr = 'name'): string =>
+const toCompare = (arr: CategorizedTemplates[], attr = 'name'): string =>
   arr
     .map((obj) => obj[attr])
     .join(' | ')
     .toLowerCase();
 
-const toCompareTemplate = (arr: Array<templateModel>, attr = 'name'): string =>
+const toCompareTemplate = (arr: templateModel[], attr = 'name'): string =>
   arr
     .map((obj) => obj[attr])
     .join(' | ')

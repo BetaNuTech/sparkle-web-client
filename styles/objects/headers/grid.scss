@@ -157,7 +157,13 @@
 
       // Animated
       opacity: 1;
-      transform: translate(-50%, 0%);
+      right: rem-calc(10);
+
+      @include media-query(desktop) {
+        right: auto;
+        left: 50%;
+        transform: translate(-50%, 0%);
+      }
     }
   }
 }
