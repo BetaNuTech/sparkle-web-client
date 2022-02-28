@@ -326,3 +326,7 @@ export const canCompleteDeficientItem = (
 // Checks that the user have access to view template
 export const canViewTemplates = (user: userModel): boolean =>
   user.admin || user.corporate;
+
+// Checks that the user have access to update template
+export const canUpdateTemplate = (user: userModel): boolean =>
+  user.admin || user.corporate;

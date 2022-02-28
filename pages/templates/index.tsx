@@ -56,6 +56,7 @@ const Page: React.FC = (): ReactElement => {
         <Templates
           templates={templates}
           templateCategories={templateCategories}
+          user={user}
         />
       ) : (
         <LoadingHud />

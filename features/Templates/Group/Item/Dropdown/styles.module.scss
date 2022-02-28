@@ -1,0 +1,28 @@
+@import '../../../../../styles/index.scss';
+
+.container {
+  @extend %gridHeaderCreateButton--dropdown;
+  display: flex;
+  align-items: center;
+  padding: 0 $global-padding;
+  cursor: pointer;
+  position: relative;
+  height: 100%;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+
+  // Dropdown icon
+  > svg {
+    max-width: rem-calc(22);
+    max-height: rem-calc(22);
+  }
+}
+
+.item {
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

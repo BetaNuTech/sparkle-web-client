@@ -34,6 +34,7 @@ import PropertyUpdateInspection from '../../../../features/PropertyUpdateInspect
 import breakpoints from '../../../../config/breakpoints';
 import firebaseConfig from '../../../../config/firebase';
 import inspectionsApi from '../../../../common/services/api/inspections';
+import errorReports from '../../../../common/services/api/errorReports';
 import propertyModel from '../../../../common/models/property';
 import inspectionModel from '../../../../common/models/inspection';
 import inspectionTemplateModel from '../../../../common/models/inspectionTemplate';
@@ -174,6 +175,10 @@ describe('Integration | Features | Property Update Inspection', () => {
 
     render(<PropertyUpdateInspection {...props} />);
 
+    await act(async () => {
+      await wait(); // for state transitions
+    });
+
     // Open item photo modal
     act(() => {
       const attachmentButton = screen.queryByTestId('attachment-photo');
@@ -235,85 +240,6 @@ describe('Integration | Features | Property Update Inspection', () => {
 
     expect(localInspectionData.inspection).toBe(inspection.id);
   });
-
-  // eslint-disable-next-line max-len
-  // TODO : Need to fix
-  // it('should delete local updates record when all changes are reverted', async () => {
-  //   const inspection = deepClone(inspectionB) as inspectionModel;
-  //   inspection.template = {
-  //     items: {
-  //       [unselectedThumbsItem.id]: deepClone(
-  //         unselectedThumbsItem
-  //       ) as inspectionTemplateItemModel,
-  //       [emptyTextInputItem.id]: {
-  //         ...deepClone(emptyTextInputItem),
-  //         sectionId: originalMultiSection.id
-  //       } as inspectionTemplateItemModel
-  //     },
-  //     sections: {
-  //       [singleSection.id]: deepClone(
-  //         singleSection
-  //       ) as inspectionTemplateSectionModel,
-  //       [originalMultiSection.id]: deepClone(
-  //         originalMultiSection
-  //       ) as inspectionTemplateSectionModel
-  //     }
-  //   } as inspectionTemplateModel;
-
-  //   inspection.inspector = user.id; // make editable
-  //   const props = {
-  //     isOnline: true,
-  //     user,
-  //     property: deepClone(fullProperty) as propertyModel,
-  //     inspection,
-  //     unpublishedTemplateUpdates: {} as inspectionTemplateUpdateModel,
-  //     forceVisible: FORCE_VISIBLE
-  //   };
-  //   render(<PropertyUpdateInspection {...props} />);
-
-  //   // change main input selection
-  //   act(() => {
-  //     const thumbButton = screen.getByTestId('control-thumbs-up');
-  //     userEvent.click(thumbButton);
-  //   });
-
-  //   // add multi-section section
-  //   await act(async () => {
-  //     const addSectionButton = screen.getByTestId(
-  //       'section-list-item-add-section'
-  //     );
-  //     userEvent.click(addSectionButton);
-  //     await wait(); // for state transitions
-  //   });
-
-  //   let localInspectionData = await inspectionTemplateUpdates.queryRecord({
-  //     inspection: inspection.id
-  //   });
-
-  //   TODO: Failing assertion
-  //   expect(localInspectionData.inspection).toBe(inspection.id);
-
-  //   // revert changes in main input selection
-  //   act(() => {
-  //     const thumbButton = screen.getByTestId('control-thumbs-up');
-  //     userEvent.click(thumbButton);
-  //   });
-
-  //   // remove previously added multi-section section
-  //   await act(async () => {
-  //     const removeSectionButton = screen.getByTestId(
-  //       'section-list-item-remove-section'
-  //     );
-  //     userEvent.click(removeSectionButton);
-  //     await wait(); // for state transitions
-  //   });
-
-  //   localInspectionData = await inspectionTemplateUpdates.queryRecord({
-  //     inspection: inspection.id
-  //   });
-
-  //   expect(localInspectionData).toBeUndefined();
-  // });
 
   it('should allow publishing when only uploading a signature', async () => {
     // Return unpublished signature data for inspection
@@ -483,6 +409,7 @@ describe('Integration | Features | Property Update Inspection', () => {
 
     // Select deficient answer to item
     await act(async () => {
+      await wait(); // for state transitions
       const checkmarkCancelButton = screen.getByTestId('control-cancel');
       userEvent.click(checkmarkCancelButton);
       await wait(); // for state transitions
@@ -558,6 +485,7 @@ describe('Integration | Features | Property Update Inspection', () => {
 
     // Change main input selection (satisfactory answer)
     await act(async () => {
+      await wait(); // for state transitions
       const thumbButton = screen.getByTestId('control-thumbs-up');
       userEvent.click(thumbButton);
       await wait(); // for state transitions
@@ -635,6 +563,8 @@ describe('Integration | Features | Property Update Inspection', () => {
       }
     } as inspectionTemplateModel;
 
+    sinon.stub(errorReports, 'send').resolves();
+
     inspection.inspector = user.id; // make editable
     const props = {
       isOnline: true,
@@ -661,7 +591,7 @@ describe('Integration | Features | Property Update Inspection', () => {
       userEvent.click(controlCheckmarkButton);
       userEvent.click(controlIconA);
       userEvent.click(controlIcon4);
-      await wait(); // for state transitions
+      await wait(300); // for state transitions
     });
 
     // Add satisfactory answer to text input
@@ -718,7 +648,7 @@ describe('Integration | Features | Property Update Inspection', () => {
       userEvent.click(controlCheckmarkButton);
       userEvent.click(checkmarkButton);
       userEvent.click(thumbButton);
-      await wait(); // for state transitions
+      await wait(300); // for state transitions
     });
 
     // remove answer to text input

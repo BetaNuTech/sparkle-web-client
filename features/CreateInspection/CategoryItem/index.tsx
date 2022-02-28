@@ -1,11 +1,11 @@
 import { FunctionComponent } from 'react';
 import templateModel from '../../../common/models/template';
-import CategoryModel from '../models/category';
+import CategorizedTemplates from '../../../common/models/templates/categorizedTemplates';
 import ListItem from './ListItem';
 import styles from '../styles.module.scss';
 
 interface Props {
-  category: CategoryModel;
+  category: CategorizedTemplates;
   createInspection: (template: templateModel) => Promise<void>;
 }
 

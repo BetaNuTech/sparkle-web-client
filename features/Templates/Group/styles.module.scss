@@ -1,0 +1,26 @@
+@import '../../../styles/index.scss';
+
+.container {
+  padding: 0;
+  overflow-y: auto;
+
+  @include media-query(desktop) {
+    padding: $global-lg-padding $global-padding $global-padding;
+    overflow: visible;
+  }
+}
+
+.group {
+  @extend %gridTableSection;
+}
+
+.heading {
+  @extend %gridTableSectionTitle;
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  padding: $global-padding $global-lg-padding;
+  text-align: center;
+  font-weight: normal;
+  font-size: rem-calc(22);
+}

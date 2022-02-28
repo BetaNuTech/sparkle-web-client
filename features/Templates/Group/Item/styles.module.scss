@@ -1,0 +1,30 @@
+@import '../../../../styles/index.scss';
+
+.item {
+  @extend %gridTableRow;
+  justify-content: space-between;
+  padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
+  min-height: rem-calc(63);
+
+  @include media-query(desktop) {
+    border-right-width: rem-calc(1);
+    border-left-width: rem-calc(1);
+  }
+}
+
+.column {
+  flex: 0 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+
+  &:first-child {
+    flex: 1;
+  }
+}
+
+.description {
+  margin: 0;
+  font-size: rem-calc(14);
+  color: $gray-dark;
+}

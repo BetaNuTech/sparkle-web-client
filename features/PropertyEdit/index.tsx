@@ -3,7 +3,7 @@ import { useMediaQuery } from 'react-responsive';
 import Router from 'next/router';
 import { useFirestore } from 'reactfire';
 import useSearching from '../../common/hooks/useSearching';
-import useCategorizedTemplates from '../CreateInspection/hooks/useCategorizedTemplates';
+
 import usePropertyForm from './hooks/usePropertyForm';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
@@ -22,6 +22,7 @@ import propertyModel from '../../common/models/property';
 import teamModel from '../../common/models/team';
 import DeletePropertyPrompt from '../../common/prompts/DeletePropertyPrompt';
 import useDeleteProperty from '../../common/hooks/useDeleteProperty';
+import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
 
 interface Props {
   isNavOpen?: boolean;

@@ -6,8 +6,8 @@ $dropdown-carrot-size: rem-calc(5);
   position: absolute;
   visibility: hidden;
   top: 100%;
-  left: 50%;
-  transform: translate(-50%, -8%);
+  right: 0;
+  transform: none;
   height: 0;
   opacity: 0;
   list-style: none;
@@ -20,6 +20,12 @@ $dropdown-carrot-size: rem-calc(5);
   box-shadow: 0 rem-calc(3) rem-calc(8) rgba(0, 0, 0, 0.4);
   transition: opacity 120ms ease-in, transform 300ms ease-in-out;
 
+  @include media-query(desktop) {
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, -8%);
+  }
+
   // Arrow-up
   &::after {
     content: '';
@@ -29,10 +35,15 @@ $dropdown-carrot-size: rem-calc(5);
     height: 0;
     margin: 0 auto;
     top: -1 * $dropdown-carrot-size;
-    left: calc(50% - #{$dropdown-carrot-size});
+    right: $dropdown-carrot-size * 2;
     border-left: $dropdown-carrot-size solid transparent;
     border-right: $dropdown-carrot-size solid transparent;
     border-bottom: $dropdown-carrot-size solid $white;
+
+    @include media-query(desktop) {
+      right: auto;
+      left: calc(50% - #{$dropdown-carrot-size});
+    }
   }
 
   &__item {

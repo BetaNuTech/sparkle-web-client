@@ -1055,11 +1055,24 @@ describe('Unit | Common | Utils | User Permissions', () => {
     const expected = [true, true, true, false, false];
 
     const actual = [
-      util.canCreateTrelloCard(admin),
-      util.canCreateTrelloCard(corporate),
-      util.canCreateTrelloCard(teamLead),
-      util.canCreateTrelloCard(propertyMember),
-      util.canCreateTrelloCard(noAccess)
+      util.canViewTemplates(admin),
+      util.canViewTemplates(corporate),
+      util.canViewTemplates(teamLead),
+      util.canViewTemplates(propertyMember),
+      util.canViewTemplates(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users to update templates', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canUpdateTemplate(admin),
+      util.canUpdateTemplate(corporate),
+      util.canUpdateTemplate(teamLead),
+      util.canUpdateTemplate(propertyMember),
+      util.canUpdateTemplate(noAccess)
     ];
     expect(actual).toEqual(expected);
   });
