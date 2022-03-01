@@ -1,0 +1,49 @@
+@import '../../../../styles/index.scss';
+
+.field {
+  position: relative;
+
+  &__input[type='text'] {
+    background-color: $gray;
+    border-color: $gray-light-4;
+    border-radius: $global-radius;
+    padding-left: $global-sm-padding;
+    padding-right: rem-calc(55);
+    margin: 0;
+
+    &::placeholder {
+      color: $info-color;
+    }
+    // Hide placeholder text on focus
+    &:focus::placeholder {
+      color: transparent;
+    }
+  }
+
+  &__action {
+    @extend .button;
+    @extend .success;
+    position: absolute;
+    right: rem-calc(4);
+    top: rem-calc(4);
+    margin: 0;
+    padding: rem-calc(4) $global-sm-padding;
+    font-size: rem-calc(14);
+  }
+}
+
+.row {
+  @extend %gridTableRow;
+  padding: $global-md-padding 0;
+  min-height: 0;
+
+  &__column {
+    flex: 0 1 auto;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    &:first-child {
+      flex: 1;
+    }
+  }
+}

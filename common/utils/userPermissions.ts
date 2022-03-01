@@ -328,5 +328,24 @@ export const canViewTemplates = (user: userModel): boolean =>
   user.admin || user.corporate;
 
 // Checks that the user have access to update template
+export const canCreateTemplate = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks that the user have access to update template
 export const canUpdateTemplate = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks that the user have access to delete template
+export const canDeleteTemplate = (user: userModel): boolean => user.admin;
+
+// Checks that the user have access to create template category
+export const canCreateTemplateCategory = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks that the user have access to update template category
+export const canUpdateTemplateCategory = (user: userModel): boolean =>
+  user.admin || user.corporate;
+
+// Checks that the user have access to delete template category
+export const canDeleteTemplateCategory = (user: userModel): boolean =>
   user.admin || user.corporate;

@@ -13,26 +13,33 @@ interface Props {
   isDesktop: boolean;
   isMobile: boolean;
   toggleNavOpen?(): void;
+  onManageCategory(): void;
+  canManageCategories: boolean;
 }
 
 const Header: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   isMobile,
-  toggleNavOpen
+  toggleNavOpen,
+  onManageCategory,
+  canManageCategories
 }) => {
   // Desktop Header actions buttons
   const DesktopActions = () => (
     <div className={styles.actions}>
-      <button
-        type="button"
-        className={clsx(
-          styles.actions__button,
-          styles['actions__button--dark']
-        )}
-      >
-        Manage Categories
-      </button>
+      {canManageCategories && (
+        <button
+          type="button"
+          className={clsx(
+            styles.actions__button,
+            styles['actions__button--dark']
+          )}
+          onClick={onManageCategory}
+        >
+          Manage Categories
+        </button>
+      )}
 
       <button type="button" className={styles.actions__button}>
         Add Template
@@ -46,9 +53,11 @@ const Header: FunctionComponent<Props> = ({
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={headStyle.header__button}>
-        <CategoryIcon />
-      </button>
+      {canManageCategories && (
+        <button className={headStyle.header__button} onClick={onManageCategory}>
+          <CategoryIcon />
+        </button>
+      )}
       <button className={headStyle.header__button}>
         <AddIcon />
       </button>
