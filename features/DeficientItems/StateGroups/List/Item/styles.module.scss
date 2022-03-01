@@ -3,10 +3,14 @@
 .container {
   display: block;
   border-bottom: 1px solid $gray-lighter;
-  min-height: rem-calc(81);
+  min-height: rem-calc(84);
+
+  &--withSubTitle {
+    min-height: rem-calc(102);
+  }
 
   @include media-query(desktop) {
-    min-height: rem-calc(91);
+    min-height: rem-calc(92);
   }
 }
 

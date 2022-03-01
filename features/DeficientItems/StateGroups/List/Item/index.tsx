@@ -73,6 +73,8 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
     (deficientItem.currentDeferredDate && deferredDate) ||
     (deficientItem.currentDueDate ? dueDate : 'Due: Not Set');
 
+  const hasSectionSubTitle = Boolean(deficientItem.sectionSubtitle);
+
   const onClickItem = () => {
     if (features.supportBetaDeficientItemEdit) {
       Router.push(
@@ -84,7 +86,13 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
   };
 
   return (
-    <li ref={placeholderRef} className={styles.container}>
+    <li
+      ref={placeholderRef}
+      className={clsx(
+        styles.container,
+        hasSectionSubTitle && isMobile && styles['container--withSubTitle']
+      )}
+    >
       {isVisible && (
         <div className={styles.main} onClick={onClickItem}>
           <div
@@ -173,14 +181,14 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
                 data-testid="section-title"
               >
                 {deficientItem.sectionTitle}
-                {deficientItem.sectionSubtitle && !isMobile && (
+                {hasSectionSubTitle && !isMobile && (
                   <span data-testid="section-sub-title">
                     {' '}
                     / {deficientItem.sectionSubtitle}
                   </span>
                 )}
               </span>
-              {deficientItem.sectionSubtitle && isMobile && (
+              {hasSectionSubTitle && isMobile && (
                 <span
                   className={clsx(
                     styles.title,
