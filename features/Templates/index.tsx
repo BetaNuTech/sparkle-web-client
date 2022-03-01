@@ -1,14 +1,23 @@
-import { FunctionComponent, useRef } from 'react';
+import { FunctionComponent, useState, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 import TemplateModel from '../../common/models/template';
 import TemplateCategoryModel from '../../common/models/templateCategory';
 import UserModel from '../../common/models/user';
-import { canUpdateTemplate } from '../../common/utils/userPermissions';
+import {
+  canCreateTemplate,
+  canCreateTemplateCategory,
+  canDeleteTemplate,
+  canDeleteTemplateCategory,
+  canUpdateTemplate,
+  canUpdateTemplateCategory
+} from '../../common/utils/userPermissions';
 import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import TemplatesGroup from './Group';
 import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
+import ManageCategoriesModal from './ManageCategoriesModal';
+import { uuid } from '../../common/utils/uuidv4';
 
 interface Props {
   user: UserModel;
@@ -29,6 +38,9 @@ const Templates: FunctionComponent<Props> = ({
   isStaging,
   toggleNavOpen
 }) => {
+  const [isVisibleCategoryModal, setIsVisibleCategoryModal] = useState(false);
+  const [unpublishedCategories, setUnpublishedCategories] = useState([]);
+
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -39,7 +51,6 @@ const Templates: FunctionComponent<Props> = ({
   });
 
   const scrollElementRef = useRef();
-
   usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
 
   const { categories: categorizedTemplate } = useCategorizedTemplates(
@@ -47,7 +58,29 @@ const Templates: FunctionComponent<Props> = ({
     templates
   );
 
+  const onCreateNewCategory = () => {
+    setUnpublishedCategories([
+      ...unpublishedCategories,
+      { id: uuid(), name: '' }
+    ]);
+  };
+
+  const onCloseCategoriesModal = () => {
+    setIsVisibleCategoryModal(false);
+    setUnpublishedCategories([]);
+  };
+
+  // Template permissions check
   const canEdit = canUpdateTemplate(user);
+  const canCreate = canCreateTemplate(user);
+  const canDelete = canDeleteTemplate(user);
+
+  // Categories permissions checks
+  const canCreateCategory = canCreateTemplateCategory(user);
+  const canUpdateCategory = canUpdateTemplateCategory(user);
+  const canDeleteCategory = canDeleteTemplateCategory(user);
+  const canManageCategories =
+    canCreateCategory || canUpdateCategory || canDeleteCategory;
 
   return (
     <>
@@ -57,10 +90,24 @@ const Templates: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isDesktop={isDesktop}
         toggleNavOpen={toggleNavOpen}
+        onManageCategory={() => setIsVisibleCategoryModal(true)}
+        canManageCategories={canManageCategories}
+      />
+      <ManageCategoriesModal
+        isVisible={isVisibleCategoryModal}
+        onClose={onCloseCategoriesModal}
+        templateCategories={templateCategories}
+        unpublishedCategories={unpublishedCategories}
+        canCreateCategory={canCreateCategory}
+        canUpdateCategory={canUpdateCategory}
+        canDeleteCategory={canDeleteCategory}
+        onCreateNewCategory={onCreateNewCategory}
       />
       <TemplatesGroup
         categorizedTemplate={categorizedTemplate}
         canEdit={canEdit}
+        canDelete={canDelete}
+        canCreate={canCreate}
         forceVisible={forceVisible}
         scrollElementRef={scrollElementRef}
       />

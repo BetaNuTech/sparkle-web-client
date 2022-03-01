@@ -1,0 +1,33 @@
+@import '../../../styles/index.scss';
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-top: $global-md-padding;
+  max-width: rem-calc(500);
+}
+
+.action {
+  display: flex;
+  justify-content: center;
+  margin-top: $global-lg-padding;
+
+  &__textButton {
+    @extend %deficientItemSection--textButton;
+    text-decoration: underline;
+  }
+}
+
+.footer {
+  justify-content: flex-end;
+}
+
+.footerAction {
+  @extend %gridHeaderCreateButton;
+  display: inline-flex;
+
+  &__icon {
+    @extend %gridHeaderButtonIcon;
+  }
+}

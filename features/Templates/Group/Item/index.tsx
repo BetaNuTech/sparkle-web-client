@@ -10,16 +10,22 @@ import features from '../../../../config/features';
 interface Props {
   template: TemplateModel;
   canEdit: boolean;
+  canDelete: boolean;
+  canCreate: boolean;
   forceVisible: boolean;
 }
 
 const TemplateItem: FunctionComponent<Props> = ({
   template,
   canEdit,
+  canDelete,
+  canCreate,
   forceVisible
 }) => {
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
+  const showActions = canEdit || canCreate || canDelete;
+
   return (
     <li className={styles.item} ref={placeholderRef}>
       {isVisible && (
@@ -39,9 +45,14 @@ const TemplateItem: FunctionComponent<Props> = ({
             </LinkFeature>
           </div>
           <div className={styles.column}>
-            {/* TODO Check if user has create & delete permissions as well
-                if user has no permissions do not render dropdown */}
-            {canEdit && <Dropdown canEdit={canEdit} templateId={template.id} />}
+            {showActions && (
+              <Dropdown
+                canEdit={canEdit}
+                canCreate={canCreate}
+                canDelete={canDelete}
+                templateId={template.id}
+              />
+            )}
           </div>
         </>
       )}

@@ -6,6 +6,8 @@ import styles from './styles.module.scss';
 interface Props {
   categorizedTemplate: CategorizedTemplates[];
   canEdit: boolean;
+  canDelete: boolean;
+  canCreate: boolean;
   forceVisible: boolean;
   scrollElementRef: RefObject<HTMLDivElement>;
 }
@@ -13,6 +15,8 @@ interface Props {
 const TemplatesGroup: FunctionComponent<Props> = ({
   categorizedTemplate,
   canEdit,
+  canDelete,
+  canCreate,
   forceVisible,
   scrollElementRef
 }) => (
@@ -29,6 +33,8 @@ const TemplatesGroup: FunctionComponent<Props> = ({
                 template={template}
                 key={template.id}
                 canEdit={canEdit}
+                canDelete={canDelete}
+                canCreate={canCreate}
                 forceVisible={forceVisible}
               />
             ))}

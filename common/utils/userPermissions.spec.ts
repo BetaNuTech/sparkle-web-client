@@ -1064,6 +1064,19 @@ describe('Unit | Common | Utils | User Permissions', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it should only allow admins, corporate users to create templates', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canCreateTemplate(admin),
+      util.canCreateTemplate(corporate),
+      util.canCreateTemplate(teamLead),
+      util.canCreateTemplate(propertyMember),
+      util.canCreateTemplate(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
   test('it should only allow admins, corporate users to update templates', () => {
     const expected = [true, true, true, false, false];
 
@@ -1073,6 +1086,58 @@ describe('Unit | Common | Utils | User Permissions', () => {
       util.canUpdateTemplate(teamLead),
       util.canUpdateTemplate(propertyMember),
       util.canUpdateTemplate(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins users to delete templates', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canDeleteTemplate(admin),
+      util.canDeleteTemplate(corporate),
+      util.canDeleteTemplate(teamLead),
+      util.canDeleteTemplate(propertyMember),
+      util.canDeleteTemplate(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users to create template category', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canCreateTemplateCategory(admin),
+      util.canCreateTemplateCategory(corporate),
+      util.canCreateTemplateCategory(teamLead),
+      util.canCreateTemplateCategory(propertyMember),
+      util.canCreateTemplateCategory(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users to update template category', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canUpdateTemplateCategory(admin),
+      util.canUpdateTemplateCategory(corporate),
+      util.canUpdateTemplateCategory(teamLead),
+      util.canUpdateTemplateCategory(propertyMember),
+      util.canUpdateTemplateCategory(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporate users to delete template category', () => {
+    const expected = [true, true, true, false, false];
+
+    const actual = [
+      util.canDeleteTemplateCategory(admin),
+      util.canDeleteTemplateCategory(corporate),
+      util.canDeleteTemplateCategory(teamLead),
+      util.canDeleteTemplateCategory(propertyMember),
+      util.canDeleteTemplateCategory(noAccess)
     ];
     expect(actual).toEqual(expected);
   });

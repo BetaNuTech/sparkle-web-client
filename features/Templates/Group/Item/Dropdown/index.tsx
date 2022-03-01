@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'react';
-import clsx from 'clsx';
 import ActionsIcon from '../../../../../public/icons/ios/actions.svg';
 import Dropdown, {
   DropdownButton,
@@ -9,27 +8,47 @@ import styles from './styles.module.scss';
 
 interface Props {
   canEdit: boolean;
+  canDelete: boolean;
+  canCreate: boolean;
   templateId: string;
 }
 
 const TemplateItemDropDown: FunctionComponent<Props> = ({
   canEdit,
+  canDelete,
+  canCreate,
   templateId
 }) => (
-  <div className={styles.container}>
+  <div className={styles.container} data-testid="template-item-dropdown">
     <ActionsIcon />
 
     <Dropdown>
-      <DropdownButton type="button">Copy</DropdownButton>
-      <DropdownLink
-        type="button"
-        className={clsx(!canEdit && styles['item--disabled'])}
-        href={`/templates/edit/${templateId}`}
-        legacyHref={`/templates/update/${templateId}`}
-      >
-        Edit
-      </DropdownLink>
-      <DropdownButton type="button">Delete</DropdownButton>
+      {canCreate && (
+        <DropdownButton
+          type="button"
+          data-testid="template-item-dropdown-copy-action"
+        >
+          Copy
+        </DropdownButton>
+      )}
+      {canEdit && (
+        <DropdownLink
+          type="button"
+          href={`/templates/edit/${templateId}`}
+          legacyHref={`/templates/update/${templateId}`}
+          data-testid="template-item-dropdown-edit-link"
+        >
+          Edit
+        </DropdownLink>
+      )}
+      {canDelete && (
+        <DropdownButton
+          type="button"
+          data-testid="template-item-dropdown-delete-action"
+        >
+          Delete
+        </DropdownButton>
+      )}
     </Dropdown>
   </div>
 );
