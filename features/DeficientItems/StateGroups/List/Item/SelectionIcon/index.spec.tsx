@@ -16,7 +16,7 @@ describe('Unit | Features | Deficient Items | List | Selection Icon', () => {
         message: 'should render CheckmarkSimpleIcon'
       },
       {
-        itemMainInputType: 'TwoActions_checkmarkX',
+        itemMainInputType: 'twoactions_checkmarkx',
         itemMainInputSelection: 1,
         selector: 'cancel-simple-icon',
         message: 'should render CancelSimpleIcon'
@@ -28,7 +28,7 @@ describe('Unit | Features | Deficient Items | List | Selection Icon', () => {
         message: 'should render ThumbsUpSimpleIcon'
       },
       {
-        itemMainInputType: 'TwoActions_thumbs',
+        itemMainInputType: 'twoactions_thumbs',
         itemMainInputSelection: 1,
         selector: 'thumbsdown-simple-icon',
         message: 'should render ThumbsDownSimpleIcon'
@@ -58,7 +58,7 @@ describe('Unit | Features | Deficient Items | List | Selection Icon', () => {
         message: 'should render ASimpleIcon'
       },
       {
-        itemMainInputType: 'ThreeActions_ABC',
+        itemMainInputType: 'threeactions_abc',
         itemMainInputSelection: 1,
         selector: 'b-simple-icon',
         message: 'should render BSimpleIcon'
@@ -76,7 +76,7 @@ describe('Unit | Features | Deficient Items | List | Selection Icon', () => {
         message: 'should render OneSimpleIcon'
       },
       {
-        itemMainInputType: 'FiveActions_oneToFive',
+        itemMainInputType: 'fiveactions_onetofive',
         itemMainInputSelection: 1,
         selector: 'two-simple-icon',
         message: 'should render TwoSimpleIcon'

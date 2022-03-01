@@ -1,6 +1,5 @@
 import sinon from 'sinon';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { categoryA, categoryB } from '../../../__mocks__/templateCategories';
 import BulkUpdateModal from './index';
 

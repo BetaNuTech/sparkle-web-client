@@ -35,7 +35,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   // and lastly use any available item type
   const inputType = item.isTextInputItem
     ? 'text_input'
-    : item.mainInputType || item.itemType;
+    : (item.mainInputType || item.itemType || '').toLowerCase();
 
   const selected = Boolean(item.mainInputSelected);
   const mainInputSelection =
