@@ -14,18 +14,18 @@ import FourSimpleIcon from '../../../../../../public/icons/sparkle/four-simple.s
 import FiveSimpleIcon from '../../../../../../public/icons/sparkle/five-simple.svg';
 
 const iconsList = {
-  TwoActions_checkmarkX: [
+  twoactions_checkmarkx: [
     <CheckmarkSimpleIcon
       data-testid="checkmark-simple-icon"
       key="checkmark-0"
     />,
     <CancelSimpleIcon data-testid="cancel-simple-icon" key="checkmark-1" />
   ],
-  TwoActions_thumbs: [
+  twoactions_thumbs: [
     <ThumbsUpSimpleIcon data-testid="thumbsup-simple-icon" key="thumb-0" />,
     <ThumbsDownSimpleIcon data-testid="thumbsdown-simple-icon" key="thumb-1" />
   ],
-  ThreeActions_checkmarkExclamationX: [
+  threeactions_checkmarkexclamationx: [
     <CheckmarkSimpleIcon
       data-testid="checkmark-simple-icon"
       key="checkmarkExclamation-0"
@@ -39,12 +39,12 @@ const iconsList = {
       key="checkmarkExclamation-2"
     />
   ],
-  ThreeActions_ABC: [
+  threeactions_abc: [
     <ASimpleIcon data-testid="a-simple-icon" key="abc-0" />,
     <BSimpleIcon data-testid="b-simple-icon" key="abc-1" />,
     <CSimpleIcon data-testid="c-simple-icon" key="abc-2" />
   ],
-  FiveActions_oneToFive: [
+  fiveactions_onetofive: [
     <OneSimpleIcon data-testid="one-simple-icon" key="oneToFive-0" />,
     <TwoSimpleIcon data-testid="two-simple-icon" key="oneToFive-1" />,
     <ThreeSimpleIcon data-testid="three-simple-icon" key="oneToFive-2" />,
@@ -61,9 +61,10 @@ interface Props {
 const DeficientItemsStateGroupsListItemSelectionIcon: FunctionComponent<
   Props
 > = ({ itemMainInputType, itemMainInputSelection }) => {
+  const mainInputType = (itemMainInputType || '').toLowerCase();
   const icon =
-    (iconsList[itemMainInputType] &&
-      iconsList[itemMainInputType][itemMainInputSelection]) ||
+    (iconsList[mainInputType] &&
+      iconsList[mainInputType][itemMainInputSelection]) ||
     '';
   return <>{icon}</>;
 };

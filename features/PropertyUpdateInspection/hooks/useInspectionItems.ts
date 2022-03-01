@@ -103,6 +103,7 @@ export default function useInspectionItems(
 // Determine if item will be considered deficient
 // based on the current selection
 function isItemDeficient(item: inspectionTemplateItemModel) {
-  const deficientEligibles = DEFICIENT_LIST_ELIGIBLE[item?.mainInputType] || [];
+  const mainInputType = `${item.mainInputType || ''}`.toLowerCase();
+  const deficientEligibles = DEFICIENT_LIST_ELIGIBLE[mainInputType] || [];
   return deficientEligibles[item?.mainInputSelection] || false;
 }
