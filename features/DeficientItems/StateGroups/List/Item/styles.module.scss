@@ -14,6 +14,7 @@
   display: flex;
   flex-direction: column;
   padding: $global-sm-padding $global-padding;
+  cursor: pointer;
 
   @include media-query(desktop) {
     flex-direction: row-reverse;
