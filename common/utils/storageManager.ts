@@ -26,6 +26,7 @@ const isStoragePersistent = async (): Promise<boolean> => {
   return false;
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const setupPersistentStorage = async () => {
   if (requestedPersistentStorageThisSession) return;
   const isPersisted = await isStoragePersistent();

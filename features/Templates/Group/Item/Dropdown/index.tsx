@@ -7,17 +7,21 @@ import Dropdown, {
 import styles from './styles.module.scss';
 
 interface Props {
+  isOnline: boolean;
   canEdit: boolean;
   canDelete: boolean;
   canCreate: boolean;
   templateId: string;
+  onCopy(): void;
 }
 
 const TemplateItemDropDown: FunctionComponent<Props> = ({
+  isOnline,
   canEdit,
   canDelete,
   canCreate,
-  templateId
+  templateId,
+  onCopy
 }) => (
   <div className={styles.container} data-testid="template-item-dropdown">
     <ActionsIcon />
@@ -27,6 +31,8 @@ const TemplateItemDropDown: FunctionComponent<Props> = ({
         <DropdownButton
           type="button"
           data-testid="template-item-dropdown-copy-action"
+          disabled={!isOnline}
+          onClick={onCopy}
         >
           Copy
         </DropdownButton>

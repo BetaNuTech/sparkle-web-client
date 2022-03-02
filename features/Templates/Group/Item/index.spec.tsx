@@ -38,6 +38,26 @@ describe('Unit | Features | Templates | Group | Item', () => {
     expect(copyAction).toBeFalsy();
   });
 
+  it('should disable copy action if user is offline ', () => {
+    const props = {
+      template: templateA,
+      canEdit: true,
+      canDelete: true,
+      canCreate: true,
+      forceVisible: true,
+      isOnline: false
+    };
+    render(<TemplateItem {...props} />);
+
+    const dropdownEl = screen.queryByTestId('template-item-dropdown');
+    const copyAction = screen.queryByTestId(
+      'template-item-dropdown-copy-action'
+    );
+    expect(dropdownEl).toBeTruthy();
+    expect(copyAction).toBeTruthy();
+    expect(copyAction).toBeDisabled();
+  });
+
   it('should not allow user to edit if user does not have permission to update template', () => {
     const props = {
       template: templateA,

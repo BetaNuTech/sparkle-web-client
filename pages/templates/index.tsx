@@ -68,6 +68,7 @@ const Page: React.FC = (): ReactElement => {
           templates={templates}
           templateCategories={templateCategories}
           user={user}
+          sendNotification={sendNotification}
         />
       ) : (
         <LoadingHud />

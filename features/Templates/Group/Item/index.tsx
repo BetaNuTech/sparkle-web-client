@@ -8,19 +8,23 @@ import LinkFeature from '../../../../common/LinkFeature';
 import features from '../../../../config/features';
 
 interface Props {
+  isOnline: boolean;
   template: TemplateModel;
   canEdit: boolean;
   canDelete: boolean;
   canCreate: boolean;
   forceVisible: boolean;
+  onCreateTemplate(templateId?: string): void;
 }
 
 const TemplateItem: FunctionComponent<Props> = ({
+  isOnline,
   template,
   canEdit,
   canDelete,
   canCreate,
-  forceVisible
+  forceVisible,
+  onCreateTemplate
 }) => {
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
@@ -47,10 +51,12 @@ const TemplateItem: FunctionComponent<Props> = ({
           <div className={styles.column}>
             {showActions && (
               <Dropdown
+                isOnline={isOnline}
                 canEdit={canEdit}
                 canCreate={canCreate}
                 canDelete={canDelete}
                 templateId={template.id}
+                onCopy={() => onCreateTemplate(template.id)}
               />
             )}
           </div>

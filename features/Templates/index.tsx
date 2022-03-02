@@ -19,7 +19,10 @@ import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates'
 import useSearching from '../../common/hooks/useSearching';
 import ManageCategoriesModal from './ManageCategoriesModal';
 import { uuid } from '../../common/utils/uuidv4';
+import useCreateTemplate from './hooks/useCreateTemplate';
+import LoadingHud from '../../common/LoadingHud';
 
+type userNotifications = (message: string, options?: any) => any;
 interface Props {
   user: UserModel;
   templates: TemplateModel[];
@@ -28,6 +31,7 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
+  sendNotification: userNotifications;
 }
 
 const Templates: FunctionComponent<Props> = ({
@@ -37,7 +41,8 @@ const Templates: FunctionComponent<Props> = ({
   forceVisible,
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  sendNotification
 }) => {
   const [isVisibleCategoryModal, setIsVisibleCategoryModal] = useState(false);
   const [unpublishedCategories, setUnpublishedCategories] = useState([]);
@@ -50,6 +55,9 @@ const Templates: FunctionComponent<Props> = ({
   const isDesktop = useMediaQuery({
     minWidth: breakpoints.desktop.minWidth
   });
+
+  const { createTemplate, isLoading: isCreatingTemplate } =
+    useCreateTemplate(sendNotification);
 
   const scrollElementRef = useRef();
   usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
@@ -88,6 +96,9 @@ const Templates: FunctionComponent<Props> = ({
   const canManageCategories =
     canCreateCategory || canUpdateCategory || canDeleteCategory;
 
+  if (isCreatingTemplate) {
+    return <LoadingHud title="Creating Template" />;
+  }
   return (
     <>
       <Header
@@ -101,6 +112,8 @@ const Templates: FunctionComponent<Props> = ({
         onClearSearch={onClearSearch}
         onManageCategory={() => setIsVisibleCategoryModal(true)}
         canManageCategories={canManageCategories}
+        canCreate={canCreate}
+        onCreateTemplate={createTemplate}
       />
       <ManageCategoriesModal
         isVisible={isVisibleCategoryModal}
@@ -113,12 +126,14 @@ const Templates: FunctionComponent<Props> = ({
         onCreateNewCategory={onCreateNewCategory}
       />
       <TemplatesGroup
+        isOnline={isOnline}
         categorizedTemplate={categorizedTemplate}
         canEdit={canEdit}
         canDelete={canDelete}
         canCreate={canCreate}
         forceVisible={forceVisible}
         scrollElementRef={scrollElementRef}
+        onCreateTemplate={createTemplate}
         isMobile={isMobile}
         searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
