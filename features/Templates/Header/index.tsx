@@ -20,6 +20,8 @@ interface Props {
   onClearSearch(): void;
   onManageCategory(): void;
   canManageCategories: boolean;
+  canCreate: boolean;
+  onCreateTemplate(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -31,7 +33,9 @@ const Header: FunctionComponent<Props> = ({
   onSearchKeyDown,
   onClearSearch,
   onManageCategory,
-  canManageCategories
+  canManageCategories,
+  canCreate,
+  onCreateTemplate
 }) => {
   // Desktop Header actions buttons
   const DesktopActions = () => (
@@ -49,12 +53,20 @@ const Header: FunctionComponent<Props> = ({
         </button>
       )}
 
-      <button type="button" className={styles.actions__button}>
-        Add Template
-        <span className={styles.addIcon}>
-          <AddIcon />
-        </span>
-      </button>
+      {canCreate && (
+        <button
+          type="button"
+          className={styles.actions__button}
+          disabled={!isOnline}
+          onClick={() => onCreateTemplate()}
+          data-testid="header-add-template-action"
+        >
+          Add Template
+          <span className={styles.addIcon}>
+            <AddIcon />
+          </span>
+        </button>
+      )}
     </div>
   );
 
@@ -66,9 +78,15 @@ const Header: FunctionComponent<Props> = ({
           <CategoryIcon />
         </button>
       )}
-      <button className={headStyle.header__button}>
-        <AddIcon />
-      </button>
+      {canCreate && (
+        <button
+          className={headStyle.header__button}
+          disabled={!isOnline}
+          onClick={() => onCreateTemplate()}
+        >
+          <AddIcon />
+        </button>
+      )}
     </>
   );
 

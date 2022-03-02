@@ -6,12 +6,14 @@ import TemplateItem from './Item';
 import styles from './styles.module.scss';
 
 interface Props {
+  isOnline: boolean;
   categorizedTemplate: CategorizedTemplates[];
   canEdit: boolean;
   canDelete: boolean;
   canCreate: boolean;
   forceVisible: boolean;
   scrollElementRef: RefObject<HTMLDivElement>;
+  onCreateTemplate(templateId?: string): void;
   isMobile: boolean;
   searchQuery: string;
   onSearchKeyDown: (
@@ -21,12 +23,14 @@ interface Props {
 }
 
 const TemplatesGroup: FunctionComponent<Props> = ({
+  isOnline,
   categorizedTemplate,
   canEdit,
   canDelete,
   canCreate,
   forceVisible,
   scrollElementRef,
+  onCreateTemplate,
   isMobile,
   searchQuery,
   onSearchKeyDown,
@@ -49,12 +53,14 @@ const TemplatesGroup: FunctionComponent<Props> = ({
           <ul>
             {templates.map((template) => (
               <TemplateItem
+                isOnline={isOnline}
                 template={template}
                 key={template.id}
                 canEdit={canEdit}
                 canDelete={canDelete}
                 canCreate={canCreate}
                 forceVisible={forceVisible}
+                onCreateTemplate={onCreateTemplate}
               />
             ))}
           </ul>

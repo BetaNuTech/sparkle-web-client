@@ -67,6 +67,11 @@ $dropdown-carrot-size: rem-calc(5);
         background-color: $primary-color;
         color: $white;
       }
+
+      &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
     }
   }
 }
