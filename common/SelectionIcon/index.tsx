@@ -1,17 +1,19 @@
 import { FunctionComponent } from 'react';
-import CheckmarkSimpleIcon from '../../../../../../public/icons/sparkle/checkmark-simple.svg';
-import CancelSimpleIcon from '../../../../../../public/icons/sparkle/cancel-simple.svg';
-import ThumbsUpSimpleIcon from '../../../../../../public/icons/sparkle/thumbs-up-simple.svg';
-import ThumbsDownSimpleIcon from '../../../../../../public/icons/sparkle/thumbs-down-simple.svg';
-import CautionSimpleIcon from '../../../../../../public/icons/sparkle/caution-simple.svg';
-import ASimpleIcon from '../../../../../../public/icons/sparkle/a-simple.svg';
-import BSimpleIcon from '../../../../../../public/icons/sparkle/b-simple.svg';
-import CSimpleIcon from '../../../../../../public/icons/sparkle/c-simple.svg';
-import OneSimpleIcon from '../../../../../../public/icons/sparkle/one-simple.svg';
-import TwoSimpleIcon from '../../../../../../public/icons/sparkle/two-simple.svg';
-import ThreeSimpleIcon from '../../../../../../public/icons/sparkle/three-simple.svg';
-import FourSimpleIcon from '../../../../../../public/icons/sparkle/four-simple.svg';
-import FiveSimpleIcon from '../../../../../../public/icons/sparkle/five-simple.svg';
+import CheckmarkSimpleIcon from '../../public/icons/sparkle/checkmark-simple.svg';
+import CancelSimpleIcon from '../../public/icons/sparkle/cancel-simple.svg';
+import ThumbsUpSimpleIcon from '../../public/icons/sparkle/thumbs-up-simple.svg';
+import ThumbsDownSimpleIcon from '../../public/icons/sparkle/thumbs-down-simple.svg';
+import CautionSimpleIcon from '../../public/icons/sparkle/caution-simple.svg';
+import ASimpleIcon from '../../public/icons/sparkle/a-simple.svg';
+import BSimpleIcon from '../../public/icons/sparkle/b-simple.svg';
+import CSimpleIcon from '../../public/icons/sparkle/c-simple.svg';
+import OneSimpleIcon from '../../public/icons/sparkle/one-simple.svg';
+import TwoSimpleIcon from '../../public/icons/sparkle/two-simple.svg';
+import ThreeSimpleIcon from '../../public/icons/sparkle/three-simple.svg';
+import FourSimpleIcon from '../../public/icons/sparkle/four-simple.svg';
+import FiveSimpleIcon from '../../public/icons/sparkle/five-simple.svg';
+
+import styles from './styles.module.scss';
 
 const iconsList = {
   twoactions_checkmarkx: [
@@ -58,15 +60,16 @@ interface Props {
   itemMainInputSelection: number;
 }
 
-const DeficientItemsStateGroupsListItemSelectionIcon: FunctionComponent<
-  Props
-> = ({ itemMainInputType, itemMainInputSelection }) => {
+const SelectionIcon: FunctionComponent<Props> = ({
+  itemMainInputType,
+  itemMainInputSelection
+}) => {
   const mainInputType = (itemMainInputType || '').toLowerCase();
   const icon =
     (iconsList[mainInputType] &&
       iconsList[mainInputType][itemMainInputSelection]) ||
     '';
-  return <>{icon}</>;
+  return <span className={styles.icon}>{icon}</span>;
 };
 
-export default DeficientItemsStateGroupsListItemSelectionIcon;
+export default SelectionIcon;

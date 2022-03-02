@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import SelectionIcon from './index';
 
-describe('Unit | Features | Deficient Items | List | Selection Icon', () => {
+describe('Unit | common | Selection Icon', () => {
   it('should render icon based on main input type and main input selection', () => {
     const props = {
       itemMainInputType: 'TwoActions_checkmarkX',
