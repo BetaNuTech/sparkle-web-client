@@ -15,7 +15,6 @@ import useTemplateCategories from '../../common/hooks/useTemplateCategories';
 import Templates from '../../features/Templates';
 
 const Page: React.FC = (): ReactElement => {
-  // const [isLoaded,setIsLoaded] = useState(false)
   const firestore = useFirestore();
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
