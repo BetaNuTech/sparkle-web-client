@@ -6,7 +6,7 @@ import deficientItemModel from '../../../../../common/models/deficientItem';
 import getResponsibilityGroup from '../../../../../common/utils/deficientItem/getResponsibilityGroup';
 import features from '../../../../../config/features';
 import dateUtils from '../../../../../common/utils/date';
-import SelectionIcon from './SelectionIcon';
+import SelectionIcon from '../../../../../common/SelectionIcon';
 import useVisibility from '../../../../../common/hooks/useVisibility';
 
 import styles from './styles.module.scss';
@@ -94,7 +94,10 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
       )}
     >
       {isVisible && (
-        <div className={styles.main} onClick={onClickItem}>
+        <div
+          className={clsx(styles.main, isClosed ? '-o-50' : '')}
+          onClick={onClickItem}
+        >
           <div
             className={clsx(styles.row, !isMobile && styles['row--reverse'])}
           >
@@ -136,14 +139,10 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
           <div className={styles.row}>
             {isMobile && (
               <div className={styles.row__left}>
-                <span className={clsx(styles.icon, isClosed && '-o-50')}>
-                  <SelectionIcon
-                    itemMainInputType={deficientItem.itemMainInputType}
-                    itemMainInputSelection={
-                      deficientItem.itemMainInputSelection
-                    }
-                  />
-                </span>
+                <SelectionIcon
+                  itemMainInputType={deficientItem.itemMainInputType}
+                  itemMainInputSelection={deficientItem.itemMainInputSelection}
+                />
               </div>
             )}
             <div className={styles.row__right}>

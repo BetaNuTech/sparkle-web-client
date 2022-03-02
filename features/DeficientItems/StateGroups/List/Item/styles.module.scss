@@ -106,27 +106,6 @@
   }
 }
 
-.icon {
-  background-color: $gray;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: rem-calc(40);
-  height: rem-calc(40);
-  border-radius: 50%;
-
-  svg {
-    max-width: rem-calc(24);
-    max-height: rem-calc(24);
-
-    path,
-    g,
-    poligon {
-      fill: darken($gray-light-2, 15);
-    }
-  }
-}
-
 .title {
   font-weight: bold;
   font-size: rem-calc(14);

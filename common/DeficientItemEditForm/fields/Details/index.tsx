@@ -1,6 +1,8 @@
+import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import MiniPreviewGallery from '../../../MiniPreviewGallery';
 import DeficientItemModel from '../../../models/deficientItem';
+import SelectionIcon from '../../../SelectionIcon';
 import dateUtil from '../../../utils/date';
 import fieldStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
@@ -33,7 +35,13 @@ const DeficientItemEditFormDetails: FunctionComponent<Props> = ({
           onClick={onClickViewPhotos}
         />
       )}
-      <hgroup className={fieldStyles.section__main}>
+      {!isMobile && (
+        <SelectionIcon
+          itemMainInputType={deficientItem.itemMainInputType}
+          itemMainInputSelection={deficientItem.itemMainInputSelection}
+        />
+      )}
+      <hgroup className={clsx(fieldStyles.section__main, !isMobile && '-mt')}>
         <small data-testid="created-at" className={styles.subHeading}>
           {dateUtil.toUserFullDateDisplay(deficientItem.createdAt)}
         </small>
