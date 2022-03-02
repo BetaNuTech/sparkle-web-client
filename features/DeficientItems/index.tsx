@@ -1,10 +1,4 @@
-import {
-  ChangeEvent,
-  FunctionComponent,
-  useEffect,
-  useRef,
-  useState
-} from 'react';
+import { ChangeEvent, FunctionComponent, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import breakpoints from '../../config/breakpoints';
 import PropertyModel from '../../common/models/property';
@@ -75,7 +69,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
     onSelectDeficiency,
     onSearchKeyDown,
     deficientItemsByState,
-    searchParam,
+    searchValue,
     onClearSearch
   } = useSelectionsAndSearch(
     sortedDeficientItems,
@@ -87,14 +81,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
 
   usePreserveScrollPosition(`DIScroll-${property.id}`, containerRef, isMobile);
 
-  const [searchQuery, setSearchQuery] = useState(searchParam);
   const [moveToStates, setMoveToStates] = useState(null);
-
-  useEffect(() => {
-    if (!searchParam) {
-      setSearchQuery('');
-    }
-  }, [searchParam]);
 
   const onMoveToState = (currentState: string, nextState: string) => {
     setMoveToStates({ currentState, nextState });
@@ -226,8 +213,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
         userFacingSortBy={userFacingSortBy}
         onSortChange={onSortChange}
         onSortDirChange={onSortDirChange}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
         toggleNavOpen={toggleNavOpen}
@@ -235,8 +221,7 @@ const DeficientItemsList: FunctionComponent<Props> = ({
       <StateGroups
         deficientItemsByState={deficientItemsByState}
         forceVisible={forceVisible}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
         isMobile={isMobile}

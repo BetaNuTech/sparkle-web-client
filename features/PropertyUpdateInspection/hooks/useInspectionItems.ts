@@ -13,7 +13,7 @@ interface Result {
   sectionItems: Map<string, inspectionTemplateItemModel[]>;
   inspectionItems: inspectionTemplateItemModel[];
   inspectionItemDeficientIds: string[];
-  searchParam: string;
+  searchValue: string;
   onSearchKeyDown(evt: React.KeyboardEvent<HTMLInputElement>): void;
   onClearSearch(): void;
 }
@@ -44,7 +44,7 @@ export default function useInspectionItems(
   // using useSearching hook for searching
   // as we have inspection items array
   // and its grouping already here
-  const { onSearchKeyDown, filteredItems, searchParam, onClearSearch } =
+  const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
     useSearching(itemsList, ['title']);
 
   const filteredInspectionItems = filteredItems.map(
@@ -94,7 +94,7 @@ export default function useInspectionItems(
     sectionItems,
     inspectionItems: itemsList,
     inspectionItemDeficientIds,
-    searchParam,
+    searchValue,
     onSearchKeyDown,
     onClearSearch
   };

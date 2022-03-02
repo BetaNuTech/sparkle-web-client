@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useRef } from 'react';
+import { FunctionComponent, useRef, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 import TemplateModel from '../../common/models/template';
@@ -16,6 +16,7 @@ import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import TemplatesGroup from './Group';
 import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
+import useSearching from '../../common/hooks/useSearching';
 import ManageCategoriesModal from './ManageCategoriesModal';
 import { uuid } from '../../common/utils/uuidv4';
 
@@ -53,9 +54,14 @@ const Templates: FunctionComponent<Props> = ({
   const scrollElementRef = useRef();
   usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
 
+  // Templates search setup
+  const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
+    useSearching(templates, ['name', 'description']);
+  const filteredTemplates = filteredItems.map((itm) => itm as TemplateModel);
+
   const { categories: categorizedTemplate } = useCategorizedTemplates(
     templateCategories,
-    templates
+    filteredTemplates
   );
 
   const onCreateNewCategory = () => {
@@ -90,6 +96,9 @@ const Templates: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isDesktop={isDesktop}
         toggleNavOpen={toggleNavOpen}
+        searchQuery={searchValue}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
         onManageCategory={() => setIsVisibleCategoryModal(true)}
         canManageCategories={canManageCategories}
       />
@@ -110,6 +119,10 @@ const Templates: FunctionComponent<Props> = ({
         canCreate={canCreate}
         forceVisible={forceVisible}
         scrollElementRef={scrollElementRef}
+        isMobile={isMobile}
+        searchQuery={searchValue}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
       />
     </>
   );

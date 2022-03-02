@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import debounce from '../utils/debounce';
 import utilString from '../utils/string';
 import utilSearch from '../utils/search';
@@ -8,7 +8,10 @@ type Model = Record<string, any>;
 interface useSearchResult {
   filteredItems: Model[];
   searchParam: string;
-  onSearchKeyDown: (ev: React.KeyboardEvent<HTMLInputElement>) => void;
+  searchValue: string;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
   onClearSearch(): void;
 }
 
@@ -21,12 +24,17 @@ export default function useSearching(
   let filteredItems = [...items];
   const [memo, setMemo] = useState('[]');
   const [searchParam, setSearchParam] = useState<string[]>(defaultQuery || []);
+  const [searchValue, setSearchValue] = useState<string>('');
 
-  const onSearchChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    // Get the keywords from inputs
-    const query = utilString.getSearchKeywords(evt.target.value);
-    setSearchParam(query);
-  };
+  const onSearchChange = debounce(
+    (evt: React.ChangeEvent<HTMLInputElement>) => {
+      // Get the keywords from inputs
+      const query = utilString.getSearchKeywords(evt.target.value);
+      setSearchParam(query);
+    },
+    300,
+    {}
+  );
 
   // Create search index from list of items
   const searchIndex = utilSearch.createSearchIndex(items, queryAttrs);
@@ -42,9 +50,15 @@ export default function useSearching(
     filteredItems = [...items];
   }
 
-  const onSearchKeyDown = debounce((ev) => onSearchChange(ev), 300, {});
+  const onSearchKeyDown = (ev) => {
+    setSearchValue(ev.target.value);
+    onSearchChange(ev);
+  };
 
-  const onClearSearch = () => setSearchParam(defaultQuery || []);
+  const onClearSearch = () => {
+    setSearchValue('');
+    setSearchParam(defaultQuery || []);
+  };
 
   // Notify of updates
   // by updating memo
@@ -61,6 +75,7 @@ export default function useSearching(
   return {
     onSearchKeyDown,
     searchParam: searchParam.join(' '),
+    searchValue,
     filteredItems,
     onClearSearch
   };

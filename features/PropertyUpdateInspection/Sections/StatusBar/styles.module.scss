@@ -4,27 +4,22 @@ $progressBarHeight: rem-calc(4);
 $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
 
 .container {
-  display: flex;
-  flex-direction: column;
-  background-color: $gray;
-  position: sticky;
+  @extend %statusbar-container;
   top: $mobileHeaderBaseHeight;
-  transition: top 200ms ease-in;
-  border-top: 1px solid $gray-lighter;
-  z-index: 13;
 
   @include media-query(desktop) {
     top: 0;
   }
 }
 
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+.main {
+  @extend %statusbar-main;
 
-  &__search,
+  &__search {
+    @extend %statusbar-search;
+    height: $elementHeight;
+  }
+
   &__content,
   &__action {
     display: flex;
@@ -48,10 +43,6 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
     display: none;
   }
 
-  &__search {
-    padding-left: $global-padding;
-  }
-
   &__content {
     padding: 0 $global-padding 0 0;
     justify-content: flex-end;
@@ -67,11 +58,6 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
   }
 
   @include media-query(desktop) {
-    // Apply global desktop padding to left
-    &__search {
-      padding-left: $global-lg-padding - rem-calc(5);
-    }
-
     // Shift content to center
     &__content {
       justify-content: center;
@@ -145,24 +131,10 @@ $elementHeight: $inspectionStatusBarHeight - $progressBarHeight;
 }
 
 .clearButton {
-  @extend %actionButton--black;
-  font-size: $paragraph-font-size;
-  text-transform: none;
-  padding: $global-sm-padding $global-mlg-padding;
+  @extend %statusbar-clearButton;
 }
 
 .searchInput[type='search'],
 .searchInput[type='search']:hover {
-  @extend %searchInput;
-  @extend %searchInputBackgound;
-  margin: 0;
-  color: $gray-light;
-
-  &:focus {
-    color: $gray-light;
-  }
-
-  &::placeholder {
-    color: $gray-light;
-  }
+  @extend %statusbar-searchInput;
 }

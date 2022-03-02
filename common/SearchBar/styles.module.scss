@@ -1,0 +1,27 @@
+@import '../../styles/index.scss';
+
+$elementHeight: $inspectionStatusBarHeight;
+
+.container {
+  @extend %statusbar-container;
+  border-bottom: 1px solid $gray-lighter;
+}
+
+.main {
+  @extend %statusbar-main;
+
+  &__search {
+    @extend %statusbar-search;
+    height: $elementHeight;
+    flex: 1;
+  }
+}
+
+.clearButton {
+  @extend %statusbar-clearButton;
+}
+
+.searchInput[type='search'],
+.searchInput[type='search']:hover {
+  @extend %statusbar-searchInput;
+}

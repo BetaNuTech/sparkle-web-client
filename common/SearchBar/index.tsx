@@ -1,32 +1,31 @@
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 
 interface Props {
   searchQuery: string;
-  onSearchKeyDown: (ev: React.KeyboardEvent<HTMLInputElement>) => void;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
   onClearSearch(): void;
-  setSearchQuery(query: string): void;
 }
 
 const SearchBar: FunctionComponent<Props> = ({
   searchQuery,
   onSearchKeyDown,
-  onClearSearch,
-  setSearchQuery
+  onClearSearch
 }) => {
   const showClearSearch = Boolean(searchQuery);
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.header__search}>
+      <div className={styles.main}>
+        <div className={styles.main__search}>
           <input
             type="search"
             className={styles.searchInput}
             placeholder="Search"
             value={searchQuery}
-            onKeyDown={onSearchKeyDown}
-            onChange={(evt) => setSearchQuery(evt.target.value)}
+            onChange={onSearchKeyDown}
             data-testid="search-bar-input"
           />
         </div>

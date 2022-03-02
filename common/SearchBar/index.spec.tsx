@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 
 import SearchBar from './index';
 
-describe('Unit | Features | Deficient Items | State Groups | Search Bar', () => {
+describe('Unit | Common | Search Bar', () => {
   it('should render clear search button if there is search query ', () => {
     const onClearSearch = sinon.spy();
     const props = {
