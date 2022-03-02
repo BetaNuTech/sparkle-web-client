@@ -73,7 +73,9 @@ interface Props {
   isRequestingReport: boolean;
   showAction: boolean;
   searchParam: string;
-  onSearchKeyDown(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
   onClearSearch(): void;
 }
 
@@ -126,18 +128,11 @@ const Sections: FunctionComponent<Props> = ({
   const [isDuplicateActionsNotInView, setIsDuplicateActionsNotInView] =
     useState(false);
 
-  const [searchQuery, setSearchQuery] = useState(searchParam);
-
   const isPdfReportVisible =
     isPdfReportStatusShowing &&
     (isDesktop
       ? isDuplicateActionsNotInView // only show on desktop when not duplicat
       : true); // always show if possible on mobile
-
-  // this will help to clear search input text
-  useEffect(() => {
-    setSearchQuery(searchParam);
-  }, [searchParam]);
 
   // Reveal duplicate header actions
   // once user scrolled down past the primary header
@@ -179,8 +174,7 @@ const Sections: FunctionComponent<Props> = ({
         onRegenerateReport={onRegenerateReport}
         inspectionReportURL={inspectionReportURL}
         isRequestingReport={isRequestingReport}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        searchQuery={searchParam}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
       />

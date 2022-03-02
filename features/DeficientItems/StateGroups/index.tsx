@@ -5,17 +5,16 @@ import React, {
   RefObject
 } from 'react';
 import deficientItemModel from '../../../common/models/deficientItem';
+import SearchBar from '../../../common/SearchBar';
 import { deficientItemStateOrder } from '../../../config/deficientItems';
 import Header from './Header';
 import List from './List';
-import SearchBar from './SearchBar';
 import styles from './styles.module.scss';
 
 interface Props {
   deficientItemsByState: Map<string, deficientItemModel[]>;
   forceVisible?: boolean;
   searchQuery: string;
-  setSearchQuery(query: string): void;
   onSearchKeyDown(evt: React.KeyboardEvent<HTMLInputElement>): void;
   onClearSearch(): void;
   isMobile: boolean;
@@ -32,7 +31,6 @@ interface Props {
 const DeficientItemsStateGroups: FunctionComponent<Props> = ({
   deficientItemsByState,
   searchQuery,
-  setSearchQuery,
   onSearchKeyDown,
   onClearSearch,
   forceVisible,
@@ -50,7 +48,6 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
     {!isMobile && (
       <SearchBar
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
       />

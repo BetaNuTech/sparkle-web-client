@@ -2,10 +2,11 @@
 
 .container {
   padding: 0;
+  flex-grow: 1;
   overflow-y: auto;
 
   @include media-query(desktop) {
-    padding: $global-lg-padding $global-padding $global-padding;
+    margin: $global-lg-padding $global-padding $global-padding;
     overflow: visible;
   }
 }
@@ -23,4 +24,20 @@
   text-align: center;
   font-weight: normal;
   font-size: rem-calc(22);
+
+  @include media-query(desktop) {
+    top: $inspectionStatusBarHeight;
+    border-left: none;
+    border-right: none;
+  }
+}
+
+.action {
+  margin: $global-padding 0;
+  display: flex;
+  justify-content: center;
+
+  &__clear {
+    @extend %actionButton--blackText;
+  }
 }

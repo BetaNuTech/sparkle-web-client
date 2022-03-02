@@ -191,7 +191,7 @@ describe('Unit | Features | Property Update Inspection | Status Bar', () => {
     expect(completeButton).toBeDisabled();
   });
 
-  it('should request to update search query on search input key press', () => {
+  it('should request to update search query on search input change', () => {
     const onSearchKeyDown = sinon.spy();
     const props = {
       showAction: true,
@@ -222,7 +222,7 @@ describe('Unit | Features | Property Update Inspection | Status Bar', () => {
 
     const searchInput = screen.queryByTestId('status-bar-search-input');
     act(() => {
-      fireEvent.keyDown(searchInput, { target: { value: 'search' } });
+      fireEvent.change(searchInput, { target: { value: 'search' } });
     });
     expect(onSearchKeyDown.called).toBeTruthy();
   });

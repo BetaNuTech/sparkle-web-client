@@ -13,8 +13,10 @@ export interface Params {
   onClearGroupSelection(state: string): void;
   onSelectDeficiency(state: string, deficiencyId: string): void;
   deficientItemsByState: Map<string, deficientItemModel[]>;
-  searchParam: string;
-  onSearchKeyDown: (ev: React.KeyboardEvent<HTMLInputElement>) => void;
+  searchValue: string;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
   onClearSearch(): void;
 }
 
@@ -34,7 +36,7 @@ export default function useSelectionsAndSearch(
   // using useSearching hook
   // to filter deficient items
   // on search
-  const { onSearchKeyDown, filteredItems, searchParam, onClearSearch } =
+  const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
     useSearching(sortedDeficientItems, [
       'itemTitle',
       'sectionTitle',
@@ -119,7 +121,7 @@ export default function useSelectionsAndSearch(
     if (!isFirstRender) {
       setSelectedDeficiencies({});
     }
-  }, [searchParam]); // eslint-disable-line
+  }, [searchValue]); // eslint-disable-line
 
   return {
     selectedDeficiencies,
@@ -128,7 +130,7 @@ export default function useSelectionsAndSearch(
     onSelectDeficiency,
     onSearchKeyDown,
     deficientItemsByState,
-    searchParam,
+    searchValue,
     onClearSearch
   };
 }

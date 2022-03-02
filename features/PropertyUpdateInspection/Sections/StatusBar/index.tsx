@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import FileUploadIcon from '../../../../public/icons/sparkle/file-upload.svg';
 import PdfReportStatus from '../../PdfReportStatus';
 import styles from './styles.module.scss';
@@ -24,9 +24,10 @@ interface Props {
   inspectionReportURL: string;
   isRequestingReport: boolean;
   searchQuery: string;
-  onSearchKeyDown: (ev: React.KeyboardEvent<HTMLInputElement>) => void;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
   onClearSearch(): void;
-  setSearchQuery(query: string): void;
 }
 
 const StatusBar: FunctionComponent<Props> = ({
@@ -50,8 +51,7 @@ const StatusBar: FunctionComponent<Props> = ({
   isRequestingReport,
   searchQuery,
   onSearchKeyDown,
-  onClearSearch,
-  setSearchQuery
+  onClearSearch
 }) => {
   const isPubishingDisabled =
     !(hasUpdates && isOnline) || isPdfReportGenerating || isPdfReportQueued;
@@ -60,15 +60,14 @@ const StatusBar: FunctionComponent<Props> = ({
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.header__search}>
+      <div className={styles.main}>
+        <div className={styles.main__search}>
           <input
             type="search"
             className={styles.searchInput}
             placeholder="Search"
             value={searchQuery}
-            onKeyDown={onSearchKeyDown}
-            onChange={(evt) => setSearchQuery(evt.target.value)}
+            onChange={onSearchKeyDown}
             data-testid="status-bar-search-input"
           />
         </div>
@@ -87,7 +86,7 @@ const StatusBar: FunctionComponent<Props> = ({
         {!showClearSearch && (
           <>
             <div
-              className={styles.header__content}
+              className={styles.main__content}
               data-testid="status-bar-content"
             >
               {isPdfReportStatusShowing ? (
@@ -113,7 +112,7 @@ const StatusBar: FunctionComponent<Props> = ({
 
             {showAction ? (
               <div
-                className={styles.header__action}
+                className={styles.main__action}
                 data-testid="status-bar-actions"
               >
                 {canEnableEditMode && (
@@ -152,7 +151,7 @@ const StatusBar: FunctionComponent<Props> = ({
                 )}
               </div>
             ) : (
-              <div className={styles.header__action}></div>
+              <div className={styles.main__action}></div>
             )}
           </>
         )}

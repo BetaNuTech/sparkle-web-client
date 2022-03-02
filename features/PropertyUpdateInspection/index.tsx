@@ -239,7 +239,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     sectionItems,
     inspectionItems,
     inspectionItemDeficientIds,
-    searchParam,
+    searchValue,
     onSearchKeyDown,
     onClearSearch
   } = useInspectionItems(
@@ -472,7 +472,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onRegenerateReport={generatePdfReport}
         inspectionReportURL={inspection.inspectionReportURL}
         isRequestingReport={isRequestingReport}
-        searchParam={searchParam}
+        searchParam={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
       />

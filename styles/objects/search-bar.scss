@@ -1,8 +1,4 @@
-@import '../../../../styles/index.scss';
-
-$elementHeight: $inspectionStatusBarHeight;
-
-.container {
+%statusbar-container {
   display: flex;
   flex-direction: column;
   background-color: $gray;
@@ -10,7 +6,6 @@ $elementHeight: $inspectionStatusBarHeight;
   top: 0;
   transition: top 200ms ease-in;
   border-top: 1px solid $gray-lighter;
-  border-bottom: 1px solid $gray-lighter;
   z-index: 13;
 
   @include media-query(desktop) {
@@ -18,44 +13,39 @@ $elementHeight: $inspectionStatusBarHeight;
   }
 }
 
-.header {
+%statusbar-main {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
 
-  &__search {
-    display: flex;
-    align-items: center;
-    height: $elementHeight;
-    flex: 1;
-    padding-left: $global-padding;
-  }
+%statusbar-search {
+  display: flex;
+  align-items: center;
+  padding-left: $global-padding;
 
   @include media-query(desktop) {
     // Apply global desktop padding to left
-    &__search {
-      padding-left: $global-lg-padding - rem-calc(5);
-    }
+    padding-left: $global-lg-padding - rem-calc(5);
   }
 }
 
-.clearButton {
+%statusbar-clearButton {
   @extend %actionButton--black;
   font-size: $paragraph-font-size;
   text-transform: none;
   padding: $global-sm-padding $global-mlg-padding;
 }
 
-.searchInput[type='search'],
-.searchInput[type='search']:hover {
+%statusbar-searchInput {
   @extend %searchInput;
   @extend %searchInputBackgound;
   margin: 0;
-  color: $gray-light;
+  color: $black;
 
   &:focus {
-    color: $gray-light;
+    color: $black;
   }
 
   &::placeholder {

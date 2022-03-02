@@ -20,7 +20,6 @@ interface Props {
   onSortDirChange(): void;
   nextDeficientItemSort(): void;
   searchQuery: string;
-  setSearchQuery(query: string): void;
   onSearchKeyDown: any;
   onClearSearch(): void;
   toggleNavOpen?(): void;
@@ -39,7 +38,6 @@ const Header: FunctionComponent<Props> = ({
   userFacingSortBy,
   searchQuery,
   onSearchKeyDown,
-  setSearchQuery,
   onClearSearch,
   toggleNavOpen
 }) => {
@@ -72,8 +70,7 @@ const Header: FunctionComponent<Props> = ({
               className={styles.search__input}
               type="search"
               value={searchQuery}
-              onKeyDown={onSearchKeyDown}
-              onChange={(evt) => setSearchQuery(evt.target.value)}
+              onChange={onSearchKeyDown}
             />
             {searchQuery && (
               <button
