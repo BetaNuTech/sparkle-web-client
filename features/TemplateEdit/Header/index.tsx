@@ -1,7 +1,10 @@
 import { FunctionComponent } from 'react';
+import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import LinkFeature from '../../../common/LinkFeature';
 import features from '../../../config/features';
+import DesktopHeader from '../../../common/DesktopHeader';
+import styles from './styles.module.scss';
 
 interface Props {
   isOnline: boolean;
@@ -11,6 +14,7 @@ interface Props {
   goToNextStep(): void;
   goToPrevStep(): void;
   isLastStep: boolean;
+  templateName: string;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -20,15 +24,25 @@ const Header: FunctionComponent<Props> = ({
   currentStepIndex,
   goToNextStep,
   goToPrevStep,
-  isLastStep
+  isLastStep,
+  templateName
 }) => {
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
       {isLastStep ? (
-        <button className={headStyle.header__button}>Save</button>
+        <button
+          className={headStyle.header__button}
+          data-testid="templateEdit-header-save"
+        >
+          Save
+        </button>
       ) : (
-        <button className={headStyle.header__button} onClick={goToNextStep}>
+        <button
+          className={headStyle.header__button}
+          onClick={goToNextStep}
+          data-testid="templateEdit-header-next"
+        >
           Next
         </button>
       )}
@@ -43,14 +57,33 @@ const Header: FunctionComponent<Props> = ({
           href="/templates"
           featureEnabled={features.supportBetaTemplatesList}
           className={headStyle.header__button}
+          data-testid="templateEdit-header-cancel"
         >
           Cancel
         </LinkFeature>
       ) : (
-        <button className={headStyle.header__button} onClick={goToPrevStep}>
+        <button
+          className={headStyle.header__button}
+          onClick={goToPrevStep}
+          data-testid="templateEdit-header-back"
+        >
           Back
         </button>
       )}
+    </>
+  );
+
+  const BreadCrumbs = () => (
+    <>
+      <div className={styles.header__breadcrumbs}>
+        <Link href="/templates">
+          <a className={styles.header__link}>Templates</a>
+        </Link>
+        <span title={templateName} className={styles.header__text}>
+          &nbsp;&nbsp;/&nbsp;&nbsp; {templateName}
+        </span>
+      </div>
+      <div className={styles.header__title}>Edit Template</div>
     </>
   );
 
@@ -67,7 +100,11 @@ const Header: FunctionComponent<Props> = ({
           />
         </>
       ) : (
-        <div>Desktop Header will go here</div>
+        <DesktopHeader
+          title={<BreadCrumbs />}
+          isOnline={isOnline}
+          isColumnTitle
+        />
       )}
     </>
   );
