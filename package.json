@@ -42,6 +42,7 @@
     "react-toastify": "^7.0.4",
     "reactfire": "^3.0.0-rc.0",
     "sass": "^1.32.13",
+    "swiper": "^8.0.6",
     "yup": "^0.32.9",
     "zen-observable": "^0.8.15"
   },
