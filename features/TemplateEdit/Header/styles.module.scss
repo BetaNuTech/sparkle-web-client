@@ -1,0 +1,33 @@
+@import '../../../styles/index.scss';
+
+.header {
+  @extend %gridMobileHeaderTopInfo;
+
+  &__link {
+    @extend %gridHeaderLink;
+  }
+  &__text {
+    display: inline-block;
+    max-width: rem-calc(190);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    vertical-align: middle;
+  }
+
+  &__breadcrumbs {
+    @extend %gridHeaderLinkMain;
+  }
+
+  &__title {
+    @extend %gridHeaderSmallTitle;
+  }
+
+  @include media-query(desktop) {
+    padding: 0;
+    background-color: transparent;
+
+    &__title {
+      font-size: rem-calc(32);
+    }
+  }
+}

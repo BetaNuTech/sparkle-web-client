@@ -2,7 +2,7 @@ export default {
   supportBetaTemplatesList:
     process.env.NEXT_PUBLIC_SUPPORT_BETA_TEMPLATES_LIST === 'true' || false,
   supportBetaTemplateEdit:
-    process.env.NEXT_PUBLIC_SUPPORT_BETA_TEMPLATES_EDIT === 'true' || false,
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_TEMPLATES_EDIT === 'true' || true,
   supportBetaUsers: false,
   supportBetaUserProfile: false,
   supportBetaSettings: false,

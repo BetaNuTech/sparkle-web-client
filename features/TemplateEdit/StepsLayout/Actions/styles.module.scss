@@ -1,0 +1,26 @@
+@import '../../../../styles/index.scss';
+
+.actions {
+  text-align: right;
+  min-width: rem-calc(280);
+  justify-self: flex-end;
+
+  &__button {
+    @extend %gridHeaderCreateButton;
+    display: inline-flex;
+    margin: 0 rem-calc(16) 0 0;
+
+    &--dark {
+      background-color: $primary-xdark-color;
+    }
+    &--white {
+      background-color: $white;
+      color: $gray-dark;
+      border: 1px solid $gray-light;
+    }
+
+    &:last-child {
+      margin: 0;
+    }
+  }
+}
