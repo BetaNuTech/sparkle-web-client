@@ -23,7 +23,8 @@ interface Props {
 const TemplateEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
-  template
+  template,
+  templateCategories
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -59,6 +60,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
         goToNextStep={goToNextStep}
         goToPrevStep={goToPrevStep}
         isLastStep={isLastStep}
+        template={template}
+        templateCategories={templateCategories}
       />
     </>
   );

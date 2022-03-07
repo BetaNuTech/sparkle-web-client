@@ -1,0 +1,105 @@
+@import '../../../../../styles/index.scss';
+
+.container {
+  max-width: 100%;
+
+  &__textarea,
+  &__input[type='text'] {
+    margin-bottom: rem-calc(1);
+    padding: $global-sm-padding $global-md-padding;
+    border: none;
+    background: $gray;
+    font-size: $paragraph-font-size;
+
+    &:hover,
+    &:focus {
+      border: none;
+      background: $gray;
+    }
+  }
+
+  &__input[type='text'] {
+    height: rem-calc(34);
+    border-top-left-radius: $global-radius;
+    border-top-right-radius: $global-radius;
+  }
+
+  &__textarea {
+    border-bottom-left-radius: $global-radius;
+    border-bottom-right-radius: $global-radius;
+    resize: vertical;
+  }
+
+  &__label {
+    margin-top: $global-mlg-padding;
+    margin-bottom: $global-xsm-padding;
+    color: $gray-light;
+    font-weight: bold;
+  }
+}
+
+.switch {
+  display: flex;
+  padding: rem-calc(5) $global-sm-padding;
+  border-radius: $global-radius;
+  margin-bottom: $global-sm-padding;
+  align-items: center;
+  background: $gray;
+
+  &__label {
+    flex: 1 1 auto;
+    padding: rem-calc(10);
+    padding-left: 0;
+    text-align: right;
+    font-size: rem-calc(14);
+  }
+
+  &__action {
+    flex: 0 1 auto;
+    width: rem-calc(50);
+    height: rem-calc(32);
+    border-radius: $global-rounded;
+    position: relative;
+    margin: 0;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  &__checkbox[type='checkbox'] {
+    width: 0;
+    height: 0;
+    opacity: 0;
+
+    &:checked + .switch__slider {
+      background-color: $primary-color;
+
+      &:before {
+        left: rem-calc(18);
+        border-color: $primary-color;
+      }
+    }
+  }
+
+  &__slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $gray-light-4;
+    transition: 150ms;
+    pointer-events: none;
+
+    &:before {
+      position: absolute;
+      height: rem-calc(32);
+      width: rem-calc(32);
+      left: 0;
+      transition: 150ms;
+      border-radius: 50%;
+      border: rem-calc(4) solid $gray-light-4;
+      background-color: white;
+      content: '';
+    }
+  }
+}
