@@ -1,40 +1,51 @@
 @import '../../../styles/index.scss';
+
 .container {
   display: flex;
   flex-direction: column;
   height: 100%;
+
+  @include media-query(desktop) {
+    height: auto;
+  }
 }
+
 .swiper {
   flex: 1;
   max-width: 100%;
-  width: rem-calc(520);
-  margin: 0px auto;
+  margin: 0 auto;
+
+  // Swiper horizontal wrapper
+  > :global(.swiper) {
+    height: 100%;
+  }
 }
 
 .main {
   flex: 1;
-  @include media-query('desktop') {
+  width: rem-calc(520);
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @include media-query(tablet) {
+    display: flex;
+    flex-direction: column;
     margin: $global-lg-padding auto;
     padding: $global-xlg-padding $global-llg-padding;
     border: 1px solid $gray-lighter;
     border-radius: $global-radius;
-    display: flex;
-    flex-direction: column;
   }
 }
 
 .stepContainer {
-  border: 1px solid $gray-lighter;
-  border-radius: $global-radius;
   margin: 1rem;
-  padding: $global-lg-padding $global-mlg-padding;
+  box-sizing: border-box; // Class `.swiper-wrapper` imposes content-box on children
+  border-radius: $global-radius;
   background-color: $white;
 
-  @include media-query('desktop') {
-    margin: $global-lg-padding auto;
-    padding: 0;
-    margin: 0rem;
-    border: none;
+  @include media-query(tablet) {
+    margin: 0;
   }
 }
 
@@ -73,9 +84,9 @@
     text-align: center;
   }
 
-  @include media-query('desktop') {
-    position: absolute;
-    right: $global-padding;
+  @include media-query(desktop) {
+    position: fixed;
+    right: $sliderNavWidth;
     bottom: rem-calc(14);
     background-color: transparent;
 

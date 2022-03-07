@@ -3,7 +3,10 @@ import { FunctionComponent, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Controller, A11y } from 'swiper';
+import TemplateModel from '../../../common/models/template';
+import TemplateCategoryModel from '../../../common/models/templateCategory';
 import Actions from './Actions';
+import EditSteps from './EditSteps';
 
 import styles from './styles.module.scss';
 
@@ -18,6 +21,8 @@ interface Props {
   goToNextStep(): void;
   goToPrevStep(): void;
   isLastStep: boolean;
+  template: TemplateModel;
+  templateCategories: TemplateCategoryModel[];
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -27,7 +32,9 @@ const StepsLayout: FunctionComponent<Props> = ({
   changeStep,
   goToNextStep,
   goToPrevStep,
-  isLastStep
+  isLastStep,
+  templateCategories,
+  template
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -56,12 +63,11 @@ const StepsLayout: FunctionComponent<Props> = ({
             {steps.map((step) => (
               <SwiperSlide key={step}>
                 <div className={styles.stepContainer}>
-                  <p>{step}</p>
-                  <p>{step}</p>
-                  <p>{step}</p>
-                  <p>{step}</p>
-                  <p>{step}</p>
-                  <p>{step}</p>
+                  <EditSteps
+                    step={step}
+                    templateCategories={templateCategories}
+                    template={template}
+                  />
                 </div>
               </SwiperSlide>
             ))}

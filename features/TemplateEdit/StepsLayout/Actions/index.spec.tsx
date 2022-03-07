@@ -11,8 +11,8 @@ describe('Unit | Features | Template Edit | Steps Layout | Actions', () => {
       isLastStep: false
     };
     render(<Header {...props} />);
-    const cancelAction = screen.queryByTestId('TemplateEditSteps-cancel');
-    const PrevAction = screen.queryByTestId('TemplateEditSteps-previous-step');
+    const cancelAction = screen.queryByTestId('StepsLayout-cancel');
+    const PrevAction = screen.queryByTestId('StepsLayout-previous-step');
     expect(cancelAction, 'should render "Cancel" action').toBeTruthy();
     expect(PrevAction, 'should not render "Previous Step" action').toBeFalsy();
   });
@@ -25,8 +25,8 @@ describe('Unit | Features | Template Edit | Steps Layout | Actions', () => {
       isLastStep: false
     };
     render(<Header {...props} />);
-    const cancelAction = screen.queryByTestId('TemplateEditSteps-cancel');
-    const PrevAction = screen.queryByTestId('TemplateEditSteps-previous-step');
+    const cancelAction = screen.queryByTestId('StepsLayout-cancel');
+    const PrevAction = screen.queryByTestId('StepsLayout-previous-step');
     expect(cancelAction, 'should not render "Cancel" action').toBeFalsy();
     expect(PrevAction, 'should render "Previous Step" action').toBeTruthy();
   });
@@ -39,8 +39,8 @@ describe('Unit | Features | Template Edit | Steps Layout | Actions', () => {
       isLastStep: false
     };
     render(<Header {...props} />);
-    const NextAction = screen.queryByTestId('TemplateEditSteps-next-step');
-    const SaveAction = screen.queryByTestId('TemplateEditSteps-save');
+    const NextAction = screen.queryByTestId('StepsLayout-next-step');
+    const SaveAction = screen.queryByTestId('StepsLayout-save');
     expect(SaveAction, 'should not render "Save" action').toBeFalsy();
     expect(NextAction, 'should render "Next Step" action').toBeTruthy();
   });
@@ -53,8 +53,8 @@ describe('Unit | Features | Template Edit | Steps Layout | Actions', () => {
       isLastStep: true
     };
     render(<Header {...props} />);
-    const NextAction = screen.queryByTestId('TemplateEditSteps-next-step');
-    const SaveAction = screen.queryByTestId('TemplateEditSteps-save');
+    const NextAction = screen.queryByTestId('StepsLayout-next-step');
+    const SaveAction = screen.queryByTestId('StepsLayout-save');
     expect(SaveAction, 'should render "Save" action').toBeTruthy();
     expect(NextAction, 'should not render "Next Step" action').toBeFalsy();
   });

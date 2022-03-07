@@ -4,6 +4,10 @@
   text-align: right;
   min-width: rem-calc(280);
   justify-self: flex-end;
+  height: rem-calc(80);
+  align-items: flex-end;
+  justify-content: flex-end;
+  display: flex;
 
   &__button {
     @extend %gridHeaderCreateButton;
