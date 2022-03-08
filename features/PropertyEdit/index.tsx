@@ -119,10 +119,13 @@ const PropertyEdit: FunctionComponent<Props> = ({
   };
 
   // Templates search setup
-  const { onSearchKeyDown, filteredItems, searchParam } = useSearching(
-    templates,
-    ['name', 'description']
-  );
+  const {
+    onSearchKeyDown,
+    filteredItems,
+    searchParam,
+    onClearSearch,
+    searchValue
+  } = useSearching(templates, ['name', 'description']);
   const filteredTemplates = filteredItems.map((itm) => itm as templateModel);
 
   const { categories: sortedCategories } = useCategorizedTemplates(
@@ -299,6 +302,8 @@ const PropertyEdit: FunctionComponent<Props> = ({
           updateTempatesList={updateTempatesList}
           onSearchKeyDown={onSearchKeyDown}
           searchParam={searchParam}
+          onClearSearch={onClearSearch}
+          searchQuery={searchValue}
         />
         <DeletePropertyPrompt
           isVisible={isDeletePropertyPromptVisible}

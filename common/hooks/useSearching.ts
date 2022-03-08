@@ -27,9 +27,9 @@ export default function useSearching(
   const [searchValue, setSearchValue] = useState<string>('');
 
   const onSearchChange = debounce(
-    (evt: React.ChangeEvent<HTMLInputElement>) => {
+    (value: string) => {
       // Get the keywords from inputs
-      const query = utilString.getSearchKeywords(evt.target.value);
+      const query = utilString.getSearchKeywords(value);
       setSearchParam(query);
     },
     300,
@@ -52,7 +52,7 @@ export default function useSearching(
 
   const onSearchKeyDown = (ev) => {
     setSearchValue(ev.target.value);
-    onSearchChange(ev);
+    onSearchChange(ev.target.value);
   };
 
   const onClearSearch = () => {

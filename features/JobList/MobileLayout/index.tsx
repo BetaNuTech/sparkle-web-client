@@ -1,4 +1,4 @@
-import { FunctionComponent, RefObject } from 'react';
+import { ChangeEvent, FunctionComponent, RefObject } from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
 import propertyModel from '../../../common/models/property';
@@ -20,9 +20,13 @@ interface Props {
   colors: Record<string, string>;
   configJobs: Record<string, Record<string, string> | any>;
   onSortChange?(): void;
-  onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
+  onClearSearch(): void;
   sortBy?: string;
   searchParam?: string;
+  searchQuery?: string;
   forceVisible?: boolean;
   scrollElementRef: RefObject<HTMLDivElement>;
 }
@@ -39,8 +43,10 @@ const MobileLayout: FunctionComponent<Props> = ({
   configJobs,
   onSortChange,
   onSearchKeyDown,
+  onClearSearch,
   sortBy,
   searchParam,
+  searchQuery,
   forceVisible,
   scrollElementRef
 }) => {
@@ -77,10 +83,16 @@ const MobileLayout: FunctionComponent<Props> = ({
           placeholder={`Search ${property.name} Jobs`}
           className={styles.searchMain__input}
           type="search"
-          defaultValue={searchParam}
-          onKeyDown={onSearchKeyDown}
+          value={searchQuery}
+          onChange={onSearchKeyDown}
           data-testid="job-search-box"
         />
+        {searchQuery && (
+          <button
+            className={styles.searchMain__clear}
+            onClick={onClearSearch}
+          />
+        )}
       </div>
       <aside
         className={styles.mobileJobList__sortInfoLine}
@@ -96,6 +108,7 @@ const MobileLayout: FunctionComponent<Props> = ({
         searchParam={searchParam}
         forceVisible={forceVisible}
         scrollElementRef={scrollElementRef}
+        onClearSearch={onClearSearch}
       />
     </>
   );

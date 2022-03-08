@@ -1,5 +1,5 @@
 @import '../../../../../styles/index.scss';
-$mobileTabletOffsetTop: $mobileHeaderBaseHeight + $inspectionStatusBarHeight;
+$mobileTabletOffsetTop: $mobileHeaderBaseHeight + $searchBarHeight;
 
 .container {
   @extend %stickyBoundingBox--header;
@@ -76,7 +76,7 @@ $mobileTabletOffsetTop: $mobileHeaderBaseHeight + $inspectionStatusBarHeight;
   }
 
   @include media-query(desktop) {
-    top: $inspectionStatusBarHeight;
+    top: $searchBarHeight;
   }
 }
 

@@ -26,16 +26,14 @@
   font-size: rem-calc(22);
 
   @include media-query(desktop) {
-    top: $inspectionStatusBarHeight;
+    top: $searchBarHeight;
     border-left: none;
     border-right: none;
   }
 }
 
 .action {
-  margin: $global-padding 0;
-  display: flex;
-  justify-content: center;
+  @extend %clear-search-footer-action;
 
   &__clear {
     @extend %actionButton--blackText;

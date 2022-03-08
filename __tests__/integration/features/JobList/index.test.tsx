@@ -36,7 +36,6 @@ const FORCE_VISIBLE = true;
 function render(ui: any, options: any = {}) {
   sinon.restore();
 
-
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
   return rtlRender(
     <FirebaseAppProvider firebaseConfig={firebaseConfig}>
@@ -821,13 +820,12 @@ describe('Integration | Features | Job List', () => {
 
     // Search box
     const searchBox = container.querySelector(
-      '[data-testid=job-search-box]'
+      '[data-testid=search-bar-input]'
     ) as HTMLInputElement;
 
-    searchBox.value = 'lat';
     await act(async () => {
       // We are searching for keyword "lat"
-      await fireEvent.keyDown(searchBox);
+      await fireEvent.change(searchBox, { target: { value: 'lat' } });
 
       // Wait for debounce to execute and filter results
       await new Promise((r) => setTimeout(r, 350));

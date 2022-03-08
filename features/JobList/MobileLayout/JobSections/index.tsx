@@ -12,6 +12,7 @@ interface Props {
   searchParam?: string;
   forceVisible?: boolean;
   scrollElementRef: RefObject<HTMLDivElement>;
+  onClearSearch(): void;
 }
 
 const JobSections: FunctionComponent<Props> = ({
@@ -21,7 +22,8 @@ const JobSections: FunctionComponent<Props> = ({
   configJobs,
   searchParam,
   forceVisible,
-  scrollElementRef
+  scrollElementRef,
+  onClearSearch
 }) => {
   const { sections } = useJobSections(jobs, '');
 
@@ -46,6 +48,13 @@ const JobSections: FunctionComponent<Props> = ({
           />
         ))}
       </ul>
+      {searchParam && (
+        <div className={styles.action}>
+          <button className={styles.action__clear} onClick={onClearSearch}>
+            Clear Search
+          </button>
+        </div>
+      )}
     </div>
   );
 };

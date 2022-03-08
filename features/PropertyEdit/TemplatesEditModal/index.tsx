@@ -4,6 +4,7 @@ import Modal, { Props as ModalProps } from '../../../common/Modal';
 import styles from './styles.module.scss';
 import CategoryItem from './CategoryItem';
 import LoadingHud from '../../../common/LoadingHud';
+import SearchBar from '../../../common/SearchBar';
 
 interface Props extends ModalProps {
   onClose: () => void;
@@ -14,6 +15,8 @@ interface Props extends ModalProps {
   categories: Array<any>;
   selectedTemplates: Array<any>;
   searchParam?: string;
+  onClearSearch(): void;
+  searchQuery: string;
 }
 
 const TemplateEditModal: FunctionComponent<Props> = (props) => {
@@ -23,7 +26,9 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
     selectedTemplates,
     updateTempatesList,
     searchParam,
-    onSearchKeyDown
+    onSearchKeyDown,
+    onClearSearch,
+    searchQuery
   } = props;
 
   const closeModal = () => {
@@ -53,17 +58,11 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
       >
         <h5 className={styles.modal__heading}>Select Templates</h5>
       </header>
-
-      <label className={styles.templatesEditModal__search}>
-        <input
-          placeholder="Search Templates"
-          className={styles.templatesEditModal__search__input}
-          type="search"
-          defaultValue={searchParam}
-          onKeyDown={onSearchKeyDown}
-          data-testid="templates-search-box"
-        />
-      </label>
+      <SearchBar
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
+        searchQuery={searchQuery}
+      />
 
       <div className={styles.templatesEditModal__main}>
         <ul className={styles.templatesEditModal__categoryBox}>
@@ -85,6 +84,13 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
             </h5>
           )}
         </ul>
+        {searchParam && (
+          <div className={styles.action}>
+            <button className={styles.action__clear} onClick={onClearSearch}>
+              Clear Search
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
