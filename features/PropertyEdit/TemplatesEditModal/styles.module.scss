@@ -67,31 +67,12 @@
     @extend %stickyBoundingBox--header;
     background-color: $gray-dark;
   }
+}
 
-  &__search {
-    @extend %search;
-    margin: 0;
-    padding-top: $global-sm-padding;
-    padding-bottom: $global-sm-padding;
-    background-color: $gray-lighter;
-    border-radius: 0;
+.action {
+  @extend %clear-search-footer-action;
 
-    &__input,
-    &__input[type='search'] {
-      @extend %searchInput;
-      margin: 0;
-      border-radius: $global-radius;
-      background-color: $white;
-      color: $body-font-color;
-      line-height: rem-calc(30);
-
-      &::placeholder {
-        color: $gray-lighter;
-      }
-    }
-
-    &__input:focus {
-      padding-left: rem-calc(8);
-    }
+  &__clear {
+    @extend %actionButton--blackText;
   }
 }

@@ -1,10 +1,15 @@
 @import '../../styles/index.scss';
 
-$elementHeight: $inspectionStatusBarHeight;
+$elementHeight: $searchBarHeight;
 
 .container {
   @extend %statusbar-container;
   border-bottom: 1px solid $gray-lighter;
+
+  &--sideBorders {
+    border-left: 1px solid $gray-lighter;
+    border-right: 1px solid $gray-lighter;
+  }
 }
 
 .main {

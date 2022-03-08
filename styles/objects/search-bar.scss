@@ -52,3 +52,9 @@
     color: $gray-light;
   }
 }
+
+%clear-search-footer-action {
+  margin: $global-padding 0;
+  display: flex;
+  justify-content: center;
+}

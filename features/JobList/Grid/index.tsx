@@ -12,9 +12,11 @@ interface Props {
   configJobs: Record<string, Record<string, string> | any>;
   onSortChange?(sortKey: string): void;
   onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onClearSearch(): void;
   sortBy?: string;
   sortDir?: string;
   searchParam?: string;
+  searchQuery?: string;
   filterState?: string;
   forceVisible?: boolean;
 }
@@ -26,7 +28,9 @@ const Grid: FunctionComponent<Props> = ({
   sortBy,
   sortDir,
   searchParam,
+  searchQuery,
   onSearchKeyDown,
+  onClearSearch,
   colors,
   configJobs,
   filterState,
@@ -47,8 +51,9 @@ const Grid: FunctionComponent<Props> = ({
             onSortChange={onSortChange}
             sortBy={sortBy}
             sortDir={sortDir}
-            searchParam={searchParam}
+            searchQuery={searchQuery}
             onSearchKeyDown={onSearchKeyDown}
+            onClearSearch={onClearSearch}
           />
           <div className={styles.jobList__box} data-testid="job-sections-main">
             <ul className={styles.jobList__box__list}>
@@ -67,6 +72,13 @@ const Grid: FunctionComponent<Props> = ({
               ))}
             </ul>
           </div>
+          {searchParam && (
+            <div className={styles.action}>
+              <button className={styles.action__clear} onClick={onClearSearch}>
+                Clear Search
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

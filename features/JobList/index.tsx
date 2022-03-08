@@ -61,10 +61,13 @@ const JobList: FunctionComponent<Props> = ({
   const { stateItems, filterState, changeFilterState } = useFilterState(jobs);
 
   // Job search setup
-  const { onSearchKeyDown, filteredItems, searchParam } = useSearching(
-    stateItems,
-    ['title', 'type']
-  );
+  const {
+    onSearchKeyDown,
+    filteredItems,
+    searchParam,
+    searchValue,
+    onClearSearch
+  } = useSearching(stateItems, ['title', 'type']);
   const filteredJobs = filteredItems.map((itm) => itm as jobModel);
 
   // Job sorting setup
@@ -102,7 +105,9 @@ const JobList: FunctionComponent<Props> = ({
           onSortChange={onMobileSortChange}
           sortBy={sortBy}
           onSearchKeyDown={onSearchKeyDown}
+          onClearSearch={onClearSearch}
           searchParam={searchParam}
+          searchQuery={searchValue}
           forceVisible={forceVisible}
           scrollElementRef={scrollElementRef}
         />
@@ -128,6 +133,8 @@ const JobList: FunctionComponent<Props> = ({
             sortDir={sortDir}
             onSearchKeyDown={onSearchKeyDown}
             searchParam={searchParam}
+            searchQuery={searchValue}
+            onClearSearch={onClearSearch}
             colors={colors}
             configJobs={configJobs}
             filterState={filterState}

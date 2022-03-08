@@ -130,3 +130,11 @@
     background-color: $primary-dark-color !important;
   }
 }
+
+.action {
+  @extend %clear-search-footer-action;
+
+  &__clear {
+    @extend %actionButton--blackText;
+  }
+}

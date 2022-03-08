@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { ChangeEvent, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 
@@ -7,17 +8,24 @@ interface Props {
     ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
   ) => void;
   onClearSearch(): void;
+  sideBorders?: boolean;
 }
 
 const SearchBar: FunctionComponent<Props> = ({
   searchQuery,
   onSearchKeyDown,
-  onClearSearch
+  onClearSearch,
+  sideBorders
 }) => {
   const showClearSearch = Boolean(searchQuery);
 
   return (
-    <div className={styles.container}>
+    <div
+      className={clsx(
+        styles.container,
+        sideBorders && styles['container--sideBorders']
+      )}
+    >
       <div className={styles.main}>
         <div className={styles.main__search}>
           <input
@@ -46,6 +54,6 @@ const SearchBar: FunctionComponent<Props> = ({
   );
 };
 
-SearchBar.defaultProps = {};
+SearchBar.defaultProps = { sideBorders: false };
 
 export default SearchBar;

@@ -1,34 +1,33 @@
 import { FunctionComponent } from 'react';
 import clsx from 'clsx';
-import styles from './styles.module.scss';
+import SearchBar from '../../../../common/SearchBar';
+
 import parentStyles from '../styles.module.scss';
 
 interface Props {
   onSortChange?(sortKey: string): void;
   onSearchKeyDown?(ev: React.KeyboardEvent<HTMLInputElement>): void;
+  onClearSearch(): void;
   sortBy?: string;
   sortDir?: string;
-  searchParam?: string;
+  searchQuery?: string;
 }
 
 const GridHeader: FunctionComponent<Props> = ({
   onSortChange,
   onSearchKeyDown,
+  onClearSearch,
   sortBy,
   sortDir,
-  searchParam
+  searchQuery
 }) => (
   <>
-    <label className={styles.propertyJobs__search}>
-      <input
-        placeholder="Search Jobs"
-        className={styles.propertyJobs__search__input}
-        type="search"
-        defaultValue={searchParam}
-        onKeyDown={onSearchKeyDown}
-        data-testid="job-search-box"
-      />
-    </label>
+    <SearchBar
+      onSearchKeyDown={onSearchKeyDown}
+      searchQuery={searchQuery}
+      onClearSearch={onClearSearch}
+      sideBorders={true} // eslint-disable-line react/jsx-boolean-value
+    />
     <header
       className={clsx(parentStyles.propertyJobs__gridHeader)}
       data-testid="grid-header"
