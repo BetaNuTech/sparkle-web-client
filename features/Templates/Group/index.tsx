@@ -14,6 +14,7 @@ interface Props {
   forceVisible: boolean;
   scrollElementRef: RefObject<HTMLDivElement>;
   onCreateTemplate(templateId?: string): void;
+  onDeleteTemplate(templateId?: string): void;
   isMobile: boolean;
   searchQuery: string;
   onSearchKeyDown: (
@@ -31,6 +32,7 @@ const TemplatesGroup: FunctionComponent<Props> = ({
   forceVisible,
   scrollElementRef,
   onCreateTemplate,
+  onDeleteTemplate,
   isMobile,
   searchQuery,
   onSearchKeyDown,
@@ -61,6 +63,7 @@ const TemplatesGroup: FunctionComponent<Props> = ({
                 canCreate={canCreate}
                 forceVisible={forceVisible}
                 onCreateTemplate={onCreateTemplate}
+                onDeleteTemplate={onDeleteTemplate}
               />
             ))}
           </ul>

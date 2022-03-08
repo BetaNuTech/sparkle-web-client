@@ -15,6 +15,7 @@ interface Props {
   canCreate: boolean;
   forceVisible: boolean;
   onCreateTemplate(templateId?: string): void;
+  onDeleteTemplate(templateId?: string): void;
 }
 
 const TemplateItem: FunctionComponent<Props> = ({
@@ -24,7 +25,8 @@ const TemplateItem: FunctionComponent<Props> = ({
   canDelete,
   canCreate,
   forceVisible,
-  onCreateTemplate
+  onCreateTemplate,
+  onDeleteTemplate
 }) => {
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
@@ -57,6 +59,7 @@ const TemplateItem: FunctionComponent<Props> = ({
                 canDelete={canDelete}
                 templateId={template.id}
                 onCopy={() => onCreateTemplate(template.id)}
+                onDelete={() => onDeleteTemplate(template.id)}
               />
             )}
           </div>

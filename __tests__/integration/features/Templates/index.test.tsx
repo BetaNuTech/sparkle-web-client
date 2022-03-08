@@ -73,10 +73,43 @@ describe('Integration | features | Templates', () => {
     expect(actual).toEqual(expected);
   });
 
+  it('should request to copy template', async () => {
+    const expected = templateA.id;
+    const deleteRequest = sinon.stub(templatesApi, 'deleteRecord').resolves();
+
+    const props = {
+      user: admin,
+      templates: [templateA],
+      templateCategories,
+      sendNotification: sinon.spy(),
+      isMobile: false,
+      isOnline: true,
+      forceVisible: true
+    };
+    render(<Templates {...props} />);
+
+    await act(async () => {
+      const deleteAction = screen.queryAllByTestId(
+        'template-item-dropdown-delete-action'
+      );
+      fireEvent.click(deleteAction[0]);
+      const deletePrompt = screen.queryByTestId('template-delete-prompt');
+      await waitFor(() => deletePrompt);
+      const confirmButton = screen.queryByTestId('btn-confirm-delete-template');
+      fireEvent.click(confirmButton);
+      await waitFor(() => deleteRequest.called);
+    });
+
+    const actual = deleteRequest.getCall(0).args[0];
+    expect(deleteRequest.called).toBeTruthy();
+    expect(actual).toEqual(expected);
+  });
+
   test('should call send notification method and send error reports for API error response', async () => {
     const expected = true;
     const expectedErrorReport =
-      'Error: features: DeficientItemEdit: hooks: useCreateTemplate: handleErrorResponse: Error: Something went wrong';
+      // eslint-disable-next-line max-len
+      'Error: features: DeficientItemEdit: hooks: useTemplatesActions: handleErrorResponse: Error: Something went wrong';
     const sendNotification = sinon.spy();
     sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
     const errorStub = sinon.stub(errorReports, 'send').callsFake(() => true);
