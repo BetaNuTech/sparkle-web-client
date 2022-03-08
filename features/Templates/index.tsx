@@ -19,8 +19,9 @@ import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates'
 import useSearching from '../../common/hooks/useSearching';
 import ManageCategoriesModal from './ManageCategoriesModal';
 import { uuid } from '../../common/utils/uuidv4';
-import useCreateTemplate from './hooks/useCreateTemplate';
+import useTemplatesActions from './hooks/useTemplatesActions';
 import LoadingHud from '../../common/LoadingHud';
+import DeleteTemplatePrompt from './DeletePrompt';
 
 type userNotifications = (message: string, options?: any) => any;
 interface Props {
@@ -46,6 +47,8 @@ const Templates: FunctionComponent<Props> = ({
 }) => {
   const [isVisibleCategoryModal, setIsVisibleCategoryModal] = useState(false);
   const [unpublishedCategories, setUnpublishedCategories] = useState([]);
+  const [deleteTemplateId, setDeleteTemplateId] = useState(null);
+  const [deletedIds, setDeletedIds] = useState([]);
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -56,8 +59,11 @@ const Templates: FunctionComponent<Props> = ({
     minWidth: breakpoints.desktop.minWidth
   });
 
-  const { createTemplate, isLoading: isCreatingTemplate } =
-    useCreateTemplate(sendNotification);
+  const {
+    createTemplate,
+    deleteTemplate,
+    isLoading: isCreatingTemplate
+  } = useTemplatesActions(sendNotification);
 
   const scrollElementRef = useRef();
   usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
@@ -65,7 +71,11 @@ const Templates: FunctionComponent<Props> = ({
   // Templates search setup
   const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
     useSearching(templates, ['name', 'description']);
-  const filteredTemplates = filteredItems.map((itm) => itm as TemplateModel);
+
+  // remove deleted items from list and assign types
+  const filteredTemplates = filteredItems
+    .filter((item) => deletedIds.indexOf(item.id) < 0)
+    .map((itm) => itm as TemplateModel);
 
   const { categories: categorizedTemplate } = useCategorizedTemplates(
     templateCategories,
@@ -82,6 +92,25 @@ const Templates: FunctionComponent<Props> = ({
   const onCloseCategoriesModal = () => {
     setIsVisibleCategoryModal(false);
     setUnpublishedCategories([]);
+  };
+
+  const onDeleteTemplate = (templateId: string) => {
+    setDeleteTemplateId(templateId);
+  };
+
+  const onCloseDeletePrompt = () => {
+    setDeleteTemplateId(null);
+  };
+
+  const onConfirmDeleteTemplate = async () => {
+    setDeletedIds([...deletedIds, deleteTemplateId]);
+    setDeleteTemplateId(null);
+    const { isDeleted, templateId } = await deleteTemplate(deleteTemplateId);
+    // if template is not deleted
+    // remove it from deleted Ids list
+    if (!isDeleted) {
+      setDeletedIds([...deletedIds].filter((id) => id !== templateId));
+    }
   };
 
   // Template permissions check
@@ -134,10 +163,17 @@ const Templates: FunctionComponent<Props> = ({
         forceVisible={forceVisible}
         scrollElementRef={scrollElementRef}
         onCreateTemplate={createTemplate}
+        onDeleteTemplate={onDeleteTemplate}
         isMobile={isMobile}
         searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
+      />
+
+      <DeleteTemplatePrompt
+        isVisible={Boolean(deleteTemplateId)}
+        onClose={onCloseDeletePrompt}
+        onConfirm={onConfirmDeleteTemplate}
       />
     </>
   );

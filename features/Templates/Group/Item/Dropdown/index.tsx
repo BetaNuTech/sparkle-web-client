@@ -13,6 +13,7 @@ interface Props {
   canCreate: boolean;
   templateId: string;
   onCopy(): void;
+  onDelete(): void;
 }
 
 const TemplateItemDropDown: FunctionComponent<Props> = ({
@@ -21,7 +22,8 @@ const TemplateItemDropDown: FunctionComponent<Props> = ({
   canDelete,
   canCreate,
   templateId,
-  onCopy
+  onCopy,
+  onDelete
 }) => (
   <div className={styles.container} data-testid="template-item-dropdown">
     <ActionsIcon />
@@ -51,6 +53,7 @@ const TemplateItemDropDown: FunctionComponent<Props> = ({
         <DropdownButton
           type="button"
           data-testid="template-item-dropdown-delete-action"
+          onClick={onDelete}
         >
           Delete
         </DropdownButton>
