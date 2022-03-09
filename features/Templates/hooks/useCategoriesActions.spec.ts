@@ -112,27 +112,27 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
     const tests = [
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorUnauthorized',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorUnauthorized',
         message: 'sends user authorization not accepted error report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorNotFound',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorNotFound',
         message: 'sends record not found error report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorServerInternal',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorServerInternal',
         message: 'sends system faliure error report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorForbidden',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorForbidden',
         message: 'sends user lacks permission report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorBadRequest',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorBadRequest',
         message: 'sends user bad request report'
       }
     ];
@@ -255,27 +255,27 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
     const tests = [
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorUnauthorized',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorUnauthorized',
         message: 'sends unauthorized report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorNotFound',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorNotFound',
         message: 'sends record not found report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorServerInternal',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorServerInternal',
         message: 'sends system faliure report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorForbidden',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorForbidden',
         message: 'sends forbidden report'
       },
       {
         expected:
-          'Error: features: Templates: hooks: useCategories: handleErrorResponse: ErrorBadRequest',
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorBadRequest',
         message: 'sends bad request report'
       }
     ];

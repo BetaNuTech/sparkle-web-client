@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { FormState, UseFormRegister } from 'react-hook-form';
+import clsx from 'clsx';
 import ErrorLabel from '../../../../../common/ErrorLabel';
 import FormInputs from '../../FormInputs';
 import styles from '../../../styles.module.scss';
@@ -7,7 +8,7 @@ import styles from '../../../styles.module.scss';
 interface Props {
   defaultChecked: boolean;
   formState: FormState<FormInputs>;
-  apiErrorVendorInsurance:string;
+  apiErrorVendorInsurance: string;
 }
 
 const InsuranceCheckbox = forwardRef<
@@ -15,7 +16,7 @@ const InsuranceCheckbox = forwardRef<
   Props & ReturnType<UseFormRegister<any>>
 >(({ defaultChecked, formState, apiErrorVendorInsurance, ...props }, ref) => (
   <div className={styles.form__group}>
-    <label className={styles.form__group__labelAlign}>
+    <label className={clsx(styles.form__group__labelAlign, '-flex-wrap')}>
       <input
         type="checkbox"
         name="vendorInsurance"
@@ -24,9 +25,14 @@ const InsuranceCheckbox = forwardRef<
         {...props}
       />
       Vendor Has Insurance
+      <div className={styles.checkboxInfo}>(required)</div>
     </label>
     <div className={styles.form__group__control}>
-      <ErrorLabel formName="vendorInsurance" errors={formState.errors} message={apiErrorVendorInsurance} />
+      <ErrorLabel
+        formName="vendorInsurance"
+        errors={formState.errors}
+        message={apiErrorVendorInsurance}
+      />
     </div>
   </div>
 ));

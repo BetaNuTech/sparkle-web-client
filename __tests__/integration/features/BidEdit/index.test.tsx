@@ -333,7 +333,7 @@ describe('Integration | Features | Bid Edit', () => {
         property={fullProperty}
         user={admin}
         job={openImprovementJob}
-        bid={mockBids[0]}
+        bid={{ ...mockBids[0], vendorW9: true, vendorInsurance: true }}
         otherBids={mockBids.splice(1)}
         isOnline={IS_ONLINE}
       />,

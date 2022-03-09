@@ -342,3 +342,10 @@
   align-items: center;
   text-decoration: underline;
 }
+
+.checkboxInfo {
+  width: 100%;
+  padding-left: rem-calc(21);
+  color: $gray-3;
+  font-weight: normal;
+}

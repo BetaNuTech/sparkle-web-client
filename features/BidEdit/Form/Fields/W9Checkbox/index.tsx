@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 import { FormState, UseFormRegister } from 'react-hook-form';
+import clsx from 'clsx';
 import ErrorLabel from '../../../../../common/ErrorLabel';
 import FormInputs from '../../FormInputs';
 import styles from '../../../styles.module.scss';
@@ -7,7 +8,7 @@ import styles from '../../../styles.module.scss';
 interface Props {
   defaultChecked: boolean;
   formState: FormState<FormInputs>;
-  apiErrorVendorW9:string;
+  apiErrorVendorW9: string;
 }
 
 const W9Checkbox = forwardRef<
@@ -15,7 +16,7 @@ const W9Checkbox = forwardRef<
   Props & ReturnType<UseFormRegister<any>>
 >(({ defaultChecked, formState, apiErrorVendorW9, ...props }, ref) => (
   <div className={styles.form__group}>
-    <label className={styles.form__group__labelAlign}>
+    <label className={clsx(styles.form__group__labelAlign, '-flex-wrap')}>
       <input
         type="checkbox"
         name="vendorW9"
@@ -24,9 +25,14 @@ const W9Checkbox = forwardRef<
         {...props}
       />
       Vendor Has W9
+      <div className={styles.checkboxInfo}>(required)</div>
     </label>
     <div className={styles.form__group__control}>
-      <ErrorLabel formName="vendorW9" errors={formState.errors} message={apiErrorVendorW9} />
+      <ErrorLabel
+        formName="vendorW9"
+        errors={formState.errors}
+        message={apiErrorVendorW9}
+      />
     </div>
   </div>
 ));
