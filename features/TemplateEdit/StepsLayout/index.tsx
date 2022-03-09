@@ -59,6 +59,7 @@ const StepsLayout: FunctionComponent<Props> = ({
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) => changeStep(swiper.activeIndex)}
             allowTouchMove={isMobile}
+            autoHeight={true} // eslint-disable-line react/jsx-boolean-value
           >
             {steps.map((step) => (
               <SwiperSlide key={step}>

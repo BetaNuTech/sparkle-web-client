@@ -20,7 +20,7 @@ const EditSteps: FunctionComponent<Props> = ({
 }) => {
   switch (step) {
     case 'sections':
-      return <Sections />;
+      return <Sections template={template} />;
     case 'section-items':
       return <SectionItems />;
     case 'items':
