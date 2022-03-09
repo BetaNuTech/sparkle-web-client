@@ -626,7 +626,7 @@ describe('Unit | Features | Bid Edit | Form', () => {
       isStaging: true,
       isNewBid: false,
       user,
-      bid: openBid,
+      bid: { ...openBid, vendorW9: true, vendorInsurance: true },
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       toggleNavOpen: () => {},
       // eslint-disable-next-line @typescript-eslint/no-empty-function

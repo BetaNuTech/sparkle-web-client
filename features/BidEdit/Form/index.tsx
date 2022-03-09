@@ -156,7 +156,10 @@ const BidForm: FunctionComponent<Props> = ({
   };
 
   const canApproveEnabled =
-    canApprove && Object.keys(formState.errors).length === 0;
+    canApprove &&
+    Object.keys(formState.errors).length === 0 &&
+    formData.vendorInsurance &&
+    formData.vendorW9;
 
   const formBid = (({
     vendor,

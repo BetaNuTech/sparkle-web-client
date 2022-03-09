@@ -6,6 +6,7 @@ import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorItem from '../../../common/models/errors/item';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import ErrorConflictingRequest from '../../../common/models/errors/conflictingRequest';
 
 const PREFIX = 'features: EditBid: hooks: useBidForm:';
 
@@ -76,6 +77,15 @@ export default function useBidForm(
       );
     } else if (apiError instanceof ErrorBadRequest) {
       setErrors(apiError.errors);
+    } else if (apiError instanceof ErrorConflictingRequest) {
+      // combine all errors details
+      const errMsg = (apiError.errors || [])
+        .map((err) => err.detail)
+        .join(', ');
+
+      sendNotification(errMsg, {
+        type: 'error'
+      });
     } else {
       // User not allowed to create or update inspection
       sendNotification(

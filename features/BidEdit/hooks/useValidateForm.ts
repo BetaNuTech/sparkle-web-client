@@ -71,7 +71,9 @@ const useValidateForm = (
       costMax: apiBid.costMax,
       scope: apiBid.scope,
       startAt: startAtProcessed,
-      completeAt: completeAtProcessed
+      completeAt: completeAtProcessed,
+      vendorInsurance: apiBid.vendorInsurance,
+      vendorW9: apiBid.vendorW9
     }
   });
 
