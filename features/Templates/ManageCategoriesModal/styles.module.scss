@@ -8,6 +8,10 @@
   max-width: rem-calc(500);
 }
 
+.content {
+  padding: $global-padding 0 $global-lg-padding;
+}
+
 .action {
   display: flex;
   justify-content: center;

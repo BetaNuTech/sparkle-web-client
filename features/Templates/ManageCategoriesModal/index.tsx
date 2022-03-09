@@ -16,6 +16,9 @@ interface Props extends ModalProps {
   canUpdateCategory: boolean;
   canDeleteCategory: boolean;
   onCreateNewCategory(): void;
+  onCreateCategory(category: TemplateCategoryModel): void;
+  updateCategory(category: TemplateCategoryModel): void;
+  savingCategories: string;
 }
 
 const ManageCategoriesModal: FunctionComponent<Props> = ({
@@ -25,7 +28,10 @@ const ManageCategoriesModal: FunctionComponent<Props> = ({
   canCreateCategory,
   canUpdateCategory,
   canDeleteCategory,
-  onCreateNewCategory
+  onCreateNewCategory,
+  onCreateCategory,
+  updateCategory,
+  savingCategories
 }) => (
   <div className={styles.modal} data-testid="manage-categories-modal">
     <button
@@ -45,26 +51,36 @@ const ManageCategoriesModal: FunctionComponent<Props> = ({
     </header>
 
     <div className={baseStyles.modal__main}>
-      <div className={baseStyles.modal__main__content}>
+      <div className={clsx(baseStyles.modal__main__content, styles.content)}>
         <ul>
-          {templateCategories.map((category) => (
-            <Item
-              key={category.id}
-              category={category}
-              canUpdateCategory={canUpdateCategory}
-              canDeleteCategory={canDeleteCategory}
-            />
-          ))}
+          {templateCategories.map((category) => {
+            const isSaving = savingCategories.indexOf(category.id) > -1;
+            return (
+              <Item
+                key={category.id}
+                category={category}
+                canUpdateCategory={canUpdateCategory}
+                canDeleteCategory={canDeleteCategory}
+                onSave={updateCategory}
+                isSaving={isSaving}
+              />
+            );
+          })}
 
-          {unpublishedCategories.map((category) => (
-            <Item
-              key={category.id}
-              category={category}
-              canUpdateCategory={canUpdateCategory}
-              canDeleteCategory={canDeleteCategory}
-              isUnpublished={true} // eslint-disable-line react/jsx-boolean-value
-            />
-          ))}
+          {unpublishedCategories.map((category) => {
+            const isSaving = savingCategories.indexOf(category.id) > -1;
+            return (
+              <Item
+                key={category.id}
+                category={category}
+                canUpdateCategory={canUpdateCategory}
+                canDeleteCategory={canDeleteCategory}
+                isUnpublished={true} // eslint-disable-line react/jsx-boolean-value
+                onSave={onCreateCategory}
+                isSaving={isSaving}
+              />
+            );
+          })}
         </ul>
         {canCreateCategory && (
           <div className={styles.action}>

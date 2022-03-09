@@ -34,16 +34,33 @@
 
 .row {
   @extend %gridTableRow;
-  padding: $global-md-padding 0;
+  padding: 0 $global-lg-padding;
   min-height: 0;
+  position: relative;
+  border-bottom: none;
 
   &__column {
     flex: 0 1 auto;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
+    padding: $global-md-padding 0;
+    border-bottom: rem-calc(1) solid $gray-lighter;
     &:first-child {
       flex: 1;
     }
+  }
+  &__loader {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba($black, 0.38);
+    color: $white;
+    font-weight: $font-weight-bold;
   }
 }

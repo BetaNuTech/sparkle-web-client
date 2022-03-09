@@ -8,13 +8,17 @@ interface Props {
   canUpdateCategory: boolean;
   canDeleteCategory: boolean;
   isUnpublished?: boolean;
+  onSave(category: TemplateCategoryModel): void;
+  isSaving: boolean;
 }
 
 const CategoryItem: FunctionComponent<Props> = ({
   category,
   canUpdateCategory,
   canDeleteCategory,
-  isUnpublished
+  isUnpublished,
+  onSave,
+  isSaving
 }) => {
   const [updates, setUpdates] = useState('');
   const isUpdated = useMemo(
@@ -36,10 +40,11 @@ const CategoryItem: FunctionComponent<Props> = ({
               autoFocus={isUnpublished} // eslint-disable-line jsx-a11y/no-autofocus
               data-testid="category-input"
             />
-            {isUpdated && (
+            {isUpdated && !isSaving && (
               <button
                 className={styles.field__action}
                 data-testid="category-save-action"
+                onClick={() => onSave({ id: category.id, name: updates })}
               >
                 Save
               </button>
@@ -57,6 +62,7 @@ const CategoryItem: FunctionComponent<Props> = ({
           <Dropdown />
         </div>
       )}
+      {isSaving && <div className={styles.row__loader}>Saving...</div>}
     </li>
   );
 };

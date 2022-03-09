@@ -21,6 +21,7 @@ import ManageCategoriesModal from './ManageCategoriesModal';
 import { uuid } from '../../common/utils/uuidv4';
 import useTemplatesActions from './hooks/useTemplatesActions';
 import LoadingHud from '../../common/LoadingHud';
+import useCategoriesActions from './hooks/useCategoriesActions';
 import DeleteTemplatePrompt from './DeletePrompt';
 
 type userNotifications = (message: string, options?: any) => any;
@@ -46,7 +47,6 @@ const Templates: FunctionComponent<Props> = ({
   sendNotification
 }) => {
   const [isVisibleCategoryModal, setIsVisibleCategoryModal] = useState(false);
-  const [unpublishedCategories, setUnpublishedCategories] = useState([]);
   const [deleteTemplateId, setDeleteTemplateId] = useState(null);
   const [deletedIds, setDeletedIds] = useState([]);
 
@@ -65,6 +65,14 @@ const Templates: FunctionComponent<Props> = ({
     isLoading: isCreatingTemplate
   } = useTemplatesActions(sendNotification);
 
+  const {
+    createCategory,
+    updateCategory,
+    savingCategories,
+    unpublishedCategories,
+    setUnpublishedCategories
+  } = useCategoriesActions(sendNotification);
+
   const scrollElementRef = useRef();
   usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
 
@@ -82,6 +90,11 @@ const Templates: FunctionComponent<Props> = ({
     filteredTemplates
   );
 
+  // sort categories by name in ascending order
+  const sortedCategories = templateCategories.sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
   const onCreateNewCategory = () => {
     setUnpublishedCategories([
       ...unpublishedCategories,
@@ -92,6 +105,10 @@ const Templates: FunctionComponent<Props> = ({
   const onCloseCategoriesModal = () => {
     setIsVisibleCategoryModal(false);
     setUnpublishedCategories([]);
+  };
+
+  const onCreateCategory = (category: TemplateCategoryModel) => {
+    createCategory(category);
   };
 
   const onDeleteTemplate = (templateId: string) => {
@@ -106,6 +123,7 @@ const Templates: FunctionComponent<Props> = ({
     setDeletedIds([...deletedIds, deleteTemplateId]);
     setDeleteTemplateId(null);
     const { isDeleted, templateId } = await deleteTemplate(deleteTemplateId);
+
     // if template is not deleted
     // remove it from deleted Ids list
     if (!isDeleted) {
@@ -147,12 +165,15 @@ const Templates: FunctionComponent<Props> = ({
       <ManageCategoriesModal
         isVisible={isVisibleCategoryModal}
         onClose={onCloseCategoriesModal}
-        templateCategories={templateCategories}
+        templateCategories={sortedCategories}
         unpublishedCategories={unpublishedCategories}
         canCreateCategory={canCreateCategory}
         canUpdateCategory={canUpdateCategory}
         canDeleteCategory={canDeleteCategory}
         onCreateNewCategory={onCreateNewCategory}
+        onCreateCategory={onCreateCategory}
+        updateCategory={updateCategory}
+        savingCategories={savingCategories}
       />
       <TemplatesGroup
         isOnline={isOnline}

@@ -13,7 +13,8 @@ describe('Unit | Features | Templates | Manage Categories Modal', () => {
       onClose,
       templateCategories: [categoryA, categoryB],
       unpublishedCategories: [],
-      canCreateCategory: false
+      canCreateCategory: false,
+      savingCategories: []
     };
     render(<BulkUpdateModal {...props} />);
 
