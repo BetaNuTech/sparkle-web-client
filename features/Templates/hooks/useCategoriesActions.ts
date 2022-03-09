@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import categoriesApi from '../../../common/services/api/categoreis';
+import categoriesApi from '../../../common/services/api/categories';
 import errorReports from '../../../common/services/api/errorReports';
 import BaseError from '../../../common/models/errors/baseError';
 import TemplateCategoryModel from '../../../common/models/templateCategory';
@@ -10,9 +10,11 @@ const PREFIX = 'features: Templates: hooks: useCategories:';
 interface useCategoriesActionsResult {
   createCategory(category: TemplateCategoryModel): void;
   updateCategory(category: TemplateCategoryModel): void;
+  deleteCategory(category: TemplateCategoryModel): void;
   savingCategories: string[];
   unpublishedCategories: TemplateCategoryModel[];
   setUnpublishedCategories(catIds: TemplateCategoryModel[]): void;
+  deletedCategories: string[];
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -22,6 +24,16 @@ export default function useCategoriesActions(
 ): useCategoriesActionsResult {
   const [savingCategories, setSavingCategories] = useState([]);
   const [unpublishedCategories, setUnpublishedCategories] = useState([]);
+  const [deletedCategories, setDeletedCategories] = useState([]);
+
+  const sendErrorReports = (error: BaseError) => {
+    // Log issue and send error report
+    // eslint-disable-next-line no-case-declarations
+    const wrappedErr = Error(`${PREFIX} sendErrorReports: ${error}`);
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    errorReports.send(wrappedErr);
+  };
 
   const handleErrorResponse = (error: BaseError, type: string) => {
     if (error instanceof ErrorConflictingRequest) {
@@ -35,13 +47,7 @@ export default function useCategoriesActions(
       sendNotification(`Failed to ${type} category, please try again`, {
         type: 'error'
       });
-
-      // Log issue and send error report
-      // eslint-disable-next-line no-case-declarations
-      const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${error}`);
-
-      // eslint-disable-next-line import/no-named-as-default-member
-      errorReports.send(wrappedErr);
+      sendErrorReports(error);
     }
   };
 
@@ -52,8 +58,8 @@ export default function useCategoriesActions(
       await categoriesApi.createRecord(category.name);
       // once category is created
       // remove it from unpublished categories
-      setUnpublishedCategories(
-        [...unpublishedCategories].filter((cat) => cat.id !== category.id)
+      setUnpublishedCategories((categories) =>
+        [...categories].filter((cat) => cat.id !== category.id)
       );
     } catch (err) {
       handleErrorResponse(err, 'create');
@@ -82,11 +88,32 @@ export default function useCategoriesActions(
     );
   };
 
+  const deleteCategory = async (category: TemplateCategoryModel) => {
+    setDeletedCategories([...deletedCategories, category.id]);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await categoriesApi.deleteRecord(category.id);
+    } catch (err) {
+      sendErrorReports(err);
+      setDeletedCategories(
+        [...deletedCategories].filter((id) => id !== category.id)
+      );
+      sendNotification(
+        `Failed to delete category: ${category.name}, please try again`,
+        {
+          type: 'error'
+        }
+      );
+    }
+  };
+
   return {
     createCategory,
     updateCategory,
+    deleteCategory,
     savingCategories,
     unpublishedCategories,
-    setUnpublishedCategories
+    setUnpublishedCategories,
+    deletedCategories
   };
 }

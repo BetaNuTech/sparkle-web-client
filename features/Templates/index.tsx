@@ -68,9 +68,11 @@ const Templates: FunctionComponent<Props> = ({
   const {
     createCategory,
     updateCategory,
+    deleteCategory,
     savingCategories,
     unpublishedCategories,
-    setUnpublishedCategories
+    setUnpublishedCategories,
+    deletedCategories
   } = useCategoriesActions(sendNotification);
 
   const scrollElementRef = useRef();
@@ -91,15 +93,21 @@ const Templates: FunctionComponent<Props> = ({
   );
 
   // sort categories by name in ascending order
-  const sortedCategories = templateCategories.sort((a, b) =>
-    a.name.localeCompare(b.name)
-  );
+  const sortedCategories = templateCategories
+    .filter((cat) => deletedCategories.includes(cat.id) === false)
+    .sort((a, b) => a.name.localeCompare(b.name));
 
   const onCreateNewCategory = () => {
     setUnpublishedCategories([
       ...unpublishedCategories,
       { id: uuid(), name: '' }
     ]);
+  };
+
+  const onRemoveNewCategory = (category: TemplateCategoryModel) => {
+    setUnpublishedCategories(
+      [...unpublishedCategories].filter((cat) => cat.id !== category.id)
+    );
   };
 
   const onCloseCategoriesModal = () => {
@@ -174,6 +182,8 @@ const Templates: FunctionComponent<Props> = ({
         onCreateCategory={onCreateCategory}
         updateCategory={updateCategory}
         savingCategories={savingCategories}
+        deleteCategory={deleteCategory}
+        onRemoveNewCategory={onRemoveNewCategory}
       />
       <TemplatesGroup
         isOnline={isOnline}

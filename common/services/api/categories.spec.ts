@@ -1,5 +1,5 @@
 import sinon from 'sinon';
-import service from './categoreis';
+import service from './categories';
 import currentUser from '../../utils/currentUser';
 
 const API_CATEGORY_RESULT = {

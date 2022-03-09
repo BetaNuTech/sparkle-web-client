@@ -18,6 +18,8 @@ interface Props extends ModalProps {
   onCreateNewCategory(): void;
   onCreateCategory(category: TemplateCategoryModel): void;
   updateCategory(category: TemplateCategoryModel): void;
+  deleteCategory(category: TemplateCategoryModel): void;
+  onRemoveNewCategory(category: TemplateCategoryModel): void;
   savingCategories: string;
 }
 
@@ -31,6 +33,8 @@ const ManageCategoriesModal: FunctionComponent<Props> = ({
   onCreateNewCategory,
   onCreateCategory,
   updateCategory,
+  deleteCategory,
+  onRemoveNewCategory,
   savingCategories
 }) => (
   <div className={styles.modal} data-testid="manage-categories-modal">
@@ -62,6 +66,7 @@ const ManageCategoriesModal: FunctionComponent<Props> = ({
                 canUpdateCategory={canUpdateCategory}
                 canDeleteCategory={canDeleteCategory}
                 onSave={updateCategory}
+                deleteCategory={deleteCategory}
                 isSaving={isSaving}
               />
             );
@@ -77,6 +82,7 @@ const ManageCategoriesModal: FunctionComponent<Props> = ({
                 canDeleteCategory={canDeleteCategory}
                 isUnpublished={true} // eslint-disable-line react/jsx-boolean-value
                 onSave={onCreateCategory}
+                deleteCategory={onRemoveNewCategory}
                 isSaving={isSaving}
               />
             );

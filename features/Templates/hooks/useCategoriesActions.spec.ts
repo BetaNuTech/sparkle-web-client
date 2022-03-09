@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils';
 import useCategoriesActions from './useCategoriesActions';
 import currentUser from '../../../common/utils/currentUser';
 import errorReports from '../../../common/services/api/errorReports';
-import categoreisAPI from '../../../common/services/api/categoreis';
+import categoriesApi from '../../../common/services/api/categories';
 import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
 import ErrorNotFound from '../../../common/models/errors/notFound';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
@@ -24,7 +24,7 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
 
     // Stub create response
     sinon
-      .stub(categoreisAPI, 'createRecord')
+      .stub(categoriesApi, 'createRecord')
       .onCall(0)
       .rejects(new ErrorUnauthorized())
       .onCall(1)
@@ -97,7 +97,7 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
 
     // Stub create response
     sinon
-      .stub(categoreisAPI, 'createRecord')
+      .stub(categoriesApi, 'createRecord')
       .onCall(0)
       .rejects(new ErrorUnauthorized())
       .onCall(1)
@@ -167,7 +167,7 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
 
     // Stub create response
     sinon
-      .stub(categoreisAPI, 'updateRecord')
+      .stub(categoriesApi, 'updateRecord')
       .onCall(0)
       .rejects(new ErrorUnauthorized())
       .onCall(1)
@@ -240,7 +240,7 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
 
     // Stub update response
     sinon
-      .stub(categoreisAPI, 'updateRecord')
+      .stub(categoriesApi, 'updateRecord')
       .onCall(0)
       .rejects(new ErrorUnauthorized())
       .onCall(1)
@@ -289,6 +289,129 @@ describe('Unit | Features | Templates | Hooks | Use Categories Actions', () => {
       await act(async () => {
         // eslint-disable-next-line
         result.current.updateCategory({
+          id: 'cat-1',
+          name: 'category-1'
+        });
+
+        // eslint-disable-next-line no-await-in-loop
+        await waitFor(() => sendReport.called);
+      });
+
+      const actual = `${((sendReport.getCall(index) || {}).args || [])[0]}`;
+      expect(actual, message).toEqual(expected);
+    }
+  });
+
+  // eslint-disable-next-line max-len
+  test('should show user notification with appropriate message when the delete API responds with an error', async () => {
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    sinon.stub(errorReports, 'send').callsFake(() => true);
+
+    // Stub create response
+    sinon
+      .stub(categoriesApi, 'deleteRecord')
+      .onCall(0)
+      .rejects(new ErrorUnauthorized())
+      .onCall(1)
+      .rejects(new ErrorNotFound())
+      .onCall(2)
+      .rejects(new ErrorServerInternal())
+      .onCall(3)
+      .rejects(new ErrorForbidden());
+
+    const tests = [
+      {
+        expected: 'Failed to delete category: category-1, please try again',
+        message: 'shows generic error message for unauthorized error'
+      },
+      {
+        expected: 'Failed to delete category: category-1, please try again',
+        message: 'shows generic error message when record not found error'
+      },
+      {
+        expected: 'Failed to delete category: category-1, please try again',
+        message: 'shows generic error message for system failure error'
+      },
+      {
+        expected: 'Failed to delete category: category-1, please try again',
+        message: 'shows generic error message when user lacks permission'
+      }
+    ];
+
+    const { result } = renderHook(() => useCategoriesActions(sendNotification));
+
+    // eslint-disable-next-line
+    for (const index in tests) {
+      const { message, expected } = tests[index];
+
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => {
+        // eslint-disable-next-line
+        result.current.deleteCategory({
+          id: 'cat-1',
+          name: 'category-1'
+        });
+        // eslint-disable-next-line no-await-in-loop
+        await waitFor(() => sendNotification.called);
+      });
+
+      const actual = `${
+        ((sendNotification.getCall(index) || {}).args || [])[0]
+      }`;
+      expect(actual, message).toEqual(expected);
+    }
+  });
+
+  test('should send all possible error reports for delete record API failures', async () => {
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    const sendReport = sinon.stub(errorReports, 'send').resolves(true);
+
+    // Stub create response
+    sinon
+      .stub(categoriesApi, 'deleteRecord')
+      .onCall(0)
+      .rejects(new ErrorUnauthorized())
+      .onCall(1)
+      .rejects(new ErrorNotFound())
+      .onCall(2)
+      .rejects(new ErrorServerInternal())
+      .onCall(3)
+      .rejects(new ErrorForbidden());
+
+    const tests = [
+      {
+        expected:
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorUnauthorized',
+        message: 'sends unauthorization error report'
+      },
+      {
+        expected:
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorNotFound',
+        message: 'sends record not found error report'
+      },
+      {
+        expected:
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorServerInternal',
+        message: 'sends system faliure error report'
+      },
+      {
+        expected:
+          'Error: features: Templates: hooks: useCategories: sendErrorReports: ErrorForbidden',
+        message: 'sends forbidden error report'
+      }
+    ];
+
+    const { result } = renderHook(() => useCategoriesActions(sendNotification));
+    // eslint-disable-next-line
+    for (const index in tests) {
+      const { message, expected } = tests[index];
+
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => {
+        // eslint-disable-next-line
+        result.current.deleteCategory({
           id: 'cat-1',
           name: 'category-1'
         });

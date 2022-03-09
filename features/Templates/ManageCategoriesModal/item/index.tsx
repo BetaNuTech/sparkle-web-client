@@ -9,6 +9,7 @@ interface Props {
   canDeleteCategory: boolean;
   isUnpublished?: boolean;
   onSave(category: TemplateCategoryModel): void;
+  deleteCategory(category: TemplateCategoryModel): void;
   isSaving: boolean;
 }
 
@@ -18,6 +19,7 @@ const CategoryItem: FunctionComponent<Props> = ({
   canDeleteCategory,
   isUnpublished,
   onSave,
+  deleteCategory,
   isSaving
 }) => {
   const [updates, setUpdates] = useState('');
@@ -59,7 +61,7 @@ const CategoryItem: FunctionComponent<Props> = ({
           className={styles.row__column}
           data-testid="category-delete-dropdown"
         >
-          <Dropdown />
+          <Dropdown onDeleteCategory={() => deleteCategory(category)} />
         </div>
       )}
       {isSaving && <div className={styles.row__loader}>Saving...</div>}
