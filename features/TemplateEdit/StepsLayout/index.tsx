@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Controller, A11y } from 'swiper';
 import TemplateModel from '../../../common/models/template';
 import TemplateCategoryModel from '../../../common/models/templateCategory';
+import TemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import Actions from './Actions';
 import EditSteps from './EditSteps';
 
@@ -23,6 +24,8 @@ interface Props {
   isLastStep: boolean;
   template: TemplateModel;
   templateCategories: TemplateCategoryModel[];
+  templateSectionItems: Map<string, TemplateItemModel[]>;
+  forceVisible?: boolean;
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -34,7 +37,9 @@ const StepsLayout: FunctionComponent<Props> = ({
   goToPrevStep,
   isLastStep,
   templateCategories,
-  template
+  template,
+  templateSectionItems,
+  forceVisible
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -59,16 +64,19 @@ const StepsLayout: FunctionComponent<Props> = ({
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) => changeStep(swiper.activeIndex)}
             allowTouchMove={isMobile}
-            autoHeight={true} // eslint-disable-line react/jsx-boolean-value
           >
-            {steps.map((step) => (
+            {steps.map((step, index) => (
               <SwiperSlide key={step}>
                 <div className={styles.stepContainer}>
-                  <EditSteps
-                    step={step}
-                    templateCategories={templateCategories}
-                    template={template}
-                  />
+                  {(swiperInstance?.activeIndex || 0) === index && (
+                    <EditSteps
+                      step={step}
+                      templateCategories={templateCategories}
+                      template={template}
+                      templateSectionItems={templateSectionItems}
+                      forceVisible={forceVisible}
+                    />
+                  )}
                 </div>
               </SwiperSlide>
             ))}

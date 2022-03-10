@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react';
 import TemplateModel from '../../../../common/models/template';
 import TemplateCategoryModel from '../../../../common/models/templateCategory';
+import TemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 import General from './General';
 import Sections from './Sections';
 import SectionItems from './SectionItems';
@@ -11,18 +12,28 @@ interface Props {
   step: string;
   template: TemplateModel;
   templateCategories: TemplateCategoryModel[];
+  templateSectionItems: Map<string, TemplateItemModel[]>;
+  forceVisible?: boolean;
 }
 
 const EditSteps: FunctionComponent<Props> = ({
   step,
   template,
-  templateCategories
+  templateCategories,
+  templateSectionItems,
+  forceVisible
 }) => {
   switch (step) {
     case 'sections':
-      return <Sections template={template} />;
+      return <Sections template={template} forceVisible={forceVisible} />;
     case 'section-items':
-      return <SectionItems />;
+      return (
+        <SectionItems
+          template={template}
+          templateSectionItems={templateSectionItems}
+          forceVisible={forceVisible}
+        />
+      );
     case 'items':
       return <Items />;
     case 'item-values':

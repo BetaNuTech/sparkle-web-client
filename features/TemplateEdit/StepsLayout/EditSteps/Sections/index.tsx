@@ -1,17 +1,16 @@
 import { FunctionComponent } from 'react';
 import TrashIcon from '../../../../../public/icons/sparkle/trash.svg';
 import TemplateModel from '../../../../../common/models/template';
-import styles from './styles.module.scss';
-import DiamondIcon from '../../../../../public/icons/sparkle/diamond.svg';
-import DiamondLayersIcon from '../../../../../public/icons/sparkle/diamond-layers.svg';
-import HamburgerIcon from '../../../../../public/icons/ios/hamburger.svg';
+import stepsStyles from '../styles.module.scss';
 import AddIcon from '../../../../../public/icons/ios/add.svg';
+import EditableItem from '../../EditableItem';
 
 interface Props {
   template: TemplateModel;
+  forceVisible?: boolean;
 }
 
-const Sections: FunctionComponent<Props> = ({ template }) => {
+const Sections: FunctionComponent<Props> = ({ template, forceVisible }) => {
   const sections = template.sections || {};
 
   // sort sections by index
@@ -21,9 +20,9 @@ const Sections: FunctionComponent<Props> = ({ template }) => {
 
   return (
     <section>
-      <header className={styles.header}>
-        <h3 className={styles.header__title}>Sections</h3>
-        <button className={styles.header__delete} disabled>
+      <header className={stepsStyles.header}>
+        <h3 className={stepsStyles.header__title}>Sections</h3>
+        <button className={stepsStyles.deleteAction} disabled>
           <TrashIcon />
           Delete
         </button>
@@ -31,35 +30,16 @@ const Sections: FunctionComponent<Props> = ({ template }) => {
 
       <ul>
         {sortedSections.map((section) => (
-          <li key={section.id} className={styles.row}>
-            <input type="checkbox" className={styles.row__checkbox} />
-            <div className={styles.content}>
-              <p
-                className={styles.content__text}
-                contentEditable
-                suppressContentEditableWarning={true} // eslint-disable-line react/jsx-boolean-value
-              >
-                {section.title}
-              </p>
-            </div>
-            <div className={styles.controls}>
-              <span>
-                {section.section_type === 'multi' ? (
-                  <DiamondLayersIcon className={styles.controls__icon} />
-                ) : (
-                  <DiamondIcon className={styles.controls__icon} />
-                )}
-              </span>
-              <span className={styles.controls__dragHandle}>
-                <HamburgerIcon className={styles.controls__icon} />
-              </span>
-            </div>
-          </li>
+          <EditableItem
+            item={section}
+            key={section.id}
+            forceVisible={forceVisible}
+          />
         ))}
       </ul>
-      <div className={styles.action}>
+      <div className={stepsStyles.action}>
         <span>Add new section</span>
-        <button className={styles.action__icon}>
+        <button className={stepsStyles.action__icon}>
           <AddIcon />
         </button>
       </div>

@@ -4,9 +4,11 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow-x: hidden;
 
   @include media-query(desktop) {
     height: auto;
+    overflow: visible;
   }
 }
 
@@ -18,6 +20,7 @@
   // Swiper horizontal wrapper
   > :global(.swiper) {
     height: 100%;
+    overflow: visible;
   }
 }
 

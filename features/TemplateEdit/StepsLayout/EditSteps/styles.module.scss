@@ -1,0 +1,86 @@
+@import '../../../../styles/index.scss';
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid $gray;
+  padding: 0 0 $global-padding;
+
+  &__title {
+    font-size: rem-calc(22);
+    text-transform: none;
+    text-align: left;
+    font-weight: bold;
+    line-height: rem-calc(18);
+    padding-top: rem-calc(2);
+  }
+}
+
+.deleteAction {
+  @extend %baseButton--gray;
+  margin-left: auto;
+  padding-top: rem-calc(4);
+  padding-bottom: rem-calc(4);
+  font-weight: bold;
+  background-color: $alert-secondary-color;
+  border-color: $alert-secondary-color;
+
+  svg {
+    max-height: rem-calc(11);
+    margin-right: rem-calc(4);
+    transform: translateY(rem-calc(1));
+  }
+
+  &:disabled {
+    background: $gray-3;
+    border-color: $gray-3;
+  }
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  padding: $global-md-padding 0;
+  position: sticky;
+  top: 0;
+  background-color: $white;
+
+  &__title {
+    font-size: rem-calc(18);
+    font-weight: bold;
+    line-height: rem-calc(20);
+    color: $gray-med-dark;
+  }
+
+  &__icon {
+    margin-left: $global-padding;
+    max-width: rem-calc(15);
+
+    path {
+      fill: $gray-med-dark;
+    }
+  }
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: rem-calc(14) 0;
+  border-bottom: 1px solid $gray;
+  color: $gray-3;
+  font-weight: bold;
+  cursor: pointer;
+
+  &__icon {
+    @extend %iconButton;
+
+    svg {
+      path {
+        fill: $primary-color;
+        stroke: $primary-color;
+      }
+    }
+  }
+}
