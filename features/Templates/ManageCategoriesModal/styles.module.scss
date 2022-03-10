@@ -8,6 +8,22 @@
   max-width: rem-calc(500);
 }
 
+.header {
+  margin: 0 $global-padding;
+
+  @include media-query(tablet) {
+    margin: 0 $global-lg-padding;
+  }
+}
+
+.heading {
+  font-size: rem-calc(26);
+
+  @include media-query(tablet) {
+    font-size: rem-calc(30);
+  }
+}
+
 .content {
   padding: $global-padding 0 $global-lg-padding;
 }
@@ -25,6 +41,13 @@
 
 .footer {
   justify-content: flex-end;
+  padding: $global-sm-padding $global-padding $global-padding;
+  height: auto;
+
+  @include media-query(tablet) {
+    height: rem-calc(92); // Base modal footer height
+    padding: $global-sm-padding $global-lg-padding;
+  }
 }
 
 .footerAction {

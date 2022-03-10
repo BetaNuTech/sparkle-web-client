@@ -45,9 +45,9 @@ const ManageCategoriesModal: FunctionComponent<Props> = ({
     >
       ×
     </button>
-    <header className={baseStyles.modal__header}>
+    <header className={clsx(baseStyles.modal__header, styles.header)}>
       <h4
-        className={baseStyles.modal__heading}
+        className={clsx(baseStyles.modal__heading, styles.heading)}
         data-testid="manage-categories-modal-heading"
       >
         Manage Categories
