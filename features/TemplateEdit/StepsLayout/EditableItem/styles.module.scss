@@ -1,0 +1,46 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  display: flex;
+  align-items: center;
+  min-height: rem-calc(55);
+  padding: rem-calc(14) $global-sm-padding;
+  border-bottom: 1px solid $gray;
+
+  &__checkbox {
+    margin-right: $global-sm-padding;
+  }
+}
+
+.content {
+  flex: 1;
+  margin-right: $global-padding;
+
+  &__text {
+    margin: 0;
+    font-weight: bold;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  &__dragHandle {
+    max-height: rem-calc(22);
+    margin-left: rem-calc(10);
+    cursor: row-resize;
+  }
+
+  &__icon {
+    max-height: rem-calc(20);
+    max-width: rem-calc(20);
+    width: rem-calc(20);
+
+    path {
+      fill: $gray-3;
+    }
+  }
+}

@@ -8,6 +8,7 @@ import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import StepsLayout from './StepsLayout';
 import useSteps from './hooks/useSteps';
+import useTemplateSectionItems from './hooks/useTemplateSectionItems';
 
 interface Props {
   user: UserModel;
@@ -24,7 +25,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   template,
-  templateCategories
+  templateCategories,
+  forceVisible
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -39,6 +41,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
     goToNextStep,
     goToPrevStep
   } = useSteps();
+
+  const { templateSectionItems } = useTemplateSectionItems(template);
 
   return (
     <>
@@ -62,6 +66,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
         isLastStep={isLastStep}
         template={template}
         templateCategories={templateCategories}
+        templateSectionItems={templateSectionItems}
+        forceVisible={forceVisible}
       />
     </>
   );
