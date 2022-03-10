@@ -7,10 +7,15 @@ import styles from '../styles.module.scss';
 interface Props {
   onClick: (any) => void;
   selected: boolean;
+  showValues?: boolean;
 }
 
-const OneActionNotes: FunctionComponent<Props> = ({ onClick, selected }) => (
-  <ul className={styles.inspection}>
+const OneActionNotes: FunctionComponent<Props> = ({
+  onClick,
+  selected,
+  showValues
+}) => (
+  <ul className={clsx(styles.inspection, showValues && '-jc-flex-start')}>
     <li
       className={clsx(
         styles.inspection__input,
@@ -27,7 +32,8 @@ const OneActionNotes: FunctionComponent<Props> = ({ onClick, selected }) => (
 
 OneActionNotes.defaultProps = {
   selected: false,
-  onClick: () => null
+  onClick: () => null,
+  showValues: false
 };
 
 export default OneActionNotes;

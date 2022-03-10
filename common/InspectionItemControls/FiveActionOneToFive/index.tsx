@@ -6,9 +6,11 @@ import TwoSimpleIcon from '../../../public/icons/sparkle/two-simple.svg';
 import ThreeSimpleIcon from '../../../public/icons/sparkle/three-simple.svg';
 import FourSimpleIcon from '../../../public/icons/sparkle/four-simple.svg';
 import FiveSimpleIcon from '../../../public/icons/sparkle/five-simple.svg';
+import InspectionTemplateItemModal from '../../models/inspectionTemplateItem';
 import styles from '../styles.module.scss';
 
 interface Props {
+  item: InspectionTemplateItemModal;
   selected?: boolean;
   value?: number;
   onChange?(
@@ -16,6 +18,7 @@ interface Props {
     value: string | number
   ): void;
   canEdit?: boolean;
+  showValues?: boolean;
 }
 
 const canAddClass = (
@@ -59,14 +62,21 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
   selected,
   value,
   onChange,
-  canEdit
+  canEdit,
+  showValues,
+  item
 }) => {
   const onInputChange = (event: MouseEvent<HTMLLIElement>, update: number) => {
     onChange(event, update);
   };
 
   return (
-    <ul className={styles.inspection}>
+    <ul
+      className={clsx(
+        styles.inspection,
+        showValues && '-pb-mlg -jc-flex-start -cu-pointer'
+      )}
+    >
       <li
         className={clsx(
           styles.inspection__input,
@@ -78,6 +88,11 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 0)}
       >
         <OneSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputZeroValue}
+          </span>
+        )}
       </li>
       <li
         className={clsx(
@@ -90,6 +105,11 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 1)}
       >
         <TwoSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputOneValue}
+          </span>
+        )}
       </li>
       <li
         className={clsx(
@@ -102,6 +122,11 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 2)}
       >
         <ThreeSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputTwoValue}
+          </span>
+        )}
       </li>
       <li
         className={clsx(
@@ -114,6 +139,11 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 3)}
       >
         <FourSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputThreeValue}
+          </span>
+        )}
       </li>
       <li
         className={clsx(
@@ -126,6 +156,11 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 4)}
       >
         <FiveSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputFourValue}
+          </span>
+        )}
       </li>
     </ul>
   );
@@ -134,7 +169,8 @@ const FiveActionOneToFive: FunctionComponent<Props> = ({
 FiveActionOneToFive.defaultProps = {
   selected: false,
   canEdit: false,
-  value: -1
+  value: -1,
+  showValues: false
 };
 
 export { canAddClass };

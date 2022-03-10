@@ -3,27 +3,37 @@ import clsx from 'clsx';
 import { FunctionComponent, MouseEvent } from 'react';
 import ThumbsUpSimpleIcon from '../../../public/icons/sparkle/thumbs-up-simple.svg';
 import ThumbsDownSimpleIcon from '../../../public/icons/sparkle/thumbs-down-simple.svg';
+import InspectionTemplateItemModal from '../../models/inspectionTemplateItem';
 import styles from '../styles.module.scss';
 
 interface Props {
+  item: InspectionTemplateItemModal;
   selected?: boolean;
   value?: number;
   onChange?(event: MouseEvent<HTMLLIElement>, value: string | number): void;
   canEdit?: boolean;
+  showValues?: boolean;
 }
 
 const TwoActionThumb: FunctionComponent<Props> = ({
   selected,
   value,
   onChange,
-  canEdit
+  canEdit,
+  showValues,
+  item
 }) => {
   const onInputChange = (event: MouseEvent<HTMLLIElement>, update: number) => {
     onChange(event, update);
   };
 
   return (
-    <ul className={styles.inspection}>
+    <ul
+      className={clsx(
+        styles.inspection,
+        showValues && '-pb-mlg -jc-flex-start -cu-pointer'
+      )}
+    >
       <li
         className={clsx(
           styles.inspection__input,
@@ -36,6 +46,11 @@ const TwoActionThumb: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 0)}
       >
         <ThumbsUpSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputZeroValue}
+          </span>
+        )}
       </li>
       <li
         className={clsx(
@@ -49,6 +64,11 @@ const TwoActionThumb: FunctionComponent<Props> = ({
         onClick={(event) => canEdit && onInputChange(event, 1)}
       >
         <ThumbsDownSimpleIcon />
+        {showValues && (
+          <span className={styles.inspection__inputValue}>
+            {item.mainInputOneValue}
+          </span>
+        )}
       </li>
     </ul>
   );
@@ -57,7 +77,8 @@ const TwoActionThumb: FunctionComponent<Props> = ({
 TwoActionThumb.defaultProps = {
   selected: false,
   canEdit: false,
-  value: -1
+  value: -1,
+  showValues: false
 };
 
 export default TwoActionThumb;

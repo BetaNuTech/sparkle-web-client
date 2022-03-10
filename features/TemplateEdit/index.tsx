@@ -44,6 +44,12 @@ const TemplateEdit: FunctionComponent<Props> = ({
 
   const { templateSectionItems } = useTemplateSectionItems(template);
 
+  const sections = template.sections || {};
+  // sort sections by index
+  const sortedSections = Object.keys(sections)
+    .map((id) => ({ id, ...sections[id] }))
+    .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
+
   return (
     <>
       <Header
@@ -67,6 +73,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         template={template}
         templateCategories={templateCategories}
         templateSectionItems={templateSectionItems}
+        sortedSections={sortedSections}
         forceVisible={forceVisible}
       />
     </>

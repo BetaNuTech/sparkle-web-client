@@ -10,9 +10,9 @@ interface Props {
   inspectorNotes?: string;
   onClickAttachmentNotes?(): void;
   onClickPhotos?(): void;
-  photosData: Record<string, PhotoDataModel>;
-  unPublishedPhotosDataCount: number;
-  isDeficient: boolean;
+  photosData?: Record<string, PhotoDataModel>;
+  unPublishedPhotosDataCount?: number;
+  isDeficient?: boolean;
   canEdit: boolean;
 }
 

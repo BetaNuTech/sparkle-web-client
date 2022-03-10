@@ -22,6 +22,10 @@
     background-color: $gray-4;
     max-width: rem-calc(85);
 
+    // added to position item values absolute
+    // to relative input
+    position: relative;
+
     // Left-most selection value container
     &:first-child {
       border-top-left-radius: rem-calc(24);
@@ -90,6 +94,15 @@
         }
       }
     }
+  }
+
+  &__inputValue {
+    position: absolute;
+    top: rem-calc(50);
+
+    color: $primary-dark-color;
+    font-size: rem-calc(14);
+    font-weight: bold;
   }
 
   &__textInputItem {

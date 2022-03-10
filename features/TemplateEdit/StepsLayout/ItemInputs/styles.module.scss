@@ -1,0 +1,60 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  min-height: rem-calc(115);
+  padding: $global-sm-padding 0;
+  border-bottom: 1px solid $gray;
+  flex-wrap: wrap;
+}
+
+.title {
+  flex: 1 1 100%;
+  margin: 0;
+  color: $gray-med-dark;
+  font-weight: bold;
+  font-size: rem-calc(14);
+}
+
+.content {
+  flex: 1;
+  margin-right: $global-padding;
+
+  @include media-query(tablet) {
+    margin: 0;
+    flex: 1 1 auto;
+  }
+
+  &__text {
+    margin: 0;
+    font-weight: bold;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+
+  @include media-query(tablet) {
+    flex: 1 1 auto;
+  }
+
+  &__dragHandle {
+    max-height: rem-calc(22);
+    margin-left: rem-calc(10);
+    cursor: row-resize;
+  }
+
+  &__icon {
+    max-height: rem-calc(20);
+    max-width: rem-calc(20);
+    width: rem-calc(20);
+
+    path {
+      fill: $gray-3;
+    }
+  }
+}

@@ -6,6 +6,7 @@ import { Controller, A11y } from 'swiper';
 import TemplateModel from '../../../common/models/template';
 import TemplateCategoryModel from '../../../common/models/templateCategory';
 import TemplateItemModel from '../../../common/models/inspectionTemplateItem';
+import TemplateSectionModel from '../../../common/models/inspectionTemplateSection';
 import Actions from './Actions';
 import EditSteps from './EditSteps';
 
@@ -26,6 +27,7 @@ interface Props {
   templateCategories: TemplateCategoryModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
+  sortedSections: TemplateSectionModel[];
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -39,6 +41,7 @@ const StepsLayout: FunctionComponent<Props> = ({
   templateCategories,
   template,
   templateSectionItems,
+  sortedSections,
   forceVisible
 }) => {
   // Reference to the internal Swiper instance
@@ -75,6 +78,7 @@ const StepsLayout: FunctionComponent<Props> = ({
                       template={template}
                       templateSectionItems={templateSectionItems}
                       forceVisible={forceVisible}
+                      sortedSections={sortedSections}
                     />
                   )}
                 </div>

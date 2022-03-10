@@ -18,6 +18,7 @@ interface Props {
   onClickOneActionNotes?(): void;
   onClickSignatureInput?(): void;
   canEdit: boolean;
+  showValues?: boolean;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
@@ -27,7 +28,8 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   onTextInputChange,
   onClickOneActionNotes,
   onClickSignatureInput,
-  canEdit
+  canEdit,
+  showValues
 }) => {
   // Adding support for old item schemas
   // when `isTextInputItem` then always make it
@@ -46,42 +48,54 @@ const InspectionItemControls: FunctionComponent<Props> = ({
     case 'twoactions_checkmarkx':
       return (
         <TwoActionCheck
+          item={item}
           selected={selected}
           value={mainInputSelection}
           onChange={onMainInputChange}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
     case 'threeactions_checkmarkexclamationx':
       return (
         <ThreeActionCheckExclamation
+          item={item}
           selected={selected}
           value={mainInputSelection}
           onChange={onMainInputChange}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
     case 'threeactions_abc':
       return (
         <ThreeActionAbc
+          item={item}
           selected={selected}
           value={mainInputSelection}
           onChange={onMainInputChange}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
     case 'fiveactions_onetofive':
       return (
         <FiveActionOneToFive
+          item={item}
           selected={selected}
           value={mainInputSelection}
           onChange={onMainInputChange}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
     case 'oneaction_notes':
       return (
-        <OneActionNotes onClick={onClickOneActionNotes} selected={selected} />
+        <OneActionNotes
+          onClick={onClickOneActionNotes}
+          selected={selected}
+          showValues={showValues}
+        />
       );
     case 'text_input':
       return (
@@ -108,10 +122,12 @@ const InspectionItemControls: FunctionComponent<Props> = ({
     default:
       return (
         <TwoActionThumb
+          item={item}
           selected={selected}
           value={mainInputSelection}
           onChange={onMainInputChange}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
   }

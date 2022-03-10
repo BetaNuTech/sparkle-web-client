@@ -4,20 +4,25 @@ import { FunctionComponent, MouseEvent } from 'react';
 import CheckmarkSimpleIcon from '../../../public/icons/sparkle/checkmark-simple.svg';
 import CancelSimpleIcon from '../../../public/icons/sparkle/cancel-simple.svg';
 import CautionSimpleIcon from '../../../public/icons/sparkle/caution-simple.svg';
+import InspectionTemplateItemModal from '../../models/inspectionTemplateItem';
 import styles from '../styles.module.scss';
 
 interface Props {
+  item: InspectionTemplateItemModal;
   selected?: boolean;
   value?: number;
   onChange?(event: MouseEvent<HTMLLIElement>, value: string | number): void;
   canEdit?: boolean;
+  showValues?: boolean;
 }
 
 const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
   selected,
   value,
   onChange,
-  canEdit
+  canEdit,
+  showValues,
+  item
 }) => {
   const onInputChange = (event: MouseEvent<HTMLLIElement>, update: number) => {
     onChange(event, update);
@@ -25,7 +30,12 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
 
   return (
     <>
-      <ul className={styles.inspection}>
+      <ul
+        className={clsx(
+          styles.inspection,
+          showValues && '-pb-mlg -jc-flex-start -cu-pointer'
+        )}
+      >
         <li
           className={clsx(
             styles.inspection__input,
@@ -38,6 +48,11 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
           onClick={(event) => canEdit && onInputChange(event, 0)}
         >
           <CheckmarkSimpleIcon />
+          {showValues && (
+            <span className={styles.inspection__inputValue}>
+              {item.mainInputZeroValue}
+            </span>
+          )}
         </li>
         <li
           className={clsx(
@@ -51,6 +66,11 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
           onClick={(event) => canEdit && onInputChange(event, 1)}
         >
           <CautionSimpleIcon />
+          {showValues && (
+            <span className={styles.inspection__inputValue}>
+              {item.mainInputOneValue}
+            </span>
+          )}
         </li>
         <li
           className={clsx(
@@ -66,6 +86,11 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
           onClick={(event) => canEdit && onInputChange(event, 2)}
         >
           <CancelSimpleIcon />
+          {showValues && (
+            <span className={styles.inspection__inputValue}>
+              {item.mainInputTwoValue}
+            </span>
+          )}
         </li>
       </ul>
     </>
@@ -75,7 +100,8 @@ const ThreeActionCheckExclamation: FunctionComponent<Props> = ({
 ThreeActionCheckExclamation.defaultProps = {
   selected: false,
   canEdit: false,
-  value: -1
+  value: -1,
+  showValues: false
 };
 
 export default ThreeActionCheckExclamation;
