@@ -4,6 +4,7 @@ interface template {
   description: string;
   category: string; // template category relationship
   trackDeficientItems: boolean;
+  requireDeficientItemNoteAndPhoto: boolean;
   properties?: Array<string>;
   sections?: any;
   items?: any;
