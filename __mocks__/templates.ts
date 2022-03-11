@@ -48,6 +48,15 @@ export const templateF: templateModel = {
   trackDeficientItems: true
 };
 
+export const emptyTemplate: templateModel = {
+  id: 'template-6',
+  name: '',
+  description: '',
+  category: '',
+  trackDeficientItems: false,
+  requireDeficientItemNoteAndPhoto: false
+};
+
 export default [
   templateA,
   templateB,
