@@ -3,8 +3,12 @@
 .item {
   @extend %gridTableRow;
   justify-content: space-between;
-  padding: $global-sm-padding 0 $global-sm-padding $global-lg-padding;
+  padding: $global-sm-padding 0 $global-sm-padding $global-padding;
   min-height: rem-calc(63);
+
+  @include media-query(desktop) {
+    padding-left: $global-lg-padding;
+  }
 }
 
 .column {
