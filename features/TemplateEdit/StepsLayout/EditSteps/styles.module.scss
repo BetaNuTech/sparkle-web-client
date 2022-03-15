@@ -85,3 +85,12 @@
     }
   }
 }
+
+// non-visible select menu to select value
+// for section items on item-values step
+.valueSelectMenu {
+  position: absolute;
+  z-index: 1;
+  opacity: 0.01;
+  cursor: pointer;
+}

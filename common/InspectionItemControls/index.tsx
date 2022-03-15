@@ -14,22 +14,26 @@ interface Props {
   item: InspectionTemplateItemModal;
   signatureDownloadURL?: string;
   onMainInputChange?(event: MouseEvent<HTMLLIElement>, value: number): void;
+  onMainInputMouseDown?(event: MouseEvent<HTMLLIElement>, value: number): void;
   onTextInputChange?(event: ChangeEvent<HTMLInputElement>, value: string): void;
   onClickOneActionNotes?(): void;
   onClickSignatureInput?(): void;
   canEdit: boolean;
   showValues?: boolean;
+  selectedToScore?: number;
 }
 
 const InspectionItemControls: FunctionComponent<Props> = ({
   item,
   signatureDownloadURL,
   onMainInputChange,
+  onMainInputMouseDown,
   onTextInputChange,
   onClickOneActionNotes,
   onClickSignatureInput,
   canEdit,
-  showValues
+  showValues,
+  selectedToScore
 }) => {
   // Adding support for old item schemas
   // when `isTextInputItem` then always make it
@@ -51,7 +55,9 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           item={item}
           selected={selected}
           value={mainInputSelection}
+          selectedToScore={selectedToScore}
           onChange={onMainInputChange}
+          onMouseDown={onMainInputMouseDown}
           canEdit={canEdit}
           showValues={showValues}
         />
@@ -62,7 +68,9 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           item={item}
           selected={selected}
           value={mainInputSelection}
+          selectedToScore={selectedToScore}
           onChange={onMainInputChange}
+          onMouseDown={onMainInputMouseDown}
           canEdit={canEdit}
           showValues={showValues}
         />
@@ -73,7 +81,9 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           item={item}
           selected={selected}
           value={mainInputSelection}
+          selectedToScore={selectedToScore}
           onChange={onMainInputChange}
+          onMouseDown={onMainInputMouseDown}
           canEdit={canEdit}
           showValues={showValues}
         />
@@ -84,7 +94,9 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           item={item}
           selected={selected}
           value={mainInputSelection}
+          selectedToScore={selectedToScore}
           onChange={onMainInputChange}
+          onMouseDown={onMainInputMouseDown}
           canEdit={canEdit}
           showValues={showValues}
         />
@@ -125,7 +137,9 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           item={item}
           selected={selected}
           value={mainInputSelection}
+          selectedToScore={selectedToScore}
           onChange={onMainInputChange}
+          onMouseDown={onMainInputMouseDown}
           canEdit={canEdit}
           showValues={showValues}
         />

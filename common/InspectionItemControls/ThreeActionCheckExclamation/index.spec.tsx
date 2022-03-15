@@ -74,6 +74,66 @@ describe('Common | Inspection Item Controls | Three Action Check Exclaimation', 
     expect(iconCancelEl.dataset.test).toEqual('selected');
   });
 
+  it('should select first option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 0,
+      showValues: true,
+      item: {}
+    };
+
+    render(<ThreeActionCheckExclamation {...props} />);
+
+    const iconCheckmarkEl = screen.queryByTestId('control-icon-checkmark');
+    const iconCautionEl = screen.queryByTestId('control-icon-caution');
+    const iconCancelEl = screen.queryByTestId('control-icon-cancel');
+
+    expect(iconCheckmarkEl.dataset.testSelectingScore).toEqual('true');
+    expect(iconCautionEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconCancelEl.dataset.testSelectingScore).toEqual('false');
+  });
+
+  it('should select second option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 1,
+      showValues: true,
+      item: {}
+    };
+
+    render(<ThreeActionCheckExclamation {...props} />);
+
+    const iconCheckmarkEl = screen.queryByTestId('control-icon-checkmark');
+    const iconCautionEl = screen.queryByTestId('control-icon-caution');
+    const iconCancelEl = screen.queryByTestId('control-icon-cancel');
+
+    expect(iconCheckmarkEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconCautionEl.dataset.testSelectingScore).toEqual('true');
+    expect(iconCancelEl.dataset.testSelectingScore).toEqual('false');
+  });
+
+  it('should select third option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 2,
+      showValues: true,
+      item: {}
+    };
+
+    render(<ThreeActionCheckExclamation {...props} />);
+
+    const iconCheckmarkEl = screen.queryByTestId('control-icon-checkmark');
+    const iconCautionEl = screen.queryByTestId('control-icon-caution');
+    const iconCancelEl = screen.queryByTestId('control-icon-cancel');
+
+    expect(iconCheckmarkEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconCautionEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconCancelEl.dataset.testSelectingScore).toEqual('true');
+  });
+
   it('should invoke change action for all selections', () => {
     const expected = 3;
     const onClick = sinon.spy();
