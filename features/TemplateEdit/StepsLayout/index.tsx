@@ -71,7 +71,8 @@ const StepsLayout: FunctionComponent<Props> = ({
             {steps.map((step, index) => (
               <SwiperSlide key={step}>
                 <div className={styles.stepContainer}>
-                  {(swiperInstance?.activeIndex || 0) === index && (
+                  {((swiperInstance?.activeIndex || 0) === index ||
+                    isMobile) && (
                     <EditSteps
                       step={step}
                       templateCategories={templateCategories}

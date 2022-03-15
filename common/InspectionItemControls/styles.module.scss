@@ -21,6 +21,7 @@
     border-left-width: 1px;
     background-color: $gray-4;
     max-width: rem-calc(85);
+    position: relative;
 
     // added to position item values absolute
     // to relative input
@@ -91,6 +92,17 @@
             fill: $white;
             stroke: $white;
           }
+        }
+      }
+    }
+
+    &--selectingScore {
+      svg {
+        g,
+        path,
+        circle {
+          fill: $primary-color;
+          stroke: $primary-color;
         }
       }
     }

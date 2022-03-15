@@ -74,6 +74,66 @@ describe('Common | Inspection Item Controls | Three Action Abc', () => {
     expect(iconCEl.dataset.test).toEqual('selected');
   });
 
+  it('should select first option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      selectedToScore: 0,
+      canEdit: true,
+      showValues: true,
+      item: {}
+    };
+
+    render(<ThreeActionAbc {...props} />);
+
+    const iconAEl = screen.queryByTestId('control-icon-a');
+    const iconBEl = screen.queryByTestId('control-icon-b');
+    const iconCEl = screen.queryByTestId('control-icon-c');
+
+    expect(iconAEl.dataset.testSelectingScore).toEqual('true');
+    expect(iconBEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconCEl.dataset.testSelectingScore).toEqual('false');
+  });
+
+  it('should select second option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      selectedToScore: 1,
+      canEdit: true,
+      showValues: true,
+      item: {}
+    };
+
+    render(<ThreeActionAbc {...props} />);
+
+    const iconAEl = screen.queryByTestId('control-icon-a');
+    const iconBEl = screen.queryByTestId('control-icon-b');
+    const iconCEl = screen.queryByTestId('control-icon-c');
+
+    expect(iconAEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconBEl.dataset.testSelectingScore).toEqual('true');
+    expect(iconCEl.dataset.testSelectingScore).toEqual('false');
+  });
+
+  it('should select third option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      selectedToScore: 2,
+      canEdit: true,
+      showValues: true,
+      item: {}
+    };
+
+    render(<ThreeActionAbc {...props} />);
+
+    const iconAEl = screen.queryByTestId('control-icon-a');
+    const iconBEl = screen.queryByTestId('control-icon-b');
+    const iconCEl = screen.queryByTestId('control-icon-c');
+
+    expect(iconAEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconBEl.dataset.testSelectingScore).toEqual('false');
+    expect(iconCEl.dataset.testSelectingScore).toEqual('true');
+  });
+
   it('should invoke change action for all selections', () => {
     const expected = 3;
     const onClick = sinon.spy();

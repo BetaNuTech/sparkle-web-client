@@ -36,6 +36,40 @@ describe('Common | Inspection Item Controls | Two Action Thumb', () => {
     expect(thumbsDown.dataset.test).toEqual('');
   });
 
+  it('should select first option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 0,
+      showValues: true
+    };
+
+    render(<TwoActionThumb {...props} />);
+
+    const thumbsUp = screen.queryByTestId('control-thumbs-up');
+    const thumbsDown = screen.queryByTestId('control-thumbs-down');
+
+    expect(thumbsUp.dataset.testSelectingScore).toEqual('true');
+    expect(thumbsDown.dataset.testSelectingScore).toEqual('false');
+  });
+
+  it('should select second option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 1,
+      showValues: true
+    };
+
+    render(<TwoActionThumb {...props} />);
+
+    const thumbsUp = screen.queryByTestId('control-thumbs-up');
+    const thumbsDown = screen.queryByTestId('control-thumbs-down');
+
+    expect(thumbsUp.dataset.testSelectingScore).toEqual('false');
+    expect(thumbsDown.dataset.testSelectingScore).toEqual('true');
+  });
+
   it('should select second option if given 1', async () => {
     const props = {
       selected: true,

@@ -52,6 +52,42 @@ describe('Common | Inspection Item Controls | Two Action Check', () => {
     expect(cancelEl.dataset.test).toEqual('selected');
   });
 
+  it('should select first option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 0,
+      showValues: true,
+      item: {}
+    };
+
+    render(<TwoActionCheck {...props} />);
+
+    const checkmarkEl = screen.queryByTestId('control-checkmark');
+    const cancelEl = screen.queryByTestId('control-cancel');
+
+    expect(checkmarkEl.dataset.testSelectingScore).toEqual('true');
+    expect(cancelEl.dataset.testSelectingScore).toEqual('false');
+  });
+
+  it('should select second option for score selection when focused for scoring', async () => {
+    const props = {
+      selected: false,
+      canEdit: true,
+      selectedToScore: 1,
+      showValues: true,
+      item: {}
+    };
+
+    render(<TwoActionCheck {...props} />);
+
+    const checkmarkEl = screen.queryByTestId('control-checkmark');
+    const cancelEl = screen.queryByTestId('control-cancel');
+
+    expect(checkmarkEl.dataset.testSelectingScore).toEqual('false');
+    expect(cancelEl.dataset.testSelectingScore).toEqual('true');
+  });
+
   it('should invoke change action for all selections', () => {
     const expected = 2;
     const onClick = sinon.spy();

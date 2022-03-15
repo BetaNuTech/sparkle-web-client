@@ -46,7 +46,13 @@ const EditSteps: FunctionComponent<Props> = ({
         />
       );
     case 'item-values':
-      return <ItemValues />;
+      return (
+        <ItemValues
+          sortedSections={sortedSections}
+          templateSectionItems={templateSectionItems}
+          forceVisible={forceVisible}
+        />
+      );
     default:
       return (
         <General template={template} templateCategories={templateCategories} />

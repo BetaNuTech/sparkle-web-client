@@ -4,7 +4,7 @@ import TemplateItemModel from '../../../../../common/models/inspectionTemplateIt
 import stepsStyles from '../styles.module.scss';
 import DiamondIcon from '../../../../../public/icons/sparkle/diamond.svg';
 import DiamondLayersIcon from '../../../../../public/icons/sparkle/diamond-layers.svg';
-
+import deepClone from '../../../../../__tests__/helpers/deepClone';
 import ItemInputs from '../../ItemInputs';
 
 interface Props {
@@ -42,14 +42,23 @@ const Items: FunctionComponent<Props> = ({
             </span>
           </header>
           <ul>
-            {sectionItems.map((item) => (
-              <ItemInputs
-                item={item}
-                key={item.id}
-                forceVisible={forceVisible}
-                step="items"
-              />
-            ))}
+            {sectionItems.map((item) => {
+              const templateItem = deepClone(item);
+              templateItem.mainInputZeroValue = '?';
+              templateItem.mainInputOneValue = '?';
+              templateItem.mainInputTwoValue = '?';
+              templateItem.mainInputThreeValue = '?';
+              templateItem.mainInputFourValue = '?';
+
+              return (
+                <ItemInputs
+                  item={templateItem}
+                  key={templateItem.id}
+                  forceVisible={forceVisible}
+                  onMouseDownMainInput={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+                />
+              );
+            })}
           </ul>
         </div>
       );

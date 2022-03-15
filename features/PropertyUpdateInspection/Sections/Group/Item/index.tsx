@@ -129,6 +129,7 @@ const Item: FunctionComponent<Props> = ({
               canEdit={canEdit}
             />
           </div>
+
           {canEdit && (
             <Dropdown
               isItemNA={item.isItemNA}
