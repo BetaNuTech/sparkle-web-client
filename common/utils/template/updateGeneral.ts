@@ -2,12 +2,10 @@ import pipe from '../pipe';
 import TemplateModel from '../../models/template';
 import ComposableSettings, { UserChanges } from './composableSettings';
 
-const PREFIX = 'utils: template: updateGeneral';
-
 // Manage local updates for template's general settings
 export default function updateGeneral(
-  updatedItem: TemplateModel,
-  currentItem: TemplateModel,
+  updatedTemplate: TemplateModel,
+  currentTemplate: TemplateModel,
   userChanges: UserChanges
 ): TemplateModel {
   return pipe(
@@ -19,8 +17,8 @@ export default function updateGeneral(
   )(
     {} as TemplateModel, // result
     {
-      updatedItem,
-      currentItem,
+      updatedTemplate,
+      currentTemplate,
       userChanges
     } as ComposableSettings
   );
@@ -28,16 +26,16 @@ export default function updateGeneral(
 
 // Set template name
 const setName = (result: TemplateModel, settings: ComposableSettings) => {
-  const { userChanges, currentItem, updatedItem } = settings;
+  const { userChanges, currentTemplate, updatedTemplate } = settings;
 
   const isChanging = typeof userChanges.name === 'string';
-  const hasPreviousUpdate = typeof updatedItem.name === 'string';
+  const hasPreviousUpdate = typeof updatedTemplate.name === 'string';
   const value = `${userChanges.name || ''}`.trim();
-  const isDifferentThanCurrent = value !== (currentItem.name || '');
+  const isDifferentThanCurrent = value !== (currentTemplate.name || '');
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
-    result.name = updatedItem.name;
+    result.name = updatedTemplate.name;
   }
 
   // Add user change to updates
@@ -58,16 +56,16 @@ const setDescription = (
   result: TemplateModel,
   settings: ComposableSettings
 ) => {
-  const { userChanges, currentItem, updatedItem } = settings;
+  const { userChanges, currentTemplate, updatedTemplate } = settings;
 
   const isChanging = typeof userChanges.description === 'string';
-  const hasPreviousUpdate = typeof updatedItem.description === 'string';
+  const hasPreviousUpdate = typeof updatedTemplate.description === 'string';
   const value = `${userChanges.description || ''}`.trim();
-  const isDifferentThanCurrent = value !== (currentItem.description || '');
+  const isDifferentThanCurrent = value !== (currentTemplate.description || '');
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
-    result.description = updatedItem.description;
+    result.description = updatedTemplate.description;
   }
 
   // Add user change to updates
@@ -85,16 +83,16 @@ const setDescription = (
 
 // Set template category
 const setCategory = (result: TemplateModel, settings: ComposableSettings) => {
-  const { userChanges, currentItem, updatedItem } = settings;
+  const { userChanges, currentTemplate, updatedTemplate } = settings;
 
   const isChanging = typeof userChanges.category === 'string';
-  const hasPreviousUpdate = typeof updatedItem.category === 'string';
+  const hasPreviousUpdate = typeof updatedTemplate.category === 'string';
   const value = userChanges.category;
-  const isDifferentThanCurrent = value !== (currentItem.category || '');
+  const isDifferentThanCurrent = value !== (currentTemplate.category || '');
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
-    result.category = updatedItem.category;
+    result.category = updatedTemplate.category;
   }
 
   // Add user change to updates
@@ -115,20 +113,20 @@ const setTrackDeficientItem = (
   result: TemplateModel,
   settings: ComposableSettings
 ) => {
-  const { userChanges, currentItem, updatedItem } = settings;
+  const { userChanges, currentTemplate, updatedTemplate } = settings;
   const isChanging = typeof userChanges.trackDeficientItems === 'boolean';
   const hasPreviousUpdate =
-    typeof updatedItem.trackDeficientItems === 'boolean';
+    typeof updatedTemplate.trackDeficientItems === 'boolean';
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
-    result.trackDeficientItems = updatedItem.trackDeficientItems;
+    result.trackDeficientItems = updatedTemplate.trackDeficientItems;
   }
 
   // Add user unselected change to updates
   if (
     isChanging &&
-    userChanges.trackDeficientItems !== currentItem.trackDeficientItems
+    userChanges.trackDeficientItems !== currentTemplate.trackDeficientItems
   ) {
     result.trackDeficientItems = userChanges.trackDeficientItems;
   } else if (isChanging) {
@@ -141,7 +139,7 @@ const setTrackDeficientItem = (
   if (
     isChanging &&
     userChanges.trackDeficientItems &&
-    !updatedItem.requireDeficientItemNoteAndPhoto
+    !updatedTemplate.requireDeficientItemNoteAndPhoto
   ) {
     result.requireDeficientItemNoteAndPhoto = userChanges.trackDeficientItems;
   }
@@ -154,23 +152,23 @@ const setRequireDeficientItemNoteAndPhoto = (
   result: TemplateModel,
   settings: ComposableSettings
 ) => {
-  const { userChanges, currentItem, updatedItem } = settings;
+  const { userChanges, currentTemplate, updatedTemplate } = settings;
   const isChanging =
     typeof userChanges.requireDeficientItemNoteAndPhoto === 'boolean';
   const hasPreviousUpdate =
-    typeof updatedItem.requireDeficientItemNoteAndPhoto === 'boolean';
+    typeof updatedTemplate.requireDeficientItemNoteAndPhoto === 'boolean';
 
   // Provide previous update
   if (!isChanging && hasPreviousUpdate) {
     result.requireDeficientItemNoteAndPhoto =
-      updatedItem.requireDeficientItemNoteAndPhoto;
+      updatedTemplate.requireDeficientItemNoteAndPhoto;
   }
 
   // Add user unselected change to updates
   if (
     isChanging &&
     userChanges.requireDeficientItemNoteAndPhoto !==
-      currentItem.requireDeficientItemNoteAndPhoto
+      currentTemplate.requireDeficientItemNoteAndPhoto
   ) {
     result.requireDeficientItemNoteAndPhoto =
       userChanges.requireDeficientItemNoteAndPhoto;
@@ -184,7 +182,7 @@ const setRequireDeficientItemNoteAndPhoto = (
   if (
     isChanging &&
     userChanges.requireDeficientItemNoteAndPhoto &&
-    !updatedItem.trackDeficientItems
+    !updatedTemplate.trackDeficientItems
   ) {
     result.trackDeficientItems = userChanges.requireDeficientItemNoteAndPhoto;
   }
