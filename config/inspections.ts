@@ -41,5 +41,13 @@ export default {
     oneaction_notes: [0, 0, 0, 0, 0],
     signature: [3, 0, 0, 0, 0],
     text_input: [3, 0, 0, 0, 0]
+  },
+  inspectionTemplateTypes: {
+    twoactions_checkmarkx: 'TwoActions_checkmarkX',
+    twoactions_thumbs: 'TwoActions_thumbs',
+    threeactions_checkmarkexclamationx: 'ThreeActions_checkmarkExclamationX',
+    threeactions_abc: 'ThreeActions_ABC',
+    fiveactions_onetofive: 'FiveActions_oneToFive',
+    oneaction_notes: 'OneAction_notes'
   }
 };

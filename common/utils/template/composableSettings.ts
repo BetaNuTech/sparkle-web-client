@@ -1,5 +1,20 @@
 import TemplateModel from '../../models/template';
 
+export interface UserItemChanges {
+  sectionId?: string;
+  itemType?: string;
+  title?: string;
+  index?: number;
+  photos?: boolean;
+  notes?: boolean;
+  mainInputType?: string;
+  mainInputZeroValue?: number;
+  mainInputOneValue?: number;
+  mainInputTwoValue?: number;
+  mainInputThreeValue?: number;
+  mainInputFourValue?: number;
+}
+
 export interface UserSectionChanges {
   new?: boolean;
   title?: string;
@@ -21,6 +36,13 @@ export interface ComposableSectionSettings {
   updatedTemplate: TemplateModel;
   currentTemplate: TemplateModel;
   userChanges: UserSectionChanges;
+  targetId?: string;
+}
+
+export interface ComposableItemSettings {
+  updatedTemplate: TemplateModel;
+  currentTemplate: TemplateModel;
+  userChanges: UserItemChanges;
   targetId?: string;
 }
 
