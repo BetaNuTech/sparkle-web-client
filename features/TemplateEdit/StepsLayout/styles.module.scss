@@ -1,10 +1,12 @@
 @import '../../../styles/index.scss';
 
+$pagination-height: rem-calc(30);
+
 .container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow-x: hidden;
+  overflow: hidden;
 
   @include media-query(desktop) {
     height: auto;
@@ -15,6 +17,7 @@
 .swiper {
   flex: 1;
   max-width: 100%;
+  height: 100%;
   margin: 0 auto;
 
   // Swiper horizontal wrapper
@@ -26,12 +29,13 @@
 
 .main {
   flex: 1;
-  width: rem-calc(520);
+  height: calc(100% - #{$pagination-height});
   max-width: 100%;
   display: flex;
   flex-direction: column;
 
-  @include media-query(tablet) {
+  @include media-query(desktop) {
+    width: rem-calc(520);
     display: flex;
     flex-direction: column;
     margin: $global-lg-padding auto;
@@ -42,13 +46,18 @@
 }
 
 .stepContainer {
-  margin: 1rem;
+  height: 100%;
+  padding: 0 $global-padding $pagination-height;
   box-sizing: border-box; // Class `.swiper-wrapper` imposes content-box on children
   border-radius: $global-radius;
   background-color: $white;
+  overflow: auto;
 
-  @include media-query(tablet) {
+  @include media-query(desktop) {
     margin: 0;
+    padding: 0;
+    height: auto;
+    overflow: visible;
   }
 }
 
@@ -58,9 +67,10 @@
   align-items: center;
   justify-content: center;
   margin: 0;
-  min-height: rem-calc(30);
+  min-height: $pagination-height;
   list-style: none;
   background-color: lighten($secondary-color, 10);
+  z-index: 2;
 
   &__item {
     display: block;

@@ -116,6 +116,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           value={textInputValue}
           onChange={onTextInputChange}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
     case 'signature':
@@ -124,6 +125,7 @@ const InspectionItemControls: FunctionComponent<Props> = ({
           downloadURL={signatureDownloadURL}
           onClick={onClickSignatureInput}
           canEdit={canEdit}
+          showValues={showValues}
         />
       );
 

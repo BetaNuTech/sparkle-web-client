@@ -67,6 +67,11 @@ const StepsLayout: FunctionComponent<Props> = ({
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) => changeStep(swiper.activeIndex)}
             allowTouchMove={isMobile}
+            shortSwipes={false}
+            longSwipesMs={0}
+            longSwipesRatio={0.1}
+            allowSlidePrev={swiperInstance?.activeIndex !== 0}
+            allowSlideNext={swiperInstance?.activeIndex !== steps.length - 1}
           >
             {steps.map((step, index) => (
               <SwiperSlide key={step}>
