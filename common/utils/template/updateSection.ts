@@ -8,6 +8,7 @@ import {
 import { uuid } from '../uuidv4';
 import deepClone from '../deepClone';
 import deepmerge from '../deepmerge';
+import updateIndexes from './updateIndexes';
 
 const PREFIX = 'utils: template: updateSection';
 
@@ -67,7 +68,8 @@ const setAddedSection = (
   settings: ComposableSectionSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate } = settings;
-  const isAddingSection = userChanges && Boolean(userChanges?.new);
+  const isAddingSection =
+    userChanges && typeof userChanges?.new === 'boolean' && userChanges?.new;
   const currentSections = currentTemplate.sections || {};
   const previousSections = updatedTemplate.sections || {};
   if (!isAddingSection) {
@@ -281,61 +283,6 @@ const setSectionIndex = (
 
   return result;
 };
-
-// Increment/Decrement the index of each template
-// section base on an updated section index
-function updateIndexes(
-  sections: Record<string, TemplateSectionModel>,
-  srcStartIndex = 0,
-  targetId: string
-): Record<string, TemplateSectionModel> {
-  const result = {};
-  const indexToBePlaced = Number(srcStartIndex); // clone
-  const indexToBeChanged = sections[targetId].index;
-
-  Object.keys(sections).forEach((key: string) => {
-    const section = deepClone(sections[key]) as TemplateSectionModel;
-    let indexTarget = indexToBeChanged;
-    let isMoving = false;
-
-    // Check if section index is less than updated
-    // previous index and it's not before starting index
-    if (
-      indexToBePlaced < indexToBeChanged &&
-      section.index < indexToBeChanged &&
-      section.index >= indexToBePlaced
-    ) {
-      indexTarget = section.index + 1;
-      isMoving = true;
-
-      // Check if section index is greater than
-      // updated previous index and it's before
-      // updated section's new index
-    } else if (
-      section.index > indexToBeChanged &&
-      section.index <= indexToBePlaced
-    ) {
-      indexTarget = section.index - 1;
-      isMoving = true;
-    }
-
-    // Check if current section is same as
-    // updating section, then assign the
-    // updated index
-    if (section.id === targetId) {
-      indexTarget = indexToBePlaced;
-      isMoving = true;
-    }
-
-    // Apply updates to results
-    if (isMoving) {
-      section.index = indexTarget;
-      result[key] = section;
-    }
-  });
-
-  return result;
-}
 
 // Decrement indexes proceeding a
 // removed section

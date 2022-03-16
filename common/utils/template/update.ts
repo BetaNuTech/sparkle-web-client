@@ -1,5 +1,7 @@
 import TemplateModel from '../../models/template';
 import { UserChanges } from './composableSettings';
+
+import updateItem from './updateItem';
 import updateGeneral from './updateGeneral';
 import updateSection from './updateSection';
 
@@ -14,12 +16,16 @@ export default function update(
   let result = JSON.parse(JSON.stringify(updatedTemplate)) as TemplateModel;
   let changeCount = userChanges ? Object.keys(userChanges).length : 0;
   const isSectionUpdate = Boolean(userChanges.sections);
+  const isItemUpdate = Boolean(userChanges.items);
   const [targetId] = isSectionUpdate
     ? Object.keys(userChanges.sections)
     : Object.keys(userChanges.items || {});
 
   if (isSectionUpdate) {
     changeCount = Object.keys(userChanges.sections).length;
+  }
+  if (isItemUpdate) {
+    changeCount = Object.keys(userChanges.items).length;
   }
 
   if (changeCount < 1) {
@@ -30,18 +36,35 @@ export default function update(
     throw Error(`${PREFIX} handles only 1 change`);
   }
 
-  if (isSectionUpdate && !targetId) {
+  if ((isSectionUpdate || isItemUpdate) && !targetId) {
     throw Error(
-      `${PREFIX} a section update must reference a section by an identifier`
+      `${PREFIX} an ${
+        isItemUpdate ? 'item' : 'section'
+      } update must reference an ${
+        isItemUpdate ? 'item' : 'section'
+      } by an identifier`
     );
   }
 
   if (isSectionUpdate) {
     // Setup section update
-    const changes = (userChanges.sections || {})[targetId] || null;
+    const changes =
+      targetId === 'new'
+        ? userChanges.sections
+        : (userChanges.sections || {})[targetId] || null;
 
     // Apply user's section changes
     result = updateSection(updatedTemplate, currentTemplate, changes, targetId);
+  } else if (isItemUpdate) {
+    const changes = (userChanges.items || {})[targetId] || null;
+
+    // Apply user's item changes
+    result = updateItem(updatedTemplate, currentTemplate, changes, targetId);
+
+    // Remove no longer applicable updates
+    if (!result.items[targetId]) delete result.items[targetId];
+
+    return result;
   } else {
     result = updateGeneral(updatedTemplate, currentTemplate, userChanges);
   }
@@ -49,6 +72,11 @@ export default function update(
   // Remove empty sections hash from updates
   if (!Object.keys(result.sections || {}).length) {
     delete result.sections;
+  }
+
+  // Remove empty items hash from updates
+  if (!Object.keys(result.items || {}).length) {
+    delete result.items;
   }
 
   return result;
