@@ -349,3 +349,6 @@ export const canUpdateTemplateCategory = (user: userModel): boolean =>
 // Checks that the user have access to delete template category
 export const canDeleteTemplateCategory = (user: userModel): boolean =>
   user.admin || user.corporate;
+
+// Checks that the user have access toview users
+export const canViewUsers = (user: userModel): boolean => user.admin;

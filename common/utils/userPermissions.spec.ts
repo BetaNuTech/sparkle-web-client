@@ -1141,4 +1141,17 @@ describe('Unit | Common | Utils | User Permissions', () => {
     ];
     expect(actual).toEqual(expected);
   });
+
+  test('it should only allow admins to to view users', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canViewUsers(admin),
+      util.canViewUsers(corporate),
+      util.canViewUsers(teamLead),
+      util.canViewUsers(propertyMember),
+      util.canViewUsers(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
 });

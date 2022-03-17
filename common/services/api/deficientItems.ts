@@ -177,7 +177,8 @@ const uploadPhoto = async (
     throw Error(`${PREFIX} uploadPhoto: failed to parse JSON: ${err}`);
   }
 
-  const apiError: any = postFileRequestApiError(
+  // Throw unsuccessful request API error
+  const apiError = postFileRequestApiError(
     response.status,
     responseJson.errors
   );
