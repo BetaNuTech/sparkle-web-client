@@ -10,6 +10,7 @@ import publishPhotos from '../../../features/DeficientItemEdit/utils/publishPhot
 import * as objectHelper from '../../utils/object';
 import UserModal from '../../models/user';
 import utilString from '../../utils/string';
+import ErrorForbidden from '../../models/errors/forbidden';
 
 const PREFIX = 'features: DeficientItemEdit: hooks: useUpdateItem:';
 
@@ -267,6 +268,9 @@ export default function useUpdateItem(
     const haveAllPhotosFailed =
       unpublishedPhotos.length === photoUploadErrors.length;
 
+    const havePhotosErrorForbidden =
+      haveAllPhotosFailed && photoUploadErrors[0] instanceof ErrorForbidden;
+
     // Proceed updating deficiency only when there's was either no
     // unpublished photos or there's at least one unpublished photo
     // that was successfully uploaded
@@ -279,7 +283,15 @@ export default function useUpdateItem(
         );
       } catch (err) {
         setIsSaving(false);
-        publishUpdatesError.push(Error(`${PREFIX} publish: ${err}`));
+        if (err instanceof ErrorForbidden) {
+          sendErrorForbidden(err);
+
+          publishUpdatesError.push(
+            new ErrorForbidden(`${PREFIX} publish: ${err}`)
+          );
+        } else {
+          publishUpdatesError.push(Error(`${PREFIX} publish: ${err}`));
+        }
       }
     }
 
@@ -287,7 +299,11 @@ export default function useUpdateItem(
     sendErrorReports(errors);
 
     // User photo error notification if some photos failed to publish
-    if (photosErrors.length > 0 && !haveAllPhotosFailed) {
+    if (
+      photosErrors.length > 0 &&
+      !haveAllPhotosFailed &&
+      !havePhotosErrorForbidden
+    ) {
       sendNotification(
         'Some deficient item photos failed to publish, please check your internet connection and try again',
         { type: 'error' }
@@ -295,14 +311,25 @@ export default function useUpdateItem(
     }
 
     // User photo error notification if all photos failed to published
-    if (photosErrors.length > 0 && haveAllPhotosFailed) {
+    if (
+      photosErrors.length > 0 &&
+      haveAllPhotosFailed &&
+      !havePhotosErrorForbidden
+    ) {
       sendNotification(
         'All photos failed to publish, please try again or contact an admin',
         { type: 'error' }
       );
     }
+    if (havePhotosErrorForbidden) {
+      sendErrorForbidden(photoUploadErrors[0] as ErrorForbidden);
+    }
 
-    if (publishUpdatesError.length > 0 && !isBulkUpdate) {
+    if (
+      publishUpdatesError.length > 0 &&
+      !isBulkUpdate &&
+      !(publishUpdatesError[0] instanceof ErrorForbidden)
+    ) {
       sendNotification('Failed to update deficient item, please try again', {
         type: 'error'
       });
@@ -324,6 +351,7 @@ export default function useUpdateItem(
     // send state transition notification
     // if DI state updated
     if (
+      photoUploadErrors.length < 1 &&
       !isBulkUpdate &&
       publishUpdatesError.length < 1 &&
       updates.state &&
@@ -349,6 +377,14 @@ export default function useUpdateItem(
     setTimeout(() => setProgress(0), 300);
     return true;
   };
+
+  function sendErrorForbidden(err: ErrorForbidden) {
+    const errors = err.errors ? err.errors.map((e) => e.detail) : [];
+
+    sendNotification(errors.join(', '), {
+      type: 'error'
+    });
+  }
 
   return {
     updates,

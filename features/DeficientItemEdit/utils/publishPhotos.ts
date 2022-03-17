@@ -7,6 +7,7 @@ import deficiencyApi from '../../../common/services/api/deficientItems';
 import filesUtil from '../../../common/utils/files';
 import DeficientItemLocalPhotos from '../../../common/models/deficientItems/unpublishedPhotos';
 import DeficientItemModel from '../../../common/models/deficientItem';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
 
 const PREFIX = 'features: DeficientItemEdit: utils: publishPhotos:';
 
@@ -58,10 +59,13 @@ const upload = (
             observer.next({ done: false, size: photo.size });
             return result;
           } catch (err) {
-            const error = Error(
+            let error = Error(
               // eslint-disable-next-line max-len
               `${PREFIX} upload: failed to upload photo for deficiency "${deficiencyId}": ${err}`
             );
+            if (err instanceof ErrorForbidden) {
+              error = err;
+            }
 
             result.errors.push(error);
             observer.next({ done: false, size: photo.size });
