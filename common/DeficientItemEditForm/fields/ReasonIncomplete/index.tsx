@@ -2,6 +2,9 @@ import { ChangeEvent, FunctionComponent } from 'react';
 import clsx from 'clsx';
 import DeficientItemModel from '../../../models/deficientItem';
 import fieldStyles from '../styles.module.scss';
+import settings from '../../settings';
+
+const EDITABLE_STATES = settings.reasonIncompleteEditStates;
 
 interface Props {
   deficientItem: DeficientItemModel;
@@ -25,6 +28,7 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
   const showHeaderAction =
     deficientItem.reasonsIncomplete && !isMobile && !isBulkUpdate;
   const showFooterAction = deficientItem.reasonsIncomplete && isMobile;
+  const isEditable = EDITABLE_STATES.includes(deficientItem.state);
 
   if (!isVisible) {
     return <></>;
@@ -66,20 +70,23 @@ const DeficientItemEditFormReasonIncomplete: FunctionComponent<Props> = ({
           !deficientItem.currentReasonIncomplete && '-p-none'
         )}
       >
-        {deficientItem.currentReasonIncomplete ? (
+        {deficientItem.currentReasonIncomplete && (
           <strong
             className={fieldStyles.richText}
             data-testid="item-reason-incomplete-text"
           >
             {deficientItem.currentReasonIncomplete}
           </strong>
-        ) : (
+        )}
+
+        {isEditable && (
           <textarea
             placeholder="NOT SET"
             className={clsx(
               fieldStyles.formInput,
               !updates?.currentReasonIncomplete &&
-                fieldStyles['formInput--empty']
+                fieldStyles['formInput--empty'],
+              deficientItem.currentReasonIncomplete ? '-mt-sm' : ''
             )}
             onChange={onChange}
             defaultValue={updates?.currentReasonIncomplete || ''}
