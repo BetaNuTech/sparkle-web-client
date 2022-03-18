@@ -26,7 +26,8 @@ export default function updateItem(
     setPhotosValue,
     setNotesValue,
     setScore,
-    setItemIndex
+    setItemIndex,
+    clearEmptyItem
   )(
     {} as TemplateModel, // result
     {
@@ -49,9 +50,9 @@ const mergePreviousUpdates = (
 
   if (!updatedTemplate) return result;
 
-  if (updatedTemplate.items) {
-    result.items = deepClone(updatedTemplate.items);
-  }
+  result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
+  result.items = deepClone(updatedTemplate.items || {});
+
   return result;
 };
 
@@ -66,7 +67,7 @@ const setAddedItem = (
     targetId === 'new' &&
     Boolean(userChanges?.sectionId) &&
     Boolean(userChanges?.itemType);
-  const currentItem = currentTemplate.items || {};
+  const currentItems = currentTemplate.items || {};
   const previousItems = updatedTemplate.items || {};
   if (!isAddingItem) {
     return result;
@@ -75,7 +76,11 @@ const setAddedItem = (
   const item = createItem(userChanges?.itemType);
   item.id = uuid(20);
   item.sectionId = userChanges.sectionId;
-  item.index = getItemIndex(userChanges.sectionId, currentItem, previousItems);
+  item.index = createNextItemIndex(
+    userChanges.sectionId,
+    currentItems,
+    previousItems
+  );
   result.items = result.items || {};
   result.items[item.id] = item;
   return result;
@@ -86,7 +91,8 @@ const setItemType = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
-  const isChangingItem = typeof userChanges?.itemType === 'string';
+  const isChangingItem =
+    typeof userChanges?.itemType === 'string' && targetId !== 'new';
   const currentItems = currentTemplate.items || {};
   const targetedItem = currentItems[targetId] || {};
   const previousItems = updatedTemplate.items || {};
@@ -126,11 +132,11 @@ const setItemMainInputType = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
-  const isChangingItem = typeof userChanges?.mainInputType === 'string';
+  const isChanging = typeof userChanges?.mainInputType === 'string';
   const currentItems = currentTemplate.items || {};
   const previousItems = updatedTemplate.items || {};
-
-  if (!isChangingItem) {
+  const value = userChanges?.mainInputType;
+  if (!isChanging) {
     return result;
   }
 
@@ -139,21 +145,18 @@ const setItemMainInputType = (
   if (item.itemType === 'signature' || item.itemType === 'text_input') {
     return result;
   }
-  const { index, sectionId, title } = previousItems[targetId] || {};
 
-  const updatedItem = createItem(item?.itemType, userChanges?.mainInputType);
+  // Add user change to updates
 
-  if (index) {
-    updatedItem.index = index;
-  }
-  if (sectionId) {
-    updatedItem.sectionId = sectionId;
-  }
-  if (title) {
-    updatedItem.title = title;
-  }
+  const itemValues = createItemValues(value);
+  const updatedItem = {
+    ...result.items[targetId],
+    ...itemValues,
+    mainInputType: value
+  };
 
   result.items[targetId] = updatedItem;
+
   return result;
 };
 
@@ -324,6 +327,21 @@ const setItemIndex = (
   return result;
 };
 
+const clearEmptyItem = (
+  result: TemplateModel,
+  settings: ComposableItemSettings
+) => {
+  const { targetId } = settings;
+
+  if (
+    result.items[targetId] &&
+    Object.keys(result.items[targetId] || {}).length === 0
+  ) {
+    delete result.items[targetId];
+  }
+  return result;
+};
+
 const createItemValues = (type: string) => {
   const itemValuesKeys = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five'];
   const itemType = typeof type === 'string' ? `${type}`.toLowerCase() : type;
@@ -354,7 +372,7 @@ const createItem = (
   const scoreValues =
     createItemValues(itemType) || createItemValues(mainInputType);
 
-  if (scoreValues && itemType === 'main') {
+  if (scoreValues) {
     Object.assign(item, scoreValues); // set any item score values
   }
 
@@ -370,23 +388,40 @@ const createItem = (
   return item;
 };
 
-const getItemIndex = (
+// Create an item idex for a section
+// group, returning next index in group
+// or zero for a first section item
+const createNextItemIndex = (
   sectionId: string,
-  currentItem: Record<string, TemplateItemModel>,
+  currentItems: Record<string, TemplateItemModel>,
   previousItems: Record<string, TemplateItemModel>
 ): number => {
-  const items = {
-    ...currentItem,
-    ...previousItems
-  };
-  const sectionItemIndexes = [];
-  Object.keys(items).forEach((key) => {
-    if (items[key].sectionId === sectionId) {
-      sectionItemIndexes.push(items[key].index);
-    }
-  });
-  if (sectionItemIndexes.length) {
-    return Math.max(...sectionItemIndexes) + 1;
-  }
-  return 0;
+  const itemIds = [...Object.keys(currentItems), ...Object.keys(previousItems)];
+
+  const lastItemIndex = itemIds
+    // Unique item identifiers only
+    .filter((id, i, arr) => arr.indexOf(id) === i)
+    // Find only items within section group
+    .filter(
+      (id) => (previousItems[id] || currentItems[id]).sectionId === sectionId
+    )
+    // Create array of all item indexes
+    .reduce((acc, id) => {
+      // Use local updates over remove
+      const { index } = previousItems[id] || currentItems[id];
+
+      // If valid index number, non NaN
+      // eslint-disable-next-line no-self-compare
+      if (typeof index === 'number' && index === index) {
+        acc.push(index);
+      }
+
+      return acc;
+    }, [])
+    .sort((a, b) => a - b) // sort ascending
+    .pop();
+
+  // Return 0 when last index unfound
+  // otherwise increment last index by 1
+  return typeof lastItemIndex === 'undefined' ? 0 : lastItemIndex + 1;
 };

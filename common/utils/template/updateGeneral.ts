@@ -1,6 +1,7 @@
 import pipe from '../pipe';
 import TemplateModel from '../../models/template';
 import ComposableSettings, { UserChanges } from './composableSettings';
+import deepClone from '../deepClone';
 
 // Manage local updates for template's general settings
 export default function updateGeneral(
@@ -9,6 +10,7 @@ export default function updateGeneral(
   userChanges: UserChanges
 ): TemplateModel {
   return pipe(
+    mergePreviousUpdates,
     setName,
     setDescription,
     setCategory,
@@ -23,6 +25,20 @@ export default function updateGeneral(
     } as ComposableSettings
   );
 }
+
+// Merge any prior updates
+// into the final results
+const mergePreviousUpdates = (
+  result: TemplateModel,
+  settings: ComposableSettings
+) => {
+  const { updatedTemplate } = settings;
+
+  if (!updatedTemplate) return result;
+  result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
+
+  return result;
+};
 
 // Set template name
 const setName = (result: TemplateModel, settings: ComposableSettings) => {
@@ -119,7 +135,11 @@ const setTrackDeficientItem = (
     typeof updatedTemplate.trackDeficientItems === 'boolean';
 
   // Provide previous update
-  if (!isChanging && hasPreviousUpdate) {
+  if (
+    !isChanging &&
+    hasPreviousUpdate &&
+    !result.requireDeficientItemNoteAndPhoto
+  ) {
     result.trackDeficientItems = updatedTemplate.trackDeficientItems;
   }
 
@@ -143,7 +163,6 @@ const setTrackDeficientItem = (
   ) {
     result.requireDeficientItemNoteAndPhoto = userChanges.trackDeficientItems;
   }
-
   return result;
 };
 
@@ -157,9 +176,12 @@ const setRequireDeficientItemNoteAndPhoto = (
     typeof userChanges.requireDeficientItemNoteAndPhoto === 'boolean';
   const hasPreviousUpdate =
     typeof updatedTemplate.requireDeficientItemNoteAndPhoto === 'boolean';
-
   // Provide previous update
-  if (!isChanging && hasPreviousUpdate) {
+  if (
+    !isChanging &&
+    hasPreviousUpdate &&
+    !result.requireDeficientItemNoteAndPhoto
+  ) {
     result.requireDeficientItemNoteAndPhoto =
       updatedTemplate.requireDeficientItemNoteAndPhoto;
   }
@@ -172,7 +194,11 @@ const setRequireDeficientItemNoteAndPhoto = (
   ) {
     result.requireDeficientItemNoteAndPhoto =
       userChanges.requireDeficientItemNoteAndPhoto;
-  } else if (isChanging) {
+  } else if (
+    isChanging ||
+    result.requireDeficientItemNoteAndPhoto ===
+      currentTemplate.requireDeficientItemNoteAndPhoto
+  ) {
     delete result.requireDeficientItemNoteAndPhoto;
   }
 
@@ -185,6 +211,10 @@ const setRequireDeficientItemNoteAndPhoto = (
     !updatedTemplate.trackDeficientItems
   ) {
     result.trackDeficientItems = userChanges.requireDeficientItemNoteAndPhoto;
+  }
+
+  if (result.trackDeficientItems === currentTemplate.trackDeficientItems) {
+    delete result.trackDeficientItems;
   }
 
   return result;

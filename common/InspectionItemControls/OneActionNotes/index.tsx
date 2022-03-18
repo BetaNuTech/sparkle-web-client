@@ -15,7 +15,12 @@ const OneActionNotes: FunctionComponent<Props> = ({
   selected,
   showValues
 }) => (
-  <ul className={clsx(styles.inspection, showValues && '-jc-flex-start')}>
+  <ul
+    className={clsx(
+      styles.inspection,
+      showValues && '-pb-mlg -jc-flex-start -cu-pointer'
+    )}
+  >
     <li
       className={clsx(
         styles.inspection__input,

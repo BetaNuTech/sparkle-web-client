@@ -19,19 +19,14 @@ export default function updateSection(
   userChanges: UserSectionChanges,
   targetId: string
 ): TemplateModel {
-  const changeCount = Object.keys(userChanges || {}).length;
-
-  if (userChanges && changeCount < 1) {
-    throw Error(`${PREFIX} only one change can be provided`);
-  }
-
   return pipe(
     mergePreviousUpdates,
     setAddedSection,
     setRemovedSection,
     setSectionTitle,
     setSectionType,
-    setSectionIndex
+    setSectionIndex,
+    clearEmptySection
   )(
     {} as TemplateModel, // result
     {
@@ -50,15 +45,12 @@ const mergePreviousUpdates = (
   settings: ComposableSectionSettings
 ) => {
   const { updatedTemplate } = settings;
+  result.sections = {};
   if (!updatedTemplate) return result;
 
-  if (updatedTemplate.sections) {
-    result.sections = deepClone(updatedTemplate.sections || {});
-  }
+  result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
+  result.sections = deepClone(updatedTemplate.sections || {});
 
-  if (updatedTemplate.items) {
-    result.items = deepClone(updatedTemplate.items);
-  }
   return result;
 };
 
@@ -167,6 +159,7 @@ const setSectionTitle = (
   settings: ComposableSectionSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
+
   const sections = currentTemplate.sections || {};
   const currentSection = sections[targetId] || {};
 
@@ -281,6 +274,22 @@ const setSectionIndex = (
     });
   }
 
+  return result;
+};
+
+// Set template section type
+const clearEmptySection = (
+  result: TemplateModel,
+  settings: ComposableSectionSettings
+) => {
+  const { targetId } = settings;
+
+  if (
+    result.sections[targetId] &&
+    Object.keys(result.sections[targetId] || {}).length === 0
+  ) {
+    delete result.sections[targetId];
+  }
   return result;
 };
 

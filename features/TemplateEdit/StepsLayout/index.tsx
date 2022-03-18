@@ -28,6 +28,22 @@ interface Props {
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
   sortedSections: TemplateSectionModel[];
+  updateName(name: string): void;
+  updateDescription(description: string): void;
+  updateCategory(category: string): void;
+  updateTrackDeficientItems(trackDeficientItems: boolean): void;
+  updateRequireDeficientItemNoteAndPhoto(
+    requireDeficientItemNoteAndPhoto: boolean
+  ): void;
+  addSection(): void;
+  updateSectionTitle(sectionId: string, title: string): void;
+  onUpdateSectionType(section: TemplateSectionModel): void;
+  addItem(sectionId: string, itemType: string): void;
+  onUpdateItemType(item: TemplateItemModel): void;
+  onChangeMainInputType(item: TemplateItemModel): void;
+  updateItemTitle(itemId: string, title: string): void;
+  onUpdatePhotosValue(item: TemplateItemModel): void;
+  onUpdateNotesValue(item: TemplateItemModel): void;
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -42,7 +58,21 @@ const StepsLayout: FunctionComponent<Props> = ({
   template,
   templateSectionItems,
   sortedSections,
-  forceVisible
+  forceVisible,
+  updateName,
+  updateDescription,
+  updateCategory,
+  updateTrackDeficientItems,
+  updateRequireDeficientItemNoteAndPhoto,
+  addSection,
+  updateSectionTitle,
+  onUpdateSectionType,
+  addItem,
+  onUpdateItemType,
+  onChangeMainInputType,
+  updateItemTitle,
+  onUpdatePhotosValue,
+  onUpdateNotesValue
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -85,6 +115,22 @@ const StepsLayout: FunctionComponent<Props> = ({
                       templateSectionItems={templateSectionItems}
                       forceVisible={forceVisible}
                       sortedSections={sortedSections}
+                      updateName={updateName}
+                      updateDescription={updateDescription}
+                      updateCategory={updateCategory}
+                      updateTrackDeficientItems={updateTrackDeficientItems}
+                      updateRequireDeficientItemNoteAndPhoto={
+                        updateRequireDeficientItemNoteAndPhoto
+                      }
+                      addSection={addSection}
+                      updateSectionTitle={updateSectionTitle}
+                      onUpdateSectionType={onUpdateSectionType}
+                      addItem={addItem}
+                      onUpdateItemType={onUpdateItemType}
+                      onChangeMainInputType={onChangeMainInputType}
+                      updateItemTitle={updateItemTitle}
+                      onUpdatePhotosValue={onUpdatePhotosValue}
+                      onUpdateNotesValue={onUpdateNotesValue}
                     />
                   )}
                 </div>

@@ -1,17 +1,19 @@
 import TemplateModel from '../../models/template';
+import ItemModel from '../../models/inspectionTemplateItem';
 import updateItem from './updateItem';
 import { templateA } from '../../../__mocks__/templates';
 import {
   unselectedCheckmarkItem,
   unselectedThumbsItem,
-  unselectedCheckedExclaimItem
+  unselectedCheckedExclaimItem,
+  singleSection
 } from '../../../__mocks__/inspections';
 import inspectionConfig from '../../../config/inspections';
 
 const INSPECTION_SCORES = inspectionConfig.inspectionScores;
 
 describe('Unit | Common | Utils | Template | Update Item', () => {
-  test('it adds new item with provided item type ', () => {
+  test('it adds new item with provided item type', () => {
     const itemId = unselectedCheckmarkItem.id;
     const templateWithItems = {
       ...templateA,
@@ -88,6 +90,49 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
         ).toBeTruthy();
       }
     }
+  });
+
+  test('it adds first item within a section group at the first position', () => {
+    const expected = 0;
+    const sectionId = 'section-123';
+    const currentTemplate = {
+      ...templateA,
+      sections: { [sectionId]: { ...singleSection } }
+    };
+    const result = updateItem(
+      {} as TemplateModel,
+      currentTemplate,
+      { sectionId, itemType: 'main' },
+      'new'
+    );
+
+    const [resultItem] = Object.entries(result.items || {})
+      .filter(([id]) => id !== 'first')
+      .map(([, item]) => item as ItemModel);
+    const actual = resultItem.index;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it adds another new item at the last position of a section group', () => {
+    const expected = 1; // Insert at 2nd position in section
+    const sectionId = 'section-123';
+    const currentTemplate = {
+      ...templateA,
+      sections: { [sectionId]: { ...singleSection } },
+      items: { first: { ...unselectedCheckmarkItem, sectionId, index: 0 } }
+    };
+    const result = updateItem(
+      {} as TemplateModel,
+      currentTemplate,
+      { sectionId, itemType: 'main' },
+      'new'
+    );
+
+    const [resultItem] = Object.entries(result.items || {})
+      .filter(([id]) => id !== 'first')
+      .map(([, item]) => item as ItemModel);
+    const actual = resultItem.index;
+    expect(actual).toEqual(expected);
   });
 
   test('it sets an template item title', () => {

@@ -1,0 +1,56 @@
+@import '../../../../../../styles/index.scss';
+
+.container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  @extend %gridHeaderCreateButton--dropdown;
+
+  > ul {
+    right: auto;
+    left: 0;
+  }
+
+  &:focus,
+  &:hover {
+    > ul {
+      right: auto;
+      left: rem-calc(0);
+
+      @include media-query(desktop) {
+        left: rem-calc(50);
+      }
+
+      &:after {
+        right: auto;
+        left: calc(50% - #{rem-calc(5)});
+      }
+    }
+  }
+}
+
+// added button attribute
+// to prioritize css
+button.button {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  border-radius: 0;
+
+  &:hover,
+  &:focus {
+    background-color: $gray-light-6;
+    color: $gray-dark;
+  }
+}
+
+.icon {
+  max-height: rem-calc(24);
+  width: rem-calc(30);
+  margin-right: $global-sm-padding;
+
+  path {
+    fill: $gray-3;
+  }
+}

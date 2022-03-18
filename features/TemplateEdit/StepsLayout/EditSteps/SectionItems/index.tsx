@@ -1,23 +1,34 @@
-import { Fragment, FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import TrashIcon from '../../../../../public/icons/sparkle/trash.svg';
 import TemplateSectionModel from '../../../../../common/models/inspectionTemplateSection';
 import TemplateItemModel from '../../../../../common/models/inspectionTemplateItem';
 import stepsStyles from '../styles.module.scss';
 import DiamondIcon from '../../../../../public/icons/sparkle/diamond.svg';
 import DiamondLayersIcon from '../../../../../public/icons/sparkle/diamond-layers.svg';
-import AddIcon from '../../../../../public/icons/ios/add.svg';
 import EditableItem from '../../EditableItem';
+import AddItemAction from './AddItemAction';
 
+const inputTypes = [
+  { label: 'Item', value: 'main' },
+  { label: 'Text Input', value: 'text_input' },
+  { label: 'Signature', value: 'signature' }
+];
 interface Props {
   sortedSections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
+  addItem(sectionId: string, itemType: string): void;
+  onUpdateItemType(item: TemplateItemModel): void;
+  updateItemTitle(itemId: string, title: string): void;
 }
 
 const SectionItems: FunctionComponent<Props> = ({
   sortedSections,
   templateSectionItems,
-  forceVisible
+  forceVisible,
+  addItem,
+  onUpdateItemType,
+  updateItemTitle
 }) => (
   <>
     <header className={stepsStyles.header}>
@@ -52,15 +63,16 @@ const SectionItems: FunctionComponent<Props> = ({
                 item={item}
                 key={item.id}
                 forceVisible={forceVisible}
+                onUpdateTitle={(title) => updateItemTitle(item.id, title)}
+                onUpdateType={() => onUpdateItemType(item)}
               />
             ))}
           </ul>
-          <div className={stepsStyles.action}>
-            <span>Add new item</span>
-            <button className={stepsStyles.action__icon}>
-              <AddIcon />
-            </button>
-          </div>
+          <AddItemAction
+            inputTypes={inputTypes}
+            sectionId={section.id}
+            addItem={addItem}
+          />
         </div>
       );
     })}
