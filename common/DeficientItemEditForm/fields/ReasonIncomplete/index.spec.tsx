@@ -4,13 +4,16 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
 import createDeficientItem from '../../../../__tests__/helpers/createDeficientItem';
 import ReasonIncomplete from './index';
+import settings from '../../settings';
 
 const STATE = 'overdue';
+const DEF_ITEM_STATES = settings.deficientItemStates;
+const REASON_INCOMPLETE_EDIT_STATES = settings.reasonIncompleteEditStates;
 
 describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete', () => {
   afterEach(() => sinon.restore());
 
-  it('should hides reason incomplete section when not relevant', () => {
+  it('should hide reason incomplete section when hidden', () => {
     render(
       <ReasonIncomplete
         deficientItem={createDeficientItem({ state: STATE })}
@@ -25,6 +28,42 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
       'item-reason-incomplete'
     );
     expect(reasonIncompleteSection).toBeNull();
+  });
+
+  it('it only allows editing for reason incomplete for specific states', () => {
+    const props = {
+      deficientItem: createDeficientItem({ state: STATE }),
+      isMobile: false,
+      onShowHistory: sinon.spy(),
+      onChange: sinon.spy(),
+      isVisible: true
+    };
+
+    const tests = DEF_ITEM_STATES.map((state) => ({
+      expected: REASON_INCOMPLETE_EDIT_STATES.includes(state),
+      data: createDeficientItem({ state }),
+      msg: `should${
+        REASON_INCOMPLETE_EDIT_STATES.includes(state) ? '' : ' not'
+      } be editable for state: ${state}`
+    }));
+
+    const { rerender } = render(<ReasonIncomplete {...props} />);
+
+    // eslint-disable-next-line no-restricted-syntax
+    for (const test of tests) {
+      const { data, expected, msg } = test;
+      const componentProps = {
+        ...props,
+        deficientItem: data
+      };
+      rerender(<ReasonIncomplete {...componentProps} />);
+      const editableField = screen.queryByTestId(
+        'item-reason-incomplete-textarea'
+      );
+
+      const actual = Boolean(editableField);
+      expect(actual, msg).toEqual(expected);
+    }
   });
 
   it('should not render show previous button when deficient item does not have reasons incomplete', () => {
@@ -76,7 +115,7 @@ describe('Unit | Common | Deficient Item Edit Form | fields | Reason Incomplete'
       <ReasonIncomplete
         deficientItem={createDeficientItem({
           currentReasonIncomplete: expected,
-          state: STATE
+          state: 'incomplete'
         })}
         isMobile={false}
         onShowHistory={sinon.spy()}
