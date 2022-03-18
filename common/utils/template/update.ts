@@ -60,11 +60,6 @@ export default function update(
 
     // Apply user's item changes
     result = updateItem(updatedTemplate, currentTemplate, changes, targetId);
-
-    // Remove no longer applicable updates
-    if (!result.items[targetId]) delete result.items[targetId];
-
-    return result;
   } else {
     result = updateGeneral(updatedTemplate, currentTemplate, userChanges);
   }
@@ -73,11 +68,9 @@ export default function update(
   if (!Object.keys(result.sections || {}).length) {
     delete result.sections;
   }
-
   // Remove empty items hash from updates
   if (!Object.keys(result.items || {}).length) {
     delete result.items;
   }
-
   return result;
 }

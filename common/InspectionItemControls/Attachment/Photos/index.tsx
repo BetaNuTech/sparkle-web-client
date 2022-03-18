@@ -10,6 +10,7 @@ interface Props {
   onClick(): void;
   canEdit: boolean;
   isRequired: boolean;
+  onMouseDown(): void;
 }
 
 const AttachmentPhoto: FunctionComponent<Props> = ({
@@ -17,7 +18,8 @@ const AttachmentPhoto: FunctionComponent<Props> = ({
   selected,
   onClick,
   canEdit,
-  isRequired
+  isRequired,
+  onMouseDown
 }) => {
   const isClickEnabled = (enabled && canEdit) || selected;
   const clickHandler = isClickEnabled ? onClick : () => null; // propagate or noop
@@ -38,6 +40,7 @@ const AttachmentPhoto: FunctionComponent<Props> = ({
       data-testselected={selected ? 'selected' : ''}
       data-testdeficient={isRequired ? 'deficient' : ''}
       onClick={clickHandler}
+      onMouseDown={onMouseDown}
     >
       <PhotoIcon />
     </li>

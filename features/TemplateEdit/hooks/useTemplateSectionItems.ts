@@ -1,15 +1,20 @@
 import TemplateItemModel from '../../../common/models/inspectionTemplateItem';
 import TemplateModel from '../../../common/models/template';
 import utilArray from '../../../common/utils/array';
+import deepmerge from '../../../common/utils/deepmerge';
 
 interface Result {
   templateSectionItems: Map<string, TemplateItemModel[]>;
 }
 
 export default function useTemplateSectionItems(
-  template: TemplateModel
+  currentTemplate: TemplateModel,
+  updatedTemplate: TemplateModel
 ): Result {
-  const templateItems = template.items || {};
+  const templateItems = deepmerge(
+    currentTemplate.items || {},
+    updatedTemplate.items || {}
+  );
   const itemsList = Object.keys(templateItems).map((id) => ({
     id,
     ...templateItems[id]

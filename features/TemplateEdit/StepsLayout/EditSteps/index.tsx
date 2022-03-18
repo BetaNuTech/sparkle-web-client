@@ -16,6 +16,22 @@ interface Props {
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
   sortedSections: TemplateSectionModel[];
+  updateName(name: string): void;
+  updateDescription(description: string): void;
+  updateCategory(category: string): void;
+  updateTrackDeficientItems(trackDeficientItems: boolean): void;
+  updateRequireDeficientItemNoteAndPhoto(
+    requireDeficientItemNoteAndPhoto: boolean
+  ): void;
+  addSection(): void;
+  updateSectionTitle(sectionId: string, title: string): void;
+  onUpdateSectionType(section: TemplateSectionModel): void;
+  addItem(sectionId: string, itemType: string): void;
+  onUpdateItemType(item: TemplateItemModel): void;
+  onChangeMainInputType(item: TemplateItemModel): void;
+  updateItemTitle(itemId: string, title: string): void;
+  onUpdatePhotosValue(item: TemplateItemModel): void;
+  onUpdateNotesValue(item: TemplateItemModel): void;
 }
 
 const EditSteps: FunctionComponent<Props> = ({
@@ -24,17 +40,42 @@ const EditSteps: FunctionComponent<Props> = ({
   templateCategories,
   templateSectionItems,
   sortedSections,
-  forceVisible
+  forceVisible,
+  updateName,
+  updateDescription,
+  updateCategory,
+  updateTrackDeficientItems,
+  updateRequireDeficientItemNoteAndPhoto,
+  addSection,
+  updateSectionTitle,
+  onUpdateSectionType,
+  addItem,
+  onUpdateItemType,
+  onChangeMainInputType,
+  updateItemTitle,
+  onUpdatePhotosValue,
+  onUpdateNotesValue
 }) => {
   switch (step) {
     case 'sections':
-      return <Sections template={template} forceVisible={forceVisible} />;
+      return (
+        <Sections
+          forceVisible={forceVisible}
+          addSection={addSection}
+          sortedSections={sortedSections}
+          updateSectionTitle={updateSectionTitle}
+          onUpdateSectionType={onUpdateSectionType}
+        />
+      );
     case 'section-items':
       return (
         <SectionItems
           sortedSections={sortedSections}
           templateSectionItems={templateSectionItems}
           forceVisible={forceVisible}
+          addItem={addItem}
+          onUpdateItemType={onUpdateItemType}
+          updateItemTitle={updateItemTitle}
         />
       );
     case 'items':
@@ -43,6 +84,9 @@ const EditSteps: FunctionComponent<Props> = ({
           sortedSections={sortedSections}
           templateSectionItems={templateSectionItems}
           forceVisible={forceVisible}
+          onChangeMainInputType={onChangeMainInputType}
+          onUpdatePhotosValue={onUpdatePhotosValue}
+          onUpdateNotesValue={onUpdateNotesValue}
         />
       );
     case 'item-values':
@@ -55,7 +99,17 @@ const EditSteps: FunctionComponent<Props> = ({
       );
     default:
       return (
-        <General template={template} templateCategories={templateCategories} />
+        <General
+          template={template}
+          templateCategories={templateCategories}
+          updateName={updateName}
+          updateDescription={updateDescription}
+          updateCategory={updateCategory}
+          updateTrackDeficientItems={updateTrackDeficientItems}
+          updateRequireDeficientItemNoteAndPhoto={
+            updateRequireDeficientItemNoteAndPhoto
+          }
+        />
       );
   }
 };

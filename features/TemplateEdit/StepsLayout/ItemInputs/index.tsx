@@ -11,24 +11,34 @@ interface Props {
   forceVisible?: boolean;
   onMouseDownMainInput(event: MouseEvent<HTMLLIElement>, value: number): void;
   selectedToScore?: number;
+  onClickItemInput?(): void;
+  onMouseDownNotes?(): void;
+  onMouseDownAttachment?(): void;
 }
 
 const ItemInputs: FunctionComponent<Props> = ({
   item,
   forceVisible,
   onMouseDownMainInput,
-  selectedToScore
+  selectedToScore,
+  onClickItemInput,
+  onMouseDownNotes,
+  onMouseDownAttachment
 }) => {
   const ref = useRef(null);
   const { isVisible } = useVisibility(ref, {}, forceVisible);
-  const showAttachment = ['signature', 'text_input'].indexOf(item.itemType) < 0;
+  const isMainItem = item.itemType === 'main';
+  const clickHandler = isMainItem ? onClickItemInput : () => null; // Propagate or noop
 
   return (
     <li className={styles.container} ref={ref}>
       {isVisible && (
         <>
           <label className={styles.title}>{item.title}</label>
-          <div className={clsx(styles.content, !showAttachment && '-mr-none')}>
+          <div
+            className={clsx(styles.content, !isMainItem && '-mr-none')}
+            onClick={clickHandler}
+          >
             <InspectionItemControls
               item={item}
               canEdit={false} // eslint-disable-line react/jsx-boolean-value
@@ -37,12 +47,14 @@ const ItemInputs: FunctionComponent<Props> = ({
               selectedToScore={selectedToScore}
             />
           </div>
-          {showAttachment && (
+          {isMainItem && (
             <div className={styles.controls}>
               <Attachment
                 photos={item.photos}
                 notes={item.notes}
                 canEdit={true} // eslint-disable-line react/jsx-boolean-value
+                onMouseDownNotes={onMouseDownNotes}
+                onMouseDownAttachment={onMouseDownAttachment}
               />
             </div>
           )}
@@ -50,6 +62,10 @@ const ItemInputs: FunctionComponent<Props> = ({
       )}
     </li>
   );
+};
+
+ItemInputs.defaultProps = {
+  onClickItemInput: () => {} // eslint-disable-line @typescript-eslint/no-empty-function
 };
 
 export default ItemInputs;

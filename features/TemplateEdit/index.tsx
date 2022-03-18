@@ -3,12 +3,20 @@ import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import TemplateModel from '../../common/models/template';
 import TemplateCategoryModel from '../../common/models/templateCategory';
+import TemplateItemModel from '../../common/models/inspectionTemplateItem';
+import TemplateSectionModel from '../../common/models/inspectionTemplateSection';
 import UserModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import StepsLayout from './StepsLayout';
 import useSteps from './hooks/useSteps';
 import useTemplateSectionItems from './hooks/useTemplateSectionItems';
+import useUpdateTemplate from './hooks/useUpdateTemplate';
+import deepmerge from '../../common/utils/deepmerge';
+import inspectionConfig from '../../config/inspections';
+
+const TEMPLATE_TYPES = inspectionConfig.inspectionTemplateTypes;
+const INPUT_ITEM_TYPES = Object.keys(TEMPLATE_TYPES);
 
 interface Props {
   user: UserModel;
@@ -26,6 +34,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
   isStaging,
   template,
   templateCategories,
+  unpublishedUpdates,
   forceVisible
 }) => {
   // Responsive queries
@@ -42,13 +51,73 @@ const TemplateEdit: FunctionComponent<Props> = ({
     goToPrevStep
   } = useSteps();
 
-  const { templateSectionItems } = useTemplateSectionItems(template);
+  const {
+    updates,
+    hasUpdates,
+    updateName,
+    updateDescription,
+    updateCategory,
+    updateTrackDeficientItems,
+    updateRequireDeficientItemNoteAndPhoto,
+    addSection,
+    updateSectionTitle,
+    updateSectionType,
+    addItem,
+    updateItemType,
+    updateItemMainInputType,
+    updateItemTitle,
+    updatePhotosValue,
+    updateNotesValue
+  } = useUpdateTemplate(template.id, unpublishedUpdates, template);
 
-  const sections = template.sections || {};
+  const { templateSectionItems } = useTemplateSectionItems(template, updates);
+
+  const sections = deepmerge(template.sections || {}, updates.sections || {});
+
   // sort sections by index
   const sortedSections = Object.keys(sections)
     .map((id) => ({ id, ...sections[id] }))
     .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
+
+  const updatedTemplate = { ...template, ...updates };
+
+  const onUpdateSectionType = (section: TemplateSectionModel) => {
+    updateSectionType(
+      section.id,
+      section.section_type === 'single' ? 'multi' : 'single'
+    );
+  };
+
+  const onChangeMainInputType = (item: TemplateItemModel) => {
+    const type = item.mainInputType.toLowerCase();
+    const nextIndex = INPUT_ITEM_TYPES.indexOf(type) + 1;
+    const targetIndex = INPUT_ITEM_TYPES[nextIndex] || INPUT_ITEM_TYPES[0];
+    const updatedMainInputType = TEMPLATE_TYPES[targetIndex];
+    updateItemMainInputType(item.id, updatedMainInputType);
+  };
+  const onUpdateItemType = (item: TemplateItemModel) => {
+    const type = (item.itemType || '').toLowerCase();
+
+    let updatedItemType = '';
+    if (type === 'text_input') {
+      // Configure signature item
+      updatedItemType = 'signature';
+    } else if (type === 'signature') {
+      // Configure main item
+      updatedItemType = 'main';
+    } else {
+      // Configure text item
+      updatedItemType = 'text_input';
+    }
+    updateItemType(item.id, updatedItemType);
+  };
+
+  const onUpdateNotesValue = (item: TemplateItemModel) => {
+    updateNotesValue(item.id, !item.notes);
+  };
+  const onUpdatePhotosValue = (item: TemplateItemModel) => {
+    updatePhotosValue(item.id, !item.photos);
+  };
 
   return (
     <>
@@ -70,11 +139,27 @@ const TemplateEdit: FunctionComponent<Props> = ({
         goToNextStep={goToNextStep}
         goToPrevStep={goToPrevStep}
         isLastStep={isLastStep}
-        template={template}
+        template={updatedTemplate}
         templateCategories={templateCategories}
         templateSectionItems={templateSectionItems}
         sortedSections={sortedSections}
         forceVisible={forceVisible}
+        updateName={updateName}
+        updateDescription={updateDescription}
+        updateCategory={updateCategory}
+        updateTrackDeficientItems={updateTrackDeficientItems}
+        updateRequireDeficientItemNoteAndPhoto={
+          updateRequireDeficientItemNoteAndPhoto
+        }
+        addSection={addSection}
+        updateSectionTitle={updateSectionTitle}
+        onUpdateSectionType={onUpdateSectionType}
+        addItem={addItem}
+        onUpdateItemType={onUpdateItemType}
+        onChangeMainInputType={onChangeMainInputType}
+        updateItemTitle={updateItemTitle}
+        onUpdateNotesValue={onUpdateNotesValue}
+        onUpdatePhotosValue={onUpdatePhotosValue}
       />
     </>
   );

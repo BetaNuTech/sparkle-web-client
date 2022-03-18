@@ -11,12 +11,18 @@ interface Props {
   sortedSections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
+  onChangeMainInputType(item: TemplateItemModel): void;
+  onUpdatePhotosValue(item: TemplateItemModel): void;
+  onUpdateNotesValue(item: TemplateItemModel): void;
 }
 
 const Items: FunctionComponent<Props> = ({
   sortedSections,
   templateSectionItems,
-  forceVisible
+  forceVisible,
+  onChangeMainInputType,
+  onUpdatePhotosValue,
+  onUpdateNotesValue
 }) => (
   <>
     <header className={stepsStyles.header}>
@@ -56,6 +62,9 @@ const Items: FunctionComponent<Props> = ({
                   key={templateItem.id}
                   forceVisible={forceVisible}
                   onMouseDownMainInput={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+                  onClickItemInput={() => onChangeMainInputType(item)}
+                  onMouseDownNotes={() => onUpdateNotesValue(item)}
+                  onMouseDownAttachment={() => onUpdatePhotosValue(item)}
                 />
               );
             })}

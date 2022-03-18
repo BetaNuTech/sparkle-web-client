@@ -7,11 +7,23 @@ import styles from './styles.module.scss';
 interface Props {
   template: TemplateModel;
   templateCategories: TemplateCategoryModel[];
+  updateName(name: string): void;
+  updateDescription(description: string): void;
+  updateCategory(category: string): void;
+  updateTrackDeficientItems(trackDeficientItems: boolean): void;
+  updateRequireDeficientItemNoteAndPhoto(
+    requireDeficientItemNoteAndPhoto: boolean
+  ): void;
 }
 
 const General: FunctionComponent<Props> = ({
   template,
-  templateCategories
+  templateCategories,
+  updateName,
+  updateDescription,
+  updateCategory,
+  updateTrackDeficientItems,
+  updateRequireDeficientItemNoteAndPhoto
 }) => (
   <section className={styles.container}>
     <input
@@ -19,16 +31,19 @@ const General: FunctionComponent<Props> = ({
       className={styles.container__input}
       placeholder="Title"
       defaultValue={template.name}
+      onChange={(e) => updateName(e.target.value)}
     />
     <textarea
       className={styles.container__textarea}
       placeholder="Description"
       defaultValue={template.description}
+      onChange={(e) => updateDescription(e.target.value)}
     />
     <label className={styles.container__label}>Category</label>
     <select
       className={styles.container__select}
-      defaultValue={template.category || ''}
+      value={template.category || ''}
+      onChange={(e) => updateCategory(e.target.value)}
     >
       <option value="">Uncategorized</option>
 
@@ -41,7 +56,12 @@ const General: FunctionComponent<Props> = ({
     <div className={styles.switch}>
       <div className={styles.switch__label}>Track Deficient Item</div>
       <label className={styles.switch__action}>
-        <input type="checkbox" className={styles.switch__checkbox} />
+        <input
+          type="checkbox"
+          className={styles.switch__checkbox}
+          checked={template.trackDeficientItems}
+          onChange={(e) => updateTrackDeficientItems(e.target.checked)}
+        />
         <span className={styles.switch__slider}></span>
       </label>
     </div>
@@ -50,7 +70,14 @@ const General: FunctionComponent<Props> = ({
         Require Note & Photo for Deficient Items
       </div>
       <label className={styles.switch__action}>
-        <input type="checkbox" className={styles.switch__checkbox} />
+        <input
+          type="checkbox"
+          className={styles.switch__checkbox}
+          checked={template.requireDeficientItemNoteAndPhoto}
+          onChange={(e) =>
+            updateRequireDeficientItemNoteAndPhoto(e.target.checked)
+          }
+        />
         <span className={styles.switch__slider}></span>
       </label>
     </div>

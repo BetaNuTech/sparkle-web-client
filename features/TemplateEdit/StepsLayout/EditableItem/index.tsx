@@ -17,9 +17,16 @@ const basePath = publicRuntimeConfig.basePath || '';
 interface Props {
   item: any;
   forceVisible?: boolean;
+  onUpdateTitle(title: string): void;
+  onUpdateType(): void;
 }
 
-const EditableItem: FunctionComponent<Props> = ({ item, forceVisible }) => {
+const EditableItem: FunctionComponent<Props> = ({
+  item,
+  forceVisible,
+  onUpdateTitle,
+  onUpdateType
+}) => {
   const ref = useRef(null);
 
   const { isVisible } = useVisibility(ref, {}, forceVisible);
@@ -51,13 +58,19 @@ const EditableItem: FunctionComponent<Props> = ({ item, forceVisible }) => {
                 className={styles.content__text}
                 contentEditable
                 suppressContentEditableWarning={true} // eslint-disable-line react/jsx-boolean-value
+                onBlur={(evt) => onUpdateTitle(evt.currentTarget.innerText)}
               >
                 {item.title}
               </p>
             )}
           </div>
           <div className={styles.controls}>
-            <span className="-flex-center-content">{icon}</span>
+            <span
+              className="-flex-center-content -cu-pointer"
+              onClick={onUpdateType}
+            >
+              {icon}
+            </span>
             <span className={styles.controls__dragHandle}>
               <HamburgerIcon className={styles.controls__icon} />
             </span>
