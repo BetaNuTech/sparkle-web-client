@@ -23,4 +23,10 @@ describe('Unit | Common | Utils | Array Helper', () => {
     expect(actual).toEqual(expected);
     expect(actualGreen).toEqual(expectedGreen);
   });
+
+  test('it should provide range array from start and end value ', () => {
+    const expected = [4, 5, 6, 7];
+    const actual = utilArray.range(4, 7);
+    expect(actual).toEqual(expected);
+  });
 });

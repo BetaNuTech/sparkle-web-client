@@ -5,6 +5,7 @@ import stepsStyles from '../styles.module.scss';
 import DiamondIcon from '../../../../../public/icons/sparkle/diamond.svg';
 import DiamondLayersIcon from '../../../../../public/icons/sparkle/diamond-layers.svg';
 import ItemInputs from '../../ItemInputs';
+import utilArray from '../../../../../common/utils/array';
 
 const itemValueKeys = [
   'mainInputZeroValue',
@@ -62,7 +63,7 @@ const ItemValues: FunctionComponent<Props> = ({
         value={selectedItemInputValue || 0}
         onChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
       >
-        {Array.from(new Array(101), (val, index) => index).map((value) => (
+        {utilArray.range(0, 100).map((value) => (
           <option key={value} value={value}>
             {value}
           </option>

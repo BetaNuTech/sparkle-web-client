@@ -1,6 +1,11 @@
-@import '../../../../styles/index.scss';
+@import '../../../../../../styles/index.scss';
 
 .container {
+  position: relative;
+  background: $white;
+}
+
+.main {
   display: flex;
   align-items: center;
   min-height: rem-calc(55);
@@ -32,6 +37,7 @@
     max-height: rem-calc(22);
     margin-left: rem-calc(10);
     cursor: row-resize;
+    touch-action: none;
   }
 
   &__icon {

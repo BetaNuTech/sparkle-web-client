@@ -4,11 +4,20 @@ import TemplateItemModel from '../../models/inspectionTemplateItem';
 import { ComposableItemSettings, UserItemChanges } from './composableSettings';
 import { uuid } from '../uuidv4';
 import inspectionConfig from '../../../config/inspections';
-import updateIndexes from './updateIndexes';
-import deepmerge from '../deepmerge';
+import updateIndexes, {
+  removeAtIndex,
+  mergeIndexedRecords
+} from './updateIndexes';
 import deepClone from '../deepClone';
 
 const INSPECTION_SCORES = inspectionConfig.inspectionScores;
+const SCORE_ATTRIBUTES = [
+  'mainInputZeroValue',
+  'mainInputOneValue',
+  'mainInputTwoValue',
+  'mainInputThreeValue',
+  'mainInputFourValue'
+];
 
 // Manage local updates for template's general settings
 export default function updateItem(
@@ -27,7 +36,8 @@ export default function updateItem(
     setNotesValue,
     setScore,
     setItemIndex,
-    clearEmptyItem
+    setRemovedItem,
+    clearEmptyItems
   )(
     {} as TemplateModel, // result
     {
@@ -48,10 +58,10 @@ const mergePreviousUpdates = (
   const { updatedTemplate } = settings;
   result.items = {};
 
-  if (!updatedTemplate) return result;
-
-  result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
-  result.items = deepClone(updatedTemplate.items || {});
+  if (updatedTemplate) {
+    result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
+    result.items = deepClone(updatedTemplate.items || {});
+  }
 
   return result;
 };
@@ -69,20 +79,20 @@ const setAddedItem = (
     Boolean(userChanges?.itemType);
   const currentItems = currentTemplate.items || {};
   const previousItems = updatedTemplate.items || {};
-  if (!isAddingItem) {
-    return result;
+
+  if (isAddingItem) {
+    const item = createItem(userChanges?.itemType);
+    item.id = uuid(20);
+    item.sectionId = userChanges.sectionId;
+    item.index = createNextItemIndex(
+      userChanges.sectionId,
+      currentItems,
+      previousItems
+    );
+    result.items = result.items || {};
+    result.items[item.id] = item;
   }
 
-  const item = createItem(userChanges?.itemType);
-  item.id = uuid(20);
-  item.sectionId = userChanges.sectionId;
-  item.index = createNextItemIndex(
-    userChanges.sectionId,
-    currentItems,
-    previousItems
-  );
-  result.items = result.items || {};
-  result.items[item.id] = item;
   return result;
 };
 
@@ -91,39 +101,39 @@ const setItemType = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
-  const isChangingItem =
+  const isChanging =
     typeof userChanges?.itemType === 'string' && targetId !== 'new';
   const currentItems = currentTemplate.items || {};
-  const targetedItem = currentItems[targetId] || {};
+  const currentItem = currentItems[targetId] || {};
   const previousItems = updatedTemplate.items || {};
   const value = userChanges?.itemType;
-  const isDifferentThanCurrent = value !== targetedItem.itemType;
+  const isDifferentThanCurrent = value !== currentItem.itemType;
 
-  if (!isChangingItem) {
+  if (!isChanging) {
     return result;
   }
 
-  const item = previousItems[targetId] || {};
-  const { index, sectionId, title } = item;
-
-  const updatedItem = createItem(value);
+  const previousItem = previousItems[targetId] || {};
+  const { index, sectionId, title } = previousItem;
+  const itemUpdates = createItem(value);
 
   if (index) {
-    updatedItem.index = index;
+    itemUpdates.index = index;
   }
   if (sectionId) {
-    updatedItem.sectionId = sectionId;
+    itemUpdates.sectionId = sectionId;
   }
   if (title) {
-    updatedItem.title = title;
+    itemUpdates.title = title;
   }
 
-  result.items[targetId] = updatedItem;
+  result.items[targetId] = itemUpdates;
 
   // Remove undifferentiated change from updates
-  if (isChangingItem && !isDifferentThanCurrent) {
-    delete ((result.items || {})[targetId] || {}).itemType;
+  if (!isDifferentThanCurrent) {
+    delete result.items[targetId].itemType;
   }
+
   return result;
 };
 
@@ -136,18 +146,19 @@ const setItemMainInputType = (
   const currentItems = currentTemplate.items || {};
   const previousItems = updatedTemplate.items || {};
   const value = userChanges?.mainInputType;
+
   if (!isChanging) {
     return result;
   }
 
-  const item = previousItems[targetId] || currentItems[targetId] || {};
+  const { itemType } = previousItems[targetId] || currentItems[targetId] || {};
 
-  if (item.itemType === 'signature' || item.itemType === 'text_input') {
+  // Do not update non-main types
+  if (`${itemType}`.toLowerCase() !== 'main') {
     return result;
   }
 
   // Add user change to updates
-
   const itemValues = createItemValues(value);
   const updatedItem = {
     ...result.items[targetId],
@@ -163,20 +174,23 @@ const setItemMainInputType = (
 // Set template item title
 const setTitle = (result: TemplateModel, settings: ComposableItemSettings) => {
   const { userChanges, currentTemplate, targetId } = settings;
-  const targetedItem = (currentTemplate.items || {})[targetId] || {};
+  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const isChanging = typeof userChanges?.title === 'string';
+  const value = `${userChanges?.title || ''}`.trim();
+  const isDifferentThanCurrent = value !== currentItem.title;
 
-  const isChanging = typeof userChanges.title === 'string';
-  const value = `${userChanges.title || ''}`.trim();
-  const isDifferentThanCurrent = value !== targetedItem.title;
-
-  // Add user change to updates
-  if (isChanging && isDifferentThanCurrent) {
-    result.items[targetId] = { ...result.items[targetId], title: value };
+  if (!isChanging) {
+    return result;
   }
 
-  // Remove undifferentiated change from updates
-  if (isChanging && !isDifferentThanCurrent) {
-    delete ((result.items || {})[targetId] || {}).title;
+  // Add publishable changes
+  // or remove local only updates
+  if (isDifferentThanCurrent) {
+    result.items[targetId] =
+      result.items[targetId] || ({} as TemplateItemModel);
+    result.items[targetId].title = value;
+  } else if (result.items[targetId]) {
+    delete result.items[targetId].title;
   }
 
   return result;
@@ -188,21 +202,23 @@ const setPhotosValue = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
+  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const isChanging = typeof userChanges?.photos === 'boolean';
+  const value = userChanges?.photos;
+  const isDifferentThanCurrent = value !== currentItem.photos;
 
-  const targetedItem = (currentTemplate.items || {})[targetId] || {};
-
-  const isChanging = typeof userChanges.photos === 'boolean';
-  const value = userChanges.photos;
-  const isDifferentThanCurrent = value !== targetedItem.photos;
-
-  // Add user change to updates
-  if (isChanging && isDifferentThanCurrent) {
-    result.items[targetId] = { ...result.items[targetId], photos: value };
+  if (!isChanging) {
+    return result;
   }
 
-  // Remove undifferentiated change from updates
-  if (isChanging && !isDifferentThanCurrent) {
-    delete ((result.items || {})[targetId] || {}).photos;
+  // Add publishable changes
+  // or remove local only updates
+  if (isDifferentThanCurrent) {
+    result.items[targetId] =
+      result.items[targetId] || ({} as TemplateItemModel);
+    result.items[targetId].photos = value;
+  } else if (result.items[targetId]) {
+    delete result.items[targetId].photos;
   }
 
   return result;
@@ -214,60 +230,49 @@ const setNotesValue = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
+  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const isChanging = typeof userChanges?.notes === 'boolean';
+  const value = userChanges?.notes;
+  const isDifferentThanCurrent = value !== currentItem.notes;
 
-  const targetedItem = (currentTemplate.items || {})[targetId] || {};
-
-  const isChanging = typeof userChanges.notes === 'boolean';
-  const value = userChanges.notes;
-  const isDifferentThanCurrent = value !== targetedItem.notes;
-
-  // Add user change to updates
-  if (isChanging && isDifferentThanCurrent) {
-    result.items[targetId] = { ...result.items[targetId], notes: value };
+  if (!isChanging) {
+    return result;
   }
 
-  // Remove undifferentiated change from updates
-  if (isChanging && !isDifferentThanCurrent) {
-    delete ((result.items || {})[targetId] || {}).notes;
+  // Add publishable changes
+  // or remove local only updates
+  if (isDifferentThanCurrent) {
+    result.items[targetId] =
+      result.items[targetId] || ({} as TemplateItemModel);
+    result.items[targetId].notes = value;
+  } else if (result.items[targetId]) {
+    delete result.items[targetId].notes;
   }
 
   return result;
 };
 
-// Set template item score value
+// Set custom template item score value
 const setScore = (result: TemplateModel, settings: ComposableItemSettings) => {
   const { userChanges, currentTemplate, targetId } = settings;
+  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const [updateAttrName] = Object.keys(userChanges || {});
+  const isChanging = SCORE_ATTRIBUTES.includes(updateAttrName);
+  const value = (userChanges || {})[updateAttrName];
 
-  const targetedItem = (currentTemplate.items || {})[targetId] || {};
-
-  const [updatedValueKey] = Object.keys(userChanges);
-  const valueKeys = [
-    'mainInputZeroValue',
-    'mainInputOneValue',
-    'mainInputTwoValue',
-    'mainInputThreeValue',
-    'mainInputFourValue'
-  ];
-
-  if (!valueKeys.some((keys) => keys === updatedValueKey)) {
+  if (!isChanging || typeof value !== 'number') {
     return result;
   }
 
-  const isChanging = typeof userChanges[updatedValueKey] === 'number';
-  const value = userChanges[updatedValueKey];
-  const isDifferentThanCurrent = value !== targetedItem[updatedValueKey];
+  const isDifferentThanCurrent = value !== currentItem[updateAttrName];
 
   // Add user change to updates
-  if (isChanging && isDifferentThanCurrent) {
-    result.items[targetId] = {
-      ...result.items[targetId],
-      [updatedValueKey]: value
-    };
-  }
-
-  // Remove undifferentiated change from updates
-  if (isChanging && !isDifferentThanCurrent) {
-    delete ((result.items || {})[targetId] || {})[updatedValueKey];
+  if (isDifferentThanCurrent) {
+    result.items[targetId] =
+      result.items[targetId] || ({} as TemplateItemModel);
+    result.items[targetId][updateAttrName] = value;
+  } else if (result.items[targetId]) {
+    delete result.items[targetId][updateAttrName];
   }
 
   return result;
@@ -279,66 +284,120 @@ const setItemIndex = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
+  const isChanging =
+    targetId && targetId !== 'new' && typeof userChanges?.index === 'number';
 
-  const items = currentTemplate.items || {};
-  const previousItems = updatedTemplate.items || {};
-
-  const isChanging = targetId && typeof userChanges?.index === 'number';
   if (!isChanging) {
     return result;
   }
 
-  const value = userChanges?.index;
+  // Update item indexes
+  const targetSectionId = findSectionId(
+    targetId,
+    updatedTemplate.items,
+    currentTemplate.items
+  );
+  const currentItems = reduceItemsToSection(
+    targetSectionId,
+    deepClone(currentTemplate.items || {})
+  );
+  const previousItems = deepClone(updatedTemplate.items || {});
+  const mergedIndexes = mergeIndexedRecords(currentItems, previousItems);
+  const updatedIndexes = updateIndexes(
+    mergedIndexes,
+    userChanges.index,
+    targetId
+  );
 
-  // Add user change to updates
-  if (isChanging) {
-    result.items = {
-      ...(result.items || {}),
-      [targetId]: { ...(result.items || {})[targetId], index: value }
-    };
+  // Merge all index updates into results
+  Object.keys(updatedIndexes).forEach((id) => {
+    const newIndex = updatedIndexes[id].index;
+    const currentIndex = (currentItems[id] || {}).index;
+    const previousIndex = (previousItems[id] || {}).index;
 
-    // update item indexes
-    const mergedItems = deepmerge(items, previousItems);
-    const updatedTemplates = updateIndexes(mergedItems, value, targetId);
+    // Update item index
+    if (newIndex !== previousIndex) {
+      result.items[id] = result.items[id] || ({} as TemplateItemModel);
+      result.items[id].index = newIndex;
+    }
 
-    // Merge item index updates into results
-    Object.keys(updatedTemplates).forEach((id) => {
-      result.items[id] = result.items[id] || ({} as TemplateItemModel); // setup
-      const resultItem = result.items[id];
-      const updatedItem = updatedTemplates[id];
-      const currentItemIndex = (items[id] || {}).index;
-
-      // Update item index
-      if (resultItem.index !== updatedItem.index) {
-        resultItem.index = updatedItem.index;
-      }
-      // Remove index matching current
-      if (resultItem.index === currentItemIndex) {
-        delete resultItem.index;
-      }
-
-      // Remove item without updates
-      if (Object.keys(resultItem).length === 0) {
-        delete result.items[id];
-      }
-    });
-  }
+    // Remove index matching current
+    if (result.items[id] && result.items[id].index === currentIndex) {
+      delete result.items[id].index;
+    }
+  });
 
   return result;
 };
 
-const clearEmptyItem = (
+// Remove item from template updates
+const setRemovedItem = (
   result: TemplateModel,
   settings: ComposableItemSettings
 ) => {
-  const { targetId } = settings;
+  const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
+  const isRemovingItem = userChanges === null;
 
-  if (
-    result.items[targetId] &&
-    Object.keys(result.items[targetId] || {}).length === 0
-  ) {
-    delete result.items[targetId];
+  if (!isRemovingItem) {
+    return result;
   }
+
+  // Update item indexes
+  const targetSectionId = findSectionId(
+    targetId,
+    updatedTemplate.items,
+    currentTemplate.items
+  );
+  const currentItems = reduceItemsToSection(
+    targetSectionId,
+    deepClone(currentTemplate.items || {})
+  );
+  const previousItems = deepClone(updatedTemplate.items || {});
+  const mergedIndexes = mergeIndexedRecords(currentItems, previousItems);
+  const removeTargetIndex = mergedIndexes[targetId].index;
+
+  // Item delete update
+  if (currentItems[targetId]) {
+    result.items[targetId] = null; // publish removal
+  } else {
+    delete result.items[targetId]; // delete local update only
+  }
+
+  // Decrement item indexes
+  const updatedIndexes = removeAtIndex(mergedIndexes, removeTargetIndex);
+
+  // Merge indirectly updated item
+  // indexes into results
+  Object.keys(updatedIndexes).forEach((id) => {
+    const newIndex = updatedIndexes[id].index;
+    const currentIndex = (currentItems[id] || {}).index;
+    const previousIndex = (previousItems[id] || {}).index;
+
+    // Update item index
+    if (newIndex !== previousIndex) {
+      result.items[id] = result.items[id] || ({} as TemplateItemModel);
+      result.items[id].index = newIndex;
+    }
+
+    // Remove index matching current (remote) state
+    if (result.items[id] && result.items[id].index === currentIndex) {
+      delete result.items[id].index;
+    }
+  });
+
+  return result;
+};
+
+const clearEmptyItems = (result: TemplateModel) => {
+  Object.keys(result.items || {}).forEach((id) => {
+    if (
+      result.items[id] !== null && // keep publishable deletes
+      Object.keys(result.items[id]).length === 0
+    ) {
+      delete result.items[id];
+    }
+  });
+
   return result;
 };
 
@@ -368,7 +427,6 @@ const createItem = (
   mainInputType = 'twoactions_checkmarkx'
 ) => {
   const item = {} as TemplateItemModel;
-
   const scoreValues =
     createItemValues(itemType) || createItemValues(mainInputType);
 
@@ -402,9 +460,11 @@ const createNextItemIndex = (
     // Unique item identifiers only
     .filter((id, i, arr) => arr.indexOf(id) === i)
     // Find only items within section group
-    .filter(
-      (id) => (previousItems[id] || currentItems[id]).sectionId === sectionId
-    )
+    .filter((id) => {
+      const itemsSectionId =
+        previousItems[id]?.sectionId || currentItems[id]?.sectionId;
+      return itemsSectionId === sectionId;
+    })
     // Create array of all item indexes
     .reduce((acc, id) => {
       // Use local updates over remove
@@ -425,3 +485,30 @@ const createNextItemIndex = (
   // otherwise increment last index by 1
   return typeof lastItemIndex === 'undefined' ? 0 : lastItemIndex + 1;
 };
+
+// Find an items section ID
+// in either a priority A or
+// priority B data set
+function findSectionId(
+  id: string,
+  priorityA: Record<string, TemplateItemModel>,
+  priorityB: Record<string, TemplateItemModel>
+): string {
+  const foundA = ((priorityA || {})[id] || {}).sectionId || '';
+  const foundB = ((priorityB || {})[id] || {}).sectionId || '';
+  return foundA || foundB;
+}
+
+// Create items group belonging to only
+// a single, specified, section
+function reduceItemsToSection(
+  sectionId: string,
+  items: Record<string, TemplateItemModel>
+): Record<string, TemplateItemModel> {
+  return Object.keys(items).reduce((acc, id) => {
+    if (acc[id].sectionId !== sectionId) {
+      delete acc[id];
+    }
+    return acc;
+  }, deepClone(items || {}) as Record<string, TemplateItemModel>);
+}
