@@ -15,10 +15,12 @@ export default function useTemplateSectionItems(
     currentTemplate.items || {},
     updatedTemplate.items || {}
   );
-  const itemsList = Object.keys(templateItems).map((id) => ({
-    id,
-    ...templateItems[id]
-  }));
+  const itemsList = Object.keys(templateItems)
+    .filter((id) => templateItems[id])
+    .map((id) => ({
+      id,
+      ...templateItems[id]
+    }));
 
   // Grouping of items by their section
   const templateSectionItems = utilArray.groupBy<string, TemplateItemModel>(
@@ -30,7 +32,6 @@ export default function useTemplateSectionItems(
   templateSectionItems.forEach((item) =>
     item.sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex)
   );
-
   return {
     templateSectionItems
   };

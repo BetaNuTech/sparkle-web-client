@@ -7,10 +7,10 @@ import {
 } from './composableSettings';
 import { uuid } from '../uuidv4';
 import deepClone from '../deepClone';
-import deepmerge from '../deepmerge';
-import updateIndexes from './updateIndexes';
-
-const PREFIX = 'utils: template: updateSection';
+import updateIndexes, {
+  mergeIndexedRecords,
+  removeAtIndex
+} from './updateIndexes';
 
 // Manage local updates for template section
 export default function updateSection(
@@ -26,7 +26,7 @@ export default function updateSection(
     setSectionTitle,
     setSectionType,
     setSectionIndex,
-    clearEmptySection
+    clearEmptyRecords
   )(
     {} as TemplateModel, // result
     {
@@ -46,10 +46,11 @@ const mergePreviousUpdates = (
 ) => {
   const { updatedTemplate } = settings;
   result.sections = {};
-  if (!updatedTemplate) return result;
 
-  result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
-  result.sections = deepClone(updatedTemplate.sections || {});
+  if (updatedTemplate) {
+    result = deepClone(updatedTemplate); // eslint-disable-line no-param-reassign
+    result.sections = deepClone(updatedTemplate.sections || {});
+  }
 
   return result;
 };
@@ -64,105 +65,111 @@ const setAddedSection = (
     userChanges && typeof userChanges?.new === 'boolean' && userChanges?.new;
   const currentSections = currentTemplate.sections || {};
   const previousSections = updatedTemplate.sections || {};
+
   if (!isAddingSection) {
     return result;
   }
 
-  const sections = {
+  const sectionsCount = Object.keys({
     ...currentSections,
     ...previousSections
-  };
+  }).filter((id, i, arr) => arr.indexOf(id) === i).length; // unique
 
   const section = {
     id: uuid(20),
-    added_multi_section: false,
     section_type: 'single',
     title: '',
-    index: Object.keys(sections).length
+    index: sectionsCount
   };
 
   result.sections = result.sections || {};
-
   result.sections[section.id] = section;
+
   return result;
 };
 
-// remove section from template updates
+// Remove section from template updates
+// along with any associated items
 const setRemovedSection = (
   result: TemplateModel,
   settings: ComposableSectionSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
-  const isRemovingSection = !userChanges;
-  const currentSections = currentTemplate.sections || {};
-  const previousSections = updatedTemplate.sections || {};
+  const isRemovingSection = userChanges === null;
 
   if (!isRemovingSection) {
     return result;
   }
 
-  const sections = {
-    ...currentSections,
-    ...previousSections
-  };
-  const sectionToRemove =
-    (previousSections || {})[targetId] ||
-    (currentSections || {})[targetId] ||
-    null;
+  const currentSections = deepClone(currentTemplate.sections || {});
+  const previousSections = deepClone(updatedTemplate.sections || {});
+  const mergedIndexes = mergeIndexedRecords(currentSections, previousSections);
+  const removeTargetIndex = mergedIndexes[targetId].index;
 
-  if (!sectionToRemove) {
-    throw Error(`${PREFIX} invalid section removal ID provided: "${targetId}"`);
-  }
-
-  // Setup section updates
-  result.sections = result.sections || {};
-
-  // Decrement section indexes
-  const updatedSections = updateIndexesOnRemove(
-    sections,
-    sectionToRemove.index
-  );
-
-  // Merge section index updates into results
-  Object.keys(updatedSections).forEach((id) => {
-    result.sections[id] = result.sections[id] || ({} as TemplateSectionModel); // setup
-    const resultSection = result.sections[id];
-    const updatedSection = updatedSections[id];
-
-    // Update section index
-    if (resultSection.index !== updatedSection.index) {
-      resultSection.index = updatedSection.index;
-    }
-  });
-
-  // Add delete section update
+  // Item delete update
   if (currentSections[targetId]) {
     result.sections[targetId] = null; // publish removal
   } else {
-    delete result.sections[targetId]; // ignore update
+    delete result.sections[targetId]; // delete local update only
   }
 
-  // Delete any removed section items
+  // Decrement section indexes
+  const updatedIndexes = removeAtIndex(mergedIndexes, removeTargetIndex);
+
+  // Merge indirectly updated section
+  // indexes into results
+  Object.keys(updatedIndexes).forEach((id) => {
+    const newIndex = updatedIndexes[id].index;
+    const currentIndex = (currentSections[id] || {}).index;
+    const previousIndex = (previousSections[id] || {}).index;
+
+    // Update section index
+    if (newIndex !== previousIndex) {
+      result.sections[id] = result.sections[id] || ({} as TemplateSectionModel);
+      result.sections[id].index = newIndex;
+    }
+
+    // Remove index matching current (remote) state
+    if (result.sections[id] && result.sections[id].index === currentIndex) {
+      delete result.sections[id].index;
+    }
+  });
+
+  const currentItems = deepClone(currentTemplate.items || {});
+  const previousItems = deepClone(updatedTemplate.items || {});
+  const itemIds = [...Object.keys(currentItems), ...Object.keys(previousItems)];
+
+  // Delete any section items
   // from resulting local updates
-  Object.keys(result.items || {})
-    .filter((itemId) => result.items[itemId].sectionId === targetId)
+  itemIds
+    // unique
+    .filter((itemId, i, arr) => arr.indexOf(itemId) === i)
+    // Only items belonging to section
+    .filter((itemId) => {
+      const previousItem = previousItems[itemId] || {};
+      const currentItem = currentItems[itemId] || {};
+      const sectionId = previousItem.sectionId || currentItem.sectionId;
+      return sectionId === targetId;
+    })
     .forEach((itemId) => {
-      delete result.items[itemId];
+      if (currentItems[itemId]) {
+        result.items = result.items || {};
+        result.items[itemId] = null; // publish removal
+      } else if (result.items) {
+        delete result.items[itemId]; // delete local update only
+      }
     });
 
   return result;
 };
 
-// Set template section title
 const setSectionTitle = (
   result: TemplateModel,
   settings: ComposableSectionSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
-
-  const sections = currentTemplate.sections || {};
-  const currentSection = sections[targetId] || {};
-
+  const currentSections = currentTemplate.sections || {};
+  const currentSection = currentSections[targetId] || {};
   const isChanging = targetId && typeof userChanges?.title === 'string';
 
   if (!isChanging) {
@@ -172,143 +179,114 @@ const setSectionTitle = (
   const value = `${userChanges?.title || ''}`.trim();
   const isDifferentThanCurrent = value !== (currentSection.title || '');
 
-  // Add user change to updates
-  if (isChanging && isDifferentThanCurrent) {
-    result.sections = {
-      ...(result.sections || {}),
-      [targetId]: { ...(result.sections || {})[targetId], title: value }
-    };
-  }
-
-  // Remove undifferentiated change from updates
-  if (isChanging && !isDifferentThanCurrent) {
-    delete ((result.sections || {})[targetId] || {}).title;
+  // Add publishable changes
+  // or remove local only updates
+  if (isDifferentThanCurrent) {
+    result.sections[targetId] =
+      result.sections[targetId] || ({} as TemplateSectionModel);
+    result.sections[targetId].title = value;
+  } else if (result.sections[targetId]) {
+    delete result.sections[targetId].title;
   }
 
   return result;
 };
 
-// Set template section type
 const setSectionType = (
   result: TemplateModel,
   settings: ComposableSectionSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
-
-  const sections = currentTemplate.sections || {};
-  const currentSection = sections[targetId] || {};
-
-  const isChanging = targetId && typeof userChanges?.section_type === 'string';
+  const currentSections = currentTemplate.sections || {};
+  const currentSection = currentSections[targetId] || {};
+  const isChanging =
+    targetId &&
+    userChanges &&
+    userChanges.section_type &&
+    typeof userChanges.section_type === 'string';
 
   if (!isChanging) {
     return result;
   }
-  const value = userChanges?.section_type;
-  const isDifferentThanCurrent = value !== (currentSection.section_type || '');
 
-  // Add user change to updates
-  if (isChanging && isDifferentThanCurrent) {
-    result.sections = {
-      ...(result.sections || {}),
-      [targetId]: { ...(result.sections || {})[targetId], section_type: value }
-    };
-  }
+  const value = userChanges.section_type;
+  const isDifferentThanCurrent = value !== currentSection.section_type;
 
-  // Remove undifferentiated change from updates
-  if (isChanging && !isDifferentThanCurrent) {
-    delete ((result.sections || {})[targetId] || {}).section_type;
+  // Add publishable changes
+  // or remove local only updates
+  if (isDifferentThanCurrent) {
+    result.sections[targetId] =
+      result.sections[targetId] || ({} as TemplateSectionModel);
+    result.sections[targetId].section_type = value;
+  } else if (result.sections[targetId]) {
+    delete result.sections[targetId].section_type;
   }
 
   return result;
 };
 
-// Set template section type
 const setSectionIndex = (
   result: TemplateModel,
   settings: ComposableSectionSettings
 ) => {
   const { userChanges, currentTemplate, updatedTemplate, targetId } = settings;
-
-  const sections = currentTemplate.sections || {};
-  const previousSections = updatedTemplate.sections || {};
-
   const isChanging = targetId && typeof userChanges?.index === 'number';
 
   if (!isChanging) {
     return result;
   }
 
-  const value = userChanges?.index;
+  // Increment section indexes
+  const currentSections = deepClone(currentTemplate.sections || {});
+  const previousSections = deepClone(updatedTemplate.sections || {});
+  const mergedIndexes = mergeIndexedRecords(currentSections, previousSections);
+  const updatedIndexes = updateIndexes(
+    mergedIndexes,
+    userChanges.index,
+    targetId
+  );
 
-  // Add user change to updates
-  if (isChanging) {
-    result.sections = {
-      ...(result.sections || {}),
-      [targetId]: { ...(result.sections || {})[targetId], index: value }
-    };
+  // Merge all index updates into results
+  Object.keys(updatedIndexes).forEach((id) => {
+    const newIndex = updatedIndexes[id].index;
+    const currentIndex = (currentSections[id] || {}).index;
+    const previousIndex = (previousSections[id] || {}).index;
 
-    // Increment section indexes
-    const mergedSections = deepmerge(sections, previousSections);
-    const updatedSections = updateIndexes(mergedSections, value, targetId);
+    // Update index
+    if (newIndex !== previousIndex) {
+      result.sections[id] = result.sections[id] || ({} as TemplateSectionModel);
+      result.sections[id].index = newIndex;
+    }
 
-    // Merge section index updates into results
-    Object.keys(updatedSections).forEach((id) => {
-      result.sections[id] = result.sections[id] || ({} as TemplateSectionModel); // setup
-      const resultSection = result.sections[id];
-      const updatedSection = updatedSections[id];
-      const currentSectionIndex = (sections[id] || {}).index;
-
-      // Update section index
-      if (resultSection.index !== updatedSection.index) {
-        resultSection.index = updatedSection.index;
-      }
-      // Remove index matching current
-      if (resultSection.index === currentSectionIndex) {
-        delete resultSection.index;
-      }
-
-      // Remove section without updates
-      if (Object.keys(resultSection).length === 0) {
-        delete result.sections[id];
-      }
-    });
-  }
-
-  return result;
-};
-
-// Set template section type
-const clearEmptySection = (
-  result: TemplateModel,
-  settings: ComposableSectionSettings
-) => {
-  const { targetId } = settings;
-
-  if (
-    result.sections[targetId] &&
-    Object.keys(result.sections[targetId] || {}).length === 0
-  ) {
-    delete result.sections[targetId];
-  }
-  return result;
-};
-
-// Decrement indexes proceeding a
-// removed section
-function updateIndexesOnRemove(
-  sections: Record<string, TemplateSectionModel>,
-  srcStartIndex = 0
-) {
-  const result = {};
-
-  Object.keys(sections).forEach((id: string) => {
-    const section = deepClone(sections[id]) as TemplateSectionModel;
-
-    if (section.index > srcStartIndex) {
-      section.index -= 1;
-      result[id] = section;
+    // Remove index matching current
+    if (result.sections[id] && result.sections[id].index === currentIndex) {
+      delete result.sections[id].index;
     }
   });
 
   return result;
-}
+};
+
+const clearEmptyRecords = (result: TemplateModel) => {
+  // Remove empty section updates
+  Object.keys(result.sections || {}).forEach((id) => {
+    if (
+      result.sections[id] !== null && // keep publishable deletes
+      Object.keys(result.sections[id]).length === 0
+    ) {
+      delete result.sections[id];
+    }
+  });
+
+  // Remove empty item updates
+  Object.keys(result.items || {}).forEach((id) => {
+    if (
+      result.items[id] !== null && // keep publishable deletes
+      Object.keys(result.items[id]).length === 0
+    ) {
+      delete result.items[id];
+    }
+  });
+
+  return result;
+};

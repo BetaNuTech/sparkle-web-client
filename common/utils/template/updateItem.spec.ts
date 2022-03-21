@@ -9,6 +9,7 @@ import {
   singleSection
 } from '../../../__mocks__/inspections';
 import inspectionConfig from '../../../config/inspections';
+import deepClone from '../deepClone';
 
 const INSPECTION_SCORES = inspectionConfig.inspectionScores;
 
@@ -22,24 +23,24 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: 'text_input',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { sectionId: '123abc', itemType: 'text_input' },
         targetId: 'new',
-        msg: 'add a text input item '
+        msg: 'added a text input item'
       },
       {
         expected: 'main',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { sectionId: '123abc', itemType: 'main' },
         targetId: 'new',
-        msg: 'add a main input item '
+        msg: 'added a main input item'
       },
       {
         expected: 'signature',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { sectionId: '123abc', itemType: 'signature' },
         targetId: 'new',
-        msg: 'add a signature input item '
+        msg: 'added a signature input item'
       }
     ];
 
@@ -96,7 +97,7 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const expected = 0;
     const sectionId = 'section-123';
     const currentTemplate = {
-      ...templateA,
+      ...deepClone(templateA),
       sections: { [sectionId]: { ...singleSection } }
     };
     const result = updateItem(
@@ -113,11 +114,32 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it adds a new item without keeping user changes', () => {
+    const expected = undefined;
+    const sectionId = 'section-123';
+    const currentTemplate = {
+      ...deepClone(templateA),
+      sections: { [sectionId]: { ...singleSection } }
+    };
+    const result = updateItem(
+      {} as TemplateModel,
+      currentTemplate,
+      { sectionId, itemType: 'main' },
+      'new'
+    );
+
+    const [resultItem] = Object.entries(result.items || {})
+      .filter(([id]) => id === 'new')
+      .map(([, item]) => item as ItemModel);
+    const actual = resultItem;
+    expect(actual).toEqual(expected);
+  });
+
   test('it adds another new item at the last position of a section group', () => {
     const expected = 1; // Insert at 2nd position in section
     const sectionId = 'section-123';
     const currentTemplate = {
-      ...templateA,
+      ...deepClone(templateA),
       sections: { [sectionId]: { ...singleSection } },
       items: { first: { ...unselectedCheckmarkItem, sectionId, index: 0 } }
     };
@@ -135,6 +157,38 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it adds new item at the last position of a section group after updating all indexes', () => {
+    const expected = 2; // Insert at 3nd position in section
+    const sectionId = 'section-123';
+    const currentTemplate = {
+      ...deepClone(templateA),
+      sections: { [sectionId]: { ...singleSection } },
+      items: {
+        first: { ...unselectedCheckmarkItem, sectionId, index: 0 },
+        second: { ...unselectedThumbsItem, sectionId, index: 1 }
+      }
+    };
+    const updates = {
+      items: {
+        first: { index: 1 },
+        second: { index: 0 } // Update 2nd to first position
+      }
+    } as TemplateModel;
+
+    const result = updateItem(
+      updates,
+      currentTemplate,
+      { sectionId, itemType: 'main' }, // new item
+      'new'
+    );
+
+    const [resultItem] = Object.entries(result.items || {})
+      .filter(([id]) => ['first', 'second'].includes(id) === false)
+      .map(([, item]) => item as ItemModel);
+    const actual = resultItem.index;
+    expect(actual).toEqual(expected);
+  });
+
   test('it sets an template item title', () => {
     const itemId = unselectedCheckmarkItem.id;
     const templateWithItems = {
@@ -144,39 +198,39 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { title: '' },
         msg: 'ignores changing empty text input to an empty value'
       },
       {
         expected: 'new title',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { items: { [itemId]: { title: 'new title' } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: 'new title',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { title: 'new title' },
         msg: 'adds item title to updates'
       },
       {
         expected: 'new title',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { title: 'old name' },
         userChanges: { title: 'new title' }, // check whitespace padding removed
         msg: 'updates over previously updated title'
       },
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { title: 'old name' },
         userChanges: { title: '' },
         msg: 'removes previously updated title back to empty original state'
@@ -184,7 +238,7 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       {
         expected: undefined,
         currentItem: {
-          ...templateWithItems,
+          ...deepClone(templateWithItems),
           ...{
             items: {
               ...templateWithItems.items,
@@ -222,22 +276,21 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
   test('it sets an template item score', () => {
     const itemId = unselectedCheckmarkItem.id;
     const templateWithItems = {
-      ...templateA,
-      items: { [itemId]: { ...unselectedCheckmarkItem, mainInputZeroValue: 0 } }
+      ...deepClone(templateA),
+      items: { [itemId]: { ...unselectedCheckmarkItem } }
     };
     const tests = [
       {
         expected: undefined,
         valueKey: 'mainInputZeroValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
-
       {
         expected: 2,
         valueKey: 'mainInputZeroValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { items: { [itemId]: { mainInputZeroValue: 2 } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
@@ -245,68 +298,68 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       {
         expected: 1,
         valueKey: 'mainInputZeroValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { mainInputZeroValue: 1 },
-        msg: 'adds item mainInputZeroValue to updates'
+        msg: 'adds custom zero value score to updates'
       },
       {
         expected: 2,
         valueKey: 'mainInputOneValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { mainInputOneValue: 2 },
-        msg: 'adds item mainInputOneValue to updates'
+        msg: 'adds custom one value score to updates'
       },
       {
         expected: 3,
         valueKey: 'mainInputTwoValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { mainInputTwoValue: 3 },
-        msg: 'adds item mainInputTwoValue to updates'
+        msg: 'adds custom two value score to updates'
       },
       {
         expected: 4,
         valueKey: 'mainInputThreeValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { mainInputThreeValue: 4 },
-        msg: 'adds item mainInputThreeValue to updates'
+        msg: 'adds custom three value score to updates'
       },
       {
         expected: 5,
         valueKey: 'mainInputFourValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { mainInputFourValue: 5 },
-        msg: 'adds item mainInputFourValue to updates'
+        msg: 'adds custom four value score to updates'
       },
       {
         expected: 3,
         valueKey: 'mainInputOneValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { mainInputOneValue: 2 },
-        userChanges: { mainInputOneValue: 3 }, // check whitespace padding removed
-        msg: 'updates over previously updated title'
+        userChanges: { mainInputOneValue: 3 },
+        msg: 'updates over previously updated custom score'
       },
       {
         expected: undefined,
         valueKey: 'mainInputZeroValue',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { mainInputZeroValue: 1 },
-        userChanges: { mainInputZeroValue: 0 },
-        msg: 'removes previously updated title back to empty original state'
+        userChanges: { mainInputZeroValue: 3 },
+        msg: 'removes previously updated custom score back to empty original state'
       },
       {
         expected: undefined,
         currentItem: {
-          ...templateWithItems,
+          ...deepClone(templateWithItems),
           ...{
             items: {
-              ...templateWithItems.items,
+              ...deepClone(templateWithItems.items),
               [itemId]: { mainInputZeroValue: 1 }
             }
           }
         },
         updatedItem: { items: { [itemId]: { mainInputZeroValue: 2 } } },
         userChanges: { mainInputZeroValue: 1 },
-        msg: 'removes previously updated title back to original truthy state'
+        msg: 'removes previously updated custom score back to original truthy state'
       }
     ];
 
@@ -341,33 +394,33 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
       {
         expected: true,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { items: { [itemId]: { photos: true } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: true,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { photos: true },
         msg: 'adds item photos to updates'
       },
       {
         expected: true,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { photos: false },
         userChanges: { photos: true }, // check whitespace padding removed
         msg: 'updates over previously updated photos'
       },
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { photos: true },
         userChanges: { photos: false },
         msg: 'removes previously updated photos back to empty original state'
@@ -375,10 +428,10 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       {
         expected: undefined,
         currentItem: {
-          ...templateWithItems,
+          ...deepClone(templateWithItems),
           ...{
             items: {
-              ...templateWithItems.items,
+              ...deepClone(templateWithItems.items),
               [itemId]: { photos: true }
             }
           }
@@ -419,33 +472,33 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
       {
         expected: true,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { items: { [itemId]: { notes: true } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: true,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { notes: true },
         msg: 'adds item notes to updates'
       },
       {
         expected: true,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { notes: false },
         userChanges: { notes: true }, // check whitespace padding removed
         msg: 'updates over previously updated notes'
       },
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { notes: true },
         userChanges: { notes: false },
         msg: 'removes previously updated notes back to empty original state'
@@ -453,10 +506,10 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       {
         expected: undefined,
         currentItem: {
-          ...templateWithItems,
+          ...deepClone(templateWithItems),
           ...{
             items: {
-              ...templateWithItems.items,
+              ...deepClone(templateWithItems.items),
               [itemId]: { notes: true }
             }
           }
@@ -499,27 +552,27 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: undefined,
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
 
       {
         expected: 'text_input',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { items: { [itemId]: { itemType: 'text_input' } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: 'signature',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         userChanges: { itemType: 'signature' },
         msg: 'adds item type to updates'
       },
       {
         expected: 'text_input',
-        currentItem: templateWithItems,
+        currentItem: deepClone(templateWithItems),
         updatedItem: { itemType: 'signature' },
         userChanges: { itemType: 'text_input' }, // check whitespace padding removed
         msg: 'updates over previously updated item type'
@@ -528,10 +581,10 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       {
         expected: undefined,
         currentItem: {
-          ...templateWithItems,
+          ...deepClone(templateWithItems),
           ...{
             items: {
-              ...templateWithItems.items,
+              ...deepClone(templateWithItems.items),
               [itemId]: { itemType: 'text_input' }
             }
           }
@@ -563,7 +616,7 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     }
   });
 
-  test('it change main input type and update scores', () => {
+  test('it changes main input type and updates scores', () => {
     const itemId = unselectedCheckmarkItem.id;
     const templateWithItems = {
       ...templateA,
@@ -607,7 +660,7 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const itemTwoId = unselectedThumbsItem.id;
     const itemThreeId = unselectedCheckedExclaimItem.id;
     const templateWithItems = {
-      ...templateA,
+      ...deepClone(templateA),
       items: {
         [itemOneId]: { ...unselectedCheckmarkItem, index: 0 },
         [itemTwoId]: { ...unselectedThumbsItem, index: 1 },
@@ -618,13 +671,13 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: [undefined, undefined, undefined],
-        current: templateWithItems,
+        current: deepClone(templateWithItems),
         userChanges: { title: 'title' },
         msg: 'ignores unrelated update'
       },
       {
         expected: [undefined, 1, undefined],
-        current: templateWithItems,
+        current: deepClone(templateWithItems),
         updated: { items: { [itemTwoId]: { index: 1 } } },
         userChanges: { title: 'title' },
         msg: 'uses previous update when no user changes apply'
@@ -632,19 +685,19 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
 
       {
         expected: [1, 0, undefined],
-        current: templateWithItems,
+        current: deepClone(templateWithItems),
         userChanges: { index: 0 }, // Move to 1st
         msg: 'adds item index updates sorting down index'
       },
       {
         expected: [undefined, 2, 1],
-        current: templateWithItems,
+        current: deepClone(templateWithItems),
         userChanges: { index: 2 }, // Move to 3rd
         msg: 'adds item index updates sorting down index'
       },
       {
         expected: [undefined, undefined, undefined],
-        current: templateWithItems,
+        current: deepClone(templateWithItems),
         updated: {
           items: {
             [itemOneId]: { index: 1 },
@@ -674,5 +727,66 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       const actual = [expectedIndexOne, expectedIndexTwo, expectedIndexThree];
       expect(actual, msg).toEqual(expected);
     }
+  });
+
+  test('it should remove a previously published item', () => {
+    const expected = [undefined, 1];
+    const itemOneId = unselectedCheckmarkItem.id;
+    const itemTwoId = unselectedThumbsItem.id;
+    const itemThreeId = unselectedCheckedExclaimItem.id;
+    const current = {
+      ...templateA,
+      items: {
+        [itemOneId]: { ...unselectedCheckmarkItem, index: 0 },
+        [itemTwoId]: { ...unselectedThumbsItem, index: 1 },
+        [itemThreeId]: { ...unselectedCheckedExclaimItem, index: 2 }
+      }
+    };
+    const updates = { items: { [itemTwoId]: { index: 0 } } } as TemplateModel;
+    const result = updateItem(updates, current, null, itemTwoId);
+
+    // check current and other items indexes are updated as expected
+    const expectedIndexOne = ((result.items || {})[itemOneId] || {}).index;
+    const expectedIndexThree = ((result.items || {})[itemThreeId] || {}).index;
+    const actual = [expectedIndexOne, expectedIndexThree];
+
+    expect(actual, 'updated unremoved item indexes').toEqual(expected);
+
+    // check if removed item has been set to null
+    const removedItemValue = (result.items || {})[itemTwoId];
+    expect(removedItemValue, 'added null to publishable updates').toBeNull();
+  });
+
+  test('it should remove a locally added item', () => {
+    const expected = [undefined, undefined];
+    const itemOneId = unselectedCheckmarkItem.id;
+    const itemTwoId = unselectedThumbsItem.id;
+    const itemThreeId = unselectedCheckedExclaimItem.id;
+    const sectionId = 'section-123';
+    const current = {
+      ...deepClone(templateA),
+      items: {
+        [itemOneId]: { ...unselectedCheckmarkItem, sectionId, index: 0 },
+        [itemThreeId]: { ...unselectedCheckedExclaimItem, sectionId, index: 1 }
+      }
+    };
+    const updates = {
+      items: {
+        [itemTwoId]: { ...unselectedThumbsItem, sectionId, index: 1 },
+        [itemThreeId]: { index: 2 }
+      }
+    } as TemplateModel;
+    const result = updateItem(updates, current, null, itemTwoId);
+
+    // check current and other items indexes are updated as expected
+    const expectedIndexOne = ((result.items || {})[itemOneId] || {}).index;
+    const expectedIndexThree = ((result.items || {})[itemThreeId] || {}).index;
+    const actual = [expectedIndexOne, expectedIndexThree];
+
+    expect(actual, 'reverted to pristine state').toEqual(expected);
+
+    // check if removed item has been set to null
+    const removedItemValue = (result.items || {})[itemTwoId];
+    expect(removedItemValue, 'removed local item').toBeUndefined();
   });
 });

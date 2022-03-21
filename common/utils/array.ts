@@ -22,5 +22,11 @@ export default {
       }
     });
     return map;
+  },
+
+  // return range array
+  // based on input start and end numbers
+  range(start: number, end: number): number[] {
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   }
 };

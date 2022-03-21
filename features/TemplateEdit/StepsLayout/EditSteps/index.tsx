@@ -26,12 +26,16 @@ interface Props {
   addSection(): void;
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
+  updateSectionIndex(sectionId: string, index: number): void;
+  removeSection(sectionId: string): void;
   addItem(sectionId: string, itemType: string): void;
   onUpdateItemType(item: TemplateItemModel): void;
   onChangeMainInputType(item: TemplateItemModel): void;
   updateItemTitle(itemId: string, title: string): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
+  updateItemIndex(itemId: string, index: number): void;
+  removeItem(itemId: string): void;
 }
 
 const EditSteps: FunctionComponent<Props> = ({
@@ -48,13 +52,17 @@ const EditSteps: FunctionComponent<Props> = ({
   updateRequireDeficientItemNoteAndPhoto,
   addSection,
   updateSectionTitle,
+  updateSectionIndex,
   onUpdateSectionType,
+  removeSection,
   addItem,
   onUpdateItemType,
   onChangeMainInputType,
   updateItemTitle,
   onUpdatePhotosValue,
-  onUpdateNotesValue
+  onUpdateNotesValue,
+  updateItemIndex,
+  removeItem
 }) => {
   switch (step) {
     case 'sections':
@@ -65,6 +73,8 @@ const EditSteps: FunctionComponent<Props> = ({
           sortedSections={sortedSections}
           updateSectionTitle={updateSectionTitle}
           onUpdateSectionType={onUpdateSectionType}
+          updateSectionIndex={updateSectionIndex}
+          removeSection={removeSection}
         />
       );
     case 'section-items':
@@ -76,6 +86,8 @@ const EditSteps: FunctionComponent<Props> = ({
           addItem={addItem}
           onUpdateItemType={onUpdateItemType}
           updateItemTitle={updateItemTitle}
+          updateItemIndex={updateItemIndex}
+          removeItem={removeItem}
         />
       );
     case 'items':

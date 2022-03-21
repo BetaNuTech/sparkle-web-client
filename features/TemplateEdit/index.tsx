@@ -62,12 +62,16 @@ const TemplateEdit: FunctionComponent<Props> = ({
     addSection,
     updateSectionTitle,
     updateSectionType,
+    updateSectionIndex,
+    removeSection,
     addItem,
     updateItemType,
     updateItemMainInputType,
     updateItemTitle,
     updatePhotosValue,
-    updateNotesValue
+    updateNotesValue,
+    updateItemIndex,
+    removeItem
   } = useUpdateTemplate(template.id, unpublishedUpdates, template);
 
   const { templateSectionItems } = useTemplateSectionItems(template, updates);
@@ -76,6 +80,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
 
   // sort sections by index
   const sortedSections = Object.keys(sections)
+    .filter((id) => sections[id])
     .map((id) => ({ id, ...sections[id] }))
     .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
 
@@ -154,12 +159,16 @@ const TemplateEdit: FunctionComponent<Props> = ({
         addSection={addSection}
         updateSectionTitle={updateSectionTitle}
         onUpdateSectionType={onUpdateSectionType}
+        updateSectionIndex={updateSectionIndex}
+        removeSection={removeSection}
         addItem={addItem}
         onUpdateItemType={onUpdateItemType}
         onChangeMainInputType={onChangeMainInputType}
         updateItemTitle={updateItemTitle}
         onUpdateNotesValue={onUpdateNotesValue}
         onUpdatePhotosValue={onUpdatePhotosValue}
+        updateItemIndex={updateItemIndex}
+        removeItem={removeItem}
       />
     </>
   );

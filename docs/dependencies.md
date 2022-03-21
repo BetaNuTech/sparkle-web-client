@@ -67,7 +67,8 @@ All 3rd party code used by this application.
 
 ## Drag and Drop
 
-- [React Dropzone](https://github.com/react-dropzone/react-dropzone) Hooks for HTML5 compliant drag and drop support.
+- [React Dropzone](https://github.com/react-dropzone/react-dropzone) Hooks for HTML5 compliant drag and drop support for files.
+- [@dnd-kit](https://github.com/clauderic/dnd-kit) Toolkit for building drag & drop or sortable interfaces.
 
 ## Misc
 

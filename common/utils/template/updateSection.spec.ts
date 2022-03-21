@@ -4,8 +4,10 @@ import { templateA } from '../../../__mocks__/templates';
 import {
   singleSection,
   originalMultiSection,
-  addedMultiSection
+  addedMultiSection,
+  unselectedCheckmarkItem
 } from '../../../__mocks__/inspections';
+import deepClone from '../deepClone';
 
 describe('Unit | Common | Utils | Template | Update Section', () => {
   test('it sets a section title', () => {
@@ -17,39 +19,39 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
     const tests = [
       {
         expected: undefined,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
       {
         expected: undefined,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { title: '' },
         msg: 'ignores changing empty text input to an empty value'
       },
       {
         expected: 'new title',
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { sections: { [sectionId]: { title: 'new title' } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: 'new title',
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { title: 'new title' },
         msg: 'adds section title to updates'
       },
       {
         expected: 'new title',
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { title: 'old name' },
         userChanges: { title: 'new title' }, // check whitespace padding removed
         msg: 'updates over previously updated title'
       },
       {
         expected: undefined,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { title: 'old name' },
         userChanges: { title: '' },
         msg: 'removes previously updated title back to empty original state'
@@ -57,10 +59,10 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
       {
         expected: undefined,
         current: {
-          ...templateWithSection,
+          ...deepClone(templateWithSection),
           ...{
             sections: {
-              ...templateWithSection.sections,
+              ...deepClone(templateWithSection.sections),
               [sectionId]: { title: 'initial' }
             }
           }
@@ -89,56 +91,50 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
   test('it sets the section type', () => {
     const sectionId = singleSection.id;
     const templateWithSection = {
-      ...templateA,
-      sections: { [sectionId]: { ...singleSection, section_type: '' } }
+      ...deepClone(templateA),
+      sections: { [sectionId]: { ...singleSection } }
     };
     const tests = [
       {
         expected: undefined,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
       {
-        expected: undefined,
-        current: templateWithSection,
-        userChanges: { section_type: '' },
-        msg: 'ignores changing empty text input to an empty value'
-      },
-      {
         expected: 'multi',
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { sections: { [sectionId]: { section_type: 'multi' } } },
         userChanges: { index: 3 },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: 'multi',
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { section_type: 'multi' },
         msg: 'adds section type to updates'
       },
       {
         expected: 'multi',
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { sections: { [sectionId]: { section_type: 'single' } } },
         userChanges: { section_type: 'multi' }, // check whitespace padding removed
         msg: 'updates over previously updated type'
       },
       {
         expected: undefined,
-        current: templateWithSection,
-        updated: { sections: { [sectionId]: { section_type: 'single' } } },
-        userChanges: { section_type: '' },
+        current: deepClone(templateWithSection),
+        updated: { sections: { [sectionId]: { section_type: 'multi' } } },
+        userChanges: { section_type: 'single' },
         msg: 'removes previously updated type back to empty original state'
       },
       {
         expected: undefined,
         current: {
-          ...templateWithSection,
+          ...deepClone(templateWithSection),
           ...{
             sections: {
-              ...templateWithSection.sections,
+              ...deepClone(templateWithSection.sections),
               [sectionId]: { section_type: 'single' }
             }
           }
@@ -181,32 +177,32 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
     const tests = [
       {
         expected: [undefined, undefined, undefined],
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { title: 'title' },
         msg: 'ignores unrelated update'
       },
       {
         expected: [undefined, 1, undefined],
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { sections: { [sectionTwoId]: { index: 1 } } },
         userChanges: { title: 'title' },
         msg: 'uses previous update when no user changes apply'
       },
       {
         expected: [1, 0, undefined],
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { index: 0 }, // Move to 1st position
         msg: 'updates section index sorting up'
       },
       {
         expected: [undefined, 2, 1],
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { index: 2 }, // Move to 3rd position
         msg: 'updates section index sorting down'
       },
       {
         expected: [undefined, undefined, undefined],
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: {
           sections: {
             [sectionOneId]: { index: 1 },
@@ -247,19 +243,19 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
     const tests = [
       {
         expected: 1,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
       },
       {
         expected: 1,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         userChanges: { new: true },
         msg: 'adds new section'
       },
       {
         expected: 2,
-        current: templateWithSection,
+        current: deepClone(templateWithSection),
         updated: { sections: { [sectionId]: { title: 'new title' } } },
         userChanges: { new: true },
         msg: 'add new Section and keep updated sections updates '
@@ -284,21 +280,18 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
     const sectionOneId = singleSection.id;
     const sectionTwoId = originalMultiSection.id;
     const sectionThreeId = addedMultiSection.id;
-    const sections = {
-      [sectionOneId]: { ...singleSection, index: 0 },
-      [sectionTwoId]: { ...originalMultiSection, index: 1 },
-      [sectionThreeId]: { ...addedMultiSection, index: 2 }
+    const current = {
+      ...deepClone(templateA),
+      sections: {
+        [sectionOneId]: { ...singleSection, index: 0 },
+        [sectionTwoId]: { ...originalMultiSection, index: 1 },
+        [sectionThreeId]: { ...addedMultiSection, index: 2 }
+      }
     };
 
-    const templateWithSection = {
-      ...templateA,
-      sections
-    };
-
-    const current = templateWithSection;
-    const updated = { sections: { [sectionTwoId]: { index: 0 } } };
+    const updates = { sections: { [sectionTwoId]: { index: 0 } } };
     const result = updateSection(
-      updated as TemplateModel,
+      updates as TemplateModel,
       current,
       null,
       sectionTwoId
@@ -319,6 +312,61 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
     expect(removedSectionValue).toBeNull();
   });
 
+  test('it should request to delete a removed published section items', () => {
+    const expected = [null, null];
+    const sectionOneId = 'section-123';
+    const sectionTwoId = 'section-456';
+    const current = {
+      ...deepClone(templateA),
+      sections: {
+        [sectionOneId]: { ...singleSection, index: 0 },
+        [sectionTwoId]: { ...singleSection, index: 1 }
+      },
+      items: {
+        one: { ...unselectedCheckmarkItem, index: 0, sectionId: sectionTwoId },
+        two: { ...unselectedCheckmarkItem, index: 1, sectionId: sectionTwoId }
+      }
+    };
+
+    const result = updateSection(
+      {} as TemplateModel,
+      current,
+      null,
+      sectionTwoId
+    );
+    const resultItems = result.items || {};
+
+    const actual = [resultItems.one, resultItems.two];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should delete a removed unpublished section items', () => {
+    const expected = [undefined, undefined];
+    const sectionOneId = 'section-123';
+    const sectionTwoId = 'section-456';
+    const current = {
+      ...deepClone(templateA),
+      sections: {
+        [sectionOneId]: { ...singleSection, index: 0 }
+      }
+    } as TemplateModel;
+    const updates = {
+      sections: {
+        [sectionTwoId]: { ...singleSection, index: 1 }
+      },
+      items: {
+        one: { ...unselectedCheckmarkItem, index: 0, sectionId: sectionTwoId },
+        two: { ...unselectedCheckmarkItem, index: 1, sectionId: sectionTwoId }
+      }
+    } as TemplateModel;
+
+    const result = updateSection(updates, current, null, sectionTwoId);
+    const resultItems = result.items || {};
+
+    const actual = [resultItems.one, resultItems.two];
+    expect(actual).toEqual(expected);
+  });
+
   test('it should remove a locally added section', () => {
     const sectionOneId = singleSection.id;
     const sectionTwoId = originalMultiSection.id;
@@ -329,7 +377,7 @@ describe('Unit | Common | Utils | Template | Update Section', () => {
     };
 
     const templateWithSection = {
-      ...templateA,
+      ...deepClone(templateA),
       sections
     };
 

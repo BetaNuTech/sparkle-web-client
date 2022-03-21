@@ -38,12 +38,16 @@ interface Props {
   addSection(): void;
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
+  updateSectionIndex(sectionId: string, index: number): void;
+  removeSection(sectionId: string): void;
   addItem(sectionId: string, itemType: string): void;
   onUpdateItemType(item: TemplateItemModel): void;
   onChangeMainInputType(item: TemplateItemModel): void;
   updateItemTitle(itemId: string, title: string): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
+  updateItemIndex(itemId: string, index: number): void;
+  removeItem(itemId: string): void;
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -67,12 +71,16 @@ const StepsLayout: FunctionComponent<Props> = ({
   addSection,
   updateSectionTitle,
   onUpdateSectionType,
+  updateSectionIndex,
+  removeSection,
   addItem,
   onUpdateItemType,
   onChangeMainInputType,
   updateItemTitle,
   onUpdatePhotosValue,
-  onUpdateNotesValue
+  onUpdateNotesValue,
+  updateItemIndex,
+  removeItem
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -125,12 +133,16 @@ const StepsLayout: FunctionComponent<Props> = ({
                       addSection={addSection}
                       updateSectionTitle={updateSectionTitle}
                       onUpdateSectionType={onUpdateSectionType}
+                      removeSection={removeSection}
                       addItem={addItem}
                       onUpdateItemType={onUpdateItemType}
                       onChangeMainInputType={onChangeMainInputType}
                       updateItemTitle={updateItemTitle}
+                      updateSectionIndex={updateSectionIndex}
                       onUpdatePhotosValue={onUpdatePhotosValue}
                       onUpdateNotesValue={onUpdateNotesValue}
+                      updateItemIndex={updateItemIndex}
+                      removeItem={removeItem}
                     />
                   )}
                 </div>

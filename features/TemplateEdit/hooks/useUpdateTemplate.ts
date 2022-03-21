@@ -31,6 +31,7 @@ interface useUpdateTemplateResult {
   updateNotesValue(itemId: string, notes: boolean): TemplateModal;
   updateScore(itemId: string, scoreKey: string, score: number): TemplateModal;
   updateItemIndex(itemId: string, index: number): TemplateModal;
+  removeItem(itemId: string): TemplateModal;
 }
 
 export default function useUpdateTemplate(
@@ -231,6 +232,13 @@ export default function useUpdateTemplate(
       })
     );
 
+  const removeItem = (itemId: string): TemplateModal =>
+    applyLatestUpdates(
+      templateUtils.update(updates, currentItem, {
+        items: { [itemId]: null }
+      })
+    );
+
   return {
     updates,
     hasUpdates,
@@ -251,7 +259,8 @@ export default function useUpdateTemplate(
     updatePhotosValue,
     updateNotesValue,
     updateScore,
-    updateItemIndex
+    updateItemIndex,
+    removeItem
   };
 }
 
