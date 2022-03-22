@@ -22,6 +22,7 @@ import firebaseConfig from '../../../../config/firebase';
 import propertiesApi from '../../../../common/services/api/properties';
 import deepClone from '../../../helpers/deepClone';
 import propertyFormErrors from '../../../../features/PropertyEdit/errors';
+import { unselectedAbcItem } from '../../../../__mocks__/inspections';
 
 function render(ui: any, options: any = {}) {
   const contextWidth = options.contextWidth || breakpoints.desktop.minWidth;
@@ -52,7 +53,11 @@ describe('Integration | Features | Property Edit', () => {
     const expected = {
       'template-2': true
     };
-    const [template] = mockTemplates;
+    const templates = [...mockTemplates].map((template) => ({
+      ...template,
+      items: { 'item-1': unselectedAbcItem }
+    }));
+    const [template] = templates;
 
     const onSave = sinon
       .stub(propertiesApi, 'updateProperty')
@@ -62,7 +67,7 @@ describe('Integration | Features | Property Edit', () => {
       user,
       property: fullProperty,
       teams: mockTeams,
-      templates: mockTemplates,
+      templates,
       templateCategories: mockTemplateCategories
     };
     render(<PropertyEdit {...props} />);
@@ -92,7 +97,12 @@ describe('Integration | Features | Property Edit', () => {
       'template-3': true,
       'template-4': true
     };
-    const [template] = mockTemplates;
+    const templates = [...mockTemplates].map((template) => ({
+      ...template,
+      items: { 'item-1': unselectedAbcItem }
+    }));
+    const [template] = templates;
+
     const property = deepClone(fullProperty);
     (property.templates || {})[template.id] = true; // add template to property
     const onSave = sinon
@@ -103,7 +113,7 @@ describe('Integration | Features | Property Edit', () => {
       user,
       property: fullProperty,
       teams: mockTeams,
-      templates: mockTemplates,
+      templates,
       templateCategories: mockTemplateCategories
     };
     render(<PropertyEdit {...props} />);

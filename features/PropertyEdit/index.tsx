@@ -118,6 +118,11 @@ const PropertyEdit: FunctionComponent<Props> = ({
     setAreTemplatesUpdated(true);
   };
 
+  // Filter templates which dose not contain items
+  const templatesWithItems = templates.filter(
+    (template) => Object.keys(template.items || {}).length > 0
+  );
+
   // Templates search setup
   const {
     onSearchKeyDown,
@@ -125,7 +130,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
     searchParam,
     onClearSearch,
     searchValue
-  } = useSearching(templates, ['name', 'description']);
+  } = useSearching(templatesWithItems, ['name', 'description']);
   const filteredTemplates = filteredItems.map((itm) => itm as templateModel);
 
   const { categories: sortedCategories } = useCategorizedTemplates(
