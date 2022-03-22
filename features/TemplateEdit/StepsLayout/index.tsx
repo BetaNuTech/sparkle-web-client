@@ -46,6 +46,9 @@ interface Props {
   updateItemTitle(itemId: string, title: string): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
+  isDisableNext: boolean;
+  errors: Record<string, string>;
+  isValidForm: boolean;
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
   updateItemIndex(itemId: string, index: number): void;
   removeItem(itemId: string): void;
@@ -80,6 +83,9 @@ const StepsLayout: FunctionComponent<Props> = ({
   updateItemTitle,
   onUpdatePhotosValue,
   onUpdateNotesValue,
+  isDisableNext,
+  errors,
+  isValidForm,
   onUpdateScore,
   updateItemIndex,
   removeItem
@@ -143,6 +149,7 @@ const StepsLayout: FunctionComponent<Props> = ({
                       updateSectionIndex={updateSectionIndex}
                       onUpdatePhotosValue={onUpdatePhotosValue}
                       onUpdateNotesValue={onUpdateNotesValue}
+                      errors={errors}
                       onUpdateScore={onUpdateScore}
                       updateItemIndex={updateItemIndex}
                       removeItem={removeItem}
@@ -159,6 +166,8 @@ const StepsLayout: FunctionComponent<Props> = ({
             goToPrevStep={goToPrevStep}
             isLastStep={isLastStep}
             currentStepIndex={currentStepIndex}
+            isDisableNext={isDisableNext}
+            isValidForm={isValidForm}
           />
         )}
       </div>

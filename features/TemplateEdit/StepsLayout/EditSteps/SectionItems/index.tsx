@@ -22,6 +22,7 @@ import stepsStyles from '../styles.module.scss';
 import DiamondIcon from '../../../../../public/icons/sparkle/diamond.svg';
 import DiamondLayersIcon from '../../../../../public/icons/sparkle/diamond-layers.svg';
 import AddItemAction from './AddItemAction';
+import ErrorLabel from '../../../../../common/ErrorLabel';
 import SortableList from '../../SortableList';
 import globalEvents from '../../../../../common/utils/globalEvents';
 import Droppable from '../../SortableList/Droppable';
@@ -39,6 +40,7 @@ interface Props {
   addItem(sectionId: string, itemType: string): void;
   onUpdateItemType(item: TemplateItemModel): void;
   updateItemTitle(itemId: string, title: string): void;
+  errors: Record<string, string>;
   updateItemIndex(itemId: string, index: number): void;
   removeItem(itemId: string): void;
 }
@@ -51,7 +53,8 @@ const SectionItems: FunctionComponent<Props> = ({
   onUpdateItemType,
   updateItemTitle,
   updateItemIndex,
-  removeItem
+  removeItem,
+  errors
 }) => {
   const [activeId, setActiveId] = useState(null);
 
@@ -136,7 +139,10 @@ const SectionItems: FunctionComponent<Props> = ({
               onUpdateTitle={updateItemTitle}
               onUpdateType={onUpdateItemType}
               forceVisible={forceVisible}
+              errors={errors}
+              errorMessage={errors.itemTitle}
             />
+            <ErrorLabel errors={errors} message={errors?.sectionItemError} />
             <Droppable id={`item-remove-${section.id}`}>
               <AddItemAction
                 inputTypes={inputTypes}

@@ -12,13 +12,17 @@ interface Props {
   goToNextStep(): void;
   goToPrevStep(): void;
   isLastStep: boolean;
+  isDisableNext: boolean;
+  isValidForm: boolean;
 }
 
 const StepsLayoutActions: FunctionComponent<Props> = ({
   currentStepIndex,
   goToNextStep,
   goToPrevStep,
-  isLastStep
+  isLastStep,
+  isDisableNext,
+  isValidForm
 }) => (
   <div className={styles.actions}>
     {currentStepIndex === 0 ? (
@@ -46,7 +50,11 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
       </button>
     )}
     {isLastStep ? (
-      <button className={styles.actions__button} data-testid="StepsLayout-save">
+      <button
+        className={styles.actions__button}
+        data-testid="StepsLayout-save"
+        disabled={!isValidForm}
+      >
         Save
       </button>
     ) : (
@@ -54,6 +62,7 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
         className={styles.actions__button}
         onClick={goToNextStep}
         data-testid="StepsLayout-next-step"
+        disabled={isDisableNext}
       >
         Next Step
       </button>

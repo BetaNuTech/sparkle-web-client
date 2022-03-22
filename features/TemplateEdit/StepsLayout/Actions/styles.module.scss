@@ -22,6 +22,9 @@
       color: $gray-dark;
       border: 1px solid $gray-light;
     }
+    &:disabled {
+      opacity: $button-opacity-disabled;
+    }
 
     &:last-child {
       margin: 0;

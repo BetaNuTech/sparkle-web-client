@@ -15,13 +15,17 @@ interface Props {
   forceVisible?: boolean;
   onUpdateTitle(id: string, title: string): void;
   onUpdateType(item: TemplateSectionModel | TemplateItemModel): void;
+  errors: Record<string, string>;
+  errorMessage: string;
 }
 
 const SortableList: FunctionComponent<Props> = ({
   forceVisible,
   items,
   onUpdateTitle,
-  onUpdateType
+  onUpdateType,
+  errors,
+  errorMessage
 }) => {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
 
@@ -35,6 +39,8 @@ const SortableList: FunctionComponent<Props> = ({
           forceVisible={forceVisible}
           onUpdateTitle={(title: string) => onUpdateTitle(item.id, title)}
           onUpdateType={() => onUpdateType(item)}
+          errors={errors}
+          errorMessage={errorMessage}
         />
       ))}
     </SortableContext>

@@ -1,4 +1,5 @@
 import { FunctionComponent } from 'react';
+import ErrorLabel from '../../../../../common/ErrorLabel';
 import TemplateModel from '../../../../../common/models/template';
 import TemplateCategoryModel from '../../../../../common/models/templateCategory';
 
@@ -14,6 +15,7 @@ interface Props {
   updateRequireDeficientItemNoteAndPhoto(
     requireDeficientItemNoteAndPhoto: boolean
   ): void;
+  errors: Record<string, string>;
 }
 
 const General: FunctionComponent<Props> = ({
@@ -23,7 +25,8 @@ const General: FunctionComponent<Props> = ({
   updateDescription,
   updateCategory,
   updateTrackDeficientItems,
-  updateRequireDeficientItemNoteAndPhoto
+  updateRequireDeficientItemNoteAndPhoto,
+  errors
 }) => (
   <section className={styles.container}>
     <input
@@ -33,6 +36,7 @@ const General: FunctionComponent<Props> = ({
       defaultValue={template.name}
       onChange={(e) => updateName(e.target.value)}
     />
+    <ErrorLabel errors={errors} message={errors.name} />
     <textarea
       className={styles.container__textarea}
       placeholder="Description"

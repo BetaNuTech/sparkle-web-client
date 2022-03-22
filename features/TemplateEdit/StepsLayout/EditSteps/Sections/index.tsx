@@ -18,6 +18,7 @@ import TrashIcon from '../../../../../public/icons/sparkle/trash.svg';
 import TemplateSectionModel from '../../../../../common/models/inspectionTemplateSection';
 import stepsStyles from '../styles.module.scss';
 import AddIcon from '../../../../../public/icons/ios/add.svg';
+import ErrorLabel from '../../../../../common/ErrorLabel';
 import SortableList from '../../SortableList';
 import globalEvents from '../../../../../common/utils/globalEvents';
 import Droppable from '../../SortableList/Droppable';
@@ -29,6 +30,7 @@ interface Props {
   addSection(): void;
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
+  errors: Record<string, string>;
   updateSectionIndex(sectionId: string, index: number): void;
   removeSection(sectionId: string): void;
 }
@@ -40,7 +42,8 @@ const Sections: FunctionComponent<Props> = ({
   updateSectionTitle,
   onUpdateSectionType,
   updateSectionIndex,
-  removeSection
+  removeSection,
+  errors
 }) => {
   const [activeId, setActiveId] = useState(null);
   const activeItem = useMemo(
@@ -98,7 +101,10 @@ const Sections: FunctionComponent<Props> = ({
           onUpdateTitle={updateSectionTitle}
           onUpdateType={onUpdateSectionType}
           forceVisible={forceVisible}
+          errors={errors}
+          errorMessage={errors.title}
         />
+        <ErrorLabel errors={errors} message={errors?.sectionError} />
         <Droppable id="section-remove">
           <div className={stepsStyles.action} onClick={addSection}>
             <span>Add new section</span>
