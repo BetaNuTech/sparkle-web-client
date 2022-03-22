@@ -9,6 +9,8 @@ interface Props {
   onUpdateTitle(title: string): void;
   onUpdateType(): void;
   id: string;
+  errors: Record<string, string>;
+  errorMessage: string;
 }
 
 const SortableItem: FunctionComponent<Props> = ({
@@ -16,7 +18,9 @@ const SortableItem: FunctionComponent<Props> = ({
   item,
   forceVisible,
   onUpdateTitle,
-  onUpdateType
+  onUpdateType,
+  errors,
+  errorMessage
 }) => {
   const {
     attributes,
@@ -42,6 +46,8 @@ const SortableItem: FunctionComponent<Props> = ({
       onUpdateType={onUpdateType}
       ref={setNodeRef}
       style={style}
+      errors={errors}
+      errorMessage={errorMessage}
       {...attributes}
       {...listeners}
     />

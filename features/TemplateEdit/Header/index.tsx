@@ -15,6 +15,8 @@ interface Props {
   goToPrevStep(): void;
   isLastStep: boolean;
   templateName: string;
+  isDisableNext: boolean;
+  isValidForm: boolean;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -25,7 +27,9 @@ const Header: FunctionComponent<Props> = ({
   goToNextStep,
   goToPrevStep,
   isLastStep,
-  templateName
+  templateName,
+  isDisableNext,
+  isValidForm
 }) => {
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -34,6 +38,7 @@ const Header: FunctionComponent<Props> = ({
         <button
           className={headStyle.header__button}
           data-testid="templateEdit-header-save"
+          disabled={!isValidForm}
         >
           Save
         </button>
@@ -42,6 +47,7 @@ const Header: FunctionComponent<Props> = ({
           className={headStyle.header__button}
           onClick={goToNextStep}
           data-testid="templateEdit-header-next"
+          disabled={isDisableNext}
         >
           Next
         </button>

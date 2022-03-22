@@ -11,6 +11,7 @@
   min-height: rem-calc(55);
   padding: rem-calc(14) $global-sm-padding;
   border-bottom: 1px solid $gray;
+  flex-wrap: wrap;
 
   &__checkbox {
     margin-right: $global-sm-padding;
@@ -24,6 +25,7 @@
   &__text {
     margin: 0;
     font-weight: bold;
+    word-break: break-word;
   }
 }
 
@@ -49,4 +51,8 @@
       fill: $gray-3;
     }
   }
+}
+
+.error {
+  width: 100%;
 }

@@ -11,6 +11,7 @@ import QuillIcon from '../../../../../../public/icons/sparkle/quill.svg';
 
 import styles from './styles.module.scss';
 import useVisibility from '../../../../../../common/hooks/useVisibility';
+import ErrorLabel from '../../../../../../common/ErrorLabel';
 
 const config = getConfig() || {};
 const publicRuntimeConfig = config.publicRuntimeConfig || {};
@@ -22,11 +23,22 @@ interface Props {
   onUpdateTitle?(title: string): void;
   onUpdateType?(): void;
   style?: CSSProperties;
+  errors?: Record<string, string>;
+  errorMessage?: string;
 }
 
 const Item = forwardRef<HTMLDivElement, Props>(
   (
-    { item, forceVisible, onUpdateTitle, onUpdateType, style, ...props },
+    {
+      item,
+      forceVisible,
+      onUpdateTitle,
+      onUpdateType,
+      style,
+      errors,
+      errorMessage,
+      ...props
+    },
     nodeRef
   ) => {
     if (!item) {
@@ -49,6 +61,9 @@ const Item = forwardRef<HTMLDivElement, Props>(
     if (item?.itemType === 'main') {
       icon = <InspectionItemIcon className={styles.controls__icon} />;
     }
+
+    const showError =
+      item.itemType !== 'signature' && errorMessage && !item.title;
 
     return (
       <div style={style} className={styles.container} ref={nodeRef}>
@@ -84,6 +99,11 @@ const Item = forwardRef<HTMLDivElement, Props>(
             </>
           )}
         </div>
+        {showError && (
+          <div className={styles.error}>
+            <ErrorLabel errors={errors} message={errorMessage} />
+          </div>
+        )}
       </div>
     );
   }

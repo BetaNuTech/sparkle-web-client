@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 
 import { useMediaQuery } from 'react-responsive';
 import TemplateModel from '../../common/models/template';
@@ -14,6 +14,7 @@ import useTemplateSectionItems from './hooks/useTemplateSectionItems';
 import useUpdateTemplate from './hooks/useUpdateTemplate';
 import deepmerge from '../../common/utils/deepmerge';
 import inspectionConfig from '../../config/inspections';
+import useValidateTemplate from './hooks/useValidateTemplate';
 
 const TEMPLATE_TYPES = inspectionConfig.inspectionTemplateTypes;
 const ITEM_VALUES_KEYS = inspectionConfig.itemValuesKeys;
@@ -76,6 +77,9 @@ const TemplateEdit: FunctionComponent<Props> = ({
     removeItem
   } = useUpdateTemplate(template.id, unpublishedUpdates, template);
 
+  const { setErrorMessages, errors, stepsStatus, isValidForm } =
+    useValidateTemplate(updates, template);
+
   const { templateSectionItems } = useTemplateSectionItems(template, updates);
 
   const sections = deepmerge(template.sections || {}, updates.sections || {});
@@ -126,6 +130,21 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updatePhotosValue(item.id, !item.photos);
   };
 
+  const isDisableNext = stepsStatus[steps[currentStepIndex]] === 'invalid';
+
+  // check validation for steps
+  // and redirect to invalid step
+  useEffect(() => {
+    const invalidStep = steps.findIndex(
+      (step) => stepsStatus[step] === 'invalid'
+    );
+    if (invalidStep > -1 && currentStepIndex > invalidStep) {
+      setErrorMessages();
+      changeStep(invalidStep);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepIndex]);
+
   const onUpdateScore = (
     itemId: string,
     selectedInput: number,
@@ -149,6 +168,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
         currentStepIndex={currentStepIndex}
         isLastStep={isLastStep}
         templateName={template.name}
+        isDisableNext={isDisableNext}
+        isValidForm={isValidForm}
       />
       <StepsLayout
         currentStepIndex={currentStepIndex}
@@ -181,6 +202,9 @@ const TemplateEdit: FunctionComponent<Props> = ({
         updateItemTitle={updateItemTitle}
         onUpdateNotesValue={onUpdateNotesValue}
         onUpdatePhotosValue={onUpdatePhotosValue}
+        isDisableNext={isDisableNext}
+        errors={errors}
+        isValidForm={isValidForm}
         onUpdateScore={onUpdateScore}
         updateItemIndex={updateItemIndex}
         removeItem={removeItem}
