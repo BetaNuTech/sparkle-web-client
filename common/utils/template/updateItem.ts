@@ -11,6 +11,7 @@ import updateIndexes, {
 import deepClone from '../deepClone';
 
 const INSPECTION_SCORES = inspectionConfig.inspectionScores;
+const ITEM_VALUES_KEYS = inspectionConfig.itemValuesKeys;
 const SCORE_ATTRIBUTES = [
   'mainInputZeroValue',
   'mainInputOneValue',
@@ -151,7 +152,7 @@ const setItemMainInputType = (
     return result;
   }
 
-  const { itemType } = previousItems[targetId] || currentItems[targetId] || {};
+  const itemType = previousItems[targetId]?.itemType || currentItems[targetId]?.itemType  || '';
 
   // Do not update non-main types
   if (`${itemType}`.toLowerCase() !== 'main') {
@@ -402,9 +403,7 @@ const clearEmptyItems = (result: TemplateModel) => {
 };
 
 const createItemValues = (type: string) => {
-  const itemValuesKeys = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five'];
   const itemType = typeof type === 'string' ? `${type}`.toLowerCase() : type;
-  const valueKeys = itemValuesKeys;
   const scores = INSPECTION_SCORES[itemType];
   const itemValues = Object.create(null);
 
@@ -416,7 +415,7 @@ const createItemValues = (type: string) => {
    * Set `mainInput<key-value>Value` = score for each score
    */
   scores.forEach((score, index) => {
-    itemValues[`mainInput${valueKeys[index]}Value`] = scores[index];
+    itemValues[`mainInput${ITEM_VALUES_KEYS[index]}Value`] = scores[index];
   });
 
   return itemValues;

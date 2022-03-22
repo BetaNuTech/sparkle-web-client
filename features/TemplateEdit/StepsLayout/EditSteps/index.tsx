@@ -34,6 +34,7 @@ interface Props {
   updateItemTitle(itemId: string, title: string): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
+  onUpdateScore(itemId: string, selectedInput: number, score: number): void;
   updateItemIndex(itemId: string, index: number): void;
   removeItem(itemId: string): void;
 }
@@ -61,6 +62,7 @@ const EditSteps: FunctionComponent<Props> = ({
   updateItemTitle,
   onUpdatePhotosValue,
   onUpdateNotesValue,
+  onUpdateScore,
   updateItemIndex,
   removeItem
 }) => {
@@ -107,6 +109,7 @@ const EditSteps: FunctionComponent<Props> = ({
           sortedSections={sortedSections}
           templateSectionItems={templateSectionItems}
           forceVisible={forceVisible}
+          onUpdateScore={onUpdateScore}
         />
       );
     default:

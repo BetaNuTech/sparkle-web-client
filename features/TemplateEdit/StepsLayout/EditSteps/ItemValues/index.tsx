@@ -1,4 +1,4 @@
-import { FunctionComponent, MouseEvent, useState } from 'react';
+import { ChangeEvent, FunctionComponent, MouseEvent, useState } from 'react';
 import TemplateSectionModel from '../../../../../common/models/inspectionTemplateSection';
 import TemplateItemModel from '../../../../../common/models/inspectionTemplateItem';
 import stepsStyles from '../styles.module.scss';
@@ -19,15 +19,17 @@ interface Props {
   sortedSections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
+  onUpdateScore(itemId: string, selectedInput: number, score: number): void;
 }
 
 const ItemValues: FunctionComponent<Props> = ({
   sortedSections,
   templateSectionItems,
-  forceVisible
+  forceVisible,
+  onUpdateScore
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [itemSelection, setItemSelection] = useState(null);
+  const [selectedInput, setSelectedInput] = useState(null);
   const [selectedItemInputValue, setSelectedItemInputValue] = useState(null);
   const [selectStyle, setSelectStyle] = useState({
     top: 0,
@@ -48,8 +50,12 @@ const ItemValues: FunctionComponent<Props> = ({
       height: evt.currentTarget.offsetHeight
     });
     setSelectedItem(item.id);
-    setItemSelection(value);
+    setSelectedInput(value);
     setSelectedItemInputValue(item[itemValueKeys[value]]);
+  };
+
+  const onChangeValue = (evt: ChangeEvent<HTMLSelectElement>) => {
+    onUpdateScore(selectedItem, selectedInput, Number(evt.target.value));
   };
 
   return (
@@ -61,7 +67,7 @@ const ItemValues: FunctionComponent<Props> = ({
         className={stepsStyles.valueSelectMenu}
         style={selectStyle}
         value={selectedItemInputValue || 0}
-        onChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+        onChange={onChangeValue}
       >
         {utilArray.range(0, 100).map((value) => (
           <option key={value} value={value}>
@@ -91,7 +97,7 @@ const ItemValues: FunctionComponent<Props> = ({
             <ul>
               {sectionItems.map((item) => {
                 const selectedToScore =
-                  item.id === selectedItem ? itemSelection : -1;
+                  item.id === selectedItem ? selectedInput : -1;
 
                 return (
                   <ItemInputs
