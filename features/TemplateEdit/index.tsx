@@ -16,6 +16,7 @@ import deepmerge from '../../common/utils/deepmerge';
 import inspectionConfig from '../../config/inspections';
 
 const TEMPLATE_TYPES = inspectionConfig.inspectionTemplateTypes;
+const ITEM_VALUES_KEYS = inspectionConfig.itemValuesKeys;
 const INPUT_ITEM_TYPES = Object.keys(TEMPLATE_TYPES);
 
 interface Props {
@@ -70,6 +71,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updateItemTitle,
     updatePhotosValue,
     updateNotesValue,
+    updateScore,
     updateItemIndex,
     removeItem
   } = useUpdateTemplate(template.id, unpublishedUpdates, template);
@@ -124,6 +126,18 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updatePhotosValue(item.id, !item.photos);
   };
 
+  const onUpdateScore = (
+    itemId: string,
+    selectedInput: number,
+    score: number
+  ) => {
+    updateScore(
+      itemId,
+      `mainInput${ITEM_VALUES_KEYS[selectedInput]}Value`,
+      score
+    );
+  };
+
   return (
     <>
       <Header
@@ -167,6 +181,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         updateItemTitle={updateItemTitle}
         onUpdateNotesValue={onUpdateNotesValue}
         onUpdatePhotosValue={onUpdatePhotosValue}
+        onUpdateScore={onUpdateScore}
         updateItemIndex={updateItemIndex}
         removeItem={removeItem}
       />

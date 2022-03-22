@@ -49,5 +49,6 @@ export default {
     threeactions_abc: 'ThreeActions_ABC',
     fiveactions_onetofive: 'FiveActions_oneToFive',
     oneaction_notes: 'OneAction_notes'
-  }
+  },
+  itemValuesKeys: ['Zero', 'One', 'Two', 'Three', 'Four', 'Five']
 };
