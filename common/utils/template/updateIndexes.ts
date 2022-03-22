@@ -64,7 +64,7 @@ export function mergeIndexedRecords(
   const itemIds = [
     ...Object.keys(currentSrc),
     ...Object.keys(updatedSrc)
-  ].filter((id, i, arr) => arr.indexOf(id) === i); // unique
+  ].filter((id, i, arr) => arr.indexOf(id) === i && updatedSrc[id] !== null); // unique and filter removed item
 
   return itemIds.reduce((acc, id) => {
     if (updatedSrc[id] && typeof updatedSrc[id].index === 'number') {
