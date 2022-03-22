@@ -15,6 +15,8 @@ interface Props {
   forceVisible?: boolean;
   onUpdateTitle(id: string, title: string): void;
   onUpdateType(item: TemplateSectionModel | TemplateItemModel): void;
+  onSelectItem(itemId: string): void;
+  selectedItems: string[];
   errors: Record<string, string>;
   errorMessage: string;
 }
@@ -24,6 +26,8 @@ const SortableList: FunctionComponent<Props> = ({
   items,
   onUpdateTitle,
   onUpdateType,
+  onSelectItem,
+  selectedItems,
   errors,
   errorMessage
 }) => {
@@ -39,6 +43,8 @@ const SortableList: FunctionComponent<Props> = ({
           forceVisible={forceVisible}
           onUpdateTitle={(title: string) => onUpdateTitle(item.id, title)}
           onUpdateType={() => onUpdateType(item)}
+          onSelectItem={onSelectItem}
+          selectedItems={selectedItems}
           errors={errors}
           errorMessage={errorMessage}
         />

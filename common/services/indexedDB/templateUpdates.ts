@@ -34,49 +34,24 @@ const createRecord = async (
   }
 };
 
-const updateRecord = async (
-  id: string,
-  data: TemplateModal
-): Promise<TemplateModal> => {
-  try {
-    const result = await db.templateUpdates.put({ id, ...data });
-    if (!result) {
-      throw Error(`${PREFIX} updateRecord: failed to update record`);
-    }
-
-    return data;
-  } catch (err) {
-    throw Error(`${PREFIX} updateRecord: ${err}`);
-  }
-};
-
 // Updates existing record otherwise
 // creates a new record
 const upsertRecord = async (
   templateId: string,
   data: TemplateModal
 ): Promise<TemplateModal> => {
-  let current = null;
+  const updatesData = {
+    id: templateId,
+    ...data
+  } as TemplateModal;
   try {
-    current = await queryRecord({
-      id: templateId
-    });
-  } catch (err) {
-    throw Error(`${PREFIX} upsertRecord: query record failed: ${err}`);
-  }
-
-  if (current) {
-    try {
-      return updateRecord(current.id, data);
-    } catch (err) {
-      throw Error(`${PREFIX} upsertRecord: updateRecord record failed: ${err}`);
+    const result = await db.templateUpdates.put(updatesData);
+    if (!result) {
+      throw Error(`${PREFIX} upsertRecord: failed to update record`);
     }
-  }
-
-  try {
-    return createRecord(templateId, data);
+    return data;
   } catch (err) {
-    throw Error(`${PREFIX} upsertRecord: createRecord record failed: ${err}`);
+    throw Error(`${PREFIX} upsertRecord: ${err}`);
   }
 };
 // Delete record associated with
@@ -106,6 +81,5 @@ export default {
   createRecord,
   queryRecord,
   upsertRecord,
-  updateRecord,
   deleteRecord
 };

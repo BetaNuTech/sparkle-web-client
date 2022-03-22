@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 import { useMediaQuery } from 'react-responsive';
 import TemplateModel from '../../common/models/template';
@@ -74,7 +74,10 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updateNotesValue,
     updateScore,
     updateItemIndex,
-    removeItem
+    removeItem,
+    onSelectItems,
+    onDeleteItems,
+    selectedItems
   } = useUpdateTemplate(template.id, unpublishedUpdates, template);
 
   const { setErrorMessages, errors, stepsStatus, isValidForm } =
@@ -208,6 +211,9 @@ const TemplateEdit: FunctionComponent<Props> = ({
         onUpdateScore={onUpdateScore}
         updateItemIndex={updateItemIndex}
         removeItem={removeItem}
+        selectedItems={selectedItems}
+        onSelectItems={onSelectItems}
+        onDeleteItems={onDeleteItems}
       />
     </>
   );
