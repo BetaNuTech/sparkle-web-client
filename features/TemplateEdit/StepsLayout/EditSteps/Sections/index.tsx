@@ -101,6 +101,8 @@ const Sections: FunctionComponent<Props> = ({
           onUpdateTitle={updateSectionTitle}
           onUpdateType={onUpdateSectionType}
           forceVisible={forceVisible}
+          onSelectItem={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+          selectedItems={[]}
           errors={errors}
           errorMessage={errors.title}
         />

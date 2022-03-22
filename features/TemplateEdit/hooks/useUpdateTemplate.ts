@@ -32,6 +32,9 @@ interface useUpdateTemplateResult {
   updateScore(itemId: string, scoreKey: string, score: number): TemplateModal;
   updateItemIndex(itemId: string, index: number): TemplateModal;
   removeItem(itemId: string): TemplateModal;
+  onSelectItems(sectionId: string, itemId: string): void;
+  onDeleteItems(sectionId: string): void;
+  selectedItems: Record<string, string[]>;
 }
 
 export default function useUpdateTemplate(
@@ -46,6 +49,8 @@ export default function useUpdateTemplate(
   const [updates, setUpdates] = useState(
     previousUpdates || ({} as TemplateModal)
   );
+
+  const [selectedItems, setSelectedItems] = useState({});
 
   //
   // Update Management
@@ -81,7 +86,7 @@ export default function useUpdateTemplate(
     setUpdates({ ...updates });
 
     // Local database save
-    persistUnpublishedUpdates(updates);
+    persistUnpublishedUpdates({ ...updates });
 
     return latestUpdates;
   };
@@ -239,6 +244,33 @@ export default function useUpdateTemplate(
       })
     );
 
+  const onSelectItems = (sectionId: string, itemId: string) => {
+    const items = selectedItems[sectionId] || [];
+    const isRemoving = items.includes(itemId);
+    if (isRemoving) {
+      setSelectedItems({
+        ...selectedItems,
+        [sectionId]: [...items].filter((id) => id !== itemId)
+      });
+    } else {
+      setSelectedItems({
+        ...selectedItems,
+        [sectionId]: [...items, itemId]
+      });
+    }
+  };
+
+  const onDeleteItems = (sectionId: string) => {
+    const items = selectedItems[sectionId];
+    items.forEach((id: string) => {
+      removeItem(id);
+    });
+    setSelectedItems({
+      ...selectedItems,
+      [sectionId]: []
+    });
+  };
+
   return {
     updates,
     hasUpdates,
@@ -260,7 +292,10 @@ export default function useUpdateTemplate(
     updateNotesValue,
     updateScore,
     updateItemIndex,
-    removeItem
+    removeItem,
+    onSelectItems,
+    onDeleteItems,
+    selectedItems
   };
 }
 

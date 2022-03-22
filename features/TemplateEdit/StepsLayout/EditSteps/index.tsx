@@ -38,6 +38,9 @@ interface Props {
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
   updateItemIndex(itemId: string, index: number): void;
   removeItem(itemId: string): void;
+  selectedItems: Record<string, string[]>;
+  onSelectItems(sectionId: string, itemId: string): void;
+  onDeleteItems(sectionId: string): void;
 }
 
 const EditSteps: FunctionComponent<Props> = ({
@@ -66,7 +69,10 @@ const EditSteps: FunctionComponent<Props> = ({
   errors,
   onUpdateScore,
   updateItemIndex,
-  removeItem
+  removeItem,
+  selectedItems,
+  onSelectItems,
+  onDeleteItems
 }) => {
   switch (step) {
     case 'sections':
@@ -94,6 +100,9 @@ const EditSteps: FunctionComponent<Props> = ({
           errors={errors}
           updateItemIndex={updateItemIndex}
           removeItem={removeItem}
+          selectedItems={selectedItems}
+          onSelectItems={onSelectItems}
+          onDeleteItems={onDeleteItems}
         />
       );
     case 'items':

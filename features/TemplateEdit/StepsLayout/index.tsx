@@ -52,6 +52,9 @@ interface Props {
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
   updateItemIndex(itemId: string, index: number): void;
   removeItem(itemId: string): void;
+  selectedItems: Record<string, string[]>;
+  onSelectItems(sectionId: string, itemId: string): void;
+  onDeleteItems(sectionId: string): void;
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -88,7 +91,10 @@ const StepsLayout: FunctionComponent<Props> = ({
   isValidForm,
   onUpdateScore,
   updateItemIndex,
-  removeItem
+  removeItem,
+  selectedItems,
+  onSelectItems,
+  onDeleteItems
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -153,6 +159,9 @@ const StepsLayout: FunctionComponent<Props> = ({
                       onUpdateScore={onUpdateScore}
                       updateItemIndex={updateItemIndex}
                       removeItem={removeItem}
+                      selectedItems={selectedItems}
+                      onSelectItems={onSelectItems}
+                      onDeleteItems={onDeleteItems}
                     />
                   )}
                 </div>

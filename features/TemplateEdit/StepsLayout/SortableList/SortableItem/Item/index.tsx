@@ -23,6 +23,8 @@ interface Props {
   onUpdateTitle?(title: string): void;
   onUpdateType?(): void;
   style?: CSSProperties;
+  onSelectItem?(itemId: string): void;
+  selectedItems?: string[];
   errors?: Record<string, string>;
   errorMessage?: string;
 }
@@ -35,6 +37,8 @@ const Item = forwardRef<HTMLDivElement, Props>(
       onUpdateTitle,
       onUpdateType,
       style,
+      onSelectItem,
+      selectedItems,
       errors,
       errorMessage,
       ...props
@@ -70,7 +74,12 @@ const Item = forwardRef<HTMLDivElement, Props>(
         <div className={styles.main} ref={ref}>
           {isVisible && (
             <>
-              <input type="checkbox" className={styles.main__checkbox} />
+              <input
+                type="checkbox"
+                className={styles.main__checkbox}
+                onChange={() => onSelectItem(item.id)}
+                checked={selectedItems?.includes(item.id)}
+              />
               <div className={styles.content}>
                 {item.itemType === 'signature' ? (
                   <img src={`${basePath}/img/signature.png`} alt="signature" />
@@ -111,7 +120,9 @@ const Item = forwardRef<HTMLDivElement, Props>(
 
 Item.defaultProps = {
   onUpdateTitle: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
-  onUpdateType: () => {} // eslint-disable-line @typescript-eslint/no-empty-function
+  onUpdateType: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+  onSelectItem: () => {}, // eslint-disable-line @typescript-eslint/no-empty-function
+  selectedItems: []
 };
 
 export default Item;

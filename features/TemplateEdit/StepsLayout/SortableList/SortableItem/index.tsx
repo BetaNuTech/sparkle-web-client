@@ -9,6 +9,8 @@ interface Props {
   onUpdateTitle(title: string): void;
   onUpdateType(): void;
   id: string;
+  onSelectItem(itemId: string): void;
+  selectedItems: string[];
   errors: Record<string, string>;
   errorMessage: string;
 }
@@ -19,6 +21,8 @@ const SortableItem: FunctionComponent<Props> = ({
   forceVisible,
   onUpdateTitle,
   onUpdateType,
+  onSelectItem,
+  selectedItems,
   errors,
   errorMessage
 }) => {
@@ -46,6 +50,8 @@ const SortableItem: FunctionComponent<Props> = ({
       onUpdateType={onUpdateType}
       ref={setNodeRef}
       style={style}
+      onSelectItem={onSelectItem}
+      selectedItems={selectedItems}
       errors={errors}
       errorMessage={errorMessage}
       {...attributes}

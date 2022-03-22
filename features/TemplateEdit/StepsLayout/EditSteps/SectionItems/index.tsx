@@ -43,6 +43,9 @@ interface Props {
   errors: Record<string, string>;
   updateItemIndex(itemId: string, index: number): void;
   removeItem(itemId: string): void;
+  selectedItems: Record<string, string[]>;
+  onSelectItems(sectionId: string, itemId: string): void;
+  onDeleteItems(sectionId: string): void;
 }
 
 const SectionItems: FunctionComponent<Props> = ({
@@ -54,6 +57,9 @@ const SectionItems: FunctionComponent<Props> = ({
   updateItemTitle,
   updateItemIndex,
   removeItem,
+  selectedItems,
+  onSelectItems,
+  onDeleteItems,
   errors
 }) => {
   const [activeId, setActiveId] = useState(null);
@@ -114,6 +120,7 @@ const SectionItems: FunctionComponent<Props> = ({
 
       {sortedSections.map((section) => {
         const sectionItems = templateSectionItems.get(section.id) || [];
+        const selectedSectionItems = selectedItems[section.id] || [];
         return (
           <div key={section.id}>
             <header className={stepsStyles.sectionHeader}>
@@ -129,7 +136,11 @@ const SectionItems: FunctionComponent<Props> = ({
                   <DiamondIcon className={stepsStyles.sectionHeader__icon} />
                 )}
               </span>
-              <button className={stepsStyles.deleteAction} disabled>
+              <button
+                className={stepsStyles.deleteAction}
+                disabled={!selectedSectionItems.length}
+                onClick={() => onDeleteItems(section.id)}
+              >
                 <TrashIcon />
                 Delete
               </button>
@@ -139,6 +150,8 @@ const SectionItems: FunctionComponent<Props> = ({
               onUpdateTitle={updateItemTitle}
               onUpdateType={onUpdateItemType}
               forceVisible={forceVisible}
+              onSelectItem={(itemId) => onSelectItems(section.id, itemId)}
+              selectedItems={selectedSectionItems}
               errors={errors}
               errorMessage={errors.itemTitle}
             />
