@@ -25,31 +25,36 @@ import Droppable from '../../SortableList/Droppable';
 import Item from '../../SortableList/SortableItem/Item';
 
 interface Props {
-  sortedSections: TemplateSectionModel[];
+  sections: TemplateSectionModel[];
   forceVisible?: boolean;
   addSection(): void;
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
+  onSelectSections(sectionId: string): void;
+  selectedSections: string[];
+  onDeleteSections(sectionIds: string[]): void;
   errors: Record<string, string>;
   updateSectionIndex(sectionId: string, index: number): void;
-  removeSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
 }
 
 const Sections: FunctionComponent<Props> = ({
   forceVisible,
-  sortedSections,
+  sections,
   addSection,
   updateSectionTitle,
   onUpdateSectionType,
   updateSectionIndex,
-  removeSection,
+  onRemoveSection,
+  onSelectSections,
+  selectedSections,
+  onDeleteSections,
   errors
 }) => {
   const [activeId, setActiveId] = useState(null);
   const activeItem = useMemo(
-    () =>
-      sortedSections.find((item: TemplateSectionModel) => item.id === activeId),
-    [activeId, sortedSections]
+    () => sections.find((item: TemplateSectionModel) => item.id === activeId),
+    [activeId, sections]
   );
 
   const sensors = useSensors(
@@ -64,9 +69,9 @@ const Sections: FunctionComponent<Props> = ({
     const { id } = active;
 
     if (over.id === 'section-remove') {
-      removeSection(id);
+      onRemoveSection(id);
     } else {
-      const updatedIndex = sortedSections.findIndex(
+      const updatedIndex = sections.findIndex(
         (section) => section.id === over.id
       );
       updateSectionIndex(id, updatedIndex);
@@ -91,18 +96,22 @@ const Sections: FunctionComponent<Props> = ({
       <section>
         <header className={stepsStyles.header}>
           <h3 className={stepsStyles.header__title}>Sections</h3>
-          <button className={stepsStyles.deleteAction} disabled>
+          <button
+            className={stepsStyles.deleteAction}
+            disabled={!selectedSections.length}
+            onClick={() => onDeleteSections(selectedSections)}
+          >
             <TrashIcon />
             Delete
           </button>
         </header>
         <SortableList
-          items={sortedSections}
+          items={sections}
           onUpdateTitle={updateSectionTitle}
           onUpdateType={onUpdateSectionType}
           forceVisible={forceVisible}
-          onSelectItem={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
-          selectedItems={[]}
+          onSelectItem={onSelectSections}
+          selectedItems={selectedSections}
           errors={errors}
           errorMessage={errors.title}
         />

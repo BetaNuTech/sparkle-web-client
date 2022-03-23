@@ -104,8 +104,7 @@ const setRemovedSection = (
   const currentSections = deepClone(currentTemplate.sections || {});
   const previousSections = deepClone(updatedTemplate.sections || {});
   const mergedIndexes = mergeIndexedRecords(currentSections, previousSections);
-  const removeTargetIndex = mergedIndexes[targetId].index;
-
+  const removeTargetIndex = mergedIndexes[targetId]?.index;
   // Item delete update
   if (currentSections[targetId]) {
     result.sections[targetId] = null; // publish removal

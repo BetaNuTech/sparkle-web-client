@@ -34,7 +34,7 @@ const inputTypes = [
   { label: 'Signature', value: 'signature' }
 ];
 interface Props {
-  sortedSections: TemplateSectionModel[];
+  sections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
   addItem(sectionId: string, itemType: string): void;
@@ -49,7 +49,7 @@ interface Props {
 }
 
 const SectionItems: FunctionComponent<Props> = ({
-  sortedSections,
+  sections,
   templateSectionItems,
   forceVisible,
   addItem,
@@ -118,7 +118,7 @@ const SectionItems: FunctionComponent<Props> = ({
         <h3 className={stepsStyles.header__title}>Items</h3>
       </header>
 
-      {sortedSections.map((section) => {
+      {sections.map((section) => {
         const sectionItems = templateSectionItems.get(section.id) || [];
         const selectedSectionItems = selectedItems[section.id] || [];
         return (
