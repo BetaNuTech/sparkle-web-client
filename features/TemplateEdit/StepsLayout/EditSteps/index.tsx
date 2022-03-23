@@ -15,7 +15,7 @@ interface Props {
   templateCategories: TemplateCategoryModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
-  sortedSections: TemplateSectionModel[];
+  sections: TemplateSectionModel[];
   updateName(name: string): void;
   updateDescription(description: string): void;
   updateCategory(category: string): void;
@@ -27,13 +27,16 @@ interface Props {
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
   updateSectionIndex(sectionId: string, index: number): void;
-  removeSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
   addItem(sectionId: string, itemType: string): void;
   onUpdateItemType(item: TemplateItemModel): void;
   onChangeMainInputType(item: TemplateItemModel): void;
   updateItemTitle(itemId: string, title: string): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
+  onSelectSections(sectionId: string): void;
+  selectedSections: string[];
+  onDeleteSections(sectionIds: string[]): void;
   errors: Record<string, string>;
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
   updateItemIndex(itemId: string, index: number): void;
@@ -48,7 +51,7 @@ const EditSteps: FunctionComponent<Props> = ({
   template,
   templateCategories,
   templateSectionItems,
-  sortedSections,
+  sections,
   forceVisible,
   updateName,
   updateDescription,
@@ -59,13 +62,16 @@ const EditSteps: FunctionComponent<Props> = ({
   updateSectionTitle,
   updateSectionIndex,
   onUpdateSectionType,
-  removeSection,
+  onRemoveSection,
   addItem,
   onUpdateItemType,
   onChangeMainInputType,
   updateItemTitle,
   onUpdatePhotosValue,
   onUpdateNotesValue,
+  onSelectSections,
+  selectedSections,
+  onDeleteSections,
   errors,
   onUpdateScore,
   updateItemIndex,
@@ -80,18 +86,21 @@ const EditSteps: FunctionComponent<Props> = ({
         <Sections
           forceVisible={forceVisible}
           addSection={addSection}
-          sortedSections={sortedSections}
+          sections={sections}
           updateSectionTitle={updateSectionTitle}
           onUpdateSectionType={onUpdateSectionType}
+          onSelectSections={onSelectSections}
+          selectedSections={selectedSections}
+          onDeleteSections={onDeleteSections}
           errors={errors}
           updateSectionIndex={updateSectionIndex}
-          removeSection={removeSection}
+          onRemoveSection={onRemoveSection}
         />
       );
     case 'section-items':
       return (
         <SectionItems
-          sortedSections={sortedSections}
+          sections={sections}
           templateSectionItems={templateSectionItems}
           forceVisible={forceVisible}
           addItem={addItem}
@@ -108,7 +117,7 @@ const EditSteps: FunctionComponent<Props> = ({
     case 'items':
       return (
         <Items
-          sortedSections={sortedSections}
+          sections={sections}
           templateSectionItems={templateSectionItems}
           forceVisible={forceVisible}
           onChangeMainInputType={onChangeMainInputType}
@@ -119,7 +128,7 @@ const EditSteps: FunctionComponent<Props> = ({
     case 'item-values':
       return (
         <ItemValues
-          sortedSections={sortedSections}
+          sections={sections}
           templateSectionItems={templateSectionItems}
           forceVisible={forceVisible}
           onUpdateScore={onUpdateScore}

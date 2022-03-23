@@ -35,6 +35,15 @@ interface useUpdateTemplateResult {
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
   selectedItems: Record<string, string[]>;
+  selectedSections: string[];
+  onSelectSections(sectionId: string): void;
+  setSelectedSections(selections: string[]): void;
+  deletedSection: string;
+  setDeletedSection(sectionId: string): void;
+  isVisibleSectionDeletePrompt: boolean;
+  setIsVisibleSectionDeletePrompt(isVisible: boolean): void;
+  onConfirmDeleteSections(): void;
+  onCancelDeleteSection(): void;
 }
 
 export default function useUpdateTemplate(
@@ -51,6 +60,10 @@ export default function useUpdateTemplate(
   );
 
   const [selectedItems, setSelectedItems] = useState({});
+  const [selectedSections, setSelectedSections] = useState([]);
+  const [deletedSection, setDeletedSection] = useState(null);
+  const [isVisibleSectionDeletePrompt, setIsVisibleSectionDeletePrompt] =
+    useState(false);
 
   //
   // Update Management
@@ -86,7 +99,7 @@ export default function useUpdateTemplate(
     setUpdates({ ...updates });
 
     // Local database save
-    persistUnpublishedUpdates({ ...updates });
+    persistUnpublishedUpdates(updates);
 
     return latestUpdates;
   };
@@ -244,6 +257,35 @@ export default function useUpdateTemplate(
       })
     );
 
+  const onSelectSections = (sectionId: string) => {
+    const isRemoving = selectedSections.includes(sectionId);
+    if (isRemoving) {
+      setSelectedSections(
+        [...selectedSections].filter((id) => id !== sectionId)
+      );
+    } else {
+      setSelectedSections([...selectedSections, sectionId]);
+    }
+  };
+
+  const onConfirmDeleteSections = () => {
+    if (deletedSection) {
+      removeSection(deletedSection);
+      setDeletedSection(null);
+    } else {
+      selectedSections.forEach((id) => {
+        removeSection(id);
+        setSelectedSections([]);
+      });
+    }
+    setIsVisibleSectionDeletePrompt(false);
+  };
+
+  const onCancelDeleteSection = () => {
+    setDeletedSection(null);
+    setIsVisibleSectionDeletePrompt(false);
+  };
+
   const onSelectItems = (sectionId: string, itemId: string) => {
     const items = selectedItems[sectionId] || [];
     const isRemoving = items.includes(itemId);
@@ -295,7 +337,16 @@ export default function useUpdateTemplate(
     removeItem,
     onSelectItems,
     onDeleteItems,
-    selectedItems
+    selectedItems,
+    selectedSections,
+    onSelectSections,
+    setSelectedSections,
+    deletedSection,
+    setDeletedSection,
+    isVisibleSectionDeletePrompt,
+    setIsVisibleSectionDeletePrompt,
+    onConfirmDeleteSections,
+    onCancelDeleteSection
   };
 }
 

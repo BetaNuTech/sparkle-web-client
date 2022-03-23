@@ -1,4 +1,4 @@
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 
 import { useMediaQuery } from 'react-responsive';
 import TemplateModel from '../../common/models/template';
@@ -14,6 +14,7 @@ import useTemplateSectionItems from './hooks/useTemplateSectionItems';
 import useUpdateTemplate from './hooks/useUpdateTemplate';
 import deepmerge from '../../common/utils/deepmerge';
 import inspectionConfig from '../../config/inspections';
+import SectionDeletePrompt from './SectionDeletePrompt';
 import useValidateTemplate from './hooks/useValidateTemplate';
 
 const TEMPLATE_TYPES = inspectionConfig.inspectionTemplateTypes;
@@ -65,7 +66,6 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updateSectionTitle,
     updateSectionType,
     updateSectionIndex,
-    removeSection,
     addItem,
     updateItemType,
     updateItemMainInputType,
@@ -77,7 +77,15 @@ const TemplateEdit: FunctionComponent<Props> = ({
     removeItem,
     onSelectItems,
     onDeleteItems,
-    selectedItems
+    selectedItems,
+    selectedSections,
+    onSelectSections,
+    deletedSection,
+    setDeletedSection,
+    isVisibleSectionDeletePrompt,
+    setIsVisibleSectionDeletePrompt,
+    onConfirmDeleteSections,
+    onCancelDeleteSection
   } = useUpdateTemplate(template.id, unpublishedUpdates, template);
 
   const { setErrorMessages, errors, stepsStatus, isValidForm } =
@@ -92,6 +100,10 @@ const TemplateEdit: FunctionComponent<Props> = ({
     .filter((id) => sections[id])
     .map((id) => ({ id, ...sections[id] }))
     .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
+
+  const filteredSections = sortedSections.filter(
+    (section) => section.id !== deletedSection
+  );
 
   const updatedTemplate = { ...template, ...updates };
 
@@ -133,6 +145,32 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updatePhotosValue(item.id, !item.photos);
   };
 
+  const onUpdateScore = (
+    itemId: string,
+    selectedInput: number,
+    score: number
+  ) => {
+    updateScore(
+      itemId,
+      `mainInput${ITEM_VALUES_KEYS[selectedInput]}Value`,
+      score
+    );
+  };
+
+  const onDeleteSections = (sectionIds: string[]) => {
+    const hasItems = sectionIds.some((id) => templateSectionItems.get(id));
+    if (hasItems) {
+      setIsVisibleSectionDeletePrompt(true);
+    } else {
+      onConfirmDeleteSections();
+    }
+  };
+
+  const onRemoveSection = (sectionId: string) => {
+    setDeletedSection(sectionId);
+    onDeleteSections([sectionId]);
+  };
+
   const isDisableNext = stepsStatus[steps[currentStepIndex]] === 'invalid';
 
   // check validation for steps
@@ -147,18 +185,6 @@ const TemplateEdit: FunctionComponent<Props> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex]);
-
-  const onUpdateScore = (
-    itemId: string,
-    selectedInput: number,
-    score: number
-  ) => {
-    updateScore(
-      itemId,
-      `mainInput${ITEM_VALUES_KEYS[selectedInput]}Value`,
-      score
-    );
-  };
 
   return (
     <>
@@ -185,7 +211,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         template={updatedTemplate}
         templateCategories={templateCategories}
         templateSectionItems={templateSectionItems}
-        sortedSections={sortedSections}
+        sections={filteredSections}
         forceVisible={forceVisible}
         updateName={updateName}
         updateDescription={updateDescription}
@@ -198,13 +224,16 @@ const TemplateEdit: FunctionComponent<Props> = ({
         updateSectionTitle={updateSectionTitle}
         onUpdateSectionType={onUpdateSectionType}
         updateSectionIndex={updateSectionIndex}
-        removeSection={removeSection}
+        onRemoveSection={onRemoveSection}
         addItem={addItem}
         onUpdateItemType={onUpdateItemType}
         onChangeMainInputType={onChangeMainInputType}
         updateItemTitle={updateItemTitle}
         onUpdateNotesValue={onUpdateNotesValue}
         onUpdatePhotosValue={onUpdatePhotosValue}
+        onSelectSections={onSelectSections}
+        selectedSections={selectedSections}
+        onDeleteSections={onDeleteSections}
         isDisableNext={isDisableNext}
         errors={errors}
         isValidForm={isValidForm}
@@ -214,6 +243,15 @@ const TemplateEdit: FunctionComponent<Props> = ({
         selectedItems={selectedItems}
         onSelectItems={onSelectItems}
         onDeleteItems={onDeleteItems}
+      />
+      <SectionDeletePrompt
+        isVisible={isVisibleSectionDeletePrompt}
+        onClose={onCancelDeleteSection}
+        onConfirm={onConfirmDeleteSections}
+        templateSectionItems={templateSectionItems}
+        sortedSections={sortedSections}
+        selectedSections={selectedSections}
+        deletedSection={deletedSection}
       />
     </>
   );

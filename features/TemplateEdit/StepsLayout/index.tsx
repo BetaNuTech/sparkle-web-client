@@ -27,7 +27,7 @@ interface Props {
   templateCategories: TemplateCategoryModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
-  sortedSections: TemplateSectionModel[];
+  sections: TemplateSectionModel[];
   updateName(name: string): void;
   updateDescription(description: string): void;
   updateCategory(category: string): void;
@@ -39,13 +39,16 @@ interface Props {
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
   updateSectionIndex(sectionId: string, index: number): void;
-  removeSection(sectionId: string): void;
+  onRemoveSection(sectionId: string): void;
   addItem(sectionId: string, itemType: string): void;
   onUpdateItemType(item: TemplateItemModel): void;
   onChangeMainInputType(item: TemplateItemModel): void;
   updateItemTitle(itemId: string, title: string): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
+  onSelectSections(sectionId: string): void;
+  selectedSections: string[];
+  onDeleteSections(sectionIds: string[]): void;
   isDisableNext: boolean;
   errors: Record<string, string>;
   isValidForm: boolean;
@@ -68,7 +71,7 @@ const StepsLayout: FunctionComponent<Props> = ({
   templateCategories,
   template,
   templateSectionItems,
-  sortedSections,
+  sections,
   forceVisible,
   updateName,
   updateDescription,
@@ -79,13 +82,16 @@ const StepsLayout: FunctionComponent<Props> = ({
   updateSectionTitle,
   onUpdateSectionType,
   updateSectionIndex,
-  removeSection,
+  onRemoveSection,
   addItem,
   onUpdateItemType,
   onChangeMainInputType,
   updateItemTitle,
   onUpdatePhotosValue,
   onUpdateNotesValue,
+  onSelectSections,
+  selectedSections,
+  onDeleteSections,
   isDisableNext,
   errors,
   isValidForm,
@@ -136,7 +142,7 @@ const StepsLayout: FunctionComponent<Props> = ({
                       template={template}
                       templateSectionItems={templateSectionItems}
                       forceVisible={forceVisible}
-                      sortedSections={sortedSections}
+                      sections={sections}
                       updateName={updateName}
                       updateDescription={updateDescription}
                       updateCategory={updateCategory}
@@ -147,7 +153,7 @@ const StepsLayout: FunctionComponent<Props> = ({
                       addSection={addSection}
                       updateSectionTitle={updateSectionTitle}
                       onUpdateSectionType={onUpdateSectionType}
-                      removeSection={removeSection}
+                      onRemoveSection={onRemoveSection}
                       addItem={addItem}
                       onUpdateItemType={onUpdateItemType}
                       onChangeMainInputType={onChangeMainInputType}
@@ -155,6 +161,9 @@ const StepsLayout: FunctionComponent<Props> = ({
                       updateSectionIndex={updateSectionIndex}
                       onUpdatePhotosValue={onUpdatePhotosValue}
                       onUpdateNotesValue={onUpdateNotesValue}
+                      onSelectSections={onSelectSections}
+                      selectedSections={selectedSections}
+                      onDeleteSections={onDeleteSections}
                       errors={errors}
                       onUpdateScore={onUpdateScore}
                       updateItemIndex={updateItemIndex}

@@ -48,10 +48,10 @@ const SortableItem: FunctionComponent<Props> = ({
       forceVisible={forceVisible}
       onUpdateTitle={onUpdateTitle}
       onUpdateType={onUpdateType}
-      ref={setNodeRef}
-      style={style}
       onSelectItem={onSelectItem}
       selectedItems={selectedItems}
+      ref={setNodeRef}
+      style={style}
       errors={errors}
       errorMessage={errorMessage}
       {...attributes}

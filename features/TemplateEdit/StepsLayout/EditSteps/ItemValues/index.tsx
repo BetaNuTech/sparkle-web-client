@@ -16,14 +16,14 @@ const itemValueKeys = [
 ];
 
 interface Props {
-  sortedSections: TemplateSectionModel[];
+  sections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
 }
 
 const ItemValues: FunctionComponent<Props> = ({
-  sortedSections,
+  sections,
   templateSectionItems,
   forceVisible,
   onUpdateScore
@@ -76,7 +76,7 @@ const ItemValues: FunctionComponent<Props> = ({
         ))}
       </select>
 
-      {sortedSections.map((section) => {
+      {sections.map((section) => {
         const sectionItems = templateSectionItems.get(section.id) || [];
         return (
           <div key={section.id}>

@@ -8,7 +8,7 @@ import deepClone from '../../../../../__tests__/helpers/deepClone';
 import ItemInputs from '../../ItemInputs';
 
 interface Props {
-  sortedSections: TemplateSectionModel[];
+  sections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
   forceVisible?: boolean;
   onChangeMainInputType(item: TemplateItemModel): void;
@@ -17,7 +17,7 @@ interface Props {
 }
 
 const Items: FunctionComponent<Props> = ({
-  sortedSections,
+  sections,
   templateSectionItems,
   forceVisible,
   onChangeMainInputType,
@@ -29,7 +29,7 @@ const Items: FunctionComponent<Props> = ({
       <h3 className={stepsStyles.header__title}>Item Elements</h3>
     </header>
 
-    {sortedSections.map((section) => {
+    {sections.map((section) => {
       const sectionItems = templateSectionItems.get(section.id) || [];
       return (
         <div key={section.id}>
