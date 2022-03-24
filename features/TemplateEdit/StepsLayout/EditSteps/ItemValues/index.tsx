@@ -68,6 +68,7 @@ const ItemValues: FunctionComponent<Props> = ({
         style={selectStyle}
         value={selectedItemInputValue || 0}
         onChange={onChangeValue}
+        data-testid="template-edit-item-value-select"
       >
         {utilArray.range(0, 100).map((value) => (
           <option key={value} value={value}>

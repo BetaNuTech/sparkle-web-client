@@ -51,18 +51,19 @@ const Item = forwardRef<HTMLDivElement, Props>(
     const ref = useRef(null);
 
     const { isVisible } = useVisibility(ref, {}, forceVisible);
+    const itemItype = item?.section_type || item.itemType;
 
     let icon = <DiamondIcon className={styles.controls__icon} />;
-    if (item?.section_type === 'multi') {
+    if (itemItype === 'multi') {
       icon = <DiamondLayersIcon className={styles.controls__icon} />;
     }
-    if (item?.itemType === 'signature') {
+    if (itemItype === 'signature') {
       icon = <QuillIcon className={styles.controls__icon} />;
     }
-    if (item?.itemType === 'text_input') {
+    if (itemItype === 'text_input') {
       icon = <TextInputIcon className={styles.controls__icon} />;
     }
-    if (item?.itemType === 'main') {
+    if (itemItype === 'main') {
       icon = <InspectionItemIcon className={styles.controls__icon} />;
     }
 
@@ -70,7 +71,13 @@ const Item = forwardRef<HTMLDivElement, Props>(
       item.itemType !== 'signature' && errorMessage && !item.title;
 
     return (
-      <div style={style} className={styles.container} ref={nodeRef}>
+      <div
+        style={style}
+        className={styles.container}
+        ref={nodeRef}
+        data-testid="template-edit-item"
+        data-item-type={itemItype}
+      >
         <div className={styles.main} ref={ref}>
           {isVisible && (
             <>
@@ -79,6 +86,7 @@ const Item = forwardRef<HTMLDivElement, Props>(
                 className={styles.main__checkbox}
                 onChange={() => onSelectItem(item.id)}
                 checked={selectedItems?.includes(item.id)}
+                data-testid="template-edit-item-checkbox"
               />
               <div className={styles.content}>
                 {item.itemType === 'signature' ? (

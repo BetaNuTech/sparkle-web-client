@@ -37,6 +37,7 @@ const AddItemAction: FunctionComponent<AddItemActionProps> = ({
           key={type.value}
           type="button"
           onClick={() => addItem(sectionId, type.value)}
+          data-testid={`template-edit-add-item-${type.value}`}
         >
           {getIcon(type.value)}
           {type.label}

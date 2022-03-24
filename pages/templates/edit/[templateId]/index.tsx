@@ -77,6 +77,7 @@ const Page: React.FC = (): ReactElement => {
           unpublishedUpdates={unpublishedUpdates}
           templateCategories={templateCategories}
           user={user}
+          sendNotification={sendNotification}
         />
       ) : (
         <LoadingHud />

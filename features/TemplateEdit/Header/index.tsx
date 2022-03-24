@@ -17,6 +17,9 @@ interface Props {
   templateName: string;
   isDisableNext: boolean;
   isValidForm: boolean;
+  onSave(): void;
+  isLoading: boolean;
+  hasUpdates: boolean;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -29,7 +32,10 @@ const Header: FunctionComponent<Props> = ({
   isLastStep,
   templateName,
   isDisableNext,
-  isValidForm
+  isValidForm,
+  onSave,
+  isLoading,
+  hasUpdates
 }) => {
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -38,7 +44,8 @@ const Header: FunctionComponent<Props> = ({
         <button
           className={headStyle.header__button}
           data-testid="templateEdit-header-save"
-          disabled={!isValidForm}
+          disabled={!isValidForm || isLoading || !hasUpdates}
+          onClick={onSave}
         >
           Save
         </button>
@@ -47,7 +54,7 @@ const Header: FunctionComponent<Props> = ({
           className={headStyle.header__button}
           onClick={goToNextStep}
           data-testid="templateEdit-header-next"
-          disabled={isDisableNext}
+          disabled={isDisableNext || isLoading}
         >
           Next
         </button>
@@ -64,6 +71,7 @@ const Header: FunctionComponent<Props> = ({
           featureEnabled={features.supportBetaTemplatesList}
           className={headStyle.header__button}
           data-testid="templateEdit-header-cancel"
+          disabled={isLoading}
         >
           Cancel
         </LinkFeature>
@@ -72,6 +80,7 @@ const Header: FunctionComponent<Props> = ({
           className={headStyle.header__button}
           onClick={goToPrevStep}
           data-testid="templateEdit-header-back"
+          disabled={isLoading}
         >
           Back
         </button>

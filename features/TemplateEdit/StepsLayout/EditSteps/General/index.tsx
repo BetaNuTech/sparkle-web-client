@@ -35,6 +35,7 @@ const General: FunctionComponent<Props> = ({
       placeholder="Title"
       defaultValue={template.name}
       onChange={(e) => updateName(e.target.value)}
+      data-testid="template-edit-name"
     />
     <ErrorLabel errors={errors} message={errors.name} />
     <textarea

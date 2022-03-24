@@ -44,7 +44,10 @@ const SectionDeletePrompt: FunctionComponent<Props> = ({
         </h5>
       </header>
 
-      <div className={styles.modalPrompt__main}>
+      <div
+        className={styles.modalPrompt__main}
+        data-testid="section-delete-prompt"
+      >
         <footer className={styles.modalPrompt__main__footer}>
           <button
             className={clsx('button', 'gray', styles.modal__mainFooterbutton)}
