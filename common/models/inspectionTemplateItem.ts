@@ -29,6 +29,7 @@ interface inspectionTemplateItem {
   adminEdits?: Record<string, adminEditModel>;
   photosData?: Record<string, photoDataModel>;
   version?: number;
+  clone?:string;
 }
 
 export default inspectionTemplateItem;

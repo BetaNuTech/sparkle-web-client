@@ -10,7 +10,6 @@ import ItemInputs from '../../ItemInputs';
 interface Props {
   sections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
-  forceVisible?: boolean;
   onChangeMainInputType(item: TemplateItemModel): void;
   onUpdatePhotosValue(item: TemplateItemModel): void;
   onUpdateNotesValue(item: TemplateItemModel): void;
@@ -19,7 +18,6 @@ interface Props {
 const Items: FunctionComponent<Props> = ({
   sections,
   templateSectionItems,
-  forceVisible,
   onChangeMainInputType,
   onUpdatePhotosValue,
   onUpdateNotesValue
@@ -60,7 +58,6 @@ const Items: FunctionComponent<Props> = ({
                 <ItemInputs
                   item={templateItem}
                   key={templateItem.id}
-                  forceVisible={forceVisible}
                   onMouseDownMainInput={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
                   onClickItemInput={() => onChangeMainInputType(item)}
                   onMouseDownNotes={() => onUpdateNotesValue(item)}

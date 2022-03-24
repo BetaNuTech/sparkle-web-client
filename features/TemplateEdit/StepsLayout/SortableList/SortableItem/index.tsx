@@ -5,7 +5,6 @@ import Item from './Item';
 
 interface Props {
   item: any;
-  forceVisible?: boolean;
   onUpdateTitle(title: string): void;
   onUpdateType(): void;
   id: string;
@@ -18,7 +17,6 @@ interface Props {
 const SortableItem: FunctionComponent<Props> = ({
   id,
   item,
-  forceVisible,
   onUpdateTitle,
   onUpdateType,
   onSelectItem,
@@ -45,7 +43,6 @@ const SortableItem: FunctionComponent<Props> = ({
   return (
     <Item
       item={item}
-      forceVisible={forceVisible}
       onUpdateTitle={onUpdateTitle}
       onUpdateType={onUpdateType}
       onSelectItem={onSelectItem}

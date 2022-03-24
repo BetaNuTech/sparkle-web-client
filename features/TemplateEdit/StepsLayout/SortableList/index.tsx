@@ -12,7 +12,6 @@ import SortableItem from './SortableItem';
 
 interface Props {
   items: TemplateSectionModel[] | TemplateItemModel[];
-  forceVisible?: boolean;
   onUpdateTitle(id: string, title: string): void;
   onUpdateType(item: TemplateSectionModel | TemplateItemModel): void;
   onSelectItem(itemId: string): void;
@@ -22,7 +21,6 @@ interface Props {
 }
 
 const SortableList: FunctionComponent<Props> = ({
-  forceVisible,
   items,
   onUpdateTitle,
   onUpdateType,
@@ -40,7 +38,6 @@ const SortableList: FunctionComponent<Props> = ({
           key={item.id}
           id={item.id}
           item={item}
-          forceVisible={forceVisible}
           onUpdateTitle={(title: string) => onUpdateTitle(item.id, title)}
           onUpdateType={() => onUpdateType(item)}
           onSelectItem={onSelectItem}

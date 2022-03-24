@@ -51,11 +51,11 @@ interface useUpdateTemplateResult {
   selectedSections: string[];
   onSelectSections(sectionId: string): void;
   setSelectedSections(selections: string[]): void;
-  deletedSection: string;
-  setDeletedSection(sectionId: string): void;
+  deletingSection: string;
+  setDeletingSection(sectionId: string): void;
   isVisibleSectionDeletePrompt: boolean;
   setIsVisibleSectionDeletePrompt(isVisible: boolean): void;
-  onConfirmDeleteSections(): void;
+  onConfirmDeleteSections(targetIds: string[]): void;
   onCancelDeleteSection(): void;
   updateTemplate(): void;
   isLoading: boolean;
@@ -77,7 +77,7 @@ export default function useUpdateTemplate(
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
   const [selectedSections, setSelectedSections] = useState([]);
-  const [deletedSection, setDeletedSection] = useState(null);
+  const [deletingSection, setDeletingSection] = useState(null);
   const [isVisibleSectionDeletePrompt, setIsVisibleSectionDeletePrompt] =
     useState(false);
 
@@ -284,21 +284,21 @@ export default function useUpdateTemplate(
     }
   };
 
-  const onConfirmDeleteSections = () => {
-    if (deletedSection) {
-      removeSection(deletedSection);
-      setDeletedSection(null);
-    } else {
-      selectedSections.forEach((id) => {
-        removeSection(id);
-        setSelectedSections([]);
-      });
-    }
+  const onConfirmDeleteSections = (targetIds: string[]) => {
+    targetIds.forEach((id) => {
+      removeSection(id);
+    });
+
+    setDeletingSection(null); // Clear single delete section
+    setSelectedSections([
+      // Remove all deleted sections from selections
+      ...selectedSections.filter((id) => targetIds.includes(id) === false)
+    ]);
     setIsVisibleSectionDeletePrompt(false);
   };
 
   const onCancelDeleteSection = () => {
-    setDeletedSection(null);
+    setDeletingSection(null);
     setIsVisibleSectionDeletePrompt(false);
   };
 
@@ -398,8 +398,8 @@ export default function useUpdateTemplate(
     selectedSections,
     onSelectSections,
     setSelectedSections,
-    deletedSection,
-    setDeletedSection,
+    deletingSection,
+    setDeletingSection,
     isVisibleSectionDeletePrompt,
     setIsVisibleSectionDeletePrompt,
     onConfirmDeleteSections,

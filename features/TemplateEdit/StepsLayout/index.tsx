@@ -26,7 +26,6 @@ interface Props {
   template: TemplateModel;
   templateCategories: TemplateCategoryModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
-  forceVisible?: boolean;
   sections: TemplateSectionModel[];
   updateName(name: string): void;
   updateDescription(description: string): void;
@@ -76,7 +75,6 @@ const StepsLayout: FunctionComponent<Props> = ({
   template,
   templateSectionItems,
   sections,
-  forceVisible,
   updateName,
   updateDescription,
   updateCategory,
@@ -138,6 +136,8 @@ const StepsLayout: FunctionComponent<Props> = ({
             allowSlideNext={swiperInstance?.activeIndex !== steps.length - 1}
             initialSlide={initialSlide || 0}
             preventClicks={false}
+            noSwiping={true} // eslint-disable-line react/jsx-boolean-value
+            noSwipingClass="template-edit-drag-handle"
           >
             {steps.map((step, index) => (
               <SwiperSlide key={step}>
@@ -149,7 +149,6 @@ const StepsLayout: FunctionComponent<Props> = ({
                       templateCategories={templateCategories}
                       template={template}
                       templateSectionItems={templateSectionItems}
-                      forceVisible={forceVisible}
                       sections={sections}
                       updateName={updateName}
                       updateDescription={updateDescription}

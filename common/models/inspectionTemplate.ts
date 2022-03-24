@@ -9,6 +9,7 @@ interface inspectionTemplate {
   trackDeficientItems: boolean;
   items?: Record<string, inspectionTemplateItemModel>;
   sections?: Record<string, inspectionTemplateSectionModel>;
+  clone?:string;
 }
 
 export default inspectionTemplate;

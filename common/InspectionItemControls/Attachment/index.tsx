@@ -16,6 +16,7 @@ interface Props {
   canEdit: boolean;
   onMouseDownNotes?(): void;
   onMouseDownAttachment?(): void;
+  isUpdatingTemplate?: boolean;
 }
 
 const Attachment: FunctionComponent<Props> = ({
@@ -29,7 +30,8 @@ const Attachment: FunctionComponent<Props> = ({
   isDeficient,
   canEdit,
   onMouseDownNotes,
-  onMouseDownAttachment
+  onMouseDownAttachment,
+  isUpdatingTemplate
 }) => {
   const isSelectedNotes = Boolean(inspectorNotes);
   const isSelectedPhotos =
@@ -78,6 +80,7 @@ const Attachment: FunctionComponent<Props> = ({
         canEdit={canEdit}
         isRequired={isSyncronizedNoteRequired}
         onMouseDown={onMouseDownNotes}
+        isUpdatingTemplate={isUpdatingTemplate}
       />
       <Photos
         enabled={photos}
@@ -86,6 +89,7 @@ const Attachment: FunctionComponent<Props> = ({
         canEdit={canEdit}
         isRequired={isSyncronizedPhotoRequired}
         onMouseDown={onMouseDownAttachment}
+        isUpdatingTemplate={isUpdatingTemplate}
       />
     </ul>
   );
@@ -99,7 +103,8 @@ Attachment.defaultProps = {
   onClickAttachmentNotes: () => {}, // eslint-disable-line
   onMouseDownNotes: () => {}, // eslint-disable-line
   onMouseDownAttachment: () => {}, // eslint-disable-line
-  unPublishedPhotosDataCount: 0
+  unPublishedPhotosDataCount: 0,
+  isUpdatingTemplate: false
 };
 
 export default Attachment;

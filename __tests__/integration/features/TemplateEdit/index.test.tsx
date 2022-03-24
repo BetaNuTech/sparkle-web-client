@@ -88,7 +88,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: { name: 'Template 1' } as TemplateModel
     };
     render(
@@ -118,7 +117,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel
     };
     render(
@@ -156,7 +154,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel
     };
     render(
@@ -209,7 +206,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 2
     };
@@ -249,7 +245,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
@@ -287,7 +282,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
@@ -329,7 +323,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 2
     };
@@ -373,7 +366,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
@@ -414,7 +406,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 4
     };
@@ -466,7 +457,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 3
     };
@@ -541,7 +531,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
@@ -630,7 +619,6 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
-      forceVisible: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 2
     };

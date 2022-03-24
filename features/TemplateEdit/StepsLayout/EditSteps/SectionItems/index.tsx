@@ -36,7 +36,6 @@ const inputTypes = [
 interface Props {
   sections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
-  forceVisible?: boolean;
   addItem(sectionId: string, itemType: string): void;
   onUpdateItemType(item: TemplateItemModel): void;
   updateItemTitle(itemId: string, title: string): void;
@@ -51,7 +50,6 @@ interface Props {
 const SectionItems: FunctionComponent<Props> = ({
   sections,
   templateSectionItems,
-  forceVisible,
   addItem,
   onUpdateItemType,
   updateItemTitle,
@@ -150,7 +148,6 @@ const SectionItems: FunctionComponent<Props> = ({
               items={sectionItems}
               onUpdateTitle={updateItemTitle}
               onUpdateType={onUpdateItemType}
-              forceVisible={forceVisible}
               onSelectItem={(itemId) => onSelectItems(section.id, itemId)}
               selectedItems={selectedSectionItems}
               errors={errors}
@@ -169,9 +166,7 @@ const SectionItems: FunctionComponent<Props> = ({
       })}
       {createPortal(
         <DragOverlay>
-          {activeId ? (
-            <Item item={activeItem} forceVisible={forceVisible} />
-          ) : null}
+          {activeId ? <Item item={activeItem} /> : null}
         </DragOverlay>,
         document.body
       )}
