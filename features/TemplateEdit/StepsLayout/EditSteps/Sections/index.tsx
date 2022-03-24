@@ -26,7 +26,6 @@ import Item from '../../SortableList/SortableItem/Item';
 
 interface Props {
   sections: TemplateSectionModel[];
-  forceVisible?: boolean;
   addSection(): void;
   updateSectionTitle(sectionId: string, title: string): void;
   onUpdateSectionType(section: TemplateSectionModel): void;
@@ -39,7 +38,6 @@ interface Props {
 }
 
 const Sections: FunctionComponent<Props> = ({
-  forceVisible,
   sections,
   addSection,
   updateSectionTitle,
@@ -110,7 +108,6 @@ const Sections: FunctionComponent<Props> = ({
           items={sections}
           onUpdateTitle={updateSectionTitle}
           onUpdateType={onUpdateSectionType}
-          forceVisible={forceVisible}
           onSelectItem={onSelectSections}
           selectedItems={selectedSections}
           errors={errors}
@@ -132,9 +129,7 @@ const Sections: FunctionComponent<Props> = ({
       </section>
       {createPortal(
         <DragOverlay>
-          {activeId ? (
-            <Item item={activeItem} forceVisible={forceVisible} />
-          ) : null}
+          {activeId ? <Item item={activeItem} /> : null}
         </DragOverlay>,
         document.body
       )}

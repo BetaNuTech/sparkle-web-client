@@ -5,6 +5,8 @@ interface inspectionTemplateSection {
   index: number;
   section_type: string;
   title: string;
+  completedAt?:number;
+  clone?:string
 }
 
 export default inspectionTemplateSection;

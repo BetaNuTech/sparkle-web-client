@@ -57,6 +57,7 @@ const ItemInputs: FunctionComponent<Props> = ({
                 canEdit={true} // eslint-disable-line react/jsx-boolean-value
                 onMouseDownNotes={onMouseDownNotes}
                 onMouseDownAttachment={onMouseDownAttachment}
+                isUpdatingTemplate={true} // eslint-disable-line react/jsx-boolean-value
               />
             </div>
           )}

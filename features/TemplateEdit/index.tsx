@@ -27,7 +27,6 @@ interface Props {
   template: TemplateModel;
   unpublishedUpdates: TemplateModel;
   templateCategories: TemplateCategoryModel[];
-  forceVisible?: boolean;
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
@@ -41,7 +40,6 @@ const TemplateEdit: FunctionComponent<Props> = ({
   template,
   templateCategories,
   unpublishedUpdates,
-  forceVisible,
   sendNotification,
   initialSlide
 }) => {
@@ -85,8 +83,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
     selectedItems,
     selectedSections,
     onSelectSections,
-    deletedSection,
-    setDeletedSection,
+    deletingSection,
+    setDeletingSection,
     isVisibleSectionDeletePrompt,
     setIsVisibleSectionDeletePrompt,
     onConfirmDeleteSections,
@@ -114,7 +112,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
     .sort(({ index: aIndex }, { index: bIndex }) => aIndex - bIndex);
 
   const filteredSections = sortedSections.filter(
-    (section) => section.id !== deletedSection
+    (section) => section.id !== deletingSection
   );
 
   const updatedTemplate = { ...template, ...updates };
@@ -174,12 +172,12 @@ const TemplateEdit: FunctionComponent<Props> = ({
     if (hasItems) {
       setIsVisibleSectionDeletePrompt(true);
     } else {
-      onConfirmDeleteSections();
+      onConfirmDeleteSections(sectionIds);
     }
   };
 
   const onRemoveSection = (sectionId: string) => {
-    setDeletedSection(sectionId);
+    setDeletingSection(sectionId);
     onDeleteSections([sectionId]);
   };
 
@@ -231,7 +229,6 @@ const TemplateEdit: FunctionComponent<Props> = ({
         templateCategories={templateCategories}
         templateSectionItems={templateSectionItems}
         sections={filteredSections}
-        forceVisible={forceVisible}
         updateName={updateName}
         updateDescription={updateDescription}
         updateCategory={updateCategory}
@@ -274,7 +271,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         templateSectionItems={templateSectionItems}
         sortedSections={sortedSections}
         selectedSections={selectedSections}
-        deletedSection={deletedSection}
+        deletingSection={deletingSection}
       />
     </>
   );

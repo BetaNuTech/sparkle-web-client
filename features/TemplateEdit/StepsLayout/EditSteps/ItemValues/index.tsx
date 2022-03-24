@@ -18,14 +18,12 @@ const itemValueKeys = [
 interface Props {
   sections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
-  forceVisible?: boolean;
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
 }
 
 const ItemValues: FunctionComponent<Props> = ({
   sections,
   templateSectionItems,
-  forceVisible,
   onUpdateScore
 }) => {
   const [selectedItem, setSelectedItem] = useState(null);
@@ -104,7 +102,6 @@ const ItemValues: FunctionComponent<Props> = ({
                   <ItemInputs
                     item={item}
                     key={item.id}
-                    forceVisible={forceVisible}
                     selectedToScore={selectedToScore}
                     onMouseDownMainInput={(event, selectionIndex) =>
                       onMouseDownMainInput(event, item, selectionIndex)

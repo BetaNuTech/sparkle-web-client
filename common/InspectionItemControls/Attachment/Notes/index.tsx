@@ -11,6 +11,7 @@ interface Props {
   canEdit: boolean;
   isRequired: boolean;
   onMouseDown(): void;
+  isUpdatingTemplate: boolean;
 }
 
 const AttachmentNotes: FunctionComponent<Props> = ({
@@ -19,7 +20,8 @@ const AttachmentNotes: FunctionComponent<Props> = ({
   onClick,
   canEdit,
   isRequired,
-  onMouseDown
+  onMouseDown,
+  isUpdatingTemplate
 }) => {
   const isClickEnabled = (enabled && canEdit) || selected;
   const clickHandler = isClickEnabled ? onClick : () => null; // Propagate or noop
@@ -33,7 +35,8 @@ const AttachmentNotes: FunctionComponent<Props> = ({
         isRequired && styles['inspection__attachment__item--isRequired'],
         !canEdit &&
           !selected &&
-          styles['inspection__attachment__item--isDisabled']
+          styles['inspection__attachment__item--isDisabled'],
+        isUpdatingTemplate && '-cu-pointer'
       )}
       data-testid="attachment-note"
       data-test={enabled ? '' : 'disabled'}

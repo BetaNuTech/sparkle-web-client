@@ -7,11 +7,11 @@ import styles from '../../../common/Modal/styles.module.scss';
 import WarningIcon from '../../../public/icons/sparkle/warning.svg';
 
 interface Props extends ModalProps {
-  onConfirm: () => any;
+  onConfirm: (sectionIds: string[]) => any;
   selectedSections: string[];
   sortedSections: TemplateSectionModel[];
   templateSectionItems: Map<string, TemplateItemModel[]>;
-  deletedSection: string;
+  deletingSection: string;
 }
 
 const SectionDeletePrompt: FunctionComponent<Props> = ({
@@ -20,11 +20,11 @@ const SectionDeletePrompt: FunctionComponent<Props> = ({
   selectedSections,
   sortedSections,
   templateSectionItems,
-  deletedSection
+  deletingSection
 }) => {
   const sectionIds = useMemo(
-    () => (deletedSection ? [deletedSection] : selectedSections),
-    [deletedSection, selectedSections]
+    () => (deletingSection ? [deletingSection] : selectedSections),
+    [deletingSection, selectedSections]
   );
 
   // create prompt delete message
@@ -57,7 +57,7 @@ const SectionDeletePrompt: FunctionComponent<Props> = ({
           </button>
           <button
             className={clsx('button', 'alert', styles.modal__mainFooterbutton)}
-            onClick={onConfirm}
+            onClick={() => onConfirm(sectionIds)}
           >
             Confirm Delete
           </button>
