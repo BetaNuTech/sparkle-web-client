@@ -38,6 +38,8 @@ const ItemInputs: FunctionComponent<Props> = ({
           <div
             className={clsx(styles.content, !isMainItem && '-mr-none')}
             onClick={clickHandler}
+            data-testid="template-edit-mainInputType"
+            data-main-input-type={item.mainInputType}
           >
             <InspectionItemControls
               item={item}

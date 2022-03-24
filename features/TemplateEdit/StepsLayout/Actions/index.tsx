@@ -14,6 +14,9 @@ interface Props {
   isLastStep: boolean;
   isDisableNext: boolean;
   isValidForm: boolean;
+  onSave(): void;
+  isLoading: boolean;
+  hasUpdates: boolean;
 }
 
 const StepsLayoutActions: FunctionComponent<Props> = ({
@@ -22,7 +25,10 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
   goToPrevStep,
   isLastStep,
   isDisableNext,
-  isValidForm
+  isValidForm,
+  onSave,
+  isLoading,
+  hasUpdates
 }) => (
   <div className={styles.actions}>
     {currentStepIndex === 0 ? (
@@ -34,6 +40,7 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
           styles['actions__button--white']
         )}
         data-testid="StepsLayout-cancel"
+        disabled={isLoading}
       >
         Cancel
       </LinkFeature>
@@ -45,6 +52,7 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
         )}
         onClick={goToPrevStep}
         data-testid="StepsLayout-previous-step"
+        disabled={isLoading}
       >
         Previous Step
       </button>
@@ -53,7 +61,8 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
       <button
         className={styles.actions__button}
         data-testid="StepsLayout-save"
-        disabled={!isValidForm}
+        disabled={!isValidForm || isLoading || !hasUpdates}
+        onClick={onSave}
       >
         Save
       </button>
@@ -62,7 +71,7 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
         className={styles.actions__button}
         onClick={goToNextStep}
         data-testid="StepsLayout-next-step"
-        disabled={isDisableNext}
+        disabled={isDisableNext || isLoading}
       >
         Next Step
       </button>

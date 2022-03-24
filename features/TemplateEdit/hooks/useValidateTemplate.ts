@@ -43,10 +43,12 @@ export default function useValidateTemplate(
   );
 
   const flattenedItems = Object.keys(items).map((id) => ({ id, ...items[id] }));
-  const flattenedSections = Object.keys(sections).map((id) => ({
-    id,
-    ...sections[id]
-  }));
+  const flattenedSections = Object.keys(sections)
+    .filter((id) => sections[id])
+    .map((id) => ({
+      id,
+      ...sections[id]
+    }));
 
   // validate general step
   const isValidGeneral = useMemo(
@@ -104,7 +106,6 @@ export default function useValidateTemplate(
     items: 'valid',
     'item-values': 'valid'
   };
-  // console.log(stepsStatus,isValidSectionItems)
   const setErrorMessages = () => {
     const err = {
       name: isValidGeneral ? '' : 'Name is required',
@@ -153,7 +154,6 @@ export default function useValidateTemplate(
     hasItemsInAllSections,
     errors
   ]);
-
   return {
     setErrorMessages,
     errors,

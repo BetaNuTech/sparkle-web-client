@@ -100,6 +100,7 @@ const Sections: FunctionComponent<Props> = ({
             className={stepsStyles.deleteAction}
             disabled={!selectedSections.length}
             onClick={() => onDeleteSections(selectedSections)}
+            data-testid="template-edit-section-delete"
           >
             <TrashIcon />
             Delete
@@ -117,7 +118,11 @@ const Sections: FunctionComponent<Props> = ({
         />
         <ErrorLabel errors={errors} message={errors?.sectionError} />
         <Droppable id="section-remove">
-          <div className={stepsStyles.action} onClick={addSection}>
+          <div
+            className={stepsStyles.action}
+            onClick={addSection}
+            data-testid="template-edit-section-add"
+          >
             <span>Add new section</span>
             <button className={stepsStyles.action__icon}>
               <AddIcon />

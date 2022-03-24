@@ -21,6 +21,7 @@ const TEMPLATE_TYPES = inspectionConfig.inspectionTemplateTypes;
 const ITEM_VALUES_KEYS = inspectionConfig.itemValuesKeys;
 const INPUT_ITEM_TYPES = Object.keys(TEMPLATE_TYPES);
 
+type UserNotifications = (message: string, options?: any) => any;
 interface Props {
   user: UserModel;
   template: TemplateModel;
@@ -30,6 +31,8 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
+  sendNotification: UserNotifications;
+  initialSlide?: number;
 }
 
 const TemplateEdit: FunctionComponent<Props> = ({
@@ -38,7 +41,9 @@ const TemplateEdit: FunctionComponent<Props> = ({
   template,
   templateCategories,
   unpublishedUpdates,
-  forceVisible
+  forceVisible,
+  sendNotification,
+  initialSlide
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -85,8 +90,15 @@ const TemplateEdit: FunctionComponent<Props> = ({
     isVisibleSectionDeletePrompt,
     setIsVisibleSectionDeletePrompt,
     onConfirmDeleteSections,
-    onCancelDeleteSection
-  } = useUpdateTemplate(template.id, unpublishedUpdates, template);
+    onCancelDeleteSection,
+    updateTemplate,
+    isLoading
+  } = useUpdateTemplate(
+    template.id,
+    unpublishedUpdates,
+    template,
+    sendNotification
+  );
 
   const { setErrorMessages, errors, stepsStatus, isValidForm } =
     useValidateTemplate(updates, template);
@@ -186,6 +198,10 @@ const TemplateEdit: FunctionComponent<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex]);
 
+  const onSave = () => {
+    updateTemplate();
+  };
+
   return (
     <>
       <Header
@@ -199,6 +215,9 @@ const TemplateEdit: FunctionComponent<Props> = ({
         templateName={template.name}
         isDisableNext={isDisableNext}
         isValidForm={isValidForm}
+        onSave={onSave}
+        isLoading={isLoading}
+        hasUpdates={hasUpdates}
       />
       <StepsLayout
         currentStepIndex={currentStepIndex}
@@ -243,6 +262,10 @@ const TemplateEdit: FunctionComponent<Props> = ({
         selectedItems={selectedItems}
         onSelectItems={onSelectItems}
         onDeleteItems={onDeleteItems}
+        onSave={onSave}
+        isLoading={isLoading}
+        hasUpdates={hasUpdates}
+        initialSlide={initialSlide}
       />
       <SectionDeletePrompt
         isVisible={isVisibleSectionDeletePrompt}

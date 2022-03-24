@@ -152,7 +152,8 @@ const setItemMainInputType = (
     return result;
   }
 
-  const itemType = previousItems[targetId]?.itemType || currentItems[targetId]?.itemType  || '';
+  const itemType =
+    previousItems[targetId]?.itemType || currentItems[targetId]?.itemType || '';
 
   // Do not update non-main types
   if (`${itemType}`.toLowerCase() !== 'main') {

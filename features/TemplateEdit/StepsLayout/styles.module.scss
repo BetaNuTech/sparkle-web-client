@@ -21,7 +21,7 @@ $pagination-height: rem-calc(30);
   margin: 0 auto;
 
   // Swiper horizontal wrapper
-  > :global(.swiper) {
+  > :global(.swiper-container) {
     height: 100%;
     overflow: visible;
   }

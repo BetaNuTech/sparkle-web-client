@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 import { FunctionComponent, useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Controller, A11y } from 'swiper';
+
+import { SwiperSlide, Swiper } from 'swiper/react';
 import TemplateModel from '../../../common/models/template';
 import TemplateCategoryModel from '../../../common/models/templateCategory';
 import TemplateItemModel from '../../../common/models/inspectionTemplateItem';
@@ -13,7 +13,7 @@ import EditSteps from './EditSteps';
 import styles from './styles.module.scss';
 
 // Import Swiper styles
-import 'swiper/css';
+import 'swiper/swiper.min.css';
 
 interface Props {
   currentStepIndex: number;
@@ -58,6 +58,10 @@ interface Props {
   selectedItems: Record<string, string[]>;
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
+  onSave(): void;
+  isLoading: boolean;
+  hasUpdates: boolean;
+  initialSlide?: number;
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
@@ -100,7 +104,11 @@ const StepsLayout: FunctionComponent<Props> = ({
   removeItem,
   selectedItems,
   onSelectItems,
-  onDeleteItems
+  onDeleteItems,
+  onSave,
+  isLoading,
+  hasUpdates,
+  initialSlide
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -119,8 +127,6 @@ const StepsLayout: FunctionComponent<Props> = ({
       <div className={styles.main}>
         <div className={styles.swiper}>
           <Swiper
-            // install Swiper modules
-            modules={[Controller, A11y]}
             slidesPerView={1}
             onSwiper={setSwiperInstance}
             onSlideChange={(swiper) => changeStep(swiper.activeIndex)}
@@ -130,6 +136,8 @@ const StepsLayout: FunctionComponent<Props> = ({
             longSwipesRatio={0.1}
             allowSlidePrev={swiperInstance?.activeIndex !== 0}
             allowSlideNext={swiperInstance?.activeIndex !== steps.length - 1}
+            initialSlide={initialSlide || 0}
+            preventClicks={false}
           >
             {steps.map((step, index) => (
               <SwiperSlide key={step}>
@@ -186,6 +194,9 @@ const StepsLayout: FunctionComponent<Props> = ({
             currentStepIndex={currentStepIndex}
             isDisableNext={isDisableNext}
             isValidForm={isValidForm}
+            onSave={onSave}
+            isLoading={isLoading}
+            hasUpdates={hasUpdates}
           />
         )}
       </div>

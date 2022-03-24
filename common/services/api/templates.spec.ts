@@ -5,6 +5,7 @@ import ErrorUnauthorized from '../../models/errors/unauthorized';
 import ErrorForbidden from '../../models/errors/forbidden';
 import ErrorNotFound from '../../models/errors/notFound';
 import ErrorServerInternal from '../../models/errors/serverInternal';
+import { templateA } from '../../../__mocks__/templates';
 
 const API_TEMPLATE_RESULT = {
   data: {
@@ -155,6 +156,17 @@ describe('Unit | Services | API | Templates', () => {
 
     // eslint-disable-next-line import/no-named-as-default-member
     const actual = await service.deleteRecord(expected);
+    expect(actual).toEqual(expected);
+  });
+
+  test('it successfully resolves update template request', async () => {
+    const expected = API_TEMPLATE_RESULT.data.id;
+
+    sinon.stub(window, 'fetch').resolves(jsonOK(API_TEMPLATE_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    const actual = await service.updateRecord(expected, templateA);
     expect(actual).toEqual(expected);
   });
 });

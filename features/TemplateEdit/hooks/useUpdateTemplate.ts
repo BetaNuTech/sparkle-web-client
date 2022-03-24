@@ -2,12 +2,25 @@ import { useState, useEffect } from 'react';
 import templateUtils from '../../../common/utils/template';
 import errorReports from '../../../common/services/api/errorReports';
 import templateUpdates from '../../../common/services/indexedDB/templateUpdates';
+import templatesApi from '../../../common/services/api/templates';
 import TemplateModal from '../../../common/models/template';
 import * as objectHelper from '../../../common/utils/object';
 import deepClone from '../../../__tests__/helpers/deepClone';
+import BaseError from '../../../common/models/errors/baseError';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
 
 const PREFIX = 'features: TemplateEdit: hooks: useUpdateTemplate:';
+export const USER_NOTIFICATIONS = {
+  badRequest:
+    'Template updates are invalid, please correct any template issues or contact an admin',
+  unpermissioned:
+    'You do not have permission to make these updates, please login again or contact an admin',
+  generic: 'Failed to update template, please try again'
+};
 
+type UserNotifications = (message: string, options?: any) => any;
 interface useUpdateTemplateResult {
   updates: TemplateModal;
   hasUpdates: boolean;
@@ -44,12 +57,15 @@ interface useUpdateTemplateResult {
   setIsVisibleSectionDeletePrompt(isVisible: boolean): void;
   onConfirmDeleteSections(): void;
   onCancelDeleteSection(): void;
+  updateTemplate(): void;
+  isLoading: boolean;
 }
 
 export default function useUpdateTemplate(
   templateId: string,
   previousUpdates: TemplateModal,
-  currentItem: TemplateModal
+  currentItem: TemplateModal,
+  sendNotification: UserNotifications
 ): useUpdateTemplateResult {
   const [hasUpdates, setHasUpdates] = useState(
     isTemplateUpdated(previousUpdates || {})
@@ -58,7 +74,7 @@ export default function useUpdateTemplate(
   const [updates, setUpdates] = useState(
     previousUpdates || ({} as TemplateModal)
   );
-
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedItems, setSelectedItems] = useState({});
   const [selectedSections, setSelectedSections] = useState([]);
   const [deletedSection, setDeletedSection] = useState(null);
@@ -313,6 +329,47 @@ export default function useUpdateTemplate(
     });
   };
 
+  const handleErrorResponse = (error: BaseError) => {
+    if (error instanceof ErrorBadRequest) {
+      sendNotification(USER_NOTIFICATIONS.badRequest, {
+        type: 'error'
+      });
+    } else if (
+      error instanceof ErrorForbidden ||
+      error instanceof ErrorUnauthorized
+    ) {
+      sendNotification(USER_NOTIFICATIONS.unpermissioned, {
+        type: 'error'
+      });
+    } else {
+      sendNotification(USER_NOTIFICATIONS.generic, {
+        type: 'error'
+      });
+    }
+
+    // Log issue and send error report
+    // eslint-disable-next-line no-case-declarations
+    const wrappedErr = Error(`${PREFIX} handleErrorResponse: ${error}`);
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    errorReports.send(wrappedErr);
+  };
+
+  const updateTemplate = async () => {
+    setIsLoading(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await templatesApi.updateRecord(templateId, updates);
+      sendNotification('Template updated successfully', {
+        type: 'success'
+      });
+      applyLatestUpdates({} as TemplateModal);
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+    setIsLoading(false);
+  };
+
   return {
     updates,
     hasUpdates,
@@ -346,7 +403,9 @@ export default function useUpdateTemplate(
     isVisibleSectionDeletePrompt,
     setIsVisibleSectionDeletePrompt,
     onConfirmDeleteSections,
-    onCancelDeleteSection
+    onCancelDeleteSection,
+    updateTemplate,
+    isLoading
   };
 }
 

@@ -114,7 +114,7 @@ const SectionItems: FunctionComponent<Props> = ({
       onDragEnd={handleDragEnd}
       modifiers={[restrictToVerticalAxis]}
     >
-      <header className={stepsStyles.header}>
+      <header className={stepsStyles.header} data-testid="section-item-header">
         <h3 className={stepsStyles.header__title}>Items</h3>
       </header>
 
@@ -140,6 +140,7 @@ const SectionItems: FunctionComponent<Props> = ({
                 className={stepsStyles.deleteAction}
                 disabled={!selectedSectionItems.length}
                 onClick={() => onDeleteItems(section.id)}
+                data-testid="template-edit-item-delete"
               >
                 <TrashIcon />
                 Delete
