@@ -119,6 +119,9 @@ const SectionItems: FunctionComponent<Props> = ({
       {sections.map((section) => {
         const sectionItems = templateSectionItems.get(section.id) || [];
         const selectedSectionItems = selectedItems[section.id] || [];
+        if (!section.title && sectionItems.length < 1) {
+          return <></>;
+        }
         return (
           <div key={section.id}>
             <header className={stepsStyles.sectionHeader}>
@@ -153,7 +156,9 @@ const SectionItems: FunctionComponent<Props> = ({
               errors={errors}
               errorMessage={errors.itemTitle}
             />
-            <ErrorLabel errors={errors} message={errors?.sectionItemError} />
+            {sectionItems.length < 1 && (
+              <ErrorLabel errors={errors} message={errors?.sectionItemError} />
+            )}
             <Droppable id={`item-remove-${section.id}`}>
               <AddItemAction
                 inputTypes={inputTypes}

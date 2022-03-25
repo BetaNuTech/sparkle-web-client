@@ -42,7 +42,9 @@ export default function useValidateTemplate(
     updatedTemplate.sections || {}
   );
 
-  const flattenedItems = Object.keys(items).map((id) => ({ id, ...items[id] }));
+  const flattenedItems = Object.keys(items)
+    .filter((id) => items[id])
+    .map((id) => ({ id, ...items[id] }));
   const flattenedSections = Object.keys(sections)
     .filter((id) => sections[id])
     .map((id) => ({
@@ -106,6 +108,7 @@ export default function useValidateTemplate(
     items: 'valid',
     'item-values': 'valid'
   };
+
   const setErrorMessages = () => {
     const err = {
       name: isValidGeneral ? '' : 'Name is required',

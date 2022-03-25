@@ -113,7 +113,11 @@ const Sections: FunctionComponent<Props> = ({
           errors={errors}
           errorMessage={errors.title}
         />
-        <ErrorLabel errors={errors} message={errors?.sectionError} />
+        <ErrorLabel
+          errors={errors}
+          message={errors?.sectionError}
+          formName="sections"
+        />
         <Droppable id="section-remove">
           <div
             className={stepsStyles.action}

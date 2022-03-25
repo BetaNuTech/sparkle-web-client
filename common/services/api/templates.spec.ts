@@ -160,13 +160,14 @@ describe('Unit | Services | API | Templates', () => {
   });
 
   test('it successfully resolves update template request', async () => {
-    const expected = API_TEMPLATE_RESULT.data.id;
+    const templateId = API_TEMPLATE_RESULT.data.id;
+    const expected = { templateId, status: 201 };
 
     sinon.stub(window, 'fetch').resolves(jsonOK(API_TEMPLATE_RESULT));
     sinon.stub(currentUser, 'getIdToken').resolves('token');
 
     // eslint-disable-next-line import/no-named-as-default-member
-    const actual = await service.updateRecord(expected, templateA);
-    expect(actual).toEqual(expected);
+    const actual = await service.updateRecord(templateId, templateA);
+    expect(actual).toMatchObject(expected);
   });
 });

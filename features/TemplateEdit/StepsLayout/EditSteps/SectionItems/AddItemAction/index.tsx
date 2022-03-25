@@ -26,7 +26,10 @@ const AddItemAction: FunctionComponent<AddItemActionProps> = ({
 }) => (
   <div className={clsx(styles.container, stepsStyles.action)}>
     <span>Add new item</span>
-    <button className={stepsStyles.action__icon}>
+    <button
+      className={stepsStyles.action__icon}
+      onClick={() => addItem(sectionId, inputTypes[0].value)}
+    >
       <AddIcon />
     </button>
 

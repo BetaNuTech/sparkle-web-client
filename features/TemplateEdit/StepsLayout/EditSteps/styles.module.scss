@@ -55,7 +55,8 @@
   }
 
   &__icon {
-    margin-left: $global-padding;
+    margin-left: $global-sm-padding;
+    margin-right: $global-sm-padding;
     max-width: rem-calc(15);
 
     path {
