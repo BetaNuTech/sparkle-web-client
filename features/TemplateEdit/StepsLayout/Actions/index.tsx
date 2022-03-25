@@ -12,7 +12,6 @@ interface Props {
   goToNextStep(): void;
   goToPrevStep(): void;
   isLastStep: boolean;
-  isDisableNext: boolean;
   isValidForm: boolean;
   onSave(): void;
   isLoading: boolean;
@@ -24,7 +23,6 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
   goToNextStep,
   goToPrevStep,
   isLastStep,
-  isDisableNext,
   isValidForm,
   onSave,
   isLoading,
@@ -71,7 +69,7 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
         className={styles.actions__button}
         onClick={goToNextStep}
         data-testid="StepsLayout-next-step"
-        disabled={isDisableNext || isLoading}
+        disabled={isLoading}
       >
         Next Step
       </button>

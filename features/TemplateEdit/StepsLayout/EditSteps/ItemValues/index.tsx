@@ -77,6 +77,9 @@ const ItemValues: FunctionComponent<Props> = ({
 
       {sections.map((section) => {
         const sectionItems = templateSectionItems.get(section.id) || [];
+        if (!section.title && sectionItems.length < 0) {
+          return <></>;
+        }
         return (
           <div key={section.id}>
             <header className={stepsStyles.sectionHeader}>

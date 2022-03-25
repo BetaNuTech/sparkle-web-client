@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
+import Router from 'next/router';
 import templateUtils from '../../../common/utils/template';
 import errorReports from '../../../common/services/api/errorReports';
 import templateUpdates from '../../../common/services/indexedDB/templateUpdates';
-import templatesApi from '../../../common/services/api/templates';
+import templatesApi, {
+  UpdateResponse
+} from '../../../common/services/api/templates';
 import TemplateModal from '../../../common/models/template';
 import * as objectHelper from '../../../common/utils/object';
 import deepClone from '../../../__tests__/helpers/deepClone';
@@ -17,7 +20,8 @@ export const USER_NOTIFICATIONS = {
     'Template updates are invalid, please correct any template issues or contact an admin',
   unpermissioned:
     'You do not have permission to make these updates, please login again or contact an admin',
-  generic: 'Failed to update template, please try again'
+  generic: 'Failed to update template, please try again',
+  success: 'Template updated successfully'
 };
 
 type UserNotifications = (message: string, options?: any) => any;
@@ -355,15 +359,33 @@ export default function useUpdateTemplate(
     errorReports.send(wrappedErr);
   };
 
+  const handleSuccessResponse = (response: UpdateResponse) => {
+    // Delete the local template updates record
+    applyLatestUpdates({} as TemplateModal);
+
+    sendNotification(USER_NOTIFICATIONS.success, {
+      type: 'success'
+    });
+
+    if (response.status === 204) {
+      // Log issue and send error report
+      // eslint-disable-next-line no-case-declarations
+      const wrappedErr = Error(
+        `${PREFIX} handleSuccessResponse: user published irrelevant updates to ${response.templateId}`
+      );
+
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+    Router.push('/templates/');
+  };
+
   const updateTemplate = async () => {
     setIsLoading(true);
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await templatesApi.updateRecord(templateId, updates);
-      sendNotification('Template updated successfully', {
-        type: 'success'
-      });
-      applyLatestUpdates({} as TemplateModal);
+      const response = await templatesApi.updateRecord(templateId, updates);
+      handleSuccessResponse(response);
     } catch (err) {
       handleErrorResponse(err);
     }

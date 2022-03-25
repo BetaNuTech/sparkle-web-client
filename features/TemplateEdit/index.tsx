@@ -181,7 +181,20 @@ const TemplateEdit: FunctionComponent<Props> = ({
     onDeleteSections([sectionId]);
   };
 
-  const isDisableNext = stepsStatus[steps[currentStepIndex]] === 'invalid';
+  const onSave = () => {
+    updateTemplate();
+  };
+
+  const onGoToNext = () => {
+    const invalidStep = steps.findIndex(
+      (step) => stepsStatus[step] === 'invalid'
+    );
+    if (invalidStep > -1 && currentStepIndex === invalidStep) {
+      setErrorMessages();
+    } else {
+      goToNextStep();
+    }
+  };
 
   // check validation for steps
   // and redirect to invalid step
@@ -196,22 +209,17 @@ const TemplateEdit: FunctionComponent<Props> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex]);
 
-  const onSave = () => {
-    updateTemplate();
-  };
-
   return (
     <>
       <Header
         isOnline={isOnline}
         isStaging={isStaging}
         isMobile={isMobile}
-        goToNextStep={goToNextStep}
+        goToNextStep={onGoToNext}
         goToPrevStep={goToPrevStep}
         currentStepIndex={currentStepIndex}
         isLastStep={isLastStep}
         templateName={template.name}
-        isDisableNext={isDisableNext}
         isValidForm={isValidForm}
         onSave={onSave}
         isLoading={isLoading}
@@ -222,7 +230,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         isMobile={isMobile}
         steps={steps}
         changeStep={changeStep}
-        goToNextStep={goToNextStep}
+        goToNextStep={onGoToNext}
         goToPrevStep={goToPrevStep}
         isLastStep={isLastStep}
         template={updatedTemplate}
@@ -250,7 +258,6 @@ const TemplateEdit: FunctionComponent<Props> = ({
         onSelectSections={onSelectSections}
         selectedSections={selectedSections}
         onDeleteSections={onDeleteSections}
-        isDisableNext={isDisableNext}
         errors={errors}
         isValidForm={isValidForm}
         onUpdateScore={onUpdateScore}

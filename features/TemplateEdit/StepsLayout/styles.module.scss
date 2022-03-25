@@ -52,6 +52,7 @@ $pagination-height: rem-calc(30);
   border-radius: $global-radius;
   background-color: $white;
   overflow: auto;
+  position: relative;
 
   @include media-query(desktop) {
     margin: 0;

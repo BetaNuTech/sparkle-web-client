@@ -39,9 +39,15 @@ const InspectionItemControls: FunctionComponent<Props> = ({
   // when `isTextInputItem` then always make it
   // a text input otherwise accept main input type
   // and lastly use any available item type
-  const inputType = item.isTextInputItem
+  let inputType = item.isTextInputItem
     ? 'text_input'
-    : (item.mainInputType || item.itemType || '').toLowerCase();
+    : (item.itemType || '').toLowerCase();
+
+  // Use main input type as type for main
+  // all main items
+  if (inputType === 'main') {
+    inputType = `${item.mainInputType || ''}`.toLowerCase();
+  }
 
   const selected = Boolean(item.mainInputSelected);
   const mainInputSelection =

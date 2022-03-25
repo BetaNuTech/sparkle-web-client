@@ -5,6 +5,11 @@ import TemplateModel from '../../models/inspectionTemplate';
 const PREFIX = 'services: api: templates:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
 
+export type UpdateResponse = {
+  templateId: string;
+  status: number;
+};
+
 const generateCreateError = createApiError(`${PREFIX} createRecord:`);
 const generateDeleteError = createApiError(`${PREFIX} deleteRecord:`);
 const generateUpdateError = createApiError(`${PREFIX} updateRecord:`);
@@ -133,7 +138,7 @@ const patchTemplateRequest = (
 const updateRecord = async (
   templateId: string,
   updates: TemplateModel
-): Promise<string> => {
+): Promise<UpdateResponse> => {
   let authToken = '';
 
   try {
@@ -152,10 +157,12 @@ const updateRecord = async (
   }
 
   let responseJson: any = {};
-  try {
-    responseJson = await response.json();
-  } catch (err) {
-    throw Error(`${PREFIX} updateRecord: failed to parse JSON: ${err}`);
+  if (response.status !== 204) {
+    try {
+      responseJson = await response.json();
+    } catch (err) {
+      throw Error(`${PREFIX} updateRecord: failed to parse JSON: ${err}`);
+    }
   }
 
   // Throw unsuccessful request API error
@@ -167,7 +174,7 @@ const updateRecord = async (
     throw apiError;
   }
 
-  return responseJson.data.id;
+  return { templateId, status: response.status };
 };
 
 export default {

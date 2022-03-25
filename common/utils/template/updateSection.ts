@@ -75,15 +75,15 @@ const setAddedSection = (
     ...previousSections
   }).filter((id, i, arr) => arr.indexOf(id) === i).length; // unique
 
+  const sectionId = uuid(20);
   const section = {
-    id: uuid(20),
     section_type: 'single',
     title: '',
     index: sectionsCount
   };
 
   result.sections = result.sections || {};
-  result.sections[section.id] = section;
+  result.sections[sectionId] = section;
 
   return result;
 };
@@ -177,7 +177,6 @@ const setSectionTitle = (
 
   const value = `${userChanges?.title || ''}`.trim();
   const isDifferentThanCurrent = value !== (currentSection.title || '');
-
   // Add publishable changes
   // or remove local only updates
   if (isDifferentThanCurrent) {

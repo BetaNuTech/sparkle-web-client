@@ -552,6 +552,8 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const tests = [
       {
         expected: undefined,
+        expectedMainInputType: undefined,
+        expectedIsTextInputItem: undefined,
         currentItem: deepClone(templateWithItems),
         userChanges: { index: 3 },
         msg: 'ignores unrelated update'
@@ -559,6 +561,8 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
 
       {
         expected: 'text_input',
+        expectedMainInputType: undefined,
+        expectedIsTextInputItem: undefined,
         currentItem: deepClone(templateWithItems),
         updatedItem: { items: { [itemId]: { itemType: 'text_input' } } },
         userChanges: { index: 3 },
@@ -566,12 +570,16 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       },
       {
         expected: 'signature',
+        expectedMainInputType: '',
+        expectedIsTextInputItem: false,
         currentItem: deepClone(templateWithItems),
         userChanges: { itemType: 'signature' },
         msg: 'adds item type to updates'
       },
       {
         expected: 'text_input',
+        expectedMainInputType: '',
+        expectedIsTextInputItem: true,
         currentItem: deepClone(templateWithItems),
         updatedItem: { itemType: 'signature' },
         userChanges: { itemType: 'text_input' }, // check whitespace padding removed
@@ -580,6 +588,8 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
 
       {
         expected: undefined,
+        expectedMainInputType: undefined,
+        expectedIsTextInputItem: undefined,
         currentItem: {
           ...deepClone(templateWithItems),
           ...{
@@ -598,6 +608,8 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     for (let i = 0; i < tests.length; i += 1) {
       const {
         expected,
+        expectedMainInputType,
+        expectedIsTextInputItem,
         currentItem,
         updatedItem = {},
         userChanges,
@@ -612,7 +624,15 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
       const actual = result
         ? ((result.items || {})[itemId] || {}).itemType
         : undefined;
+      const actualMainInputType = result
+        ? ((result.items || {})[itemId] || {}).mainInputType
+        : undefined;
+      const actualIsTextInputItem = result
+        ? ((result.items || {})[itemId] || {}).isTextInputItem
+        : undefined;
       expect(actual, msg).toEqual(expected);
+      expect(actualMainInputType, msg).toEqual(expectedMainInputType);
+      expect(actualIsTextInputItem, msg).toEqual(expectedIsTextInputItem);
     }
   });
 

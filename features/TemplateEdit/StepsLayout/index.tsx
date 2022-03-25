@@ -48,7 +48,6 @@ interface Props {
   onSelectSections(sectionId: string): void;
   selectedSections: string[];
   onDeleteSections(sectionIds: string[]): void;
-  isDisableNext: boolean;
   errors: Record<string, string>;
   isValidForm: boolean;
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
@@ -94,7 +93,6 @@ const StepsLayout: FunctionComponent<Props> = ({
   onSelectSections,
   selectedSections,
   onDeleteSections,
-  isDisableNext,
   errors,
   isValidForm,
   onUpdateScore,
@@ -191,7 +189,6 @@ const StepsLayout: FunctionComponent<Props> = ({
             goToPrevStep={goToPrevStep}
             isLastStep={isLastStep}
             currentStepIndex={currentStepIndex}
-            isDisableNext={isDisableNext}
             isValidForm={isValidForm}
             onSave={onSave}
             isLoading={isLoading}

@@ -21,7 +21,6 @@ export default function useTemplateSectionItems(
       id,
       ...templateItems[id]
     }));
-
   // Grouping of items by their section
   const templateSectionItems = utilArray.groupBy<string, TemplateItemModel>(
     itemsList,

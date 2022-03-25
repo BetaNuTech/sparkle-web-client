@@ -15,7 +15,6 @@ interface Props {
   goToPrevStep(): void;
   isLastStep: boolean;
   templateName: string;
-  isDisableNext: boolean;
   isValidForm: boolean;
   onSave(): void;
   isLoading: boolean;
@@ -31,7 +30,6 @@ const Header: FunctionComponent<Props> = ({
   goToPrevStep,
   isLastStep,
   templateName,
-  isDisableNext,
   isValidForm,
   onSave,
   isLoading,
@@ -54,7 +52,7 @@ const Header: FunctionComponent<Props> = ({
           className={headStyle.header__button}
           onClick={goToNextStep}
           data-testid="templateEdit-header-next"
-          disabled={isDisableNext || isLoading}
+          disabled={isLoading}
         >
           Next
         </button>

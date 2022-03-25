@@ -116,7 +116,11 @@ const Item = forwardRef<HTMLDivElement, Props>(
         </div>
         {showError && (
           <div className={styles.error}>
-            <ErrorLabel errors={errors} message={errorMessage} />
+            <ErrorLabel
+              errors={errors}
+              message={errorMessage}
+              formName={item.id}
+            />
           </div>
         )}
       </div>

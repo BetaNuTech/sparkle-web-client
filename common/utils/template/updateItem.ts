@@ -80,10 +80,9 @@ const setAddedItem = (
     Boolean(userChanges?.itemType);
   const currentItems = currentTemplate.items || {};
   const previousItems = updatedTemplate.items || {};
-
   if (isAddingItem) {
     const item = createItem(userChanges?.itemType);
-    item.id = uuid(20);
+    const itemId = uuid(20);
     item.sectionId = userChanges.sectionId;
     item.index = createNextItemIndex(
       userChanges.sectionId,
@@ -91,7 +90,7 @@ const setAddedItem = (
       previousItems
     );
     result.items = result.items || {};
-    result.items[item.id] = item;
+    result.items[itemId] = item;
   }
 
   return result;
@@ -127,12 +126,17 @@ const setItemType = (
   if (title) {
     itemUpdates.title = title;
   }
+  if (value !== 'main') {
+    itemUpdates.mainInputType = '';
+  }
 
   result.items[targetId] = itemUpdates;
 
   // Remove undifferentiated change from updates
   if (!isDifferentThanCurrent) {
     delete result.items[targetId].itemType;
+    delete result.items[targetId].mainInputType;
+    delete result.items[targetId].isTextInputItem;
   }
 
   return result;
@@ -436,6 +440,7 @@ const createItem = (
 
   // Set common item properties
   item.itemType = itemType;
+  item.isTextInputItem = itemType === 'text_input';
 
   if (itemType === 'main') {
     item.mainInputType = mainInputType;
