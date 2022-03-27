@@ -1,3 +1,5 @@
+import OccupantModel from './occupant';
+
 interface yardiResident {
   id?: string;
   email: string;
@@ -22,7 +24,7 @@ interface yardiResident {
   totalOwed?: any;
   yardiStatus?: string;
   sortLeaseUnit?: number;
-  occupants?: string[];
+  occupants?: OccupantModel[];
 }
 
 export default yardiResident;

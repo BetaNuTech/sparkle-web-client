@@ -1,0 +1,58 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  position: relative;
+  padding: rem-calc(20);
+  border-bottom: 1px solid;
+}
+
+.info {
+  display: flex;
+  flex-direction: row;
+
+  &__label {
+    color: $primary-dark-color;
+    padding: 0;
+    margin: 0 rem-calc(4) 0 0;
+    font-size: rem-calc(14);
+    font-weight: 700;
+  }
+
+  &__value {
+    font-size: rem-calc(14);
+    margin: 0 rem-calc(4) 0 0;
+  }
+}
+
+.badgeContainer {
+  flex-direction: row;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: rem-calc(10);
+
+  .leftBadge,
+  .redAlert,
+  .rightBadge {
+    padding: 0 $global-xsm-padding;
+    border-radius: $global-radius;
+    color: $white;
+    font-size: rem-calc(14);
+    line-height: rem-calc(17);
+  }
+
+  .leftBadge {
+    background-color: $gray-6;
+  }
+
+  .redAlert {
+    background-color: $alert-color;
+    position: absolute;
+    left: rem-calc(120);
+  }
+
+  .rightBadge {
+    background-color: $primary-color;
+    text-transform: capitalize;
+  }
+}
