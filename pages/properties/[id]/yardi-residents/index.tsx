@@ -31,6 +31,7 @@ const Page: React.FC = (): ReactElement => {
         <PropertyResidents
           residents={data.residents}
           occupants={data.occupants}
+          propertyId={propertyId}
         />
       ) : (
         <LoadingHud />

@@ -161,7 +161,7 @@ export default {
     const residents: yardiResident[] = (responseJson.data || []).map(
       (residentData) => {
         const resident = normalizeJsonApiDoc(residentData);
-        const residentsOccupantIds: string[] = occupantSrc
+        const residentsOccupants: string[] = occupantSrc
           .filter(
             (occ) =>
               occ &&
@@ -170,7 +170,7 @@ export default {
               occ.relationships.resident.data &&
               occ.relationships.resident.data.id === resident.id
           )
-          .map((occ) => occ.id);
+          .map((occ) => normalizeJsonApiDoc(occ));
 
         // Add numeric lease unit
         // attribute for sorting
@@ -179,7 +179,7 @@ export default {
         }
 
         // Add occupant(s) to resident
-        resident.occupants = residentsOccupantIds;
+        resident.occupants = residentsOccupants;
         return resident as yardiResident;
       }
     );
@@ -187,11 +187,10 @@ export default {
     // Add resident to each occupant
     occupants.forEach((occupant) => {
       const [resident] = residents.filter((r) =>
-        r.occupants.includes(occupant.id)
+        r.occupants.some((occ) => occ.id === occupant.id)
       );
       occupant.resident = resident ? resident.id : '';
     });
-
     // Handle success
     return { residents, occupants };
   }
