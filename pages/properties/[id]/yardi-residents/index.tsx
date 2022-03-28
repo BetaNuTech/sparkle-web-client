@@ -1,6 +1,8 @@
 import 'firebase/firestore';
 import { ReactElement } from 'react';
 import { useRouter } from 'next/router';
+import { useFirestore } from 'reactfire';
+import useProperty from '../../../../common/hooks/useProperty';
 import { MainLayout } from '../../../../common/MainLayout';
 import LoadingHud from '../../../../common/LoadingHud';
 import useResidents from '../../../../features/PropertyResidents/hooks/useResidents';
@@ -9,6 +11,8 @@ import useNotifications from '../../../../common/hooks/useNotifications'; // esl
 import notifications from '../../../../common/services/notifications'; // eslint-disable-line
 
 const Page: React.FC = (): ReactElement => {
+  const firestore = useFirestore();
+
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
   const router = useRouter();
@@ -21,8 +25,14 @@ const Page: React.FC = (): ReactElement => {
     propertyId
   );
 
+  // Fetch the data of property
+  const { data: property, status: propertyStatus } = useProperty(
+    firestore,
+    propertyId
+  );
+
   let isLoaded = false;
-  if (residentStatus === 'success') {
+  if (residentStatus === 'success' && propertyStatus === 'success') {
     isLoaded = true;
   }
   return (
@@ -31,7 +41,7 @@ const Page: React.FC = (): ReactElement => {
         <PropertyResidents
           residents={data.residents}
           occupants={data.occupants}
-          propertyId={propertyId}
+          property={property}
         />
       ) : (
         <LoadingHud />

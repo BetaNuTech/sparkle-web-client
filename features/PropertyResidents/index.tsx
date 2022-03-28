@@ -2,9 +2,12 @@ import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import residentModel from '../../common/models/yardi/resident';
 import occupantModel from '../../common/models/yardi/occupant';
+import PropertyModel from '../../common/models/property';
 import ResidenceList from './List';
 import Header from './Header';
 import breakpoints from '../../config/breakpoints';
+import SearchBar from '../../common/SearchBar';
+import styles from './styles.module.scss';
 
 interface Props {
   isOnline?: boolean;
@@ -14,14 +17,14 @@ interface Props {
   forceVisible?: boolean;
   residents: residentModel[];
   occupants: occupantModel[];
-  propertyId: string;
+  property: PropertyModel;
 }
 
 const PropertyResidents: FunctionComponent<Props> = ({
   isStaging,
   isOnline,
   residents,
-  propertyId
+  property
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -31,15 +34,22 @@ const PropertyResidents: FunctionComponent<Props> = ({
   return (
     <>
       <Header
-        propertyId={propertyId}
+        property={property}
         isMobile={isMobile}
         isStaging={isStaging}
         isOnline={isOnline}
       />
-      {/* <header className={styles.header} data-testid="workorders-header">
-      <h1 className={styles.header__title}>Residents List</h1>
-    </header> */}
-      <ResidenceList residents={residents} />
+      <div className={styles.container}>
+        {!isMobile && (
+          <SearchBar
+            searchQuery=""
+            onSearchKeyDown={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+            onClearSearch={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+          />
+        )}
+
+        <ResidenceList residents={residents} isMobile={isMobile} />
+      </div>
     </>
   );
 };

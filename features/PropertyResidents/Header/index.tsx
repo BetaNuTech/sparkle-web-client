@@ -3,29 +3,42 @@ import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import styles from './styles.module.scss';
+import DesktopHeader from '../../../common/DesktopHeader';
+import PropertyModel from '../../../common/models/property';
+import SortBy from './SortBy';
 
 interface Props {
   isOnline: boolean;
   isStaging: boolean;
   isMobile: boolean;
-  propertyId: string;
+  property: PropertyModel;
 }
 
 const Header: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   isMobile,
-  propertyId
+  property
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
     <>
-      <Link href={`/properties/${propertyId}`}>
+      <Link href={`/properties/${property.id}`}>
         <a className={headStyle.header__back}>
           <ChevronIcon />
           Property
         </a>
       </Link>
+    </>
+  );
+  const BreadCrumbs = () => (
+    <>
+      <div className={styles.header__breadcrumbs}>
+        <Link href={`/properties/${property.id}`}>
+          <a className={styles.header__link}>{property.name}</a>
+        </Link>
+      </div>
+      <div className={styles.header__title}>{property.name} Residents</div>
     </>
   );
 
@@ -46,9 +59,12 @@ const Header: FunctionComponent<Props> = ({
           </div>
         </>
       ) : (
-        <header className={styles.header} data-testid="workorders-header">
-          <h1 className={styles.header__title}>Residents List</h1>
-        </header>
+        <DesktopHeader
+          title={<BreadCrumbs />}
+          isOnline={isOnline}
+          isColumnTitle
+          right={<SortBy />}
+        />
       )}
     </>
   );
