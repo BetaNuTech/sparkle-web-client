@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
@@ -12,13 +12,21 @@ interface Props {
   isStaging: boolean;
   isMobile: boolean;
   property: PropertyModel;
+  searchQuery: string;
+  onSearchKeyDown: (
+    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
+  onClearSearch(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   isMobile,
-  property
+  property,
+  searchQuery,
+  onSearchKeyDown,
+  onClearSearch
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -53,9 +61,19 @@ const Header: FunctionComponent<Props> = ({
             title="Residents"
           />
           <div className={styles.search}>
-            <input className={styles.search__input} type="search" />
+            <input
+              className={styles.search__input}
+              type="search"
+              value={searchQuery}
+              onChange={onSearchKeyDown}
+            />
 
-            <button className={styles.search__clear} />
+            {searchQuery && (
+              <button
+                className={styles.search__clear}
+                onClick={onClearSearch}
+              />
+            )}
           </div>
         </>
       ) : (
