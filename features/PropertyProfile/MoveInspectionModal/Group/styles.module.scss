@@ -1,0 +1,22 @@
+@import '../../../../styles/index.scss';
+
+.group {
+  display: block;
+
+  &__header {
+    @extend %stickyBoundingBox--header;
+    background-color: $gray-dark;
+  }
+}
+
+.item {
+  padding: $global-sm-padding $global-padding;
+  border-bottom: 1px solid $gray;
+  cursor: pointer;
+  font-size: rem-calc(14);
+  line-height: 1.4;
+
+  &--selected {
+    background-color: $gray;
+  }
+}

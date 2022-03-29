@@ -9,6 +9,7 @@ interface Props {
   inspections: Array<inspectionModel>;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
+  onMoveInspection: (inspection: inspectionModel) => void;
   forceVisible: boolean;
 }
 
@@ -17,6 +18,7 @@ const InspectionList: FunctionComponent<Props> = ({
   inspections,
   templateCategories,
   openInspectionDeletePrompt,
+  onMoveInspection,
   forceVisible
 }) => {
   if (inspections) {
@@ -32,6 +34,7 @@ const InspectionList: FunctionComponent<Props> = ({
             inspection={lineItem}
             templateCategories={templateCategories}
             openInspectionDeletePrompt={openInspectionDeletePrompt}
+            onMoveInspection={onMoveInspection}
             forceVisible={forceVisible}
           />
         ))}

@@ -409,7 +409,7 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
   });
 
   it('should show dropdown with button and link if user has permission', () => {
-    const expected = 1;
+    const expected = 2;
 
     const props = {
       user: admin,
@@ -427,10 +427,7 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       'inspection-grid-list-item-actions'
     );
 
-    const anchors = items.querySelectorAll('a');
     const buttons = items.querySelectorAll('button');
-
-    expect(anchors.length).toEqual(expected);
     expect(buttons.length).toEqual(expected);
   });
 });
