@@ -2,6 +2,7 @@ import { ChangeEvent, FunctionComponent } from 'react';
 import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
+import FolderIcon from '../../../public/icons/ios/folder.svg';
 import styles from './styles.module.scss';
 import DesktopHeader from '../../../common/DesktopHeader';
 import PropertyModel from '../../../common/models/property';
@@ -17,6 +18,12 @@ interface Props {
     ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
   ) => void;
   onClearSearch(): void;
+  sortBy: string;
+  sortDir: string;
+  userFacingSortBy: string;
+  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
+  onSortDirChange(): void;
+  nextResidentsSort(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -26,7 +33,13 @@ const Header: FunctionComponent<Props> = ({
   property,
   searchQuery,
   onSearchKeyDown,
-  onClearSearch
+  onClearSearch,
+  sortDir,
+  sortBy,
+  userFacingSortBy,
+  nextResidentsSort,
+  onSortChange,
+  onSortDirChange
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -37,6 +50,18 @@ const Header: FunctionComponent<Props> = ({
           Property
         </a>
       </Link>
+    </>
+  );
+
+  // Mobile Header actions buttons
+  const mobileHeaderActions = (headStyle) => (
+    <>
+      <button
+        className={headStyle.header__button}
+        onClick={() => nextResidentsSort()}
+      >
+        <FolderIcon />
+      </button>
     </>
   );
   const BreadCrumbs = () => (
@@ -57,6 +82,7 @@ const Header: FunctionComponent<Props> = ({
           <MobileHeader
             isOnline={isOnline}
             left={mobileHeaderLeft}
+            actions={mobileHeaderActions}
             isStaging={isStaging}
             title="Residents"
           />
@@ -75,13 +101,23 @@ const Header: FunctionComponent<Props> = ({
               />
             )}
           </div>
+          <div className={styles.sortInfoLine}>
+            Sorted by {userFacingSortBy}
+          </div>
         </>
       ) : (
         <DesktopHeader
           title={<BreadCrumbs />}
           isOnline={isOnline}
           isColumnTitle
-          right={<SortBy />}
+          right={
+            <SortBy
+              sortDir={sortDir}
+              sortBy={sortBy}
+              onSortChange={onSortChange}
+              onSortDirChange={onSortDirChange}
+            />
+          }
         />
       )}
     </>

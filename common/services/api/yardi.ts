@@ -172,12 +172,6 @@ export default {
           )
           .map((occ) => normalizeJsonApiDoc(occ));
 
-        // Add numeric lease unit
-        // attribute for sorting
-        if (resident.leaseUnit && typeof resident.leaseUnit === 'string') {
-          resident.leaseUnit = parseInt(resident.leaseUnit, 10);
-        }
-
         // Add occupant(s) to resident
         resident.occupants = residentsOccupants;
         return resident as yardiResident;
