@@ -4,36 +4,25 @@ import {
   canDeleteInspection,
   canReassignInspectionProperty
 } from '../../../common/utils/userPermissions';
-import Dropdown, {
-  DropdownLink,
-  DropdownButton
-} from '../../../common/Dropdown';
-import features from '../../../config/features';
+import Dropdown, { DropdownButton } from '../../../common/Dropdown';
 
 interface Props {
   user: userModel;
-  propertyId: string;
-  inspectionId: string;
   onDeleteClick?: () => any;
+  onMove?: () => void;
 }
 
 const DropdownInspection: FunctionComponent<Props> = ({
   user,
-  propertyId,
-  inspectionId,
-  onDeleteClick
+  onDeleteClick,
+  onMove
 }) => (
   <Dropdown>
     {canDeleteInspection(user) ? (
       <DropdownButton onClick={onDeleteClick}>Delete</DropdownButton>
     ) : null}
     {canReassignInspectionProperty(user) ? (
-      <DropdownLink
-        href={`/properties/${propertyId}/reassign-inspection/${inspectionId}`}
-        featureEnabled={features.supportBetaPropertyInspectionMove}
-      >
-        Move
-      </DropdownLink>
+      <DropdownButton onClick={onMove}>Move</DropdownButton>
     ) : null}
   </Dropdown>
 );

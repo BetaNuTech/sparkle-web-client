@@ -22,6 +22,7 @@ interface ListItemProps {
   propertyId: string;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
+  onMoveInspection: (inspection: inspectionModel) => void;
   forceVisible?: boolean;
 }
 
@@ -31,6 +32,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   propertyId,
   templateCategories,
   openInspectionDeletePrompt,
+  onMoveInspection,
   forceVisible
 }) => {
   // State
@@ -200,9 +202,8 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                 <ActionsIcon />
                 <DropdownInspection
                   user={user}
-                  propertyId={propertyId}
-                  inspectionId={inspection.id}
                   onDeleteClick={() => openInspectionDeletePrompt(inspection)}
+                  onMove={() => onMoveInspection(inspection)}
                 />
               </span>
             </div>

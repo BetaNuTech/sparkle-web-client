@@ -18,6 +18,7 @@ interface ListItemProps {
   inspection: inspectionModel;
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
+  onMoveInspection: (inspection: inspectionModel) => void;
   forceVisible?: boolean;
 }
 
@@ -26,6 +27,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   inspection,
   templateCategories,
   openInspectionDeletePrompt,
+  onMoveInspection,
   forceVisible
 }) => {
   // State
@@ -241,16 +243,15 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             >
               Delete
             </button>
-            <LinkFeature
-              href={`/properties/${propertyId}/reassign-inspection/${inspection.id}`}
-              featureEnabled={features.supportBetaPropertyInspectionMove}
+            <button
+              onClick={() => onMoveInspection(inspection)}
               className={clsx(
                 styles.propertyProfile__inspectionsList__revealButton,
                 '-bgc-orange'
               )}
             >
               Move
-            </LinkFeature>
+            </button>
           </div>
         </div>
       ) : null}

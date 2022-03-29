@@ -34,6 +34,7 @@ import propertyModel from '../../common/models/property';
 import templateCategoryModel from '../../common/models/templateCategory';
 import inspectionModel from '../../common/models/inspection';
 import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
+import MoveInspectionModal from './MoveInspectionModal';
 
 interface Props {
   user: userModel;
@@ -99,11 +100,16 @@ const PropertyProfile: FunctionComponent<Props> = ({
     true
   );
 
+  const [queueInspectionForMove, setQueueInspectionForMove] = useState(null);
+  const [isMoveInspectionModalVisible, setMoveInspectionPromptVisible] =
+    useState(false);
+
   // Queue and Delete Inspection
   const [isDeleteInspectionPromptVisible, setDeleteInspectionPromptVisible] =
     useState(false);
   const { queueInspectionForDelete, confirmInspectionDelete } =
     useDeleteInspection(firestore, sendNotification, user);
+
   const openInspectionDeletePrompt = (inspection: inspectionModel) => {
     queueInspectionForDelete(inspection);
     setDeleteInspectionPromptVisible(true);
@@ -111,6 +117,16 @@ const PropertyProfile: FunctionComponent<Props> = ({
   const closeDeleteInspctionPrompt = () => {
     setDeleteInspectionPromptVisible(false);
     queueInspectionForDelete(null);
+  };
+
+  const onMoveInspection = (inspection: inspectionModel) => {
+    setMoveInspectionPromptVisible(true);
+    setQueueInspectionForMove(inspection);
+  };
+
+  const onCloseMoveInspection = () => {
+    setMoveInspectionPromptVisible(false);
+    setQueueInspectionForMove(null);
   };
 
   // Activate next inspection fitler in series
@@ -197,6 +213,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
                 <Inspection
                   inspections={sortedInspections}
                   openInspectionDeletePrompt={openInspectionDeletePrompt}
+                  onMoveInspection={onMoveInspection}
                   templateCategories={templateCategories}
                   propertyId={id}
                   forceVisible={forceVisible}
@@ -259,6 +276,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
                 inspections={sortedInspections}
                 templateCategories={templateCategories}
                 openInspectionDeletePrompt={openInspectionDeletePrompt}
+                onMoveInspection={onMoveInspection}
                 onSortChange={onSortChange}
                 sortBy={sortBy}
                 sortDir={sortDir}
@@ -281,6 +299,13 @@ const PropertyProfile: FunctionComponent<Props> = ({
         onConfirm={confirmInspectionDelete}
         isVisible={isDeleteInspectionPromptVisible}
         onClose={closeDeleteInspctionPrompt}
+      />
+      <MoveInspectionModal
+        isVisible={isMoveInspectionModalVisible}
+        onClose={onCloseMoveInspection}
+        inspection={queueInspectionForMove}
+        firestore={firestore}
+        user={user}
       />
     </>
   );
