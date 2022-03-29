@@ -32,6 +32,11 @@
   }
 }
 
+.sortInfoLine {
+  @extend %sortInfo;
+  justify-content: center;
+}
+
 .search {
   @extend %mobileSearchInputMain;
 

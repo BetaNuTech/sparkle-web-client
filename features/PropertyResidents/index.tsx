@@ -8,32 +8,7 @@ import Header from './Header';
 import breakpoints from '../../config/breakpoints';
 import SearchBar from '../../common/SearchBar';
 import styles from './styles.module.scss';
-import useSearching from '../../common/hooks/useSearching';
-import search from '../../common/utils/search';
-
-const queryAttrs = [
-  'email',
-  'eviction',
-  'firstName',
-  'homeNumber',
-  'lastName',
-  'lastNote',
-  'leaseFrom',
-  'leaseSqFt',
-  'leaseTo',
-  'leaseUnit',
-  'middleName',
-  'mobileNumber',
-  'moveIn',
-  'paymentPlan',
-  'paymentPlanDelinquent',
-  'status',
-  'totalCharges',
-  'totalOwed',
-  'yardiStatus',
-  'sortLeaseUnit',
-  'sortLeaseUnit'
-];
+import useSearchingAndSorting from './hooks/useSearchingAndSorting';
 
 interface Props {
   isOnline?: boolean;
@@ -53,25 +28,24 @@ const PropertyResidents: FunctionComponent<Props> = ({
   property,
   forceVisible
 }) => {
-  // create indexes for resident's occupant
-  const residentsForFilter = residents.map((resident) => {
-    const indexes = search.createSearchIndex(
-      resident.occupants || [],
-      queryAttrs
-    );
-
-    return { ...resident, occupantsString: Object.values(indexes).join(' ') };
-  });
-
-  const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
-    useSearching(residentsForFilter, [...queryAttrs, 'occupantsString']);
-
-  const filteredResidents = filteredItems.map((item) => item as ResidentModel);
-
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
+
+  // Sort properties
+  const {
+    sortDir,
+    sortBy,
+    userFacingSortBy,
+    nextResidentsSort,
+    onSortChange,
+    onSortDirChange,
+    searchValue,
+    onClearSearch,
+    onSearchKeyDown,
+    filteredResidents
+  } = useSearchingAndSorting(residents, 'asc');
 
   return (
     <>
@@ -83,6 +57,12 @@ const PropertyResidents: FunctionComponent<Props> = ({
         searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
+        sortDir={sortDir}
+        sortBy={sortBy}
+        userFacingSortBy={userFacingSortBy}
+        nextResidentsSort={nextResidentsSort}
+        onSortChange={onSortChange}
+        onSortDirChange={onSortDirChange}
       />
       <div className={styles.container}>
         {!isMobile && (

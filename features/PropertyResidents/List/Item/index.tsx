@@ -62,10 +62,10 @@ const ResidenceListItem: FunctionComponent<Props> = ({
             {resident.id && (
               <Info label="ID" value={resident.id} data-testid="residents-id" />
             )}
-            {resident.status && (
+            {resident.yardiStatus && (
               <Info
                 label="Status"
-                value={resident.status}
+                value={resident.yardiStatus}
                 data-testid="residents-yardi-status"
               />
             )}
@@ -81,14 +81,14 @@ const ResidenceListItem: FunctionComponent<Props> = ({
                   </span>
                 </>
               )}
-              {resident.sortLeaseUnit && (
+              {resident.leaseSqFt && (
                 <>
                   <p className={styles.info__label}>Sq Ft:</p>
                   <span
                     className={styles.info__value}
                     data-testid="residents-sort-lease-unit"
                   >
-                    {resident.sortLeaseUnit}
+                    {resident.leaseSqFt}
                   </span>
                 </>
               )}
