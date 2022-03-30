@@ -16,6 +16,7 @@ interface Props {
   isLastStep: boolean;
   templateName: string;
   isValidForm: boolean;
+  hideBreadcrumbs?: boolean;
   onSave(): void;
   isLoading: boolean;
   hasUpdates: boolean;
@@ -31,6 +32,7 @@ const Header: FunctionComponent<Props> = ({
   isLastStep,
   templateName,
   isValidForm,
+  hideBreadcrumbs,
   onSave,
   isLoading,
   hasUpdates
@@ -88,15 +90,21 @@ const Header: FunctionComponent<Props> = ({
 
   const BreadCrumbs = () => (
     <>
-      <div className={styles.header__breadcrumbs}>
-        <Link href="/templates">
-          <a className={styles.header__link}>Templates</a>
-        </Link>
-        <span title={templateName} className={styles.header__text}>
-          &nbsp;&nbsp;/&nbsp;&nbsp; {templateName}
-        </span>
-      </div>
-      <div className={styles.header__title}>Edit Template</div>
+      {hideBreadcrumbs ? (
+        <></>
+      ) : (
+        <>
+          <div className={styles.header__breadcrumbs}>
+            <Link href="/templates">
+              <a className={styles.header__link}>Templates</a>
+            </Link>
+            <span title={templateName} className={styles.header__text}>
+              &nbsp;&nbsp;/&nbsp;&nbsp; {templateName}
+            </span>
+          </div>
+          <div className={styles.header__title}>Edit Template</div>
+        </>
+      )}
     </>
   );
 
@@ -123,6 +131,8 @@ const Header: FunctionComponent<Props> = ({
   );
 };
 
-Header.defaultProps = {};
+Header.defaultProps = {
+  hideBreadcrumbs: false
+};
 
 export default Header;

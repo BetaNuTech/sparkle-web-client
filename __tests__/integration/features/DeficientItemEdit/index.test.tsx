@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import moment from 'moment';
 import { act } from 'react-dom/test-utils';
+import FDBFactory from 'fake-indexeddb/lib/FDBFactory';
 import createDeficientItem from '../../../helpers/createDeficientItem';
 import { admin } from '../../../../__mocks__/users';
 import { fullProperty } from '../../../../__mocks__/properties';
@@ -12,7 +13,11 @@ import deepClone from '../../../helpers/deepClone';
 import wait from '../../../helpers/wait';
 
 describe('Unit | features | Deficient Item Edit', () => {
-  afterEach(() => sinon.restore());
+  afterEach(() => {
+    sinon.restore();
+    new FDBFactory(); // eslint-disable-line
+    return wait(600);
+  });
 
   it('should request for transition to pending', async () => {
     // Stub update
