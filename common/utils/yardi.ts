@@ -1,4 +1,4 @@
-export interface yardiContact {
+export interface YardiContact {
   name: string;
   category: string;
   subCategory: string;
@@ -7,7 +7,7 @@ export interface yardiContact {
 
 // Any type like a yardi
 // resident, work order, or occupant
-interface yardiDocument {
+interface YardiDocument {
   requestorName?: string;
   requestorEmail?: string;
   requestorPhone?: string;
@@ -27,7 +27,7 @@ interface yardiDocument {
  * @param  {Object} source
  * @return {Contact[]} - contacts
  */
-export function toContacts(source: yardiDocument): yardiContact[] {
+export function toContacts(source: YardiDocument): YardiContact[] {
   const results = [];
   const name = [
     source.requestorName,

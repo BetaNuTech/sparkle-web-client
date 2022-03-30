@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import ResidentModel from '../../common/models/yardi/resident';
 import OccupantModel from '../../common/models/yardi/occupant';
@@ -9,6 +9,7 @@ import breakpoints from '../../config/breakpoints';
 import SearchBar from '../../common/SearchBar';
 import styles from './styles.module.scss';
 import useSearchingAndSorting from './hooks/useSearchingAndSorting';
+import ContactModal from './ContactModal';
 
 interface Props {
   isOnline?: boolean;
@@ -33,6 +34,10 @@ const PropertyResidents: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
+  const [selectedResident, setSelectedResident] = useState(null);
+  const onClickResident = (resident: ResidentModel) => {
+    setSelectedResident(resident);
+  };
   // Sort properties
   const {
     sortDir,
@@ -77,6 +82,7 @@ const PropertyResidents: FunctionComponent<Props> = ({
           residents={filteredResidents}
           isMobile={isMobile}
           forceVisible={forceVisible}
+          onClickResident={onClickResident}
         />
         {searchValue && (
           <div className={styles.action}>
@@ -86,6 +92,11 @@ const PropertyResidents: FunctionComponent<Props> = ({
           </div>
         )}
       </div>
+      <ContactModal
+        isVisible={Boolean(selectedResident)}
+        onClose={() => setSelectedResident(null)}
+        resident={selectedResident}
+      />
     </>
   );
 };

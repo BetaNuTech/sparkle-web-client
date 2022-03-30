@@ -7,12 +7,14 @@ interface Props {
   residents: residentModel[];
   isMobile: boolean;
   forceVisible?: boolean;
+  onClickResident(resident: residentModel): void;
 }
 
 const ResidentList: FunctionComponent<Props> = ({
   residents,
   isMobile,
-  forceVisible
+  forceVisible,
+  onClickResident
 }) => (
   <div>
     <h3 className={styles.header}>Residents</h3>
@@ -23,6 +25,7 @@ const ResidentList: FunctionComponent<Props> = ({
           resident={resident}
           isMobile={isMobile}
           forceVisible={forceVisible}
+          onClick={() => onClickResident(resident)}
         />
       ))}
     </ul>
