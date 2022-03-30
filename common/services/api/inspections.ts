@@ -30,6 +30,8 @@ const patchInspectionTemplateApiError = createApiError(
   `${PREFIX} updateInspectionTemplate:`
 );
 
+const patchInspectionApiError = createApiError(`${PREFIX} updateInspection:`);
+
 const postFileRequestApiError = createApiError(`${PREFIX} uploadPhotoData:`);
 
 const generatePDFApiError = createApiError(`${PREFIX} generatePdfReport:`);
@@ -285,9 +287,65 @@ const generatePdfReport = async (inspectionId: string): Promise<boolean> => {
   return true;
 };
 
+const patchInspectionRequest = (
+  authToken: string,
+  inspectionId: string,
+  data: Record<string, string>
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/inspections/${inspectionId}`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      ...data
+    })
+  });
+
+const updateInspection = async (
+  inspectionId: string,
+  data: Record<string, string>
+): Promise<boolean> => {
+  let authToken = '';
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} updateInspection: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await patchInspectionRequest(authToken, inspectionId, data);
+  } catch (err) {
+    throw Error(`${PREFIX} updateInspection: PATCH request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} updateInspection: failed to parse JSON: ${err}`);
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = patchInspectionApiError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return true;
+};
+
 export default {
   createRecord,
   updateInspectionTemplate,
   uploadPhotoData,
-  generatePdfReport
+  generatePdfReport,
+  updateInspection
 };

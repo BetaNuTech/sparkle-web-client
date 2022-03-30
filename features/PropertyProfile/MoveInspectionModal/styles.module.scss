@@ -8,6 +8,12 @@
 
 .main {
   padding: 0;
+
+  &--loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .selection {

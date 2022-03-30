@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import firebase from 'firebase/app';
+import Image from 'next/image';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import baseStyles from '../../../common/Modal/styles.module.scss';
 import InspectionModel from '../../../common/models/inspection';
@@ -15,13 +16,17 @@ interface Props extends ModalProps {
   inspection: InspectionModel;
   firestore: firebase.firestore.Firestore;
   user: UserModel;
+  onConfirm(property: string): void;
+  isMoving: boolean;
 }
 
 const MoveInspectionModal: FunctionComponent<Props> = ({
   onClose,
   inspection,
   firestore,
-  user
+  user,
+  onConfirm,
+  isMoving
 }) => {
   const {
     isLoaded,
@@ -50,6 +55,7 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
       >
         ×
       </button>
+
       <div className={clsx(baseStyles.modal__main)}>
         <div className={styles.selection}>
           <p className="-c-gray-med-dark -fz-medium-large -mb-xsm">
@@ -62,8 +68,25 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
             {selectedPropertyName}
           </div>
         </div>
-        <div className={clsx(baseStyles.modal__main__content, styles.main)}>
-          {isLoaded ? (
+        <div
+          className={clsx(
+            baseStyles.modal__main__content,
+            styles.main,
+            isMoving && styles['main--loading']
+          )}
+        >
+          {isMoving && (
+            <Image
+              className={styles.loader}
+              src="/img/sparkle-loader.gif"
+              alt="loader"
+              width="100"
+              height="100"
+              layout="fixed"
+            />
+          )}
+          {!isLoaded && <SkeletonLoader className="-pl -pr" />}
+          {isLoaded && !isMoving && (
             <ul>
               {teams.map((team) => {
                 const teamProperties = propertiesByTeam.get(team.id) || [];
@@ -78,12 +101,14 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
                 );
               })}
             </ul>
-          ) : (
-            <SkeletonLoader className="-pl -pr" />
           )}
         </div>
         <div className={clsx(baseStyles.modal__main__footer, '-jc-flex-end')}>
-          <button className={styles.action} disabled={!selectedProperty}>
+          <button
+            className={styles.action}
+            disabled={!selectedProperty || isMoving}
+            onClick={() => onConfirm(selectedProperty)}
+          >
             Confirm Move
           </button>
         </div>
