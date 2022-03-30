@@ -3,6 +3,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import { act } from 'react-dom/test-utils';
 import ResidentModel from '../../../common/models/yardi/resident';
 import { shuffle } from '../../../__tests__/helpers/array';
+import createResident from '../../../__tests__/helpers/createResident';
 import useSearchingAndSorting from './useSearchingAndSorting';
 
 describe('Unit | features | Property Residents | Hooks | use searching and sorting', () => {
@@ -158,27 +159,3 @@ describe('Unit | features | Property Residents | Hooks | use searching and sorti
     expect(actual).toEqual(expected);
   });
 });
-
-const createResident = (id: string, config: any): ResidentModel => {
-  const now = new Date().toISOString();
-
-  return {
-    id,
-    firstName: 'first',
-    middleName: 'middle',
-    lastName: 'last',
-    email: 'test@email.com',
-    mobileNumber: '12345678910',
-    homeNumber: '12345678911',
-    officeNumber: '12345678912',
-    status: 'current resident',
-    yardiStatus: 'current',
-    leaseUnit: '1235',
-    leaseSqFt: '123',
-    leaseFrom: now,
-    leaseTo: now,
-    moveIn: now,
-    occupants: [],
-    ...config
-  };
-};

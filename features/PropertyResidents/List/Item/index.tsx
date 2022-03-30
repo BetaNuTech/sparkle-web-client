@@ -11,17 +11,20 @@ interface Props {
   resident: ResidentModel;
   isMobile: boolean;
   forceVisible?: boolean;
+  onClick(): void;
 }
 
 const ResidenceListItem: FunctionComponent<Props> = ({
   resident,
   isMobile,
-  forceVisible
+  forceVisible,
+  onClick
 }) => {
   const placeholderRef = useRef();
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
   return (
-    <li className={styles.container} ref={placeholderRef}>
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <li className={styles.container} ref={placeholderRef} onClick={onClick}>
       {isVisible && (
         <>
           <div className={styles.container__left}>

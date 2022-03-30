@@ -1,0 +1,13 @@
+@import '../../../styles/index.scss';
+
+.contactModal {
+  display: flex;
+  padding-top: $global-mlg-padding;
+}
+
+.contact {
+  display: flex;
+  justify-content: center;
+  padding: $global-sm-padding;
+  border-bottom: 1px solid $gray;
+}

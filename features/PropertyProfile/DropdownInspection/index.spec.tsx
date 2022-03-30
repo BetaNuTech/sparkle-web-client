@@ -3,11 +3,6 @@ import { admin } from '../../../__mocks__/users';
 import DropdownInspection from './index';
 
 describe('Unit | Common | Dropdown | Link', () => {
-  it('matches prior snapshot', () => {
-    const { container } = render(<DropdownInspection user={admin} />);
-    expect(container).toMatchSnapshot();
-  });
-
   it('should has 2 button for admin login', () => {
     const { container } = render(<DropdownInspection user={admin} />);
     const buttons = container.querySelectorAll('button');
