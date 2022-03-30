@@ -77,6 +77,7 @@
 
   &__icon {
     @extend %iconButton;
+    padding: 0 rem-calc(6);
 
     svg path {
       fill: $primary-color;

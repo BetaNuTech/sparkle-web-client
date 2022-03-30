@@ -4,7 +4,7 @@ import { act } from 'react-dom/test-utils';
 import useInspectionActions, {
   USER_NOTIFICATIONS
 } from './useInspectionActions';
-import inspectionFirestoreDb from '../../../common/services/firestore/inspections';
+import inspectionFirestoreApi from '../../../common/services/firestore/inspections';
 import errorReports from '../../../common/services/api/errorReports';
 import globalNotification from '../../../common/services/firestore/notifications';
 import inspections from '../../../__mocks__/inspections';
@@ -28,7 +28,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
     const deleteRecord = sinon
-      .stub(inspectionFirestoreDb, 'deleteRecord')
+      .stub(inspectionFirestoreApi, 'deleteRecord')
       .resolves();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
@@ -59,7 +59,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
 
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    sinon.stub(inspectionFirestoreDb, 'deleteRecord').resolves();
+    sinon.stub(inspectionFirestoreApi, 'deleteRecord').resolves();
 
     const globalNotificaion = sinon
       .stub(globalNotification, 'send')
@@ -92,7 +92,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
 
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    sinon.stub(inspectionFirestoreDb, 'deleteRecord').rejects();
+    sinon.stub(inspectionFirestoreApi, 'deleteRecord').rejects();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await new Promise((resolve) => {
@@ -122,7 +122,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
     const [target] = inspections;
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    sinon.stub(inspectionFirestoreDb, 'deleteRecord').rejects();
+    sinon.stub(inspectionFirestoreApi, 'deleteRecord').rejects();
     const sendError = sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await new Promise((resolve) => {

@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Item from './Item';
@@ -24,6 +24,7 @@ const SortableItem: FunctionComponent<Props> = ({
   errors,
   errorMessage
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
   const {
     attributes,
     listeners,
@@ -31,7 +32,7 @@ const SortableItem: FunctionComponent<Props> = ({
     transform,
     transition,
     isDragging
-  } = useSortable({ id });
+  } = useSortable({ id, disabled: isEditing });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -51,6 +52,7 @@ const SortableItem: FunctionComponent<Props> = ({
       style={style}
       errors={errors}
       errorMessage={errorMessage}
+      setIsEditing={setIsEditing}
       {...attributes}
       {...listeners}
     />
