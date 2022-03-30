@@ -2,6 +2,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
 import { act } from 'react-dom/test-utils';
 import { NextRouter } from 'next/router';
+import FDBFactory from 'fake-indexeddb/lib/FDBFactory';
 import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { admin } from '../../../../__mocks__/users';
 import TemplateModel from '../../../../common/models/template';
@@ -75,6 +76,9 @@ describe('Integration | features | Templates', () => {
   beforeEach(() => {
     sinon.stub(errorReports, 'send').resolves();
     stubIntersectionObserver();
+    // Wipe fake Indexed DB
+    new FDBFactory(); // eslint-disable-line
+    return wait(600);
   });
 
   it('should request to publish template updates', async () => {
@@ -90,8 +94,10 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: { name: 'Template 1' } as TemplateModel
     };
+
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'item-values' }
@@ -119,8 +125,10 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel
     };
+
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'general' }
@@ -128,20 +136,21 @@ describe('Integration | features | Templates', () => {
     );
 
     await act(async () => {
-      await wait(100);
       const nameInput = screen.queryByTestId('template-edit-name');
       fireEvent.change(nameInput, {
         target: { value: expected }
       });
-      await wait(100);
+      await wait(500);
     });
 
     const localTemplateData = await templateUpdates.queryRecord({
       id: templateA.id
     });
 
-    expect(localTemplateData.id).toEqual(templateA.id);
-    expect(localTemplateData.name).toEqual(expected);
+    const id = localTemplateData ? localTemplateData.id : '';
+    const name = localTemplateData ? localTemplateData.name : '';
+    expect(id).toEqual(templateA.id);
+    expect(name).toEqual(expected);
   });
 
   it('should delete local updates record when changes are reverted', async () => {
@@ -156,8 +165,10 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel
     };
+
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'general' }
@@ -166,7 +177,6 @@ describe('Integration | features | Templates', () => {
 
     // add local updates
     await act(async () => {
-      await wait(100);
       const nameInput = screen.queryByTestId('template-edit-name');
       fireEvent.change(nameInput, {
         target: { value: 'Template name 1' }
@@ -208,9 +218,11 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 2
     };
+
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'section-items' }
@@ -218,7 +230,6 @@ describe('Integration | features | Templates', () => {
     );
 
     await act(async () => {
-      await wait(200);
       const itemCheckbox = screen.queryByTestId('template-edit-item-checkbox');
       const deleteAction = screen.queryByTestId('template-edit-item-delete');
       fireEvent.click(itemCheckbox);
@@ -247,9 +258,11 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
+
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'sections' }
@@ -284,9 +297,11 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
+
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'sections' }
@@ -325,15 +340,18 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 2
     };
 
+    // Link requires rendering inside act
     render(
       withTestRouter(<TemplateEdit {...props} />, {
         query: { step: 'section-items' }
       })
     );
+
     const actual = [];
 
     for (let i = 0; i < expected.length; i += 1) {
@@ -368,6 +386,7 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
@@ -408,6 +427,7 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 4
     };
@@ -459,6 +479,7 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 3
     };
@@ -468,6 +489,7 @@ describe('Integration | features | Templates', () => {
         query: { step: 'items' }
       })
     );
+
     const actual = [];
     // eslint-disable-next-line
     for (const type of INPUT_ITEM_TYPES) {
@@ -492,28 +514,28 @@ describe('Integration | features | Templates', () => {
       {
         expected: 'Minimum 1 section is required',
         sections: {},
-        unpublishedUpdates: {},
+        unpublishedUpdates: {} as TemplateModel,
         message: 'reveals minimum one section required error label'
       },
       {
         expected: '',
         sections: { one: { ...singleSection, id: 'one' } },
-        unpublishedUpdates: {},
+        unpublishedUpdates: {} as TemplateModel,
         message: 'progresses to next step successfully'
+      },
+      {
+        expected: 'Minimum 1 section is required',
+        sections: { one: { ...singleSection, id: 'one' } },
+        unpublishedUpdates: { sections: { one: null } } as TemplateModel,
+        message: 'reveals minimum one section required error label'
+      },
+      {
+        expected: 'Name is required',
+        sections: { one: { ...singleSection, title: '', id: 'one' } },
+        unpublishedUpdates: {} as TemplateModel,
+        message:
+          'reveals section title error label when any sections lacks a title'
       }
-      // TODO: fix unpublished updates not setting:
-      // {
-      //   expected: 'Minimum 1 section is required',
-      //   sections: { one: { ...singleSection, id: 'one' } },
-      //   unpublishedUpdates: { sections: { one: null } },
-      //   message: 'reveals minimum one section required error label'
-      // }
-      // {
-      //   expected: 'Name is required',
-      //   sections: { one: { ...singleSection, title: '', id: 'one' } },
-      //   unpublishedUpdates: { sections: { one: null } },
-      //   message: 'section title error label when any sections lacks a title'
-      // }
     ];
 
     const props = {
@@ -534,26 +556,23 @@ describe('Integration | features | Templates', () => {
       sendNotification: sinon.spy(),
       isMobile: false,
       isOnline: true,
+      hideBreadcrumbs: true,
       unpublishedUpdates: {} as TemplateModel,
       initialSlide: 1
     };
-
-    const { rerender } = render(
-      withTestRouter(<TemplateEdit {...props} />, {
-        query: { step: 'sections' }
-      })
-    );
 
     // eslint-disable-next-line
     for (const test of tests) {
       const { unpublishedUpdates, sections, expected, message } = test;
       const template = { ...props.template, sections } as TemplateModel;
       const updatedProps = { ...props, template, unpublishedUpdates };
-      rerender(
+
+      const { unmount } = render(
         withTestRouter(<TemplateEdit {...updatedProps} />, {
           query: { step: 'sections' }
         })
       );
+
       // eslint-disable-next-line
       await act(async () => {
         await wait(100);
@@ -567,96 +586,100 @@ describe('Integration | features | Templates', () => {
       const miscErrorMsg = miscSectionError ? miscSectionError.textContent : '';
       const sectionErrorMsg = sectionError ? sectionError.textContent : '';
       const actual = `${miscErrorMsg || sectionErrorMsg}`.trim();
-
       expect(actual, message).toEqual(expected);
+      unmount(); // Needed for unpublished updates to sync in next tests
     }
   });
 
-  // TODO: test for validation error messages and re-enable
-  // it('sshould invalidate section items step once all sections contain at least one titled item', async () => {
-  //   const tests = [
-  //     {
-  //       expected: false,
-  //       items: {},
-  //       unpublishedUpdates: {},
-  //       message: 'disable next step button if there is no items'
-  //     },
-  //     {
-  //       expected: true,
-  //       items: {
-  //         itemOne: {
-  //           ...selectedCheckmarkItem,
-  //           mainInputType: 'OneAction_notes',
-  //           sectionId: 'one',
-  //           id: 'itemOne'
-  //         }
-  //       },
-  //       unpublishedUpdates: {},
-  //       message: 'enable next step button'
-  //     },
-  //     {
-  //       expected: true,
-  //       items: {
-  //         itemOne: {
-  //           ...selectedCheckmarkItem,
-  //           mainInputType: 'OneAction_notes',
-  //           sectionId: 'one',
-  //           id: 'itemOne'
-  //         }
-  //       },
-  //       unpublishedUpdates: { items: { itemOne: null } },
-  //       message:
-  //         'disable next step button if local updates removes all items from section'
-  //     }
-  //   ];
+  it('should invalidate section items step once all sections contain at least one titled item', async () => {
+    const tests = [
+      {
+        expected: 'Minimum 1 item required in each section',
+        items: {},
+        unpublishedUpdates: {} as TemplateModel,
+        message: 'disable next step button if there is no items'
+      },
+      {
+        expected: '',
+        items: {
+          itemOne: {
+            ...selectedCheckmarkItem,
+            mainInputType: 'OneAction_notes',
+            sectionId: 'one',
+            id: 'itemOne'
+          }
+        },
+        unpublishedUpdates: {} as TemplateModel,
+        message: 'enable next step button'
+      },
+      {
+        expected: 'Minimum 1 item required in each section',
+        items: {
+          itemOne: {
+            ...selectedCheckmarkItem,
+            mainInputType: 'OneAction_notes',
+            sectionId: 'one',
+            id: 'itemOne'
+          }
+        },
+        unpublishedUpdates: { items: { itemOne: null } } as TemplateModel,
+        message:
+          'disable next step button if local updates removes all items from section'
+      }
+    ];
 
-  //   const props = {
-  //     user: admin,
-  //     template: {
-  //       ...templateA,
-  //       sections: { one: { ...singleSection, id: 'one' } },
-  //       items: {
-  //         itemOne: {
-  //           ...selectedCheckmarkItem,
-  //           mainInputType: 'OneAction_notes',
-  //           sectionId: 'one',
-  //           id: 'itemOne'
-  //         }
-  //       }
-  //     },
-  //     templateCategories,
-  //     sendNotification: sinon.spy(),
-  //     isMobile: false,
-  //     isOnline: true,
-  //     unpublishedUpdates: {} as TemplateModel,
-  //     initialSlide: 2
-  //   };
+    const props = {
+      user: admin,
+      template: {
+        ...templateA,
+        sections: { one: { ...singleSection, id: 'one' } },
+        items: {
+          itemOne: {
+            ...selectedCheckmarkItem,
+            mainInputType: 'OneAction_notes',
+            sectionId: 'one',
+            id: 'itemOne'
+          }
+        }
+      },
+      templateCategories,
+      sendNotification: sinon.spy(),
+      isMobile: false,
+      isOnline: true,
+      hideBreadcrumbs: true,
+      unpublishedUpdates: {} as TemplateModel,
+      initialSlide: 2
+    };
+    // eslint-disable-next-line
+    for (const test of tests) {
+      const { unpublishedUpdates, items, expected, message } = test;
+      const template = { ...props.template, items } as TemplateModel;
+      const updatedProps = { ...props, template, unpublishedUpdates };
 
-  //   const { rerender } = render(
-  //     withTestRouter(<TemplateEdit {...props} />, {
-  //       query: { step: 'section-items' }
-  //     })
-  //   );
-  //   // eslint-disable-next-line
-  //   for (const test of tests) {
-  //     const { unpublishedUpdates, items, expected, message } = test;
-  //     const template = { ...props.template, items } as TemplateModel;
-  //     const updatedProps = { ...props, template, unpublishedUpdates };
-  //     rerender(
-  //       withTestRouter(<TemplateEdit {...updatedProps} />, {
-  //         query: { step: 'section-items' }
-  //       })
-  //     );
-  //     // eslint-disable-next-line
-  //     await act(async () => {
-  //       await wait(100);
-  //     });
-  //     const nextStepAction = screen.queryByTestId('StepsLayout-next-step');
-  //     if (expected) {
-  //       expect(nextStepAction, message).toBeEnabled();
-  //     } else {
-  //       expect(nextStepAction, message).toBeDisabled();
-  //     }
-  //   }
-  // });
+      const { unmount } = render(
+        withTestRouter(<TemplateEdit {...updatedProps} />, {
+          query: { step: 'section-items' }
+        })
+      );
+
+      // eslint-disable-next-line
+      await act(async () => {
+        await wait(100);
+        const nextStepAction = screen.queryByTestId('StepsLayout-next-step');
+        fireEvent.click(nextStepAction);
+        await wait(500);
+      });
+
+      const miscSectionItemError = screen.queryByTestId(
+        'error-message-undefined'
+      );
+      const sectionItemErrorMsg = miscSectionItemError
+        ? miscSectionItemError.textContent
+        : '';
+
+      const actual = sectionItemErrorMsg.trim();
+      expect(actual, message).toEqual(expected);
+      unmount(); // Needed for unpublished updates to sync in next tests
+    }
+  });
 });

@@ -29,6 +29,7 @@ interface Props {
   templateCategories: TemplateCategoryModel[];
   isOnline?: boolean;
   isStaging?: boolean;
+  hideBreadcrumbs?: boolean;
   toggleNavOpen?(): void;
   sendNotification: UserNotifications;
   initialSlide?: number;
@@ -41,7 +42,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
   templateCategories,
   unpublishedUpdates,
   sendNotification,
-  initialSlide
+  initialSlide,
+  hideBreadcrumbs
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -221,6 +223,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         isLastStep={isLastStep}
         templateName={template.name}
         isValidForm={isValidForm}
+        hideBreadcrumbs={hideBreadcrumbs}
         onSave={onSave}
         isLoading={isLoading}
         hasUpdates={hasUpdates}
@@ -282,6 +285,10 @@ const TemplateEdit: FunctionComponent<Props> = ({
       />
     </>
   );
+};
+
+TemplateEdit.defaultProps = {
+  hideBreadcrumbs: false
 };
 
 export default TemplateEdit;
