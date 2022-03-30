@@ -11,7 +11,7 @@ import { canAccessJobs } from '../../common/utils/userPermissions';
 import useInspectionSorting from './hooks/useInspectionSorting';
 import useInspectionFilter from './hooks/useInspectionFilter';
 import { activeInspectionSortFilter } from './utils/inspectionSorting';
-import useDeleteInspection from './hooks/useDeleteInspection';
+import useInspectionActions from './hooks/useInspectionActions';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
@@ -100,15 +100,18 @@ const PropertyProfile: FunctionComponent<Props> = ({
     true
   );
 
-  const [queueInspectionForMove, setQueueInspectionForMove] = useState(null);
-  const [isMoveInspectionModalVisible, setMoveInspectionPromptVisible] =
-    useState(false);
-
   // Queue and Delete Inspection
   const [isDeleteInspectionPromptVisible, setDeleteInspectionPromptVisible] =
     useState(false);
-  const { queueInspectionForDelete, confirmInspectionDelete } =
-    useDeleteInspection(firestore, sendNotification, user);
+
+  const {
+    queueInspectionForDelete,
+    confirmInspectionDelete,
+    queuedInspectionForMove,
+    setQueueInspectionForMove,
+    confirmMoveInspection,
+    isMoving
+  } = useInspectionActions(firestore, sendNotification, user);
 
   const openInspectionDeletePrompt = (inspection: inspectionModel) => {
     queueInspectionForDelete(inspection);
@@ -120,12 +123,10 @@ const PropertyProfile: FunctionComponent<Props> = ({
   };
 
   const onMoveInspection = (inspection: inspectionModel) => {
-    setMoveInspectionPromptVisible(true);
     setQueueInspectionForMove(inspection);
   };
 
   const onCloseMoveInspection = () => {
-    setMoveInspectionPromptVisible(false);
     setQueueInspectionForMove(null);
   };
 
@@ -301,11 +302,13 @@ const PropertyProfile: FunctionComponent<Props> = ({
         onClose={closeDeleteInspctionPrompt}
       />
       <MoveInspectionModal
-        isVisible={isMoveInspectionModalVisible}
+        isVisible={Boolean(queuedInspectionForMove)}
         onClose={onCloseMoveInspection}
-        inspection={queueInspectionForMove}
+        inspection={queuedInspectionForMove}
         firestore={firestore}
         user={user}
+        onConfirm={confirmMoveInspection}
+        isMoving={isMoving}
       />
     </>
   );

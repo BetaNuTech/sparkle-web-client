@@ -1,12 +1,22 @@
 import sinon from 'sinon';
 import { renderHook } from '@testing-library/react-hooks';
-import useDeleteInspection from './useDeleteInspection';
-import inspectionApi from '../../../common/services/firestore/inspections';
+import { act } from 'react-dom/test-utils';
+import useInspectionActions, {
+  USER_NOTIFICATIONS
+} from './useInspectionActions';
+import inspectionFirestoreDb from '../../../common/services/firestore/inspections';
 import errorReports from '../../../common/services/api/errorReports';
 import globalNotification from '../../../common/services/firestore/notifications';
 import inspections from '../../../__mocks__/inspections';
 import { admin } from '../../../__mocks__/users';
 import stubFirestore from '../../../__tests__/helpers/stubFirestore';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
+import ErrorConflictingRequest from '../../../common/models/errors/conflictingRequest';
+import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import wait from '../../../__tests__/helpers/wait';
+import inspectionApi from '../../../common/services/api/inspections';
 
 describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', () => {
   afterEach(() => sinon.restore());
@@ -17,7 +27,9 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
     const targetId = target.id;
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    const deleteRecord = sinon.stub(inspectionApi, 'deleteRecord').resolves();
+    const deleteRecord = sinon
+      .stub(inspectionFirestoreDb, 'deleteRecord')
+      .resolves();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await new Promise((resolve) => {
@@ -27,7 +39,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
           queuedInspectionForDeletion,
           queueInspectionForDelete,
           confirmInspectionDelete
-        } = useDeleteInspection(firestore, () => true, admin);
+        } = useInspectionActions(firestore, () => true, admin);
         queueInspectionForDelete(target);
         if (queuedInspectionForDeletion && !confirm) {
           confirm = true;
@@ -47,7 +59,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
 
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    sinon.stub(inspectionApi, 'deleteRecord').resolves();
+    sinon.stub(inspectionFirestoreDb, 'deleteRecord').resolves();
 
     const globalNotificaion = sinon
       .stub(globalNotification, 'send')
@@ -60,7 +72,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
           queuedInspectionForDeletion,
           queueInspectionForDelete,
           confirmInspectionDelete
-        } = useDeleteInspection(firestore, () => true, admin);
+        } = useInspectionActions(firestore, () => true, admin);
         queueInspectionForDelete(target);
         if (queuedInspectionForDeletion && !confirm) {
           confirm = true;
@@ -80,7 +92,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
 
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    sinon.stub(inspectionApi, 'deleteRecord').rejects();
+    sinon.stub(inspectionFirestoreDb, 'deleteRecord').rejects();
     sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await new Promise((resolve) => {
@@ -90,7 +102,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
           queuedInspectionForDeletion,
           queueInspectionForDelete,
           confirmInspectionDelete
-        } = useDeleteInspection(firestore, sendNotification, admin);
+        } = useInspectionActions(firestore, sendNotification, admin);
         queueInspectionForDelete(target);
         if (queuedInspectionForDeletion && !confirm) {
           confirm = true;
@@ -110,7 +122,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
     const [target] = inspections;
     const firestore = stubFirestore(); // eslint-disable-line
     sinon.stub(firestore, 'collection').callThrough();
-    sinon.stub(inspectionApi, 'deleteRecord').rejects();
+    sinon.stub(inspectionFirestoreDb, 'deleteRecord').rejects();
     const sendError = sinon.stub(errorReports, 'send').callsFake(() => true);
 
     await new Promise((resolve) => {
@@ -120,7 +132,7 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
           queuedInspectionForDeletion,
           queueInspectionForDelete,
           confirmInspectionDelete
-        } = useDeleteInspection(firestore, () => true, admin);
+        } = useInspectionActions(firestore, () => true, admin);
         queueInspectionForDelete(target);
         if (queuedInspectionForDeletion && !confirm) {
           confirm = true;
@@ -131,5 +143,65 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
 
     const actual = sendError.called;
     expect(actual).toEqual(expected);
+  });
+
+  test('should show user facing error message according to error type', async () => {
+    const sendNotification = sinon.spy();
+
+    const tests = [
+      {
+        expected: USER_NOTIFICATIONS.unpermissioned,
+        message: 'show generic error message for unauthorized request'
+      },
+      {
+        expected: USER_NOTIFICATIONS.badRequest,
+        message: 'show invalid template updates error for bad request'
+      },
+      {
+        expected: USER_NOTIFICATIONS.badRequest,
+        message: 'show invalid template updates error for bad request'
+      },
+      {
+        expected: USER_NOTIFICATIONS.unpermissioned,
+        message: 'show permission error on forbidden request'
+      },
+      {
+        expected: USER_NOTIFICATIONS.generic,
+        message: 'show generic error message for internal server error'
+      }
+    ];
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    sinon
+      .stub(inspectionApi, 'updateInspection')
+      .onCall(0)
+      .rejects(new ErrorUnauthorized())
+      .onCall(1)
+      .rejects(new ErrorBadRequest())
+      .onCall(2)
+      .rejects(new ErrorConflictingRequest())
+      .onCall(3)
+      .rejects(new ErrorForbidden())
+      .onCall(4)
+      .rejects(new ErrorServerInternal());
+
+    const firestore = stubFirestore(); // eslint-disable-line
+
+    const { result } = renderHook(() =>
+      useInspectionActions(firestore, sendNotification, admin)
+    );
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, message } = tests[i];
+      // eslint-disable-next-line
+      await act(async () => {
+        result.current.setQueueInspectionForMove(inspections[0]);
+        await wait(100);
+        result.current.confirmMoveInspection('property-1');
+        await wait(100);
+      });
+      const actual = sendNotification.getCall(i).args[0];
+      expect(actual, message).toEqual(expected);
+    }
   });
 });
