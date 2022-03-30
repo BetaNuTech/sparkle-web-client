@@ -23,6 +23,7 @@ interface Props {
   style?: CSSProperties;
   onSelectItem?(itemId: string): void;
   selectedItems?: string[];
+  setIsEditing?(isEditing: boolean): void;
   errors?: Record<string, string>;
   errorMessage?: string;
 }
@@ -36,6 +37,7 @@ const Item = forwardRef<HTMLDivElement, Props>(
       style,
       onSelectItem,
       selectedItems,
+      setIsEditing,
       errors,
       errorMessage,
       ...props
@@ -91,6 +93,8 @@ const Item = forwardRef<HTMLDivElement, Props>(
                 contentEditable
                 suppressContentEditableWarning={true} // eslint-disable-line react/jsx-boolean-value
                 onInput={(evt) => onUpdateTitle(evt.currentTarget.innerText)}
+                onFocus={() => setIsEditing(true)}
+                onBlur={() => setIsEditing(false)}
               >
                 {title.current}
               </p>
