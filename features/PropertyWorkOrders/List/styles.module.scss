@@ -1,0 +1,10 @@
+@import '../../../styles/index.scss';
+
+.container {
+  overflow-y: auto;
+
+  @include media-query(desktop) {
+    margin: $global-lg-padding $global-padding $global-padding;
+    overflow: visible;
+  }
+}

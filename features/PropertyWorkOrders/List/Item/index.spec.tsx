@@ -5,10 +5,13 @@ import {
 } from '../../../../__mocks__/yardi/workOrders';
 import Item from './index';
 import workOrderModel from '../../../../common/models/yardi/workOrder';
+import stubIntersectionObserver from '../../../../__tests__/helpers/stubIntersectionObserver';
 
 describe('Unit | Features | Property Work Orders | List | Item', () => {
+  beforeEach(() => stubIntersectionObserver());
+
   it('should show work order id, request date, and status of the order if present', () => {
-    render(<Item workOrder={yardiWorkOrderTwo} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     const [idElement, dateElement, statusElement] = [
       screen.queryByTestId('order-id'),
       screen.queryByTestId('request-date'),
@@ -24,13 +27,13 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
       ...yardiWorkOrderTwo,
       permissionToEnter: undefined
     } as workOrderModel;
-    render(<Item workOrder={workOrder} />);
+    render(<Item forceVisible workOrder={workOrder} />);
     const unitElement = screen.queryByTestId('work-order-unit');
     expect(unitElement).toBeDefined();
   });
 
   it('should show updatedAt and updated by in the work order if present', () => {
-    render(<Item workOrder={yardiWorkOrderTwo} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     const [updatedAtElement, updatedByElement] = [
       screen.queryByTestId('updated-at'),
       screen.queryByTestId('updated-by')
@@ -40,34 +43,34 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
   });
 
   it('should show order description if present', () => {
-    render(<Item workOrder={yardiWorkOrderOne} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderOne} />);
     const descriptionElement = screen.queryByTestId('order-description');
     expect(descriptionElement).toBeDefined();
   });
 
   it('should not show order category', () => {
-    render(<Item workOrder={yardiWorkOrderTwo} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     const categoryElement = screen.queryByTestId('order-category');
     expect(categoryElement).toBeNull();
   });
 
   it('should show problem notes if present', () => {
-    render(<Item workOrder={yardiWorkOrderTwo} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     const problemElement = screen.queryByTestId('problem-notes');
     expect(problemElement).toBeDefined();
   });
 
   it('should not show technician notes', () => {
-    render(<Item workOrder={yardiWorkOrderTwo} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     const technicianElement = screen.queryByTestId('technician-notes');
     expect(technicianElement).toBeNull();
   });
 
   it('should show Yes or No when tenant caused is present', () => {
-    render(<Item workOrder={yardiWorkOrderOne} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderOne} />);
     const technicianElement = screen.queryByTestId('tenant-caused');
     expect(technicianElement).toBeDefined();
-    expect(technicianElement.textContent).toEqual('Tenant Caused: NO');
+    expect(technicianElement.textContent).toEqual('NO');
   });
 
   it('should not show permission to enter when not set', () => {
@@ -75,13 +78,13 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
       ...yardiWorkOrderTwo,
       permissionToEnter: undefined
     } as workOrderModel;
-    render(<Item workOrder={workOrder} />);
+    render(<Item forceVisible workOrder={workOrder} />);
     const permissionElement = screen.queryByTestId('permission-enter');
     expect(permissionElement).toBeNull();
   });
 
   it('should not redner the row for the requestor data if all the data is missing', () => {
-    render(<Item workOrder={yardiWorkOrderTwo} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     const requestorData = [
       screen.queryByTestId('requestor-name'),
       screen.queryByTestId('requestor-email'),
@@ -91,7 +94,7 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
   });
 
   it('should show origin of work order if present', () => {
-    render(<Item workOrder={yardiWorkOrderOne} />);
+    render(<Item forceVisible workOrder={yardiWorkOrderOne} />);
     const originElement = screen.queryByTestId('order-origin');
     expect(originElement).toBeDefined();
   });
