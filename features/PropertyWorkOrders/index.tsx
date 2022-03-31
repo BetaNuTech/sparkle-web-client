@@ -1,12 +1,11 @@
-import clsx from 'clsx';
 import { FunctionComponent } from 'react';
+import { useMediaQuery } from 'react-responsive';
 import propertyModel from '../../common/models/property';
 import workOrderModel from '../../common/models/yardi/workOrder';
+import breakpoints from '../../config/breakpoints';
 import WorkOrderList from './List';
 import useSorting from './hooks/useSorting';
-import FolderIcon from '../../public/icons/ios/folder.svg';
-import MobileHeader from '../../common/MobileHeader';
-import styles from './styles.module.scss';
+import Header from './Header';
 
 interface Props {
   isOnline?: boolean;
@@ -23,36 +22,31 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
   isOnline,
   isStaging
 }) => {
-  const { sortedWorkOrders, userFacingSortBy, nextWorkOrdersSort } =
-    useSorting(workOrders);
+  const {
+    sortedWorkOrders,
+    userFacingSortBy,
+    nextWorkOrdersSort,
+    sortDir,
+    sortBy
+  } = useSorting(workOrders);
 
-  // Mobile Header actions buttons
-  const mobileHeaderActions = (headStyle) => (
-    <>
-      <button
-        className={headStyle.header__button}
-        data-testid="mobile-property-profile-sort-by"
-        onClick={nextWorkOrdersSort}
-      >
-        <FolderIcon />
-      </button>
-    </>
-  );
+  // Responsive queries
+  const isMobile = useMediaQuery({
+    maxWidth: breakpoints.tablet.maxWidth
+  });
 
   return (
     <>
-      <MobileHeader
-        title={`${property.name.toUpperCase()} WOs`}
+      <Header
+        property={property}
+        sortDir={sortDir}
+        sortBy={sortBy}
+        userFacingSortBy={userFacingSortBy}
+        nextResidentsSort={nextWorkOrdersSort}
         isOnline={isOnline}
         isStaging={isStaging}
-        actions={mobileHeaderActions}
+        isMobile={isMobile}
       />
-      <footer
-        className={clsx(styles.header__footer)}
-        data-testid="property-workOrders-mobile-footer"
-      >
-        Sorted by {userFacingSortBy}
-      </footer>
       <WorkOrderList workOrders={sortedWorkOrders} />
     </>
   );

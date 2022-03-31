@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent } from 'react';
+import { FunctionComponent } from 'react';
 import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
@@ -9,11 +9,8 @@ import PropertyModel from '../../../common/models/property';
 import SortDropdown from '../../../common/SortDropdown';
 
 const sortOptions = [
-  { label: 'Unit', value: 'leaseUnit' },
-  { label: 'Resident ID', value: 'id' },
-  { label: 'Resident First Name', value: 'firstName' },
-  { label: 'Resident Last Name', value: 'lastName' },
-  { label: 'Current Status', value: 'yardiStatus' }
+  { label: 'Creation Date', value: 'createdAt' },
+  { label: 'Last Update', value: 'updatedAt' }
 ];
 
 interface Props {
@@ -21,16 +18,9 @@ interface Props {
   isStaging: boolean;
   isMobile: boolean;
   property: PropertyModel;
-  searchQuery: string;
-  onSearchKeyDown: (
-    ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
-  ) => void;
-  onClearSearch(): void;
-  sortBy: string;
   sortDir: string;
+  sortBy: string;
   userFacingSortBy: string;
-  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
-  onSortDirChange(): void;
   nextResidentsSort(): void;
 }
 
@@ -39,15 +29,10 @@ const Header: FunctionComponent<Props> = ({
   isStaging,
   isMobile,
   property,
-  searchQuery,
-  onSearchKeyDown,
-  onClearSearch,
   sortDir,
   sortBy,
   userFacingSortBy,
-  nextResidentsSort,
-  onSortChange,
-  onSortDirChange
+  nextResidentsSort
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -79,7 +64,7 @@ const Header: FunctionComponent<Props> = ({
           <a className={styles.header__link}>{property.name}</a>
         </Link>
       </div>
-      <div className={styles.header__title}>{property.name} Residents</div>
+      <div className={styles.header__title}>Work Orders</div>
     </>
   );
 
@@ -92,22 +77,12 @@ const Header: FunctionComponent<Props> = ({
             left={mobileHeaderLeft}
             actions={mobileHeaderActions}
             isStaging={isStaging}
-            title="Residents"
+            title={`${property.name.toUpperCase()} WOs`}
           />
           <div className={styles.search}>
-            <input
-              className={styles.search__input}
-              type="search"
-              value={searchQuery}
-              onChange={onSearchKeyDown}
-            />
+            <input className={styles.search__input} type="search" />
 
-            {searchQuery && (
-              <button
-                className={styles.search__clear}
-                onClick={onClearSearch}
-              />
-            )}
+            <button className={styles.search__clear} />
           </div>
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}
@@ -120,11 +95,11 @@ const Header: FunctionComponent<Props> = ({
           isColumnTitle
           right={
             <SortDropdown
-              options={sortOptions}
               sortDir={sortDir}
               sortBy={sortBy}
-              onSortChange={onSortChange}
-              onSortDirChange={onSortDirChange}
+              options={sortOptions}
+              onSortChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+              onSortDirChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
             />
           }
         />
