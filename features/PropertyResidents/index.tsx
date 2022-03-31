@@ -49,7 +49,10 @@ const PropertyResidents: FunctionComponent<Props> = ({
     searchValue,
     onClearSearch,
     onSearchKeyDown,
-    filteredResidents
+    filteredResidents,
+    onFilterByStatus,
+    onNextResidentFilterByStatus,
+    activeFilter
   } = useSearchingAndSorting(residents, 'asc');
 
   return (
@@ -68,6 +71,9 @@ const PropertyResidents: FunctionComponent<Props> = ({
         nextResidentsSort={nextResidentsSort}
         onSortChange={onSortChange}
         onSortDirChange={onSortDirChange}
+        onFilterByStatus={onFilterByStatus}
+        onNextResidentFilterByStatus={onNextResidentFilterByStatus}
+        activeFilter={activeFilter}
       />
       <div className={styles.container}>
         {!isMobile && (
@@ -83,6 +89,8 @@ const PropertyResidents: FunctionComponent<Props> = ({
           isMobile={isMobile}
           forceVisible={forceVisible}
           onClickResident={onClickResident}
+          activeFilter={activeFilter}
+          searchValue={searchValue}
         />
         {searchValue && (
           <div className={styles.action}>
