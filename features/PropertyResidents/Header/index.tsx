@@ -6,6 +6,8 @@ import FolderIcon from '../../../public/icons/ios/folder.svg';
 import styles from './styles.module.scss';
 import DesktopHeader from '../../../common/DesktopHeader';
 import PropertyModel from '../../../common/models/property';
+import string from '../../../common/utils/string';
+import FilterDropdown from './FilterDropdown';
 import SortDropdown from '../../../common/SortDropdown';
 
 const sortOptions = [
@@ -32,6 +34,9 @@ interface Props {
   onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
   onSortDirChange(): void;
   nextResidentsSort(): void;
+  onFilterByStatus(evt: ChangeEvent<HTMLSelectElement>): void;
+  onNextResidentFilterByStatus(): void;
+  activeFilter: string;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -47,7 +52,10 @@ const Header: FunctionComponent<Props> = ({
   userFacingSortBy,
   nextResidentsSort,
   onSortChange,
-  onSortDirChange
+  onSortDirChange,
+  onFilterByStatus,
+  onNextResidentFilterByStatus,
+  activeFilter
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -64,6 +72,12 @@ const Header: FunctionComponent<Props> = ({
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
+      <button
+        className={headStyle.header__button}
+        onClick={() => onNextResidentFilterByStatus()}
+      >
+        {string.titleize(activeFilter)}
+      </button>
       <button
         className={headStyle.header__button}
         onClick={() => nextResidentsSort()}
@@ -119,13 +133,19 @@ const Header: FunctionComponent<Props> = ({
           isOnline={isOnline}
           isColumnTitle
           right={
-            <SortDropdown
-              options={sortOptions}
-              sortDir={sortDir}
-              sortBy={sortBy}
-              onSortChange={onSortChange}
-              onSortDirChange={onSortDirChange}
-            />
+            <>
+              <FilterDropdown
+                activeFilter={activeFilter}
+                onFilterByStatus={onFilterByStatus}
+              />
+              <SortDropdown
+                options={sortOptions}
+                sortDir={sortDir}
+                sortBy={sortBy}
+                onSortChange={onSortChange}
+                onSortDirChange={onSortDirChange}
+              />
+            </>
           }
         />
       )}

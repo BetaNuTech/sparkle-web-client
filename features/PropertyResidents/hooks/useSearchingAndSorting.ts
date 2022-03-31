@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import useSearching from '../../../common/hooks/useSearching';
 import ResidentModel from '../../../common/models/yardi/resident';
 import globalEvents from '../../../common/utils/globalEvents';
@@ -42,6 +42,9 @@ interface useSearchingAndSortingModel {
     ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
   ) => void;
   filteredResidents: ResidentModel[];
+  onFilterByStatus(evt: ChangeEvent<HTMLSelectElement>): void;
+  onNextResidentFilterByStatus(): void;
+  activeFilter: string;
 }
 
 const PREFIX = 'features: PropertyResidents: hooks: useSearchingAndSorting:';
@@ -78,6 +81,15 @@ const USER_FRIENDLY_SORT_NAMES = {
 
 const MOBILE_AUTO_SORT_DESC = ['yardiStatus'];
 
+const FILTER_ORDER = [
+  'all',
+  'current',
+  'future',
+  'eviction',
+  'notice',
+  'vacant'
+];
+
 // Hooks for sorting residents
 export default function useSearchingAndSorting(
   residents: ResidentModel[],
@@ -89,9 +101,20 @@ export default function useSearchingAndSorting(
     toUserFacingActiveSort(sortBy)
   );
   const [sortedResidents, setSortedResidents] = useState(residents);
+  const [activeFilter, setActiveFilter] = useState('all');
+
+  // Filter residents by status
+  const residentsByStatus = useMemo(() => {
+    if (activeFilter === 'all') {
+      return sortedResidents;
+    }
+    return sortedResidents.filter(
+      (resident) => resident.yardiStatus === activeFilter
+    );
+  }, [activeFilter, sortedResidents]);
 
   // create indexes for resident's occupant
-  const residentsForFilter = sortedResidents.map((resident) => {
+  const residentsForFilter = residentsByStatus.map((resident) => {
     const indexes = search.createSearchIndex(
       resident.occupants || [],
       queryAttrs
@@ -154,6 +177,21 @@ export default function useSearchingAndSorting(
     setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
     globalEvents.trigger('visibilityForceCheck');
   };
+
+  const onFilterByStatus = (evt: { target: HTMLSelectElement }) => {
+    const {
+      target: { value }
+    } = evt;
+
+    setActiveFilter(value);
+  };
+
+  const onNextResidentFilterByStatus = () => {
+    const nextFilter =
+      FILTER_ORDER[FILTER_ORDER.indexOf(activeFilter) + 1] || FILTER_ORDER[0]; // Get next or first
+    setActiveFilter(nextFilter);
+  };
+
   return {
     sortedResidents,
     sortDir,
@@ -165,7 +203,10 @@ export default function useSearchingAndSorting(
     searchValue,
     onClearSearch,
     onSearchKeyDown,
-    filteredResidents
+    filteredResidents,
+    onFilterByStatus,
+    onNextResidentFilterByStatus,
+    activeFilter
   };
 }
 
