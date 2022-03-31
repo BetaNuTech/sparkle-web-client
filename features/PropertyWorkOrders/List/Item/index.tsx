@@ -1,14 +1,21 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import workOrderModel from '../../../../common/models/yardi/workOrder';
-import stringUtil from '../../../../common/utils/string';
 import dateUtil from '../../../../common/utils/date';
 import { phoneNumber } from '../../../../common/utils/humanize';
+import Info, { InfoLabel, InfoValue } from '../../../../common/Yardi/Info';
+import Badge from '../../../../common/Yardi/Badge';
+import styles from './styles.module.scss';
+import useVisibility from '../../../../common/hooks/useVisibility';
 
 interface Props {
   workOrder: workOrderModel;
+  forceVisible?: boolean;
 }
 
-const WorkOrderListItem: FunctionComponent<Props> = ({ workOrder }) => {
+const WorkOrderListItem: FunctionComponent<Props> = ({
+  workOrder,
+  forceVisible
+}) => {
   const hasUnitOrResident = Boolean(workOrder.unit || workOrder.resident);
   const hasUpdateInfo = Boolean(workOrder.updatedAt || workOrder.updatedBy);
   const hasAnyRequestorContactInfo = Boolean(
@@ -20,123 +27,170 @@ const WorkOrderListItem: FunctionComponent<Props> = ({ workOrder }) => {
     workOrder.category || workOrder.priority
   );
 
+  const placeholderRef = useRef();
+  const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
+
   return (
-    <li>
-      <aside>
-        <div>
-          <span data-testid="order-id">{workOrder.id}</span>
-          {workOrder.requestDate && (
-            <span data-testid="request-date">{workOrder.requestDate}</span>
-          )}
-        </div>
-        {workOrder.status && (
-          <div data-testid="order-status">
-            {stringUtil.titleize(workOrder.status)}
+    <li className={styles.container} ref={placeholderRef}>
+      {isVisible && (
+        <>
+          <div className="-mb-sm -flex-spread-content">
+            {workOrder.id && (
+              <Badge
+                type="secondary"
+                text={`${workOrder.id} ${workOrder.requestDate || ''}`}
+                data-testid="order-id-and-requestDate"
+              />
+            )}
+
+            {workOrder.status && (
+              <Badge
+                type="primary"
+                text={workOrder.status}
+                data-testid="order-status"
+              />
+            )}
           </div>
-        )}
-      </aside>
 
-      {hasUnitOrResident && (
-        <div>
-          {workOrder.unit && (
-            <div data-testid="work-order-unit">
-              <h6>Unit:</h6> {workOrder.unit}
+          {hasUnitOrResident && (
+            <div className="-d-flex">
+              {workOrder.unit && (
+                <>
+                  <InfoLabel label="Unit" />
+                  <InfoValue
+                    value={workOrder.unit}
+                    data-testid="work-order-unit"
+                  />
+                </>
+              )}
+              {workOrder.resident && (
+                <>
+                  <InfoLabel label="Tenant" />
+                  <InfoValue
+                    value={workOrder.resident}
+                    data-testid="work-order-resident"
+                  />
+                </>
+              )}
             </div>
           )}
-          {workOrder.resident && (
-            <div data-testid="work-order-resident">
-              <h6>Tenant:</h6> {workOrder.resident}
+
+          {hasUpdateInfo && (
+            <div className="-d-flex">
+              {workOrder.updatedAt && (
+                <>
+                  <InfoLabel label="Updated" />
+                  <InfoValue
+                    value={dateUtil.toUserDateTimeDisplay(workOrder.updatedAt)}
+                    data-testid="updated-at"
+                  />
+                </>
+              )}
+              {workOrder.updatedBy && (
+                <>
+                  <InfoLabel label="By" />
+                  <InfoValue
+                    value={workOrder.updatedBy}
+                    data-testid="updated-by"
+                  />
+                </>
+              )}
             </div>
           )}
-        </div>
-      )}
 
-      {hasUpdateInfo && (
-        <div>
-          {workOrder.updatedAt && (
-            <div data-testid="updated-at">
-              <h6>Updated:</h6>
-              {dateUtil.toUserDateTimeDisplay(workOrder.updatedAt)}
+          {workOrder.description && (
+            <Info
+              label="Description"
+              value={workOrder.description}
+              data-testid="order-description"
+            />
+          )}
+
+          {hasCategoryOrPriority && (
+            <div className="-d-flex">
+              {workOrder.category && (
+                <>
+                  <InfoLabel label="Category" />
+                  <InfoValue
+                    value={workOrder.category}
+                    data-testid="order-category"
+                  />
+                </>
+              )}
+              {workOrder.priority && (
+                <>
+                  <InfoLabel label="Priority" />
+                  <InfoValue
+                    value={workOrder.priority}
+                    data-testid="order-priority"
+                  />
+                </>
+              )}
             </div>
           )}
-          {workOrder.updatedBy && (
-            <div data-testid="updated-by">
-              <h6>By:</h6> {workOrder.updatedBy}
-            </div>
+
+          {workOrder.problemNotes && (
+            <Info
+              label="Problem Notes"
+              value={workOrder.problemNotes}
+              data-testid="problem-notes"
+            />
           )}
-        </div>
-      )}
 
-      {workOrder.description && (
-        <div data-testid="order-description">
-          <h6>Description:</h6> {workOrder.description}
-        </div>
-      )}
-
-      {hasCategoryOrPriority && (
-        <div>
-          {workOrder.category && (
-            <div data-testid="order-category">
-              <h6>Category:</h6> {workOrder.category}
-            </div>
+          {workOrder.technicianNotes && (
+            <Info
+              label="Technician Notes"
+              value={workOrder.technicianNotes}
+              data-testid="technician-notes"
+            />
           )}
-          {workOrder.priority && (
-            <div data-testid="order-priority">
-              <h6>Priority:</h6> {workOrder.priority}
-            </div>
+
+          {typeof workOrder.tenantCaused !== 'undefined' && (
+            <Info
+              label="Tenant Caused"
+              value={workOrder.tenantCaused ? 'YES' : 'NO'}
+              data-testid="tenant-caused"
+            />
           )}
-        </div>
-      )}
 
-      {workOrder.problemNotes && (
-        <div data-testid="problem-notes">
-          <h6>Problem Notes:</h6> {workOrder.problemNotes}
-        </div>
-      )}
-
-      {workOrder.technicianNotes && (
-        <div data-testid="technician-notes">
-          <h6>Technician Notes:</h6> {workOrder.technicianNotes}
-        </div>
-      )}
-
-      {typeof workOrder.tenantCaused !== 'undefined' && (
-        <div data-testid="tenant-caused">
-          <h6>Tenant Caused:</h6> {workOrder.tenantCaused ? 'YES' : 'NO'}
-        </div>
-      )}
-
-      {typeof workOrder.permissionToEnter !== 'undefined' && (
-        <div data-testid="permission-enter">
-          <h6>Has Permission to Enter:</h6>
-          {workOrder.permissionToEnter ? 'YES' : 'NO'}
-        </div>
-      )}
-
-      {hasAnyRequestorContactInfo && (
-        <div>
-          <h6>Requestor:</h6>
-          {workOrder.requestorName && (
-            <span data-testid="requestor-name">{workOrder.requestorName}</span>
+          {typeof workOrder.permissionToEnter !== 'undefined' && (
+            <Info
+              label="Has Permission to Enter"
+              value={workOrder.permissionToEnter ? 'YES' : 'NO'}
+              data-testid="permission-enter"
+            />
           )}
-          {workOrder.requestorEmail && (
-            <span data-testid="requestor-email">
-              ({workOrder.requestorEmail}){workOrder.requestorPhone}{' '}
-              <span> / </span>
-            </span>
-          )}
-          {workOrder.requestorPhone && (
-            <span data-testid="requestor-phone">
-              {phoneNumber(workOrder.requestorPhone)}
-            </span>
-          )}
-        </div>
-      )}
 
-      {workOrder.origin && (
-        <div data-testid="order-origin">
-          <h6>Origin:</h6> {workOrder.origin}
-        </div>
+          {hasAnyRequestorContactInfo && (
+            <>
+              <InfoLabel label="Requestor" />
+
+              {workOrder.requestorName && (
+                <InfoValue
+                  value={workOrder.requestorName}
+                  data-testid="requestor-name"
+                />
+              )}
+
+              {(workOrder.requestorEmail || workOrder.requestorPhone) && (
+                <InfoValue
+                  value={`(${workOrder.requestorEmail} / ${phoneNumber(
+                    workOrder.requestorPhone
+                  )})`}
+                  data-testid="requestor-email-phone"
+                />
+              )}
+            </>
+          )}
+
+          {workOrder.origin && (
+            <Info
+              label="Origin"
+              value={workOrder.origin}
+              data-testid="order-origin"
+            />
+          )}
+        </>
       )}
     </li>
   );

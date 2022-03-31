@@ -4,8 +4,9 @@ import dateUtil from '../../../../common/utils/date';
 import styles from './styles.module.scss';
 import { moneyUsd, phoneNumber } from '../../../../common/utils/humanize';
 import OccupantItem from './Occupants';
-import Info from './Info';
+import Info, { InfoLabel, InfoValue } from '../../../../common/Yardi/Info';
 import useVisibility from '../../../../common/hooks/useVisibility';
+import Badge from '../../../../common/Yardi/Badge';
 
 interface Props {
   resident: ResidentModel;
@@ -29,19 +30,21 @@ const ResidenceListItem: FunctionComponent<Props> = ({
         <>
           <div className={styles.container__left}>
             {isMobile && (
-              <div className={styles.badgeContainer}>
+              <div className="-mb-sm -flex-spread-content">
                 {resident.id && (
-                  <div className={styles.leftBadge}>
-                    <span data-testid="residents-id">{resident.id}</span>
-                  </div>
+                  <Badge
+                    type="secondary"
+                    text={resident.id}
+                    data-testid="residents-id"
+                  />
                 )}
 
                 {resident.yardiStatus && (
-                  <div className={styles.rightBadge}>
-                    <span data-testid="residents-yardi-status">
-                      {resident.yardiStatus}
-                    </span>
-                  </div>
+                  <Badge
+                    type="primary"
+                    text={resident.yardiStatus}
+                    data-testid="residents-yardi-status"
+                  />
                 )}
               </div>
             )}
@@ -72,27 +75,23 @@ const ResidenceListItem: FunctionComponent<Props> = ({
                 data-testid="residents-yardi-status"
               />
             )}
-            <div className={styles.info}>
+            <div className="-d-flex">
               {resident.leaseUnit && (
                 <>
-                  <p className={styles.info__label}>Unit:</p>
-                  <span
-                    className={styles.info__value}
+                  <InfoLabel label="Unit" />
+                  <InfoValue
+                    value={resident.leaseUnit}
                     data-testid="residents-lease-unit"
-                  >
-                    {resident.leaseUnit}
-                  </span>
+                  />
                 </>
               )}
               {resident.leaseSqFt && (
                 <>
-                  <p className={styles.info__label}>Sq Ft:</p>
-                  <span
-                    className={styles.info__value}
+                  <InfoLabel label="Sq Ft" />
+                  <InfoValue
+                    value={resident.leaseSqFt}
                     data-testid="residents-sort-lease-unit"
-                  >
-                    {resident.leaseSqFt}
-                  </span>
+                  />
                 </>
               )}
             </div>
@@ -163,7 +162,7 @@ const ResidenceListItem: FunctionComponent<Props> = ({
             {resident.occupants.length > 0 && (
               <div className="-mt -mb">
                 <div className={styles.row}>
-                  <p className={styles.info__label}>Roommate:</p>
+                  <InfoLabel label="Roommate" />
                 </div>
                 {resident.occupants.map((occupant) => (
                   <OccupantItem occupant={occupant} key={occupant.id} />

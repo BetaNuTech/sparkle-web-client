@@ -1,0 +1,10 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  display: block;
+  position: relative;
+  padding: $global-sm-padding $global-padding;
+  justify-content: space-between;
+  min-height: rem-calc(200);
+  border-bottom: 1px solid $gray-lighter;
+}

@@ -1,9 +1,7 @@
 import { FunctionComponent } from 'react';
 import OccupantModel from '../../../../../common/models/yardi/occupant';
 import { phoneNumber } from '../../../../../common/utils/humanize';
-import Info from '../Info';
-
-import styles from '../styles.module.scss';
+import Info, { InfoLabel, InfoValue } from '../../../../../common/Yardi/Info';
 
 interface Props {
   occupant: OccupantModel;
@@ -17,17 +15,11 @@ const OccupantItem: FunctionComponent<Props> = ({ occupant }) => {
   return (
     <>
       {hasName && (
-        <div className={styles.info}>
-          <p className={styles.info__label}>Name:</p>
-          {occupant.firstName && (
-            <span className={styles.info__value}>{occupant.firstName}</span>
-          )}
-          {occupant.middleName && (
-            <span className={styles.info__value}>{occupant.middleName}</span>
-          )}
-          {occupant.lastName && (
-            <span className={styles.info__value}>{occupant.lastName}</span>
-          )}
+        <div className="-d-flex">
+          <InfoLabel label="Name" />
+          {occupant.firstName && <InfoValue value={occupant.firstName} />}
+          {occupant.middleName && <InfoValue value={occupant.middleName} />}
+          {occupant.lastName && <InfoValue value={occupant.lastName} />}
         </div>
       )}
 

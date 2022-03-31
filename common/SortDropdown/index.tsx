@@ -3,13 +3,15 @@ import { ChangeEvent, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 
 interface Props {
-  sortBy?: string;
-  sortDir?: string;
+  sortBy: string;
+  sortDir: string;
   onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
   onSortDirChange(): void;
+  options: Record<string, string>[];
 }
 
-const SortBy: FunctionComponent<Props> = ({
+const SortDropdown: FunctionComponent<Props> = ({
+  options,
   sortDir,
   sortBy,
   onSortChange,
@@ -24,11 +26,11 @@ const SortBy: FunctionComponent<Props> = ({
         onChange={onSortChange}
         className={styles.sortBy__menu}
       >
-        <option value="leaseUnit">Unit</option>
-        <option value="id">Resident ID</option>
-        <option value="firstName">Resident First Name</option>
-        <option value="lastName">Resident Last Name</option>
-        <option value="yardiStatus">Current Status</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
       </select>
     </div>
     <div className={styles.sortBy__item}>
@@ -40,9 +42,4 @@ const SortBy: FunctionComponent<Props> = ({
   </div>
 );
 
-SortBy.defaultProps = {
-  sortBy: 'unit',
-  sortDir: 'asc'
-};
-
-export default SortBy;
+export default SortDropdown;
