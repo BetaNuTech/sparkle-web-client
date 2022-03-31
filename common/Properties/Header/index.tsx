@@ -3,6 +3,15 @@ import { FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import Dropdown from '../../../features/Properties/DropdownAdd';
+import SortDropdown from '../../SortDropdown';
+
+const sortOptions = [
+  { label: 'Name', value: 'name' },
+  { label: 'City', value: 'city' },
+  { label: 'State', value: 'state' },
+  { label: 'Last Entry Date', value: 'lastInspectionDate' },
+  { label: 'Last Entry Score', value: 'lastInspectionScore' }
+];
 
 interface Props {
   sortBy: string;
@@ -46,39 +55,13 @@ const Header: FunctionComponent<Props> = ({
       )}
 
       {/* Sort By, Selector */}
-      <div className={styles.header__item}>
-        <label
-          htmlFor="properties-sort-by"
-          className={styles.header__item__label}
-        >
-          Sort by:
-        </label>
-
-        <select
-          id="properties-sort-by"
-          value={sortBy}
-          onChange={onSortChange('sortBy')}
-          className={styles.header__item__menu}
-        >
-          <option value="name">Name</option>
-          <option value="city">City</option>
-          <option value="state">State</option>
-          <option value="lastInspectionDate">Last Entry Date</option>
-          <option value="lastInspectionScore">Last Entry Score</option>
-        </select>
-      </div>
-
-      {/* Sort Direction, Selector */}
-      <div className={styles.header__item}>
-        <button
-          aria-label="Change the sort direction"
-          onClick={onSortChange('sortDir')}
-          className={clsx(
-            styles.header__item__sortDirButton,
-            styles[`-${sortDir}`]
-          )}
-        />
-      </div>
+      <SortDropdown
+        options={sortOptions}
+        onSortChange={onSortChange('sortBy')}
+        onSortDirChange={onSortChange('sortDir')}
+        sortBy={sortBy}
+        sortDir={sortDir}
+      />
     </aside>
   </header>
 );

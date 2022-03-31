@@ -4,8 +4,16 @@ import MobileHeader from '../../../common/MobileHeader';
 import DesktopHeader from '../../../common/DesktopHeader';
 import PropertyModel from '../../../common/models/property';
 import Breadcrumbs from './Breadcrumbs';
-import SortBy from './SortBy';
 import styles from './styles.module.scss';
+import SortDropdown from '../../../common/SortDropdown';
+
+const sortOptions = [
+  { label: 'Last Update', value: 'updatedAt' },
+  { label: 'Responsibility Group', value: 'currentResponsibilityGroup' },
+  { label: 'Due/Deferred Date', value: 'finalDueDate' },
+  { label: 'Grade', value: 'grade' },
+  { label: 'Deficient Date', value: 'createdAt' }
+];
 
 interface Props {
   property: PropertyModel;
@@ -88,7 +96,8 @@ const Header: FunctionComponent<Props> = ({
           title={<Breadcrumbs property={property} />}
           isOnline={isOnline}
           right={
-            <SortBy
+            <SortDropdown
+              options={sortOptions}
               onSortChange={onSortChange}
               onSortDirChange={onSortDirChange}
               sortBy={sortBy}
