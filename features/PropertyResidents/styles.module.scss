@@ -2,9 +2,13 @@
 
 .container {
   padding: 0;
+  overflow-y: auto;
 
   @include media-query(desktop) {
-    padding: $global-padding;
+    margin: $global-padding;
+    border-left: 1px solid $gray-lighter;
+    border-right: 1px solid $gray-lighter;
+    overflow: visible;
   }
 }
 

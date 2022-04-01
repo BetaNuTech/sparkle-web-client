@@ -1,7 +1,6 @@
 import { FunctionComponent } from 'react';
 import residentModel from '../../../common/models/yardi/resident';
 import Item from './Item';
-import styles from './styles.module.scss';
 
 interface Props {
   residents: residentModel[];
@@ -24,7 +23,7 @@ const ResidentList: FunctionComponent<Props> = ({
   let emptyStateMessage = '';
 
   if (!hasLength && searchValue) {
-    emptyStateMessage = 'No Resident Found';
+    emptyStateMessage = 'No residents or occupants match your search';
   } else if (!hasLength) {
     emptyStateMessage =
       activeFilter === 'notice'
@@ -34,7 +33,6 @@ const ResidentList: FunctionComponent<Props> = ({
 
   return (
     <div>
-      <h3 className={styles.header}>Residents</h3>
       {hasLength ? (
         <ul>
           {residents.map((resident) => (

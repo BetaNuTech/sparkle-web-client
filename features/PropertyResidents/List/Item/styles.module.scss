@@ -43,6 +43,7 @@
   line-height: 1.4;
   font-weight: 300;
   font-size: 0.85rem;
+  cursor: pointer;
 
   @include media-query(desktop) {
     padding: rem-calc(10) rem-calc(20);
