@@ -1,0 +1,9 @@
+@import '../../../styles/index.scss';
+
+.action {
+  @extend %clear-search-footer-action;
+
+  &__clear {
+    @extend %actionButton--blackText;
+  }
+}

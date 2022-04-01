@@ -5,6 +5,8 @@
 
   @include media-query(desktop) {
     margin: $global-lg-padding $global-padding $global-padding;
+    border-left: 1px solid $gray-lighter;
+    border-right: 1px solid $gray-lighter;
     overflow: visible;
   }
 }

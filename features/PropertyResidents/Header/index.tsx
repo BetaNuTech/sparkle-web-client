@@ -9,6 +9,7 @@ import PropertyModel from '../../../common/models/property';
 import string from '../../../common/utils/string';
 import FilterDropdown from './FilterDropdown';
 import SortDropdown from '../../../common/SortDropdown';
+import MobileSearchBar from '../../../common/MobileSearchBar';
 
 const sortOptions = [
   { label: 'Unit', value: 'leaseUnit' },
@@ -108,21 +109,11 @@ const Header: FunctionComponent<Props> = ({
             isStaging={isStaging}
             title="Residents"
           />
-          <div className={styles.search}>
-            <input
-              className={styles.search__input}
-              type="search"
-              value={searchQuery}
-              onChange={onSearchKeyDown}
-            />
-
-            {searchQuery && (
-              <button
-                className={styles.search__clear}
-                onClick={onClearSearch}
-              />
-            )}
-          </div>
+          <MobileSearchBar
+            searchQuery={searchQuery}
+            onChange={onSearchKeyDown}
+            onClearSearch={onClearSearch}
+          />
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}
           </div>

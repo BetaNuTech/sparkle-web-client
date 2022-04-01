@@ -3,6 +3,7 @@ import jobModel from '../../../../common/models/job';
 import Section from './Section';
 import useJobSections from '../../hooks/useJobSections';
 import styles from './styles.module.scss';
+import { ClearSearchAction } from '../../../../common/SearchBar';
 
 interface Props {
   jobs: Array<jobModel>;
@@ -48,13 +49,10 @@ const JobSections: FunctionComponent<Props> = ({
           />
         ))}
       </ul>
-      {searchParam && (
-        <div className={styles.action}>
-          <button className={styles.action__clear} onClick={onClearSearch}>
-            Clear Search
-          </button>
-        </div>
-      )}
+      <ClearSearchAction
+        searchQuery={searchParam}
+        onClearSearch={onClearSearch}
+      />
     </div>
   );
 };

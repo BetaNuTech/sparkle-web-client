@@ -6,6 +6,7 @@ import PropertyModel from '../../../common/models/property';
 import Breadcrumbs from './Breadcrumbs';
 import styles from './styles.module.scss';
 import SortDropdown from '../../../common/SortDropdown';
+import MobileSearchBar from '../../../common/MobileSearchBar';
 
 const sortOptions = [
   { label: 'Last Update', value: 'updatedAt' },
@@ -73,20 +74,11 @@ const Header: FunctionComponent<Props> = ({
             actions={mobileHeaderActions}
           />
           <Breadcrumbs property={property} />
-          <div className={styles.search}>
-            <input
-              className={styles.search__input}
-              type="search"
-              value={searchQuery}
-              onChange={onSearchKeyDown}
-            />
-            {searchQuery && (
-              <button
-                className={styles.search__clear}
-                onClick={onClearSearch}
-              />
-            )}
-          </div>
+          <MobileSearchBar
+            searchQuery={searchQuery}
+            onChange={onSearchKeyDown}
+            onClearSearch={onClearSearch}
+          />
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}
           </div>

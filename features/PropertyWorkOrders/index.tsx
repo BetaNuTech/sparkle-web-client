@@ -1,11 +1,13 @@
 import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import propertyModel from '../../common/models/property';
-import workOrderModel from '../../common/models/yardi/workOrder';
+import WorkOrderModel from '../../common/models/yardi/workOrder';
 import breakpoints from '../../config/breakpoints';
 import WorkOrderList from './List';
 import useSorting from './hooks/useSorting';
 import Header from './Header';
+import useSearching from '../../common/hooks/useSearching';
+import settings from './settings';
 
 interface Props {
   isOnline?: boolean;
@@ -13,7 +15,7 @@ interface Props {
   isNavOpen?: boolean;
   forceVisible?: boolean;
   property: propertyModel;
-  workOrders: workOrderModel[];
+  workOrders: WorkOrderModel[];
 }
 
 const PropertyWorkOrders: FunctionComponent<Props> = ({
@@ -23,6 +25,11 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
   isStaging,
   forceVisible
 }) => {
+  // Work order search setup
+  const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
+    useSearching(workOrders, settings.workOrderAttributes);
+  const filteredWorkOrders = filteredItems.map((itm) => itm as WorkOrderModel);
+
   const {
     sortedWorkOrders,
     userFacingSortBy,
@@ -31,7 +38,7 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
     sortBy,
     onSortChange,
     onSortDirChange
-  } = useSorting(workOrders);
+  } = useSorting(filteredWorkOrders);
 
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -49,12 +56,19 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
         isOnline={isOnline}
         isStaging={isStaging}
         isMobile={isMobile}
+        searchQuery={searchValue}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
         onSortChange={onSortChange}
         onSortDirChange={onSortDirChange}
       />
       <WorkOrderList
         workOrders={sortedWorkOrders}
         forceVisible={forceVisible}
+        searchQuery={searchValue}
+        onSearchKeyDown={onSearchKeyDown}
+        onClearSearch={onClearSearch}
+        isMobile={isMobile}
       />
     </>
   );
