@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
@@ -22,6 +22,8 @@ interface Props {
   sortBy: string;
   userFacingSortBy: string;
   nextResidentsSort(): void;
+  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
+  onSortDirChange(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -32,7 +34,9 @@ const Header: FunctionComponent<Props> = ({
   sortDir,
   sortBy,
   userFacingSortBy,
-  nextResidentsSort
+  nextResidentsSort,
+  onSortChange,
+  onSortDirChange
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderLeft = (headStyle) => (
@@ -98,8 +102,8 @@ const Header: FunctionComponent<Props> = ({
               sortDir={sortDir}
               sortBy={sortBy}
               options={sortOptions}
-              onSortChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
-              onSortDirChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+              onSortChange={onSortChange}
+              onSortDirChange={onSortDirChange}
             />
           }
         />

@@ -28,7 +28,9 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
     userFacingSortBy,
     nextWorkOrdersSort,
     sortDir,
-    sortBy
+    sortBy,
+    onSortChange,
+    onSortDirChange
   } = useSorting(workOrders);
 
   // Responsive queries
@@ -47,6 +49,8 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
         isOnline={isOnline}
         isStaging={isStaging}
         isMobile={isMobile}
+        onSortChange={onSortChange}
+        onSortDirChange={onSortDirChange}
       />
       <WorkOrderList
         workOrders={sortedWorkOrders}
