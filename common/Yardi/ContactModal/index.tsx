@@ -1,21 +1,26 @@
 import clsx from 'clsx';
 import { FunctionComponent, useMemo } from 'react';
-import Modal, { Props as ModalProps } from '../../../common/Modal';
-import baseStyles from '../../../common/Modal/styles.module.scss';
-import ResidentModel from '../../../common/models/yardi/resident';
-import { phoneNumber } from '../../../common/utils/humanize';
-import { toContacts, YardiContact } from '../../../common/utils/yardi';
+import Modal, { Props as ModalProps } from '../../Modal';
+import baseStyles from '../../Modal/styles.module.scss';
+import ResidentModel from '../../models/yardi/resident';
+import WorkOrderModel from '../../models/yardi/workOrder';
+import { phoneNumber } from '../../utils/humanize';
+import { toContacts, YardiContact } from '../../utils/yardi';
 import styles from './styles.module.scss';
 
 interface Props extends ModalProps {
   onClose: () => void;
-  resident: ResidentModel;
+  data: ResidentModel | WorkOrderModel;
+  type: string;
 }
 
-const ContactModal: FunctionComponent<Props> = ({ onClose, resident }) => {
+const ContactModal: FunctionComponent<Props> = ({ onClose, data, type }) => {
   const contacts = useMemo(
-    () => createResidentAndOccupantsContacts(resident),
-    [resident]
+    () =>
+      type === 'resident'
+        ? createResidentAndOccupantsContacts(data as ResidentModel)
+        : toContacts(data),
+    [data, type]
   );
 
   return (
@@ -41,8 +46,8 @@ const ContactModal: FunctionComponent<Props> = ({ onClose, resident }) => {
                     className="-ta-center"
                     data-testid="property-residents-contact-phone"
                   >
-                    {contact.name} - {phoneNumber(contact.value)} (
-                    {contact.subCategory})
+                    {contact.name} - {phoneNumber(contact.value)}{' '}
+                    {contact.subCategory ? `(${contact.subCategory})` : ''}
                   </a>
                 )}
               </li>
@@ -52,6 +57,10 @@ const ContactModal: FunctionComponent<Props> = ({ onClose, resident }) => {
       </div>
     </>
   );
+};
+
+ContactModal.defaultProps = {
+  type: 'resident'
 };
 
 export default Modal(ContactModal, false, styles.contactModal);

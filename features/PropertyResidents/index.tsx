@@ -9,7 +9,7 @@ import breakpoints from '../../config/breakpoints';
 import SearchBar, { ClearSearchAction } from '../../common/SearchBar';
 import styles from './styles.module.scss';
 import useSearchingAndSorting from './hooks/useSearchingAndSorting';
-import ContactModal from './ContactModal';
+import ContactModal from '../../common/Yardi/ContactModal';
 
 interface Props {
   isOnline?: boolean;
@@ -100,7 +100,8 @@ const PropertyResidents: FunctionComponent<Props> = ({
       <ContactModal
         isVisible={Boolean(selectedResident)}
         onClose={() => setSelectedResident(null)}
-        resident={selectedResident}
+        data={selectedResident}
+        type="resident"
       />
     </>
   );

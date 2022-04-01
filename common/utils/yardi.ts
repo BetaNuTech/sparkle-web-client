@@ -7,7 +7,7 @@ export interface YardiContact {
 
 // Any type like a yardi
 // resident, work order, or occupant
-interface YardiDocument {
+export interface YardiDocument {
   requestorName?: string;
   requestorEmail?: string;
   requestorPhone?: string;

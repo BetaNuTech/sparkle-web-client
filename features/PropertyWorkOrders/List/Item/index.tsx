@@ -1,5 +1,6 @@
 import { FunctionComponent, useRef } from 'react';
-import workOrderModel from '../../../../common/models/yardi/workOrder';
+import clsx from 'clsx';
+import WorkOrderModel from '../../../../common/models/yardi/workOrder';
 import dateUtil from '../../../../common/utils/date';
 import { phoneNumber } from '../../../../common/utils/humanize';
 import Info, { InfoLabel, InfoValue } from '../../../../common/Yardi/Info';
@@ -8,21 +9,26 @@ import styles from './styles.module.scss';
 import useVisibility from '../../../../common/hooks/useVisibility';
 
 interface Props {
-  workOrder: workOrderModel;
+  workOrder: WorkOrderModel;
   forceVisible?: boolean;
+  onClickWorkOrder(workOrder: WorkOrderModel): void;
 }
 
 const WorkOrderListItem: FunctionComponent<Props> = ({
   workOrder,
+  onClickWorkOrder,
   forceVisible
 }) => {
   const hasUnitOrResident = Boolean(workOrder.unit || workOrder.resident);
   const hasUpdateInfo = Boolean(workOrder.updatedAt || workOrder.updatedBy);
-  const hasAnyRequestorContactInfo = Boolean(
-    workOrder.requestorName ||
-      workOrder.requestorEmail ||
-      workOrder.requestorPhone
+
+  const hasRequestorContactInfo = Boolean(
+    workOrder.requestorEmail || workOrder.requestorPhone
   );
+
+  const hasAnyRequestorInfo =
+    Boolean(workOrder.requestorName) || hasRequestorContactInfo;
+
   const hasCategoryOrPriority = Boolean(
     workOrder.category || workOrder.priority
   );
@@ -31,7 +37,15 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
 
   return (
-    <li className={styles.container} ref={placeholderRef}>
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <li
+      className={clsx(
+        styles.container,
+        hasRequestorContactInfo && '-cu-pointer'
+      )}
+      ref={placeholderRef}
+      onClick={() => onClickWorkOrder(workOrder)}
+    >
       {isVisible && (
         <>
           <div className="-mb-sm -flex-spread-content">
@@ -161,7 +175,7 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
             />
           )}
 
-          {hasAnyRequestorContactInfo && (
+          {hasAnyRequestorInfo && (
             <>
               <InfoLabel label="Requestor" />
 

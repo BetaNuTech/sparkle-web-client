@@ -1,11 +1,12 @@
 import { ChangeEvent, FunctionComponent, KeyboardEvent } from 'react';
-import workOrderModel from '../../../common/models/yardi/workOrder';
+import WorkOrderModel from '../../../common/models/yardi/workOrder';
 import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
 import Item from './Item';
 import styles from './styles.module.scss';
 
 interface Props {
-  workOrders: workOrderModel[];
+  workOrders: WorkOrderModel[];
+  onClickWorkOrder(workOrder: WorkOrderModel): void;
   forceVisible?: boolean;
   searchQuery: string;
   onSearchKeyDown: (
@@ -17,6 +18,7 @@ interface Props {
 
 const WorkOrderList: FunctionComponent<Props> = ({
   workOrders,
+  onClickWorkOrder,
   forceVisible,
   searchQuery,
   onSearchKeyDown,
@@ -36,6 +38,7 @@ const WorkOrderList: FunctionComponent<Props> = ({
         <Item
           key={workOrder.id}
           workOrder={workOrder}
+          onClickWorkOrder={onClickWorkOrder}
           forceVisible={forceVisible}
         />
       ))}

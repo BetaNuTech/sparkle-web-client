@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import propertyModel from '../../common/models/property';
 import WorkOrderModel from '../../common/models/yardi/workOrder';
@@ -6,6 +6,7 @@ import breakpoints from '../../config/breakpoints';
 import WorkOrderList from './List';
 import useSorting from './hooks/useSorting';
 import Header from './Header';
+import ContactModal from '../../common/Yardi/ContactModal';
 import useSearching from '../../common/hooks/useSearching';
 import settings from './settings';
 
@@ -45,6 +46,11 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
+  const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
+  const onClickWorkOrder = (workOrder: WorkOrderModel) => {
+    setSelectedWorkOrder(workOrder);
+  };
+
   return (
     <>
       <Header
@@ -65,10 +71,17 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
       <WorkOrderList
         workOrders={sortedWorkOrders}
         forceVisible={forceVisible}
+        onClickWorkOrder={onClickWorkOrder}
         searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
         isMobile={isMobile}
+      />
+      <ContactModal
+        isVisible={Boolean(selectedWorkOrder)}
+        onClose={() => setSelectedWorkOrder(null)}
+        data={selectedWorkOrder}
+        type="workOrder"
       />
     </>
   );

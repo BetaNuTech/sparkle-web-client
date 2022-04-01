@@ -1,4 +1,3 @@
-import clsx from 'clsx';
 import { ChangeEvent, FunctionComponent } from 'react';
 import styles from './styles.module.scss';
 
