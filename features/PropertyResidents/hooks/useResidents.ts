@@ -10,6 +10,8 @@ import ErrorProxyForbidden from '../../../common/models/errors/proxyForbidden';
 
 const PREFIX = 'features: PropertyResidents: hooks: useResidents:';
 
+const OMITTED_YARDI_STATUSES = ['past', 'applicant', 'denied', 'canceled'];
+
 type userNotifications = (message: string, options?: any) => any;
 
 type Data = {
@@ -72,7 +74,10 @@ export default function useWorkOrders(
     yardiApi
       .getResidentsRequest(propertyId)
       .then((result) => {
-        setData(result);
+        const residents = result.residents.filter(
+          (resident) => !OMITTED_YARDI_STATUSES.includes(resident.yardiStatus)
+        );
+        setData({ ...result, residents });
         setStatus('success');
       })
       .catch(handleErrorResponse);

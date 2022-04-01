@@ -1,4 +1,5 @@
-import { FunctionComponent, useRef } from 'react';
+import { FunctionComponent, useMemo, useRef } from 'react';
+import clsx from 'clsx';
 import ResidentModel from '../../../../common/models/yardi/resident';
 import dateUtil from '../../../../common/utils/date';
 import styles from './styles.module.scss';
@@ -23,9 +24,23 @@ const ResidenceListItem: FunctionComponent<Props> = ({
 }) => {
   const placeholderRef = useRef();
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
+
+  // check resident has contact info or not
+  const { hasContact, minHeight } = useMemo(() => {
+    const hasContactInfo = isHavingContactInfo(resident);
+    const rowHeight = getRowHeight(resident, isMobile);
+
+    return { hasContact: hasContactInfo, minHeight: rowHeight };
+  }, [resident, isMobile]);
+
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <li className={styles.container} ref={placeholderRef} onClick={onClick}>
+    <li
+      className={clsx(styles.container, hasContact && '-cu-pointer')}
+      ref={placeholderRef}
+      onClick={onClick}
+      style={{ minHeight: isVisible ? 0 : minHeight }}
+    >
       {isVisible && (
         <>
           <div className={styles.container__left}>
@@ -243,3 +258,54 @@ const ResidenceListItem: FunctionComponent<Props> = ({
 };
 
 export default ResidenceListItem;
+
+const isHavingContactInfo = (resident: ResidentModel) => {
+  // check if resident has any contact info
+  const hasResidentContact =
+    resident.mobileNumber ||
+    resident.homeNumber ||
+    resident.email ||
+    resident.officeNumber;
+
+  // check if any occupant has any contact info
+  const hasOccupantContact = resident.occupants.some(
+    (occupant) =>
+      occupant.mobileNumber ||
+      occupant.homeNumber ||
+      occupant.email ||
+      occupant.officeNumber
+  );
+
+  return hasResidentContact || hasOccupantContact;
+};
+
+const getRowHeight = (resident: ResidentModel, isMobile: boolean) => {
+  const residentKeys = Object.keys(resident).filter(
+    (key) =>
+      Boolean(resident[key]) &&
+      ['firstName', 'lastName', 'occupantsString'].indexOf(key) < 0
+  ).length;
+
+  const occupantsKeys = resident.occupants.reduce(
+    (acc, obj) =>
+      acc +
+      Object.keys(obj).filter(
+        (key) =>
+          Boolean(obj[key]) &&
+          [
+            'relationship',
+            'email',
+            'officeNumber',
+            'homeNumber',
+            'mobileNumber'
+          ].indexOf(key) > -1
+      ).length,
+    0
+  );
+  const totalKeys = residentKeys + occupantsKeys;
+
+  const margins = resident.occupants.length ? 48 : 16;
+  const totalHeight = totalKeys * 25 + margins;
+
+  return isMobile ? totalHeight + 100 : totalHeight;
+};

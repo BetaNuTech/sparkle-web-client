@@ -3,30 +3,9 @@ import useSearching from '../../../common/hooks/useSearching';
 import ResidentModel from '../../../common/models/yardi/resident';
 import globalEvents from '../../../common/utils/globalEvents';
 import search from '../../../common/utils/search';
+import settings from '../settings';
 
-const queryAttrs = [
-  'email',
-  'eviction',
-  'firstName',
-  'homeNumber',
-  'lastName',
-  'lastNote',
-  'leaseFrom',
-  'leaseSqFt',
-  'leaseTo',
-  'leaseUnit',
-  'middleName',
-  'mobileNumber',
-  'moveIn',
-  'paymentPlan',
-  'paymentPlanDelinquent',
-  'status',
-  'totalCharges',
-  'totalOwed',
-  'yardiStatus',
-  'sortLeaseUnit',
-  'sortLeaseUnit'
-];
+const queryAttrs = settings.residentAttributes;
 
 interface useSearchingAndSortingModel {
   sortedResidents: ResidentModel[];
@@ -50,45 +29,20 @@ interface useSearchingAndSortingModel {
 const PREFIX = 'features: PropertyResidents: hooks: useSearchingAndSorting:';
 
 // Selectable residents sorts
-export const SORTS = [
-  'leaseUnit',
-  'id',
-  'firstName',
-  'lastName',
-  'yardiStatus'
-];
+export const SORTS = settings.selectableSorts;
 
-const SORT_TYPES = {
-  leaseUnit: 'number',
-  id: 'string',
-  firstName: 'string',
-  lastName: 'string',
-  yardiStatus: 'string'
-};
+const SORT_TYPES = settings.sortTypes;
 
 if (!SORTS.every((s) => SORT_TYPES[s])) {
   throw Error(`${PREFIX} not all sorts have a type set`);
 }
 
 // User friendly names
-const USER_FRIENDLY_SORT_NAMES = {
-  leaseUnit: 'Unit',
-  id: 'Resident ID',
-  firstName: 'Resident First Name',
-  lastName: 'Resident Last Name',
-  yardiStatus: 'Current Status'
-};
+const USER_FRIENDLY_SORT_NAMES = settings.userFriendlySortNames;
 
 const MOBILE_AUTO_SORT_DESC = ['yardiStatus'];
 
-const FILTER_ORDER = [
-  'all',
-  'current',
-  'future',
-  'eviction',
-  'notice',
-  'vacant'
-];
+const FILTER_ORDER = settings.filterOrder;
 
 // Hooks for sorting residents
 export default function useSearchingAndSorting(

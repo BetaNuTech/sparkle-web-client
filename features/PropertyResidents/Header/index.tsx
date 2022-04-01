@@ -93,7 +93,7 @@ const Header: FunctionComponent<Props> = ({
           <a className={styles.header__link}>{property.name}</a>
         </Link>
       </div>
-      <div className={styles.header__title}>{property.name} Residents</div>
+      <div className={styles.header__title}>Residents</div>
     </>
   );
 
