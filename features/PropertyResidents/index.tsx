@@ -6,7 +6,7 @@ import PropertyModel from '../../common/models/property';
 import ResidenceList from './List';
 import Header from './Header';
 import breakpoints from '../../config/breakpoints';
-import SearchBar from '../../common/SearchBar';
+import SearchBar, { ClearSearchAction } from '../../common/SearchBar';
 import styles from './styles.module.scss';
 import useSearchingAndSorting from './hooks/useSearchingAndSorting';
 import ContactModal from './ContactModal';
@@ -92,13 +92,10 @@ const PropertyResidents: FunctionComponent<Props> = ({
           activeFilter={activeFilter}
           searchValue={searchValue}
         />
-        {searchValue && (
-          <div className={styles.action}>
-            <button className={styles.action__clear} onClick={onClearSearch}>
-              Clear Search
-            </button>
-          </div>
-        )}
+        <ClearSearchAction
+          searchQuery={searchValue}
+          onClearSearch={onClearSearch}
+        />
       </div>
       <ContactModal
         isVisible={Boolean(selectedResident)}

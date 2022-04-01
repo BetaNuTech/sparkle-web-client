@@ -4,7 +4,7 @@ import Modal, { Props as ModalProps } from '../../../common/Modal';
 import styles from './styles.module.scss';
 import CategoryItem from './CategoryItem';
 import LoadingHud from '../../../common/LoadingHud';
-import SearchBar from '../../../common/SearchBar';
+import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
 
 interface Props extends ModalProps {
   onClose: () => void;
@@ -84,13 +84,10 @@ const TemplateEditModal: FunctionComponent<Props> = (props) => {
             </h5>
           )}
         </ul>
-        {searchParam && (
-          <div className={styles.action}>
-            <button className={styles.action__clear} onClick={onClearSearch}>
-              Clear Search
-            </button>
-          </div>
-        )}
+        <ClearSearchAction
+          searchQuery={searchParam}
+          onClearSearch={onClearSearch}
+        />
       </div>
     </div>
   );

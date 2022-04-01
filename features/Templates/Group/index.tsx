@@ -1,6 +1,6 @@
 import { ChangeEvent, FunctionComponent, RefObject } from 'react';
 import CategorizedTemplates from '../../../common/models/templates/categorizedTemplates';
-import SearchBar from '../../../common/SearchBar';
+import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
 import TemplateItem from './Item';
 
 import styles from './styles.module.scss';
@@ -76,13 +76,10 @@ const TemplatesGroup: FunctionComponent<Props> = ({
         {searchQuery ? 'No Templates Match Search' : 'No Templates Found'}
       </h3>
     )}
-    {searchQuery && (
-      <div className={styles.action}>
-        <button className={styles.action__clear} onClick={onClearSearch}>
-          Clear Search
-        </button>
-      </div>
-    )}
+    <ClearSearchAction
+      searchQuery={searchQuery}
+      onClearSearch={onClearSearch}
+    />
   </div>
 );
 

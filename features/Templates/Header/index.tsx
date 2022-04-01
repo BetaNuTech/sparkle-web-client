@@ -6,6 +6,7 @@ import MobileHeader from '../../../common/MobileHeader';
 import DesktopHeader from '../../../common/DesktopHeader';
 
 import styles from './styles.module.scss';
+import MobileSearchBar from '../../../common/MobileSearchBar';
 
 interface Props {
   isOnline: boolean;
@@ -101,20 +102,11 @@ const Header: FunctionComponent<Props> = ({
             title="Templates"
             actions={mobileHeaderActions}
           />
-          <div className={styles.search}>
-            <input
-              className={styles.search__input}
-              type="search"
-              value={searchQuery}
-              onChange={onSearchKeyDown}
-            />
-            {searchQuery && (
-              <button
-                className={styles.search__clear}
-                onClick={onClearSearch}
-              />
-            )}
-          </div>
+          <MobileSearchBar
+            searchQuery={searchQuery}
+            onChange={onSearchKeyDown}
+            onClearSearch={onClearSearch}
+          />
         </>
       ) : (
         <DesktopHeader

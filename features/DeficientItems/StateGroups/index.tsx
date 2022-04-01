@@ -5,7 +5,7 @@ import React, {
   RefObject
 } from 'react';
 import deficientItemModel from '../../../common/models/deficientItem';
-import SearchBar from '../../../common/SearchBar';
+import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
 import { deficientItemStateOrder } from '../../../config/deficientItems';
 import Header from './Header';
 import List from './List';
@@ -99,14 +99,10 @@ const DeficientItemsStateGroups: FunctionComponent<Props> = ({
         None found
       </h3>
     )}
-
-    {searchQuery && (
-      <div className={styles.action}>
-        <button className={styles.action__clear} onClick={onClearSearch}>
-          Clear Search
-        </button>
-      </div>
-    )}
+    <ClearSearchAction
+      searchQuery={searchQuery}
+      onClearSearch={onClearSearch}
+    />
   </div>
 );
 

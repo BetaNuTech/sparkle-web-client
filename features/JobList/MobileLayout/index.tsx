@@ -8,6 +8,7 @@ import AddIcon from '../../../public/icons/ios/add.svg';
 import FolderIcon from '../../../public/icons/ios/folder.svg';
 import { activeJobSortFilter } from '../utils/jobSorting';
 import JobSections from './JobSections';
+import MobileSearchBar from '../../../common/MobileSearchBar';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -78,22 +79,14 @@ const MobileLayout: FunctionComponent<Props> = ({
         actions={mobileHeaderActions}
         testid="mobile-joblist-header"
       />
-      <div className={styles.searchMain}>
-        <input
-          placeholder={`Search ${property.name} Jobs`}
-          className={styles.searchMain__input}
-          type="search"
-          value={searchQuery}
-          onChange={onSearchKeyDown}
-          data-testid="job-search-box"
-        />
-        {searchQuery && (
-          <button
-            className={styles.searchMain__clear}
-            onClick={onClearSearch}
-          />
-        )}
-      </div>
+      <MobileSearchBar
+        searchQuery={searchQuery}
+        onChange={onSearchKeyDown}
+        onClearSearch={onClearSearch}
+        placeholder={`Search ${property.name} Jobs`}
+        data-testid="job-search-box"
+      />
+
       <aside
         className={styles.mobileJobList__sortInfoLine}
         data-testid="mobile-sort-text"

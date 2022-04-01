@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { ChangeEvent, FunctionComponent } from 'react';
+import ClearSearchAction from './ClearSearchAction';
 import styles from './styles.module.scss';
 
 interface Props {
@@ -56,4 +57,5 @@ const SearchBar: FunctionComponent<Props> = ({
 
 SearchBar.defaultProps = { sideBorders: false };
 
+export { ClearSearchAction };
 export default SearchBar;

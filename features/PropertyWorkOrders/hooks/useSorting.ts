@@ -53,9 +53,8 @@ export default function useWorkOrdersSorting(
     function resortWorkOrders() {
       setSortedWorkOrders(applyWorkOrdersSort());
     }
-
     resortWorkOrders();
-  }, [sortBy, sortDir]); // eslint-disable-line
+  }, [sortBy, sortDir, `${filteredWorkOrders}`]); // eslint-disable-line
 
   // Set sort attribute
   const onSortChange = (evt: { target: HTMLSelectElement }) => {

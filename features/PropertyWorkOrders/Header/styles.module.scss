@@ -36,15 +36,3 @@
   @extend %sortInfo;
   justify-content: center;
 }
-
-.search {
-  @extend %mobileSearchInputMain;
-
-  &__input[type='search'] {
-    @extend %mobileSearchInput;
-  }
-
-  &__clear {
-    @extend %mobileSearchClear;
-  }
-}

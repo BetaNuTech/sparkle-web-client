@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent } from 'react';
+import { ChangeEvent, KeyboardEvent, FunctionComponent } from 'react';
 import Link from 'next/link';
 import MobileHeader from '../../../common/MobileHeader';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
@@ -7,6 +7,7 @@ import styles from './styles.module.scss';
 import DesktopHeader from '../../../common/DesktopHeader';
 import PropertyModel from '../../../common/models/property';
 import SortDropdown from '../../../common/SortDropdown';
+import MobileSearchBar from '../../../common/MobileSearchBar';
 
 const sortOptions = [
   { label: 'Creation Date', value: 'createdAt' },
@@ -22,6 +23,11 @@ interface Props {
   sortBy: string;
   userFacingSortBy: string;
   nextResidentsSort(): void;
+  searchQuery: string;
+  onSearchKeyDown: (
+    ev: KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
+  ) => void;
+  onClearSearch(): void;
   onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
   onSortDirChange(): void;
 }
@@ -35,6 +41,9 @@ const Header: FunctionComponent<Props> = ({
   sortBy,
   userFacingSortBy,
   nextResidentsSort,
+  searchQuery,
+  onSearchKeyDown,
+  onClearSearch,
   onSortChange,
   onSortDirChange
 }) => {
@@ -83,11 +92,11 @@ const Header: FunctionComponent<Props> = ({
             isStaging={isStaging}
             title={`${property.name.toUpperCase()} WOs`}
           />
-          <div className={styles.search}>
-            <input className={styles.search__input} type="search" />
-
-            <button className={styles.search__clear} />
-          </div>
+          <MobileSearchBar
+            searchQuery={searchQuery}
+            onChange={onSearchKeyDown}
+            onClearSearch={onClearSearch}
+          />
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}
           </div>
