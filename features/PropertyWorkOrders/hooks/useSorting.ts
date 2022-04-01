@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import workOrdersModel from '../../../common/models/yardi/workOrder';
 import globalEvents from '../../../common/utils/globalEvents';
 
@@ -8,6 +8,8 @@ interface result {
   sortBy: string;
   userFacingSortBy: string;
   nextWorkOrdersSort: () => void;
+  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
+  onSortDirChange(): void;
 }
 
 const PREFIX = 'common: hooks: workOrders: useSorting:';
@@ -55,12 +57,30 @@ export default function useWorkOrdersSorting(
     resortWorkOrders();
   }, [sortBy, sortDir]); // eslint-disable-line
 
+  // Set sort attribute
+  const onSortChange = (evt: { target: HTMLSelectElement }) => {
+    const {
+      target: { value }
+    } = evt;
+
+    setSortBy(value);
+    setUserFacingSortBy(toUserFacingActiveSort(value, sortDir));
+
+    globalEvents.trigger('visibilityForceCheck');
+  };
+
+  // Set sort direction
+  const onSortDirChange = () => {
+    setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    setUserFacingSortBy(toUserFacingActiveSort(sortBy, sortDir));
+    globalEvents.trigger('visibilityForceCheck');
+  };
+
   // Loop property sorting options
   const nextWorkOrdersSort = () => {
     const activeSortSrc =
       SORTS[SORTS.indexOf(`${sortBy}:${sortDir}`) + 1] || SORTS[0]; // Get next or first
     const [activeSort, activeSortDir] = activeSortSrc.split(':');
-
     setSortBy(activeSort);
     setSortDir(activeSortDir);
     setUserFacingSortBy(toUserFacingActiveSort(activeSort, activeSortDir)); // update sort label
@@ -72,7 +92,9 @@ export default function useWorkOrdersSorting(
     sortDir,
     sortBy,
     userFacingSortBy,
-    nextWorkOrdersSort
+    nextWorkOrdersSort,
+    onSortChange,
+    onSortDirChange
   };
 }
 
