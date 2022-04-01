@@ -15,7 +15,7 @@ describe('Unit | features | Property Residents | Contact Modal', () => {
       <ContactModal
         onClose={sinon.spy()}
         isVisible={true} // eslint-disable-line react/jsx-boolean-value
-        resident={resident}
+        data={resident}
       />
     );
 
