@@ -78,6 +78,7 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
           {isMoving && (
             <Image
               className={styles.loader}
+              loader={sparkleImgLoader}
               src="/img/sparkle-loader.gif"
               alt="loader"
               width="100"
@@ -116,5 +117,7 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
     </div>
   );
 };
+
+const sparkleImgLoader = ({ src }) => src;
 
 export default Modal(MoveInspectionModal, false);

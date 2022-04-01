@@ -6,6 +6,10 @@ module.exports = {
   trailingSlash: true,
   basePath: BASE_PATH,
   assetPrefix: BASE_PATH,
+  images: {
+    loader: 'imgix',
+    path: ''
+  },
 
   publicRuntimeConfig: {
     basePath: BASE_PATH,
