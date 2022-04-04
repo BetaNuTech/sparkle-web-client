@@ -30,7 +30,7 @@ export default {
   ],
   progressNoteEditStates: deficientItemProgressNoteEditStates,
   reasonIncompleteStates: ['overdue', 'incomplete', 'closed'],
-  reasonIncompleteEditStates: ['overdue', 'incomplete'],
+  reasonIncompleteEditStates: ['overdue'],
   respGroupEditStates: [
     'completed',
     'incomplete',
