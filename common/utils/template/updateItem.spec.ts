@@ -809,4 +809,39 @@ describe('Unit | Common | Utils | Template | Update Item', () => {
     const removedItemValue = (result.items || {})[itemTwoId];
     expect(removedItemValue, 'removed local item').toBeUndefined();
   });
+
+  test('it keeps same index when toggle between all primary input types', () => {
+    const currentTemplate = {
+      ...templateA,
+      sections: {
+        one: { ...singleSection, index: 0 }
+      }
+    };
+    const tests = ['text_input', 'signature', 'main'];
+
+    // Add new item
+    const updatedTemplate = updateItem(
+      {} as TemplateModel,
+      currentTemplate,
+      { sectionId: 'one', itemType: 'main' },
+      'new'
+    );
+
+    // Get added item id
+    const [itemId] = Object.keys(updatedTemplate.items);
+    const addedItem = updatedTemplate.items[itemId];
+    const expected = addedItem.index;
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const itemType = tests[i];
+      const result = updateItem(
+        updatedTemplate as TemplateModel,
+        currentTemplate,
+        { itemType },
+        itemId
+      );
+      const actual = ((result.items || {})[itemId] || {}).index;
+      expect(actual).toEqual(expected);
+    }
+  });
 });
