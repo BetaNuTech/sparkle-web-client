@@ -40,6 +40,7 @@ const WorkOrderList: FunctionComponent<Props> = ({
           workOrder={workOrder}
           onClickWorkOrder={onClickWorkOrder}
           forceVisible={forceVisible}
+          isMobile={isMobile}
         />
       ))}
     </ul>

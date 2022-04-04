@@ -1,0 +1,13 @@
+@import '../../../styles/index.scss';
+
+.pill {
+  padding: rem-calc(10) rem-calc(20);
+  background-color: $gray;
+  border-radius: $global-radius;
+  line-height: 1.4;
+  font-weight: 300;
+  font-size: rem-calc(14);
+  color: $gray-dark;
+  white-space: nowrap;
+  cursor: pointer;
+}
