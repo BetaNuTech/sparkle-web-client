@@ -117,7 +117,7 @@ const setItemType = (
   const { index, sectionId, title } = previousItem;
   const itemUpdates = createItem(value);
 
-  if (index) {
+  if (typeof index === 'number') {
     itemUpdates.index = index;
   }
   if (sectionId) {
