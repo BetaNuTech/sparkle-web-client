@@ -34,22 +34,6 @@
   }
 }
 
-.badge {
-  padding: rem-calc(10) rem-calc(20);
-  margin-bottom: $global-xsm-padding;
-  white-space: nowrap;
-  background-color: $gray;
-  border-radius: $global-radius;
-  line-height: 1.4;
-  font-weight: 300;
-  font-size: 0.85rem;
-  cursor: pointer;
-
-  @include media-query(desktop) {
-    padding: rem-calc(10) rem-calc(20);
-    color: $gray-dark;
-  }
-}
 .contact {
   display: block;
   font-size: rem-calc(14);

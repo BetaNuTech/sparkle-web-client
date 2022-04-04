@@ -8,6 +8,7 @@ import OccupantItem from './Occupants';
 import Info, { InfoLabel, InfoValue } from '../../../../common/Yardi/Info';
 import useVisibility from '../../../../common/hooks/useVisibility';
 import Badge from '../../../../common/Yardi/Badge';
+import Pill from '../../../../common/Yardi/Pill';
 
 interface Props {
   resident: ResidentModel;
@@ -216,39 +217,37 @@ const ResidenceListItem: FunctionComponent<Props> = ({
 
           {!isMobile && (
             <div className={styles.right}>
-              <div className={styles.badge}>
-                <ul>
-                  {resident.email && (
-                    <Info
-                      label="Email"
-                      value={resident.email}
-                      data-testid="residents-email"
-                    />
-                  )}
+              <Pill>
+                {resident.email && (
+                  <Info
+                    label="Email"
+                    value={resident.email}
+                    data-testid="residents-email"
+                  />
+                )}
 
-                  {resident.mobileNumber && (
-                    <Info
-                      label="Mobile Number"
-                      value={phoneNumber(resident.mobileNumber)}
-                      data-testid="residents-mobile-number"
-                    />
-                  )}
-                  {resident.officeNumber && (
-                    <Info
-                      label="Office Number"
-                      value={phoneNumber(resident.officeNumber)}
-                      data-testid="residents-office-number"
-                    />
-                  )}
-                  {resident.homeNumber && (
-                    <Info
-                      label="Home Number"
-                      value={phoneNumber(resident.homeNumber)}
-                      data-testid="residents-home-number"
-                    />
-                  )}
-                </ul>
-              </div>
+                {resident.mobileNumber && (
+                  <Info
+                    label="Mobile Number"
+                    value={phoneNumber(resident.mobileNumber)}
+                    data-testid="residents-mobile-number"
+                  />
+                )}
+                {resident.officeNumber && (
+                  <Info
+                    label="Office Number"
+                    value={phoneNumber(resident.officeNumber)}
+                    data-testid="residents-office-number"
+                  />
+                )}
+                {resident.homeNumber && (
+                  <Info
+                    label="Home Number"
+                    value={phoneNumber(resident.homeNumber)}
+                    data-testid="residents-home-number"
+                  />
+                )}
+              </Pill>
             </div>
           )}
         </>
