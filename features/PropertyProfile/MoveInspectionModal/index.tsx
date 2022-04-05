@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
 import firebase from 'firebase/app';
-import Image from 'next/image';
+import getConfig from 'next/config';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import baseStyles from '../../../common/Modal/styles.module.scss';
 import InspectionModel from '../../../common/models/inspection';
@@ -10,6 +10,10 @@ import useMoveInspection from '../hooks/useMoveInspection';
 import SkeletonLoader from '../../../common/SkeletonLoader';
 import PropertiesGroup from './Group';
 import styles from './styles.module.scss';
+
+const config = getConfig() || {};
+const publicRuntimeConfig = config.publicRuntimeConfig || {};
+const basePath = publicRuntimeConfig.basePath || '';
 
 interface Props extends ModalProps {
   onClose: () => void;
@@ -76,14 +80,10 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
           )}
         >
           {isMoving && (
-            <Image
+            <img
               className={styles.loader}
-              loader={sparkleImgLoader}
-              src="/img/sparkle-loader.gif"
+              src={`${basePath}/img/sparkle-loader.gif`}
               alt="loader"
-              width="100"
-              height="100"
-              layout="fixed"
             />
           )}
           {!isLoaded && <SkeletonLoader className="-pl -pr" />}
@@ -117,7 +117,5 @@ const MoveInspectionModal: FunctionComponent<Props> = ({
     </div>
   );
 };
-
-const sparkleImgLoader = ({ src }) => src;
 
 export default Modal(MoveInspectionModal, false);
