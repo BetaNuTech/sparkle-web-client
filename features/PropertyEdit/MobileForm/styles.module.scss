@@ -3,7 +3,7 @@
 .propertyEditMobile {
   &__form {
     height: 100%;
-    background-color: #f2f2f2;
+    background-color: $gray;
     overflow: auto;
     padding: 0 $global-lg-padding $global-lg-padding;
   }
