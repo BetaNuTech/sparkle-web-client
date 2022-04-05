@@ -1,0 +1,99 @@
+@import '../../../styles/index.scss';
+
+.header {
+  @extend %gridMobileHeaderTopInfo;
+
+  &__link {
+    @extend %gridHeaderLink;
+  }
+
+  &__text {
+    display: inline-block;
+    max-width: rem-calc(190);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__breadcrumbs {
+    @extend %gridHeaderLinkMain;
+  }
+
+  &__title {
+    @extend %gridHeaderSmallTitle;
+  }
+
+  @include media-query(desktop) {
+    padding: 0;
+    background-color: transparent;
+
+    &__title {
+      font-size: rem-calc(32);
+    }
+  }
+}
+
+.actionCancel {
+  @extend %gridHeaderCancelButton;
+  margin-right: $global-padding;
+  text-decoration: none !important;
+}
+
+.actionSubmit {
+  @extend %gridHeaderCreateButton;
+  border: rem-calc(1) solid $primary-color;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.userInfo {
+  display: flex;
+  padding: $global-padding;
+  justify-content: space-between;
+
+  @include media-query(desktop) {
+    justify-content: flex-start;
+  }
+}
+
+.pill {
+  width: 48%;
+  display: flex;
+  padding: 1.625rem;
+  margin-bottom: 1.5625rem;
+  align-items: center;
+  flex-direction: column;
+  background: $gray;
+  border-radius: 0.625rem;
+
+  &__label,
+  &__value {
+    margin: 0;
+  }
+
+  &__label {
+    color: $gray-6;
+    font-size: rem-calc(12);
+  }
+
+  &__value {
+    max-width: 100%;
+    font-size: rem-calc(18);
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  @include media-query(desktop) {
+    width: auto;
+    flex-direction: row;
+    margin-right: 1rem;
+
+    &__label,
+    &__value {
+      font-size: 1rem;
+    }
+  }
+}
