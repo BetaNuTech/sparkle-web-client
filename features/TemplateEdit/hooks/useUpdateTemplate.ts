@@ -13,6 +13,7 @@ import BaseError from '../../../common/models/errors/baseError';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
+import TemplateItemModel from '../../../common/models/inspectionTemplateItem';
 
 const PREFIX = 'features: TemplateEdit: hooks: useUpdateTemplate:';
 export const USER_NOTIFICATIONS = {
@@ -51,6 +52,7 @@ interface useUpdateTemplateResult {
   removeItem(itemId: string): TemplateModal;
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
+  onDeleteItem(item: TemplateItemModel): void;
   selectedItems: Record<string, string[]>;
   selectedSections: string[];
   onSelectSections(sectionId: string): void;
@@ -333,6 +335,22 @@ export default function useUpdateTemplate(
     });
   };
 
+  const onDeleteItem = (item: TemplateItemModel) => {
+    removeItem(item.id);
+    const selectedSectionItems = selectedItems[item.sectionId] || [];
+
+    // Do not update selections
+    // when group has no selections
+    if (!selectedSectionItems.length) return;
+
+    setSelectedItems({
+      ...selectedItems,
+      [item.sectionId]: selectedSectionItems.filter(
+        (itemId: string) => itemId !== item.id
+      )
+    });
+  };
+
   const handleErrorResponse = (error: BaseError) => {
     if (error instanceof ErrorBadRequest) {
       sendNotification(USER_NOTIFICATIONS.badRequest, {
@@ -416,6 +434,7 @@ export default function useUpdateTemplate(
     removeItem,
     onSelectItems,
     onDeleteItems,
+    onDeleteItem,
     selectedItems,
     selectedSections,
     onSelectSections,

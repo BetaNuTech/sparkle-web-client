@@ -133,7 +133,9 @@ const Sections: FunctionComponent<Props> = ({
       </section>
       {createPortal(
         <DragOverlay>
-          {activeId ? <Item item={activeItem} /> : null}
+          {activeId ? (
+            <Item item={activeItem} selectedItems={selectedSections} />
+          ) : null}
         </DragOverlay>,
         document.body
       )}

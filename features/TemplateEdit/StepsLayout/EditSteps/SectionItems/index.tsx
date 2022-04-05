@@ -41,10 +41,10 @@ interface Props {
   updateItemTitle(itemId: string, title: string): void;
   errors: Record<string, string>;
   updateItemIndex(itemId: string, index: number): void;
-  removeItem(itemId: string): void;
   selectedItems: Record<string, string[]>;
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
+  onDeleteItem(item: TemplateItemModel): void;
 }
 
 const SectionItems: FunctionComponent<Props> = ({
@@ -54,10 +54,10 @@ const SectionItems: FunctionComponent<Props> = ({
   onUpdateItemType,
   updateItemTitle,
   updateItemIndex,
-  removeItem,
   selectedItems,
   onSelectItems,
   onDeleteItems,
+  onDeleteItem,
   errors
 }) => {
   const [activeId, setActiveId] = useState(null);
@@ -88,12 +88,12 @@ const SectionItems: FunctionComponent<Props> = ({
     const overItem = flattenedItems.find((item) => item.id === over.id);
     const movedItem = flattenedItems.find((item) => item.id === active.id);
 
-    // only update item index if droped within secion
+    // only update item index if dropped within section
     // otherwise delete active item.
     if (overItem && movedItem.sectionId === overItem.sectionId) {
       updateItemIndex(id, overItem.index);
     } else {
-      removeItem(id);
+      onDeleteItem(movedItem);
     }
 
     globalEvents.trigger('visibilityForceCheck');
@@ -103,6 +103,11 @@ const SectionItems: FunctionComponent<Props> = ({
     const { active } = event;
     setActiveId(active.id);
   };
+
+  const allSelectedItems = useMemo(
+    () => Object.values(selectedItems).flat(),
+    [selectedItems]
+  );
 
   return (
     <DndContext
@@ -171,7 +176,9 @@ const SectionItems: FunctionComponent<Props> = ({
       })}
       {createPortal(
         <DragOverlay>
-          {activeId ? <Item item={activeItem} /> : null}
+          {activeId ? (
+            <Item item={activeItem} selectedItems={allSelectedItems} />
+          ) : null}
         </DragOverlay>,
         document.body
       )}

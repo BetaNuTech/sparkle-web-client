@@ -101,12 +101,9 @@ const Item = forwardRef<HTMLDivElement, Props>(
             )}
           </div>
           <div className={styles.controls}>
-            <span
-              className="-flex-center-content -cu-pointer"
-              onClick={onUpdateType}
-            >
+            <button className={styles.controls__action} onClick={onUpdateType}>
               {icon}
-            </span>
+            </button>
             <span
               className={clsx(
                 styles.controls__dragHandle,

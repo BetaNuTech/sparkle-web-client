@@ -52,10 +52,10 @@ interface Props {
   isValidForm: boolean;
   onUpdateScore(itemId: string, selectedInput: number, score: number): void;
   updateItemIndex(itemId: string, index: number): void;
-  removeItem(itemId: string): void;
   selectedItems: Record<string, string[]>;
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
+  onDeleteItem(item: TemplateItemModel): void;
   onSave(): void;
   isLoading: boolean;
   hasUpdates: boolean;
@@ -97,10 +97,10 @@ const StepsLayout: FunctionComponent<Props> = ({
   isValidForm,
   onUpdateScore,
   updateItemIndex,
-  removeItem,
   selectedItems,
   onSelectItems,
   onDeleteItems,
+  onDeleteItem,
   onSave,
   isLoading,
   hasUpdates,
@@ -172,10 +172,10 @@ const StepsLayout: FunctionComponent<Props> = ({
                       errors={errors}
                       onUpdateScore={onUpdateScore}
                       updateItemIndex={updateItemIndex}
-                      removeItem={removeItem}
                       selectedItems={selectedItems}
                       onSelectItems={onSelectItems}
                       onDeleteItems={onDeleteItems}
+                      onDeleteItem={onDeleteItem}
                     />
                   )}
                 </div>

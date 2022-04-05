@@ -79,9 +79,9 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updateNotesValue,
     updateScore,
     updateItemIndex,
-    removeItem,
     onSelectItems,
     onDeleteItems,
+    onDeleteItem,
     selectedItems,
     selectedSections,
     onSelectSections,
@@ -265,10 +265,10 @@ const TemplateEdit: FunctionComponent<Props> = ({
         isValidForm={isValidForm}
         onUpdateScore={onUpdateScore}
         updateItemIndex={updateItemIndex}
-        removeItem={removeItem}
         selectedItems={selectedItems}
         onSelectItems={onSelectItems}
         onDeleteItems={onDeleteItems}
+        onDeleteItem={onDeleteItem}
         onSave={onSave}
         isLoading={isLoading}
         hasUpdates={hasUpdates}
