@@ -5,7 +5,7 @@
   position: relative;
   padding: $global-sm-padding $global-padding;
   justify-content: space-between;
-  min-height: rem-calc(200);
+  min-height: rem-calc(320);
   border-bottom: 1px solid $gray-lighter;
 
   &__left {
@@ -15,5 +15,6 @@
 
   @include media-query(desktop) {
     padding: $global-sm-padding $global-lg-padding;
+    min-height: rem-calc(250);
   }
 }
