@@ -1,5 +1,5 @@
 import 'firebase/firestore';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import { useFirestore, useUser } from 'reactfire';
 import Router, { useRouter } from 'next/router';
 import useProperty from '../../../../common/hooks/useProperty';
@@ -49,6 +49,23 @@ const Page: FunctionComponent = () => {
     });
     Router.push('/properties/');
   }
+
+  // using this useEffect so it only
+  // sends single notification to user
+  useEffect(() => {
+    // Redirect to properties if property not found with error notification
+    if (
+      !property?.name &&
+      propertyStatus === 'success' &&
+      !isCreatingProperty
+    ) {
+      sendNotification('Property does not exist.', {
+        type: 'error'
+      });
+      Router.push('/properties/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propertyStatus, property]);
 
   let isLoaded = false;
   if (
