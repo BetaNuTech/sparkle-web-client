@@ -96,7 +96,8 @@ const SlideNav: FunctionComponent<Props> = ({
               <div className={styles.slideNav__links__link}>
                 <LinkFeature
                   featureEnabled={features.supportBetaUsers}
-                  href="/admin"
+                  href="/users"
+                  legacyHref="/admin"
                 >
                   Users
                 </LinkFeature>
