@@ -3,7 +3,10 @@ export default {
     process.env.NEXT_PUBLIC_SUPPORT_BETA_TEMPLATES_LIST === 'true' || false,
   supportBetaTemplateEdit:
     process.env.NEXT_PUBLIC_SUPPORT_BETA_TEMPLATES_EDIT === 'true' || false,
-  supportBetaUsers: false,
+  supportBetaUsers:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_USERS === 'true' || false,
+  supportBetaUserEdit:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_USER_EDIT === 'true' || false,
   supportBetaUserProfile: false,
   supportBetaSettings: false,
   supportBetaLogin: false,
