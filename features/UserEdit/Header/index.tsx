@@ -8,6 +8,7 @@ import styles from './styles.module.scss';
 import UserModel from '../../../common/models/user';
 import { getLevelName } from '../../../common/utils/userPermissions';
 import utilString from '../../../common/utils/string';
+import Actions from '../Actions';
 
 interface Props {
   isOnline: boolean;
@@ -15,6 +16,8 @@ interface Props {
   isMobile: boolean;
   isCreatingUser: boolean;
   user: UserModel;
+  isDisabled: boolean;
+  onSubmit(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -22,7 +25,9 @@ const Header: FunctionComponent<Props> = ({
   isStaging,
   isMobile,
   isCreatingUser,
-  user
+  user,
+  isDisabled,
+  onSubmit
 }) => {
   const title = isCreatingUser ? 'Add User' : 'Edit User';
   const accessLevel = getLevelName(user);
@@ -30,7 +35,7 @@ const Header: FunctionComponent<Props> = ({
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={headStyle.header__button} disabled>
+      <button className={headStyle.header__button} disabled={isDisabled}>
         Save
       </button>
     </>
@@ -73,23 +78,6 @@ const Header: FunctionComponent<Props> = ({
     </>
   );
 
-  const DesktopActions = () => (
-    <>
-      <LinkFeature
-        href="/users"
-        legacyHref="/admin/users"
-        featureEnabled={features.supportBetaUsers}
-        className={styles.actionCancel}
-      >
-        Cancel
-      </LinkFeature>
-
-      <button type="button" className={styles.actionSubmit} disabled>
-        Save
-      </button>
-    </>
-  );
-
   return (
     <>
       {isMobile ? (
@@ -107,7 +95,13 @@ const Header: FunctionComponent<Props> = ({
           title={<BreadCrumbs />}
           isOnline={isOnline}
           isColumnTitle
-          right={<DesktopActions />}
+          right={
+            <Actions
+              isDisabled={isDisabled}
+              onSubmit={onSubmit}
+              isCreatingUser={isCreatingUser}
+            />
+          }
         />
       )}
       {!isCreatingUser && (

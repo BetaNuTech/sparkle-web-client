@@ -1,0 +1,17 @@
+@import '../../../styles/index.scss';
+
+.actionCancel {
+  @extend %gridHeaderCancelButton;
+  margin: 0 $global-padding;
+  text-decoration: none !important;
+}
+
+.actionSubmit {
+  @extend %gridHeaderCreateButton;
+  border: rem-calc(1) solid $primary-color;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}

@@ -33,22 +33,6 @@
   }
 }
 
-.actionCancel {
-  @extend %gridHeaderCancelButton;
-  margin-right: $global-padding;
-  text-decoration: none !important;
-}
-
-.actionSubmit {
-  @extend %gridHeaderCreateButton;
-  border: rem-calc(1) solid $primary-color;
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
 .userInfo {
   display: flex;
   padding: $global-padding;

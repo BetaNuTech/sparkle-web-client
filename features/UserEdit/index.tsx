@@ -4,7 +4,9 @@ import PropertyModel from '../../common/models/property';
 import TeamModel from '../../common/models/team';
 import UserModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
+import UserEditForm from './Form';
 import Header from './Header';
+import useUserEdit from './hooks/useUserEdit';
 
 interface Props {
   user: UserModel;
@@ -27,7 +29,9 @@ const UserEdit: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
-  const isCreatingUser = target.id === 'new';
+  const { register, formState, isCreatingUser, isDisabled, onSubmit } =
+    useUserEdit(target);
+
   return (
     <>
       <Header
@@ -36,10 +40,18 @@ const UserEdit: FunctionComponent<Props> = ({
         isMobile={isMobile}
         isCreatingUser={isCreatingUser}
         user={target}
+        isDisabled={isDisabled}
+        onSubmit={onSubmit}
       />
       <div>
-        {isCreatingUser ? 'Add' : 'Edit'} User {target.firstName}{' '}
-        {target.lastName}
+        <UserEditForm
+          user={target}
+          formState={formState}
+          register={register}
+          isDisabled={isDisabled}
+          onSubmit={onSubmit}
+          isCreatingUser={isCreatingUser}
+        />
       </div>
     </>
   );

@@ -1,0 +1,44 @@
+@import '../../../styles/index.scss';
+
+.container {
+  padding: $global-padding;
+  max-width: rem-calc(600);
+  margin: $global-padding auto;
+
+  @include media-query(desktop) {
+    padding: rem-calc(52) rem-calc(42);
+    border: 1px solid $gray-lighter;
+  }
+}
+
+.field {
+  &__label {
+    font-weight: 600;
+  }
+
+  &__input[type='text'] {
+    @extend %inputText;
+    margin: 0;
+  }
+
+  &__control {
+    margin-bottom: rem-calc(16);
+  }
+
+  &__input[type='text'],
+  &__input[type='email'] {
+    @extend %inputText;
+    margin: 0;
+  }
+}
+
+.actions {
+  display: flex;
+  margin-top: $global-lg-padding;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+
+  > * {
+    margin-right: 0;
+  }
+}
