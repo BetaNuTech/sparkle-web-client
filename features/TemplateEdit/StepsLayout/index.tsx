@@ -136,6 +136,7 @@ const StepsLayout: FunctionComponent<Props> = ({
             preventClicks={false}
             noSwiping={true} // eslint-disable-line react/jsx-boolean-value
             noSwipingClass="template-edit-drag-handle"
+            simulateTouch={false}
           >
             {steps.map((step, index) => (
               <SwiperSlide key={step}>
