@@ -15,14 +15,13 @@ import {
 import breakpoints from '../../config/breakpoints';
 import Header from './Header';
 import TemplatesGroup from './Group';
-import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
-import useSearching from '../../common/hooks/useSearching';
 import ManageCategoriesModal from './ManageCategoriesModal';
 import { uuid } from '../../common/utils/uuidv4';
 import useTemplatesActions from './hooks/useTemplatesActions';
 import LoadingHud from '../../common/LoadingHud';
 import useCategoriesActions from './hooks/useCategoriesActions';
 import DeleteTemplatePrompt from './DeletePrompt';
+import useSearchTemplates from './hooks/useSearchTemplates';
 
 type userNotifications = (message: string, options?: any) => any;
 interface Props {
@@ -78,19 +77,8 @@ const Templates: FunctionComponent<Props> = ({
   const scrollElementRef = useRef();
   usePreserveScrollPosition('TemplatesScroll', scrollElementRef, isMobile);
 
-  // Templates search setup
-  const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
-    useSearching(templates, ['name', 'description']);
-
-  // remove deleted items from list and assign types
-  const filteredTemplates = filteredItems
-    .filter((item) => deletedIds.indexOf(item.id) < 0)
-    .map((itm) => itm as TemplateModel);
-
-  const { categories: categorizedTemplate } = useCategorizedTemplates(
-    templateCategories,
-    filteredTemplates
-  );
+  const { categorizedTemplate, searchValue, onSearchKeyDown, onClearSearch } =
+    useSearchTemplates(templates, templateCategories, deletedIds);
 
   // sort categories by name in ascending order
   const sortedCategories = templateCategories
