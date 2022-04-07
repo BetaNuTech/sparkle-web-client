@@ -65,7 +65,7 @@ const Page: React.FC = (): ReactElement => {
     if (
       !targetUser?.email &&
       targetUserStatus === 'success' &&
-      targetUser.id !== 'new'
+      targetUser?.id !== 'new'
     ) {
       sendNotification('User does not exist.', {
         type: 'error'
