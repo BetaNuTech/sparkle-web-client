@@ -4,3 +4,13 @@
   @extend %sortInfo;
   justify-content: center;
 }
+
+.action {
+  @extend %gridHeaderCreateButton;
+  margin-right: $global-padding;
+  text-decoration: none !important;
+}
+
+.addIcon {
+  @extend %gridHeaderButtonIcon;
+}
