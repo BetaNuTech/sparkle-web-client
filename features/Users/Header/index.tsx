@@ -7,6 +7,16 @@ import FolderIcon from '../../../public/icons/ios/folder.svg';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import styles from './styles.module.scss';
 import MobileSearchBar from '../../../common/MobileSearchBar';
+import SortDropdown from '../../../common/SortDropdown';
+
+const sortOptions = [
+  { label: 'Access Level', value: 'accessLevel' },
+  { label: 'Email', value: 'email' },
+  { label: 'First Name', value: 'firstName' },
+  { label: 'Last Name', value: 'lastName' },
+  { label: 'Creation Date', value: 'createdAt' },
+  { label: 'Last sign on', value: 'lastSignInDate' }
+];
 
 interface Props {
   isOnline: boolean;
@@ -39,6 +49,30 @@ const Header: FunctionComponent<Props> = ({
     </>
   );
 
+  // Desktop Header actions buttons
+  const DesktopActions = () => (
+    <>
+      <LinkFeature
+        href="/users/edit/new"
+        legacyHref="/admin/users/add"
+        featureEnabled={features.supportBetaUserEdit}
+        className={styles.action}
+      >
+        Create
+        <span className={styles.addIcon}>
+          <AddIcon />
+        </span>
+      </LinkFeature>
+      <SortDropdown
+        options={sortOptions}
+        sortBy=""
+        sortDir="asc"
+        onSortChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+        onSortDirChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+      />
+    </>
+  );
+
   return (
     <>
       {isMobile ? (
@@ -61,7 +95,7 @@ const Header: FunctionComponent<Props> = ({
         <DesktopHeader
           title={<span>Users</span>}
           isOnline={isOnline}
-          isColumnTitle
+          right={<DesktopActions />}
         />
       )}
     </>
