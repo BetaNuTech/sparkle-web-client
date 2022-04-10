@@ -1,7 +1,9 @@
 import clsx from 'clsx';
 import { ChangeEvent, FunctionComponent } from 'react';
+import { stateColors } from '../../../../config/deficientItems';
 import MoveToDropDown from './MoveToDropdown';
 import styles from './styles.module.scss';
+import { colorClasses, borderClasses } from '../../settings';
 
 interface Props {
   state: string;
@@ -65,10 +67,14 @@ const DeficientItemsStateGroupsHeader: FunctionComponent<Props> = ({
   }
   const hasBulkUpdate = !isMobile && state !== 'closed';
   const showSelectedCount = !isMobile && Boolean(selectedCount);
+  const colorization = isMobile
+    ? colorClasses[stateColors[state]]
+    : styles[`container--${borderClasses[stateColors[state]]}`];
+
   return (
     <h3
       data-testid="state-item-title"
-      className={clsx(styles.container, styles[`container--${state}`])}
+      className={clsx(styles.container, colorization)}
     >
       {hasBulkUpdate && (
         <input

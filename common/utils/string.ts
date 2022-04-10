@@ -36,5 +36,10 @@ export default {
   // Replace all "-" dash characters with spaces
   dedash(params?: string): string {
     return `${params || ''}`.replace(/-/g, ' ');
+  },
+
+  // Convert a camelCaseString to "spaced string"
+  decamel(str: string): string {
+    return str.replace(/([A-Z])/g, ' $1');
   }
 };

@@ -69,4 +69,10 @@ describe('Unit | Common | Utils | String', () => {
       expect(actual).toEqual(expected);
     });
   });
+
+  test('it converts a camel cased string to a spaced string', () => {
+    const expected = 'camel Cased String';
+    const actual = utilString.decamel('camelCasedString');
+    expect(actual).toEqual(expected);
+  });
 });

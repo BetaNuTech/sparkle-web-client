@@ -23,6 +23,8 @@ interface user {
 
   // User agent string of last sign up OS/Browser
   lastUserAgent?: string;
+
+  isDisabled?: boolean;
 }
 
 export default user;

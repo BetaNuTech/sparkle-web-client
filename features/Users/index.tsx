@@ -1,8 +1,11 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 import UserModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
+import UsersGroups from './Groups';
 import Header from './Header';
+import useUsersGroup from './hooks/useUsersGroup';
 
 interface Props {
   user: UserModel;
@@ -10,17 +13,25 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
+  list: UserModel[];
 }
 
 const Users: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  list,
+  forceVisible
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
+
+  const { userGroups, groups } = useUsersGroup(list);
+
+  const scrollElementRef = useRef();
+  usePreserveScrollPosition('UsersScroll', scrollElementRef, isMobile);
 
   return (
     <>
@@ -30,9 +41,12 @@ const Users: FunctionComponent<Props> = ({
         isMobile={isMobile}
         toggleNavOpen={toggleNavOpen}
       />
-      <div>
-        <h1>Users List</h1>
-      </div>
+      <UsersGroups
+        userGroups={userGroups}
+        groups={groups}
+        scrollElementRef={scrollElementRef}
+        forceVisible={forceVisible}
+      />
     </>
   );
 };
