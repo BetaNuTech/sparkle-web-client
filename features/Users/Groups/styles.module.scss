@@ -1,0 +1,13 @@
+@import '../../../styles/index.scss';
+
+.container {
+  overflow-y: auto;
+
+  @include media-query(desktop) {
+    overflow: visible;
+  }
+}
+
+.heading {
+  @extend %stickyBoundingBox--header;
+}

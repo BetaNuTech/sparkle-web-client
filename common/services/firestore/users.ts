@@ -1,19 +1,19 @@
 import firebase from 'firebase/app';
 import { useFirestoreDocData, useFirestoreCollectionData } from 'reactfire';
-import userModel from '../../models/user';
+import UserModel from '../../models/user';
 import fbCollections from '../../../config/collections';
 
 // Result of user document query
-export interface userDocumentResult {
+export interface UserDocumentResult {
   status: string;
   error?: Error;
-  data: userModel;
+  data: UserModel;
 }
 
-export interface userCollectionResult {
+export interface UserCollectionResult {
   status: string;
   error?: Error;
-  data: userModel[];
+  data: UserModel[];
 }
 
 export default {
@@ -21,7 +21,7 @@ export default {
   findRecord(
     firestore: firebase.firestore.Firestore,
     userId: string
-  ): userDocumentResult {
+  ): UserDocumentResult {
     const userRef = firestore.collection(fbCollections.users).doc(userId);
     const {
       status,
@@ -32,7 +32,7 @@ export default {
     });
 
     // Cast firestore data into team records
-    const data = userData as userModel;
+    const data = userData as UserModel;
 
     // Result
     return { status, error, data };
@@ -42,7 +42,7 @@ export default {
   query(
     firestore: firebase.firestore.Firestore,
     ids: string[]
-  ): userCollectionResult {
+  ): UserCollectionResult {
     let status = 'success';
     let error = null;
     let data = [];
@@ -66,8 +66,34 @@ export default {
       error = queryError;
 
       // Cast firestore data into users records
-      data = queryData.map((itemData: any) => itemData as userModel);
+      data = queryData.map((itemData: any) => itemData as UserModel);
     }
+
+    // Result
+    return { status, error, data };
+  },
+
+  // Lookup all users
+  findAll(firestore: firebase.firestore.Firestore): UserCollectionResult {
+    let status = 'success';
+    let error = null;
+    let data = [];
+
+    const query = firestore.collection(fbCollections.users);
+
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData = []
+    } = useFirestoreCollectionData(query, {
+      idField: 'id'
+    });
+
+    status = queryStatus;
+    error = queryError;
+
+    // Cast firestore data into users records
+    data = queryData.map((itemData: any) => itemData as UserModel);
 
     // Result
     return { status, error, data };

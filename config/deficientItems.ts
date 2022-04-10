@@ -1,3 +1,15 @@
+export const stateColors = {
+  completed: 'purple',
+  incomplete: 'purple',
+  overdue: 'alertSecondary',
+  'requires-action': 'alertSecondary',
+  'go-back': 'alertSecondary',
+  'requires-progress-update': 'alertSecondary',
+  deferred: 'orange',
+  pending: 'grayDark',
+  closed: 'gray'
+};
+
 export const deficientItemStateOrder = [
   'completed',
   'incomplete',

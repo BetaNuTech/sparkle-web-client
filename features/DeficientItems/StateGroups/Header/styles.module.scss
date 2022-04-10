@@ -9,30 +9,6 @@ $selected-count-border-color: #133e86;
   align-items: center;
   justify-content: center;
 
-  &--completed,
-  &--incomplete {
-    background: $quaternary-color;
-  }
-
-  &--overdue,
-  &--requires-action,
-  &--go-back,
-  &--requires-progress-update {
-    background: $alert-secondary-color;
-  }
-
-  &--deferred {
-    background: $orange-color;
-  }
-
-  &--pending {
-    background: $gray-dark;
-  }
-
-  &--closed {
-    background: $gray-light;
-  }
-
   @include media-query(desktop) {
     padding: $global-padding $global-lg-padding;
     background: $gray;
@@ -45,29 +21,47 @@ $selected-count-border-color: #133e86;
     top: $searchBarHeight;
     justify-content: flex-start;
     min-height: rem-calc(65);
+    border-bottom-width: 5px;
+    border-bottom-style: solid;
 
-    &--completed,
-    &--incomplete {
-      border-bottom: 5px solid $quaternary-color;
+    &--primary {
+      border-bottom-color: $primary-color;
     }
 
-    &--overdue,
-    &--requires-action,
-    &--go-back,
-    &--requires-progress-update {
-      border-bottom: 5px solid $alert-secondary-color;
+    &--secondary {
+      border-bottom-color: $secondary-color;
     }
 
-    &--deferred {
-      border-bottom: 5px solid $orange-color;
+    &--gray-light {
+      border-bottom-color: $gray-light;
     }
 
-    &--pending {
-      border-bottom: 5px solid $gray-dark;
+    &--gray-dark {
+      border-bottom-color: $gray-dark;
     }
 
-    &--closed {
-      border-bottom: 5px solid $gray-light;
+    &--sea-green {
+      border-bottom-color: $sea-green-color;
+    }
+
+    &--info {
+      border-bottom-color: $info-color;
+    }
+
+    &--alert {
+      border-bottom-color: $alert-color;
+    }
+
+    &--alert-secondary {
+      border-bottom-color: $alert-secondary-color;
+    }
+
+    &--orange {
+      border-bottom-color: $orange-color;
+    }
+
+    &--quaternary {
+      border-bottom-color: $quaternary-color;
     }
   }
 }

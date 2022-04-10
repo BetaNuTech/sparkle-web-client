@@ -1,0 +1,41 @@
+@import '../../../../styles/index.scss';
+
+.item {
+  min-height: rem-calc(85);
+  padding: $global-sm-padding $global-sm-padding;
+  border-bottom: 1px solid $gray-lighter;
+}
+
+.details {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pill {
+  margin-bottom: $global-xsm-padding;
+  margin-bottom: $global-sm-padding;
+  padding: 0 rem-calc(4);
+  border-radius: $global-radius;
+  background-color: $gray-light-2;
+  color: $white;
+  font-weight: 300;
+  font-size: 0.85rem;
+  line-height: 1.4;
+
+  &--info {
+    background-color: $info-color;
+  }
+}
+
+.title,
+.info {
+  @extend %ellipsisOverflow;
+  font-size: $medium-font-size;
+  line-height: 1.3;
+  color: $black;
+  margin-bottom: 0;
+}
+
+.title {
+  font-weight: bold;
+}
