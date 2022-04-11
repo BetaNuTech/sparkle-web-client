@@ -30,9 +30,10 @@ const Item: FunctionComponent<Props> = ({ user, forceVisible }) => {
   const fullName = getUserFullname(user);
 
   return (
-    <li className={styles.item} ref={placeholderRef}>
+    <li className={styles.main} ref={placeholderRef}>
       {isVisible && (
         <LinkFeature
+          className={styles.item}
           href={`/users/edit/${user.id}`}
           legacyHref={`/admin/users/${user.id}`}
           featureEnabled={features.supportBetaUserEdit}
@@ -43,11 +44,12 @@ const Item: FunctionComponent<Props> = ({ user, forceVisible }) => {
               Created: {creationDate}
             </div>
           </header>
-
-          <h4 className={styles.title}>{fullName}</h4>
-          <p className={styles.info}>Email: {user.email}</p>
-          <p className={styles.info}>Last App Used: {lastAppUsed}</p>
-          <p className={styles.info}>Last Sign On: {lastSignInDate}</p>
+          <div>
+            <h4 className={styles.title}>{fullName}</h4>
+            <p className={styles.info}>Email: {user.email}</p>
+            <p className={styles.info}>Last App Used: {lastAppUsed}</p>
+            <p className={styles.info}>Last Sign On: {lastSignInDate}</p>
+          </div>
         </LinkFeature>
       )}
     </li>
