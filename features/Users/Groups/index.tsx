@@ -1,6 +1,7 @@
 import clsx from 'clsx';
-import { Fragment, FunctionComponent, RefObject } from 'react';
+import { FunctionComponent, RefObject } from 'react';
 import UserModel from '../../../common/models/user';
+import SearchBar from '../../../common/SearchBar';
 import Item from './Item';
 import userConfig from '../../../config/users';
 import styles from './styles.module.scss';
@@ -19,23 +20,32 @@ interface Props {
   userGroups: Map<string, UserModel[]>;
   scrollElementRef: RefObject<HTMLDivElement>;
   forceVisible: boolean;
+  isMobile: boolean;
 }
 
 const UsersGroups: FunctionComponent<Props> = ({
   groups,
   userGroups,
   scrollElementRef,
-  forceVisible
-}) =>
-  (<div className={styles.container} ref={scrollElementRef}>
+  forceVisible,
+  isMobile
+}) => (
+  <div className={styles.container} ref={scrollElementRef}>
+    {!isMobile && (
+      <SearchBar
+        searchQuery=""
+        onClearSearch={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+        onSearchKeyDown={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+      />
+    )}
+
     {groups.map((group) => {
       const users = userGroups.get(group);
       const colorClass = colorClasses[GROUP_COLORS[group]];
 
       return (
-        <Fragment key={group}>
-          <h3
-            className={clsx(styles.heading, colorClass)}>
+        <div key={group}>
+          <h3 className={clsx(styles.heading, colorClass)}>
             {groupNames[group]}
           </h3>
           <ul>
@@ -43,9 +53,10 @@ const UsersGroups: FunctionComponent<Props> = ({
               <Item user={user} forceVisible={forceVisible} key={user.id} />
             ))}
           </ul>
-        </Fragment>
+        </div>
       );
     })}
-  </div>);
+  </div>
+);
 
 export default UsersGroups;

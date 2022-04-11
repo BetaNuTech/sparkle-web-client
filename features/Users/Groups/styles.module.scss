@@ -5,9 +5,14 @@
 
   @include media-query(desktop) {
     overflow: visible;
+    padding: $global-lg-padding $global-padding $global-padding;
   }
 }
 
 .heading {
   @extend %stickyBoundingBox--header;
+
+  @include media-query(desktop) {
+    top: $searchBarHeight;
+  }
 }

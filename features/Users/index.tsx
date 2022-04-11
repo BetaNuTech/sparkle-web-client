@@ -46,6 +46,7 @@ const Users: FunctionComponent<Props> = ({
         groups={groups}
         scrollElementRef={scrollElementRef}
         forceVisible={forceVisible}
+        isMobile={isMobile}
       />
     </>
   );
