@@ -5,6 +5,7 @@ import UserModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 import UsersGroups from './Groups';
 import Header from './Header';
+import useSorting from './hooks/useSorting';
 import useUsersGroup from './hooks/useUsersGroup';
 import useUsersSearch from './hooks/useUsersSearch';
 
@@ -14,14 +15,14 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
-  list: UserModel[];
+  data: UserModel[];
 }
 
 const Users: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   toggleNavOpen,
-  list,
+  data,
   forceVisible
 }) => {
   // Responsive queries
@@ -29,8 +30,17 @@ const Users: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
+  const {
+    sortedUsers,
+    sortBy,
+    sortDir,
+    onSortChange,
+    onSortDirChange,
+    nextUserSort,
+    userFacingSortBy
+  } = useSorting(data);
   const { filteredUsers, onClearSearch, onSearchKeyDown, searchValue } =
-    useUsersSearch(list);
+    useUsersSearch(sortedUsers);
 
   const { userGroups, groups } = useUsersGroup(filteredUsers);
 
@@ -44,6 +54,12 @@ const Users: FunctionComponent<Props> = ({
         isStaging={isStaging}
         isMobile={isMobile}
         toggleNavOpen={toggleNavOpen}
+        sortBy={sortBy}
+        sortDir={sortDir}
+        onSortChange={onSortChange}
+        onSortDirChange={onSortDirChange}
+        nextUserSort={nextUserSort}
+        userFacingSortBy={userFacingSortBy}
         onSearchKeyDown={onSearchKeyDown}
         searchValue={searchValue}
         onClearSearch={onClearSearch}

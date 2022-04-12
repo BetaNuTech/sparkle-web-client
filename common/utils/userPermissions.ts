@@ -74,11 +74,15 @@ export const getTeams = (userTeams: any = {}): Array<string> => {
 
 // Discovers the permission level of a user
 // returns a name to be associated with their access
-export const getLevelName = (user: userModel): string => {
+export const getLevelName = (
+  user: userModel,
+  teamOrientation = false
+): string => {
   const hasLeadershipTeams: boolean =
     getLeadershipProperties(user.teams).length > 0;
   const hasPropertyMemberships: boolean =
     getProperties(user.properties).length > 0;
+  const hasTeams: boolean = getTeams(user.teams).length > 0;
 
   if (user.admin) {
     return 'admin';
@@ -90,6 +94,16 @@ export const getLevelName = (user: userModel): string => {
 
   if (user.corporate) {
     return 'corporate';
+  }
+
+  // Provide team base levels
+  // when team orientation is active
+  if (teamOrientation && hasTeams) {
+    return 'teamMember';
+  }
+
+  if (teamOrientation && hasPropertyMemberships) {
+    return 'teamProperty';
   }
 
   if (hasPropertyMemberships) {

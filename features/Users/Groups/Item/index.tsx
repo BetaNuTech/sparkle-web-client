@@ -18,10 +18,10 @@ interface Props {
 const Item: FunctionComponent<Props> = ({ user, forceVisible }) => {
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
-  const accessLevel = getLevelName(user);
-  const userFriendlyAccessLevel = utilString.titleize(
-    utilString.decamel(accessLevel)
-  );
+  const accessLevel = getLevelName(user, true);
+  const userFriendlyAccessLevel = utilString
+    .titleize(utilString.decamel(accessLevel))
+    .replace('Team Property', 'Team / Property');
   const creationDate = dateUtils.toUserDateDisplay(user.createdAt);
   const lastSignInDate = user.lastSignInDate
     ? dateUtils.toUserDateDisplay(user.lastSignInDate)

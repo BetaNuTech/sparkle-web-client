@@ -68,12 +68,22 @@ describe('Unit | Common | Utils | User Permissions', () => {
       {
         user: noAccess,
         expected: 'noAccess'
+      },
+      {
+        user: teamMember,
+        expected: 'teamMember',
+        teamOrientation: true
+      },
+      {
+        user: propertyMember,
+        expected: 'teamProperty',
+        teamOrientation: true
       }
     ];
 
     for (let i = 0; i < data.length; i += 1) {
-      const { user, expected } = data[i];
-      const actual = util.getLevelName(user);
+      const { user, expected, teamOrientation = false } = data[i];
+      const actual = util.getLevelName(user, teamOrientation);
       expect(actual).toEqual(expected);
     }
   });

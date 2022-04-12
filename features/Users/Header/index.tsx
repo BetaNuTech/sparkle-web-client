@@ -8,21 +8,19 @@ import AddIcon from '../../../public/icons/ios/add.svg';
 import styles from './styles.module.scss';
 import MobileSearchBar from '../../../common/MobileSearchBar';
 import SortDropdown from '../../../common/SortDropdown';
-
-const sortOptions = [
-  { label: 'Access Level', value: 'accessLevel' },
-  { label: 'Email', value: 'email' },
-  { label: 'First Name', value: 'firstName' },
-  { label: 'Last Name', value: 'lastName' },
-  { label: 'Creation Date', value: 'createdAt' },
-  { label: 'Last sign on', value: 'lastSignInDate' }
-];
+import { sortOptions } from '../settings';
 
 interface Props {
   isOnline: boolean;
   isStaging: boolean;
   isMobile: boolean;
   toggleNavOpen(): void;
+  sortBy: string;
+  sortDir: string;
+  onSortChange(evt: ChangeEvent<HTMLSelectElement>): void;
+  onSortDirChange(): void;
+  nextUserSort(): void;
+  userFacingSortBy: string;
   searchValue: string;
   onSearchKeyDown(evt: ChangeEvent<HTMLInputElement>): void;
   onClearSearch(): void;
@@ -33,6 +31,12 @@ const Header: FunctionComponent<Props> = ({
   isStaging,
   isMobile,
   toggleNavOpen,
+  sortBy,
+  sortDir,
+  onSortChange,
+  onSortDirChange,
+  nextUserSort,
+  userFacingSortBy,
   onSearchKeyDown,
   onClearSearch,
   searchValue
@@ -49,7 +53,7 @@ const Header: FunctionComponent<Props> = ({
         <AddIcon />
       </LinkFeature>
 
-      <button className={headStyle.header__button}>
+      <button className={headStyle.header__button} onClick={nextUserSort}>
         <FolderIcon />
       </button>
     </>
@@ -71,10 +75,10 @@ const Header: FunctionComponent<Props> = ({
       </LinkFeature>
       <SortDropdown
         options={sortOptions}
-        sortBy=""
-        sortDir="asc"
-        onSortChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
-        onSortDirChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+        sortBy={sortBy}
+        sortDir={sortDir}
+        onSortChange={onSortChange} // eslint-disable-line @typescript-eslint/no-empty-function
+        onSortDirChange={onSortDirChange} // eslint-disable-line @typescript-eslint/no-empty-function
       />
     </>
   );
@@ -95,7 +99,9 @@ const Header: FunctionComponent<Props> = ({
             onChange={onSearchKeyDown} // eslint-disable-line @typescript-eslint/no-empty-function
             onClearSearch={onClearSearch} // eslint-disable-line @typescript-eslint/no-empty-function
           />
-          <div className={styles.sortInfoLine}>Sorted by Access Level</div>
+          <div className={styles.sortInfoLine}>
+            Sorted by {userFacingSortBy}
+          </div>
         </>
       ) : (
         <DesktopHeader
