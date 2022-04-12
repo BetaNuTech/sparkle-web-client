@@ -6,6 +6,7 @@ import breakpoints from '../../config/breakpoints';
 import UsersGroups from './Groups';
 import Header from './Header';
 import useUsersGroup from './hooks/useUsersGroup';
+import useUsersSearch from './hooks/useUsersSearch';
 
 interface Props {
   user: UserModel;
@@ -28,7 +29,10 @@ const Users: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
-  const { userGroups, groups } = useUsersGroup(list);
+  const { filteredUsers, onClearSearch, onSearchKeyDown, searchValue } =
+    useUsersSearch(list);
+
+  const { userGroups, groups } = useUsersGroup(filteredUsers);
 
   const scrollElementRef = useRef();
   usePreserveScrollPosition('UsersScroll', scrollElementRef, isMobile);
@@ -40,6 +44,9 @@ const Users: FunctionComponent<Props> = ({
         isStaging={isStaging}
         isMobile={isMobile}
         toggleNavOpen={toggleNavOpen}
+        onSearchKeyDown={onSearchKeyDown}
+        searchValue={searchValue}
+        onClearSearch={onClearSearch}
       />
       <UsersGroups
         userGroups={userGroups}
@@ -47,6 +54,9 @@ const Users: FunctionComponent<Props> = ({
         scrollElementRef={scrollElementRef}
         forceVisible={forceVisible}
         isMobile={isMobile}
+        onSearchKeyDown={onSearchKeyDown}
+        searchValue={searchValue}
+        onClearSearch={onClearSearch}
       />
     </>
   );

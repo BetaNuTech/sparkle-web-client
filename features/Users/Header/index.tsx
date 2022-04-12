@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { ChangeEvent, FunctionComponent } from 'react';
 import MobileHeader from '../../../common/MobileHeader';
 import LinkFeature from '../../../common/LinkFeature';
 import features from '../../../config/features';
@@ -23,13 +23,19 @@ interface Props {
   isStaging: boolean;
   isMobile: boolean;
   toggleNavOpen(): void;
+  searchValue: string;
+  onSearchKeyDown(evt: ChangeEvent<HTMLInputElement>): void;
+  onClearSearch(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   isMobile,
-  toggleNavOpen
+  toggleNavOpen,
+  onSearchKeyDown,
+  onClearSearch,
+  searchValue
 }) => {
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -85,9 +91,9 @@ const Header: FunctionComponent<Props> = ({
             actions={mobileHeaderActions}
           />
           <MobileSearchBar
-            searchQuery=""
-            onChange={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
-            onClearSearch={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+            searchQuery={searchValue}
+            onChange={onSearchKeyDown} // eslint-disable-line @typescript-eslint/no-empty-function
+            onClearSearch={onClearSearch} // eslint-disable-line @typescript-eslint/no-empty-function
           />
           <div className={styles.sortInfoLine}>Sorted by Access Level</div>
         </>
