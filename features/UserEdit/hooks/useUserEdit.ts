@@ -17,6 +17,9 @@ export type FormInputs = {
   email: string;
   firstName: string;
   lastName: string;
+  admin: boolean;
+  corporate: boolean;
+  isDisabled: boolean;
 };
 
 interface useUserEditReturn {
