@@ -50,7 +50,7 @@ const Page: React.FC = (): ReactElement => {
 
   return (
     <MainLayout user={user}>
-      {isLoaded ? <Users user={user} list={usersList} /> : <LoadingHud />}
+      {isLoaded ? <Users user={user} data={usersList} /> : <LoadingHud />}
     </MainLayout>
   );
 };
