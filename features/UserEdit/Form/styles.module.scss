@@ -42,3 +42,42 @@
     margin-right: 0;
   }
 }
+
+.pillField {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: $global-sm-padding $global-md-padding;
+  background-color: $gray;
+  border-radius: $global-radius;
+  cursor: pointer;
+
+  &__label {
+    margin: 0;
+    font-size: rem-calc(14);
+    font-weight: bold;
+    color: $gray-darker;
+    line-height: 1;
+  }
+
+  &__subLabel {
+    font-size: rem-calc(12);
+    color: $gray-3;
+  }
+
+  &__input {
+    align-self: flex-end;
+    justify-self: flex-end;
+  }
+
+  &__counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: rem-calc(50);
+    height: rem-calc(32);
+    background-color: $primary-color;
+    border-radius: $global-rounded;
+    color: $white;
+  }
+}

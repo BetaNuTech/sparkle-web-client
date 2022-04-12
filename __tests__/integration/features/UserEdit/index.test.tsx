@@ -49,17 +49,14 @@ describe('Integration | features | User Edit', () => {
     };
     render(<UserEdit {...props} />);
 
-    const emailEl = screen.queryByTestId('user-edit-email-input');
     const firstNameEl = screen.queryByTestId('user-edit-first-name-input');
     const lastNameEl = screen.queryByTestId('user-edit-last-name-input');
 
     await act(async () => {
-      fireEvent.change(emailEl, { target: { value: '' } });
       fireEvent.change(firstNameEl, { target: { value: '' } });
       fireEvent.change(lastNameEl, { target: { value: '' } });
       await waitFor(() => wait());
     });
-    const formErrorEmail = screen.queryByTestId('error-label-email');
 
     const formErrorFirstName = screen.queryByTestId(
       'error-label-firstName'
@@ -68,9 +65,6 @@ describe('Integration | features | User Edit', () => {
     const formErrorLastName = screen.queryByTestId(
       'error-label-lastName'
     ) as HTMLElement;
-
-    expect(formErrorEmail).toBeTruthy();
-    expect(formErrorEmail).toHaveTextContent(errors.email);
 
     expect(formErrorFirstName).toBeTruthy();
     expect(formErrorFirstName).toHaveTextContent(errors.firstName);

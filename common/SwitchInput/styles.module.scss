@@ -1,0 +1,50 @@
+@import '../../styles/index.scss';
+
+.switch {
+  flex: 0 1 auto;
+  width: rem-calc(50);
+  height: rem-calc(32);
+  border-radius: $global-rounded;
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  cursor: pointer;
+
+  &__checkbox[type='checkbox'] {
+    width: 0;
+    height: 0;
+    opacity: 0;
+
+    &:checked + .switch__slider {
+      background-color: $primary-color;
+
+      &:before {
+        left: rem-calc(18);
+        border-color: $primary-color;
+      }
+    }
+  }
+
+  &__slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $gray-light-4;
+    transition: 150ms;
+    pointer-events: none;
+
+    &:before {
+      position: absolute;
+      height: rem-calc(32);
+      width: rem-calc(32);
+      left: 0;
+      transition: 150ms;
+      border-radius: 50%;
+      border: rem-calc(4) solid $gray-light-4;
+      background-color: white;
+      content: '';
+    }
+  }
+}
