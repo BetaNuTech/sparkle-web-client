@@ -1,7 +1,7 @@
 import clsx from 'clsx';
-import { FunctionComponent, RefObject } from 'react';
+import { ChangeEvent, FunctionComponent, RefObject } from 'react';
 import UserModel from '../../../common/models/user';
-import SearchBar from '../../../common/SearchBar';
+import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
 import Item from './Item';
 import userConfig from '../../../config/users';
 import styles from './styles.module.scss';
@@ -21,6 +21,9 @@ interface Props {
   scrollElementRef: RefObject<HTMLDivElement>;
   forceVisible: boolean;
   isMobile: boolean;
+  searchValue: string;
+  onSearchKeyDown(evt: ChangeEvent<HTMLInputElement>): void;
+  onClearSearch(): void;
 }
 
 const UsersGroups: FunctionComponent<Props> = ({
@@ -28,14 +31,17 @@ const UsersGroups: FunctionComponent<Props> = ({
   userGroups,
   scrollElementRef,
   forceVisible,
-  isMobile
+  isMobile,
+  onSearchKeyDown,
+  onClearSearch,
+  searchValue
 }) => (
   <div className={styles.container} ref={scrollElementRef}>
     {!isMobile && (
       <SearchBar
-        searchQuery=""
-        onClearSearch={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
-        onSearchKeyDown={() => {}} // eslint-disable-line  @typescript-eslint/no-empty-function
+        searchQuery={searchValue}
+        onClearSearch={onClearSearch} // eslint-disable-line  @typescript-eslint/no-empty-function
+        onSearchKeyDown={onSearchKeyDown} // eslint-disable-line  @typescript-eslint/no-empty-function
       />
     )}
 
@@ -56,6 +62,10 @@ const UsersGroups: FunctionComponent<Props> = ({
         </div>
       );
     })}
+    <ClearSearchAction
+      searchQuery={searchValue}
+      onClearSearch={onClearSearch}
+    />
   </div>
 );
 
