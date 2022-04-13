@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import PropertyModel from '../../common/models/property';
 import TeamModel from '../../common/models/team';
@@ -7,6 +7,7 @@ import breakpoints from '../../config/breakpoints';
 import UserEditForm from './Form';
 import Header from './Header';
 import useUserEdit from './hooks/useUserEdit';
+import TeamModal from './TeamModal';
 
 interface Props {
   user: UserModel;
@@ -22,15 +23,25 @@ interface Props {
 const UserEdit: FunctionComponent<Props> = ({
   target,
   isOnline,
-  isStaging
+  isStaging,
+  teams
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
-  const { register, formState, isCreatingUser, isDisabled, onSubmit } =
-    useUserEdit(target);
+  const [isVisibleTeamModal, setIsVisibleTeamModal] = useState(false);
+
+  const {
+    register,
+    formState,
+    isCreatingUser,
+    isDisabled,
+    onSubmit,
+    onSelectTeam,
+    selectedTeams
+  } = useUserEdit(target);
 
   return (
     <>
@@ -51,8 +62,17 @@ const UserEdit: FunctionComponent<Props> = ({
           isDisabled={isDisabled}
           onSubmit={onSubmit}
           isCreatingUser={isCreatingUser}
+          onTeamsClick={() => setIsVisibleTeamModal(true)}
+          selectedTeams={selectedTeams}
         />
       </div>
+      <TeamModal
+        isVisible={isVisibleTeamModal}
+        teams={teams}
+        onClose={() => setIsVisibleTeamModal(false)}
+        onSelect={onSelectTeam}
+        selectedTeams={selectedTeams}
+      />
     </>
   );
 };

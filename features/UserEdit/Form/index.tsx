@@ -15,6 +15,8 @@ interface Props {
   onSubmit(): void;
   isDisabled: boolean;
   isCreatingUser: boolean;
+  onTeamsClick(): void;
+  selectedTeams: string[];
 }
 
 const UserEditForm: FunctionComponent<Props> = ({
@@ -23,10 +25,11 @@ const UserEditForm: FunctionComponent<Props> = ({
   onSubmit,
   isDisabled,
   isCreatingUser,
-  user
+  user,
+  onTeamsClick,
+  selectedTeams
 }) => {
   const userProperties = Object.keys(user.properties || {}).length;
-  const userTeams = Object.keys(user.teams || {}).length;
 
   return (
     <form className={styles.container}>
@@ -116,7 +119,10 @@ const UserEditForm: FunctionComponent<Props> = ({
         </div>
       </label>
 
-      <div className={clsx(styles.field__control, styles.pillField)}>
+      <div
+        className={clsx(styles.field__control, styles.pillField)}
+        onClick={onTeamsClick}
+      >
         <div className={styles.pillField__body}>
           <p className={styles.pillField__label}>Team</p>
           <small className={styles.pillField__subLabel}>
@@ -124,7 +130,9 @@ const UserEditForm: FunctionComponent<Props> = ({
           </small>
         </div>
         <div className={styles.pillField__input}>
-          <div className={styles.pillField__counter}>{userTeams}</div>
+          <div className={styles.pillField__counter}>
+            {selectedTeams.length}
+          </div>
         </div>
       </div>
 

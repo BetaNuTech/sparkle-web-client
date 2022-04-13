@@ -1,0 +1,27 @@
+@import '../../../styles/index.scss';
+
+.modal {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  padding: $global-sm-padding $global-padding;
+  border-bottom: 1px solid $gray;
+  cursor: pointer;
+  font-size: rem-calc(14);
+  line-height: 1.4;
+
+  &--selected {
+    background-color: $gray;
+  }
+}
+
+.icon {
+  path {
+    fill: $gray-6;
+  }
+}
