@@ -39,6 +39,7 @@ const Users: FunctionComponent<Props> = ({
     nextUserSort,
     userFacingSortBy
   } = useSorting(data);
+
   const { filteredUsers, onClearSearch, onSearchKeyDown, searchValue } =
     useUsersSearch(sortedUsers);
 
