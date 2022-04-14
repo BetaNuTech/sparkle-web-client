@@ -1,28 +1,30 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
-import TeamModel from '../../../common/models/team';
+import propertyModel from '../../../common/models/property';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import baseStyles from '../../../common/Modal/styles.module.scss';
 import ModalItem from '../ModalItem';
 
 interface Props extends ModalProps {
   onClose: () => void;
-  teams: TeamModel[];
-  onSelect(teamId: string): void;
-  selectedTeams: string[];
+  properties: propertyModel[];
+  onSelect(propertyId: string): void;
+  selectedProperties: string[];
 }
 
-const TeamModal: FunctionComponent<Props> = ({
+const PropertiesModal: FunctionComponent<Props> = ({
   onClose,
-  teams,
+  properties,
   onSelect,
-  selectedTeams
+  selectedProperties
 }) => {
-  const sortedTeams = [...teams].sort((a, b) => a.name.localeCompare(b.name));
+  const sortedProperties = [...properties].sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
   return (
     <div
       className="-flex-direction-column -full-height"
-      data-testid="user-edit-team-modal"
+      data-testid="user-edit-properties-modal"
     >
       <header
         className={clsx(
@@ -30,27 +32,27 @@ const TeamModal: FunctionComponent<Props> = ({
           baseStyles['modal__header--blue']
         )}
       >
-        <h4 className={baseStyles.modal__heading}>Teams</h4>
-        <h5>Update user team associations</h5>
+        <h4 className={baseStyles.modal__heading}>Properties</h4>
+        <h5>Update user property associations</h5>
       </header>
       <button
         className={baseStyles.modal__closeButton}
         onClick={onClose}
-        data-testid="user-edit-team-close"
+        data-testid="user-edit-properties-close"
       >
         ×
       </button>
 
       <div className={clsx(baseStyles.modal__main)}>
         <ul>
-          {sortedTeams.map((team) => {
-            const isSelected = selectedTeams.includes(team.id);
+          {sortedProperties.map((property) => {
+            const isSelected = selectedProperties.includes(property.id);
             return (
               <ModalItem
-                key={team.id}
-                item={team}
+                key={property.id}
+                item={property}
                 isSelected={isSelected}
-                onClick={() => onSelect(team.id)}
+                onClick={() => onSelect(property.id)}
               />
             );
           })}
@@ -60,4 +62,4 @@ const TeamModal: FunctionComponent<Props> = ({
   );
 };
 
-export default Modal(TeamModal, false);
+export default Modal(PropertiesModal, false);

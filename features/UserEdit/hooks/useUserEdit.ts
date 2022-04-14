@@ -35,6 +35,8 @@ interface useUserEditReturn {
   setValue: UseFormSetValue<FormInputs>;
   selectedTeams: string[];
   onSelectTeam(teamId: string): void;
+  selectedProperties: string[];
+  onSelectProperty(propertyId: string): void;
 }
 
 /* eslint-disable */
@@ -62,9 +64,11 @@ const useUserEdit = (user: UserModel): useUserEditReturn => {
     }
   };
 
+  const hasUpdates = Boolean(Object.keys(updates).length);
+
   const isDisabled = isCreatingUser
     ? !formState.isValid
-    : !formState.isValid || !formState.isDirty;
+    : !hasUpdates && (!formState.isValid || !formState.isDirty);
 
   const onSelectTeam = (teamId: string) => {
     const result = deepClone(updates);
@@ -96,9 +100,47 @@ const useUserEdit = (user: UserModel): useUserEditReturn => {
     setUpdates(result as UserModel);
   };
 
+  const onSelectProperty = (propertyId: string) => {
+    const result = deepClone(updates);
+    result['properties'] = result['properties'] || {};
+    const hasProperty = Boolean((user.properties || {})[propertyId]);
+    const hasPreviousProperty =
+      typeof result.properties[propertyId] === 'boolean';
+
+    // Remove, previously published, property
+    if (hasProperty && !hasPreviousProperty) {
+      result['properties'][propertyId] = false;
+    }
+
+    // Add new, unpublished, property relationship
+    if (!hasProperty && !hasPreviousProperty) {
+      result['properties'][propertyId] = true;
+    }
+
+    // Remove, unchanged and non-publishable, property update
+    if (hasPreviousProperty) {
+      delete result['properties'][propertyId];
+    }
+
+    // remove blank property object from updates
+    if (Object.keys(result['properties']).length < 1) {
+      delete result.properties;
+    }
+
+    objectHelper.replaceContent(updates, result || {});
+    setUpdates(result as UserModel);
+  };
+
   const selectedTeams = useMemo(() => {
     const userTeams = { ...user.teams, ...updates.teams };
     return Object.keys(userTeams).filter((key) => Boolean(userTeams[key]));
+  }, [user, updates]);
+
+  const selectedProperties = useMemo(() => {
+    const userProperties = { ...user.properties, ...updates.properties };
+    return Object.keys(userProperties).filter((key) =>
+      Boolean(userProperties[key])
+    );
   }, [user, updates]);
 
   return {
@@ -110,7 +152,9 @@ const useUserEdit = (user: UserModel): useUserEditReturn => {
     setValue,
     updates,
     selectedTeams,
-    onSelectTeam
+    onSelectTeam,
+    selectedProperties,
+    onSelectProperty
   };
 };
 
