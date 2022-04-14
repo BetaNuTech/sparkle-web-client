@@ -40,8 +40,9 @@ const UsersGroups: FunctionComponent<Props> = ({
     {!isMobile && (
       <SearchBar
         searchQuery={searchValue}
-        onClearSearch={onClearSearch} // eslint-disable-line  @typescript-eslint/no-empty-function
-        onSearchKeyDown={onSearchKeyDown} // eslint-disable-line  @typescript-eslint/no-empty-function
+        onClearSearch={onClearSearch}
+        onSearchKeyDown={onSearchKeyDown}
+        sideBorders
       />
     )}
 
@@ -62,6 +63,11 @@ const UsersGroups: FunctionComponent<Props> = ({
         </div>
       );
     })}
+    {groups.length === 0 && searchValue && (
+      <h3 className="-c-gray-light -pt-sm -pl-sm -pb-sm -ta-center">
+        No users match search query
+      </h3>
+    )}
     <ClearSearchAction
       searchQuery={searchValue}
       onClearSearch={onClearSearch}
