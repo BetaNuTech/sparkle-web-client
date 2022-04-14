@@ -154,4 +154,112 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
       expect(actual, message).toEqual(expected);
     }
   });
+
+  test('should add and remove properties from users selected properties', async () => {
+    const propertyIds = ['property-1', 'property-2', 'property-3'];
+    const { result } = renderHook(() =>
+      useUserEdit({
+        id: 'user-1',
+        properties: { 'property-3': true }
+      } as UserModel)
+    );
+
+    const tests = [
+      {
+        expected: 'property-3 | property-1',
+        propertyId: propertyIds[0],
+        message: 'add property id in users selected property'
+      },
+      {
+        expected: 'property-3 | property-1 | property-2',
+        propertyId: propertyIds[1],
+        message: 'add another property id in users selected property'
+      },
+      {
+        expected: 'property-3 | property-2',
+        propertyId: propertyIds[0],
+        message: 'remove added property id from users selected property'
+      },
+      {
+        expected: 'property-2',
+        propertyId: propertyIds[2],
+        message: 'should remove existing property id from selected property'
+      },
+      {
+        expected: 'property-3 | property-2',
+        propertyId: propertyIds[2],
+        message: 'should add back existing property id from selected property'
+      }
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, propertyId, message } = tests[i];
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => {
+        await result.current.onSelectProperty(propertyId);
+      });
+
+      const actual = result.current.selectedProperties.join(' | ');
+      expect(actual, message).toEqual(expected);
+    }
+  });
+
+  test('should add and remove properties from users publishable property updates', async () => {
+    const propertyIds = ['property-1', 'property-2', 'property-3'];
+    const { result } = renderHook(() =>
+      useUserEdit({
+        id: 'user-1',
+        properties: { 'property-3': true }
+      } as UserModel)
+    );
+
+    const tests = [
+      {
+        expected: 'property-1: true',
+        propertyId: propertyIds[0],
+        message: 'add property id in users publishable properties'
+      },
+      {
+        expected: 'property-1: true | property-2: true',
+        propertyId: propertyIds[1],
+        message: 'add another property id in users publishable properties'
+      },
+      {
+        expected: 'property-2: true',
+        propertyId: propertyIds[0],
+        message:
+          'remove locally added property from users publishable properties'
+      },
+      {
+        expected: 'property-2: true | property-3: false',
+        propertyId: propertyIds[2],
+        message:
+          'should remove, previously published, property from publishable properties'
+      },
+      {
+        expected: 'property-2: true',
+        propertyId: propertyIds[2],
+        message:
+          'should remove, already published, property from publishable properties'
+      }
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, propertyId, message } = tests[i];
+      // eslint-disable-next-line no-await-in-loop
+      await act(async () => {
+        await result.current.onSelectProperty(propertyId);
+      });
+
+      const currentResult = result.current.updates || ({} as UserModel);
+      const actual = Object.entries(currentResult.properties || {})
+        .sort(
+          ([propertyAId], [propertyBId]) =>
+            propertyIds.indexOf(propertyAId) - propertyIds.indexOf(propertyBId)
+        )
+        .map(([id, value]) => `${id}: ${value}`)
+        .join(' | ');
+      expect(actual, message).toEqual(expected);
+    }
+  });
 });
