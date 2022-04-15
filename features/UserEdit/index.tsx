@@ -1,11 +1,13 @@
 import { FunctionComponent, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import LoadingHud from '../../common/LoadingHud';
 import PropertyModel from '../../common/models/property';
 import TeamModel from '../../common/models/team';
 import UserModel from '../../common/models/user';
 import breakpoints from '../../config/breakpoints';
 import UserEditForm from './Form';
 import Header from './Header';
+import useUserDelete from './hooks/useUserDelete';
 import useUserEdit from './hooks/useUserEdit';
 import PropertiesModal from './PropertiesModal';
 import TeamModal from './TeamModal';
@@ -30,7 +32,8 @@ const UserEdit: FunctionComponent<Props> = ({
   isStaging,
   teams,
   sendNotification,
-  properties
+  properties,
+  user
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -54,6 +57,13 @@ const UserEdit: FunctionComponent<Props> = ({
     selectedProperties
   } = useUserEdit(target, sendNotification);
 
+  const { onDelete, isDeleting } = useUserDelete(target, sendNotification);
+
+  const isCurrentUser = user.id === target.id;
+
+  if (isDeleting) {
+    return <LoadingHud />;
+  }
   return (
     <>
       <Header
@@ -79,6 +89,8 @@ const UserEdit: FunctionComponent<Props> = ({
           selectedTeams={selectedTeams}
           isLoading={isLoading}
           selectedProperties={selectedProperties}
+          isCurrentUser={isCurrentUser}
+          onDelete={onDelete}
         />
       </div>
       <TeamModal

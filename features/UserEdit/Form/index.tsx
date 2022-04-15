@@ -20,6 +20,8 @@ interface Props {
   isLoading: boolean;
   onPropertiesClick(): void;
   selectedProperties: string[];
+  isCurrentUser: boolean;
+  onDelete(): void;
 }
 
 const UserEditForm: FunctionComponent<Props> = ({
@@ -32,7 +34,9 @@ const UserEditForm: FunctionComponent<Props> = ({
   selectedTeams,
   onPropertiesClick,
   selectedProperties,
-  isLoading
+  isLoading,
+  isCurrentUser,
+  onDelete
 }) => (
   <form className={styles.container}>
     {isCreatingUser && (
@@ -188,6 +192,15 @@ const UserEditForm: FunctionComponent<Props> = ({
       </>
     )}
     <div className={styles.actions}>
+      {!isCurrentUser && !isCreatingUser && (
+        <button
+          type="button"
+          className={styles.actions__delete}
+          onClick={onDelete}
+        >
+          Delete
+        </button>
+      )}
       <Actions
         isDisabled={isDisabled}
         onSubmit={onSubmit}
