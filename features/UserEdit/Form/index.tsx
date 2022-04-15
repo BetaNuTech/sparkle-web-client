@@ -17,6 +17,7 @@ interface Props {
   isCreatingUser: boolean;
   onTeamsClick(): void;
   selectedTeams: string[];
+  isLoading: boolean;
   onPropertiesClick(): void;
   selectedProperties: string[];
 }
@@ -27,14 +28,14 @@ const UserEditForm: FunctionComponent<Props> = ({
   onSubmit,
   isDisabled,
   isCreatingUser,
-  user,
   onTeamsClick,
   selectedTeams,
   onPropertiesClick,
-  selectedProperties
+  selectedProperties,
+  isLoading
 }) => (
   <form className={styles.container}>
-    {!user?.email && (
+    {isCreatingUser && (
       <div className={styles.field}>
         <label htmlFor="email" className={styles.field__label}>
           Email <span>*</span>
@@ -52,6 +53,7 @@ const UserEditForm: FunctionComponent<Props> = ({
                 message: errors.invalidEmail
               }
             })}
+            disabled={isLoading}
           />
           <ErrorLabel formName="email" errors={formState.errors} />
         </div>
@@ -69,6 +71,7 @@ const UserEditForm: FunctionComponent<Props> = ({
           className={styles.field__input}
           data-testid="user-edit-first-name-input"
           {...register('firstName', { required: errors.firstName })}
+          disabled={isLoading}
         />
         <ErrorLabel formName="firstName" errors={formState.errors} />
       </div>
@@ -85,91 +88,111 @@ const UserEditForm: FunctionComponent<Props> = ({
           className={styles.field__input}
           data-testid="user-edit-last-name-input"
           {...register('lastName', { required: errors.lastName })}
+          disabled={isLoading}
         />
         <ErrorLabel formName="lastName" errors={formState.errors} />
       </div>
     </div>
+    {!isCreatingUser && (
+      <>
+        <label
+          className={clsx(styles.field__control, styles.pillField)}
+          htmlFor="admin-check"
+        >
+          <div className={styles.pillField__body}>
+            <p className={styles.pillField__label}>Admin</p>
+            <small className={styles.pillField__subLabel}>
+              Full Sparkle & Admin Access
+            </small>
+          </div>
+          <div className={styles.pillField__input}>
+            <SwitchInput
+              {...register('admin')}
+              id="admin-check"
+              disabled={isLoading}
+            />
+          </div>
+        </label>
 
-    <label
-      className={clsx(styles.field__control, styles.pillField)}
-      htmlFor="admin-check"
-    >
-      <div className={styles.pillField__body}>
-        <p className={styles.pillField__label}>Admin</p>
-        <small className={styles.pillField__subLabel}>
-          Full Sparkle & Admin Access
-        </small>
-      </div>
-      <div className={styles.pillField__input}>
-        <SwitchInput {...register('admin')} id="admin-check" />
-      </div>
-    </label>
+        <label
+          className={clsx(styles.field__control, styles.pillField)}
+          htmlFor="corporate-check"
+        >
+          <div className={styles.pillField__body}>
+            <p className={styles.pillField__label}>Corporate</p>
+            <small className={styles.pillField__subLabel}>
+              Access to All Properties
+            </small>
+          </div>
+          <div className={styles.pillField__input}>
+            <SwitchInput
+              {...register('corporate')}
+              id="corporate-check"
+              disabled={isLoading}
+            />
+          </div>
+        </label>
 
-    <label
-      className={clsx(styles.field__control, styles.pillField)}
-      htmlFor="corporate-check"
-    >
-      <div className={styles.pillField__body}>
-        <p className={styles.pillField__label}>Corporate</p>
-        <small className={styles.pillField__subLabel}>
-          Access to All Properties
-        </small>
-      </div>
-      <div className={styles.pillField__input}>
-        <SwitchInput {...register('corporate')} id="corporate-check" />
-      </div>
-    </label>
-
-    <div
-      className={clsx(styles.field__control, styles.pillField)}
-      onClick={onTeamsClick}
-    >
-      <div className={styles.pillField__body}>
-        <p className={styles.pillField__label}>Team</p>
-        <small className={styles.pillField__subLabel}>
-          Access to All Team Properties
-        </small>
-      </div>
-      <div className={styles.pillField__input}>
-        <div className={styles.pillField__counter}>{selectedTeams.length}</div>
-      </div>
-    </div>
-
-    <div
-      className={clsx(styles.field__control, styles.pillField)}
-      onClick={onPropertiesClick}
-    >
-      <div className={styles.pillField__body}>
-        <p className={styles.pillField__label}>Property</p>
-        <small className={styles.pillField__subLabel}>
-          Access to Properties Only
-        </small>
-      </div>
-      <div className={styles.pillField__input}>
-        <div className={styles.pillField__counter}>
-          {selectedProperties.length}
+        <div
+          className={clsx(styles.field__control, styles.pillField)}
+          onClick={onTeamsClick}
+        >
+          <div className={styles.pillField__body}>
+            <p className={styles.pillField__label}>Team</p>
+            <small className={styles.pillField__subLabel}>
+              Access to All Team Properties
+            </small>
+          </div>
+          <div className={styles.pillField__input}>
+            <div className={styles.pillField__counter}>
+              {selectedTeams.length}
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
 
-    <label
-      className={clsx(styles.field__control, styles.pillField)}
-      htmlFor="isDisabled-check"
-    >
-      <div className={styles.pillField__body}>
-        <p className={styles.pillField__label}>Disable</p>
-        <small className={styles.pillField__subLabel}>Remove all access</small>
-      </div>
-      <div className={styles.pillField__input}>
-        <SwitchInput {...register('isDisabled')} id="isDisabled-check" />
-      </div>
-    </label>
+        <div
+          className={clsx(styles.field__control, styles.pillField)}
+          onClick={onPropertiesClick}
+        >
+          <div className={styles.pillField__body}>
+            <p className={styles.pillField__label}>Property</p>
+            <small className={styles.pillField__subLabel}>
+              Access to Properties Only
+            </small>
+          </div>
+          <div className={styles.pillField__input}>
+            <div className={styles.pillField__counter}>
+              {selectedProperties.length}
+            </div>
+          </div>
+        </div>
 
+        <label
+          className={clsx(styles.field__control, styles.pillField)}
+          htmlFor="isDisabled-check"
+        >
+          <div className={styles.pillField__body}>
+            <p className={styles.pillField__label}>Disable</p>
+            <small className={styles.pillField__subLabel}>
+              Remove all access
+            </small>
+          </div>
+          <div className={styles.pillField__input}>
+            <SwitchInput
+              {...register('isDisabled')}
+              id="isDisabled-check"
+              disabled={isLoading}
+            />
+          </div>
+        </label>
+      </>
+    )}
     <div className={styles.actions}>
       <Actions
         isDisabled={isDisabled}
         onSubmit={onSubmit}
         isCreatingUser={isCreatingUser}
+        isLoading={isLoading}
       />
     </div>
   </form>

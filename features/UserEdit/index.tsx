@@ -10,6 +10,8 @@ import useUserEdit from './hooks/useUserEdit';
 import PropertiesModal from './PropertiesModal';
 import TeamModal from './TeamModal';
 
+type userNotifications = (message: string, options?: any) => any;
+
 interface Props {
   user: UserModel;
   target: UserModel;
@@ -19,6 +21,7 @@ interface Props {
   isOnline?: boolean;
   isStaging?: boolean;
   toggleNavOpen?(): void;
+  sendNotification: userNotifications;
 }
 
 const UserEdit: FunctionComponent<Props> = ({
@@ -26,6 +29,7 @@ const UserEdit: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
   teams,
+  sendNotification,
   properties
 }) => {
   // Responsive queries
@@ -45,9 +49,10 @@ const UserEdit: FunctionComponent<Props> = ({
     onSubmit,
     onSelectTeam,
     selectedTeams,
+    isLoading,
     onSelectProperty,
     selectedProperties
-  } = useUserEdit(target);
+  } = useUserEdit(target, sendNotification);
 
   return (
     <>
@@ -59,6 +64,7 @@ const UserEdit: FunctionComponent<Props> = ({
         user={target}
         isDisabled={isDisabled}
         onSubmit={onSubmit}
+        isLoading={isLoading}
       />
       <div>
         <UserEditForm
@@ -71,6 +77,7 @@ const UserEdit: FunctionComponent<Props> = ({
           onTeamsClick={() => setIsVisibleTeamModal(true)}
           onPropertiesClick={() => setIsVisiblePropertiesModal(true)}
           selectedTeams={selectedTeams}
+          isLoading={isLoading}
           selectedProperties={selectedProperties}
         />
       </div>

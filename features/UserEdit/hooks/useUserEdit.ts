@@ -5,9 +5,34 @@ import {
   UseFormRegister,
   UseFormSetValue
 } from 'react-hook-form';
+import Router from 'next/router';
 import UserModel from '../../../common/models/user';
 import deepClone from '../../../common/utils/deepClone';
 import * as objectHelper from '../../../common/utils/object';
+import userApi from '../../../common/services/api/users';
+import BaseError from '../../../common/models/errors/baseError';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
+import errorReports from '../../../common/services/api/errorReports';
+import ErrorNotFound from '../../../common/models/errors/notFound';
+import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+
+const PREFIX = 'features: UserEdit: hooks: useUserEdit:';
+
+export const USER_NOTIFICATIONS_CREATE = {
+  forbidden: 'User with that email already exists',
+  unpermissioned: 'You do not have permission to create users',
+  internalServer: 'Unknown error please try again',
+  success: 'New user created successfully'
+};
+
+export const USER_NOTIFICATIONS_UPDATE = {
+  notFound: 'This user no longer exists',
+  unpermissioned: 'You do not have permission to update users',
+  internalServer: 'Unknown error please try again',
+  success: 'User successfully updated'
+};
 
 export const errors = {
   email: 'Email is required.',
@@ -15,6 +40,8 @@ export const errors = {
   firstName: 'First name is required.',
   lastName: 'Last name is required.'
 };
+
+type userNotifications = (message: string, options?: any) => any;
 
 export type FormInputs = {
   email: string;
@@ -35,34 +62,34 @@ interface useUserEditReturn {
   setValue: UseFormSetValue<FormInputs>;
   selectedTeams: string[];
   onSelectTeam(teamId: string): void;
+  isLoading: boolean;
+  onUpdateUser(): void;
+  onCreateUser(): void;
   selectedProperties: string[];
   onSelectProperty(propertyId: string): void;
 }
 
 /* eslint-disable */
-const useUserEdit = (user: UserModel): useUserEditReturn => {
+const useUserEdit = (
+  user: UserModel,
+  sendNotification: userNotifications
+): useUserEditReturn => {
   const isCreatingUser = user.id === 'new';
   const [updates, setUpdates] = useState({} as UserModel);
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     trigger: triggerFormValidation,
     formState,
     getValues,
-    setValue
+    setValue,
+    setError,
+    reset
   } = useForm<FormInputs>({
     mode: 'all',
     defaultValues: user
   });
-
-  const onSubmit = () => {
-    triggerFormValidation();
-
-    if (formState.isValid) {
-      const data = getValues();
-      console.log(data); // eslint-disable-line
-    }
-  };
 
   const hasUpdates = Boolean(Object.keys(updates).length);
 
@@ -131,6 +158,137 @@ const useUserEdit = (user: UserModel): useUserEditReturn => {
     setUpdates(result as UserModel);
   };
 
+  const handleCreateErrorResponse = (error: BaseError) => {
+    let errorMessage = null;
+    if (error instanceof ErrorBadRequest) {
+      error.errors.forEach((err) =>
+        // set form errors
+        setError(
+          err.name as keyof FormInputs,
+          { type: 'custom', message: err.detail },
+          { shouldFocus: true }
+        )
+      );
+    }
+    if (error instanceof ErrorForbidden) {
+      errorMessage = USER_NOTIFICATIONS_CREATE.forbidden;
+    }
+    if (error instanceof ErrorServerInternal) {
+      errorMessage = USER_NOTIFICATIONS_CREATE.internalServer;
+    }
+
+    if (error instanceof ErrorUnauthorized) {
+      errorMessage = USER_NOTIFICATIONS_CREATE.unpermissioned;
+      // eslint-disable-next-line no-case-declarations
+      const wrappedErr = Error(`${PREFIX} handleCreateErrorResponse: ${error}`);
+
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+
+    // send error notifications
+    if (errorMessage) {
+      sendNotification(errorMessage, {
+        type: 'error'
+      });
+    }
+  };
+
+  const onCreateUser = async () => {
+    const { email, firstName, lastName } = getValues();
+    setIsLoading(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      const createdUser = await userApi.createRecord({
+        email,
+        firstName,
+        lastName
+      } as UserModel);
+
+      // Send user facing notification
+      sendNotification(USER_NOTIFICATIONS_CREATE.success, {
+        type: 'success'
+      });
+      // Redirect to user edit page
+      Router.push(`/users/edit/${createdUser.id}/`);
+      // Reset form state and values
+      reset();
+    } catch (err) {
+      handleCreateErrorResponse(err);
+    }
+    setIsLoading(false);
+  };
+
+  const handleUpdateErrorResponse = (error: BaseError) => {
+    let errorMessage = null;
+    if (error instanceof ErrorBadRequest) {
+      errorMessage = error.errors.map((err) => err.detail).join(', ');
+    }
+    if (error instanceof ErrorUnauthorized || error instanceof ErrorForbidden) {
+      errorMessage = USER_NOTIFICATIONS_UPDATE.unpermissioned;
+    }
+
+    if (error instanceof ErrorNotFound) {
+      errorMessage = USER_NOTIFICATIONS_UPDATE.notFound;
+    }
+
+    if (error instanceof ErrorServerInternal) {
+      errorMessage = USER_NOTIFICATIONS_UPDATE.internalServer;
+    }
+
+    // send error notifications
+    if (errorMessage) {
+      sendNotification(errorMessage, {
+        type: 'error'
+      });
+    }
+  };
+  const onUpdateUser = async () => {
+    const { email, firstName, lastName, admin, corporate, isDisabled } =
+      getValues();
+    const data = {
+      email,
+      firstName,
+      lastName,
+      admin,
+      corporate,
+      isDisabled
+    } as UserModel;
+    if (updates.teams) {
+      data.teams = updates.teams;
+    }
+    if (updates.properties) {
+      data.properties = updates.properties;
+    }
+    setIsLoading(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await userApi.updateRecord(user.id, data as UserModel);
+      // Send user facing notification
+      sendNotification(USER_NOTIFICATIONS_UPDATE.success, {
+        type: 'success'
+      });
+
+      // Reset form state
+      reset({}, { keepValues: true });
+    } catch (err) {
+      handleUpdateErrorResponse(err);
+    }
+    setIsLoading(false);
+  };
+
+  const onSubmit = () => {
+    triggerFormValidation();
+
+    if (!formState.isValid) return;
+
+    if (isCreatingUser) {
+      onCreateUser();
+    } else {
+      onUpdateUser();
+    }
+  };
+
   const selectedTeams = useMemo(() => {
     const userTeams = { ...user.teams, ...updates.teams };
     return Object.keys(userTeams).filter((key) => Boolean(userTeams[key]));
@@ -153,6 +311,9 @@ const useUserEdit = (user: UserModel): useUserEditReturn => {
     updates,
     selectedTeams,
     onSelectTeam,
+    isLoading,
+    onUpdateUser,
+    onCreateUser,
     selectedProperties,
     onSelectProperty
   };

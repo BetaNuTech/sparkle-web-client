@@ -63,6 +63,7 @@ const Page: React.FC = (): ReactElement => {
   useEffect(() => {
     // Redirect to users if user not found with error notification
     if (
+      targetUser &&
       !targetUser?.email &&
       targetUserStatus === 'success' &&
       targetUser?.id !== 'new'
@@ -93,6 +94,7 @@ const Page: React.FC = (): ReactElement => {
           target={targetUser}
           properties={properties}
           teams={teams}
+          sendNotification={sendNotification}
         />
       ) : (
         <LoadingHud />
