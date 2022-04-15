@@ -2,16 +2,28 @@ import sinon from 'sinon';
 
 import { act } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
-
-import useUserEdit, { errors } from './useUserEdit';
+import userApi from '../../../common/services/api/users';
+import useUserEdit, {
+  errors,
+  USER_NOTIFICATIONS_CREATE,
+  USER_NOTIFICATIONS_UPDATE
+} from './useUserEdit';
 import UserModel from '../../../common/models/user';
+import errorReports from '../../../common/services/api/errorReports';
+import ErrorForbidden from '../../../common/models/errors/forbidden';
+import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
+import { admin } from '../../../__mocks__/users';
+import wait from '../../../__tests__/helpers/wait';
+import ErrorNotFound from '../../../common/models/errors/notFound';
+import ErrorServerInternal from '../../../common/models/errors/serverInternal';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
 
 describe('Unit | Features | Users | Hooks | Use User Edit', () => {
   afterEach(() => sinon.restore());
 
   test('should not allow user to publish form until it has publishable updates', async () => {
     const { result } = renderHook(() =>
-      useUserEdit({ id: 'new' } as UserModel)
+      useUserEdit({ id: 'new' } as UserModel, sinon.spy())
     );
 
     result.current.register('email', {
@@ -58,7 +70,10 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
   test('should add and remove teams from users selected teams', async () => {
     const teamIds = ['team-1', 'team-2', 'team-3'];
     const { result } = renderHook(() =>
-      useUserEdit({ id: 'user-1', teams: { 'team-3': true } } as UserModel)
+      useUserEdit(
+        { id: 'user-1', teams: { 'team-3': true } } as UserModel,
+        sinon.spy()
+      )
     );
 
     const tests = [
@@ -104,7 +119,10 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
   test('should add and remove teams from users publishable team updates', async () => {
     const teamIds = ['team-1', 'team-2', 'team-3'];
     const { result } = renderHook(() =>
-      useUserEdit({ id: 'user-1', teams: { 'team-3': true } } as UserModel)
+      useUserEdit(
+        { id: 'user-1', teams: { 'team-3': true } } as UserModel,
+        sinon.spy()
+      )
     );
 
     const tests = [
@@ -158,10 +176,13 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
   test('should add and remove properties from users selected properties', async () => {
     const propertyIds = ['property-1', 'property-2', 'property-3'];
     const { result } = renderHook(() =>
-      useUserEdit({
-        id: 'user-1',
-        properties: { 'property-3': true }
-      } as UserModel)
+      useUserEdit(
+        {
+          id: 'user-1',
+          properties: { 'property-3': true }
+        } as UserModel,
+        sinon.spy()
+      )
     );
 
     const tests = [
@@ -207,10 +228,13 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
   test('should add and remove properties from users publishable property updates', async () => {
     const propertyIds = ['property-1', 'property-2', 'property-3'];
     const { result } = renderHook(() =>
-      useUserEdit({
-        id: 'user-1',
-        properties: { 'property-3': true }
-      } as UserModel)
+      useUserEdit(
+        {
+          id: 'user-1',
+          properties: { 'property-3': true }
+        } as UserModel,
+        sinon.spy()
+      )
     );
 
     const tests = [
@@ -259,6 +283,119 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
         )
         .map(([id, value]) => `${id}: ${value}`)
         .join(' | ');
+      expect(actual, message).toEqual(expected);
+    }
+  });
+
+  test('should show user facing error message according to error type while creating user', async () => {
+    const sendNotification = sinon.spy();
+
+    const tests = [
+      {
+        expected: USER_NOTIFICATIONS_CREATE.forbidden,
+        message: 'show email already exist message for forbidden request'
+      },
+      {
+        expected: USER_NOTIFICATIONS_CREATE.unpermissioned,
+        message: 'show permission error for unauthorised request'
+      },
+      {
+        expected: USER_NOTIFICATIONS_CREATE.internalServer,
+        message: 'show unknown error for internal server error'
+      },
+      {
+        expected: USER_NOTIFICATIONS_CREATE.success,
+        message: 'show success on successful request'
+      }
+    ];
+
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    sinon
+      .stub(userApi, 'createRecord')
+      .onCall(0)
+      .rejects(new ErrorForbidden())
+      .onCall(1)
+      .rejects(new ErrorUnauthorized())
+      .onCall(2)
+      .rejects(new ErrorServerInternal())
+      .onCall(3)
+      .resolves();
+
+    const { result } = renderHook(() => useUserEdit(admin, sendNotification));
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, message } = tests[i];
+      // eslint-disable-next-line
+      await act(async () => {
+        result.current.onCreateUser();
+        await wait(100);
+      });
+      const actual = sendNotification.getCall(i).args[0];
+      expect(actual, message).toEqual(expected);
+    }
+  });
+
+  test('should show user facing error message according to error type while updating user', async () => {
+    const sendNotification = sinon.spy();
+    const badRequestErrorText = 'update user bad request ';
+    const badRequestError = new ErrorBadRequest('bad request');
+    badRequestError.addErrors([{ detail: badRequestErrorText }]);
+
+    const tests = [
+      {
+        expected: USER_NOTIFICATIONS_UPDATE.notFound,
+        message: 'show no longer exist message for not found request'
+      },
+      {
+        expected: USER_NOTIFICATIONS_UPDATE.unpermissioned,
+        message: 'show permission error for unauthorised request'
+      },
+      {
+        expected: USER_NOTIFICATIONS_UPDATE.unpermissioned,
+        message: 'show permission error for forbidden request'
+      },
+      {
+        expected: USER_NOTIFICATIONS_UPDATE.internalServer,
+        message: 'show unknown error for internal server error'
+      },
+      {
+        expected: badRequestErrorText,
+        message: 'shows error from api response for bad request'
+      },
+      {
+        expected: USER_NOTIFICATIONS_UPDATE.success,
+        message: 'show success on successful request'
+      }
+    ];
+
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    sinon
+      .stub(userApi, 'updateRecord')
+      .onCall(0)
+      .rejects(new ErrorNotFound())
+      .onCall(1)
+      .rejects(new ErrorUnauthorized())
+      .onCall(2)
+      .rejects(new ErrorForbidden())
+      .onCall(3)
+      .rejects(new ErrorServerInternal())
+      .onCall(4)
+      .rejects(badRequestError)
+      .onCall(5)
+      .resolves();
+
+    const { result } = renderHook(() => useUserEdit(admin, sendNotification));
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, message } = tests[i];
+      // eslint-disable-next-line
+      await act(async () => {
+        result.current.onUpdateUser();
+        await wait(100);
+      });
+      const actual = sendNotification.getCall(i).args[0];
       expect(actual, message).toEqual(expected);
     }
   });

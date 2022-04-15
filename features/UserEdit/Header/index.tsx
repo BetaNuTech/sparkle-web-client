@@ -18,6 +18,7 @@ interface Props {
   user: UserModel;
   isDisabled: boolean;
   onSubmit(): void;
+  isLoading: boolean;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -27,10 +28,14 @@ const Header: FunctionComponent<Props> = ({
   isCreatingUser,
   user,
   isDisabled,
-  onSubmit
+  onSubmit,
+  isLoading
 }) => {
   const title = isCreatingUser ? 'Add User' : 'Edit User';
-  const accessLevel = getLevelName(user);
+  const accessLevel = getLevelName(user, true);
+  const userFriendlyAccessLevel = utilString
+    .titleize(utilString.decamel(accessLevel))
+    .replace('Team Property', 'Team / Property');
 
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -100,6 +105,7 @@ const Header: FunctionComponent<Props> = ({
               isDisabled={isDisabled}
               onSubmit={onSubmit}
               isCreatingUser={isCreatingUser}
+              isLoading={isLoading}
             />
           }
         />
@@ -108,18 +114,16 @@ const Header: FunctionComponent<Props> = ({
         <div className={styles.userInfo}>
           <div className={styles.pill}>
             <p className={styles.pill__label}>
-              Updating{!isMobile && <> :&nbsp;</>}
+              Updating{!isMobile && <>:&nbsp;</>}
             </p>
             <p className={styles.pill__value}>{user?.email}</p>
           </div>
 
           <div className={styles.pill}>
             <p className={styles.pill__label}>
-              Access{!isMobile && <> :&nbsp;</>}
+              Access{!isMobile && <>:&nbsp;</>}
             </p>
-            <p className={styles.pill__value}>
-              {utilString.titleize(accessLevel)}
-            </p>
+            <p className={styles.pill__value}>{userFriendlyAccessLevel}</p>
           </div>
         </div>
       )}

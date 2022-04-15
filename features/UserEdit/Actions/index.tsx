@@ -7,12 +7,14 @@ interface Props {
   isDisabled: boolean;
   onSubmit(): void;
   isCreatingUser: boolean;
+  isLoading: boolean;
 }
 
 const Actions: FunctionComponent<Props> = ({
   isDisabled,
   onSubmit,
-  isCreatingUser
+  isCreatingUser,
+  isLoading
 }) => (
   <>
     <LinkFeature
@@ -27,11 +29,15 @@ const Actions: FunctionComponent<Props> = ({
     <button
       type="button"
       className={styles.actionSubmit}
-      disabled={isDisabled}
+      disabled={isDisabled || isLoading}
       onClick={onSubmit}
       data-testid="user-edit-save-button"
     >
-      {isCreatingUser ? 'Create User' : 'Save'}
+      {isLoading ? (
+        <span className={styles.actionSubmit__loading}>Loading...</span>
+      ) : (
+        <span>{isCreatingUser ? 'Create User' : 'Save'}</span>
+      )}
     </button>
   </>
 );

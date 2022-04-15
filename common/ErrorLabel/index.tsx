@@ -27,8 +27,7 @@ const ErrorLabel: FunctionComponent<Props> = ({
 
   useEffect(() => {
     setIsVisible(true);
-  }, [errors]);
-
+  }, [errors, errorMessage]);
   return errorMessage && isVisible ? (
     <p
       className={clsx(styles.error, message ? styles.error__form : '')}
