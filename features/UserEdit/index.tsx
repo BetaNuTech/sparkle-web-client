@@ -4,6 +4,7 @@ import LoadingHud from '../../common/LoadingHud';
 import PropertyModel from '../../common/models/property';
 import TeamModel from '../../common/models/team';
 import UserModel from '../../common/models/user';
+import { canEditUserRoles } from '../../common/utils/userPermissions';
 import breakpoints from '../../config/breakpoints';
 import UserEditForm from './Form';
 import Header from './Header';
@@ -33,7 +34,8 @@ const UserEdit: FunctionComponent<Props> = ({
   teams,
   sendNotification,
   properties,
-  user
+  user,
+  toggleNavOpen
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
@@ -57,6 +59,10 @@ const UserEdit: FunctionComponent<Props> = ({
     selectedProperties
   } = useUserEdit(target, sendNotification);
 
+  const canEditRole = canEditUserRoles(user);
+
+  const showUserRoleFields = !isCreatingUser && canEditRole;
+
   const { onDelete, isDeleting } = useUserDelete(target, sendNotification);
 
   const isCurrentUser = user.id === target.id;
@@ -75,6 +81,8 @@ const UserEdit: FunctionComponent<Props> = ({
         isDisabled={isDisabled}
         onSubmit={onSubmit}
         isLoading={isLoading}
+        canEditRole={canEditRole}
+        toggleNavOpen={toggleNavOpen}
       />
       <div>
         <UserEditForm
@@ -89,8 +97,10 @@ const UserEdit: FunctionComponent<Props> = ({
           selectedTeams={selectedTeams}
           isLoading={isLoading}
           selectedProperties={selectedProperties}
+          showUserRoleFields={showUserRoleFields}
           isCurrentUser={isCurrentUser}
           onDelete={onDelete}
+          canEditRole={canEditRole}
         />
       </div>
       <TeamModal

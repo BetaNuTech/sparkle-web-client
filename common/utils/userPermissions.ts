@@ -88,7 +88,7 @@ export const getLevelName = (
     return 'admin';
   }
 
-  if (hasLeadershipTeams) {
+  if (user.corporate && hasLeadershipTeams) {
     return 'teamLead';
   }
 
@@ -337,32 +337,36 @@ export const canCompleteDeficientItem = (
 ): boolean =>
   user.admin || user.corporate || hasPropertyAccess(user, propertyId);
 
-// Checks that the user have access to view template
+// User has access to view templates
 export const canViewTemplates = (user: userModel): boolean =>
   user.admin || user.corporate;
 
-// Checks that the user have access to update template
+// User has access to update templates
 export const canCreateTemplate = (user: userModel): boolean =>
   user.admin || user.corporate;
 
-// Checks that the user have access to update template
+// User has access to update templates
 export const canUpdateTemplate = (user: userModel): boolean =>
   user.admin || user.corporate;
 
-// Checks that the user have access to delete template
+// User has access to delete templates
 export const canDeleteTemplate = (user: userModel): boolean => user.admin;
 
-// Checks that the user have access to create template category
+// User has access to create template categories
 export const canCreateTemplateCategory = (user: userModel): boolean =>
   user.admin || user.corporate;
 
-// Checks that the user have access to update template category
+// User has access to update template categories
 export const canUpdateTemplateCategory = (user: userModel): boolean =>
   user.admin || user.corporate;
 
-// Checks that the user have access to delete template category
+// User has access to delete template categories
 export const canDeleteTemplateCategory = (user: userModel): boolean =>
   user.admin || user.corporate;
 
-// Checks that the user have access toview users
+// User has access to view all users
 export const canViewUsers = (user: userModel): boolean => user.admin;
+
+// User has ability to change property,
+// corporate, team, or admin role(s)
+export const canEditUserRoles = (user: userModel): boolean => user.admin;

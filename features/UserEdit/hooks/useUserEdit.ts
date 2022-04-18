@@ -50,6 +50,7 @@ export type FormInputs = {
   admin: boolean;
   corporate: boolean;
   isDisabled: boolean;
+  pushOptOut: boolean;
 };
 
 interface useUserEditReturn {
@@ -78,6 +79,17 @@ const useUserEdit = (
   const [updates, setUpdates] = useState({} as UserModel);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Default values for form fields
+  const defaultValues = {
+    email: user.email || '',
+    firstName: user.firstName || '',
+    lastName: user.lastName || '',
+    admin: user.admin || false,
+    corporate: user.corporate || false,
+    isDisabled: user.isDisabled || false,
+    pushOptOut: user.pushOptOut || false
+  };
+
   const {
     register,
     trigger: triggerFormValidation,
@@ -88,7 +100,7 @@ const useUserEdit = (
     reset
   } = useForm<FormInputs>({
     mode: 'all',
-    defaultValues: user
+    defaultValues
   });
 
   const hasUpdates = Boolean(Object.keys(updates).length);
@@ -244,16 +256,15 @@ const useUserEdit = (
     }
   };
   const onUpdateUser = async () => {
-    const { email, firstName, lastName, admin, corporate, isDisabled } =
-      getValues();
-    const data = {
-      email,
-      firstName,
-      lastName,
-      admin,
-      corporate,
-      isDisabled
-    } as UserModel;
+    const values = getValues();
+    // Get only updated values
+    const data = Object.keys(values).reduce((acc, curr) => {
+      if (values[curr] !== user[curr]) {
+        acc[curr] = values[curr];
+      }
+      return acc;
+    }, {} as UserModel);
+
     if (updates.teams) {
       data.teams = updates.teams;
     }
