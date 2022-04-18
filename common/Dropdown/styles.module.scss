@@ -77,7 +77,6 @@ $dropdown-carrot-size: rem-calc(5);
 }
 
 .dropdown--right {
-  left: 0;
   &::after {
     left: auto;
     right: $dropdown-carrot-size;

@@ -161,8 +161,8 @@
     grid-template-columns: 1fr 2fr 1fr !important;
 
     &__icon {
-      path:last-child {
-        fill: $white !important;
+      path:not(:last-child) {
+        fill: none !important;
       }
     }
   }
