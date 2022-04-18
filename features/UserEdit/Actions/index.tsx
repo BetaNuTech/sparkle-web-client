@@ -8,38 +8,44 @@ interface Props {
   onSubmit(): void;
   isCreatingUser: boolean;
   isLoading: boolean;
+  canEditRole: boolean;
 }
 
 const Actions: FunctionComponent<Props> = ({
   isDisabled,
   onSubmit,
   isCreatingUser,
-  isLoading
-}) => (
-  <>
-    <LinkFeature
-      href="/users"
-      legacyHref="/admin/users"
-      featureEnabled={features.supportBetaUsers}
-      className={styles.actionCancel}
-    >
-      Cancel
-    </LinkFeature>
+  isLoading,
+  canEditRole
+}) => {
+  const cancelHref = canEditRole ? '/users' : '/properties';
+  const cancelLegacyHref = canEditRole ? '/admin/users' : '/properties';
+  return (
+    <>
+      <LinkFeature
+        href={cancelHref}
+        legacyHref={cancelLegacyHref}
+        featureEnabled={features.supportBetaUsers}
+        className={styles.actionCancel}
+      >
+        Cancel
+      </LinkFeature>
 
-    <button
-      type="button"
-      className={styles.actionSubmit}
-      disabled={isDisabled || isLoading}
-      onClick={onSubmit}
-      data-testid="user-edit-save-button"
-    >
-      {isLoading ? (
-        <span className={styles.actionSubmit__loading}>Loading...</span>
-      ) : (
-        <span>{isCreatingUser ? 'Create User' : 'Save'}</span>
-      )}
-    </button>
-  </>
-);
+      <button
+        type="button"
+        className={styles.actionSubmit}
+        disabled={isDisabled || isLoading}
+        onClick={onSubmit}
+        data-testid="user-edit-save-button"
+      >
+        {isLoading ? (
+          <span className={styles.actionSubmit__loading}>Loading...</span>
+        ) : (
+          <span>{isCreatingUser ? 'Create User' : 'Save'}</span>
+        )}
+      </button>
+    </>
+  );
+};
 
 export default Actions;

@@ -19,6 +19,8 @@ interface Props {
   isDisabled: boolean;
   onSubmit(): void;
   isLoading: boolean;
+  canEditRole: boolean;
+  toggleNavOpen?(): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -29,9 +31,12 @@ const Header: FunctionComponent<Props> = ({
   user,
   isDisabled,
   onSubmit,
-  isLoading
+  isLoading,
+  canEditRole,
+  toggleNavOpen
 }) => {
-  const title = isCreatingUser ? 'Add User' : 'Edit User';
+  const editType = canEditRole ? 'User' : 'Profile';
+  const title = isCreatingUser ? 'Add User' : `Edit ${editType}`;
   const accessLevel = getLevelName(user, true);
   const userFriendlyAccessLevel = utilString
     .titleize(utilString.decamel(accessLevel))
@@ -49,31 +54,35 @@ const Header: FunctionComponent<Props> = ({
   // Mobile Header left actions buttons
   const mobileHeaderLeftAction = (headStyle) => (
     <>
-      <LinkFeature
-        href="/users"
-        legacyHref="/admin/users"
-        featureEnabled={features.supportBetaUsers}
-        className={headStyle.header__back}
-      >
-        <ChevronIcon />
-        Users
-      </LinkFeature>
+      {canEditRole && (
+        <LinkFeature
+          href="/users"
+          legacyHref="/admin/users"
+          featureEnabled={features.supportBetaUsers}
+          className={headStyle.header__back}
+        >
+          <ChevronIcon />
+          Users
+        </LinkFeature>
+      )}
     </>
   );
 
   const BreadCrumbs = () => (
     <>
-      <div className={styles.header__breadcrumbs}>
-        <LinkFeature
-          href="/users"
-          legacyHref="/admin/users"
-          featureEnabled={features.supportBetaUsers}
-          className={styles.header__link}
-          data-testid="user-edit-header-link"
-        >
-          Users
-        </LinkFeature>
-      </div>
+      {canEditRole && (
+        <div className={styles.header__breadcrumbs}>
+          <LinkFeature
+            href="/users"
+            legacyHref="/admin/users"
+            featureEnabled={features.supportBetaUsers}
+            className={styles.header__link}
+            data-testid="user-edit-header-link"
+          >
+            Users
+          </LinkFeature>
+        </div>
+      )}
       <div
         className={styles.header__title}
         data-testid="user-edit-header-title"
@@ -93,6 +102,7 @@ const Header: FunctionComponent<Props> = ({
             isStaging={isStaging}
             title={title}
             actions={mobileHeaderActions}
+            toggleNavOpen={!canEditRole && toggleNavOpen}
           />
         </>
       ) : (
@@ -106,6 +116,7 @@ const Header: FunctionComponent<Props> = ({
               onSubmit={onSubmit}
               isCreatingUser={isCreatingUser}
               isLoading={isLoading}
+              canEditRole={canEditRole}
             />
           }
         />

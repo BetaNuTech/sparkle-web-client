@@ -48,6 +48,8 @@ describe('Unit | Common | Utils | User Permissions', () => {
   });
 
   test('it returns the correct permission level name for all access levels', () => {
+    const teamMemberNestedProperties = deepClone(teamLead);
+    teamMemberNestedProperties.corporate = false;
     const data = [
       {
         user: admin,
@@ -71,6 +73,11 @@ describe('Unit | Common | Utils | User Permissions', () => {
       },
       {
         user: teamMember,
+        expected: 'teamMember',
+        teamOrientation: true
+      },
+      {
+        user: teamMemberNestedProperties,
         expected: 'teamMember',
         teamOrientation: true
       },
@@ -1161,6 +1168,19 @@ describe('Unit | Common | Utils | User Permissions', () => {
       util.canViewUsers(teamLead),
       util.canViewUsers(propertyMember),
       util.canViewUsers(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins to to configure user permissions', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canEditUserRoles(admin),
+      util.canEditUserRoles(corporate),
+      util.canEditUserRoles(teamLead),
+      util.canEditUserRoles(propertyMember),
+      util.canEditUserRoles(noAccess)
     ];
     expect(actual).toEqual(expected);
   });
