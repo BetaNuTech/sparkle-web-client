@@ -18,6 +18,7 @@ const ModalItem: FunctionComponent<Props> = ({ item, onClick, isSelected }) => (
     key={item.id}
     className={clsx(styles.item, isSelected && styles['item--selected'])}
     onClick={() => onClick(item.id)}
+    data-testid={`modal-list-item-${item.id}`}
   >
     <span>{item.name}</span>
     <span>

@@ -46,12 +46,11 @@
 .pill {
   width: 48%;
   display: flex;
-  padding: 1.625rem;
-  margin-bottom: 1.5625rem;
+  padding: $global-mlg-padding;
   align-items: center;
   flex-direction: column;
   background: $gray;
-  border-radius: 0.625rem;
+  border-radius: rem-calc(10);
 
   &__label,
   &__value {
@@ -73,11 +72,11 @@
   @include media-query(desktop) {
     width: auto;
     flex-direction: row;
-    margin-right: 1rem;
+    margin-right: $global-padding;
 
     &__label,
     &__value {
-      font-size: 1rem;
+      font-size: $paragraph-font-size;
     }
   }
 }

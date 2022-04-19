@@ -225,6 +225,7 @@ const useUserEdit = (
       Router.push(`/users/edit/${createdUser.id}/`);
       // Reset form state and values
       reset();
+      setUpdates({} as UserModel);
     } catch (err) {
       handleCreateErrorResponse(err);
     }
@@ -282,6 +283,7 @@ const useUserEdit = (
 
       // Reset form state
       reset({}, { keepValues: true });
+      setUpdates({} as UserModel);
     } catch (err) {
       handleUpdateErrorResponse(err);
     }

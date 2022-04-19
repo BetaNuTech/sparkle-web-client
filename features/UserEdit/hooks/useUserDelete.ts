@@ -15,8 +15,7 @@ const PREFIX = 'features: UserEdit: hooks: useUserDelete:';
 export const USER_NOTIFICATIONS = {
   notFound: 'This user no longer exists',
   unpermissioned: 'You do not have permission to delete users',
-  internalServer: 'Unknown error please try again',
-  success: 'User successfully deleted'
+  internalServer: 'Unknown error please try again'
 };
 
 type userNotifications = (message: string, options?: any) => any;
@@ -24,6 +23,8 @@ type userNotifications = (message: string, options?: any) => any;
 interface useUserDeleteReturn {
   isDeleting: boolean;
   onDelete(): void;
+  setShowDeletePrompt(show: boolean): void;
+  showDeletePrompt: boolean;
 }
 
 /* eslint-disable */
@@ -32,6 +33,7 @@ const useUserDelete = (
   sendNotification: userNotifications
 ): useUserDeleteReturn => {
   const [isLoading, setIsLoading] = useState(false);
+  const [showDeletePrompt, setShowDeletePrompt] = useState(false);
 
   const handleErrorResponse = (error: BaseError) => {
     let errorMessage = null;
@@ -67,10 +69,6 @@ const useUserDelete = (
       await userApi.deleteRecord(user.id);
       // Redirect to users page
       Router.push('/users');
-      // Send user facing notification
-      sendNotification(USER_NOTIFICATIONS.success, {
-        type: 'success'
-      });
     } catch (err) {
       handleErrorResponse(err);
     }
@@ -79,7 +77,9 @@ const useUserDelete = (
 
   return {
     isDeleting: isLoading,
-    onDelete
+    onDelete,
+    setShowDeletePrompt,
+    showDeletePrompt
   };
 };
 

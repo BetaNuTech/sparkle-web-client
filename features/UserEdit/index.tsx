@@ -6,6 +6,7 @@ import TeamModel from '../../common/models/team';
 import UserModel from '../../common/models/user';
 import { canEditUserRoles } from '../../common/utils/userPermissions';
 import breakpoints from '../../config/breakpoints';
+import DeletePrompt from './DeletePrompt';
 import UserEditForm from './Form';
 import Header from './Header';
 import useUserDelete from './hooks/useUserDelete';
@@ -63,7 +64,8 @@ const UserEdit: FunctionComponent<Props> = ({
 
   const showUserRoleFields = !isCreatingUser && canEditRole;
 
-  const { onDelete, isDeleting } = useUserDelete(target, sendNotification);
+  const { onDelete, isDeleting, setShowDeletePrompt, showDeletePrompt } =
+    useUserDelete(target, sendNotification);
 
   const isCurrentUser = user.id === target.id;
 
@@ -99,7 +101,7 @@ const UserEdit: FunctionComponent<Props> = ({
           selectedProperties={selectedProperties}
           showUserRoleFields={showUserRoleFields}
           isCurrentUser={isCurrentUser}
-          onDelete={onDelete}
+          onDelete={() => setShowDeletePrompt(true)}
           canEditRole={canEditRole}
         />
       </div>
@@ -116,6 +118,11 @@ const UserEdit: FunctionComponent<Props> = ({
         onClose={() => setIsVisiblePropertiesModal(false)}
         onSelect={onSelectProperty}
         selectedProperties={selectedProperties}
+      />
+      <DeletePrompt
+        isVisible={showDeletePrompt}
+        onClose={() => setShowDeletePrompt(false)}
+        onConfirm={onDelete}
       />
     </>
   );
