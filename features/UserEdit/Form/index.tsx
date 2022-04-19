@@ -120,6 +120,7 @@ const UserEditForm: FunctionComponent<Props> = ({
                 {...register('admin')}
                 id="admin-check"
                 disabled={isLoading}
+                data-testid="user-edit-admin-input"
               />
             </div>
           </label>
@@ -139,6 +140,7 @@ const UserEditForm: FunctionComponent<Props> = ({
                 {...register('corporate')}
                 id="corporate-check"
                 disabled={isLoading}
+                data-testid="user-edit-corporate-input"
               />
             </div>
           </label>
@@ -146,6 +148,7 @@ const UserEditForm: FunctionComponent<Props> = ({
           <div
             className={clsx(styles.field__control, styles.pillField)}
             onClick={onTeamsClick}
+            data-testid="user-edit-teams-input"
           >
             <div className={styles.pillField__body}>
               <p className={styles.pillField__label}>Team</p>
@@ -163,6 +166,7 @@ const UserEditForm: FunctionComponent<Props> = ({
           <div
             className={clsx(styles.field__control, styles.pillField)}
             onClick={onPropertiesClick}
+            data-testid="user-edit-properties-input"
           >
             <div className={styles.pillField__body}>
               <p className={styles.pillField__label}>Property</p>
@@ -192,6 +196,7 @@ const UserEditForm: FunctionComponent<Props> = ({
                 {...register('isDisabled')}
                 id="isDisabled-check"
                 disabled={isLoading}
+                data-testid="user-edit-isDisabled-input"
               />
             </div>
           </label>
@@ -213,20 +218,12 @@ const UserEditForm: FunctionComponent<Props> = ({
               {...register('pushOptOut')}
               id="pushOptOut-check"
               disabled={isLoading}
+              data-testid="user-edit-pushOptOut-input"
             />
           </div>
         </label>
       )}
       <div className={styles.actions}>
-        {showDeleteAction && (
-          <button
-            type="button"
-            className={styles.actions__delete}
-            onClick={onDelete}
-          >
-            Delete
-          </button>
-        )}
         <Actions
           isDisabled={isDisabled}
           onSubmit={onSubmit}
@@ -235,6 +232,15 @@ const UserEditForm: FunctionComponent<Props> = ({
           canEditRole={canEditRole}
         />
       </div>
+      {showDeleteAction && (
+        <button
+          type="button"
+          className={styles.deleteButton}
+          onClick={onDelete}
+        >
+          Delete User
+        </button>
+      )}
     </form>
   );
 };
