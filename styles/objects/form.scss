@@ -1,0 +1,32 @@
+%fieldset {
+  padding: 0;
+  margin: 0;
+  border-width: 0;
+
+  input,
+  textarea,
+  [contenteditable] {
+    border-radius: 0;
+    border-width: 0;
+
+    &:focus {
+      border-width: 0;
+    }
+  }
+
+  & &__open {
+    border-top-left-radius: $global-radius;
+    border-top-right-radius: $global-radius;
+  }
+
+  & &__close {
+    border-bottom-left-radius: $global-radius;
+    border-bottom-right-radius: $global-radius;
+  }
+}
+
+// previous .spk-fieldset input:not(.spk-fieldset__close)
+%fieldset input:not(.fieldset__close),
+%fieldset [contenteditable]:not(.fieldset__close) {
+  margin-bottom: 1px !important;
+}

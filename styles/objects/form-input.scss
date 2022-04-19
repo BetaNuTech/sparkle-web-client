@@ -123,3 +123,27 @@
   height: auto;
   background-color: $white;
 }
+
+%form-input {
+  padding-left: rem-calc(8);
+  padding-right: rem-calc(8);
+  margin-bottom: rem-calc(2);
+  font-size: 1rem;
+
+  border-radius: $global-radius;
+  border: 1px solid darken($gray, 14);
+  background: $gray;
+
+  &:focus {
+    background: $gray;
+  }
+}
+
+%form-input,
+input%form-input {
+  height: rem-calc(34);
+}
+
+[contenteditable]%form-input {
+  padding: rem-calc(6) rem-calc(8);
+}

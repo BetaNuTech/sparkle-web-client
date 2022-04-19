@@ -1,25 +1,34 @@
+import { FunctionComponent } from 'react';
 import { useForm } from 'react-hook-form';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
+import clsx from 'clsx';
 import { useAuth } from '../../common/Auth/Provider';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
-import styles from './styles.module.scss';
+import ErrorLabel from '../../common/ErrorLabel';
 import regexPattern from '../../common/utils/regexPattern';
+import SparkleLogo from '../../public/icons/sparkle/logo.svg';
+import BlueStoneLogo from '../../public/icons/sparkle/bluestone-logo.svg';
+import AppleLogo from '../../public/icons/sparkle/apple-logo.svg';
+
+import styles from './styles.module.scss';
 
 type FormInputs = {
   email: string;
   password: string;
 };
 
-export const LoginForm = (): JSX.Element => {
+interface Props {
+  isStaging?: boolean;
+}
+
+const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
   const { signInWithEmail } = useAuth();
 
   // User notifications setup
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
 
-  const { register, handleSubmit } = useForm<FormInputs>();
+  const { register, handleSubmit, formState } = useForm<FormInputs>();
 
   const onSubmit = (data) => {
     signInWithEmail(data.email, data.password).catch((error) => {
@@ -31,18 +40,22 @@ export const LoginForm = (): JSX.Element => {
 
   return (
     <>
-      <div className={styles.loginForm}>
-        <div className={styles.loginForm__container}>
-          <h2>Login To Your Account</h2>
-          <form
-            className={styles.loginForm__main}
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className={styles.loginForm__fields}>
+      <form className={styles.container} onSubmit={handleSubmit(onSubmit)}>
+        <div className={styles.main}>
+          <header className={styles.header}>
+            {isStaging ? (
+              <h1 className={styles.header__title}>Staging</h1>
+            ) : (
+              <SparkleLogo className={styles.header__logo} />
+            )}
+          </header>
+
+          <div className={styles.form}>
+            <div className={styles.form__fields}>
               <input
                 type="text"
                 name="email"
-                className={styles.loginForm__field}
+                className={clsx(styles.form__input, styles.form__input__open)}
                 id="email"
                 placeholder="Email"
                 {...register('email', {
@@ -53,11 +66,11 @@ export const LoginForm = (): JSX.Element => {
                   }
                 })}
               />
-              {/* {!!errors.email && <p>{errors.email?.message}</p>} */}
+              <ErrorLabel formName="email" errors={formState.errors} />
               <input
-                type="text"
+                type="password"
                 name="password"
-                className={styles.loginForm__field}
+                className={clsx(styles.form__input, styles.form__input__close)}
                 id="password"
                 placeholder="Password"
                 {...register('password', {
@@ -68,27 +81,50 @@ export const LoginForm = (): JSX.Element => {
                   }
                 })}
               />
-              {/* {!!errors.password && <p>{errors.password?.message}</p>} */}
-
-              <div className="loginForm__actions">
-                <button className={styles.loginForm__button} type="submit">
-                  Log in
+              <ErrorLabel formName="password" errors={formState.errors} />
+              <div className={styles.form__actions}>
+                <button
+                  className={clsx(
+                    styles.form__button,
+                    styles.form__button__secondary
+                  )}
+                  type="button"
+                >
+                  Forgot Password
+                </button>
+                <button
+                  className={clsx(
+                    styles.form__button,
+                    styles.form__button__primary
+                  )}
+                  type="submit"
+                >
+                  Log In
                 </button>
               </div>
+              <img
+                src="/img/sapphire-large.png"
+                alt="login"
+                className={styles.form__loginImg}
+              />
+              <button className={styles.form__promptButton}>New User?</button>
+
+              <div className="-ta-center -mt">
+                <div className="-fz-small -mb-sm">Using iOS device?</div>
+                <a href="##" className={styles.form__iosInstallButton}>
+                  <AppleLogo /> Install iOS App
+                </a>
+              </div>
             </div>
-          </form>
+          </div>
+          <footer className={styles.footer}>
+            <BlueStoneLogo className={styles.footer__logo} />
+            <p className={styles.footer__version}>v0.1.0</p>
+          </footer>
         </div>
-      </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar
-        newestOnTop={false}
-        closeOnClick
-        pauseOnFocusLoss={false}
-        draggable
-        pauseOnHover
-      />
+      </form>
     </>
   );
 };
+
+export default LoginForm;
