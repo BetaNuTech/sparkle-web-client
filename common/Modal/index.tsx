@@ -12,7 +12,12 @@ const CLOSE_ELEMENT_SELECTOR = '[data-modal=trigger-close]';
 
 // Modal high level component
 /* eslint-disable */
-const ModalHOC = (Content, isPrompt = false, modalClass = '') => {
+const ModalHOC = (
+  Content,
+  isPrompt = false,
+  modalClass = '',
+  overlayclass = ''
+) => {
   const Modal: FunctionComponent<any> = (props) => {
     if (typeof props.isVisible !== 'boolean') {
       throw TypeError(`missing isVisible boolean got: ${props.isVisible}`);
@@ -44,7 +49,7 @@ const ModalHOC = (Content, isPrompt = false, modalClass = '') => {
       <>
         {/* Overlay */}
         <div
-          className={styles.modalOverlay}
+          className={clsx(styles.modalOverlay, overlayclass)}
           onClick={onClose}
           data-testid="modal-overlay"
         ></div>

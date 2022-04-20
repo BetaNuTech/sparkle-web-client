@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 import { useAuth } from '../../common/Auth/Provider';
@@ -11,6 +11,8 @@ import BlueStoneLogo from '../../public/icons/sparkle/bluestone-logo.svg';
 import AppleLogo from '../../public/icons/sparkle/apple-logo.svg';
 
 import styles from './styles.module.scss';
+import NewUserPrompt from './NewUserPrompt';
+import ForgotPasswordPrompt from './ForgotPasswordPrompt';
 
 type FormInputs = {
   email: string;
@@ -23,12 +25,16 @@ interface Props {
 
 const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
   const { signInWithEmail } = useAuth();
+  const [isVisibleNewUserPrompt, setIsVisibleNewUserPrompt] = useState(false);
+  const [isVisibleForgotPasswordPrompt, setIsVisibleForgotPasswordPrompt] =
+    useState(false);
 
   // User notifications setup
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
 
-  const { register, handleSubmit, formState } = useForm<FormInputs>();
+  const { register, handleSubmit, formState, getValues } =
+    useForm<FormInputs>();
 
   const onSubmit = (data) => {
     signInWithEmail(data.email, data.password).catch((error) => {
@@ -37,6 +43,8 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
       });
     });
   };
+
+  const email = getValues('email');
 
   return (
     <>
@@ -89,6 +97,7 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
                     styles.form__button__secondary
                   )}
                   type="button"
+                  onClick={() => setIsVisibleForgotPasswordPrompt(true)}
                 >
                   Forgot Password
                 </button>
@@ -107,7 +116,13 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
                 alt="login"
                 className={styles.form__loginImg}
               />
-              <button className={styles.form__promptButton}>New User?</button>
+              <button
+                type="button"
+                className={styles.form__promptButton}
+                onClick={() => setIsVisibleNewUserPrompt(true)}
+              >
+                New User?
+              </button>
 
               <div className="-ta-center -mt">
                 <div className="-fz-small -mb-sm">Using iOS device?</div>
@@ -123,6 +138,16 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
           </footer>
         </div>
       </form>
+      <NewUserPrompt
+        isVisible={isVisibleNewUserPrompt}
+        onClose={() => setIsVisibleNewUserPrompt(false)}
+      />
+      <ForgotPasswordPrompt
+        isVisible={isVisibleForgotPasswordPrompt}
+        onClose={() => setIsVisibleForgotPasswordPrompt(false)}
+        onConfirm={() => setIsVisibleForgotPasswordPrompt(false)}
+        email={email}
+      />
     </>
   );
 };

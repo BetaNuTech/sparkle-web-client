@@ -429,3 +429,12 @@
     opacity: 1;
   }
 }
+
+.-forceLeft {
+  left: 0 !important;
+  max-width: 90% !important;
+}
+
+.-forceLeftOverlay {
+  left: 0 !important;
+}
