@@ -1,5 +1,4 @@
-import { FunctionComponent, useEffect } from 'react';
-
+import { RefObject, useRef, FunctionComponent, useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import TemplateModel from '../../common/models/template';
 import TemplateCategoryModel from '../../common/models/templateCategory';
@@ -100,8 +99,14 @@ const TemplateEdit: FunctionComponent<Props> = ({
     sendNotification
   );
 
-  const { setErrorMessages, errors, stepsStatus, isValidForm } =
-    useValidateTemplate(updates, template);
+  const {
+    setErrorMessages,
+    errors,
+    stepsStatus,
+    isValidForm,
+    invalidSections,
+    invalidItems
+  } = useValidateTemplate(updates, template, sendNotification);
 
   const { templateSectionItems } = useTemplateSectionItems(template, updates);
 
@@ -187,26 +192,70 @@ const TemplateEdit: FunctionComponent<Props> = ({
     updateTemplate();
   };
 
+  // Setup element references for
+  // validation error focusing
+  const sectionInputRefs: RefObject<HTMLParagraphElement[]> = useRef([]);
+  const itemInputRefs: RefObject<HTMLParagraphElement[]> = useRef([]);
+
+  // Focus on first invalid section or item
+  const focusOnInput = (stepIndex: number) => {
+    if (sectionInputRefs.current.length && stepIndex === 1) {
+      sectionInputRefs.current
+        .find((section) => section?.id === invalidSections[0])
+        ?.focus();
+    }
+
+    if (itemInputRefs.current.length && stepIndex === 2) {
+      itemInputRefs.current
+        .filter((item) => invalidItems.indexOf(item?.id) > -1)[0]
+        .focus();
+    }
+  };
+
+  // Get index of the first invalid step
+  const getInvalidSetupIndex = () =>
+    steps.findIndex((step) => stepsStatus[step] === 'invalid');
+
   const onGoToNext = () => {
-    const invalidStep = steps.findIndex(
-      (step) => stepsStatus[step] === 'invalid'
-    );
-    if (invalidStep > -1 && currentStepIndex === invalidStep) {
+    const invalidStepIndex = getInvalidSetupIndex();
+
+    // Prevent going to next step when
+    // invalid, instead set error labels
+    // and focus on first errored field
+    if (invalidStepIndex > -1 && currentStepIndex === invalidStepIndex) {
       setErrorMessages();
+      focusOnInput(invalidStepIndex);
     } else {
       goToNextStep();
+    }
+  };
+
+  const onChangeStep = (stepIndex: number) => {
+    const invalidStepIndex = getInvalidSetupIndex();
+
+    // Prevent going to requested step
+    // instead set error labels and focus
+    // on first errored field
+    if (
+      invalidStepIndex > -1 &&
+      currentStepIndex === invalidStepIndex &&
+      stepIndex > currentStepIndex
+    ) {
+      setErrorMessages();
+      focusOnInput(invalidStepIndex);
+    } else {
+      changeStep(stepIndex);
     }
   };
 
   // check validation for steps
   // and redirect to invalid step
   useEffect(() => {
-    const invalidStep = steps.findIndex(
-      (step) => stepsStatus[step] === 'invalid'
-    );
-    if (invalidStep > -1 && currentStepIndex > invalidStep) {
+    const invalidStepIndex = getInvalidSetupIndex();
+
+    if (invalidStepIndex > -1 && currentStepIndex > invalidStepIndex) {
       setErrorMessages();
-      changeStep(invalidStep);
+      changeStep(invalidStepIndex);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStepIndex]);
@@ -232,7 +281,7 @@ const TemplateEdit: FunctionComponent<Props> = ({
         currentStepIndex={currentStepIndex}
         isMobile={isMobile}
         steps={steps}
-        changeStep={changeStep}
+        onChangeStep={onChangeStep}
         goToNextStep={onGoToNext}
         goToPrevStep={goToPrevStep}
         isLastStep={isLastStep}
@@ -273,6 +322,8 @@ const TemplateEdit: FunctionComponent<Props> = ({
         isLoading={isLoading}
         hasUpdates={hasUpdates}
         initialSlide={initialSlide}
+        sectionInputRefs={sectionInputRefs}
+        itemInputRefs={itemInputRefs}
       />
       <SectionDeletePrompt
         isVisible={isVisibleSectionDeletePrompt}

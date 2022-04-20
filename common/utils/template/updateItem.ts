@@ -104,7 +104,7 @@ const setItemType = (
   const isChanging =
     typeof userChanges?.itemType === 'string' && targetId !== 'new';
   const currentItems = currentTemplate.items || {};
-  const currentItem = currentItems[targetId] || {};
+  const currentItem = currentItems[targetId] || ({} as TemplateItemModel);
   const previousItems = updatedTemplate.items || {};
   const value = userChanges?.itemType;
   const isDifferentThanCurrent = value !== currentItem.itemType;
@@ -113,7 +113,7 @@ const setItemType = (
     return result;
   }
 
-  const previousItem = previousItems[targetId] || {};
+  const previousItem = previousItems[targetId] || ({} as TemplateItemModel);
   const { index, sectionId, title } = previousItem;
   const itemUpdates = createItem(value);
 
@@ -180,7 +180,8 @@ const setItemMainInputType = (
 // Set template item title
 const setTitle = (result: TemplateModel, settings: ComposableItemSettings) => {
   const { userChanges, currentTemplate, targetId } = settings;
-  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const currentItem =
+    (currentTemplate.items || {})[targetId] || ({} as TemplateItemModel);
   const isChanging = typeof userChanges?.title === 'string';
   const value = `${userChanges?.title || ''}`.trim();
   const isDifferentThanCurrent = value !== currentItem.title;
@@ -208,7 +209,8 @@ const setPhotosValue = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
-  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const currentItem =
+    (currentTemplate.items || {})[targetId] || ({} as TemplateItemModel);
   const isChanging = typeof userChanges?.photos === 'boolean';
   const value = userChanges?.photos;
   const isDifferentThanCurrent = value !== currentItem.photos;
@@ -236,7 +238,8 @@ const setNotesValue = (
   settings: ComposableItemSettings
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
-  const currentItem = (currentTemplate.items || {})[targetId] || {};
+  const currentItem =
+    (currentTemplate.items || {})[targetId] || ({} as TemplateItemModel);
   const isChanging = typeof userChanges?.notes === 'boolean';
   const value = userChanges?.notes;
   const isDifferentThanCurrent = value !== currentItem.notes;

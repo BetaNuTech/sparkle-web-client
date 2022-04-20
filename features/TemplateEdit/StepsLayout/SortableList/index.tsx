@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo } from 'react';
+import { FunctionComponent, RefObject, useMemo } from 'react';
 
 import {
   SortableContext,
@@ -9,6 +9,7 @@ import TemplateSectionModel from '../../../../common/models/inspectionTemplateSe
 import TemplateItemModel from '../../../../common/models/inspectionTemplateItem';
 
 import SortableItem from './SortableItem';
+// type Ref = (element: HTMLElement) => void | { current: HTMLElement };
 
 interface Props {
   items: TemplateSectionModel[] | TemplateItemModel[];
@@ -18,6 +19,7 @@ interface Props {
   selectedItems: string[];
   errors: Record<string, string>;
   errorMessage: string;
+  inputRef: RefObject<HTMLParagraphElement[]>;
 }
 
 const SortableList: FunctionComponent<Props> = ({
@@ -27,10 +29,12 @@ const SortableList: FunctionComponent<Props> = ({
   onSelectItem,
   selectedItems,
   errors,
-  errorMessage
+  errorMessage,
+  inputRef
 }) => {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
 
+  inputRef.current.splice(0, inputRef.current.length);
   return (
     <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
       {items.map((item) => (
@@ -44,6 +48,7 @@ const SortableList: FunctionComponent<Props> = ({
           selectedItems={selectedItems}
           errors={errors}
           errorMessage={errorMessage}
+          inputRef={inputRef}
         />
       ))}
     </SortableContext>

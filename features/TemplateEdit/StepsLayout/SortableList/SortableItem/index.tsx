@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent, RefObject, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Item from './Item';
@@ -12,6 +12,7 @@ interface Props {
   selectedItems: string[];
   errors: Record<string, string>;
   errorMessage: string;
+  inputRef: RefObject<HTMLParagraphElement[]>;
 }
 
 const SortableItem: FunctionComponent<Props> = ({
@@ -22,7 +23,8 @@ const SortableItem: FunctionComponent<Props> = ({
   onSelectItem,
   selectedItems,
   errors,
-  errorMessage
+  errorMessage,
+  inputRef
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const {
@@ -53,6 +55,7 @@ const SortableItem: FunctionComponent<Props> = ({
       errors={errors}
       errorMessage={errorMessage}
       setIsEditing={setIsEditing}
+      inputRef={inputRef}
       {...attributes}
       {...listeners}
     />

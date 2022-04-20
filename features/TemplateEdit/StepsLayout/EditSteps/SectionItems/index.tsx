@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, useMemo } from 'react';
+import { FunctionComponent, useState, useMemo, RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import {
   DndContext,
@@ -45,6 +45,7 @@ interface Props {
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
   onDeleteItem(item: TemplateItemModel): void;
+  itemInputRefs: RefObject<HTMLParagraphElement[]>;
 }
 
 const SectionItems: FunctionComponent<Props> = ({
@@ -58,7 +59,8 @@ const SectionItems: FunctionComponent<Props> = ({
   onSelectItems,
   onDeleteItems,
   onDeleteItem,
-  errors
+  errors,
+  itemInputRefs
 }) => {
   const [activeId, setActiveId] = useState(null);
 
@@ -160,6 +162,7 @@ const SectionItems: FunctionComponent<Props> = ({
               selectedItems={selectedSectionItems}
               errors={errors}
               errorMessage={errors.itemTitle}
+              inputRef={itemInputRefs}
             />
             {sectionItems.length < 1 && (
               <ErrorLabel errors={errors} message={errors?.sectionItemError} />
