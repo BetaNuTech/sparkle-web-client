@@ -10,7 +10,6 @@ import { errors } from '../../../../features/UserEdit/hooks/useUserEdit';
 import wait from '../../../helpers/wait';
 import userApi from '../../../../common/services/api/users';
 import ErrorBadRequest from '../../../../common/models/errors/badRequest';
-import errorReports from '../../../../common/services/api/errorReports';
 
 describe('Integration | features | User Edit', () => {
   afterEach(() => sinon.restore());

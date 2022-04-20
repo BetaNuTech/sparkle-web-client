@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import { FunctionComponent, useEffect, useState } from 'react';
+import { FunctionComponent, RefObject, useEffect, useState } from 'react';
 import clsx from 'clsx';
 
 import { SwiperSlide, Swiper } from 'swiper/react';
@@ -19,7 +19,7 @@ interface Props {
   currentStepIndex: number;
   isMobile: boolean;
   steps: string[];
-  changeStep(index: number): void;
+  onChangeStep(index: number): void;
   goToNextStep(): void;
   goToPrevStep(): void;
   isLastStep: boolean;
@@ -60,13 +60,15 @@ interface Props {
   isLoading: boolean;
   hasUpdates: boolean;
   initialSlide?: number;
+  sectionInputRefs: RefObject<HTMLParagraphElement[]>;
+  itemInputRefs: RefObject<HTMLParagraphElement[]>;
 }
 
 const StepsLayout: FunctionComponent<Props> = ({
   currentStepIndex,
   isMobile,
   steps,
-  changeStep,
+  onChangeStep,
   goToNextStep,
   goToPrevStep,
   isLastStep,
@@ -104,7 +106,9 @@ const StepsLayout: FunctionComponent<Props> = ({
   onSave,
   isLoading,
   hasUpdates,
-  initialSlide
+  initialSlide,
+  sectionInputRefs,
+  itemInputRefs
 }) => {
   // Reference to the internal Swiper instance
   const [swiperInstance, setSwiperInstance] = useState(null);
@@ -116,7 +120,7 @@ const StepsLayout: FunctionComponent<Props> = ({
       swiperInstance.slideTo(currentStepIndex, isMobile ? 300 : 0);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStepIndex, swiperInstance]);
+  }, [currentStepIndex, swiperInstance, swiperInstance?.activeIndex]);
 
   return (
     <div className={styles.container}>
@@ -125,7 +129,7 @@ const StepsLayout: FunctionComponent<Props> = ({
           <Swiper
             slidesPerView={1}
             onSwiper={setSwiperInstance}
-            onSlideChange={(swiper) => changeStep(swiper.activeIndex)}
+            onSlideChange={(swiper) => onChangeStep(swiper.activeIndex)}
             allowTouchMove={isMobile}
             shortSwipes={false}
             longSwipesMs={0}
@@ -177,6 +181,8 @@ const StepsLayout: FunctionComponent<Props> = ({
                       onSelectItems={onSelectItems}
                       onDeleteItems={onDeleteItems}
                       onDeleteItem={onDeleteItem}
+                      sectionInputRefs={sectionInputRefs}
+                      itemInputRefs={itemInputRefs}
                     />
                   )}
                 </div>

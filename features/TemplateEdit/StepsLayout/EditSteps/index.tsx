@@ -1,4 +1,4 @@
-import { FunctionComponent } from 'react';
+import { FunctionComponent, RefObject } from 'react';
 import TemplateModel from '../../../../common/models/template';
 import TemplateCategoryModel from '../../../../common/models/templateCategory';
 import TemplateItemModel from '../../../../common/models/inspectionTemplateItem';
@@ -43,6 +43,8 @@ interface Props {
   onSelectItems(sectionId: string, itemId: string): void;
   onDeleteItems(sectionId: string): void;
   onDeleteItem(item: TemplateItemModel): void;
+  sectionInputRefs: RefObject<HTMLParagraphElement[]>;
+  itemInputRefs: RefObject<HTMLParagraphElement[]>;
 }
 
 const EditSteps: FunctionComponent<Props> = ({
@@ -76,7 +78,9 @@ const EditSteps: FunctionComponent<Props> = ({
   selectedItems,
   onSelectItems,
   onDeleteItems,
-  onDeleteItem
+  onDeleteItem,
+  sectionInputRefs,
+  itemInputRefs
 }) => {
   switch (step) {
     case 'sections':
@@ -92,6 +96,7 @@ const EditSteps: FunctionComponent<Props> = ({
           errors={errors}
           updateSectionIndex={updateSectionIndex}
           onRemoveSection={onRemoveSection}
+          sectionInputRefs={sectionInputRefs}
         />
       );
     case 'section-items':
@@ -108,6 +113,7 @@ const EditSteps: FunctionComponent<Props> = ({
           onSelectItems={onSelectItems}
           onDeleteItems={onDeleteItems}
           onDeleteItem={onDeleteItem}
+          itemInputRefs={itemInputRefs}
         />
       );
     case 'items':

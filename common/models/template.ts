@@ -1,3 +1,6 @@
+import SectionModel from './inspectionTemplateSection';
+import ItemModel from './inspectionTemplateItem';
+
 interface template {
   id?: string;
   name: string;
@@ -6,8 +9,8 @@ interface template {
   trackDeficientItems: boolean;
   requireDeficientItemNoteAndPhoto: boolean;
   properties?: Array<string>;
-  sections?: any;
-  items?: any;
+  sections?: Record<string, SectionModel>;
+  items?: Record<string, ItemModel>;
   createdAt?: number;
   updatedAt?: number;
 }

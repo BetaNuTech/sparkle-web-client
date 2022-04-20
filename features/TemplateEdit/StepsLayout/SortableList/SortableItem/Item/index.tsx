@@ -1,4 +1,4 @@
-import { CSSProperties, forwardRef, useRef } from 'react';
+import { CSSProperties, forwardRef, RefObject, useRef } from 'react';
 import getConfig from 'next/config';
 import clsx from 'clsx';
 
@@ -26,6 +26,7 @@ interface Props {
   setIsEditing?(isEditing: boolean): void;
   errors?: Record<string, string>;
   errorMessage?: string;
+  inputRef?: RefObject<HTMLParagraphElement[]>;
 }
 
 const Item = forwardRef<HTMLDivElement, Props>(
@@ -40,6 +41,7 @@ const Item = forwardRef<HTMLDivElement, Props>(
       setIsEditing,
       errors,
       errorMessage,
+      inputRef,
       ...props
     },
     nodeRef
@@ -89,12 +91,14 @@ const Item = forwardRef<HTMLDivElement, Props>(
               <img src={`${basePath}/img/signature.png`} alt="signature" />
             ) : (
               <p
+                id={item.id}
                 className={styles.content__text}
                 contentEditable
                 suppressContentEditableWarning={true} // eslint-disable-line react/jsx-boolean-value
                 onInput={(evt) => onUpdateTitle(evt.currentTarget.innerText)}
                 onFocus={() => setIsEditing(true)}
                 onBlur={() => setIsEditing(false)}
+                ref={(element) => inputRef?.current?.push(element)}
               >
                 {title.current}
               </p>

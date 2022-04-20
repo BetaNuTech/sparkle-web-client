@@ -80,7 +80,7 @@ const setAddedSection = (
     section_type: 'single',
     title: '',
     index: sectionsCount
-  };
+  } as TemplateSectionModel;
 
   result.sections = result.sections || {};
   result.sections[sectionId] = section;
@@ -168,7 +168,8 @@ const setSectionTitle = (
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
   const currentSections = currentTemplate.sections || {};
-  const currentSection = currentSections[targetId] || {};
+  const currentSection =
+    currentSections[targetId] || ({} as TemplateSectionModel);
   const isChanging = targetId && typeof userChanges?.title === 'string';
 
   if (!isChanging) {
@@ -196,7 +197,8 @@ const setSectionType = (
 ) => {
   const { userChanges, currentTemplate, targetId } = settings;
   const currentSections = currentTemplate.sections || {};
-  const currentSection = currentSections[targetId] || {};
+  const currentSection =
+    currentSections[targetId] || ({} as TemplateSectionModel);
   const isChanging =
     targetId &&
     userChanges &&
