@@ -10,7 +10,8 @@ export default {
   supportBetaUserProfile:
     process.env.NEXT_PUBLIC_SUPPORT_BETA_USER_PROFILE === 'true' || false,
   supportBetaSettings: false,
-  supportBetaLogin: false,
+  supportBetaLogin:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_LOGIN === 'true' || false,
   supportBetaTeamCreate: true,
   supportBetaTeamEdit: true,
   supportBetaTeamView: true,

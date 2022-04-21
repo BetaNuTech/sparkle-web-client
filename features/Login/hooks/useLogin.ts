@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import getConfig from 'next/config';
+import { useRouter } from 'next/router';
 import authApi from '../../../common/services/auth';
 import winLocation from '../../../common/utils/winLocation';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
@@ -22,14 +23,26 @@ type UserNotifications = (message: string, options?: any) => any;
 
 export default function useLogin(sendNotification: UserNotifications): Result {
   const [isLoading, setIsloading] = useState(false);
+  const router = useRouter();
+
+  const onLoginSuccess = () => {
+    // Get request url
+    const request = router?.query?.request || '';
+    const previousHref = typeof request === 'string' ? request : request[0];
+    const href = previousHref
+      ? decodeURIComponent(previousHref)
+      : `${window.location.origin}${basePath}/properties`;
+
+    // Forcing a page reload page allows
+    // us to use reactFire auth utilites
+    winLocation.setHref(href);
+  };
 
   const signIn = async (email: string, password: string) => {
     setIsloading(true);
     try {
       await authApi.signInWithEmailAndPassword(email, password);
-      // Forcing a page reload page allows
-      // us to use reactFire auth utilites
-      winLocation.setHref(`${basePath}/properties`);
+      onLoginSuccess();
     } catch (error) {
       if (error instanceof ErrorBadRequest) {
         sendNotification(USER_NOTIFICATIONS.invalidPassword, {

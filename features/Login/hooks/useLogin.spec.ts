@@ -48,7 +48,7 @@ describe('Unit | Features | Login | Hooks | UseLogin', () => {
   });
 
   test('should redirect to properties page on successful login', async () => {
-    const expected = '/properties';
+    const expected = 'http://localhost/properties';
     const sendNotification = sinon.spy();
 
     sinon.stub(authApi, 'signInWithEmailAndPassword').resolves();
@@ -59,7 +59,6 @@ describe('Unit | Features | Login | Hooks | UseLogin', () => {
       result.current.signIn('test@test.com', 'password');
       await wait(100);
     });
-
     const actual = setHref.getCall(0).args[0];
     expect(actual).toEqual(expected);
   });
