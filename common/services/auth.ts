@@ -23,6 +23,24 @@ const signInWithEmailAndPassword = async (
   }
 };
 
+const sendPasswordResetEmail = async (email: string): Promise<void> => {
+  try {
+    return await firebase.auth().sendPasswordResetEmail(email);
+  } catch (err) {
+    if (err.code === 'auth/user-not-found') {
+      return Promise.reject(
+        new ErrorBadRequest(
+          `${PREFIX} sendPasswordResetEmail: auth/user-not-found`
+        )
+      );
+    }
+    return Promise.reject(
+      new Error(`${PREFIX} sendPasswordResetEmail: ${err.code}`)
+    );
+  }
+};
+
 export default {
-  signInWithEmailAndPassword
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail
 };

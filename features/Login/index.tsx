@@ -28,7 +28,8 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
 
-  const { signIn, isLoading } = useLogin(sendNotification);
+  const { signIn, forgotPassword, isLoading, passwordResetSent } =
+    useLogin(sendNotification);
   const [isVisibleNewUserPrompt, setIsVisibleNewUserPrompt] = useState(false);
   const [isVisibleForgotPasswordPrompt, setIsVisibleForgotPasswordPrompt] =
     useState(false);
@@ -37,8 +38,13 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
     mode: 'all'
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: FormInputs) => {
     signIn(data.email, data.password);
+  };
+
+  const onForgotPassword = (data: FormInputs) => {
+    forgotPassword(data.email);
+    setIsVisibleForgotPasswordPrompt(false);
   };
 
   const { isValid } = formState;
@@ -96,9 +102,10 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
                     styles.form__button__secondary
                   )}
                   type="button"
+                  disabled={passwordResetSent}
                   onClick={() => setIsVisibleForgotPasswordPrompt(true)}
                 >
-                  Forgot Password
+                  {passwordResetSent ? 'Check Your Email' : 'Forgot Password'}
                 </button>
                 <button
                   className={clsx(
@@ -146,7 +153,7 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
       <ForgotPasswordPrompt
         isVisible={isVisibleForgotPasswordPrompt}
         onClose={() => setIsVisibleForgotPasswordPrompt(false)}
-        onConfirm={() => setIsVisibleForgotPasswordPrompt(false)}
+        onConfirm={onForgotPassword}
         email={email}
       />
     </>
