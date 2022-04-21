@@ -1,7 +1,6 @@
 import { FunctionComponent, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
-import { useAuth } from '../../common/Auth/Provider';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../common/services/notifications'; // eslint-disable-line
 import ErrorLabel from '../../common/ErrorLabel';
@@ -13,6 +12,7 @@ import AppleLogo from '../../public/icons/sparkle/apple-logo.svg';
 import styles from './styles.module.scss';
 import NewUserPrompt from './NewUserPrompt';
 import ForgotPasswordPrompt from './ForgotPasswordPrompt';
+import useLogin from './hooks/useLogin';
 
 type FormInputs = {
   email: string;
@@ -24,25 +24,24 @@ interface Props {
 }
 
 const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
-  const { signInWithEmail } = useAuth();
-  const [isVisibleNewUserPrompt, setIsVisibleNewUserPrompt] = useState(false);
-  const [isVisibleForgotPasswordPrompt, setIsVisibleForgotPasswordPrompt] =
-    useState(false);
-
   // User notifications setup
   // eslint-disable-next-line
   const sendNotification = notifications.createPublisher(useNotifications());
 
-  const { register, handleSubmit, formState, getValues } =
-    useForm<FormInputs>();
+  const { signIn, isLoading } = useLogin(sendNotification);
+  const [isVisibleNewUserPrompt, setIsVisibleNewUserPrompt] = useState(false);
+  const [isVisibleForgotPasswordPrompt, setIsVisibleForgotPasswordPrompt] =
+    useState(false);
+
+  const { register, handleSubmit, formState, getValues } = useForm<FormInputs>({
+    mode: 'all'
+  });
 
   const onSubmit = (data) => {
-    signInWithEmail(data.email, data.password).catch((error) => {
-      sendNotification(error.message, {
-        type: 'error'
-      });
-    });
+    signIn(data.email, data.password);
   };
+
+  const { isValid } = formState;
 
   const email = getValues('email');
 
@@ -104,11 +103,13 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
                 <button
                   className={clsx(
                     styles.form__button,
-                    styles.form__button__primary
+                    styles.form__button__primary,
+                    isLoading && styles['form__button--loading']
                   )}
+                  disabled={!isValid || isLoading}
                   type="submit"
                 >
-                  Log In
+                  {isLoading ? 'Sending...' : 'Log In'}
                 </button>
               </div>
               <img

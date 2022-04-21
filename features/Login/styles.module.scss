@@ -81,6 +81,15 @@
     &__secondary {
       color: $gray-light;
     }
+
+    &--loading {
+      @extend %ani-blink;
+      color: $gray-light;
+    }
+    
+    &:disabled {
+      opacity: 0.5;
+    }
   }
 
   &__promptButton {
