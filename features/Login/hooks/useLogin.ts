@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
-import authApi from '../../../common/services/auth';
+import auth from '../../../common/services/auth';
 import winLocation from '../../../common/utils/winLocation';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
 
@@ -14,15 +14,25 @@ export const USER_NOTIFICATIONS = {
   invalidPassword: 'The password is invalid or user does not have a password'
 };
 
+export const USER_NOTIFICATIONS_FORGOT_PASSWORD = {
+  generic: 'Failed to send forgot password request, please try again',
+  invalidEmail:
+    'There is no user record corresponding to this identifier. The user may have been deleted.',
+  success: 'Reset Password Success: Check your email for reset password link'
+};
+
 interface Result {
   isLoading: boolean;
   signIn(email: string, password: string): void;
+  forgotPassword(email: string): void;
+  passwordResetSent: boolean;
 }
 
 type UserNotifications = (message: string, options?: any) => any;
 
 export default function useLogin(sendNotification: UserNotifications): Result {
   const [isLoading, setIsloading] = useState(false);
+  const [passwordResetSent, setPasswordResetSent] = useState(false);
   const router = useRouter();
 
   const onLoginSuccess = () => {
@@ -41,7 +51,7 @@ export default function useLogin(sendNotification: UserNotifications): Result {
   const signIn = async (email: string, password: string) => {
     setIsloading(true);
     try {
-      await authApi.signInWithEmailAndPassword(email, password);
+      await auth.signInWithEmailAndPassword(email, password);
       onLoginSuccess();
     } catch (error) {
       if (error instanceof ErrorBadRequest) {
@@ -57,8 +67,30 @@ export default function useLogin(sendNotification: UserNotifications): Result {
     setIsloading(false);
   };
 
+  const forgotPassword = async (email: string) => {
+    try {
+      await auth.sendPasswordResetEmail(email);
+      sendNotification(USER_NOTIFICATIONS_FORGOT_PASSWORD.success, {
+        type: 'success'
+      });
+      setPasswordResetSent(true);
+    } catch (error) {
+      if (error instanceof ErrorBadRequest) {
+        sendNotification(USER_NOTIFICATIONS_FORGOT_PASSWORD.invalidEmail, {
+          type: 'error'
+        });
+      } else {
+        sendNotification(USER_NOTIFICATIONS_FORGOT_PASSWORD.generic, {
+          type: 'error'
+        });
+      }
+    }
+  };
+
   return {
     isLoading,
-    signIn
+    signIn,
+    forgotPassword,
+    passwordResetSent
   };
 }
