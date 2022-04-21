@@ -22,10 +22,14 @@ const PrivateRoute = ({ children, fallback }) => {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
   const redirectToLogin = () => {
+    const encodedUrl = encodeURIComponent(window.location.href);
     if (features.supportBetaLogin) {
-      router.push('/login');
+      router.replace({
+        pathname: '/login',
+        query: { request: encodedUrl }
+      });
     } else {
-      window.location.href = '/login';
+      window.location.href = `/login?request=${encodedUrl}`;
     }
   };
 
