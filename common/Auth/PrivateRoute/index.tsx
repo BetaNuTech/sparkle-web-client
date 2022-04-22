@@ -17,6 +17,20 @@ const isLoginPage = (router: any): boolean => {
   }
 };
 
+// Is current page ios
+const isIOSPage = (router: any): boolean => {
+  try {
+    const { pathname = '' } = router;
+    const lastPath = `${pathname
+      .replace(/\/$/, '')
+      .split('/')
+      .pop()}`.toLowerCase();
+    return lastPath === 'ios';
+  } catch (err) {
+    return false;
+  }
+};
+
 // eslint-disable-next-line
 const PrivateRoute = ({ children, fallback }) => {
   const router = useRouter();
@@ -34,12 +48,17 @@ const PrivateRoute = ({ children, fallback }) => {
   };
 
   useEffect(() => {
-    if (!isAuthenticated && !isLoginPage(router) && !isLoading) {
+    if (
+      !isAuthenticated &&
+      !isLoginPage(router) &&
+      !isIOSPage(router) &&
+      !isLoading
+    ) {
       redirectToLogin();
     }
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
-  if (!isAuthenticated && !isLoginPage(router)) {
+  if (!isAuthenticated && !isLoginPage(router) && !isIOSPage(router)) {
     return fallback || <p>Loading...</p>;
   }
 

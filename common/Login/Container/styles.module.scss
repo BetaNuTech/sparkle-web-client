@@ -1,0 +1,33 @@
+@import '../../../styles/index.scss';
+
+.container {
+  height: 100%;
+  background-color: $gray;
+
+  @include media-query(tablet) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  max-width: rem-calc(600);
+
+  background-color: $white;
+  justify-content: space-between;
+
+  @include media-query(tablet) {
+    height: auto;
+    overflow: hidden;
+    border: 1px solid $gray-lighter;
+    border-radius: $global-radius * 2;
+    margin: 0 auto;
+  }
+}

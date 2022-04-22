@@ -13,6 +13,9 @@ import styles from './styles.module.scss';
 import NewUserPrompt from './NewUserPrompt';
 import ForgotPasswordPrompt from './ForgotPasswordPrompt';
 import useLogin from './hooks/useLogin';
+import LoginHeader from '../../common/Login/Header';
+import LoginFooter from '../../common/Login/Footer';
+import IOSLink from '../../common/Login/IOSLink';
 
 type FormInputs = {
   email: string;
@@ -55,13 +58,7 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
     <>
       <form className={styles.container} onSubmit={handleSubmit(onSubmit)}>
         <div className={styles.main}>
-          <header className={styles.header}>
-            {isStaging ? (
-              <h1 className={styles.header__title}>Staging</h1>
-            ) : (
-              <SparkleLogo className={styles.header__logo} />
-            )}
-          </header>
+          <LoginHeader isStaging={isStaging} />
 
           <div className={styles.form}>
             <div className={styles.form__fields}>
@@ -134,16 +131,11 @@ const LoginForm: FunctionComponent<Props> = ({ isStaging }) => {
 
               <div className="-ta-center -mt">
                 <div className="-fz-small -mb-sm">Using iOS device?</div>
-                <a href="##" className={styles.form__iosInstallButton}>
-                  <AppleLogo /> Install iOS App
-                </a>
+                <IOSLink />
               </div>
             </div>
           </div>
-          <footer className={styles.footer}>
-            <BlueStoneLogo className={styles.footer__logo} />
-            <p className={styles.footer__version}>v0.1.0</p>
-          </footer>
+          <LoginFooter />
         </div>
       </form>
       <NewUserPrompt

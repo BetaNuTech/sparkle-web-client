@@ -1,0 +1,25 @@
+@import '../../../styles/index.scss';
+
+.iosLink {
+  display: inline-block;
+  line-height: rem-calc(39);
+  padding: 0 $global-lg-padding;
+  align-self: center;
+  white-space: nowrap;
+  color: $white;
+  background-color: $black;
+  border-radius: $global-rounded;
+
+  &:hover,
+  &:active {
+    color: $white;
+  }
+
+  > svg {
+    max-width: rem-calc(18);
+    max-height: rem-calc(18);
+    margin-right: $global-sm-padding;
+    transform: translateY(#{rem-calc(2)});
+    fill: $white;
+  }
+}
