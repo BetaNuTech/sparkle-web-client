@@ -1,0 +1,20 @@
+@import '../../../../styles/index.scss';
+
+.fields {
+  @extend %fieldset;
+
+  &__input[type='password'],
+  &__input[type='text'] {
+    border-radius: 0;
+    border-width: 0;
+    @extend %form-input;
+  }
+
+  &__input[type='password'] {
+    @extend %fieldset__close;
+  }
+
+  &__input[type='text'] {
+    @extend %fieldset__open;
+  }
+}
