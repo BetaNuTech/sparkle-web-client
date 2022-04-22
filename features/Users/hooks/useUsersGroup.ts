@@ -13,11 +13,11 @@ export default function useUsersGroup(users: UserModel[]): useUsersGroupResult {
     const userByGroup = new Map();
 
     const noAccessUsers = users.filter(
-      (user) => getLevelName(user) === 'noAccess' && !user.isDisabled
+      (user) => getLevelName(user, true) === 'noAccess' && !user.isDisabled
     );
 
     const accessUsers = users.filter(
-      (user) => getLevelName(user) !== 'noAccess' && !user.isDisabled
+      (user) => getLevelName(user, true) !== 'noAccess' && !user.isDisabled
     );
 
     const disabledUsers = users.filter((user) => user.isDisabled);
