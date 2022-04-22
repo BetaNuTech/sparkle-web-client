@@ -45,8 +45,12 @@ const Header: FunctionComponent<Props> = ({
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
-      <button className={headStyle.header__button} disabled={isDisabled}>
-        Save
+      <button
+        className={headStyle.header__button}
+        disabled={isDisabled || isLoading}
+        onClick={onSubmit}
+      >
+        <span>{isCreatingUser ? 'Create User' : 'Save'}</span>
       </button>
     </>
   );
