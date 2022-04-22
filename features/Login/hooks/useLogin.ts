@@ -26,12 +26,14 @@ interface Result {
   signIn(email: string, password: string): void;
   forgotPassword(email: string): void;
   passwordResetSent: boolean;
+  isForgotPasswordLoading: boolean;
 }
 
 type UserNotifications = (message: string, options?: any) => any;
 
 export default function useLogin(sendNotification: UserNotifications): Result {
   const [isLoading, setIsloading] = useState(false);
+  const [isForgotPasswordLoading, setIsForgotPasswordLoading] = useState(false);
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const router = useRouter();
 
@@ -68,6 +70,7 @@ export default function useLogin(sendNotification: UserNotifications): Result {
   };
 
   const forgotPassword = async (email: string) => {
+    setIsForgotPasswordLoading(true);
     try {
       await auth.sendPasswordResetEmail(email);
       sendNotification(USER_NOTIFICATIONS_FORGOT_PASSWORD.success, {
@@ -85,12 +88,14 @@ export default function useLogin(sendNotification: UserNotifications): Result {
         });
       }
     }
+    setIsForgotPasswordLoading(false);
   };
 
   return {
     isLoading,
     signIn,
     forgotPassword,
-    passwordResetSent
+    passwordResetSent,
+    isForgotPasswordLoading
   };
 }

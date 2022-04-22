@@ -1,0 +1,27 @@
+@import '../../../styles/index.scss';
+
+.form {
+  flex-grow: 1;
+  width: 100%;
+  max-width: rem-calc(320);
+  align-self: center;
+
+  &__actions,
+  &__generalErrors {
+    margin: 0 auto;
+  }
+
+  &__promptButton {
+    @extend %unstyledButton;
+    display: block;
+    margin: $global-padding auto 0;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  &__loginImg {
+    width: rem-calc(75);
+    display: block;
+    margin: 0 auto;
+  }
+}

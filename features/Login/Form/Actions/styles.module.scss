@@ -1,0 +1,32 @@
+@import '../../../../styles/index.scss';
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: $global-padding;
+  margin-bottom: $global-mlg-padding;
+  &__button {
+    @extend %unstyledButton;
+    padding: 0;
+    font-weight: bold;
+    white-space: nowrap;
+    cursor: pointer;
+
+    &__primary {
+      color: $primary-color;
+    }
+
+    &__secondary {
+      color: $gray-light;
+    }
+
+    &--loading {
+      @extend %ani-blink;
+      color: $gray-light;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
