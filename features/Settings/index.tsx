@@ -3,6 +3,7 @@ import { useMediaQuery } from 'react-responsive';
 import SlackIntegration from '../../common/models/slackIntegration';
 import TrelloIntegration from '../../common/models/trelloIntegration';
 import breakpoints from '../../config/breakpoints';
+import Form from './Form';
 import Header from './Header';
 
 interface Props {
@@ -16,13 +17,14 @@ interface Props {
 const Settings: FunctionComponent<Props> = ({
   isOnline,
   isStaging,
-  toggleNavOpen
+  toggleNavOpen,
+  slack,
+  trello
 }) => {
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
-
   return (
     <>
       <Header
@@ -31,6 +33,7 @@ const Settings: FunctionComponent<Props> = ({
         isMobile={isMobile}
         toggleNavOpen={toggleNavOpen}
       />
+      <Form trello={trello} slack={slack} />
     </>
   );
 };
