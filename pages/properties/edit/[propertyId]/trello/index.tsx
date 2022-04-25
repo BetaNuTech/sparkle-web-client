@@ -7,7 +7,7 @@ import notifications from '../../../../../common/services/notifications';
 import useProperty from '../../../../../common/hooks/useProperty';
 import propertyModel from '../../../../../common/models/property';
 import useTrelloBoards from '../../../../../features/PropertyEditTrello/hooks/useTrelloBoards';
-import useTrelloUser from '../../../../../features/PropertyEditTrello/hooks/useTrelloUser';
+import useTrelloIntegration from '../../../../../common/hooks/useTrelloIntegration';
 import useTrelloProperty from '../../../../../common/hooks/useTrelloProperty';
 import { canUpdateCompanySettings } from '../../../../../common/utils/userPermissions';
 import { MainLayout } from '../../../../../common/MainLayout/index';
@@ -42,7 +42,7 @@ const Page: FunctionComponent = () => {
 
   // Load Trello user
   const { data: trelloUser, status: trelloUserStatus } =
-    useTrelloUser(firestore);
+    useTrelloIntegration(firestore);
 
   // Load Trello data for property
   const { data: trelloProperty, status: trelloPropertyStatus } =

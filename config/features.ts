@@ -9,7 +9,8 @@ export default {
     process.env.NEXT_PUBLIC_SUPPORT_BETA_USER_EDIT === 'true' || false,
   supportBetaUserProfile:
     process.env.NEXT_PUBLIC_SUPPORT_BETA_USER_PROFILE === 'true' || false,
-  supportBetaSettings: false,
+  supportBetaSettings:
+    process.env.NEXT_PUBLIC_SUPPORT_BETA_SETTINGS === 'true' || false,
   supportBetaLogin:
     process.env.NEXT_PUBLIC_SUPPORT_BETA_LOGIN === 'true' || false,
   supportBetaTeamCreate: true,

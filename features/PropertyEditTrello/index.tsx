@@ -3,7 +3,7 @@ import { useFirestore } from 'reactfire';
 import TrelloModal from './Modal/index';
 import SelectionModal from './SelectionModal/index';
 import { trelloBoard } from '../../common/services/api/trello';
-import trelloUserModel from '../../common/models/trelloUser';
+import TrelloIntegrationModel from '../../common/models/trelloIntegration';
 import propertyTrelloIntegrationModel from '../../common/models/propertyTrelloIntegration';
 import useTrelloSave from './hooks/useTrelloSave';
 import useTrelloLists from './hooks/useTrelloLists';
@@ -18,7 +18,7 @@ interface Props {
   property: propertyModel;
   isOnline?: boolean;
   isStaging?: boolean;
-  trelloUser: trelloUserModel;
+  trelloUser: TrelloIntegrationModel;
   trelloProperty: propertyTrelloIntegrationModel;
   trelloBoards: trelloBoard[];
   hasUpdateCompanySettingsPermission: boolean;

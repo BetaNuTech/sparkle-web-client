@@ -1184,4 +1184,17 @@ describe('Unit | Common | Utils | User Permissions', () => {
     ];
     expect(actual).toEqual(expected);
   });
+
+  test('it should only allow admins to update system settings', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canUpdateSystemSettings(admin),
+      util.canUpdateSystemSettings(corporate),
+      util.canUpdateSystemSettings(teamLead),
+      util.canUpdateSystemSettings(propertyMember),
+      util.canUpdateSystemSettings(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
 });

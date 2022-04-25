@@ -8,7 +8,7 @@ import MobileHeader from '../../../common/MobileHeader';
 import DropdownGroup from './dropdownGroup';
 import propertyModel from '../../../common/models/property';
 import { trelloBoard, trelloResult } from '../../../common/services/api/trello';
-import trelloUserModel from '../../../common/models/trelloUser';
+import TrelloIntegrationModel from '../../../common/models/trelloIntegration';
 
 export interface Selection {
   openBoard: { name: string; id: string };
@@ -23,7 +23,7 @@ interface Props extends ModalProps {
   isStaging?: boolean;
   property: propertyModel;
   selectedOptions: Selection;
-  trelloUser: trelloUserModel;
+  trelloUser: TrelloIntegrationModel;
   hasUpdateCompanySettingsPermission: boolean;
   trelloBoards: trelloBoard;
   openSelectionModal: () => void;
