@@ -121,6 +121,7 @@ const SlideNav: FunctionComponent<Props> = ({
               <LinkFeature
                 featureEnabled={features.supportBetaSettings}
                 href="/settings"
+                legacyHref="/admin/settings"
               >
                 Settings
               </LinkFeature>

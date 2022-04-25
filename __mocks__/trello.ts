@@ -1,4 +1,4 @@
-import trelloUserModel from '../common/models/trelloUser';
+import TrelloIntegrationModel from '../common/models/trelloIntegration';
 import trelloPropertyModel from '../common/models/propertyTrelloIntegration';
 import {
   trelloBoard,
@@ -42,7 +42,7 @@ export const closeList: trelloList = {
 
 export const trelloLists: Array<trelloList> = [openList, closeList];
 
-export const trelloUser: trelloUserModel = {
+export const trelloUser: TrelloIntegrationModel = {
   member: 'member-1',
   trelloFullName: 'trello_handle',
   trelloUsername: 'trellouser'

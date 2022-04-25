@@ -370,3 +370,6 @@ export const canViewUsers = (user: userModel): boolean => user.admin;
 // User has ability to change property,
 // corporate, team, or admin role(s)
 export const canEditUserRoles = (user: userModel): boolean => user.admin;
+
+// User has ability to update system settings,
+export const canUpdateSystemSettings = (user: userModel): boolean => user.admin;
