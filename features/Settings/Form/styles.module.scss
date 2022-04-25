@@ -1,0 +1,58 @@
+@import '../../../styles/index.scss';
+
+.container {
+  width: 100%;
+  max-width: rem-calc(600);
+  padding: $global-padding;
+  margin: $global-padding auto;
+
+  @include media-query(desktop) {
+    padding: rem-calc(52) rem-calc(42);
+    margin-bottom: $global-lg-padding;
+    border: 1px solid $gray-lighter;
+  }
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__logo {
+    @extend %unstyledButton;
+    width: rem-calc(152);
+    height: rem-calc(48);
+  }
+
+  &__header {
+    margin-top: $global-md-padding;
+    line-height: 1.25;
+    text-align: center;
+    color: $gray-dark;
+  }
+
+  &__headerSub {
+    display: block;
+    margin-top: $global-md-padding;
+    font-size: $medium-font-size;
+    color: $gray-light;
+  }
+
+  &__footer {
+    margin-top: $global-md-padding;
+    max-width: rem-calc(370);
+    font-size: $medium-font-size;
+    color: $gray-light;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  &:first-child {
+    margin-bottom: $global-xxlg-padding;
+  }
+}
+
+.logo {
+  max-width: 100%;
+  max-height: 100%;
+}
