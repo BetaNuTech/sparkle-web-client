@@ -1,16 +1,15 @@
 import { FunctionComponent } from 'react';
-
 import SlackIntegration from '../../../../common/models/slackIntegration';
 import dateUtils from '../../../../common/utils/date';
 import SlackLogo from '../../../../public/logos/slack.svg';
 import styles from '../styles.module.scss';
 
 interface Props {
-  slack: SlackIntegration;
+  integration: SlackIntegration;
 }
 
-const Slack: FunctionComponent<Props> = ({ slack }) => {
-  const isAuthorisedSlack = slack?.teamName;
+const Slack: FunctionComponent<Props> = ({ integration }) => {
+  const isAuthorisedSlack = integration?.teamName;
   return (
     <section className={styles.section}>
       <button className={styles.section__logo}>
@@ -20,10 +19,10 @@ const Slack: FunctionComponent<Props> = ({ slack }) => {
       <header className={styles.section__header}>
         {isAuthorisedSlack ? (
           <>
-            {slack.teamName}
+            {integration.teamName}
             <span className="-d-block">
-              Added: {dateUtils.toUserFullDateDisplay(slack.createdAt)}{' '}
-              {dateUtils.toUserTimeDisplay(slack.createdAt)}
+              Added: {dateUtils.toUserFullDateDisplay(integration.createdAt)}{' '}
+              {dateUtils.toUserTimeDisplay(integration.createdAt)}
             </span>
           </>
         ) : (
@@ -43,8 +42,10 @@ const Slack: FunctionComponent<Props> = ({ slack }) => {
             <h6 className="-fw-bold -mt-sm -c-gray-dark -fz-medium">
               System Channel
             </h6>
-            {slack.defaultChannelName ? (
-              <p className="-c-primary-dark">#{slack.defaultChannelName}</p>
+            {integration.defaultChannelName ? (
+              <p className="-c-primary-dark">
+                #{integration.defaultChannelName}
+              </p>
             ) : (
               <p className="-mb-none">NOT SET</p>
             )}

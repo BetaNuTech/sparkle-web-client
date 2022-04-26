@@ -51,6 +51,15 @@ const Page: React.FC = (): ReactElement => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userStatus, canUpdate]);
 
+  // Get token from url hash
+  const token = useMemo(() => {
+    const hash = router.asPath.split('#')[1];
+    const tokenKey = hash?.split('=')[0];
+    const tokenvalue = hash?.split('=')[1];
+
+    return tokenKey === 'token' && tokenvalue ? tokenvalue : null;
+  }, [router.asPath]);
+
   const isLoaded =
     userStatus === 'success' &&
     trelloStatus === 'success' &&
@@ -58,7 +67,16 @@ const Page: React.FC = (): ReactElement => {
 
   return (
     <MainLayout user={user}>
-      {isLoaded ? <Settings trello={trello} slack={slack} /> : <LoadingHud />}
+      {isLoaded ? (
+        <Settings
+          sendNotification={sendNotification}
+          trelloIntegration={trello}
+          slackIntegration={slack}
+          token={token}
+        />
+      ) : (
+        <LoadingHud />
+      )}
     </MainLayout>
   );
 };

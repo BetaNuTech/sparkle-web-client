@@ -1,0 +1,14 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__title {
+    @extend %ani-blink;
+    margin-top: $global-padding;
+    font-size: $medium-font-size;
+    font-weight: bold;
+  }
+}

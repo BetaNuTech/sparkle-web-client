@@ -6,14 +6,31 @@ import styles from './styles.module.scss';
 import Trello from './Trello';
 
 interface Props {
-  slack: SlackIntegration;
-  trello: TrelloIntegration;
+  slackIntegration: SlackIntegration;
+  trelloIntegration: TrelloIntegration;
+  redirectUrl: string;
+  isAuthorizingTrello: boolean;
+  hasAuthorizingTrelloError: boolean;
+  reAuthorizeTrello(): void;
 }
 
-const Form: FunctionComponent<Props> = ({ slack, trello }) => (
+const Form: FunctionComponent<Props> = ({
+  slackIntegration,
+  trelloIntegration,
+  redirectUrl,
+  isAuthorizingTrello,
+  hasAuthorizingTrelloError,
+  reAuthorizeTrello
+}) => (
   <div className={styles.container}>
-    <Trello trello={trello} />
-    <Slack slack={slack} />
+    <Trello
+      integration={trelloIntegration}
+      redirectUrl={redirectUrl}
+      isAuthorizing={isAuthorizingTrello}
+      hasError={hasAuthorizingTrelloError}
+      reAuthorize={reAuthorizeTrello}
+    />
+    <Slack integration={slackIntegration} />
   </div>
 );
 

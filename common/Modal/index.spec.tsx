@@ -10,13 +10,6 @@ const TestContent = ({ title = 'title' }) => (
 describe('Unit | Common | Modal', () => {
   afterEach(() => sinon.restore());
 
-  it('matches prior snapshot', () => {
-    const isVisible = true;
-    const Modal = ModalHOC(TestContent);
-    const { container } = render(<Modal isVisible={isVisible} />);
-    expect(container).toMatchSnapshot();
-  });
-
   it('does not render when not visible', () => {
     const expected = false;
     const Modal = ModalHOC(TestContent);
