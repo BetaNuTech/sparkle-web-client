@@ -1,27 +1,56 @@
 import { FunctionComponent } from 'react';
 import TrelloIntegration from '../../../../common/models/trelloIntegration';
 import TrelloLogo from '../../../../public/logos/trello.svg';
+import AuthError from '../AuthError';
+import Loader from '../Loader';
 import styles from '../styles.module.scss';
+import systemSettings from '../../../../config/systemSettings';
+
+const BASE_AUTH_URL = systemSettings.trello.authURL;
 
 interface Props {
-  trello: TrelloIntegration;
+  integration: TrelloIntegration;
+  redirectUrl: string;
+  isAuthorizing: boolean;
+  hasError: boolean;
+  reAuthorize(): void;
 }
 
-const Trello: FunctionComponent<Props> = ({ trello }) => {
-  const isAuthorisedTrello = trello?.trelloUsername;
+const Trello: FunctionComponent<Props> = ({
+  integration,
+  redirectUrl,
+  isAuthorizing,
+  hasError,
+  reAuthorize
+}) => {
+  const isAuthorized = integration?.trelloUsername;
+  const authUrl = `${BASE_AUTH_URL}&return_url=${redirectUrl}`;
 
   return (
     <section className={styles.section}>
-      <button className={styles.section__logo}>
-        <TrelloLogo className={styles.logo} />
-      </button>
+      {isAuthorizing && <Loader title="Authorizing Trello..." />}
+      {hasError && !isAuthorizing && <AuthError onClick={reAuthorize} />}
+      {!isAuthorizing && !hasError && (
+        <>
+          {isAuthorized ? (
+            <button className={styles.section__logo}>
+              <TrelloLogo className={styles.logo} />
+            </button>
+          ) : (
+            <a href={authUrl} className={styles.section__logo}>
+              <TrelloLogo className={styles.logo} />
+            </a>
+          )}
+        </>
+      )}
 
       <header className={styles.section__header}>
-        {isAuthorisedTrello ? (
+        {isAuthorized ? (
           <>
-            {trello.trelloFullName} (@{trello.trelloUsername})
+            {integration.trelloFullName} (@
+            {integration.trelloUsername})
             <small className={styles.section__headerSub}>
-              {trello.trelloEmail || 'Email not provided'}
+              {integration.trelloEmail || 'Email not provided'}
             </small>
           </>
         ) : (

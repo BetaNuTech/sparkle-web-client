@@ -22,6 +22,7 @@
     @extend %unstyledButton;
     width: rem-calc(152);
     height: rem-calc(48);
+    display: block;
   }
 
   &__header {

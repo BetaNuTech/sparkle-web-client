@@ -1,3 +1,4 @@
+import getConfig from 'next/config';
 import Document, {
   DocumentContext,
   Html,
@@ -8,6 +9,10 @@ import Document, {
 import Script from 'next/script';
 
 const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
+
+const config = getConfig() || {};
+const publicRuntimeConfig = config.publicRuntimeConfig || {};
+const basePath = publicRuntimeConfig.basePath || '';
 
 class MyDocument extends Document {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -40,6 +45,11 @@ class MyDocument extends Document {
               </Script>
             </>
           )}
+          <link
+            rel="preload"
+            as="image"
+            href={`${basePath}/img/sparkle-loader.gif`}
+          />
         </Head>
         <body>
           <Main />

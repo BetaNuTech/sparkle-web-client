@@ -1,0 +1,24 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__icon {
+    width: rem-calc(30);
+    height: rem-calc(30);
+  }
+
+  &__title {
+    margin-top: $global-padding;
+    font-size: $medium-font-size;
+    font-weight: bold;
+    color: $gray-dark;
+  }
+
+  &__action {
+    @extend %gridHeaderCreateButton;
+    margin-top: $global-xsm-padding;
+  }
+}

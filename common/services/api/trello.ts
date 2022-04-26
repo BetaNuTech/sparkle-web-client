@@ -1,4 +1,6 @@
+import TrelloIntegration from '../../models/trelloIntegration';
 import currentUser from '../../utils/currentUser';
+import createApiError from '../../utils/api/createError';
 
 const PREFIX = 'services: api: trello:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
@@ -25,6 +27,8 @@ export interface trelloList {
   name: string;
   board?: string;
 }
+
+const generateAuhtoriseError = createApiError(`${PREFIX} authorise:`);
 
 // Request all Trello user's boards
 const getBoardsRequest = async (authToken: string): Promise<trelloBoard[]> => {
@@ -112,6 +116,65 @@ const getBoardListRequest = async (
   );
 };
 
+// POST request to authorise trello
+const postAuthoriseRequest = (
+  authToken: string,
+  body: Record<string, string>
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/integrations/trello/authorization`, {
+    method: 'POST',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ...body })
+  });
+
+// Request to authorise trello
+const authorise = async (
+  data: Record<string, string>
+): Promise<TrelloIntegration> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} authorise: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await postAuthoriseRequest(authToken, data);
+  } catch (err) {
+    throw Error(`${PREFIX} authorise: POST request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  if (response.status !== 204) {
+    try {
+      responseJson = await response.json();
+    } catch (err) {
+      throw Error(`${PREFIX} authorise: failed to parse JSON: ${err}`);
+    }
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = generateAuhtoriseError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return {
+    id: responseJson.data.id,
+    ...responseJson.data.attributes
+  };
+};
+
 // Request Boards for previously
 // authorized Trello user
 export default {
@@ -140,5 +203,6 @@ export default {
     }
 
     return getBoardListRequest(authToken, boardId);
-  }
+  },
+  authorise
 };
