@@ -28,7 +28,10 @@ export interface trelloList {
   board?: string;
 }
 
-const generateAuhtoriseError = createApiError(`${PREFIX} authorise:`);
+const generateAuhtoriseError = createApiError(`${PREFIX} authorize:`);
+const generateDeleteAuhtorizationError = createApiError(
+  `${PREFIX} deleteAuthorization:`
+);
 
 // Request all Trello user's boards
 const getBoardsRequest = async (authToken: string): Promise<trelloBoard[]> => {
@@ -116,8 +119,8 @@ const getBoardListRequest = async (
   );
 };
 
-// POST request to authorise trello
-const postAuthoriseRequest = (
+// POST request to authorize trello
+const postAuthorizeRequest = (
   authToken: string,
   body: Record<string, string>
 ): Promise<Response> =>
@@ -130,8 +133,8 @@ const postAuthoriseRequest = (
     body: JSON.stringify({ ...body })
   });
 
-// Request to authorise trello
-const authorise = async (
+// Request to authorize trello
+const authorize = async (
   data: Record<string, string>
 ): Promise<TrelloIntegration> => {
   let authToken = '';
@@ -140,15 +143,15 @@ const authorise = async (
     authToken = await currentUser.getIdToken();
   } catch (tokenErr) {
     throw Error(
-      `${PREFIX} authorise: auth token could not be recovered: ${tokenErr}`
+      `${PREFIX} authorize: auth token could not be recovered: ${tokenErr}`
     );
   }
 
   let response = null;
   try {
-    response = await postAuthoriseRequest(authToken, data);
+    response = await postAuthorizeRequest(authToken, data);
   } catch (err) {
-    throw Error(`${PREFIX} authorise: POST request failed: ${err}`);
+    throw Error(`${PREFIX} authorize: POST request failed: ${err}`);
   }
 
   let responseJson: any = {};
@@ -156,7 +159,7 @@ const authorise = async (
     try {
       responseJson = await response.json();
     } catch (err) {
-      throw Error(`${PREFIX} authorise: failed to parse JSON: ${err}`);
+      throw Error(`${PREFIX} authorize: failed to parse JSON: ${err}`);
     }
   }
 
@@ -173,6 +176,58 @@ const authorise = async (
     id: responseJson.data.id,
     ...responseJson.data.attributes
   };
+};
+
+// DELETE request to remove trello authorization
+const deleteAuthorizeRequest = (authToken: string): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/integrations/trello/authorization`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+// Request to delete trello authorization
+const deleteAuthorization = async (): Promise<boolean> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} deleteAuthorization: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await deleteAuthorizeRequest(authToken);
+  } catch (err) {
+    throw Error(`${PREFIX} deleteAuthorization: DELETE request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  if (response.status !== 204) {
+    try {
+      responseJson = await response.json();
+    } catch (err) {
+      throw Error(
+        `${PREFIX} deleteAuthorization: failed to parse JSON: ${err}`
+      );
+    }
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = generateDeleteAuhtorizationError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return true;
 };
 
 // Request Boards for previously
@@ -204,5 +259,6 @@ export default {
 
     return getBoardListRequest(authToken, boardId);
   },
-  authorise
+  authorize,
+  deleteAuthorization
 };

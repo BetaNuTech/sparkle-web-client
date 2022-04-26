@@ -14,6 +14,7 @@ interface Props {
   isAuthorizing: boolean;
   hasError: boolean;
   reAuthorize(): void;
+  onDeleteTrelloAuth(): void;
 }
 
 const Trello: FunctionComponent<Props> = ({
@@ -21,19 +22,25 @@ const Trello: FunctionComponent<Props> = ({
   redirectUrl,
   isAuthorizing,
   hasError,
-  reAuthorize
+  reAuthorize,
+  onDeleteTrelloAuth
 }) => {
   const isAuthorized = integration?.trelloUsername;
   const authUrl = `${BASE_AUTH_URL}&return_url=${redirectUrl}`;
 
   return (
     <section className={styles.section}>
-      {isAuthorizing && <Loader title="Authorizing Trello..." />}
+      {isAuthorizing && (
+        <Loader title={isAuthorized ? '' : 'Authorizing Trello...'} />
+      )}
       {hasError && !isAuthorizing && <AuthError onClick={reAuthorize} />}
       {!isAuthorizing && !hasError && (
         <>
           {isAuthorized ? (
-            <button className={styles.section__logo}>
+            <button
+              className={styles.section__logo}
+              onClick={onDeleteTrelloAuth}
+            >
               <TrelloLogo className={styles.logo} />
             </button>
           ) : (

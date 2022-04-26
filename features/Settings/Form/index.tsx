@@ -12,6 +12,7 @@ interface Props {
   isAuthorizingTrello: boolean;
   hasAuthorizingTrelloError: boolean;
   reAuthorizeTrello(): void;
+  onDeleteTrelloAuth(): void;
 }
 
 const Form: FunctionComponent<Props> = ({
@@ -20,7 +21,8 @@ const Form: FunctionComponent<Props> = ({
   redirectUrl,
   isAuthorizingTrello,
   hasAuthorizingTrelloError,
-  reAuthorizeTrello
+  reAuthorizeTrello,
+  onDeleteTrelloAuth
 }) => (
   <div className={styles.container}>
     <Trello
@@ -29,6 +31,7 @@ const Form: FunctionComponent<Props> = ({
       isAuthorizing={isAuthorizingTrello}
       hasError={hasAuthorizingTrelloError}
       reAuthorize={reAuthorizeTrello}
+      onDeleteTrelloAuth={onDeleteTrelloAuth}
     />
     <Slack integration={slackIntegration} />
   </div>
