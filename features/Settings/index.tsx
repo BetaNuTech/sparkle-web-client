@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
-import { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import SlackIntegration from '../../common/models/slackIntegration';
 import TrelloIntegration from '../../common/models/trelloIntegration';
 import winLocation from '../../common/utils/winLocation';
 import breakpoints from '../../config/breakpoints';
+import DeleteTrelloAuthPrompt from './DeleteTrelloAuthPrompt';
 import Form from './Form';
 import Header from './Header';
 import useTrello from './hooks/useTrello';
@@ -30,18 +31,26 @@ const Settings: FunctionComponent<Props> = ({
   sendNotification,
   token
 }) => {
+  const [isVisibleDeleteTrelloAuth, setIsVisibleDeleteTrelloAuth] =
+    useState(false);
   const { pathname, push } = useRouter();
   const {
     onAuthorizeTrello,
     reAuthorize: reAuthorizeTrello,
     isLoading: isAuthorizingTrello,
-    hasError: hasAuthorizingTrelloError
+    hasError: hasAuthorizingTrelloError,
+    onDelete: onDeleteTrello
   } = useTrello(sendNotification);
 
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
   });
+
+  const onDeleteTrelloAuth = () => {
+    setIsVisibleDeleteTrelloAuth(false);
+    onDeleteTrello();
+  };
 
   const redirectUrl = winLocation.getRedirectUrl();
 
@@ -69,7 +78,13 @@ const Settings: FunctionComponent<Props> = ({
         redirectUrl={redirectUrl}
         isAuthorizingTrello={isAuthorizingTrello}
         hasAuthorizingTrelloError={hasAuthorizingTrelloError}
+        onDeleteTrelloAuth={() => setIsVisibleDeleteTrelloAuth(true)}
         reAuthorizeTrello={reAuthorizeTrello}
+      />
+      <DeleteTrelloAuthPrompt
+        isVisible={isVisibleDeleteTrelloAuth}
+        onClose={() => setIsVisibleDeleteTrelloAuth(false)}
+        onConfirm={onDeleteTrelloAuth}
       />
     </>
   );

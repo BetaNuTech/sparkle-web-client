@@ -18,6 +18,14 @@ export const USER_NOTIFICATIONS = {
     'Failed to complete Trello Authorization, please try again or contact the tech team'
 };
 
+export const USER_NOTIFICATIONS_DELETE = {
+  unpermissioned:
+    'ou do not have permission to delete Trello Authorization, please contact an admin',
+  badRequest: 'Failed to delete Trello Authorization due to bad request',
+  internalServer:
+    'Failed to delete Trello Authorization, please try again or contact the tech team'
+};
+
 type userNotifications = (message: string, options?: any) => any;
 
 interface useTrelloReturn {
@@ -25,6 +33,7 @@ interface useTrelloReturn {
   hasError: boolean;
   onAuthorizeTrello(authToken: string): void;
   reAuthorize(): void;
+  onDelete(): void;
 }
 
 /* eslint-disable */
@@ -33,7 +42,11 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
   const [hasError, setHasError] = useState(false);
   const [token, setToken] = useState(null);
 
-  const handleErrorResponse = (error: BaseError) => {
+  const handleErrorResponse = (error: BaseError, isDeleting = false) => {
+    const { badRequest, unpermissioned, internalServer } = isDeleting
+      ? USER_NOTIFICATIONS_DELETE
+      : USER_NOTIFICATIONS;
+
     setHasError(true);
     let errorMessage = '';
 
@@ -42,15 +55,15 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
         error.errors
           .filter(({ detail }) => Boolean(detail))
           .map(({ detail }) => detail)
-          .join(', ') || USER_NOTIFICATIONS.badRequest; // fallback to default message
+          .join(', ') || badRequest; // fallback to default message
     }
 
     if (error instanceof ErrorUnauthorized || error instanceof ErrorForbidden) {
-      errorMessage = USER_NOTIFICATIONS.unpermissioned;
+      errorMessage = unpermissioned;
     }
 
     if (error instanceof ErrorServerInternal) {
-      errorMessage = USER_NOTIFICATIONS.internalServer;
+      errorMessage = internalServer;
     }
 
     // send error notifications
@@ -77,7 +90,7 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
 
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await trelloApi.authorise(data);
+      await trelloApi.authorize(data);
       setToken(null);
     } catch (err) {
       handleErrorResponse(err);
@@ -89,11 +102,24 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
     onAuthorizeTrello(token);
   };
 
+  const onDelete = async () => {
+    setIsLoading(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await trelloApi.deleteAuthorization();
+      setToken(null);
+    } catch (err) {
+      handleErrorResponse(err, true);
+    }
+    setIsLoading(false);
+  };
+
   return {
     isLoading,
     hasError,
     onAuthorizeTrello,
-    reAuthorize
+    reAuthorize,
+    onDelete
   };
 };
 
