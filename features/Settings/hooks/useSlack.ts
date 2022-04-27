@@ -17,6 +17,14 @@ export const USER_NOTIFICATIONS = {
     'Failed to complete Slack Authorization, please try again or contact the tech team'
 };
 
+export const USER_NOTIFICATIONS_DELETE = {
+  unpermissioned:
+    'You do not have permission to delete Slack Authorization, please contact an admin',
+  badRequest: 'Failed to delete Slack Authorization due to bad request',
+  internalServer:
+    'Failed to delete Slack Authorization, please try again or contact the tech team'
+};
+
 type userNotifications = (message: string, options?: any) => any;
 
 interface useSlackReturn {
@@ -24,6 +32,7 @@ interface useSlackReturn {
   hasError: boolean;
   onAuthorizeSlack(authToken: string): void;
   reAuthorize(): void;
+  onDelete(): void;
 }
 
 /* eslint-disable */
@@ -35,10 +44,11 @@ const useSlack = (
   const [hasError, setHasError] = useState(false);
   const [token, setToken] = useState(null);
 
-  const handleErrorResponse = (error: BaseError) => {
-    const { badRequest, unpermissioned, internalServer } = USER_NOTIFICATIONS;
+  const handleErrorResponse = (error: BaseError, isDeleting = false) => {
+    const { badRequest, unpermissioned, internalServer } = isDeleting
+      ? USER_NOTIFICATIONS_DELETE
+      : USER_NOTIFICATIONS;
 
-    setHasError(true);
     let errorMessage = '';
 
     if (error instanceof ErrorBadRequest) {
@@ -82,6 +92,7 @@ const useSlack = (
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       await slackApi.authorize(data);
+      setHasError(true);
       setToken(null);
     } catch (err) {
       handleErrorResponse(err);
@@ -93,11 +104,23 @@ const useSlack = (
     onAuthorizeSlack(token);
   };
 
+  const onDelete = async () => {
+    setIsLoading(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await slackApi.deleteAuthorization();
+    } catch (err) {
+      handleErrorResponse(err, true);
+    }
+    setIsLoading(false);
+  };
+
   return {
     isLoading,
     hasError,
     onAuthorizeSlack,
-    reAuthorize
+    reAuthorize,
+    onDelete
   };
 };
 

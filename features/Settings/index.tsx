@@ -5,6 +5,7 @@ import SlackIntegration from '../../common/models/slackIntegration';
 import TrelloIntegration from '../../common/models/trelloIntegration';
 import winLocation from '../../common/utils/winLocation';
 import breakpoints from '../../config/breakpoints';
+import DeleteSlackAuthPrompt from './DeleteSlackAuthPrompt';
 import DeleteTrelloAuthPrompt from './DeleteTrelloAuthPrompt';
 import Form from './Form';
 import Header from './Header';
@@ -38,6 +39,9 @@ const Settings: FunctionComponent<Props> = ({
 
   const [isVisibleDeleteTrelloAuth, setIsVisibleDeleteTrelloAuth] =
     useState(false);
+  const [isVisibleDeleteSlackAuth, setIsVisibleDeleteSlackAuth] =
+    useState(false);
+
   const { pathname, push } = useRouter();
   const {
     onAuthorizeTrello,
@@ -51,7 +55,8 @@ const Settings: FunctionComponent<Props> = ({
     onAuthorizeSlack,
     reAuthorize: reAuthorizeSlack,
     isLoading: isAuthorizingSlack,
-    hasError: hasAuthorizingSlackError
+    hasError: hasAuthorizingSlackError,
+    onDelete: onDeleteSlack
   } = useSlack(sendNotification, redirectUrl);
 
   // Responsive queries
@@ -62,6 +67,11 @@ const Settings: FunctionComponent<Props> = ({
   const onDeleteTrelloAuth = () => {
     setIsVisibleDeleteTrelloAuth(false);
     onDeleteTrello();
+  };
+
+  const onDeleteSlackAuth = () => {
+    setIsVisibleDeleteSlackAuth(false);
+    onDeleteSlack();
   };
 
   useEffect(() => {
@@ -99,6 +109,7 @@ const Settings: FunctionComponent<Props> = ({
         isAuthorizingTrello={isAuthorizingTrello}
         hasAuthorizingTrelloError={hasAuthorizingTrelloError}
         onDeleteTrelloAuth={() => setIsVisibleDeleteTrelloAuth(true)}
+        onDeleteSlackAuth={() => setIsVisibleDeleteSlackAuth(true)}
         reAuthorizeTrello={reAuthorizeTrello}
         isAuthorizingSlack={isAuthorizingSlack}
         hasAuthorizingSlackError={hasAuthorizingSlackError}
@@ -108,6 +119,11 @@ const Settings: FunctionComponent<Props> = ({
         isVisible={isVisibleDeleteTrelloAuth}
         onClose={() => setIsVisibleDeleteTrelloAuth(false)}
         onConfirm={onDeleteTrelloAuth}
+      />
+      <DeleteSlackAuthPrompt
+        isVisible={isVisibleDeleteSlackAuth}
+        onClose={() => setIsVisibleDeleteSlackAuth(false)}
+        onConfirm={onDeleteSlackAuth}
       />
     </>
   );
