@@ -297,7 +297,7 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
       },
       {
         expected: USER_NOTIFICATIONS_CREATE.unpermissioned,
-        message: 'show permission error for unauthorised request'
+        message: 'show permission error for unauthorized request'
       },
       {
         expected: USER_NOTIFICATIONS_CREATE.internalServer,
@@ -349,7 +349,7 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
       },
       {
         expected: USER_NOTIFICATIONS_UPDATE.unpermissioned,
-        message: 'show permission error for unauthorised request'
+        message: 'show permission error for unauthorized request'
       },
       {
         expected: USER_NOTIFICATIONS_UPDATE.unpermissioned,

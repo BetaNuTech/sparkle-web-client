@@ -60,6 +60,10 @@ const Page: React.FC = (): ReactElement => {
     return tokenKey === 'token' && tokenvalue ? tokenvalue : null;
   }, [router.asPath]);
 
+  const code = router?.query?.code;
+  const slackCode =
+    (code && (typeof code === 'string' ? code : code[0])) || null;
+
   const isLoaded =
     userStatus === 'success' &&
     trelloStatus === 'success' &&
@@ -73,6 +77,7 @@ const Page: React.FC = (): ReactElement => {
           trelloIntegration={trello}
           slackIntegration={slack}
           token={token}
+          code={slackCode}
         />
       ) : (
         <LoadingHud />
