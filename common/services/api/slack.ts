@@ -9,6 +9,7 @@ const generateAuthorizeError = createApiError(`${PREFIX} authorize:`);
 const generateDeleteAuhtorizationError = createApiError(
   `${PREFIX} deleteAuthorization:`
 );
+const generateUpdateError = createApiError(`${PREFIX} update:`);
 
 // POST request to authorize slack
 const postAuthorizeRequest = (
@@ -25,7 +26,7 @@ const postAuthorizeRequest = (
   });
 
 // Request to authorize slack
-const authorize = async (
+const createAuthorization = async (
   data: Record<string, string>
 ): Promise<SlackIntegration> => {
   let authToken = '';
@@ -34,7 +35,7 @@ const authorize = async (
     authToken = await currentUser.getIdToken();
   } catch (tokenErr) {
     throw Error(
-      `${PREFIX} authorize: auth token could not be recovered: ${tokenErr}`
+      `${PREFIX} createAuthorization: auth token could not be recovered: ${tokenErr}`
     );
   }
 
@@ -42,16 +43,14 @@ const authorize = async (
   try {
     response = await postAuthorizeRequest(authToken, data);
   } catch (err) {
-    throw Error(`${PREFIX} authorize: POST request failed: ${err}`);
+    throw Error(`${PREFIX} createAuthorization: request failed: ${err}`);
   }
 
   let responseJson: any = {};
-  if (response.status !== 204) {
-    try {
-      responseJson = await response.json();
-    } catch (err) {
-      throw Error(`${PREFIX} authorize: failed to parse JSON: ${err}`);
-    }
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} createAuthorization: failed to parse JSON: ${err}`);
   }
 
   // Throw unsuccessful request API error
@@ -121,7 +120,65 @@ const deleteAuthorization = async (): Promise<boolean> => {
   return true;
 };
 
+// PATCH request to authorize slack
+const patchSlackRequest = (
+  authToken: string,
+  body: Record<string, string>
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/integrations/slack/authorization`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ...body })
+  });
+
+// Request to update slack integration detail
+const updateAuthorization = async (
+  data: Record<string, string>
+): Promise<SlackIntegration> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} updateAuthorization: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await patchSlackRequest(authToken, data);
+  } catch (err) {
+    throw Error(`${PREFIX} updateAuthorization: request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} updateAuthorization: failed to parse JSON: ${err}`);
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = generateUpdateError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return {
+    id: responseJson.data.id,
+    ...responseJson.data.attributes
+  };
+};
+
 export default {
-  authorize,
-  deleteAuthorization
+  createAuthorization,
+  deleteAuthorization,
+  updateAuthorization
 };

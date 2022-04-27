@@ -47,7 +47,7 @@ describe('Unit | Features | Settings | Hooks | Use Trello', () => {
     sinon.stub(errorReports, 'send').resolves(true);
 
     sinon
-      .stub(trelloApi, 'authorize')
+      .stub(trelloApi, 'createAuthorization')
       .onCall(0)
       .rejects(new ErrorUnauthorized())
       .onCall(1)

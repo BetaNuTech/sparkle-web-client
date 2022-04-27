@@ -56,7 +56,9 @@ const Settings: FunctionComponent<Props> = ({
     reAuthorize: reAuthorizeSlack,
     isLoading: isAuthorizingSlack,
     hasError: hasAuthorizingSlackError,
-    onDelete: onDeleteSlack
+    onDelete: onDeleteSlack,
+    onSetChannelName,
+    isUpdatingChannel
   } = useSlack(sendNotification, redirectUrl);
 
   // Responsive queries
@@ -114,6 +116,8 @@ const Settings: FunctionComponent<Props> = ({
         isAuthorizingSlack={isAuthorizingSlack}
         hasAuthorizingSlackError={hasAuthorizingSlackError}
         reAuthorizeSlack={reAuthorizeSlack}
+        onSetChannelName={onSetChannelName}
+        isUpdatingChannel={isUpdatingChannel}
       />
       <DeleteTrelloAuthPrompt
         isVisible={isVisibleDeleteTrelloAuth}
