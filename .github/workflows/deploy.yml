@@ -7,15 +7,102 @@ on:
       - staging
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Initiate CI/CD Repository
-        uses: peter-evans/repository-dispatch@v1
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Cache NPM dependencies
+        uses: actions/cache@v2
+        id: yarn-cache # use this to check for `cache-hit`
         with:
-          token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
-          repository: ${{ secrets.DEPLOY_REPOSITORY }}
-          event-type: push
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+          path: '**/node_modules'
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Install dependencies
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        run: docker-compose run install
+
+      - name: Create Env File [Staging]
+        if: github.ref == 'refs/heads/staging'
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_NEXT_PUBLIC_STAGING: true
+          envkey_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.STAGING_FIREBASE_API_KEY }}
+          envkey_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
+          envkey_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.STAGING_FIREBASE_AUTH_DOMAIN }}
+          envkey_NEXT_PUBLIC_FIREBASE_DATABASE_URL: ${{ secrets.STAGING_FIREBASE_DATABASE_URL }}
+          envkey_NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN: ${{ secrets.STAGING_FIREBASE_FUNCTIONS_DOMAIN }}
+          envkey_NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.STAGING_FIREBASE_MESSAGING_SENDER_ID }}
+          envkey_NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
+          envkey_NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.STAGING_FIREBASE_STORAGE_BUCKET }}
+          envkey_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.STAGING_FIREBASE_MEASUREMENT_ID }}
+          envkey_NEXT_PUBLIC_SLACK_CLIENT_ID: ${{ secrets.STAGING_SLACK_CLIENT_ID }}
+          envkey_NEXT_PUBLIC_TRELLO_API_KEY: ${{ secrets.STAGING_TRELLO_API_KEY }}
+          file_name: .env.local
+
+      - name: Create Env File [Production]
+        if: github.ref == 'refs/heads/production'
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.PRODUCTION_FIREBASE_API_KEY }}
+          envkey_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
+          envkey_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PRODUCTION_FIREBASE_AUTH_DOMAIN }}
+          envkey_NEXT_PUBLIC_FIREBASE_DATABASE_URL: ${{ secrets.PRODUCTION_FIREBASE_DATABASE_URL }}
+          envkey_NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN: ${{ secrets.PRODUCTION_FIREBASE_FUNCTIONS_DOMAIN }}
+          envkey_NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.PRODUCTION_FIREBASE_MESSAGING_SENDER_ID }}
+          envkey_NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
+          envkey_NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ secrets.PRODUCTION_FIREBASE_STORAGE_BUCKET }}
+          envkey_NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: ${{ secrets.PRODUCTION_FIREBASE_MEASUREMENT_ID }}
+          envkey_NEXT_PUBLIC_SLACK_CLIENT_ID: ${{ secrets.PRODUCTION_SLACK_CLIENT_ID }}
+          envkey_NEXT_PUBLIC_TRELLO_API_KEY: ${{ secrets.PRODUCTION_TRELLO_API_KEY }}
+          envkey_NEXT_PUBLIC_GOOGLE_ANALYTICS: ${{ secrets.PRODUCTION_GOOGLE_ANALYTICS }}
+          file_name: .env.local
+
+      - name: Build
+        run: docker-compose run build
+
+      - name: Archive Build
+        uses: actions/upload-artifact@v1
+        with:
+          name: dist
+          path: dist
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    container:
+      image: mj3000/firebase-tools
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Download Build
+        uses: actions/download-artifact@v1
+        with:
+          name: dist
+          path: dist
+
+      - name: Select Staging Firebase Project
+        if: github.ref == 'refs/heads/staging'
+        run: firebase use ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Target Staging Firebase Project
+        if: github.ref == 'refs/heads/staging'
+        run: firebase target:apply hosting production ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Select Production Firebase Project
+        if: github.ref == 'refs/heads/production'
+        run: firebase use ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Target Production Firebase Project
+        if: github.ref == 'refs/heads/production'
+        run: firebase target:apply hosting production ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy to Firebase
+        run: firebase deploy --only hosting --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
