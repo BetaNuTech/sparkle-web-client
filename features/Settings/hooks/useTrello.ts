@@ -90,7 +90,7 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
 
     try {
       // eslint-disable-next-line import/no-named-as-default-member
-      await trelloApi.authorize(data);
+      await trelloApi.createAuthorization(data);
       setToken(null);
     } catch (err) {
       handleErrorResponse(err);

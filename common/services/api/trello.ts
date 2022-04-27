@@ -134,7 +134,7 @@ const postAuthorizeRequest = (
   });
 
 // Request to authorize trello
-const authorize = async (
+const createAuthorization = async (
   data: Record<string, string>
 ): Promise<TrelloIntegration> => {
   let authToken = '';
@@ -143,7 +143,7 @@ const authorize = async (
     authToken = await currentUser.getIdToken();
   } catch (tokenErr) {
     throw Error(
-      `${PREFIX} authorize: auth token could not be recovered: ${tokenErr}`
+      `${PREFIX} createAuthorization: auth token could not be recovered: ${tokenErr}`
     );
   }
 
@@ -151,16 +151,14 @@ const authorize = async (
   try {
     response = await postAuthorizeRequest(authToken, data);
   } catch (err) {
-    throw Error(`${PREFIX} authorize: POST request failed: ${err}`);
+    throw Error(`${PREFIX} createAuthorization: request failed: ${err}`);
   }
 
   let responseJson: any = {};
-  if (response.status !== 204) {
-    try {
-      responseJson = await response.json();
-    } catch (err) {
-      throw Error(`${PREFIX} authorize: failed to parse JSON: ${err}`);
-    }
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} createAuthorization: failed to parse JSON: ${err}`);
   }
 
   // Throw unsuccessful request API error
@@ -259,6 +257,6 @@ export default {
 
     return getBoardListRequest(authToken, boardId);
   },
-  authorize,
+  createAuthorization,
   deleteAuthorization
 };

@@ -17,6 +17,8 @@ interface Props {
   hasAuthorizingSlackError: boolean;
   reAuthorizeSlack(): void;
   onDeleteSlackAuth(): void;
+  onSetChannelName(initialValue: string): void;
+  isUpdatingChannel: boolean;
 }
 
 const Form: FunctionComponent<Props> = ({
@@ -30,7 +32,9 @@ const Form: FunctionComponent<Props> = ({
   isAuthorizingSlack,
   hasAuthorizingSlackError,
   reAuthorizeSlack,
-  onDeleteSlackAuth
+  onDeleteSlackAuth,
+  onSetChannelName,
+  isUpdatingChannel
 }) => (
   <div className={styles.container}>
     <Trello
@@ -48,6 +52,8 @@ const Form: FunctionComponent<Props> = ({
       hasError={hasAuthorizingSlackError}
       reAuthorize={reAuthorizeSlack}
       onDeleteSlackAuth={onDeleteSlackAuth}
+      onSetChannelName={onSetChannelName}
+      isUpdatingChannel={isUpdatingChannel}
     />
   </div>
 );
