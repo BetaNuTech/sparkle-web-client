@@ -20,7 +20,7 @@ export const USER_NOTIFICATIONS = {
 
 export const USER_NOTIFICATIONS_DELETE = {
   unpermissioned:
-    'ou do not have permission to delete Trello Authorization, please contact an admin',
+    'You do not have permission to delete Trello Authorization, please contact an admin',
   badRequest: 'Failed to delete Trello Authorization due to bad request',
   internalServer:
     'Failed to delete Trello Authorization, please try again or contact the tech team'
@@ -107,7 +107,6 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       await trelloApi.deleteAuthorization();
-      setToken(null);
     } catch (err) {
       handleErrorResponse(err, true);
     }

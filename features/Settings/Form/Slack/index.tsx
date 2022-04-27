@@ -15,6 +15,7 @@ interface Props {
   isAuthorizing: boolean;
   hasError: boolean;
   reAuthorize(): void;
+  onDeleteSlackAuth(): void;
 }
 
 const Slack: FunctionComponent<Props> = ({
@@ -22,7 +23,8 @@ const Slack: FunctionComponent<Props> = ({
   redirectUrl,
   isAuthorizing,
   hasError,
-  reAuthorize
+  reAuthorize,
+  onDeleteSlackAuth
 }) => {
   const isAuthorized = integration?.teamName;
   const authUrl = `${BASE_AUTH_URL}&redirect_uri=${redirectUrl}`;
@@ -35,7 +37,10 @@ const Slack: FunctionComponent<Props> = ({
       {!isAuthorizing && !hasError && (
         <>
           {isAuthorized ? (
-            <button className={styles.section__logo}>
+            <button
+              className={styles.section__logo}
+              onClick={onDeleteSlackAuth}
+            >
               <SlackLogo className={styles.logo} />
             </button>
           ) : (
