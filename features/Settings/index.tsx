@@ -8,6 +8,7 @@ import breakpoints from '../../config/breakpoints';
 import DeleteTrelloAuthPrompt from './DeleteTrelloAuthPrompt';
 import Form from './Form';
 import Header from './Header';
+import useSlack from './hooks/useSlack';
 import useTrello from './hooks/useTrello';
 
 type userNotifications = (message: string, options?: any) => any;
@@ -20,6 +21,7 @@ interface Props {
   toggleNavOpen?(): void;
   sendNotification: userNotifications;
   token: string;
+  code: string;
 }
 
 const Settings: FunctionComponent<Props> = ({
@@ -29,8 +31,11 @@ const Settings: FunctionComponent<Props> = ({
   slackIntegration,
   trelloIntegration,
   sendNotification,
-  token
+  token,
+  code
 }) => {
+  const redirectUrl = winLocation.getRedirectUrl();
+
   const [isVisibleDeleteTrelloAuth, setIsVisibleDeleteTrelloAuth] =
     useState(false);
   const { pathname, push } = useRouter();
@@ -42,6 +47,13 @@ const Settings: FunctionComponent<Props> = ({
     onDelete: onDeleteTrello
   } = useTrello(sendNotification);
 
+  const {
+    onAuthorizeSlack,
+    reAuthorize: reAuthorizeSlack,
+    isLoading: isAuthorizingSlack,
+    hasError: hasAuthorizingSlackError
+  } = useSlack(sendNotification, redirectUrl);
+
   // Responsive queries
   const isMobile = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -52,8 +64,6 @@ const Settings: FunctionComponent<Props> = ({
     onDeleteTrello();
   };
 
-  const redirectUrl = winLocation.getRedirectUrl();
-
   useEffect(() => {
     // request to trello authorization
     if (token) {
@@ -63,6 +73,16 @@ const Settings: FunctionComponent<Props> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, pathname]);
+
+  useEffect(() => {
+    // request to slack authorization
+    if (code) {
+      onAuthorizeSlack(code);
+      // remove qeury from url
+      push(pathname);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, pathname]);
 
   return (
     <>
@@ -80,6 +100,9 @@ const Settings: FunctionComponent<Props> = ({
         hasAuthorizingTrelloError={hasAuthorizingTrelloError}
         onDeleteTrelloAuth={() => setIsVisibleDeleteTrelloAuth(true)}
         reAuthorizeTrello={reAuthorizeTrello}
+        isAuthorizingSlack={isAuthorizingSlack}
+        hasAuthorizingSlackError={hasAuthorizingSlackError}
+        reAuthorizeSlack={reAuthorizeSlack}
       />
       <DeleteTrelloAuthPrompt
         isVisible={isVisibleDeleteTrelloAuth}

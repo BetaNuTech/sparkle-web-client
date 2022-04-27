@@ -17,7 +17,7 @@ describe('Unit | Features | Settings | Hooks | Use Trello', () => {
 
   test('should show user facing error message according to error type while authrizing trello', async () => {
     const sendNotification = sinon.spy();
-    const badRequestErrorText = 'update user bad request ';
+    const badRequestErrorText = 'authorize trello bad request ';
     const badRequestError = new ErrorBadRequest('bad request');
     badRequestError.addErrors([{ detail: badRequestErrorText }]);
 
@@ -75,7 +75,7 @@ describe('Unit | Features | Settings | Hooks | Use Trello', () => {
 
   test('should show user facing error message according to error type while delete trello authorization', async () => {
     const sendNotification = sinon.spy();
-    const badRequestErrorText = 'update user bad request ';
+    const badRequestErrorText = 'delete trello authorization bad request';
     const badRequestError = new ErrorBadRequest('bad request');
     badRequestError.addErrors([{ detail: badRequestErrorText }]);
     const tests = [

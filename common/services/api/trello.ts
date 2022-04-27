@@ -28,7 +28,7 @@ export interface trelloList {
   board?: string;
 }
 
-const generateAuhtoriseError = createApiError(`${PREFIX} authorize:`);
+const generateAuthorizeError = createApiError(`${PREFIX} authorize:`);
 const generateDeleteAuhtorizationError = createApiError(
   `${PREFIX} deleteAuthorization:`
 );
@@ -164,7 +164,7 @@ const authorize = async (
   }
 
   // Throw unsuccessful request API error
-  const apiError: any = generateAuhtoriseError(
+  const apiError: any = generateAuthorizeError(
     response.status,
     responseJson.errors
   );
