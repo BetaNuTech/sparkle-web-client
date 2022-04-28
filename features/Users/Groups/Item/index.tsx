@@ -36,7 +36,7 @@ const Item: FunctionComponent<Props> = ({ user, forceVisible }) => {
           className={styles.item}
           href={`/users/edit/${user.id}`}
           legacyHref={`/admin/users/${user.id}`}
-          featureEnabled={features.supportBetaUserEdit}
+          featureEnabled={features.supportUserEdit}
         >
           <header className={styles.details}>
             <div className={styles.pill}>{userFriendlyAccessLevel}</div>

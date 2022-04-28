@@ -68,7 +68,7 @@ const CreateInspection: FunctionComponent<CreateInspectionProps> = ({
     inspectionService
       .createRecord(propertyId, template, sendNotification)
       .then((inspectionId) => {
-        if (features.supportBetaPropertyInspectionUpdate) {
+        if (features.supportPropertyInspectionUpdate) {
           Router.push(
             `/properties/${propertyId}/inspections/edit/${inspectionId}/`
           );

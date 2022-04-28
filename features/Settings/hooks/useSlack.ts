@@ -117,9 +117,9 @@ const useSlack = (
     try {
       // eslint-disable-next-line import/no-named-as-default-member
       await slackApi.createAuthorization(data);
-      setHasError(true);
       setToken(null);
     } catch (err) {
+      setHasError(true);
       handleErrorResponse(err, USER_NOTIFICATIONS);
     }
     setIsLoading(false);

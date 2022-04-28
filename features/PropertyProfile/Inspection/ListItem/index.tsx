@@ -94,7 +94,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           <LinkFeature
             href={inspectionUpdateUrl}
             legacyHref={legacyInspectionUpdateUrl}
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             <div
               className={clsx(

@@ -68,7 +68,7 @@ const Header: FunctionComponent<Props> = ({
       {currentStepIndex === 0 ? (
         <LinkFeature
           href="/templates"
-          featureEnabled={features.supportBetaTemplatesList}
+          featureEnabled={features.supportTemplatesList}
           className={headStyle.header__button}
           data-testid="templateEdit-header-cancel"
           disabled={isLoading}

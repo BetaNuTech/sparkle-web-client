@@ -76,7 +76,7 @@ const DeficientItemsStateGroupsListItem: FunctionComponent<Props> = ({
   const hasSectionSubTitle = Boolean(deficientItem.sectionSubtitle);
 
   const onClickItem = () => {
-    if (features.supportBetaDeficientItemEdit) {
+    if (features.supportDeficientItemEdit) {
       Router.push(
         `/properties/${deficientItem.property}/deficient-items/edit/${deficientItem.id}`
       );

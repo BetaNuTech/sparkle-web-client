@@ -47,7 +47,7 @@ const Header: FunctionComponent<Props> = ({
       <LinkFeature
         href="/users/edit/new"
         legacyHref="/admin/users/add"
-        featureEnabled={features.supportBetaUserEdit}
+        featureEnabled={features.supportUserEdit}
         className={headStyle.header__button}
       >
         <AddIcon />
@@ -65,7 +65,7 @@ const Header: FunctionComponent<Props> = ({
       <LinkFeature
         href="/users/edit/new"
         legacyHref="/admin/users/add"
-        featureEnabled={features.supportBetaUserEdit}
+        featureEnabled={features.supportUserEdit}
         className={styles.action}
       >
         Create

@@ -73,7 +73,7 @@ const SlideNav: FunctionComponent<Props> = ({
           <div>
             <div className={styles.slideNav__links__link}>
               <LinkFeature
-                featureEnabled={features.supportBetaPropertiesList}
+                featureEnabled={features.supportPropertiesList}
                 href="/properties"
               >
                 Properties
@@ -85,7 +85,7 @@ const SlideNav: FunctionComponent<Props> = ({
                 data-testid="templates-link"
               >
                 <LinkFeature
-                  featureEnabled={features.supportBetaTemplatesList}
+                  featureEnabled={features.supportTemplatesList}
                   href="/templates"
                 >
                   Templates
@@ -95,7 +95,7 @@ const SlideNav: FunctionComponent<Props> = ({
             {hasUsersViewAccess && (
               <div className={styles.slideNav__links__link}>
                 <LinkFeature
-                  featureEnabled={features.supportBetaUsers}
+                  featureEnabled={features.supportUsers}
                   href="/users"
                   legacyHref="/admin"
                 >
@@ -109,7 +109,7 @@ const SlideNav: FunctionComponent<Props> = ({
             {userId && (
               <div className={styles.slideNav__links__link}>
                 <LinkFeature
-                  featureEnabled={features.supportBetaUserProfile}
+                  featureEnabled={features.supportUserProfile}
                   href={`/users/edit/${userId}`}
                   legacyHref={`/admin/users/${userId}`}
                 >
@@ -119,7 +119,7 @@ const SlideNav: FunctionComponent<Props> = ({
             )}
             <div className={styles.slideNav__links__link}>
               <LinkFeature
-                featureEnabled={features.supportBetaSettings}
+                featureEnabled={features.supportSettings}
                 href="/settings"
                 legacyHref="/admin/settings"
               >

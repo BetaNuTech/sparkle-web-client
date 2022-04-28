@@ -7,6 +7,6 @@ export default {
   slack: {
     apiKey: process.env.NEXT_PUBLIC_SLACK_CLIENT_ID,
     // eslint-disable-next-line max-len
-    authURL: `https://slack.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_SLACK_CLIENT_ID}&scope=incoming-webhook,chat:write&user_scope=channels:write`
+    authURL: `https://slack.com/oauth/v2/authorize?client_id=${process.env.NEXT_PUBLIC_SLACK_CLIENT_ID}&scope=incoming-webhook,chat:write&user_scope=channels:write`
   }
 };

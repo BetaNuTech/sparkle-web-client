@@ -25,7 +25,7 @@ const Actions: FunctionComponent<Props> = ({
       <LinkFeature
         href={cancelHref}
         legacyHref={cancelLegacyHref}
-        featureEnabled={features.supportBetaUsers}
+        featureEnabled={features.supportUsers}
         className={styles.actionCancel}
       >
         Cancel

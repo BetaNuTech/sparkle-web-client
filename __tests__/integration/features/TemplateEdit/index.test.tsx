@@ -177,6 +177,7 @@ describe('Integration | features | Templates', () => {
 
     // add local updates
     await act(async () => {
+      await wait(100);
       const nameInput = screen.queryByTestId('template-edit-name');
       fireEvent.change(nameInput, {
         target: { value: 'Template name 1' }

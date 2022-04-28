@@ -28,7 +28,7 @@ const TeamItem: FunctionComponent<Props> = ({
   <li className={styles.teamItem} data-testid="team-item" data-team={team.id}>
     {/* Team Name */}
     <LinkFeature
-      featureEnabled={features.supportBetaTeamView}
+      featureEnabled={features.supportTeamView}
       href={`/teams/${team.id}`}
       className={styles.teamItem__name}
     >
@@ -48,7 +48,7 @@ const TeamItem: FunctionComponent<Props> = ({
 
     {/* Metadata */}
     <LinkFeature
-      featureEnabled={features.supportBetaTeamView}
+      featureEnabled={features.supportTeamView}
       href={`/teams/${team.id}`}
     >
       <TeamValues

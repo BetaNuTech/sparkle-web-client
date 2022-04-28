@@ -44,7 +44,7 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         }
       >
         <LinkFeature
-          featureEnabled={features.supportBetaTeamView}
+          featureEnabled={features.supportTeamView}
           href={`/teams/${team.id}`}
           className={parentStyles.itemResult__link}
         >
@@ -86,7 +86,7 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         )}
       >
         <LinkFeature
-          featureEnabled={features.supportBetaTeamView}
+          featureEnabled={features.supportTeamView}
           href={`/teams/${team.id}/edit`}
           className={parentStyles.swipeReveal__editButton}
         >

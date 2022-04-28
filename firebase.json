@@ -23,6 +23,123 @@
         ]
       }
     ],
+    "redirects": [
+      {
+        "source": "/forgot-password",
+        "destination": "/login/",
+        "type": 301
+      },
+      {
+        "source": "/properties/:propertyId/update-inspection/:inspectionId",
+        "destination": "/properties/:propertyId/inspections/edit/:inspectionId/",
+        "type": 301
+      },
+      {
+        "source": "/properties/:propertyId/update-inspection/:inspectionId/uploads",
+        "destination": "/properties/:propertyId/inspections/edit/:inspectionId/",
+        "type": 301
+      },
+      {
+        "source":
+          "/properties/:propertyId/update-inspection/:inspectionId/publish-uploads",
+        "destination": "/properties/:propertyId/inspections/edit/:inspectionId/",
+        "type": 301
+      },
+      {
+        "source": "/properties/:propertyId/deficient-items/:deficientItemId",
+        "destination":
+          "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
+        "type": 301
+      },
+      {
+        "source": "/properties/:propertyId/deficient-items/:deficientItemId/uploads",
+        "destination":
+          "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
+        "type": 301
+      },
+      {
+        "source":
+          "/properties/:propertyId/deficient-items/:deficientItemId/publish-uploads",
+        "destination":
+          "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
+        "type": 301
+      },
+      {
+        "source": "/properties/:propertyId/reassign-inspection/:inspectionId",
+        "destination": "/properties/:propertyId/",
+        "type": 301
+      },
+      {
+        "source": "/properties/update/:propertyId",
+        "destination": "/properties/edit/:propertyId/",
+        "type": 301
+      },
+      {
+        "source": "/properties/update/:propertyId/trello",
+        "destination": "/properties/edit/:propertyId/",
+        "type": 301
+      },
+      {
+        "source": "/teams/create",
+        "destination": "/teams/edit/new",
+        "type": 301
+      },
+      {
+        "source": "/teams/:teamId/edit",
+        "destination": "/teams/edit/:teamId",
+        "type": 301
+      },
+      {
+        "source": "/templates/create",
+        "destination": "/templates/",
+        "type": 301
+      },
+      {
+        "source": "/templates/categories",
+        "destination": "/templates/",
+        "type": 301
+      },
+      {
+        "source": "/templates/update/:templateId",
+        "destination": "/templates/edit/:templateId",
+        "type": 301
+      },
+      {
+        "source": "/templates/update/:templateId",
+        "destination": "/templates/edit/:templateId",
+        "type": 301
+      },
+      {
+        "source": "/admin",
+        "destination": "/users/",
+        "type": 301
+      },
+      {
+        "source": "/admin/users",
+        "destination": "/users/",
+        "type": 301
+      },
+      {
+        "source": "/admin/users/add",
+        "destination": "/users/edit/new",
+        "type": 301
+      },
+      {
+        "source": "/admin/users/:userId",
+        "destination": "/users/edit/:userId",
+        "type": 301
+      },
+      {
+        "source": "/admin/settings",
+        "destination": "/settings/",
+        "type": 301
+      },
+      {
+        "source": "/admin/login",
+        "destination": "/login/",
+        "type": 301
+      }
+    ],
     "rewrites": [
       {
         "source": "/admin{,/**}",
