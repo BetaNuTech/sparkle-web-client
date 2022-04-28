@@ -201,4 +201,54 @@ describe('Unit | Features | Settings | Hooks | Use Slack', () => {
       expect(actual, message).toEqual(expected);
     }
   });
+
+  test('should set error and keep token on failing to authorize slack ', async () => {
+    const expectedToken = 'token_123';
+    const sendNotification = sinon.spy();
+
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    sinon
+      .stub(slackApi, 'createAuthorization')
+      .rejects(new ErrorUnauthorized());
+
+    const { result } = renderHook(() => useSlack(sendNotification, ''));
+
+    await act(async () => {
+      result.current.onAuthorizeSlack(expectedToken);
+      await waitFor(() => sendNotification.called);
+    });
+    expect(result.current.hasError).toBeTruthy();
+    expect(result.current.token).toEqual(expectedToken);
+  });
+
+  test('should remove error and destroy token on success of authorize slack ', async () => {
+    const expectedToken = 'token_123';
+    const sendNotification = sinon.spy();
+
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    sinon
+      .stub(slackApi, 'createAuthorization')
+      .rejects(new ErrorUnauthorized())
+      .onCall(1)
+      .resolves();
+
+    const { result } = renderHook(() => useSlack(sendNotification, ''));
+
+    await act(async () => {
+      result.current.onAuthorizeSlack(expectedToken);
+      await waitFor(() => sendNotification.called);
+    });
+    expect(result.current.hasError).toBeTruthy();
+    expect(result.current.token).toEqual(expectedToken);
+
+    await act(async () => {
+      result.current.reAuthorize();
+    });
+
+    // remove error and destroy token
+    expect(result.current.hasError).toBeFalsy();
+    expect(result.current.token).toBeNull();
+  });
 });

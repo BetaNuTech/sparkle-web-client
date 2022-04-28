@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../Provider';
 import features from '../../../config/features';
-console.log('>>> features', features);
 
 // Is current page login
 const isLoginPage = (router: any): boolean => {
@@ -56,6 +55,9 @@ const PrivateRoute = ({ children, fallback }) => {
       !isLoading
     ) {
       redirectToLogin();
+    }
+    if (isAuthenticated && isLoginPage(router)) {
+      router.push('/properties');
     }
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
