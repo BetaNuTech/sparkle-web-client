@@ -75,7 +75,7 @@ const Slack: FunctionComponent<Props> = ({
       </header>
 
       <footer className={styles.section__footer}>
-        <p className="-fz-medium">
+        <p className="-fz-medium -mb-none">
           The Sparkle slack app will be added to the Slack Team of your
           choosing. Once added, Sparkle will use channels specified in the app
           to send messages automatically. To remove the Sparkle App, please

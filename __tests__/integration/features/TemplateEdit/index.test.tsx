@@ -1,9 +1,7 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import sinon from 'sinon';
 import { act } from 'react-dom/test-utils';
-import { NextRouter } from 'next/router';
 import FDBFactory from 'fake-indexeddb/lib/FDBFactory';
-import { RouterContext } from 'next/dist/shared/lib/router-context';
 import { admin } from '../../../../__mocks__/users';
 import TemplateModel from '../../../../common/models/template';
 import templatesApi from '../../../../common/services/api/templates';
@@ -20,54 +18,10 @@ import {
 import templateUpdates from '../../../../common/services/indexedDB/templateUpdates';
 import wait from '../../../helpers/wait';
 import inspectionConfig from '../../../../config/inspections';
+import withTestRouter from '../../../helpers/withTestRouter';
 
 const TEMPLATE_TYPES = inspectionConfig.inspectionTemplateTypes;
 const INPUT_ITEM_TYPES = Object.keys(TEMPLATE_TYPES);
-
-function withTestRouter(
-  tree: React.ReactElement,
-  router: Partial<NextRouter> = {}
-) {
-  const {
-    route = '',
-    pathname = '',
-    query = {},
-    asPath = '',
-    push = async () => true,
-    replace = async () => true,
-    reload = () => null,
-    back = () => null,
-    prefetch = async () => undefined,
-    beforePopState = () => null,
-    isFallback = false,
-    events = {
-      on: () => null,
-      off: () => null,
-      emit: () => null
-    }
-  } = router;
-
-  return (
-    <RouterContext.Provider
-      value={{
-        route,
-        pathname,
-        query,
-        asPath,
-        push,
-        replace,
-        reload,
-        back,
-        prefetch,
-        beforePopState,
-        isFallback,
-        events
-      }}
-    >
-      {tree}
-    </RouterContext.Provider>
-  );
-}
 
 describe('Integration | features | Templates', () => {
   afterEach(() => {

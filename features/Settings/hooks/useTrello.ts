@@ -34,6 +34,7 @@ interface useTrelloReturn {
   onAuthorizeTrello(authToken: string): void;
   reAuthorize(): void;
   onDelete(): void;
+  token: string;
 }
 
 /* eslint-disable */
@@ -82,6 +83,7 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
   const onAuthorizeTrello = async (authToken: string) => {
     setToken(authToken);
     setHasError(false);
+
     const data = {
       apikey: systemSettings.trello.apiKey,
       authToken
@@ -118,7 +120,8 @@ const useTrello = (sendNotification: userNotifications): useTrelloReturn => {
     hasError,
     onAuthorizeTrello,
     reAuthorize,
-    onDelete
+    onDelete,
+    token
   };
 };
 

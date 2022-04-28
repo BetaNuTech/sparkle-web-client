@@ -48,6 +48,7 @@ interface useSlackReturn {
   onSetChannelName(initialValue: string): void;
   isUpdatingChannel: boolean;
   onUpdateChannelName(channelName: string): void;
+  token: string;
 }
 
 /* eslint-disable */
@@ -181,7 +182,8 @@ const useSlack = (
     onDelete,
     onSetChannelName,
     isUpdatingChannel,
-    onUpdateChannelName
+    onUpdateChannelName,
+    token
   };
 };
 

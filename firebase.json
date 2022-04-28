@@ -105,11 +105,6 @@
         "type": 301
       },
       {
-        "source": "/templates/update/:templateId",
-        "destination": "/templates/edit/:templateId",
-        "type": 301
-      },
-      {
         "source": "/admin",
         "destination": "/users/",
         "type": 301

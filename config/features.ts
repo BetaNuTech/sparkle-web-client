@@ -23,7 +23,7 @@ export default {
   supportPropertyInspectionCreate: true,
   supportPropertyInspectionUpdate: true,
   supportPropertyUpdate: true,
-  supportInspectionUploadPhotos: true,
+  supportInspectionUploadPhotos: false,
   supportDeficientItemEdit:
     process.env.NEXT_PUBLIC_SUPPORT_PROPERTY_DEFICIENT_ITEM_EDIT !== 'false'
 };
