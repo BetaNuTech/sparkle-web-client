@@ -103,7 +103,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-creator"
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             {/*
             <span
@@ -122,7 +122,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-creation-date"
             data-time={inspection.creationDate}
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             {inspection.creationDate ? (
               <>
@@ -139,7 +139,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-update-date"
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             {inspection.updatedAt ? (
               <>
@@ -156,7 +156,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-template"
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             {templateName}
           </LinkFeature>
@@ -165,7 +165,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
             legacyHref={legacyInspectionUpdateUrl}
             className={styles.propertyProfile__gridRow__column}
             data-testid="inspection-grid-list-item-template-cat"
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             {templateCategory}
           </LinkFeature>
@@ -177,7 +177,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
               inspection.deficienciesExist ? '-c-red' : '-c-blue'
             )}
             data-testid="inspection-grid-list-item-score"
-            featureEnabled={features.supportBetaPropertyInspectionUpdate}
+            featureEnabled={features.supportPropertyInspectionUpdate}
           >
             {inspection.inspectionCompleted ? (
               `${scoreDisplay}%`

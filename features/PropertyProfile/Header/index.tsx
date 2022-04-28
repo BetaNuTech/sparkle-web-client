@@ -36,7 +36,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
                   <li data-testid="property-profile-yardi-button">
                     <LinkFeature
                       href={residentsLink}
-                      featureEnabled={features.supportBetaPropertyYardiResident}
+                      featureEnabled={features.supportPropertyYardiResident}
                     >
                       Residents <ChevronIcon />
                     </LinkFeature>
@@ -44,9 +44,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
                   <li>
                     <LinkFeature
                       href={workOrdersLink}
-                      featureEnabled={
-                        features.supportBetaPropertyYardiWorkOrder
-                      }
+                      featureEnabled={features.supportPropertyYardiWorkOrder}
                     >
                       Open WOs <ChevronIcon />
                     </LinkFeature>
@@ -68,7 +66,7 @@ const getMobileExtra: FunctionComponent<Props> = ({
 
         <LinkFeature
           href={`/properties/${property.id}/deficient-items`}
-          featureEnabled={features.supportBetaPropertyDeficient}
+          featureEnabled={features.supportPropertyDeficient}
         >
           <ol className={clsx(styles.propertyProfile__header__deficientItems)}>
             <li data-testid="property-profile-deficient-item">

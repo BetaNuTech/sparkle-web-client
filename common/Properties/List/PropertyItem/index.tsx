@@ -53,7 +53,7 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
             >
               <LinkFeature
                 href={`/properties/${property.id}`}
-                featureEnabled={features.supportBetaPropertyProfile}
+                featureEnabled={features.supportPropertyProfile}
                 className={parentStyles.itemResult__link}
               >
                 {/* Toggle Button */}
@@ -119,7 +119,7 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
               <LinkFeature
                 href={`/properties/${property.id}/deficient-items`}
                 className={parentStyles.itemResult__metadata}
-                featureEnabled={features.supportBetaPropertyDeficient}
+                featureEnabled={features.supportPropertyDeficient}
               >
                 Deficient Items
                 <TeamValues
@@ -155,12 +155,12 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
             >
               <LinkFeature
                 href={
-                  features.supportBetaPropertyUpdate
+                  features.supportPropertyUpdate
                     ? `/properties/edit/${property.id}`
                     : `/properties/update/${property.id}`
                 }
                 className={parentStyles.swipeReveal__editButton}
-                featureEnabled={features.supportBetaPropertyUpdate}
+                featureEnabled={features.supportPropertyUpdate}
               >
                 Edit
               </LinkFeature>

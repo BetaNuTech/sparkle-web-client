@@ -221,11 +221,7 @@ const BidForm: FunctionComponent<Props> = ({
   const propertyLink = `/properties/${property.id}/`;
   const approvedBidLink =
     approvedCompletedBid &&
-    `${
-      window.location.host === 'sparkle-jwc.web.app' ? '/beta' : ''
-    }/properties/${property.id}/jobs/${job.id}/bids/${
-      approvedCompletedBid.id
-    }/`;
+    `/properties/${property.id}/jobs/${job.id}/bids/${approvedCompletedBid.id}/`;
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (

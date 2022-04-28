@@ -40,7 +40,7 @@ const TemplateItem: FunctionComponent<Props> = ({
             <LinkFeature
               href={`/templates/edit/${template.id}`}
               legacyHref={`/templates/update/${template.id}`}
-              featureEnabled={features.supportBetaTemplateEdit}
+              featureEnabled={features.supportTemplateEdit}
             >
               <h6 className={styles.heading}>
                 {stringUtils.titleize(template.name)}

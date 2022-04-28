@@ -28,7 +28,7 @@ const YardiButtons: FunctionComponent<{
       <li>
         <LinkFeature
           href={`/properties/${propertyId}/yardi-residents`}
-          featureEnabled={features.supportBetaPropertyYardiResident}
+          featureEnabled={features.supportPropertyYardiResident}
         >
           Residents
         </LinkFeature>
@@ -36,7 +36,7 @@ const YardiButtons: FunctionComponent<{
       <li>
         <LinkFeature
           href={`/properties/${propertyId}/yardi-work-orders`}
-          featureEnabled={features.supportBetaPropertyYardiWorkOrder}
+          featureEnabled={features.supportPropertyYardiWorkOrder}
         >
           Open WOs
         </LinkFeature>
@@ -180,7 +180,7 @@ const Overview: FunctionComponent<Props> = ({
           <LinkFeature
             href={`/properties/${property.id}/create-inspection`}
             className={clsx('button', styles.button, styles.primary)}
-            featureEnabled={features.supportBetaPropertyInspectionCreate}
+            featureEnabled={features.supportPropertyInspectionCreate}
           >
             Add Inspection{' '}
             <span className={styles.propertyProfile__overview__iconButton}>
@@ -200,7 +200,7 @@ const Overview: FunctionComponent<Props> = ({
             styles.propertyProfile__overview__deficient__link,
             styles['-no-container']
           )}
-          featureEnabled={features.supportBetaPropertyDeficient}
+          featureEnabled={features.supportPropertyDeficient}
         >
           <DeficiencienItemsLink property={property} />
         </LinkFeature>

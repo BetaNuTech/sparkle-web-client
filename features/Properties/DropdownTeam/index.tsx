@@ -16,7 +16,7 @@ const DropdownTeam: FunctionComponent<Props> = ({ team, onDelete }) => (
   <Dropdown>
     <DropdownLink
       href={`/teams/edit/${team.id}`}
-      featureEnabled={features.supportBetaTeamCreate}
+      featureEnabled={features.supportTeamCreate}
       testid="dropdown-add-team"
     >
       Edit

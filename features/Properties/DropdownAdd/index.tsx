@@ -15,7 +15,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
     {canAddTeam && (
       <DropdownLink
         href="/teams/edit/new"
-        featureEnabled={features.supportBetaTeamCreate}
+        featureEnabled={features.supportTeamCreate}
         testid="dropdown-add-team"
       >
         Add Team
@@ -24,11 +24,11 @@ const DropdownAdd: FunctionComponent<Props> = ({
     {canAddProperty && (
       <DropdownLink
         href={
-          features.supportBetaPropertyCreate
+          features.supportPropertyCreate
             ? '/properties/edit/new'
             : '/properties/update/new'
         }
-        featureEnabled={features.supportBetaPropertyCreate}
+        featureEnabled={features.supportPropertyCreate}
         testid="dropdown-add-property"
       >
         Add Property

@@ -161,7 +161,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
       <LinkFeature
         href={`/properties/${id}/create-inspection`}
         className={headStyle.header__button}
-        featureEnabled={features.supportBetaPropertyInspectionCreate}
+        featureEnabled={features.supportPropertyInspectionCreate}
       >
         <AddIcon />
       </LinkFeature>

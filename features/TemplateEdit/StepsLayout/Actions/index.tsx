@@ -32,7 +32,7 @@ const StepsLayoutActions: FunctionComponent<Props> = ({
     {currentStepIndex === 0 ? (
       <LinkFeature
         href="/templates"
-        featureEnabled={features.supportBetaTemplatesList}
+        featureEnabled={features.supportTemplatesList}
         className={clsx(
           styles.actions__button,
           styles['actions__button--white']

@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../Provider';
 import features from '../../../config/features';
+console.log('>>> features', features);
 
 // Is current page login
 const isLoginPage = (router: any): boolean => {
@@ -37,7 +38,7 @@ const PrivateRoute = ({ children, fallback }) => {
   const { isAuthenticated, isLoading } = useAuth();
   const redirectToLogin = () => {
     const encodedUrl = encodeURIComponent(window.location.href);
-    if (features.supportBetaLogin) {
+    if (features.supportLogin) {
       router.replace({
         pathname: '/login',
         query: { request: encodedUrl }

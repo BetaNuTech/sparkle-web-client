@@ -27,7 +27,7 @@ export default function useSession(firebase): SessionResult {
   // Terminate session
   // and redirect to login
   const signOut = () => {
-    if (features.supportBetaLogin) {
+    if (features.supportLogin) {
       Router.push('/login');
     } else {
       window.location.href = '/login';

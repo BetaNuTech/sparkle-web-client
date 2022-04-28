@@ -27,7 +27,7 @@ export default function useTemplatesActions(
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCreateSuccessResponse = (templateId: string) => {
-    if (features.supportBetaTemplateEdit) {
+    if (features.supportTemplateEdit) {
       Router.push(`/templates/edit/${templateId}/`);
     } else {
       winLocation.setHref(`/templates/update/${templateId}/`);

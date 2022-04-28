@@ -62,7 +62,7 @@ const Header: FunctionComponent<Props> = ({
         <LinkFeature
           href="/users"
           legacyHref="/admin/users"
-          featureEnabled={features.supportBetaUsers}
+          featureEnabled={features.supportUsers}
           className={headStyle.header__back}
         >
           <ChevronIcon />
@@ -79,7 +79,7 @@ const Header: FunctionComponent<Props> = ({
           <LinkFeature
             href="/users"
             legacyHref="/admin/users"
-            featureEnabled={features.supportBetaUsers}
+            featureEnabled={features.supportUsers}
             className={styles.header__link}
             data-testid="user-edit-header-link"
           >

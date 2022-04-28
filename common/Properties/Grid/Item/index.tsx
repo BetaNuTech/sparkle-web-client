@@ -29,7 +29,7 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
           <LinkFeature
             href={`/properties/${property.id}`}
             className={styles.item__wrapper}
-            featureEnabled={features.supportBetaPropertyProfile}
+            featureEnabled={features.supportPropertyProfile}
           >
             {/* Profile Picture */}
             <aside
@@ -91,7 +91,7 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
             <LinkFeature
               href={`/properties/${property.id}/deficient-items`}
               className={styles.item__link}
-              featureEnabled={features.supportBetaPropertyDeficient}
+              featureEnabled={features.supportPropertyDeficient}
             >
               <span className="-mr-sm">Deficient Items</span>
               <TeamValues
@@ -108,12 +108,12 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
 
             <LinkFeature
               href={
-                features.supportBetaPropertyUpdate
+                features.supportPropertyUpdate
                   ? `/properties/edit/${property.id}`
                   : `/properties/update/${property.id}`
               }
               className={styles.item__editButton}
-              featureEnabled={features.supportBetaPropertyUpdate}
+              featureEnabled={features.supportPropertyUpdate}
             >
               Edit
             </LinkFeature>

@@ -69,7 +69,7 @@ const AttachmentNoteModal: FunctionComponent<Props> = ({
             data-testid="attachmentNotesModal-sidebar"
           >
             <LinkFeature
-              featureEnabled={features.supportBetaInspectionUploadPhotos}
+              featureEnabled={features.supportInspectionUploadPhotos}
               href={uploadPageLink}
             >
               <MiniPreviewGallery photos={photosDataItems} />
