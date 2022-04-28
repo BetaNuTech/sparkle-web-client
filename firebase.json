@@ -40,28 +40,23 @@
         "type": 301
       },
       {
-        "source":
-          "/properties/:propertyId/update-inspection/:inspectionId/publish-uploads",
+        "source": "/properties/:propertyId/update-inspection/:inspectionId/publish-uploads",
         "destination": "/properties/:propertyId/inspections/edit/:inspectionId/",
         "type": 301
       },
       {
         "source": "/properties/:propertyId/deficient-items/:deficientItemId",
-        "destination":
-          "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
+        "destination": "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
         "type": 301
       },
       {
         "source": "/properties/:propertyId/deficient-items/:deficientItemId/uploads",
-        "destination":
-          "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
+        "destination": "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
         "type": 301
       },
       {
-        "source":
-          "/properties/:propertyId/deficient-items/:deficientItemId/publish-uploads",
-        "destination":
-          "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
+        "source": "/properties/:propertyId/deficient-items/:deficientItemId/publish-uploads",
+        "destination": "/properties/:propertyId/deficient-items/edit/:deficientItemId/",
         "type": 301
       },
       {
@@ -133,17 +128,14 @@
         "source": "/admin/login",
         "destination": "/login/",
         "type": 301
+      },
+      {
+        "source": "/beta/**",
+        "destination": "/",
+        "type": 301
       }
     ],
     "rewrites": [
-      {
-        "source": "/admin{,/**}",
-        "destination": "/index.html"
-      },
-      {
-        "source": "/beta{,/**}",
-        "destination": "/index.html"
-      },
       {
         "source": "**",
         "destination": "/index.html"
