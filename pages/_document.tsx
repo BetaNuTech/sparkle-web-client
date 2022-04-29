@@ -6,9 +6,6 @@ import Document, {
   Main,
   NextScript
 } from 'next/document';
-import Script from 'next/script';
-
-const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
 const config = getConfig() || {};
 const publicRuntimeConfig = config.publicRuntimeConfig || {};
@@ -26,25 +23,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          {GA_TRACKING_ID && (
-            <>
-              <Script
-                async
-                src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-                strategy="lazyOnload"
-              />
-              <Script strategy="lazyOnload">
-                {`
-                  window.dataLayer = window.dataLayer || [];
-                  function gtag(){dataLayer.push(arguments);}
-                  gtag('js', new Date());
-                  gtag('config', '${GA_TRACKING_ID}', {
-                    page_path: window.location.pathname,
-                  });
-                `}
-              </Script>
-            </>
-          )}
           <link
             rel="preload"
             as="image"

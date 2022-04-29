@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { AppProps } from 'next/app';
+import Script from 'next/script';
 import { FirebaseAppProvider } from 'reactfire';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -14,7 +16,7 @@ import currentUser from '../common/utils/currentUser';
 import copyTextToClipboard from '../common/utils/copyTextToClipboard';
 import '../styles/app.scss';
 
-const isProduction = process.env.NODE_ENV === 'production';
+const GA4_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS;
 
 // Copy Firebase Auth token to clipboard
 const getSparkleApiToken = async () => {
@@ -35,7 +37,7 @@ const getSparkleApiToken = async () => {
   }
 };
 
-function MyApp({ Component, pageProps }) {
+function App({ Component, pageProps }: AppProps): JSX.Element {
   const router = useRouter();
 
   // Export the auth token method to global scope
@@ -45,8 +47,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const handleRouteChange = (url) => {
-      /* invoke analytics function only for production */
-      if (isProduction) gtag.pageview(url);
+      if (GA4_MEASUREMENT_ID) gtag.pageview(url);
     };
     router.events.on('routeChangeComplete', handleRouteChange);
     return () => {
@@ -55,25 +56,49 @@ function MyApp({ Component, pageProps }) {
   }, [router.events]);
 
   return (
-    <FirebaseAppProvider firebaseConfig={firebaseConfig}>
-      {/* Initializes Firebase */}
-      <AuthProvider>
-        <PrivateRoute fallback={<AppLoader />}>
-          <NextHeader />
-          <Component {...pageProps} />
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar
-            newestOnTop={false}
-            closeOnClick
-            pauseOnFocusLoss={false}
-            draggable
-            pauseOnHover
+    <>
+      {/* Global Site Tag (gtag.js) - Google Analytics */}
+      {GA4_MEASUREMENT_ID && (
+        <>
+          <Script
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA4_MEASUREMENT_ID}`}
           />
-        </PrivateRoute>
-      </AuthProvider>
-    </FirebaseAppProvider>
+          <Script
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA4_MEASUREMENT_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `
+            }}
+          />
+        </>
+      )}
+      <FirebaseAppProvider firebaseConfig={firebaseConfig}>
+        {/* Initializes Firebase */}
+        <AuthProvider>
+          <PrivateRoute fallback={<AppLoader />}>
+            <NextHeader />
+            <Component {...pageProps} />
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar
+              newestOnTop={false}
+              closeOnClick
+              pauseOnFocusLoss={false}
+              draggable
+              pauseOnHover
+            />
+          </PrivateRoute>
+        </AuthProvider>
+      </FirebaseAppProvider>
+    </>
   );
 }
 
@@ -89,4 +114,4 @@ if (typeof window !== 'undefined') {
   };
 }
 
-export default MyApp;
+export default App;
