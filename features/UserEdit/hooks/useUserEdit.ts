@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   useForm,
   FormState,
@@ -313,6 +313,12 @@ const useUserEdit = (
       Boolean(userProperties[key])
     );
   }, [user, updates]);
+
+  // reset form state
+  // on user change
+  useEffect(() => {
+    reset(defaultValues);
+  }, [user.id]);
 
   return {
     register,

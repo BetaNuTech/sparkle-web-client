@@ -40,6 +40,8 @@ describe('Unit | Features | Users | Hooks | Use User Edit', () => {
     expect(result.current.isDisabled).toBeTruthy();
 
     await act(async () => {
+      // wait to register all input fields
+      await wait(100);
       await result.current.setValue('email', 'test@test.com', {
         shouldValidate: true
       });
