@@ -28,7 +28,7 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
   hasOpenList,
   isPill
 }) => {
-  const showTrelloCardUrl = deficientItem.trelloCardURL;
+  const showTrelloCardUrl = hasOpenList && deficientItem.trelloCardURL;
   const showCreateCardAction = hasOpenList && !deficientItem.trelloCardURL;
 
   if (!isVisible) {
@@ -85,7 +85,7 @@ const DeficientItemEditFormTrelloCard: FunctionComponent<Props> = ({
             className={clsx(
               formStyles.action,
               '-bgc-primary',
-              isPill && formStyles['action--pill']
+              isPill && formStyles['action--fullButton']
             )}
             href={`/properties/edit/${propertyId}/trello`}
             featureEnabled={true} // eslint-disable-line react/jsx-boolean-value
