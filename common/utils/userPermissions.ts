@@ -122,6 +122,9 @@ export const canCreateTeam = (user: userModel): boolean => user.admin;
 // Checks that the user can create property record
 export const canCreateProperty = (user: userModel): boolean => user.admin;
 
+// Checks that the user can create or edit property record
+export const canEditProperty = (user: userModel): boolean => user.admin;
+
 // Checks that the user can re-assign inspection entry against a property
 export const canReassignInspectionProperty = (user: userModel): boolean =>
   user.admin;
@@ -130,8 +133,19 @@ export const canReassignInspectionProperty = (user: userModel): boolean =>
 const hasPropertyAccess = (user: userModel, propertyId: string): boolean =>
   getPropertyLevelAccess(user.properties, user.teams).includes(propertyId);
 
+// Checks if user has access to a team
+export const hasTeamAccess = (user: userModel, teamId: string): boolean =>
+  user.admin || user.corporate || getTeams(user.teams).includes(teamId);
+
 // Checks user has permission to CREATE property inspections
 export const canCreateInspection = (
+  user: userModel,
+  propertyId: string
+): boolean =>
+  user.admin || user.corporate || hasPropertyAccess(user, propertyId);
+
+// Checks user has permission to CREATE property inspections
+export const canViewPropertyProfile = (
   user: userModel,
   propertyId: string
 ): boolean =>

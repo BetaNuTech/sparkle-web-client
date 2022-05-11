@@ -16,6 +16,7 @@ export default function PropertiesPage() {
   );
 
   const loadedUser = userStatus === 'success' && user;
+
   const {
     data: properties,
     memo: propertiesMemo,
@@ -26,7 +27,7 @@ export default function PropertiesPage() {
     status: teamsStatus,
     data: teams,
     memo: teamsMemo
-  } = useTeams(firestore);
+  } = useTeams(firestore, loadedUser);
 
   let isLoaded = false;
   if (

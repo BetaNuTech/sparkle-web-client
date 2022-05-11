@@ -36,25 +36,27 @@ interface PropertyListModel {
   userFacingSortBy?: string;
   forceVisible?: boolean;
   headerTitle?: string;
+  hasEditPropertyAccess: boolean;
   onAddTeam?: () => void;
 }
 
 // Wrapper around team items
 // to look associated property meta data
-const PropertyListTeamItemWrapper: FunctionComponent<PropertyListTeamWrapperModel> =
-  ({ team, teamCalculatedValues, openDeletePrompt }) => {
-    const [propertiesMetaData] = teamCalculatedValues.filter(
-      ({ team: teamId }) => teamId === team.id
-    );
+const PropertyListTeamItemWrapper: FunctionComponent<
+  PropertyListTeamWrapperModel
+> = ({ team, teamCalculatedValues, openDeletePrompt }) => {
+  const [propertiesMetaData] = teamCalculatedValues.filter(
+    ({ team: teamId }) => teamId === team.id
+  );
 
-    return (
-      <TeamItem
-        team={team}
-        teamCalculatedValues={propertiesMetaData}
-        onQueueTeamDelete={openDeletePrompt}
-      />
-    );
-  };
+  return (
+    <TeamItem
+      team={team}
+      teamCalculatedValues={propertiesMetaData}
+      onQueueTeamDelete={openDeletePrompt}
+    />
+  );
+};
 
 // Mobile layout
 const PropertyList: FunctionComponent<PropertyListModel> = ({
@@ -75,13 +77,14 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
   userFacingSortBy,
   forceVisible,
   headerTitle,
+  hasEditPropertyAccess,
   onAddTeam
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
     <>
       {(canAddTeam || canAddProperty) && (
-        <button
+        <div
           className={clsx(
             headStyle.header__button,
             headStyle['header__button--dropdown']
@@ -94,7 +97,7 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
             canAddProperty={canAddProperty}
             onAddTeam={onAddTeam}
           />
-        </button>
+        </div>
       )}
 
       <button
@@ -151,6 +154,7 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
                 property={property}
                 onQueuePropertyDelete={openPropertyDeletePrompt}
                 forceVisible={forceVisible}
+                hasEditPropertyAccess={hasEditPropertyAccess}
               />
             ))
           ) : (

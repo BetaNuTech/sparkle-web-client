@@ -12,7 +12,7 @@ import { MainLayout } from '../../../../common/MainLayout/index';
 import PropertyEdit from '../../../../features/PropertyEdit/index';
 import LoadingHud from '../../../../common/LoadingHud';
 import useFirestoreUser from '../../../../common/hooks/useFirestoreUser';
-import { canCreateProperty } from '../../../../common/utils/userPermissions';
+import { canEditProperty } from '../../../../common/utils/userPermissions';
 import useTrelloIntegration from '../../../../common/hooks/useTrelloIntegration';
 
 const Page: FunctionComponent = () => {
@@ -28,9 +28,11 @@ const Page: FunctionComponent = () => {
   );
   const id = typeof propertyId === 'string' ? propertyId : propertyId[0];
   const isCreatingProperty = id === 'new';
+  const loadedUser = userStatus === 'success' && user;
+
   const { data, status: propertyStatus } = useProperty(firestore, id);
   // Fetch Teams
-  const { data: teams, status: teamsStatus } = useTeams(firestore);
+  const { data: teams, status: teamsStatus } = useTeams(firestore, loadedUser);
   // Fetch Templates
   const { data: templates, status: templatesStatus } = useTemplates(firestore);
   // Fetch all data in template categories
@@ -47,9 +49,9 @@ const Page: FunctionComponent = () => {
   }
 
   // Reject unpermissioned users
-  const canAddProperty = user ? canCreateProperty(user) : false;
-  if (user && !canAddProperty && isCreatingProperty) {
-    sendNotification('Sorry, you do not have permission to create a property', {
+  const canEdit = user ? canEditProperty(user) : false;
+  if (user && !canEdit) {
+    sendNotification('Sorry, you do not have permission to edit a property', {
       type: 'error'
     });
     Router.push('/properties/');

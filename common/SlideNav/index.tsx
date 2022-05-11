@@ -10,7 +10,11 @@ import Logo from '../../public/icons/sparkle/logo.svg';
 import BusinessLogo from '../../public/icons/sparkle/bluestone-logo.svg';
 import CancelIcon from '../../public/icons/sparkle/cancel-simple.svg';
 import UserModel from '../models/user';
-import { canViewTemplates, canViewUsers } from '../utils/userPermissions';
+import {
+  canUpdateSystemSettings,
+  canViewTemplates,
+  canViewUsers
+} from '../utils/userPermissions';
 
 interface Props {
   toggleNavOpen?(): void;
@@ -43,6 +47,7 @@ const SlideNav: FunctionComponent<Props> = ({
 
   const hasTemplateViewAccess = canViewTemplates(user);
   const hasUsersViewAccess = canViewUsers(user);
+  const hasSystemSettingAccess = canUpdateSystemSettings(user);
 
   return (
     <nav className={clsx(styles.slideNav, containerTheme)}>
@@ -117,15 +122,17 @@ const SlideNav: FunctionComponent<Props> = ({
                 </LinkFeature>
               </div>
             )}
-            <div className={styles.slideNav__links__link}>
-              <LinkFeature
-                featureEnabled={features.supportSettings}
-                href="/settings"
-                legacyHref="/admin/settings"
-              >
-                Settings
-              </LinkFeature>
-            </div>
+            {hasSystemSettingAccess && (
+              <div className={styles.slideNav__links__link}>
+                <LinkFeature
+                  featureEnabled={features.supportSettings}
+                  href="/settings"
+                  legacyHref="/admin/settings"
+                >
+                  Settings
+                </LinkFeature>
+              </div>
+            )}
             <div className={styles.slideNav__links__link}>
               <div
                 className={clsx(styles.slideNav__links__signOut, '-cu-pointer')}

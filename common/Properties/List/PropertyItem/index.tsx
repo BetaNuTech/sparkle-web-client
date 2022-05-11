@@ -15,12 +15,14 @@ interface MobileLayoutPropertyItemProps {
   property: propertyModel;
   onQueuePropertyDelete: (property: propertyModel) => void;
   forceVisible?: boolean;
+  hasEditPropertyAccess: boolean;
 }
 
 const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
   property,
   onQueuePropertyDelete,
-  forceVisible
+  forceVisible,
+  hasEditPropertyAccess
 }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
@@ -43,7 +45,7 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
             {/* Main Content */}
             <div
               className={
-                isSwipeOpen
+                isSwipeOpen && hasEditPropertyAccess
                   ? clsx(
                       parentStyles.itemResult__content,
                       parentStyles['itemResult--swipeOpen']
@@ -147,30 +149,32 @@ const PropertyItem: FunctionComponent<MobileLayoutPropertyItemProps> = ({
             </div>
 
             {/* Swipe Reveal Actions */}
-            <div
-              className={clsx(
-                parentStyles.swipeReveal,
-                isSwipeOpen && parentStyles.swipeReveal__reveal
-              )}
-            >
-              <LinkFeature
-                href={
-                  features.supportPropertyUpdate
-                    ? `/properties/edit/${property.id}`
-                    : `/properties/update/${property.id}`
-                }
-                className={parentStyles.swipeReveal__editButton}
-                featureEnabled={features.supportPropertyUpdate}
+            {hasEditPropertyAccess && (
+              <div
+                className={clsx(
+                  parentStyles.swipeReveal,
+                  isSwipeOpen && parentStyles.swipeReveal__reveal
+                )}
               >
-                Edit
-              </LinkFeature>
-              <button
-                className={parentStyles.swipeReveal__deleteButton}
-                onClick={() => onQueuePropertyDelete(property)}
-              >
-                Delete
-              </button>
-            </div>
+                <LinkFeature
+                  href={
+                    features.supportPropertyUpdate
+                      ? `/properties/edit/${property.id}`
+                      : `/properties/update/${property.id}`
+                  }
+                  className={parentStyles.swipeReveal__editButton}
+                  featureEnabled={features.supportPropertyUpdate}
+                >
+                  Edit
+                </LinkFeature>
+                <button
+                  className={parentStyles.swipeReveal__deleteButton}
+                  onClick={() => onQueuePropertyDelete(property)}
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

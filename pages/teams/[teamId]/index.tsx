@@ -1,5 +1,5 @@
 import 'firebase/firestore';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import { useUser, useFirestore } from 'reactfire';
 import { MainLayout } from '../../../common/MainLayout';
@@ -10,6 +10,7 @@ import useFirestoreUser from '../../../common/hooks/useFirestoreUser';
 import LoadingHud from '../../../common/LoadingHud';
 import useNotifications from '../../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../../common/services/notifications'; // eslint-disable-line
+import { hasTeamAccess } from '../../../common/utils/userPermissions';
 
 const Page: FunctionComponent = () => {
   const firestore = useFirestore();
@@ -57,6 +58,20 @@ const Page: FunctionComponent = () => {
   ) {
     isLoaded = true;
   }
+
+  // using this useEffect so it only
+  // sends single notification to user
+  useEffect(() => {
+    // Redirect to properties
+    // if user dont have access to team
+    if (userStatus === 'success' && user && !hasTeamAccess(user, id)) {
+      sendNotification('You do not have access to this team', {
+        type: 'error'
+      });
+      Router.push('/properties/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userStatus, user, id]);
 
   return (
     <MainLayout user={user}>

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import errorReports from '../../../common/services/api/errorReports';
 import userModel from '../../../common/models/user';
 import { getLevelName, getTeams } from '../../../common/utils/userPermissions';
@@ -7,8 +6,7 @@ import teamsApi, {
 } from '../../../common/services/firestore/teams';
 
 const PREFIX = 'features: properties: hooks: useTeams:';
-interface useTeamsResult extends teamsCollectionResult {
-  memo: string;
+interface Result extends teamsCollectionResult {
   handlers: any;
 }
 
@@ -19,27 +17,26 @@ const handlers = {};
 export default function useTeams(
   firestore: any, // eslint-disable-line
   user?: userModel
-): useTeamsResult {
-  const [memo, setMemo] = useState('[]');
+): Result {
   // Return all users if no permision
-  const permissionLevel = user ? getLevelName(user) : 'admin';
+  const permissionLevel = getLevelName(user);
+  const teamIds = user ? getTeams(user.teams || {}) : [];
+  const hasTeams = teamIds.length > 0;
 
   // No access payload
   const payload = {
     status: 'loading',
     error: null,
     data: [],
-    handlers,
-    memo
+    handlers
   };
 
-  // Load all teams for admin & corporate
-  if (['admin', 'corporate'].includes(permissionLevel)) {
-    const result = teamsApi.findAll(firestore);
-    Object.assign(payload, result, { handlers });
-  } else if (['teamLead', 'propertyMember'].includes(permissionLevel)) {
-    const teamIds = getTeams(user.teams);
+  let result = null;
 
+  // Load all teams for admin & corporate
+  if (user && ['admin', 'corporate'].includes(permissionLevel)) {
+    result = teamsApi.findAll(firestore);
+  } else if (user && hasTeams) {
     if (teamIds.length > 10) {
       teamIds.splice(10);
       // Log issue and send error report
@@ -52,21 +49,15 @@ export default function useTeams(
       errorReports.send(wrappedErr); // eslint-disable-line
     }
 
-    const result = teamsApi.queryRecords(firestore, teamIds);
+    result = teamsApi.queryRecords(firestore, teamIds);
     Object.assign(payload, result, { handlers });
+  } else {
+    // Fix for requiring all hooks to call
+    // on every render
+    result = teamsApi.queryRecords(firestore, []);
   }
 
-  // Notify of updates
-  // by updating memo
-  /* eslint-disable */
-  useEffect(() => {
-    /* eslint-enable */
-    const updated = JSON.stringify(payload.data);
-
-    if (memo !== updated) {
-      setMemo(updated);
-    }
-  });
+  Object.assign(payload, result, { handlers });
 
   return payload;
 }
