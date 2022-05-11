@@ -13,6 +13,7 @@ import usePropertiesSorting from '../../common/hooks/properties/useSorting';
 import PropertyList from '../../common/Properties/List';
 import PropertyGrid from '../../common/Properties/Grid';
 import Container from '../../common/Properties/Container';
+import { canEditProperty } from '../../common/utils/userPermissions';
 
 interface Props {
   user: userModel;
@@ -70,6 +71,7 @@ const TeamProfile: FunctionComponent<Props> = ({
     queuePropertyForDelete(null);
   };
 
+  const hasEditPropertyAccess = canEditProperty(user);
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -90,7 +92,11 @@ const TeamProfile: FunctionComponent<Props> = ({
   );
 
   const grid = (
-    <PropertyGrid properties={sortedProperties} forceVisible={forceVisible} />
+    <PropertyGrid
+      properties={sortedProperties}
+      forceVisible={forceVisible}
+      hasEditPropertyAccess={hasEditPropertyAccess}
+    />
   );
 
   return (
@@ -109,6 +115,7 @@ const TeamProfile: FunctionComponent<Props> = ({
           userFacingSortBy={userFacingSortBy}
           forceVisible={forceVisible}
           headerTitle={team.name}
+          hasEditPropertyAccess={hasEditPropertyAccess}
         />
       )}
 

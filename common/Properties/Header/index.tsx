@@ -41,7 +41,7 @@ const Header: FunctionComponent<Props> = ({
     <aside className={styles.header__controls}>
       {(canAddTeam || canAddProperty) && (
         <div className={styles.header__item} data-testid="property-list-create">
-          <button
+          <div
             className={clsx(
               styles.header__item__createButton,
               styles['header__item__createButton--dropdown']
@@ -56,7 +56,7 @@ const Header: FunctionComponent<Props> = ({
               canAddProperty={canAddProperty}
               onAddTeam={onAddTeam}
             />
-          </button>
+          </div>
         </div>
       )}
 

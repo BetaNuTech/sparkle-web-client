@@ -9,7 +9,7 @@ import teamModel from '../../models/team';
 export interface teamsCollectionResult {
   status: string;
   error?: Error;
-  data: Array<teamModel>;
+  data: teamModel[];
 }
 
 export interface teamResult {
@@ -47,27 +47,28 @@ export default {
     let status = 'success';
     let error = null;
     let data = [];
+
     // If we do not have any ids,
-    // do not call firestore query
-    if (ids.length > 0) {
-      const query = firestore
-        .collection(fbCollections.teams)
-        .where(firebase.firestore.FieldPath.documentId(), 'in', ids);
+    // call query with undefined id
+    // to avoid conditional hook rendering error
+    const dbIds = ids.length > 0 ? [...ids] : ['undefined'];
+    const query = firestore
+      .collection(fbCollections.teams)
+      .where(firebase.firestore.FieldPath.documentId(), 'in', dbIds);
 
-      const {
-        status: queryStatus,
-        error: queryError,
-        data: queryData = []
-      } = useFirestoreCollectionData(query, {
-        idField: 'id'
-      });
+    const {
+      status: queryStatus,
+      error: queryError,
+      data: queryData = []
+    } = useFirestoreCollectionData(query, {
+      idField: 'id'
+    });
 
-      status = queryStatus;
-      error = queryError;
+    status = queryStatus;
+    error = queryError;
 
-      // Cast firestore data into team records
-      data = queryData.map((itemData: any) => itemData as teamModel);
-    }
+    // Cast firestore data into team records
+    data = queryData.map((itemData: any) => itemData as teamModel);
 
     // Result
     return { status, error, data };

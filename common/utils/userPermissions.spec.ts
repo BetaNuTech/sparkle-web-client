@@ -170,6 +170,19 @@ describe('Unit | Common | Utils | User Permissions', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it should only allow admins to create and edit property record', () => {
+    const expected = [true, false, false, false, false];
+
+    const actual = [
+      util.canEditProperty(admin),
+      util.canEditProperty(corporate),
+      util.canEditProperty(teamLead),
+      util.canEditProperty(propertyMember),
+      util.canEditProperty(noAccess)
+    ];
+    expect(actual).toEqual(expected);
+  });
+
   test('it should only allow admins to re-assign inspections', () => {
     const expected = [true, false, false, false, false];
 
@@ -199,6 +212,27 @@ describe('Unit | Common | Utils | User Permissions', () => {
       util.canCreateInspection(updatedTeamLead, propertyId),
       util.canCreateInspection(updatedPropertyMember, propertyId),
       util.canCreateInspection(noAccess, propertyId)
+    ];
+
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should only allow admins, corporates, team leads, and property level users to view property profile', () => {
+    const propertyId = 'property-1';
+    const expected = [true, true, true, true, false];
+    const updatedTeamLead = Object.assign(deepClone(teamLead), {
+      teams: { 'team-1': { [propertyId]: true } }
+    });
+    const updatedPropertyMember = Object.assign(deepClone(propertyMember), {
+      properties: { [propertyId]: true }
+    });
+
+    const actual = [
+      util.canViewPropertyProfile(admin, propertyId),
+      util.canViewPropertyProfile(corporate, propertyId),
+      util.canViewPropertyProfile(updatedTeamLead, propertyId),
+      util.canViewPropertyProfile(updatedPropertyMember, propertyId),
+      util.canViewPropertyProfile(noAccess, propertyId)
     ];
 
     expect(actual).toEqual(expected);

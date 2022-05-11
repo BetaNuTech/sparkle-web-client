@@ -7,11 +7,13 @@ import Item from './Item';
 interface Props {
   properties: Array<propertyModel>;
   forceVisible?: boolean;
+  hasEditPropertyAccess: boolean;
 }
 
 const PropertyGrid: FunctionComponent<Props> = ({
   properties,
-  forceVisible
+  forceVisible,
+  hasEditPropertyAccess
 }) => (
   <ul className={styles.propertyGrid} data-testid="properties-list">
     {properties.length ? (
@@ -20,6 +22,7 @@ const PropertyGrid: FunctionComponent<Props> = ({
           key={property.id}
           property={property}
           forceVisible={forceVisible}
+          hasEditPropertyAccess={hasEditPropertyAccess}
         />
       ))
     ) : (

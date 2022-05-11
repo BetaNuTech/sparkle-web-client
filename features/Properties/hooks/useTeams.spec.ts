@@ -64,7 +64,8 @@ describe('Unit | Features | Properties | Hooks | Use Teams', () => {
   });
 
   test('should not request any teams for users without access', () => {
-    const expected = [false, false];
+    const expected = [];
+
     const findAll = sinon
       .stub(teamsApi, 'findAll')
       .returns(emptyCollectionResult);
@@ -73,8 +74,10 @@ describe('Unit | Features | Properties | Hooks | Use Teams', () => {
       .returns(emptyCollectionResult);
     renderHook(() => useTeams({}, noAccess));
 
-    const actual = [findAll.called, queryRecords.called];
-    expect(actual).toEqual(expected);
+    const result = queryRecords.firstCall || { args: [] };
+    const actual = result.args[1];
+    expect(findAll.called, 'find all not called').toEqual(false);
+    expect(actual, 'called query all with empty array').toEqual(expected);
   });
 
   test('should request assigned teams for team lead user', () => {

@@ -40,7 +40,7 @@ const Page: React.FC = (): ReactElement => {
   );
 
   // Load all teams
-  const { status: teamsStatus, data: teams } = useTeams(firestore);
+  const { status: teamsStatus, data: teams } = useTeams(firestore, loadedUser);
 
   const canEdit =
     getLevelName(loadedUser) === 'admin' || authUser.uid === userId;

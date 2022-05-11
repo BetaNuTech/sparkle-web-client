@@ -29,7 +29,7 @@ export default function useMoveInspection(
     firestore,
     user
   );
-  const { status: teamsStatus, data: teams } = useTeams(firestore);
+  const { status: teamsStatus, data: teams } = useTeams(firestore, user);
   let isLoaded = false;
 
   if (propertyStatus === 'success' && teamsStatus === 'success') {

@@ -7,7 +7,8 @@ import useDeleteTeam from './hooks/useDeleteTeam';
 import usePropertiesSorting from '../../common/hooks/properties/useSorting';
 import {
   canCreateTeam,
-  canCreateProperty
+  canCreateProperty,
+  canEditProperty
 } from '../../common/utils/userPermissions';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
@@ -54,6 +55,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   // Lookup user permissions
   const hasCreateTeamPermission = canCreateTeam(user);
   const hasCreatePropertyPermission = canCreateProperty(user);
+  const hasEditPropertyAccess = canEditProperty(user);
 
   // User notifications setup
   /* eslint-disable */
@@ -142,7 +144,11 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   );
 
   const grid = (
-    <PropertyGrid properties={sortedProperties} forceVisible={forceVisible} />
+    <PropertyGrid
+      properties={sortedProperties}
+      forceVisible={forceVisible}
+      hasEditPropertyAccess={hasEditPropertyAccess}
+    />
   );
 
   const sidebar = (
@@ -173,6 +179,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           nextPropertiesSort={nextPropertiesSort}
           userFacingSortBy={userFacingSortBy}
           forceVisible={forceVisible}
+          hasEditPropertyAccess={hasEditPropertyAccess}
           onAddTeam={() => setIsAddTeamPromptVisible(true)}
         />
       )}

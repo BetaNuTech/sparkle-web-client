@@ -18,12 +18,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
 }) => (
   <Dropdown>
     {canAddTeam && (
-      <DropdownButton
-        href="/teams/edit/new"
-        featureEnabled={features.supportTeamCreate}
-        testid="dropdown-add-team"
-        onClick={onAddTeam}
-      >
+      <DropdownButton testid="dropdown-add-team" onClick={onAddTeam}>
         Add Team
       </DropdownButton>
     )}

@@ -11,9 +11,14 @@ import getLastInspectionEntry from '../../../../features/Properties/utils/getLas
 interface Props {
   property: propertyModel;
   forceVisible?: boolean;
+  hasEditPropertyAccess: boolean;
 }
 
-const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
+const Item: FunctionComponent<Props> = ({
+  property,
+  forceVisible,
+  hasEditPropertyAccess
+}) => {
   const lastInspectionEntry = getLastInspectionEntry(property);
   const placeholderRef = useRef(null);
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
@@ -106,17 +111,19 @@ const Item: FunctionComponent<Props> = ({ property, forceVisible }) => {
               />
             </LinkFeature>
 
-            <LinkFeature
-              href={
-                features.supportPropertyUpdate
-                  ? `/properties/edit/${property.id}`
-                  : `/properties/update/${property.id}`
-              }
-              className={styles.item__editButton}
-              featureEnabled={features.supportPropertyUpdate}
-            >
-              Edit
-            </LinkFeature>
+            {hasEditPropertyAccess && (
+              <LinkFeature
+                href={
+                  features.supportPropertyUpdate
+                    ? `/properties/edit/${property.id}`
+                    : `/properties/update/${property.id}`
+                }
+                className={styles.item__editButton}
+                featureEnabled={features.supportPropertyUpdate}
+              >
+                Edit
+              </LinkFeature>
+            )}
           </footer>
         </>
       )}

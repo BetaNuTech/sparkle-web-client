@@ -35,7 +35,7 @@ const Page: React.FC = (): ReactElement => {
   );
 
   // Fetch Teams
-  const { data: teams, status: teamsStatus } = useTeams(firestore);
+  const { data: teams, status: teamsStatus } = useTeams(firestore, user);
 
   // Fetch inspection
   const inspectionIdFinal =
