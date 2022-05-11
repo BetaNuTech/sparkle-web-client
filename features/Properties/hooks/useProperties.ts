@@ -1,10 +1,8 @@
-import { useEffect, useState } from 'react';
 import errorReports from '../../../common/services/api/errorReports';
 import userModel from '../../../common/models/user';
 import {
   getLevelName,
-  getProperties,
-  getLeadershipProperties
+  getPropertyLevelAccess
 } from '../../../common/utils/userPermissions';
 import propertiesApi, {
   propertiesCollectionResult
@@ -12,7 +10,6 @@ import propertiesApi, {
 
 const PREFIX = 'features: properties: hooks: useProperties:';
 interface usePropertiesResult extends propertiesCollectionResult {
-  memo: string;
   handlers: any;
 }
 
@@ -24,37 +21,30 @@ export default function useProperties(
   firestore: any, // eslint-disable-line
   user?: userModel
 ): usePropertiesResult {
-  const [memo, setMemo] = useState('[]');
   const permissionLevel = getLevelName(user);
+
+  // Get the properties of user
+  // Collect all unique property id's from
+  // both users team property and user property
+  // memberships, filter for unique
+  const propertyIds = (
+    user ? getPropertyLevelAccess(user.properties || {}, user.teams || {}) : []
+  ).filter((id, i, arr) => arr.indexOf(id) === i); // unique only
+  const hasProperties = propertyIds.length > 0;
 
   // No access payload
   const payload = {
     status: 'loading',
     error: null,
     data: [],
-    handlers,
-    memo
+    handlers
   };
 
   let result = null;
   // Load all properties for admin & corporate
-  if (['admin', 'corporate'].includes(permissionLevel)) {
+  if (user.admin || user.corporate) {
     result = propertiesApi.findAll(firestore);
-  } else if (['teamLead', 'propertyMember'].includes(permissionLevel)) {
-    // Get the properties of user
-    const isTeamLead = permissionLevel === 'teamLead';
-    const teamProperties = isTeamLead
-      ? getLeadershipProperties(user && user.teams)
-      : [];
-
-    // Collect all unique property id's from
-    // both users leadership teams and property
-    // memberships, filter for unique
-    const propertyIds = [
-      ...teamProperties,
-      ...getProperties(user.properties)
-    ].filter((id, i, arr) => arr.indexOf(id) === i);
-
+  } else if (user && hasProperties) {
     if (propertyIds.length > 10) {
       propertyIds.splice(10);
 
@@ -76,18 +66,6 @@ export default function useProperties(
   }
 
   Object.assign(payload, result, { handlers });
-
-  // Notify of updates
-  // by updating memo
-  /* eslint-disable */
-  useEffect(() => {
-    /* eslint-enable */
-    const updated = JSON.stringify(payload.data);
-
-    if (memo !== updated) {
-      setMemo(updated);
-    }
-  });
 
   return payload;
 }

@@ -50,8 +50,8 @@ describe('Unit | Features | Properties | Hooks | Use Teams', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('should not request all teams for corporate team leads', () => {
-    const expected = false;
+  test('should request all teams for corporate team leads', () => {
+    const expected = true;
     const corpTeamLead = JSON.parse(JSON.stringify(teamLead));
     corpTeamLead.corporate = true; // sanity check
     const findAll = sinon
@@ -78,18 +78,6 @@ describe('Unit | Features | Properties | Hooks | Use Teams', () => {
     const actual = result.args[1];
     expect(findAll.called, 'find all not called').toEqual(false);
     expect(actual, 'called query all with empty array').toEqual(expected);
-  });
-
-  test('should request assigned teams for team lead user', () => {
-    const expected = userUtils.getTeams(teamLead.teams);
-    const queryRecords = sinon
-      .stub(teamsApi, 'queryRecords')
-      .returns(emptyCollectionResult);
-    renderHook(() => useTeams({}, teamLead));
-
-    const result = queryRecords.firstCall || { args: [] };
-    const actual = result.args[1];
-    expect(actual).toEqual(expected);
   });
 
   test('should request assigned teams for property user', () => {

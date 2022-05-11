@@ -37,13 +37,7 @@ describe('Unit | Common | Utils | User Permissions', () => {
 
   test('it returns all a users team lead properties', () => {
     const expected = Object.keys(Object.values(teamLead.teams)[0]);
-    const actual = util.getLeadershipProperties(teamLead.teams);
-    expect(actual).toEqual(expected);
-  });
-
-  test('it returns teams for a team lead user', () => {
-    const expected = [Object.keys(teamLead.teams)[0]];
-    const actual = util.getLeadershipTeams(teamLead.teams);
+    const actual = util.getTeamsProperties(teamLead.teams);
     expect(actual).toEqual(expected);
   });
 
