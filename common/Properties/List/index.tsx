@@ -36,6 +36,7 @@ interface PropertyListModel {
   userFacingSortBy?: string;
   forceVisible?: boolean;
   headerTitle?: string;
+  onAddTeam?: () => void;
 }
 
 // Wrapper around team items
@@ -73,7 +74,8 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
   nextPropertiesSort,
   userFacingSortBy,
   forceVisible,
-  headerTitle
+  headerTitle,
+  onAddTeam
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -87,7 +89,11 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
           data-testid="property-list-create"
         >
           <AddIcon />
-          <Dropdown canAddTeam={canAddTeam} canAddProperty={canAddProperty} />
+          <Dropdown
+            canAddTeam={canAddTeam}
+            canAddProperty={canAddProperty}
+            onAddTeam={onAddTeam}
+          />
         </button>
       )}
 

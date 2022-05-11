@@ -10,8 +10,10 @@ describe('Unit | Common | Dropdown | Link', () => {
     const { container } = render(<DropdownAdd {...props} />);
 
     const anchors = container.querySelectorAll('a');
+    const buttons = container.querySelectorAll('button');
 
-    expect(anchors).toHaveLength(2);
+    expect(anchors).toHaveLength(1);
+    expect(buttons).toHaveLength(1);
   });
 
   it('should not show add team option without create team permission', () => {
