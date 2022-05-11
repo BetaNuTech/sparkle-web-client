@@ -1,0 +1,42 @@
+@import '../../../styles/index.scss';
+
+.container {
+  height: 100%;
+  max-height: rem-calc(557);
+  padding: 0;
+  background-color: $white;
+  overflow-x: hidden;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.headerButton {
+  padding: $global-padding;
+  position: static;
+  background: transparent;
+  border-width: 0;
+  color: $white;
+
+  &:disabled {
+    opacity: $button-opacity-disabled;
+  }
+}
+
+.subHeading {
+  align-self: center;
+  margin-bottom: $global-mlg-padding;
+  margin-top: $global-md-padding;
+  color: $gray-darker;
+  font-weight: 500;
+}
+
+.cancelButton {
+  justify-self: center;
+  border: none;
+  background-color: transparent;
+  color: $alert-color;
+}

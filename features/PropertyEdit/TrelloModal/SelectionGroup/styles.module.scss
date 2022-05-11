@@ -1,0 +1,35 @@
+@import '../../../../styles/index.scss';
+
+.container {
+  margin: $global-xsm-padding $global-mlg-padding;
+  text-align: center;
+}
+
+.title {
+  color: $gray-dark;
+  font-size: $medium-large-font-size;
+}
+
+.label {
+  line-height: $global-md-padding;
+  text-align: left;
+  color: $primary-dark-color;
+  font-size: $paragraph-font-size;
+}
+
+.dropdown {
+  width: 100%;
+  display: block;
+  padding: $global-sm-padding $global-sm-padding $global-padding;
+  margin: 0 0 $global-padding;
+  background-color: $white;
+  border: 1px solid $gray-darker;
+  border-radius: rem-calc(3);
+  text-align: center;
+  cursor: pointer;
+
+  &--disabled {
+    opacity: $button-opacity-disabled;
+    pointer-events: none;
+  }
+}

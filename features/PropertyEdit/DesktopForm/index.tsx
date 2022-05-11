@@ -1,12 +1,14 @@
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
-import { FunctionComponent, ChangeEvent } from 'react';
+import { FunctionComponent, ChangeEvent, MouseEvent } from 'react';
 import styles from './styles.module.scss';
 import propertyModel from '../../../common/models/property';
 import ErrorLabel from '../../../common/ErrorLabel';
 import ChevronIcon from '../../../public/icons/ios/chevron.svg';
 import teamModel from '../../../common/models/team';
 import ErrorList from '../../../common/ErrorList';
+import LinkFeature from '../../../common/LinkFeature';
+import features from '../../../config/features';
 
 interface Props {
   isOnline?: boolean;
@@ -22,12 +24,13 @@ interface Props {
   userRequestErrors: string[];
   openUpdateTeamModal: (e) => void;
   openTemplatesEditModal: (e) => void;
-  openTrello: (e) => void;
+  openTrello: (e: MouseEvent<HTMLButtonElement>) => void;
   onSubmit: (action: any) => void;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   removePropertyImage: () => void;
   removeLogo: () => void;
   onQueuePropertyDelete: (e, property: propertyModel) => void;
+  isTrelloAuthorized: boolean;
 }
 
 const PropertyDesktopForm: FunctionComponent<Props> = ({
@@ -49,7 +52,8 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
   onSubmit,
   removePropertyImage,
   removeLogo,
-  onQueuePropertyDelete
+  onQueuePropertyDelete,
+  isTrelloAuthorized
 }) => {
   const router = useRouter();
 
@@ -182,13 +186,24 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
               TEMPLATES
             </button>
             {/* Trello Button */}
-            <button
-              disabled={!property.id}
-              onClick={(e) => openTrello(e)}
-              className={styles.propertyEditDesktop__trelloButton}
-            >
-              TRELLO
-            </button>
+            {isTrelloAuthorized ? (
+              <button
+                disabled={!property.id}
+                onClick={(e) => openTrello(e)}
+                className={styles.propertyEditDesktop__trelloButton}
+              >
+                TRELLO
+              </button>
+            ) : (
+              <LinkFeature
+                featureEnabled={features.supportSettings}
+                href="/settings"
+                legacyHref="/admin/settings"
+                className={styles.propertyEditDesktop__trelloButton}
+              >
+                TRELLO
+              </LinkFeature>
+            )}
           </div>
         </div>
         <div className={styles.propertyEditDesktop__container__fields}>

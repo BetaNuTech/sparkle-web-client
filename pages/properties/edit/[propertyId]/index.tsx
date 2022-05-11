@@ -13,6 +13,7 @@ import PropertyEdit from '../../../../features/PropertyEdit/index';
 import LoadingHud from '../../../../common/LoadingHud';
 import useFirestoreUser from '../../../../common/hooks/useFirestoreUser';
 import { canCreateProperty } from '../../../../common/utils/userPermissions';
+import useTrelloIntegration from '../../../../common/hooks/useTrelloIntegration';
 
 const Page: FunctionComponent = () => {
   const firestore = useFirestore();
@@ -35,6 +36,10 @@ const Page: FunctionComponent = () => {
   // Fetch all data in template categories
   const { data: templateCategories, status: tamplateCatStatus } =
     useTemplateCategories(firestore);
+
+  // Load Trello integration
+  const { data: trelloIntegration, status: trelloIntegrationStatus } =
+    useTrelloIntegration(firestore);
 
   let property = { name: '' };
   if (!isCreatingProperty) {
@@ -73,7 +78,8 @@ const Page: FunctionComponent = () => {
     userStatus === 'success' &&
     teamsStatus === 'success' &&
     templatesStatus === 'success' &&
-    tamplateCatStatus === 'success'
+    tamplateCatStatus === 'success' &&
+    trelloIntegrationStatus === 'success'
   ) {
     isLoaded = true;
   }
@@ -87,6 +93,7 @@ const Page: FunctionComponent = () => {
           teams={teams}
           templates={templates}
           templateCategories={templateCategories}
+          trelloIntegration={trelloIntegration}
         />
       ) : (
         <LoadingHud />
