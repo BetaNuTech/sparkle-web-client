@@ -20,6 +20,7 @@ interface Props {
   canAddTeam: boolean;
   canAddProperty: boolean;
   headerTitle?: string;
+  onAddTeam?: () => void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -28,7 +29,8 @@ const Header: FunctionComponent<Props> = ({
   onSortChange,
   canAddTeam,
   canAddProperty,
-  headerTitle
+  headerTitle,
+  onAddTeam
 }) => (
   <header className={styles.header} data-testid="properties-header">
     {/* Title And Create Button */}
@@ -49,7 +51,11 @@ const Header: FunctionComponent<Props> = ({
             <span className="iconAddButton">
               <AddIcon />
             </span>
-            <Dropdown canAddTeam={canAddTeam} canAddProperty={canAddProperty} />
+            <Dropdown
+              canAddTeam={canAddTeam}
+              canAddProperty={canAddProperty}
+              onAddTeam={onAddTeam}
+            />
           </button>
         </div>
       )}

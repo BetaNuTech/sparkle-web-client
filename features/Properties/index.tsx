@@ -21,6 +21,8 @@ import Sidebar from './Sidebar';
 import DeleteTeamPrompt from './DeleteTeamPrompt';
 import PropertyList from '../../common/Properties/List';
 import PropertyGrid from '../../common/Properties/Grid';
+import AddTeamPrompt from './AddTeamPrompt';
+import useTeamForm from './hooks/useTeamForm';
 
 interface PropertiesModel {
   user: userModel;
@@ -57,6 +59,14 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   /* eslint-disable */
   const sendNotification = notifications.createPublisher(useNotifications());
   /* eslint-enable */
+
+  const {
+    createTeam,
+    isLoading,
+    errors,
+    isVisible: isAddTeamPromptVisible,
+    setIsVisible: setIsAddTeamPromptVisible
+  } = useTeamForm(sendNotification);
 
   // Queue and Delete Property
   const [isDeletePropertyPromptVisible, setDeletePropertyPromptVisible] =
@@ -99,6 +109,10 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     queueTeamForDelete(null);
   };
 
+  const onCreateTeam = (teamName: string) => {
+    createTeam({ name: teamName });
+  };
+
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -123,6 +137,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
       onSortChange={onSortChange}
       canAddTeam={hasCreateTeamPermission}
       canAddProperty={hasCreatePropertyPermission}
+      onAddTeam={() => setIsAddTeamPromptVisible(true)}
     />
   );
 
@@ -158,6 +173,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           nextPropertiesSort={nextPropertiesSort}
           userFacingSortBy={userFacingSortBy}
           forceVisible={forceVisible}
+          onAddTeam={() => setIsAddTeamPromptVisible(true)}
         />
       )}
 
@@ -168,6 +184,13 @@ const Properties: FunctionComponent<PropertiesModel> = ({
         isVisible={isDeleteTeamPromptVisible}
         onClose={closeDeleteTeamPrompt}
         onConfirm={confirmTeamDelete}
+      />
+      <AddTeamPrompt
+        isVisible={isAddTeamPromptVisible}
+        onClose={() => setIsAddTeamPromptVisible(false)}
+        onConfirm={onCreateTeam}
+        isLoading={isLoading}
+        errors={errors}
       />
     </>
   );

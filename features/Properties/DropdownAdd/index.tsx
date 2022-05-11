@@ -1,25 +1,31 @@
 import { FunctionComponent } from 'react';
-import Dropdown, { DropdownLink } from '../../../common/Dropdown';
+import Dropdown, {
+  DropdownButton,
+  DropdownLink
+} from '../../../common/Dropdown';
 import features from '../../../config/features';
 
 interface Props {
   canAddTeam: boolean;
   canAddProperty: boolean;
+  onAddTeam(): void;
 }
 
 const DropdownAdd: FunctionComponent<Props> = ({
   canAddTeam,
-  canAddProperty
+  canAddProperty,
+  onAddTeam
 }) => (
   <Dropdown>
     {canAddTeam && (
-      <DropdownLink
+      <DropdownButton
         href="/teams/edit/new"
         featureEnabled={features.supportTeamCreate}
         testid="dropdown-add-team"
+        onClick={onAddTeam}
       >
         Add Team
-      </DropdownLink>
+      </DropdownButton>
     )}
     {canAddProperty && (
       <DropdownLink
