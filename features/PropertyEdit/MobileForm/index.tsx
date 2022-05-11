@@ -1,10 +1,12 @@
 import clsx from 'clsx';
-import { FunctionComponent, ChangeEvent } from 'react';
+import { FunctionComponent, ChangeEvent, MouseEvent } from 'react';
 import propertyModel from '../../../common/models/property';
 import styles from './styles.module.scss';
 import ErrorLabel from '../../../common/ErrorLabel';
 import teamModel from '../../../common/models/team';
 import ErrorList from '../../../common/ErrorList';
+import LinkFeature from '../../../common/LinkFeature';
+import features from '../../../config/features';
 
 interface Props {
   isOnline: boolean;
@@ -17,10 +19,11 @@ interface Props {
   formErrors?: any;
   userRequestErrors: string[];
   openUpdateTeamModal: (e: any) => void;
-  openTrello: (e: any) => void;
+  openTrello: (e: MouseEvent<HTMLButtonElement>) => void;
   openTemplatesEditModal: (e: any) => void;
   handleChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onQueuePropertyDelete: (e, property: propertyModel) => void;
+  isTrelloAuthorized: boolean;
 }
 
 const PropertyMobileForm: FunctionComponent<Props> = ({
@@ -37,7 +40,8 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
   openTemplatesEditModal,
   openTrello,
   handleChange,
-  onQueuePropertyDelete
+  onQueuePropertyDelete,
+  isTrelloAuthorized
 }) => (
   <>
     <ErrorList errors={userRequestErrors} />
@@ -308,13 +312,24 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
         {/* Trello Button */}
         <div className={styles.propertyEditMobile__formGroup}>
           <div className={styles.propertyEditMobile__formGroup__control}>
-            <button
-              disabled={!property.id}
-              onClick={(e) => openTrello(e)}
-              className={styles.propertyEditMobile__trelloButton}
-            >
-              TRELLO
-            </button>
+            {isTrelloAuthorized ? (
+              <button
+                disabled={!property.id}
+                onClick={(e) => openTrello(e)}
+                className={styles.propertyEditMobile__trelloButton}
+              >
+                TRELLO
+              </button>
+            ) : (
+              <LinkFeature
+                featureEnabled={features.supportSettings}
+                href="/settings"
+                legacyHref="/admin/settings"
+                className={styles.propertyEditMobile__trelloButton}
+              >
+                TRELLO
+              </LinkFeature>
+            )}
           </div>
         </div>
       </div>

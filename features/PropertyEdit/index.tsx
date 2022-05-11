@@ -1,4 +1,4 @@
-import { FunctionComponent, useState, ChangeEvent } from 'react';
+import { FunctionComponent, useState, ChangeEvent, MouseEvent } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import Router from 'next/router';
 import { useFirestore } from 'reactfire';
@@ -23,6 +23,8 @@ import teamModel from '../../common/models/team';
 import DeletePropertyPrompt from '../../common/prompts/DeletePropertyPrompt';
 import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
+import TrelloIntegration from '../../common/models/trelloIntegration';
+import TrelloModal from './TrelloModal';
 
 interface Props {
   isNavOpen?: boolean;
@@ -34,6 +36,7 @@ interface Props {
   teams: teamModel[];
   templates: templateModel[];
   templateCategories: templateCategoryModel[];
+  trelloIntegration: TrelloIntegration;
 }
 
 const PropertyEdit: FunctionComponent<Props> = ({
@@ -44,7 +47,8 @@ const PropertyEdit: FunctionComponent<Props> = ({
   property,
   teams,
   templates,
-  templateCategories
+  templateCategories,
+  trelloIntegration
 }) => {
   const firestore = useFirestore();
 
@@ -58,9 +62,9 @@ const PropertyEdit: FunctionComponent<Props> = ({
   /* eslint-enable */
 
   // Redirect to Trello page
-  const openTrello = (e) => {
+  const openTrello = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    Router.push(`/properties/edit/${property.id}/trello`);
+    setTrelloModalVisible(true);
   };
 
   // Form submission hook
@@ -74,6 +78,10 @@ const PropertyEdit: FunctionComponent<Props> = ({
 
   // Open & Close Team Modal
   const [isUpdateTeamModalVisible, setUpdateTeamModalVisible] = useState(false);
+
+  // Open & Close Trello Modal
+  const [isTrelloModalVisible, setTrelloModalVisible] = useState(false);
+
   const openUpdateTeamModal = (e) => {
     e.preventDefault();
     setUpdateTeamModalVisible(true);
@@ -222,6 +230,13 @@ const PropertyEdit: FunctionComponent<Props> = ({
     toggleDeletingProperty();
   };
 
+  const onLoadDataError = () => {
+    sendNotification('Failed to load required data, please try again', {
+      type: 'error'
+    });
+    setTrelloModalVisible(false);
+  };
+
   //   Mobile header save button
   const mobileHeaderActions = () => (
     <button
@@ -237,6 +252,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
+  const isTrelloAuthorized = Boolean(trelloIntegration?.trelloUsername);
   return (
     user && (
       <>
@@ -267,6 +283,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
               openTrello={openTrello}
               userRequestErrors={userRequestErrors}
               onQueuePropertyDelete={openPropertyDeletePrompt}
+              isTrelloAuthorized={isTrelloAuthorized}
             />
           </>
         ) : (
@@ -290,6 +307,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
             openTrello={openTrello}
             userRequestErrors={userRequestErrors}
             onQueuePropertyDelete={openPropertyDeletePrompt}
+            isTrelloAuthorized={isTrelloAuthorized}
           />
         )}
         <UpdateTeamModal
@@ -314,6 +332,15 @@ const PropertyEdit: FunctionComponent<Props> = ({
           isVisible={isDeletePropertyPromptVisible}
           onClose={closeDeletePropertyPrompt}
           onConfirm={confirmPropertyDeleteAndRedirect}
+        />
+        <TrelloModal
+          trelloIntegration={trelloIntegration}
+          property={property}
+          isVisible={isTrelloModalVisible}
+          onClose={() => setTrelloModalVisible(false)}
+          onSave={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+          onReset={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+          onLoadDataError={onLoadDataError}
         />
       </>
     )
