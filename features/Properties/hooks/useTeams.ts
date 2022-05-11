@@ -34,7 +34,7 @@ export default function useTeams(
   let result = null;
 
   // Load all teams for admin & corporate
-  if (user && ['admin', 'corporate'].includes(permissionLevel)) {
+  if (user && ['admin', 'corporate', 'teamLead'].includes(permissionLevel)) {
     result = teamsApi.findAll(firestore);
   } else if (user && hasTeams) {
     if (teamIds.length > 10) {

@@ -48,15 +48,6 @@ const Page: FunctionComponent = () => {
     property = data;
   }
 
-  // Reject unpermissioned users
-  const canEdit = user ? canEditProperty(user) : false;
-  if (user && !canEdit) {
-    sendNotification('Sorry, you do not have permission to edit a property', {
-      type: 'error'
-    });
-    Router.push('/properties/');
-  }
-
   // using this useEffect so it only
   // sends single notification to user
   useEffect(() => {
@@ -73,6 +64,18 @@ const Page: FunctionComponent = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propertyStatus, property]);
+
+  useEffect(() => {
+    // Reject unpermissioned users
+    const canEdit = user ? canEditProperty(user) : false;
+    if (user && !canEdit) {
+      sendNotification('Sorry, you do not have permission to edit a property', {
+        type: 'error'
+      });
+      Router.push('/properties/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   let isLoaded = false;
   if (

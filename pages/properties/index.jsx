@@ -28,7 +28,6 @@ export default function PropertiesPage() {
     data: teams,
     memo: teamsMemo
   } = useTeams(firestore, loadedUser);
-
   let isLoaded = false;
   if (
     propertyStatus === 'success' &&

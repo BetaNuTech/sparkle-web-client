@@ -5,7 +5,6 @@ import propertiesApi from '../../../common/services/firestore/properties';
 import {
   admin,
   corporate,
-  teamLead,
   propertyMember,
   noAccess
 } from '../../../__mocks__/users';
@@ -46,23 +45,6 @@ describe('Unit | Features | Properties | Hooks | Use Properties', () => {
     renderHook(() => useProperties({}, corporate));
 
     const actual = [findAll.called, queryRecords.called];
-    expect(actual).toEqual(expected);
-  });
-
-  test('should request leadership & membership properties for corporate team leads', () => {
-    const user = JSON.parse(JSON.stringify(teamLead));
-    user.properties = { memberProp: true };
-    const expected = [
-      ...userUtils.getLeadershipProperties(user.teams),
-      'memberProp'
-    ];
-    const queryRecords = sinon
-      .stub(propertiesApi, 'queryRecords')
-      .returns(emptyCollectionResult);
-    renderHook(() => useProperties({}, user));
-
-    const result = queryRecords.firstCall || { args: [] };
-    const actual = result.args[1];
     expect(actual).toEqual(expected);
   });
 

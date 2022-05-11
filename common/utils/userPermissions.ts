@@ -4,10 +4,10 @@ import bidModel from '../models/bid';
 import inspectionModel from '../models/inspection';
 
 // Create flat array of all user's
-// property's that they are team lead of.
-// Team leads have access to all the
+// property's that they are members of.
+// Users should have access to all the
 // nested properties under their teams hash
-export const getLeadershipProperties = (userTeams: any = {}): Array<string> => {
+export const getTeamsProperties = (userTeams: any = {}): string[] => {
   if (typeof userTeams !== 'object' && !Array.isArray(userTeams)) {
     throw TypeError(`expected users teams to be an object. Got : ${userTeams}`);
   }
@@ -19,22 +19,8 @@ export const getLeadershipProperties = (userTeams: any = {}): Array<string> => {
   );
 };
 
-// Get all teams of users where user's teams
-// has properties linked to it
-export const getLeadershipTeams = (userTeams: any = {}): Array<string> => {
-  if (typeof userTeams !== 'object' && !Array.isArray(userTeams)) {
-    throw TypeError(`expected users teams to be an object. Got: ${userTeams}`);
-  }
-
-  return Object.keys(userTeams).filter(
-    (team) =>
-      typeof userTeams[team] === 'object' &&
-      Object.keys(userTeams[team]).length > 0
-  );
-};
-
 // Create array of all a users property memberships id's
-export const getProperties = (userProperties: any = {}): Array<string> => {
+export const getProperties = (userProperties: any = {}): string[] => {
   if (typeof userProperties !== 'object' && !Array.isArray(userProperties)) {
     throw TypeError(
       `expected user properties to be an object: ${userProperties}`
@@ -51,7 +37,7 @@ export const getProperties = (userProperties: any = {}): Array<string> => {
 export const getPropertyLevelAccess = (
   userProperties: any = {},
   userTeams: any = {}
-): Array<string> =>
+): string[] =>
   []
     .concat(
       Object.keys(userProperties || {}),
@@ -62,7 +48,7 @@ export const getPropertyLevelAccess = (
     .filter((propId, i, all) => all.indexOf(propId) === i); // unique only
 
 // Create array of all a users team leaderships/memberships id's
-export const getTeams = (userTeams: any = {}): Array<string> => {
+export const getTeams = (userTeams: any = {}): string[] => {
   if (typeof userTeams !== 'object' || Array.isArray(userTeams)) {
     throw TypeError(
       `expected users properties to be an object. Got : ${userTeams}`
@@ -78,8 +64,7 @@ export const getLevelName = (
   user: userModel,
   teamOrientation = false
 ): string => {
-  const hasLeadershipTeams: boolean =
-    getLeadershipProperties(user.teams).length > 0;
+  const hasLeadershipTeams: boolean = getTeamsProperties(user.teams).length > 0;
   const hasPropertyMemberships: boolean =
     getProperties(user.properties).length > 0;
   const hasTeams: boolean = getTeams(user.teams).length > 0;

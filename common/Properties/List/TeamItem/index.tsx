@@ -86,8 +86,8 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
         )}
       >
         <LinkFeature
-          featureEnabled={features.supportTeamView}
-          href={`/teams/${team.id}/edit`}
+          featureEnabled={features.supportTeamEdit}
+          href={`/teams/edit/${team.id}`}
           className={parentStyles.swipeReveal__editButton}
         >
           Edit

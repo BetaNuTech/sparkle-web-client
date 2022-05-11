@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '../Provider';
 import features from '../../../config/features';
+import winLocation from '../../utils/winLocation';
 
 // Is current page login
 const isLoginPage = (router: any): boolean => {
@@ -57,7 +58,10 @@ const PrivateRoute = ({ children, fallback }) => {
       redirectToLogin();
     }
     if (isAuthenticated && isLoginPage(router)) {
-      router.push('/properties');
+      // redirect if user already authenticated
+      // with full page referesh
+      // to load all session related data
+      winLocation.setHref('/properties');
     }
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
