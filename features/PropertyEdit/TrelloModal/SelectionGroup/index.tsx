@@ -11,13 +11,17 @@ interface Props {
   board: trelloBoard;
   list: trelloList;
   status: string;
+  openSelectionModal: (option: string) => void;
+  isLoadingLists: boolean;
 }
 
 const SelectionGroup: FunctionComponent<Props> = ({
   title,
   board,
   list,
-  status
+  status,
+  openSelectionModal,
+  isLoadingLists
 }) => {
   const boardName = (board && board.name) || 'Not Set';
   const listName = (list && list.name) || 'Not Set';
@@ -26,19 +30,24 @@ const SelectionGroup: FunctionComponent<Props> = ({
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>{title}</h3>
-      <div className={styles.dropdown} data-testid={`${status}-boards-pill`}>
+      <div
+        className={styles.dropdown}
+        data-testid={`${status}-boards-pill`}
+        onClick={() => openSelectionModal(`${status}Boards`)}
+      >
         <h4 className={styles.label}>Board</h4>
         {boardName}
       </div>
       <div
         className={clsx(
           styles.dropdown,
-          isListDisabled && styles['dropdown--disabled']
+          (isListDisabled || isLoadingLists) && styles['dropdown--disabled']
         )}
         data-testid={`${status}-lists-pill`}
+        onClick={() => openSelectionModal(`${status}Lists`)}
       >
         <h4 className={styles.label}>List</h4>
-        {listName}
+        {isLoadingLists ? 'Loading...' : listName}
       </div>
     </div>
   );

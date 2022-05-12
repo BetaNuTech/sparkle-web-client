@@ -40,10 +40,11 @@ export default function useTrelloLists(
   const [openLists, setOpenLists] = useState([]);
   const [closeLists, setCloseLists] = useState([]);
 
-  const findLists = (
+  const findLists = async (
     boardId: string,
     isOpen: boolean
   ): Promise<Error | trelloList[]> => {
+    if (!boardId) return;
     if (isOpen) {
       setIsOpenLoading(true);
     } else {
@@ -58,39 +59,34 @@ export default function useTrelloLists(
     const request = isCached
       ? Promise.resolve(cachedLists)
       : trelloApi.findAllBoardLists(boardId);
-
-    return request
-      .then((trelloLists) => {
-        // Add uncached results to in-memory cache
-        if (!isCached) setCachedLists(boardId, trelloLists);
-
-        if (isOpen) {
-          setOpenLists(trelloLists);
-        } else {
-          setCloseLists(trelloLists);
-        }
-
-        return trelloLists;
-      })
-      .catch((err) => {
-        // Send notification if request fails
-        sendNotification('Trello lists failed to load, please try again.', {
+    let list = [];
+    try {
+      const trelloLists = await request;
+      if (!isCached) setCachedLists(boardId, trelloLists);
+      list = trelloLists;
+    } catch (err) {
+      // Send notification if request fails
+      sendNotification(
+        'Failed to load lists for Trello board, please try again.',
+        {
           type: 'error'
-        });
-
-        const wrappedErr = Error(`${PREFIX} findLists: load failed: ${err}`);
-        // Send the error report to backend
-        // eslint-disable-next-line import/no-named-as-default-member
-        errorReports.send(wrappedErr);
-        return wrappedErr;
-      })
-      .finally(() => {
-        if (isOpen) {
-          setIsOpenLoading(false);
-        } else {
-          setIsClosedLoading(false);
         }
-      });
+      );
+
+      const wrappedErr = Error(`${PREFIX} findLists: load failed: ${err}`);
+      // Send the error report to backend
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+      // wrappedErr;
+    }
+
+    if (isOpen) {
+      setOpenLists(list);
+      setIsOpenLoading(false);
+    } else {
+      setCloseLists(list);
+      setIsClosedLoading(false);
+    }
   };
 
   // Inital load of open board's lists

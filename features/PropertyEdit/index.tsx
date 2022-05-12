@@ -341,6 +341,7 @@ const PropertyEdit: FunctionComponent<Props> = ({
           onSave={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
           onReset={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
           onLoadDataError={onLoadDataError}
+          sendNotification={sendNotification}
         />
       </>
     )
