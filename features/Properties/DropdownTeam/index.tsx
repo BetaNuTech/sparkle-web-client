@@ -1,26 +1,17 @@
 import { FunctionComponent } from 'react';
-import Dropdown, {
-  DropdownLink,
-  DropdownButton
-} from '../../../common/Dropdown';
-import teamModel from '../../../common/models/team';
-import features from '../../../config/features';
+import Dropdown, { DropdownButton } from '../../../common/Dropdown';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface Props {
-  team: teamModel;
   onDelete(): void;
+  onEdit(): void;
 }
 
-const DropdownTeam: FunctionComponent<Props> = ({ team, onDelete }) => (
-  <Dropdown>
-    <DropdownLink
-      href={`/teams/edit/${team.id}`}
-      featureEnabled={features.supportTeamCreate}
-      testid="dropdown-add-team"
-    >
+const DropdownTeam: FunctionComponent<Props> = ({ onDelete, onEdit }) => (
+  <Dropdown isOnRight>
+    <DropdownButton onClick={onEdit} data-testid="dropdown-edit-team">
       Edit
-    </DropdownLink>
+    </DropdownButton>
     <DropdownButton onClick={onDelete}>Delete</DropdownButton>
   </Dropdown>
 );

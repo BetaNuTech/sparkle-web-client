@@ -8,19 +8,23 @@ interface PropertiesSidebarTeamItemWrapperModel {
   team: any;
   teamCalculatedValues: Array<propertyMetaData>;
   openTeamDeletePrompt: (team: teamModel) => void;
+  onEdit(team: teamModel): void;
+  canEdit: boolean;
 }
 
 interface PropertiesSidebarLayoutModel {
   teams: Array<any>;
   teamCalculatedValues: Array<propertyMetaData>;
   openTeamDeletePrompt: (team: teamModel) => void;
+  onEdit(team: teamModel): void;
+  canEdit: boolean;
 }
 
 // Wrapper around team items
 // to lookup properties meta data
 const TeamItemWrapper: FunctionComponent<
   PropertiesSidebarTeamItemWrapperModel
-> = ({ team, teamCalculatedValues, openTeamDeletePrompt }) => {
+> = ({ team, teamCalculatedValues, openTeamDeletePrompt, onEdit, canEdit }) => {
   const [propertiesMetaData] = teamCalculatedValues.filter(
     ({ team: teamId }) => teamId === team.id
   );
@@ -30,6 +34,8 @@ const TeamItemWrapper: FunctionComponent<
       team={team}
       teamCalculatedValues={propertiesMetaData}
       openTeamDeletePrompt={openTeamDeletePrompt}
+      onEdit={onEdit}
+      canEdit={canEdit}
     />
   );
 };
@@ -38,7 +44,9 @@ const TeamItemWrapper: FunctionComponent<
 const PropertiesSidebar: FunctionComponent<PropertiesSidebarLayoutModel> = ({
   teams,
   teamCalculatedValues,
-  openTeamDeletePrompt
+  openTeamDeletePrompt,
+  onEdit,
+  canEdit
 }) => {
   if (teams.length < 1) {
     return <></>;
@@ -55,6 +63,8 @@ const PropertiesSidebar: FunctionComponent<PropertiesSidebarLayoutModel> = ({
               team={team}
               teamCalculatedValues={teamCalculatedValues}
               openTeamDeletePrompt={openTeamDeletePrompt}
+              onEdit={onEdit}
+              canEdit={canEdit}
             />
           ))}
       </ul>

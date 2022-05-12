@@ -16,6 +16,8 @@ interface PropertyListTeamWrapperModel {
   team: teamModel;
   teamCalculatedValues: Array<propertyMetaData>;
   openDeletePrompt: (team: teamModel) => void;
+  onEdit(): void;
+  canEditTeam: boolean;
 }
 
 interface PropertyListModel {
@@ -38,13 +40,15 @@ interface PropertyListModel {
   headerTitle?: string;
   hasEditPropertyAccess: boolean;
   onAddTeam?: () => void;
+  onEditTeam?: (team: teamModel) => void;
+  canEditTeam?: boolean;
 }
 
 // Wrapper around team items
 // to look associated property meta data
 const PropertyListTeamItemWrapper: FunctionComponent<
   PropertyListTeamWrapperModel
-> = ({ team, teamCalculatedValues, openDeletePrompt }) => {
+> = ({ team, teamCalculatedValues, openDeletePrompt, onEdit, canEditTeam }) => {
   const [propertiesMetaData] = teamCalculatedValues.filter(
     ({ team: teamId }) => teamId === team.id
   );
@@ -54,6 +58,8 @@ const PropertyListTeamItemWrapper: FunctionComponent<
       team={team}
       teamCalculatedValues={propertiesMetaData}
       onQueueTeamDelete={openDeletePrompt}
+      onEdit={onEdit}
+      canEdit={canEditTeam}
     />
   );
 };
@@ -78,7 +84,9 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
   forceVisible,
   headerTitle,
   hasEditPropertyAccess,
-  onAddTeam
+  onAddTeam,
+  onEditTeam,
+  canEditTeam
 }) => {
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -137,6 +145,8 @@ const PropertyList: FunctionComponent<PropertyListModel> = ({
                 team={team}
                 teamCalculatedValues={teamCalculatedValues}
                 openDeletePrompt={openTeamDeletePrompt}
+                onEdit={() => onEditTeam(team)}
+                canEditTeam={canEditTeam}
               />
             ))}
           </li>

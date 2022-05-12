@@ -18,7 +18,7 @@ const DropdownAdd: FunctionComponent<Props> = ({
 }) => (
   <Dropdown>
     {canAddTeam && (
-      <DropdownButton testid="dropdown-add-team" onClick={onAddTeam}>
+      <DropdownButton data-testid="dropdown-add-team" onClick={onAddTeam}>
         Add Team
       </DropdownButton>
     )}

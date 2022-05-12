@@ -1,0 +1,31 @@
+@import '../../styles/index.scss';
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+
+  // Make sidebar sticky
+  height: 100%;
+  overflow: auto;
+
+  &__header {
+    align-self: flex-start;
+    flex-basis: 100%;
+  }
+
+  &__sidebar {
+    height: 100vh;
+    position: sticky;
+    flex: 0 0 rem-calc(190);
+    top: 1rem;
+    padding-right: $global-padding;
+    margin-bottom: $global-padding;
+    overflow: auto;
+  }
+
+  &__main {
+    padding: 0 0 rem-calc(16) rem-calc(16);
+    flex: 1;
+    margin-right: $global-padding;
+  }
+}

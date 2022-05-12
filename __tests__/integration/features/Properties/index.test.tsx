@@ -1,6 +1,11 @@
 import sinon from 'sinon';
 import { FirebaseAppProvider } from 'reactfire';
-import { render as rtlRender, screen, act } from '@testing-library/react';
+import {
+  render as rtlRender,
+  screen,
+  act,
+  fireEvent
+} from '@testing-library/react';
 import { ToastContainer } from 'react-toastify';
 import userEvent from '@testing-library/user-event';
 import { Context as ResponsiveContext } from 'react-responsive';
@@ -13,6 +18,7 @@ import Properties from '../../../../features/Properties';
 import breakpoints from '../../../../config/breakpoints';
 import deepClone from '../../../helpers/deepClone';
 import { shuffle } from '../../../helpers/array';
+import teamsApi from '../../../../common/services/api/teams';
 
 const FORCE_VISIBLE = true;
 
@@ -310,6 +316,76 @@ describe('Integration | Features | Properties', () => {
     const actual = propertyItems
       .map((item) => item.textContent.trim().toLowerCase())
       .join(' | ');
+    expect(actual).toEqual(expected);
+  });
+
+  it('should request to create new team', async () => {
+    const expected = true;
+    const properties = deepClone(mockPropertes);
+    render(
+      <Properties
+        user={user}
+        forceVisible={FORCE_VISIBLE}
+        properties={properties}
+        propertiesMemo=""
+        teams={mockTeams}
+        teamsMemo=""
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth,
+        properties
+      }
+    );
+    const addTeamActionEl = screen.queryByTestId('dropdown-add-team');
+    act(() => {
+      fireEvent.click(addTeamActionEl);
+    });
+
+    const request = sinon.stub(teamsApi, 'createTeam').resolves({});
+
+    await act(async () => {
+      const save = screen.queryByTestId('save-button');
+      const nameInput = screen.queryByTestId('team-name');
+      await fireEvent.change(nameInput, { target: { value: 'New Team' } });
+      await userEvent.click(save);
+    });
+
+    const actual = request.called;
+    expect(actual).toEqual(expected);
+  });
+
+  it('should request to update existing team', async () => {
+    const expected = true;
+    const properties = deepClone(mockPropertes);
+    render(
+      <Properties
+        user={user}
+        forceVisible={FORCE_VISIBLE}
+        properties={properties}
+        propertiesMemo=""
+        teams={mockTeams}
+        teamsMemo=""
+      />,
+      {
+        contextWidth: breakpoints.desktop.minWidth,
+        properties
+      }
+    );
+    const [editTeamActionEl] = screen.queryAllByTestId('dropdown-edit-team');
+    act(() => {
+      fireEvent.click(editTeamActionEl);
+    });
+
+    const request = sinon.stub(teamsApi, 'updateTeam').resolves({});
+
+    await act(async () => {
+      const save = screen.queryByTestId('save-button');
+      const nameInput = screen.queryByTestId('team-name');
+      await fireEvent.change(nameInput, { target: { value: 'New Team' } });
+      await userEvent.click(save);
+    });
+
+    const actual = request.called;
     expect(actual).toEqual(expected);
   });
 });

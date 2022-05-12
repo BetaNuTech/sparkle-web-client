@@ -25,7 +25,8 @@ describe('Integration | features | Templates', () => {
   });
 
   it('should request to create new template', async () => {
-    const create = sinon.stub(templatesApi, 'createRecord').resolves();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    const create = sinon.stub(templatesApi, 'createRecord').resolves('');
 
     const props = {
       user: admin,
@@ -48,6 +49,7 @@ describe('Integration | features | Templates', () => {
 
   it('should request to copy template', async () => {
     const expected = templateA.id;
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
     const create = sinon.stub(templatesApi, 'createRecord').resolves();
 
     const props = {

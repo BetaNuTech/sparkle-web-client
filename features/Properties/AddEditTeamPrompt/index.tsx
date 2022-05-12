@@ -4,25 +4,33 @@ import { FunctionComponent, useState } from 'react';
 import ErrorLabel from '../../../common/ErrorLabel';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import styles from '../../../common/Modal/styles.module.scss';
+import TeamModal from '../../../common/models/team';
+import { UserError } from '../hooks/useTeamForm';
 
 interface Props extends ModalProps {
-  onConfirm: (teamName: string) => any;
+  onConfirm: (name: string) => void;
   isLoading: boolean;
-  errors: Record<string, any>;
+  errors: Record<string, UserError>;
+  isEditingTeam: boolean;
+  team: TeamModal;
 }
 
-const AddTeamPrompt: FunctionComponent<Props> = ({
+const AddEditTeamPrompt: FunctionComponent<Props> = ({
   onConfirm,
   onClose,
   isLoading,
-  errors
+  errors,
+  isEditingTeam,
+  team
 }) => {
-  const [teamName, setTeamName] = useState<string>('');
+  const [teamName, setTeamName] = useState<string>(team?.name || '');
+  const title = isEditingTeam ? 'Edit Team' : 'Create New Team';
+  const isDisabledSubmit = !teamName.trim() || isLoading;
 
   return (
     <>
       <header className={styles.modalPrompt__header}>
-        <h5 className={styles.modalPrompt__heading}>Create New Team</h5>
+        <h5 className={styles.modalPrompt__heading}>{title}</h5>
       </header>
 
       <div className={styles.modalPrompt__main}>
@@ -37,6 +45,8 @@ const AddTeamPrompt: FunctionComponent<Props> = ({
               onChange={(evt) => setTeamName(evt.target.value)}
               className="-m-none"
               disabled={isLoading}
+              defaultValue={teamName}
+              data-testid="team-name"
             />
             <ErrorLabel formName="name" errors={errors} />
           </div>
@@ -51,16 +61,17 @@ const AddTeamPrompt: FunctionComponent<Props> = ({
             Cancel
           </button>
           <button
-            disabled={!teamName || isLoading}
+            disabled={isDisabledSubmit}
             className={clsx('button', styles.modal__mainFooterbutton)}
             onClick={() => onConfirm(teamName)}
+            data-testid="save-button"
           >
             {isLoading ? (
               <span className={styles['modal__mainFooterbutton--loading']}>
-                Creating...
+                {isEditingTeam ? 'Updating...' : 'Creating...'}
               </span>
             ) : (
-              'Create'
+              <span>{isEditingTeam ? 'Update' : 'Create'}</span>
             )}
           </button>
         </footer>
@@ -69,4 +80,4 @@ const AddTeamPrompt: FunctionComponent<Props> = ({
   );
 };
 
-export default Modal(AddTeamPrompt, true);
+export default Modal(AddEditTeamPrompt, true);
