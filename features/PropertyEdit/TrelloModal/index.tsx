@@ -1,9 +1,8 @@
-import { FunctionComponent, useEffect } from 'react';
+import { FunctionComponent, useEffect, useState } from 'react';
 
 import clsx from 'clsx';
 import { useFirestore } from 'reactfire';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
-import styles from './styles.module.scss';
 import modalStyles from '../../../common/Modal/styles.module.scss';
 import propertyModel from '../../../common/models/property';
 import TrelloIntegrationModel from '../../../common/models/trelloIntegration';
@@ -12,6 +11,11 @@ import SkeletonLoader from '../../../common/SkeletonLoader';
 import useTrelloBoards from '../../PropertyEditTrello/hooks/useTrelloBoards';
 import usePropertyTrelloSelection from '../../PropertyEditTrello/hooks/usePropertyTrelloSelection';
 import SelectionGroup from './SelectionGroup';
+import SelectionModal from './SelectionModal';
+import useTrelloLists from '../../PropertyEditTrello/hooks/useTrelloLists';
+import styles from './styles.module.scss';
+
+type UserNotifications = (message: string, options?: any) => any;
 
 interface Props extends ModalProps {
   onClose: () => void;
@@ -21,6 +25,7 @@ interface Props extends ModalProps {
   onSave: () => void;
   onReset: () => void;
   onLoadDataError: () => void;
+  sendNotification: UserNotifications;
 }
 
 const TrelloModal: FunctionComponent<Props> = ({
@@ -29,9 +34,15 @@ const TrelloModal: FunctionComponent<Props> = ({
   property,
   onSave,
   onReset,
-  onLoadDataError
+  onLoadDataError,
+  sendNotification
 }) => {
   const firestore = useFirestore();
+
+  // Open & Close Selection Modal
+  const [isSelectionModalVisible, setSelectionModalVisible] = useState(false);
+
+  const [activeSelection, setActiveSelection] = useState('');
 
   // Load Trello data for property
   const {
@@ -48,10 +59,53 @@ const TrelloModal: FunctionComponent<Props> = ({
   } = useTrelloBoards();
 
   // Handle Selection
-  const { selectedOptions, hasSelectionChange } = usePropertyTrelloSelection(
-    trelloProperty || {},
-    ''
+  const {
+    handleboardSelection,
+    onSelect,
+    selectedOptions,
+    hasSelectionChange
+  } = usePropertyTrelloSelection(trelloProperty || {}, activeSelection);
+
+  // Load Lists
+  const {
+    isOpenLoading: isOpenListsLoading,
+    isClosedLoading: isClosedListsLoading,
+    openLists,
+    closeLists,
+    findLists
+  } = useTrelloLists(
+    (trelloProperty && trelloProperty.openBoard) || '',
+    (trelloProperty && trelloProperty.closedBoard) || '',
+    sendNotification
   );
+
+  const [options, setOptions] = useState({
+    openBoards: trelloBoards,
+    closeBoards: trelloBoards,
+    openLists,
+    closeLists
+  });
+
+  useEffect(() => {
+    setOptions({
+      openBoards: trelloBoards,
+      closeBoards: trelloBoards,
+      openLists,
+      closeLists
+    });
+  }, [trelloBoards, openLists, closeLists]);
+
+  // Opens selection modal and asign options
+  const openSelectionModal = (option: string) => {
+    setActiveSelection(option);
+    setSelectionModalVisible(true);
+  };
+
+  // Close selection modal and get lists for selected board
+  const closeSelectionModal = () => {
+    setSelectionModalVisible(false);
+    handleboardSelection(findLists);
+  };
 
   const { openBoard, openList, closeBoard, closeList } = selectedOptions;
   const { trelloFullName, trelloUsername } = trelloIntegration;
@@ -110,12 +164,16 @@ const TrelloModal: FunctionComponent<Props> = ({
               board={openBoard}
               list={openList}
               status="open"
+              openSelectionModal={openSelectionModal}
+              isLoadingLists={isOpenListsLoading}
             />
             <SelectionGroup
               title="Deficient Item - CLOSED"
               board={closeBoard}
               list={closeList}
               status="close"
+              openSelectionModal={openSelectionModal}
+              isLoadingLists={isClosedListsLoading}
             />
           </div>
           <footer
@@ -129,6 +187,14 @@ const TrelloModal: FunctionComponent<Props> = ({
               RESET
             </button>
           </footer>
+          <SelectionModal
+            isVisible={isSelectionModalVisible}
+            onClose={closeSelectionModal}
+            activeSelection={activeSelection}
+            selectedOptions={selectedOptions}
+            options={options}
+            onSelect={onSelect}
+          />
         </>
       )}
     </>

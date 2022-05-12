@@ -1,0 +1,32 @@
+@import '../../../../../styles/index.scss';
+
+.item {
+  list-style-type: none;
+  border-bottom: 1px solid $gray-light-3;
+
+  &__input {
+    display: none;
+  }
+
+  &__label {
+    width: 100%;
+    padding: $global-sm-padding;
+    justify-content: space-between;
+    align-items: center;
+    font-size: rem-calc(15);
+    cursor: pointer;
+
+    &__icon {
+      width: rem-calc(18);
+      height: rem-calc(18);
+      padding: 0;
+      padding-top: rem-calc(2);
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    &.-isChecked {
+      background-color: $gray-lighter;
+    }
+  }
+}

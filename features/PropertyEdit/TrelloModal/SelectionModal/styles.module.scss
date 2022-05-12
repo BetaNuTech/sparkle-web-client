@@ -1,0 +1,21 @@
+@import '../../../../styles/index.scss';
+
+.trelloSelectionModal {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-height: rem-calc(557);
+  padding: 0;
+  overflow-x: hidden;
+
+  &__backIcon svg {
+    width: rem-calc(18);
+    height: rem-calc(36);
+    padding-bottom: rem-calc(6);
+  }
+
+  &__emptyHeading {
+    padding: $global-padding $global-lg-padding;
+  }
+}

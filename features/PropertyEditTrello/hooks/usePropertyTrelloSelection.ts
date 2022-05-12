@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react';
 import propertyTrelloIntegrationModel from '../../../common/models/propertyTrelloIntegration';
+import { trelloBoard, trelloList } from '../../../common/services/api/trello';
 
-interface selected {
-  openBoard: { name: string; id: string };
-  openList: { name: string; id: string };
-  closeBoard: { name: string; id: string };
-  closeList: { name: string; id: string };
+type SelectedItem = trelloBoard | trelloList;
+
+export interface Selected {
+  openBoard: trelloBoard;
+  openList: trelloList;
+  closeBoard: trelloBoard;
+  closeList: trelloList;
 }
 
 interface usePropertyTrelloSelectionResult {
   hasSelectionChange: boolean;
-  selectedOptions: selected;
-  onSelect(selection: { name: string; id: string }): void;
-  handleboardSelection(findLists: (string, boolean) => void);
+  selectedOptions: Selected;
+  onSelect(selection: SelectedItem): void;
+  handleboardSelection(findLists: (id: string, isOpen: boolean) => void): void;
 }
 
 // Hooks for filtering jobs list
@@ -22,7 +25,7 @@ export default function usePropertyTrelloSelection(
 ): usePropertyTrelloSelectionResult {
   const [memo, setMemo] = useState('[]');
   const [hasSelectionChange, setHasSelectionChange] = useState(false);
-  const [selectedOptions, setselectedOptions] = useState<selected>({
+  const [selectedOptions, setselectedOptions] = useState<Selected>({
     openBoard: {
       id: initialSelection.openBoard,
       name: initialSelection.openBoardName
