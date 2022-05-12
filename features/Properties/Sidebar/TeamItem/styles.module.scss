@@ -43,6 +43,22 @@
       @extend %gridHeaderCreateButton--dropdown;
       display: flex;
       align-items: center;
+
+      // adjust dropdown to align from right
+      > ul {
+        right: rem-calc(4);
+        left: auto;
+        transform: translate(0%, 0%);
+      }
+
+      &:focus,
+      &:hover {
+        > ul {
+          right: rem-calc(4);
+          left: auto;
+          transform: translate(0%, 0%);
+        }
+      }
     }
   }
 }

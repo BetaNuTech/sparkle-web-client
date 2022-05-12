@@ -14,12 +14,16 @@ interface MobileLayoutTeamItemModel {
   team: teamModel;
   teamCalculatedValues: propertyMetaData;
   onQueueTeamDelete: (team: teamModel) => void;
+  onEdit(): void;
+  canEdit: boolean;
 }
 
 const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
   team,
   teamCalculatedValues,
-  onQueueTeamDelete
+  onQueueTeamDelete,
+  onEdit,
+  canEdit
 }) => {
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const ref = useRef(null);
@@ -35,7 +39,7 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
       {/* Main Content */}
       <div
         className={
-          isSwipeOpen
+          isSwipeOpen && canEdit
             ? clsx(
                 parentStyles.itemResult__content,
                 parentStyles['itemResult--swipeOpen']
@@ -85,13 +89,13 @@ const TeamItem: FunctionComponent<MobileLayoutTeamItemModel> = ({
           isSwipeOpen && parentStyles.swipeReveal__reveal
         )}
       >
-        <LinkFeature
-          featureEnabled={features.supportTeamEdit}
-          href={`/teams/edit/${team.id}`}
+        <button
           className={parentStyles.swipeReveal__editButton}
+          onClick={onEdit}
         >
           Edit
-        </LinkFeature>
+        </button>
+
         <button
           className={parentStyles.swipeReveal__deleteButton}
           onClick={() => onQueueTeamDelete(team)}

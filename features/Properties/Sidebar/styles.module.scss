@@ -3,8 +3,6 @@
 .sidebar {
   border: rem-calc(1) solid $gray-lighter;
   background-color: $gray;
-  position: sticky;
-  top: $global-padding;
 
   &__heading {
     margin: 0;

@@ -81,7 +81,12 @@
       },
       {
         "source": "/teams/:teamId/edit",
-        "destination": "/teams/edit/:teamId",
+        "destination": "/properties",
+        "type": 301
+      },
+      {
+        "source": "/teams/edit/:teamId",
+        "destination": "/properties",
         "type": 301
       },
       {

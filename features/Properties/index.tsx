@@ -8,7 +8,8 @@ import usePropertiesSorting from '../../common/hooks/properties/useSorting';
 import {
   canCreateTeam,
   canCreateProperty,
-  canEditProperty
+  canEditProperty,
+  canAccessUpdateTeam
 } from '../../common/utils/userPermissions';
 import useNotifications from '../../common/hooks/useNotifications'; // eslint-disable-line
 import userModel from '../../common/models/user';
@@ -22,7 +23,7 @@ import Sidebar from './Sidebar';
 import DeleteTeamPrompt from './DeleteTeamPrompt';
 import PropertyList from '../../common/Properties/List';
 import PropertyGrid from '../../common/Properties/Grid';
-import AddTeamPrompt from './AddTeamPrompt';
+import AddEditTeamPrompt from './AddEditTeamPrompt';
 import useTeamForm from './hooks/useTeamForm';
 
 interface PropertiesModel {
@@ -54,6 +55,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
 
   // Lookup user permissions
   const hasCreateTeamPermission = canCreateTeam(user);
+  const hasUpdateTeamPermission = canAccessUpdateTeam(user);
   const hasCreatePropertyPermission = canCreateProperty(user);
   const hasEditPropertyAccess = canEditProperty(user);
 
@@ -63,11 +65,15 @@ const Properties: FunctionComponent<PropertiesModel> = ({
   /* eslint-enable */
 
   const {
-    createTeam,
+    onSubmit,
     isLoading,
     errors,
     isVisible: isAddTeamPromptVisible,
-    setIsVisible: setIsAddTeamPromptVisible
+    addTeam,
+    editTeam,
+    closeTeamModal,
+    isEditing: isEditingTeam,
+    team: selectedTeam
   } = useTeamForm(sendNotification);
 
   // Queue and Delete Property
@@ -111,10 +117,6 @@ const Properties: FunctionComponent<PropertiesModel> = ({
     queueTeamForDelete(null);
   };
 
-  const onCreateTeam = (teamName: string) => {
-    createTeam({ name: teamName });
-  };
-
   // Responsive queries
   const isMobileorTablet = useMediaQuery({
     maxWidth: breakpoints.tablet.maxWidth
@@ -139,7 +141,7 @@ const Properties: FunctionComponent<PropertiesModel> = ({
       onSortChange={onSortChange}
       canAddTeam={hasCreateTeamPermission}
       canAddProperty={hasCreatePropertyPermission}
-      onAddTeam={() => setIsAddTeamPromptVisible(true)}
+      onAddTeam={addTeam}
     />
   );
 
@@ -156,6 +158,8 @@ const Properties: FunctionComponent<PropertiesModel> = ({
       teams={teams}
       openTeamDeletePrompt={openTeamDeletePrompt}
       teamCalculatedValues={teamCalculatedValues}
+      onEdit={editTeam}
+      canEdit={hasUpdateTeamPermission}
     />
   );
 
@@ -180,7 +184,9 @@ const Properties: FunctionComponent<PropertiesModel> = ({
           userFacingSortBy={userFacingSortBy}
           forceVisible={forceVisible}
           hasEditPropertyAccess={hasEditPropertyAccess}
-          onAddTeam={() => setIsAddTeamPromptVisible(true)}
+          onAddTeam={addTeam}
+          onEditTeam={editTeam}
+          canEditTeam={hasUpdateTeamPermission}
         />
       )}
 
@@ -192,12 +198,14 @@ const Properties: FunctionComponent<PropertiesModel> = ({
         onClose={closeDeleteTeamPrompt}
         onConfirm={confirmTeamDelete}
       />
-      <AddTeamPrompt
+      <AddEditTeamPrompt
         isVisible={isAddTeamPromptVisible}
-        onClose={() => setIsAddTeamPromptVisible(false)}
-        onConfirm={onCreateTeam}
+        onClose={closeTeamModal}
+        onConfirm={onSubmit}
         isLoading={isLoading}
         errors={errors}
+        isEditingTeam={isEditingTeam}
+        team={selectedTeam}
       />
     </>
   );

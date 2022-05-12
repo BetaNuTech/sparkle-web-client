@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import { FunctionComponent } from 'react';
+import SortDropdown from '../../SortDropdown';
+import parentStyles from '../styles.module.scss';
 import styles from './styles.module.scss';
 import AddIcon from '../../../public/icons/ios/add.svg';
 import Dropdown from '../../../features/Properties/DropdownAdd';
-import SortDropdown from '../../SortDropdown';
 
 const sortOptions = [
   { label: 'Name', value: 'name' },
@@ -32,7 +33,10 @@ const Header: FunctionComponent<Props> = ({
   headerTitle,
   onAddTeam
 }) => (
-  <header className={styles.header} data-testid="properties-header">
+  <header
+    className={clsx(parentStyles.container__header, styles.header)}
+    data-testid="properties-header"
+  >
     {/* Title And Create Button */}
     <h1 className={styles.header__title}>
       {!headerTitle ? 'Properties' : headerTitle}

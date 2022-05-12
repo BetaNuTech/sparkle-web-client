@@ -1,5 +1,5 @@
 import { ReactElement, FunctionComponent } from 'react';
-import styles from './styles.module.scss';
+import parentStyles from '../styles.module.scss';
 
 interface Props {
   header: ReactElement;
@@ -8,11 +8,10 @@ interface Props {
 }
 
 const Container: FunctionComponent<Props> = ({ header, grid, sidebar }) => (
-  <div className={styles.container}>
+  <div className={parentStyles.container}>
     {header}
-
-    <div className={styles.container__main}>{grid}</div>
-    <aside>{sidebar}</aside>
+    <div className={parentStyles.container__main}>{grid}</div>
+    <aside className={parentStyles.container__sidebar}>{sidebar}</aside>
   </div>
 );
 

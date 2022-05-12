@@ -18,12 +18,16 @@ interface Props {
   team: teamModel;
   teamCalculatedValues: summaryPropertyCalcValues;
   openTeamDeletePrompt: (team: teamModel) => void;
+  onEdit: (team: teamModel) => void;
+  canEdit: boolean;
 }
 
 const TeamItem: FunctionComponent<Props> = ({
   team,
   teamCalculatedValues,
-  openTeamDeletePrompt
+  openTeamDeletePrompt,
+  onEdit,
+  canEdit
 }) => (
   <li className={styles.teamItem} data-testid="team-item" data-team={team.id}>
     {/* Team Name */}
@@ -35,16 +39,21 @@ const TeamItem: FunctionComponent<Props> = ({
       {team.name}
     </LinkFeature>
 
-    <div
-      aria-label="Open menu"
-      className={clsx(
-        styles.teamItem__menuButton,
-        styles['teamItem__menuButton--dropdown']
-      )}
-    >
-      <ActionsIcon />
-      <DropdownTeam team={team} onDelete={() => openTeamDeletePrompt(team)} />
-    </div>
+    {canEdit && (
+      <div
+        aria-label="Open menu"
+        className={clsx(
+          styles.teamItem__menuButton,
+          styles['teamItem__menuButton--dropdown']
+        )}
+      >
+        <ActionsIcon />
+        <DropdownTeam
+          onDelete={() => openTeamDeletePrompt(team)}
+          onEdit={() => onEdit(team)}
+        />
+      </div>
+    )}
 
     {/* Metadata */}
     <LinkFeature
