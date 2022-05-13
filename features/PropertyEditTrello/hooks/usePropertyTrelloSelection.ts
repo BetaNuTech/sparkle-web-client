@@ -23,33 +23,18 @@ export default function usePropertyTrelloSelection(
   initialSelection: propertyTrelloIntegrationModel,
   activeSelection: string
 ): usePropertyTrelloSelectionResult {
-  const [memo, setMemo] = useState('[]');
-  const [hasSelectionChange, setHasSelectionChange] = useState(false);
-  const [selectedOptions, setselectedOptions] = useState<Selected>({
-    openBoard: {
-      id: initialSelection.openBoard,
-      name: initialSelection.openBoardName
-    },
-    openList: {
-      id: initialSelection.openList,
-      name: initialSelection.openListName
-    },
-    closeBoard: {
-      id: initialSelection.closedBoard,
-      name: initialSelection.closedBoardName
-    },
-    closeList: {
-      id: initialSelection.closedList,
-      name: initialSelection.closedListName
-    }
-  });
-  const emptyOption = { name: null, id: null };
+  // const [hasSelectionChange, setHasSelectionChange] = useState(false);
+  const [selectedOptions, setselectedOptions] = useState<Selected>(
+    getSelectedOptions(initialSelection)
+  );
+  const emptyOption = { id: '', name: '' } as SelectedItem;
+  const hasSelectionChange = hasUpdates(initialSelection, selectedOptions);
 
   // Checks if a selection is already selected and updates state
   const onSelect = (selection: { name: string; id: string }) => {
     const singleOption = activeSelection.slice(0, -1);
     const isAlreadySelected = selectedOptions[singleOption] === selection;
-    setHasSelectionChange(true);
+    // setHasSelectionChange(true);
 
     setselectedOptions({
       ...selectedOptions,
@@ -68,17 +53,10 @@ export default function usePropertyTrelloSelection(
     }
   };
 
-  // Notify of updates
-  // by updating memo
-  /* eslint-disable */
   useEffect(() => {
-    /* eslint-enable */
-    const updated = JSON.stringify(selectedOptions);
-
-    if (memo !== updated) {
-      setMemo(updated);
-    }
-  });
+    setselectedOptions(getSelectedOptions(initialSelection));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(initialSelection)]);
 
   return {
     handleboardSelection,
@@ -87,3 +65,36 @@ export default function usePropertyTrelloSelection(
     hasSelectionChange
   };
 }
+
+const getSelectedOptions = (selection: propertyTrelloIntegrationModel) => ({
+  openBoard: {
+    id: selection.openBoard,
+    name: selection.openBoardName
+  },
+  openList: {
+    id: selection.openList,
+    name: selection.openListName
+  },
+  closeBoard: {
+    id: selection.closedBoard,
+    name: selection.closedBoardName
+  },
+  closeList: {
+    id: selection.closedList,
+    name: selection.closedListName
+  }
+});
+
+const hasUpdates = (
+  current: propertyTrelloIntegrationModel,
+  updated: Selected
+) => {
+  const { closedBoard, closedList, openBoard, openList } = current;
+  const isUpdated =
+    closedBoard !== updated.closeBoard.id ||
+    openBoard !== updated.openBoard.id ||
+    closedList !== updated.closeList.id ||
+    openList !== updated.openList.id;
+
+  return isUpdated;
+};

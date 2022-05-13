@@ -164,25 +164,7 @@ describe('Unit | Services | global notifications', () => {
         template: 'template-delete-markdown-body',
         values: ['name', 'authorName', 'authorEmail']
       },
-      {
-        template: 'property-trello-integration-update-summary',
-        values: ['authorName']
-      },
-      {
-        template: 'property-trello-integration-update-markdown-body',
-        values: [
-          'previousOpenBoard',
-          'previousOpenList',
-          'previousClosedBoard',
-          'previousClosedList',
-          'currentOpenBoard',
-          'currentOpenList',
-          'currentClosedBoard',
-          'currentClosedList',
-          'authorName',
-          'authorEmail'
-        ]
-      },
+
       {
         template: 'deficient-item-state-change-summary',
         values: ['title', 'previousState', 'state', 'authorName']

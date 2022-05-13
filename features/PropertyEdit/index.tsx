@@ -25,6 +25,7 @@ import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
 import TrelloIntegration from '../../common/models/trelloIntegration';
 import TrelloModal from './TrelloModal';
+import useTrelloSave, { Selection } from './hooks/useTrelloSave';
 
 interface Props {
   isNavOpen?: boolean;
@@ -146,6 +147,11 @@ const PropertyEdit: FunctionComponent<Props> = ({
     filteredTemplates
   );
 
+  const { isLoading: isSavingTrello, updateTrelloIntegration } = useTrelloSave(
+    property.id,
+    sendNotification
+  );
+
   // Selected templates names
   const templateNames = selectedTemplates
     .map((id) => filteredTemplates.find((tmpl) => tmpl.id === id))
@@ -235,6 +241,10 @@ const PropertyEdit: FunctionComponent<Props> = ({
       type: 'error'
     });
     setTrelloModalVisible(false);
+  };
+
+  const onSaveTrello = (selection: Selection) => {
+    updateTrelloIntegration(selection);
   };
 
   //   Mobile header save button
@@ -338,10 +348,11 @@ const PropertyEdit: FunctionComponent<Props> = ({
           property={property}
           isVisible={isTrelloModalVisible}
           onClose={() => setTrelloModalVisible(false)}
-          onSave={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+          onSave={onSaveTrello} // eslint-disable-line @typescript-eslint/no-empty-function
           onReset={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
           onLoadDataError={onLoadDataError}
           sendNotification={sendNotification}
+          isSaving={isSavingTrello}
         />
       </>
     )
