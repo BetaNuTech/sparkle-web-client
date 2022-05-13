@@ -27,7 +27,7 @@ const trelloListsByBoard: Record<string, trelloList[]> = {};
 export const setCachedLists = (boardId: string, lists: trelloList[]): void => {
   trelloListsByBoard[boardId] =
     trelloListsByBoard[boardId] || ([] as trelloList[]);
-  trelloListsByBoard[boardId].push(...lists);
+  trelloListsByBoard[boardId] = [...lists];
 };
 
 export default function useTrelloLists(
@@ -53,6 +53,7 @@ export default function useTrelloLists(
 
     // Check if trello lists are cached for requested board
     const cachedLists = trelloListsByBoard[boardId] || ([] as trelloList[]);
+
     const isCached = cachedLists.length > 0;
 
     // Resolve cached or fetch board's lists

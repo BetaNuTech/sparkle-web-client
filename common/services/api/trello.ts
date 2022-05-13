@@ -1,6 +1,7 @@
 import TrelloIntegration from '../../models/trelloIntegration';
 import currentUser from '../../utils/currentUser';
 import createApiError from '../../utils/api/createError';
+import propertyTrelloIntegration from '../../models/propertyTrelloIntegration';
 
 const PREFIX = 'services: api: trello:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
@@ -29,6 +30,7 @@ export interface trelloList {
 }
 
 const generateAuthorizeError = createApiError(`${PREFIX} authorize:`);
+const generateUpdatePropertyTrelloError = createApiError(`${PREFIX} update:`);
 const generateDeleteAuhtorizationError = createApiError(
   `${PREFIX} deleteAuthorization:`
 );
@@ -228,6 +230,65 @@ const deleteAuthorization = async (): Promise<boolean> => {
   return true;
 };
 
+// PUT request to authorize trello
+const putPropertyTrello = (
+  authToken: string,
+  id: string,
+  body: propertyTrelloIntegration
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/integrations/trello/properties/${id}`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ ...body })
+  });
+
+// Request to authorize trello
+const updatePropertyTrello = async (
+  id: string,
+  data: propertyTrelloIntegration
+): Promise<propertyTrelloIntegration> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} updatePropertyTrello: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await putPropertyTrello(authToken, id, data);
+  } catch (err) {
+    throw Error(`${PREFIX} updatePropertyTrello: request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} updatePropertyTrello: failed to parse JSON: ${err}`);
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = generateUpdatePropertyTrelloError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return {
+    id: responseJson.id,
+    ...responseJson.attributes
+  };
+};
+
 // Request Boards for previously
 // authorized Trello user
 export default {
@@ -258,5 +319,6 @@ export default {
     return getBoardListRequest(authToken, boardId);
   },
   createAuthorization,
-  deleteAuthorization
+  deleteAuthorization,
+  updatePropertyTrello
 };

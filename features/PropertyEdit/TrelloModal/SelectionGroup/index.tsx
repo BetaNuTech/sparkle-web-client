@@ -13,6 +13,7 @@ interface Props {
   status: string;
   openSelectionModal: (option: string) => void;
   isLoadingLists: boolean;
+  isSaving: boolean;
 }
 
 const SelectionGroup: FunctionComponent<Props> = ({
@@ -21,17 +22,21 @@ const SelectionGroup: FunctionComponent<Props> = ({
   list,
   status,
   openSelectionModal,
-  isLoadingLists
+  isLoadingLists,
+  isSaving
 }) => {
   const boardName = (board && board.name) || 'Not Set';
   const listName = (list && list.name) || 'Not Set';
-  const isListDisabled = Boolean(!board || !board.name);
+  const isListDisabled = Boolean(!board || !board.name) || isSaving;
 
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>{title}</h3>
       <div
-        className={styles.dropdown}
+        className={clsx(
+          styles.dropdown,
+          isSaving && styles['dropdown--disabled']
+        )}
         data-testid={`${status}-boards-pill`}
         onClick={() => openSelectionModal(`${status}Boards`)}
       >

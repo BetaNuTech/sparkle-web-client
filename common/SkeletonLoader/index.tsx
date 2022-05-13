@@ -10,7 +10,7 @@ interface Props {
 
 const SkeletonLoader: FunctionComponent<Props> = ({ className, rows }) => (
   <div className={clsx(styles.container, className)}>
-    {arrayUtils.range(0, rows).map((id) => (
+    {arrayUtils.range(0, rows - 1).map((id) => (
       <div key={id} className={styles.loader} />
     ))}
   </div>

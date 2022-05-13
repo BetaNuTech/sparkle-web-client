@@ -9,7 +9,6 @@ import { admin as user } from '../../../__mocks__/users';
 import useTrelloSave from './useTrelloSave';
 import errorReports from '../../../common/services/api/errorReports';
 import stubFirestore from '../../../__tests__/helpers/stubFirestore';
-import globalNotification from '../../../common/services/firestore/notifications';
 
 describe('Unit | Features | Trello | Hooks | Use Trello Save', () => {
   afterEach(() => sinon.restore());
@@ -114,41 +113,6 @@ describe('Unit | Features | Trello | Hooks | Use Trello Save', () => {
 
     const result = redirect.firstCall || { args: [] };
     const actual = (result.args[0] || '').search(propertyId) > -1;
-    expect(actual).toEqual(expected);
-  });
-
-  test('it sends success global notification after successful save', async () => {
-    const expected = true;
-    const propertyId = 'property-123';
-    sinon.stub(Router, 'push').returns();
-    sinon
-      .stub(integrationsDb, 'upsertPropertyTrelloRecord')
-      .resolves({} as propertyTrelloIntegration);
-    const sendNotification = sinon.spy();
-
-    const globalNotificaion = sinon
-      .stub(globalNotification, 'send')
-      .callsFake(() => true);
-
-    const firestore = stubFirestore(); // eslint-disable-line
-
-    await act(async () => {
-      const { result } = renderHook(() =>
-        useTrelloSave(firestore, sendNotification, user)
-      );
-      await result.current.updateTrelloIntegration(
-        propertyId,
-        {
-          closeBoard: {
-            id: 'board-123',
-            name: 'test'
-          }
-        },
-        mockPropertyTrello
-      );
-    });
-
-    const actual = globalNotificaion.called;
     expect(actual).toEqual(expected);
   });
 });

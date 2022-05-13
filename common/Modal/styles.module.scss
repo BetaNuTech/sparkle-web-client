@@ -14,8 +14,13 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: $sliderNavWidth;
   right: 0;
+  left: $sliderNavWidth;
+
+  & .modal {
+    left: 0;
+  }
+
   z-index: 1001;
 
   @include media-query(desktop) {

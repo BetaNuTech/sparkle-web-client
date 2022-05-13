@@ -134,34 +134,6 @@ New Data:
 *Deleted by*:{{#if authorName}} {{{authorName}}}{{/if}} ({{{authorEmail}}})`),
 
   //
-  // Trello Settings Change for Property
-  //
-
-  'property-trello-integration-update-summary': Handlebars.compile(
-    'Trello Settings updated{{#if authorName}} by {{{authorName}}}{{/if}}'
-  ),
-
-  'property-trello-integration-update-markdown-body':
-    Handlebars.compile(`*Trello Settings updated*
-
-Previous Settings:
-\`\`\`
-Deficient Items, OPEN Board: {{{previousOpenBoard}}}
-Deficient Items, OPEN List: {{{previousOpenList}}}
-Deficient Items, CLOSED Board: {{{previousClosedBoard}}}
-Deficient Items, CLOSED List: {{{previousClosedList}}}
-\`\`\`
-New Settings:
-\`\`\`
-Deficient Items, OPEN Board: {{{currentOpenBoard}}}
-Deficient Items, OPEN List: {{{currentOpenList}}}
-Deficient Items, CLOSED Board: {{{currentClosedBoard}}}
-Deficient Items, CLOSED List: {{{currentClosedList}}}
-
-\`\`\`
-*Updated by*:{{#if authorName}} {{{authorName}}}{{/if}} ({{{authorEmail}}})`),
-
-  //
   // Property Deficient Item - State Update
   //
 

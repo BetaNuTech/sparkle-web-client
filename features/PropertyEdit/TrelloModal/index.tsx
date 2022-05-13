@@ -1,6 +1,5 @@
-import { FunctionComponent, useEffect, useState } from 'react';
-
 import clsx from 'clsx';
+import { FunctionComponent, useEffect, useState } from 'react';
 import { useFirestore } from 'reactfire';
 import Modal, { Props as ModalProps } from '../../../common/Modal';
 import modalStyles from '../../../common/Modal/styles.module.scss';
@@ -14,6 +13,7 @@ import SelectionGroup from './SelectionGroup';
 import SelectionModal from './SelectionModal';
 import useTrelloLists from '../../PropertyEditTrello/hooks/useTrelloLists';
 import styles from './styles.module.scss';
+import { Selection } from '../hooks/useTrelloSave';
 
 type UserNotifications = (message: string, options?: any) => any;
 
@@ -22,10 +22,11 @@ interface Props extends ModalProps {
   property: propertyModel;
   trelloIntegration: TrelloIntegrationModel;
   hasUpdateCompanySettingsPermission: boolean;
-  onSave: () => void;
+  onSave: (selection: Selection) => void;
   onReset: () => void;
   onLoadDataError: () => void;
   sendNotification: UserNotifications;
+  isSaving: boolean;
 }
 
 const TrelloModal: FunctionComponent<Props> = ({
@@ -35,7 +36,8 @@ const TrelloModal: FunctionComponent<Props> = ({
   onSave,
   onReset,
   onLoadDataError,
-  sendNotification
+  sendNotification,
+  isSaving
 }) => {
   const firestore = useFirestore();
 
@@ -146,13 +148,19 @@ const TrelloModal: FunctionComponent<Props> = ({
         <button
           data-testid="save-button"
           className={clsx(styles.headerButton, modalStyles['-topLeft'])}
-          disabled={!hasSelectionChange}
-          onClick={onSave}
+          disabled={!hasSelectionChange || isSaving}
+          onClick={() => onSave(selectedOptions)}
         >
-          Save
+          {isSaving ? (
+            <span className={styles.headerButton__loading}>Updating...</span>
+          ) : (
+            'Save'
+          )}
         </button>
       </header>
-      {!isLoaded && <SkeletonLoader className="-pl -pr -mt" />}
+      {!isLoaded && (
+        <SkeletonLoader rows={4} className="-pl -pr -mt -heightAuto" />
+      )}
       {trelloIntegration && isLoaded && (
         <>
           <div className={modalStyles.modal__main}>
@@ -166,6 +174,7 @@ const TrelloModal: FunctionComponent<Props> = ({
               status="open"
               openSelectionModal={openSelectionModal}
               isLoadingLists={isOpenListsLoading}
+              isSaving={isSaving}
             />
             <SelectionGroup
               title="Deficient Item - CLOSED"
@@ -174,6 +183,7 @@ const TrelloModal: FunctionComponent<Props> = ({
               status="close"
               openSelectionModal={openSelectionModal}
               isLoadingLists={isClosedListsLoading}
+              isSaving={isSaving}
             />
           </div>
           <footer
