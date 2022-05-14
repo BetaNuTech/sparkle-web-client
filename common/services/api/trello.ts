@@ -34,6 +34,9 @@ const generateUpdatePropertyTrelloError = createApiError(`${PREFIX} update:`);
 const generateDeleteAuhtorizationError = createApiError(
   `${PREFIX} deleteAuthorization:`
 );
+const generateResetPropertyTrelloError = createApiError(
+  `${PREFIX} resetPropertyTrello:`
+);
 
 // Request all Trello user's boards
 const getBoardsRequest = async (authToken: string): Promise<trelloBoard[]> => {
@@ -289,6 +292,62 @@ const updatePropertyTrello = async (
   };
 };
 
+// PUT request to authorize trello
+const deletePropertyTrello = (
+  authToken: string,
+  id: string
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/integrations/trello/properties/${id}`, {
+    method: 'DELETE',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    }
+  });
+
+// Request to authorize trello
+const resetPropertyTrello = async (id: string): Promise<boolean> => {
+  let authToken = '';
+
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} resetPropertyTrello: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await deletePropertyTrello(authToken, id);
+  } catch (err) {
+    throw Error(`${PREFIX} resetPropertyTrello: request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+
+  if (response.status !== 204) {
+    try {
+      responseJson = await response.json();
+    } catch (err) {
+      throw Error(
+        `${PREFIX} resetPropertyTrello: failed to parse JSON: ${err}`
+      );
+    }
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = generateResetPropertyTrelloError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return true;
+};
+
 // Request Boards for previously
 // authorized Trello user
 export default {
@@ -320,5 +379,6 @@ export default {
   },
   createAuthorization,
   deleteAuthorization,
-  updatePropertyTrello
+  updatePropertyTrello,
+  resetPropertyTrello
 };

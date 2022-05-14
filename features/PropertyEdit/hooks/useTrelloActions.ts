@@ -9,7 +9,7 @@ import errorReports from '../../../common/services/api/errorReports';
 
 import ErrorConflictingRequest from '../../../common/models/errors/conflictingRequest';
 
-const PREFIX = 'features: EditProperty: hooks: useTrelloSave:';
+const PREFIX = 'features: EditProperty: hooks: useTrelloActiions:';
 
 type RecordSelection = trelloList | trelloBoard;
 
@@ -19,18 +19,21 @@ export interface Selection {
   closeBoard?: RecordSelection;
   closeList?: RecordSelection;
 }
-interface useTrelloSaveResult {
+interface useTrelloActiionsResult {
   isLoading: boolean;
   updateTrelloIntegration: (selectedOptions: Selection) => void;
+  resetTrello(): void;
+  isResetting: boolean;
 }
 
 type userNotifications = (message: string, options?: any) => any;
 
-export default function useTrelloSave(
+export default function useTrelloActiions(
   propertyId: string,
   sendNotification: userNotifications
-): useTrelloSaveResult {
+): useTrelloActiionsResult {
   const [isLoading, setIsLoading] = useState(false);
+  const [isResetting, setIsRelsetting] = useState(false);
 
   // Update a property's trello integration
   const updateTrelloIntegration = async (selections: Selection) => {
@@ -87,5 +90,30 @@ export default function useTrelloSave(
     setIsLoading(false);
   };
 
-  return { isLoading, updateTrelloIntegration };
+  // Update a property's trello integration
+  const resetTrello = async () => {
+    setIsRelsetting(true);
+
+    try {
+      await trelloApi.resetPropertyTrello(propertyId);
+      sendNotification('Trello settings were successfuly reseted', {
+        type: 'success'
+      });
+    } catch (err) {
+      // Send success notification
+      sendNotification(
+        'Failed to reset the property’s Trello configuration, please try again or contact an admin',
+        {
+          type: 'error'
+        }
+      );
+      const wrappedErr = Error(`${PREFIX} resetTrello: failed: ${err}`);
+      // Log issue and send error report
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+    setIsRelsetting(false);
+  };
+
+  return { isLoading, updateTrelloIntegration, resetTrello, isResetting };
 }

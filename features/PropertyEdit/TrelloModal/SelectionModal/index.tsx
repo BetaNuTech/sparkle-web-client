@@ -8,7 +8,7 @@ import ChevronIcon from '../../../../public/icons/ios/chevron-left.svg';
 import useSearching from '../../../../common/hooks/useSearching';
 import SearchBar from '../../../../common/SearchBar';
 import Item from './Item';
-import { Selected } from '../../../PropertyEditTrello/hooks/usePropertyTrelloSelection';
+import { Selected } from '../../hooks/usePropertyTrelloSelection';
 import {
   trelloBoard,
   trelloList

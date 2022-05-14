@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react-hooks';
 import trelloApi from '../../../common/services/api/trello';
 
 import currentUser from '../../../common/utils/currentUser';
-import useTrelloSave from './useTrelloSave';
+import useTrelloActiions from './useTrelloActions';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorConflictingRequest from '../../../common/models/errors/conflictingRequest';
@@ -24,7 +24,7 @@ describe('Unit | Features | Property Edit | Hooks | Use Trello Save', () => {
       name: 'update'
     });
     const { result: hook } = renderHook(() =>
-      useTrelloSave('property-1', sendNotification)
+      useTrelloActiions('property-1', sendNotification)
     );
 
     await act(async () => {
@@ -56,7 +56,7 @@ describe('Unit | Features | Property Edit | Hooks | Use Trello Save', () => {
       .stub(trelloApi, 'updatePropertyTrello')
       .rejects(new ErrorConflictingRequest());
     const { result: hook } = renderHook(() =>
-      useTrelloSave('property-1', sendNotification)
+      useTrelloActiions('property-1', sendNotification)
     );
 
     await act(async () => {
@@ -87,7 +87,7 @@ describe('Unit | Features | Property Edit | Hooks | Use Trello Save', () => {
     sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
     sinon.stub(trelloApi, 'updatePropertyTrello').rejects(new ErrorForbidden());
     const { result: hook } = renderHook(() =>
-      useTrelloSave('property-1', sendNotification)
+      useTrelloActiions('property-1', sendNotification)
     );
 
     await act(async () => {
@@ -116,7 +116,7 @@ describe('Unit | Features | Property Edit | Hooks | Use Trello Save', () => {
     sinon.stub(trelloApi, 'updatePropertyTrello').rejects(new ErrorForbidden());
 
     const { result: hook } = renderHook(() =>
-      useTrelloSave('property-1', sendNotification)
+      useTrelloActiions('property-1', sendNotification)
     );
 
     await act(async () => {

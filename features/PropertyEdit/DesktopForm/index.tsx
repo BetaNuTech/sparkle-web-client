@@ -187,13 +187,16 @@ const PropertyDesktopForm: FunctionComponent<Props> = ({
             </button>
             {/* Trello Button */}
             {isTrelloAuthorized ? (
-              <button
-                disabled={!property.id}
-                onClick={(e) => openTrello(e)}
-                className={styles.propertyEditDesktop__trelloButton}
-              >
-                TRELLO
-              </button>
+              <>
+                {property.id && (
+                  <button
+                    onClick={(e) => openTrello(e)}
+                    className={styles.propertyEditDesktop__trelloButton}
+                  >
+                    TRELLO
+                  </button>
+                )}
+              </>
             ) : (
               <LinkFeature
                 featureEnabled={features.supportSettings}
