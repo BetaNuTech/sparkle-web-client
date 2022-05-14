@@ -6,7 +6,7 @@ import TrelloApi from '../../../common/services/api/trello';
 import errorReports from '../../../common/services/api/errorReports';
 import { openList } from '../../../__mocks__/trello';
 
-describe('Unit | Features | Trello | Hooks | Use Trello Lists', () => {
+describe('Unit | Features | Property Edit | Hooks | Use Trello Lists', () => {
   afterEach(() => sinon.restore());
 
   test('should request lists associated with a board', async () => {

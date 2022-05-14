@@ -7,13 +7,13 @@ import propertyModel from '../../../common/models/property';
 import TrelloIntegrationModel from '../../../common/models/trelloIntegration';
 import useTrelloProperty from '../../../common/hooks/useTrelloProperty';
 import SkeletonLoader from '../../../common/SkeletonLoader';
-import useTrelloBoards from '../../PropertyEditTrello/hooks/useTrelloBoards';
-import usePropertyTrelloSelection from '../../PropertyEditTrello/hooks/usePropertyTrelloSelection';
+import useTrelloBoards from '../hooks/useTrelloBoards';
+import usePropertyTrelloSelection from '../hooks/usePropertyTrelloSelection';
 import SelectionGroup from './SelectionGroup';
 import SelectionModal from './SelectionModal';
-import useTrelloLists from '../../PropertyEditTrello/hooks/useTrelloLists';
+import useTrelloLists from '../hooks/useTrelloLists';
 import styles from './styles.module.scss';
-import { Selection } from '../hooks/useTrelloSave';
+import { Selection } from '../hooks/useTrelloActions';
 
 type UserNotifications = (message: string, options?: any) => any;
 
@@ -27,6 +27,7 @@ interface Props extends ModalProps {
   onLoadDataError: () => void;
   sendNotification: UserNotifications;
   isSaving: boolean;
+  isResetting: boolean;
 }
 
 const TrelloModal: FunctionComponent<Props> = ({
@@ -37,7 +38,8 @@ const TrelloModal: FunctionComponent<Props> = ({
   onReset,
   onLoadDataError,
   sendNotification,
-  isSaving
+  isSaving,
+  isResetting
 }) => {
   const firestore = useFirestore();
 
@@ -65,7 +67,8 @@ const TrelloModal: FunctionComponent<Props> = ({
     handleboardSelection,
     onSelect,
     selectedOptions,
-    hasSelectionChange
+    hasSelectionChange,
+    resetSelection
   } = usePropertyTrelloSelection(trelloProperty || {}, activeSelection);
 
   // Load Lists
@@ -112,6 +115,11 @@ const TrelloModal: FunctionComponent<Props> = ({
   const { openBoard, openList, closeBoard, closeList } = selectedOptions;
   const { trelloFullName, trelloUsername } = trelloIntegration;
 
+  const reset = () => {
+    onReset();
+    resetSelection();
+  };
+
   // invoke method to close modal
   // and send user facing notification
   // on error in loading data
@@ -123,6 +131,12 @@ const TrelloModal: FunctionComponent<Props> = ({
 
   const isLoaded =
     trelloPropertyStatus === 'success' && trelloBoardsStatus === 'success';
+
+  const hasTrelloIntegration = Boolean(
+    trelloProperty?.openBoard || trelloProperty?.closedBoard
+  );
+
+  const showReset = hasTrelloIntegration || hasSelectionChange;
 
   return (
     <>
@@ -152,7 +166,7 @@ const TrelloModal: FunctionComponent<Props> = ({
           onClick={() => onSave(selectedOptions)}
         >
           {isSaving ? (
-            <span className={styles.headerButton__loading}>Updating...</span>
+            <span className={styles.isLoading}>Updating...</span>
           ) : (
             'Save'
           )}
@@ -174,7 +188,7 @@ const TrelloModal: FunctionComponent<Props> = ({
               status="open"
               openSelectionModal={openSelectionModal}
               isLoadingLists={isOpenListsLoading}
-              isSaving={isSaving}
+              isSaving={isSaving || isResetting}
             />
             <SelectionGroup
               title="Deficient Item - CLOSED"
@@ -183,7 +197,7 @@ const TrelloModal: FunctionComponent<Props> = ({
               status="close"
               openSelectionModal={openSelectionModal}
               isLoadingLists={isClosedListsLoading}
-              isSaving={isSaving}
+              isSaving={isSaving || isResetting}
             />
           </div>
           <footer
@@ -193,9 +207,15 @@ const TrelloModal: FunctionComponent<Props> = ({
               '-bgc-white'
             )}
           >
-            <button onClick={onReset} className={styles.cancelButton}>
-              RESET
-            </button>
+            {showReset && (
+              <button onClick={reset} className={styles.cancelButton}>
+                {isResetting ? (
+                  <span className={styles.isLoading}>Loading...</span>
+                ) : (
+                  'RESET'
+                )}
+              </button>
+            )}
           </footer>
           <SelectionModal
             isVisible={isSelectionModalVisible}

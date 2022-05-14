@@ -25,7 +25,7 @@ import useDeleteProperty from '../../common/hooks/useDeleteProperty';
 import useCategorizedTemplates from '../../common/hooks/useCategorizedTemplates';
 import TrelloIntegration from '../../common/models/trelloIntegration';
 import TrelloModal from './TrelloModal';
-import useTrelloSave, { Selection } from './hooks/useTrelloSave';
+import useTrelloActions, { Selection } from './hooks/useTrelloActions';
 
 interface Props {
   isNavOpen?: boolean;
@@ -147,10 +147,12 @@ const PropertyEdit: FunctionComponent<Props> = ({
     filteredTemplates
   );
 
-  const { isLoading: isSavingTrello, updateTrelloIntegration } = useTrelloSave(
-    property.id,
-    sendNotification
-  );
+  const {
+    isLoading: isSavingTrello,
+    updateTrelloIntegration,
+    resetTrello,
+    isResetting
+  } = useTrelloActions(property.id, sendNotification);
 
   // Selected templates names
   const templateNames = selectedTemplates
@@ -245,6 +247,10 @@ const PropertyEdit: FunctionComponent<Props> = ({
 
   const onSaveTrello = (selection: Selection) => {
     updateTrelloIntegration(selection);
+  };
+
+  const onResetTrello = () => {
+    resetTrello();
   };
 
   //   Mobile header save button
@@ -349,10 +355,11 @@ const PropertyEdit: FunctionComponent<Props> = ({
           isVisible={isTrelloModalVisible}
           onClose={() => setTrelloModalVisible(false)}
           onSave={onSaveTrello} // eslint-disable-line @typescript-eslint/no-empty-function
-          onReset={() => {}} // eslint-disable-line @typescript-eslint/no-empty-function
+          onReset={onResetTrello} // eslint-disable-line @typescript-eslint/no-empty-function
           onLoadDataError={onLoadDataError}
           sendNotification={sendNotification}
           isSaving={isSavingTrello}
+          isResetting={isResetting}
         />
       </>
     )

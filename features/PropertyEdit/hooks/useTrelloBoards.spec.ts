@@ -9,7 +9,7 @@ const emptyCollectionResult = {
   data: []
 };
 
-describe('Unit | Features | Trello | Hooks | Use Trello Boards', () => {
+describe('Unit | Features | Property Edit | Hooks | Use Trello Boards', () => {
   afterEach(() => sinon.restore());
 
   test('should request Trello boards', () => {

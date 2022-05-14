@@ -16,6 +16,7 @@ interface usePropertyTrelloSelectionResult {
   selectedOptions: Selected;
   onSelect(selection: SelectedItem): void;
   handleboardSelection(findLists: (id: string, isOpen: boolean) => void): void;
+  resetSelection(): void;
 }
 
 // Hooks for filtering jobs list
@@ -23,7 +24,6 @@ export default function usePropertyTrelloSelection(
   initialSelection: propertyTrelloIntegrationModel,
   activeSelection: string
 ): usePropertyTrelloSelectionResult {
-  // const [hasSelectionChange, setHasSelectionChange] = useState(false);
   const [selectedOptions, setselectedOptions] = useState<Selected>(
     getSelectedOptions(initialSelection)
   );
@@ -53,6 +53,10 @@ export default function usePropertyTrelloSelection(
     }
   };
 
+  const resetSelection = () => {
+    setselectedOptions(getSelectedOptions({}));
+  };
+
   useEffect(() => {
     setselectedOptions(getSelectedOptions(initialSelection));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,7 +66,8 @@ export default function usePropertyTrelloSelection(
     handleboardSelection,
     onSelect,
     selectedOptions,
-    hasSelectionChange
+    hasSelectionChange,
+    resetSelection
   };
 }
 

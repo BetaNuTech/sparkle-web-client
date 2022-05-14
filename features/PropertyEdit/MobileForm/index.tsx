@@ -313,13 +313,16 @@ const PropertyMobileForm: FunctionComponent<Props> = ({
         <div className={styles.propertyEditMobile__formGroup}>
           <div className={styles.propertyEditMobile__formGroup__control}>
             {isTrelloAuthorized ? (
-              <button
-                disabled={!property.id}
-                onClick={(e) => openTrello(e)}
-                className={styles.propertyEditMobile__trelloButton}
-              >
-                TRELLO
-              </button>
+              <>
+                {property.id && (
+                  <button
+                    onClick={(e) => openTrello(e)}
+                    className={styles.propertyEditMobile__trelloButton}
+                  >
+                    TRELLO
+                  </button>
+                )}
+              </>
             ) : (
               <LinkFeature
                 featureEnabled={features.supportSettings}
