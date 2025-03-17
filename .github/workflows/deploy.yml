@@ -35,7 +35,7 @@ jobs:
 
       - name: Create Env File [Staging]
         if: github.ref == 'refs/heads/staging'
-        uses: SpicyPizza/create-envfile@v1
+        uses: SpicyPizza/create-envfile@v2.0
         with:
           file_name: .env.local
           envs: |
@@ -54,7 +54,7 @@ jobs:
 
       - name: Create Env File [Production]
         if: github.ref == 'refs/heads/production'
-        uses: SpicyPizza/create-envfile@v1
+        uses: SpicyPizza/create-envfile@v2.0
         with:
           file_name: .env.local
           envs: |
@@ -70,6 +70,7 @@ jobs:
             NEXT_PUBLIC_SLACK_CLIENT_ID=${{ secrets.PRODUCTION_SLACK_CLIENT_ID }}
             NEXT_PUBLIC_TRELLO_API_KEY=${{ secrets.PRODUCTION_TRELLO_API_KEY }}
             NEXT_PUBLIC_GOOGLE_ANALYTICS=${{ secrets.PRODUCTION_GOOGLE_ANALYTICS }}
+
 
       - name: Build
         run: docker-compose run build
