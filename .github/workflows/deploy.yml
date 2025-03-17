@@ -91,6 +91,22 @@ jobs:
           name: dist
           path: dist
 
+      - name: Setup Firebase Tools for Staging
+        if: github.ref == 'refs/heads/staging'
+        uses: w9jds/firebase-action@master
+        with:
+          args: --version
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.STAGING_GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - name: Setup Firebase Tools for Production
+        if: github.ref == 'refs/heads/production'
+        uses: w9jds/firebase-action@master
+        with:
+          args: --version
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.PRODUCTION_GOOGLE_APPLICATION_CREDENTIALS }}
+
       - name: Target Staging Firebase Project
         if: github.ref == 'refs/heads/staging'
         uses: w9jds/firebase-action@master
