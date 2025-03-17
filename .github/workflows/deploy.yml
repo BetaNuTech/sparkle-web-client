@@ -97,7 +97,7 @@ jobs:
         with:
           args: target:apply hosting production --non-interactive
         env:
-          GCP_SA_KEY: ${{ secrets.STAGING_GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.STAGING_GOOGLE_APPLICATION_CREDENTIALS }}
           PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
 
       - name: Target Production Firebase Project
@@ -106,7 +106,7 @@ jobs:
         with:
           args: target:apply hosting production --non-interactive
         env:
-          GCP_SA_KEY: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.PRODUCTION_GOOGLE_APPLICATION_CREDENTIALS }}
           PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
 
       - name: Deploy Staging to Firebase
@@ -115,7 +115,7 @@ jobs:
         with:
           args: deploy --only hosting
         env:
-          GCP_SA_KEY: ${{ secrets.STAGING_GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.STAGING_GOOGLE_APPLICATION_CREDENTIALS }}
 
       - name: Deploy Production to Firebase
         if: github.ref == 'refs/heads/production'
@@ -123,4 +123,4 @@ jobs:
         with:
           args: deploy --only hosting
         env:
-          GCP_SA_KEY: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.PRODUCTION_GOOGLE_APPLICATION_CREDENTIALS }}
