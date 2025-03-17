@@ -91,39 +91,14 @@ jobs:
           name: dist
           path: dist
 
-      - name: Setup Firebase Tools
-        uses: w9jds/firebase-action@master
-        with:
-          args: --version
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-      - name: Select Staging Firebase Project
-        if: github.ref == 'refs/heads/staging'
-        uses: w9jds/firebase-action@master
-        with:
-          args: use --non-interactive
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
-
       - name: Target Staging Firebase Project
         if: github.ref == 'refs/heads/staging'
         uses: w9jds/firebase-action@master
         with:
           args: target:apply hosting production --non-interactive
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GCP_SA_KEY: ${{ secrets.STAGING_GCP_SA_KEY }}
           PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
-
-      - name: Select Production Firebase Project
-        if: github.ref == 'refs/heads/production'
-        uses: w9jds/firebase-action@master
-        with:
-          args: use --non-interactive
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
 
       - name: Target Production Firebase Project
         if: github.ref == 'refs/heads/production'
@@ -131,12 +106,21 @@ jobs:
         with:
           args: target:apply hosting production --non-interactive
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GCP_SA_KEY: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
           PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
 
-      - name: Deploy to Firebase
+      - name: Deploy Staging to Firebase
+        if: github.ref == 'refs/heads/staging'
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          GCP_SA_KEY: ${{ secrets.STAGING_GCP_SA_KEY }}
+
+      - name: Deploy Production to Firebase
+        if: github.ref == 'refs/heads/production'
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          GCP_SA_KEY: ${{ secrets.PRODUCTION_GCP_SA_KEY }}
