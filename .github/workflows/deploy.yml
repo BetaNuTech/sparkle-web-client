@@ -118,14 +118,23 @@ jobs:
         if: github.ref == 'refs/heads/production'
         uses: w9jds/firebase-action@master
         with:
-          args: target:apply hosting production sapphire-inspections.web.app sapphire-inspections.firebaseapp.com bluestone-prop.sapphire-standard.com--non-interactive
+          args: target:apply hosting production sapphire-inspections.web.app sapphire-inspections.firebaseapp.com bluestone-prop.sapphire-standard.com --non-interactive
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ./firebase.json
           PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
 
-      - name: Deploy to Firebase
+      - name: Deploy Staging to Firebase
+        if: github.ref == 'refs/heads/staging'
         uses: w9jds/firebase-action@master
         with:
-          args: deploy
+          args: deploy --only hosting:sapphire-inspections-staging
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./firebase.json
+
+      - name: Deploy Production to Firebase
+        if: github.ref == 'refs/heads/production'
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting:sapphire-inspections
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ./firebase.json
