@@ -81,9 +81,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    container:
-      image: mj3000/firebase-tools
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -94,21 +91,48 @@ jobs:
           name: dist
           path: dist
 
+      - name: Setup Firebase Tools
+        uses: w9jds/firebase-action@master
+        with:
+          args: --version
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
       - name: Select Staging Firebase Project
         if: github.ref == 'refs/heads/staging'
-        run: firebase use ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+        uses: w9jds/firebase-action@master
+        with:
+          args: use ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Target Staging Firebase Project
         if: github.ref == 'refs/heads/staging'
-        run: firebase target:apply hosting production ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+        uses: w9jds/firebase-action@master
+        with:
+          args: target:apply hosting production ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Select Production Firebase Project
         if: github.ref == 'refs/heads/production'
-        run: firebase use ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+        uses: w9jds/firebase-action@master
+        with:
+          args: use ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Target Production Firebase Project
         if: github.ref == 'refs/heads/production'
-        run: firebase target:apply hosting production ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+        uses: w9jds/firebase-action@master
+        with:
+          args: target:apply hosting production ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
 
       - name: Deploy to Firebase
-        run: firebase deploy --only hosting --non-interactive --token ${{ secrets.FIREBASE_TOKEN }}
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
