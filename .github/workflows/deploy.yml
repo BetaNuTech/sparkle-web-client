@@ -105,24 +105,6 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.PRODUCTION_GOOGLE_APPLICATION_CREDENTIALS }}
 
-      - name: Target Staging Firebase Project
-        if: github.ref == 'refs/heads/staging'
-        uses: w9jds/firebase-action@master
-        with:
-          args: target:apply hosting production ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./firebase_credentials.json
-          PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
-
-      - name: Target Production Firebase Project
-        if: github.ref == 'refs/heads/production'
-        uses: w9jds/firebase-action@master
-        with:
-          args: target:apply hosting production ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./firebase_credentials.json
-          PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
-
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
