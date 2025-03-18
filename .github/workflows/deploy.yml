@@ -105,13 +105,6 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.PRODUCTION_GOOGLE_APPLICATION_CREDENTIALS }}
 
-      - name: List Firebase Projects (Debug)
-        uses: w9jds/firebase-action@master
-        with:
-          args: use --list
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ./firebase_credentials.json
-
       - name: Target Staging Firebase Project
         if: github.ref == 'refs/heads/staging'
         uses: w9jds/firebase-action@master
