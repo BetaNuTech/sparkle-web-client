@@ -105,18 +105,27 @@ jobs:
         env:
           GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.PRODUCTION_GOOGLE_APPLICATION_CREDENTIALS }}
 
-      - name: Deploy Staging to Firebase
+      - name: Target Staging Firebase Project
         if: github.ref == 'refs/heads/staging'
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: w9jds/firebase-action@master
         with:
-          firebaseServiceAccount: ./firebase_credentials.json
-          projectId: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
-          target: production
+          args: target:apply hosting production ${{ secrets.STAGING_FIREBASE_PROJECT_ID }} --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./firebase_credentials.json
+          PROJECT_ID: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
 
-      - name: Deploy Production to Firebase
+      - name: Target Production Firebase Project
         if: github.ref == 'refs/heads/production'
-        uses: FirebaseExtended/action-hosting-deploy@v0
+        uses: w9jds/firebase-action@master
         with:
-          firebaseServiceAccount: ./firebase_credentials.json
-          projectId: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
-          target: production
+          args: target:apply hosting production ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }} --non-interactive
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./firebase_credentials.json
+          PROJECT_ID: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./firebase_credentials.json
