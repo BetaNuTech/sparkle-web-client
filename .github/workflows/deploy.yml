@@ -96,7 +96,7 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           projectId: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
-          firebaseServiceAccount: ${{ secrets.STAGING_SERVICE_ACCOUNT_KEY }}
+          firebaseServiceAccount: "${{ secrets.STAGING_SERVICE_ACCOUNT_KEY_JSON }}"
           channelId: live
 
       - name: Deploy to Firebase Hosting (Production)
@@ -104,5 +104,5 @@ jobs:
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           projectId: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
-          firebaseServiceAccount: ${{ secrets.PRODUCTION_SERVICE_ACCOUNT_KEY }}
+          firebaseServiceAccount: "${{ secrets.PRODUCTION_SERVICE_ACCOUNT_KEY_JSON }}"
           channelId: live
