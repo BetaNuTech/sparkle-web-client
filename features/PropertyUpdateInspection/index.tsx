@@ -225,10 +225,12 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
       );
       destroyUpdates();
       disableAdminEditMode();
-    } catch (err) {}
-
-    reloadSignatures();
-    reloadPhotos();
+      reloadSignatures();
+      reloadPhotos();
+    } catch (err) {
+      // Don't clear updates or reload on error
+      console.error('Failed to save inspection:', err);
+    }
   };
 
   const { sortedTemplateSections, collapsedSections, onSectionCollapseToggle } =

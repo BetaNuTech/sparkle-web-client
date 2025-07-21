@@ -402,6 +402,7 @@ export default function useInspectionItemUpdate(
     } catch (err) {
       setIsPublishing(false);
       handleErrorResponse(err);
+      throw err; // Re-throw to prevent success notification
     }
 
     // Combine all errors
