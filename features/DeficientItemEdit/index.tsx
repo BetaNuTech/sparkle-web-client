@@ -168,6 +168,7 @@ const DeficientItemEdit: FunctionComponent<Props> = ({
   };
 
   const onAddProgressNote = () => {
+    updateState('pending');
     publish();
   };
 
