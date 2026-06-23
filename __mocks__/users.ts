@@ -60,6 +60,7 @@ export const teamMember: userModel = {
   properties: {
     'property-1': true
   },
+  courtesyOfficer: true,
   lastUserAgent: 'Web · OS X · Chrome (Sparkle v0.1.0)'
 };
 
@@ -76,6 +77,7 @@ export const propertyMember: userModel = {
   properties: {
     'property-1': true
   },
+  courtesyOfficer: true,
   lastUserAgent: 'Web · OS X · Chrome (Sparkle v0.1.0)'
 };
 

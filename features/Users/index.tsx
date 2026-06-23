@@ -6,6 +6,7 @@ import breakpoints from '../../config/breakpoints';
 import UsersGroups from './Groups';
 import Header from './Header';
 import useSorting from './hooks/useSorting';
+import useUsersFilter from './hooks/useUsersFilter';
 import useUsersGroup from './hooks/useUsersGroup';
 import useUsersSearch from './hooks/useUsersSearch';
 
@@ -30,6 +31,8 @@ const Users: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
+  const { visibleUsers, filterBy, onFilterChange } = useUsersFilter(data);
+
   const {
     sortedUsers,
     sortBy,
@@ -38,7 +41,7 @@ const Users: FunctionComponent<Props> = ({
     onSortDirChange,
     nextUserSort,
     userFacingSortBy
-  } = useSorting(data);
+  } = useSorting(visibleUsers);
 
   const { filteredUsers, onClearSearch, onSearchKeyDown, searchValue } =
     useUsersSearch(sortedUsers);
@@ -64,6 +67,8 @@ const Users: FunctionComponent<Props> = ({
         onSearchKeyDown={onSearchKeyDown}
         searchValue={searchValue}
         onClearSearch={onClearSearch}
+        filterBy={filterBy}
+        onFilterChange={onFilterChange}
       />
       <UsersGroups
         userGroups={userGroups}

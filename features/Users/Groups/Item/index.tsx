@@ -40,6 +40,11 @@ const Item: FunctionComponent<Props> = ({ user, forceVisible }) => {
         >
           <header className={styles.details}>
             <div className={styles.pill}>{userFriendlyAccessLevel}</div>
+            {user.courtesyOfficer && (
+              <div className={clsx(styles.pill, styles['pill--courtesy'])}>
+                Courtesy Officer
+              </div>
+            )}
             <div className={clsx(styles.pill, styles['pill--info'])}>
               Created: {creationDate}
             </div>

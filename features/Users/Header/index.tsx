@@ -8,7 +8,8 @@ import AddIcon from '../../../public/icons/ios/add.svg';
 import styles from './styles.module.scss';
 import MobileSearchBar from '../../../common/MobileSearchBar';
 import SortDropdown from '../../../common/SortDropdown';
-import { sortOptions } from '../settings';
+import FilterDropdown from '../../../common/FilterDropdown';
+import { sortOptions, filterOptions } from '../settings';
 
 interface Props {
   isOnline: boolean;
@@ -24,6 +25,8 @@ interface Props {
   searchValue: string;
   onSearchKeyDown(evt: ChangeEvent<HTMLInputElement>): void;
   onClearSearch(): void;
+  filterBy: string;
+  onFilterChange(evt: ChangeEvent<HTMLSelectElement>): void;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -39,7 +42,9 @@ const Header: FunctionComponent<Props> = ({
   userFacingSortBy,
   onSearchKeyDown,
   onClearSearch,
-  searchValue
+  searchValue,
+  filterBy,
+  onFilterChange
 }) => {
   // Mobile Header right actions buttons
   const mobileHeaderActions = (headStyle) => (
@@ -73,6 +78,11 @@ const Header: FunctionComponent<Props> = ({
           <AddIcon />
         </span>
       </LinkFeature>
+      <FilterDropdown
+        options={filterOptions}
+        value={filterBy}
+        onChange={onFilterChange} // eslint-disable-line @typescript-eslint/no-empty-function
+      />
       <SortDropdown
         options={sortOptions}
         sortBy={sortBy}
@@ -102,6 +112,11 @@ const Header: FunctionComponent<Props> = ({
           <div className={styles.sortInfoLine}>
             Sorted by {userFacingSortBy}
           </div>
+          <FilterDropdown
+            options={filterOptions}
+            value={filterBy}
+            onChange={onFilterChange} // eslint-disable-line @typescript-eslint/no-empty-function
+          />
         </>
       ) : (
         <DesktopHeader

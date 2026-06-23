@@ -1,0 +1,26 @@
+@import '../../styles/index.scss';
+
+.filterBy {
+  display: flex;
+  flex-direction: row;
+  margin-right: $global-padding;
+
+  &__item {
+    flex-direction: row;
+    display: flex;
+    align-items: center;
+  }
+
+  // Filter by, selector
+  &__label,
+  &__menu {
+    width: auto;
+    margin-bottom: 0;
+    font-size: $medium-font-size;
+  }
+
+  &__label {
+    margin-right: rem-calc(5);
+    color: $gray-light-2;
+  }
+}

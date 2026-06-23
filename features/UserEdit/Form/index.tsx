@@ -145,6 +145,26 @@ const UserEditForm: FunctionComponent<Props> = ({
             </div>
           </label>
 
+          <label
+            className={clsx(styles.field__control, styles.pillField)}
+            htmlFor="courtesyOfficer-check"
+          >
+            <div className={styles.pillField__body}>
+              <p className={styles.pillField__label}>Courtesy Officer</p>
+              <small className={styles.pillField__subLabel}>
+                Designate as a courtesy officer
+              </small>
+            </div>
+            <div className={styles.pillField__input}>
+              <SwitchInput
+                {...register('courtesyOfficer')}
+                id="courtesyOfficer-check"
+                disabled={isLoading}
+                data-testid="user-edit-courtesyOfficer-input"
+              />
+            </div>
+          </label>
+
           <div
             className={clsx(styles.field__control, styles.pillField)}
             onClick={onTeamsClick}
