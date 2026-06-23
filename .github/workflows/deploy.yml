@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: yarn-cache # use this to check for `cache-hit`
         with:
           path: '**/node_modules'
@@ -73,7 +73,7 @@ jobs:
         run: docker-compose run build
 
       - name: Archive Build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist
@@ -83,10 +83,10 @@ jobs:
     needs: build
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download Build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist
