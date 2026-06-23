@@ -7,7 +7,7 @@ import LinkFeature from '../LinkFeature';
 import { useAuth } from '../Auth/Provider';
 import styles from './styles.module.scss';
 import Logo from '../../public/icons/sparkle/logo.svg';
-import BusinessLogo from '../../public/icons/sparkle/bluecrest-logo.svg';
+import BusinessLogo from '../../public/icons/sparkle/bluecore-logo.svg';
 import CancelIcon from '../../public/icons/sparkle/cancel-simple.svg';
 import UserModel from '../models/user';
 import {
