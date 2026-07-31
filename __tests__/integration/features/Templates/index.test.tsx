@@ -111,7 +111,7 @@ describe('Integration | features | Templates', () => {
     const expected = true;
     const expectedErrorReport =
       // eslint-disable-next-line max-len
-      'Error: features: DeficientItemEdit: hooks: useTemplatesActions: handleErrorResponse: Error: Something went wrong';
+      'Error: features: Templates: hooks: useTemplatesActions: handleErrorResponse: Error: Something went wrong';
     const sendNotification = sinon.spy();
     sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
     const errorStub = sinon.stub(errorReports, 'send').callsFake(() => true);
