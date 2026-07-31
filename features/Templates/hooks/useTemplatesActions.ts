@@ -6,7 +6,7 @@ import BaseError from '../../../common/models/errors/baseError';
 import features from '../../../config/features';
 import winLocation from '../../../common/utils/winLocation';
 
-const PREFIX = 'features: DeficientItemEdit: hooks: useTemplatesActions:';
+const PREFIX = 'features: Templates: hooks: useTemplatesActions:';
 
 type DeleteStatus = {
   isDeleted: boolean;
