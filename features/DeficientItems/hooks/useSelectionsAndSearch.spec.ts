@@ -163,9 +163,10 @@ describe('Unit | features | Deficient Items | Hooks | useSelectionsAndSearch', (
     await act(async () => {
       result.current.onSearchKeyDown({ target: { value: 'o' } });
 
-      // need to wait for 300 ms
-      // as we have 300ms debounce in useSearching Hook
-      await new Promise((r) => setTimeout(r, 300));
+      // need to wait beyond the 300ms debounce
+      // in useSearching Hook; extra headroom keeps
+      // this from flaking on slow CI runners
+      await new Promise((r) => setTimeout(r, 600));
     });
     const { deficientItemsByState } = result.current;
 
