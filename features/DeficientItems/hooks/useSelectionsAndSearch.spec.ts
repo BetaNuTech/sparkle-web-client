@@ -157,17 +157,20 @@ describe('Unit | features | Deficient Items | Hooks | useSelectionsAndSearch', (
     const expectedResultOne = 'one | two | four | four';
     const expectedResultTwo = 'one';
 
-    const { result } = renderHook(() =>
+    const { result, waitFor } = renderHook(() =>
       useSelectionsAndSearch(deficientItems, 'property-1', sendNotification)
     );
     await act(async () => {
       result.current.onSearchKeyDown({ target: { value: 'o' } });
-
-      // need to wait beyond the 300ms debounce
-      // in useSearching Hook; extra headroom keeps
-      // this from flaking on slow CI runners
-      await new Promise((r) => setTimeout(r, 600));
     });
+
+    // Poll until useSearching Hook's 300ms debounced
+    // search has applied, instead of sleeping a fixed
+    // duration that can flake on slow CI runners
+    await waitFor(
+      () => result.current.deficientItemsByState.get('pending').length === 4,
+      { timeout: 5000 }
+    );
     const { deficientItemsByState } = result.current;
 
     const actualResultOne = deficientItemsByState
