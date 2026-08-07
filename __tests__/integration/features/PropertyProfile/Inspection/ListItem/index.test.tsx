@@ -49,6 +49,50 @@ describe('Integration | Features | Properties | Profile | Inspection | List Item
     expect(actual).toEqual(expected);
   });
 
+  it('should render the inspection unit number', () => {
+    const expected = 'A12';
+    const inspectionItem = deepClone(fullInspection);
+    inspectionItem.unitNumber = 'A12';
+    const forceVisible = true;
+
+    render(
+      <ListItem
+        propertyId="property-1"
+        inspection={inspectionItem}
+        templateCategories={templateCategories}
+        forceVisible={forceVisible}
+      />
+    );
+
+    const items: HTMLElement = screen.queryByTestId(
+      'property-profile-inspection-list-item-unit-number'
+    );
+    const actual = items.textContent;
+    expect(actual).toEqual(expected);
+  });
+
+  it('defaults to -- when inspection has no unit number', () => {
+    const expected = '--';
+    const inspectionItem = deepClone(fullInspection);
+    delete inspectionItem.unitNumber;
+    const forceVisible = true;
+
+    render(
+      <ListItem
+        propertyId="property-1"
+        inspection={inspectionItem}
+        templateCategories={templateCategories}
+        forceVisible={forceVisible}
+      />
+    );
+
+    const items: HTMLElement = screen.queryByTestId(
+      'property-profile-inspection-list-item-unit-number'
+    );
+    const actual = items.textContent;
+    expect(actual).toEqual(expected);
+  });
+
   it('Adds initial caps to inspector name ', () => {
     const expected = 'Matt Jensen';
     const inspectionItem = deepClone(fullInspection);

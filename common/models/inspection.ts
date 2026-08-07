@@ -25,6 +25,7 @@ interface inspection {
 
   templateId?: string;
   templateName?: string;
+  unitNumber?: string;
   totalItems?: number;
   updatedAt?: number;
   updatedLastDate?: number;

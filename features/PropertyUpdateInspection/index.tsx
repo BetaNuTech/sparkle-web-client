@@ -25,9 +25,13 @@ import SignatureInputModal from './SignatureInputModal';
 import Header from './Header';
 import {
   canEnableOverwriteMode,
-  canEditInspection
+  canEditInspection,
+  canEditInspectionUnitNumber
 } from '../../common/utils/userPermissions';
 import PhotosModal from '../../common/PhotosModal';
+import EditUnitNumberModal from '../../common/EditInspectionUnitNumberModal';
+import inspectionsApi from '../../common/services/api/inspections';
+import errorReports from '../../common/services/api/errorReports';
 
 interface Props {
   user: userModel;
@@ -95,6 +99,10 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     useState(false);
 
   const [isVisiblePhotosModal, setIsVisiblePhotosModal] = useState(false);
+
+  const [isVisibleUnitNumberModal, setIsVisibleUnitNumberModal] =
+    useState(false);
+  const [isUpdatingUnitNumber, setIsUpdatingUnitNumber] = useState(false);
 
   const [selectedInspectionItem, setSelectedInspectionItem] = useState(null);
 
@@ -213,6 +221,41 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
 
   const onEnableAdminEditMode = () => {
     enableAdminEditMode(user);
+  };
+
+  const canEditUnitNumber = canEditInspectionUnitNumber(user);
+
+  const onEditUnitNumber = () => {
+    setIsVisibleUnitNumberModal(true);
+  };
+
+  const closeUnitNumberModal = () => {
+    setIsVisibleUnitNumberModal(false);
+  };
+
+  // Persist a new unit number without
+  // effecting the inspection's completion
+  // date or queueing report generation
+  const confirmUnitNumberUpdate = async (unitNumber: string) => {
+    setIsUpdatingUnitNumber(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionsApi.updateUnitNumber(inspection.id, unitNumber);
+      sendNotification('Inspection unit # updated successfully', {
+        type: 'success'
+      });
+    } catch (err) {
+      sendNotification('Failed to update inspection unit #, please try again', {
+        type: 'error'
+      });
+      const wrappedErr = Error(
+        `features: propertyUpdateInspection: confirmUnitNumberUpdate: ${err}`
+      );
+      // eslint-disable-next-line import/no-named-as-default-member
+      errorReports.send(wrappedErr);
+    }
+    setIsUpdatingUnitNumber(false);
+    setIsVisibleUnitNumberModal(false);
   };
 
   // Publish local changes and on success
@@ -405,6 +448,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
             canUpdateCompleteInspection={canUpdatesCompleteInspection}
             isPdfReportGenerating={isPdfReportGenerating}
             isPdfReportQueued={isPdfReportQueued}
+            onEditUnitNumber={onEditUnitNumber}
+            canEditUnitNumber={canEditUnitNumber}
           />
         </>
       ) : (
@@ -427,6 +472,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
           onRegenerateReport={generatePdfReport}
           isRequestingReport={isRequestingReport}
+          onEditUnitNumber={onEditUnitNumber}
+          canEditUnitNumber={canEditUnitNumber}
         />
       )}
 
@@ -515,6 +562,13 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onRemovePhoto={onRemoveItemsUnpublishedPhoto}
         sendNotification={sendNotification}
         disabled={!canEdit}
+      />
+      <EditUnitNumberModal
+        isVisible={isVisibleUnitNumberModal}
+        onClose={closeUnitNumberModal}
+        inspection={inspection}
+        onConfirm={confirmUnitNumberUpdate}
+        isUpdating={isUpdatingUnitNumber}
       />
     </>
   );

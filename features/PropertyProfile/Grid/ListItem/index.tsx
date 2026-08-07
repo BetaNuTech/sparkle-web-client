@@ -23,6 +23,7 @@ interface ListItemProps {
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
   onMoveInspection: (inspection: inspectionModel) => void;
+  onEditUnitNumber: (inspection: inspectionModel) => void;
   forceVisible?: boolean;
 }
 
@@ -33,6 +34,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   templateCategories,
   openInspectionDeletePrompt,
   onMoveInspection,
+  onEditUnitNumber,
   forceVisible
 }) => {
   // State
@@ -57,6 +59,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
     ? utilString.titleize(inspection.inspectorName)
     : '--';
   const templateName = inspection.templateName ? inspection.templateName : '--';
+  const unitNumber = inspection.unitNumber ? inspection.unitNumber : '--';
   // If the inspection is completed then use direct score,
   // otherwise calculate percentage
   const scoreDisplay = Number(
@@ -115,6 +118,15 @@ const ListItem: FunctionComponent<ListItemProps> = ({
           ></span>
             */}
             {creatorName}
+          </LinkFeature>
+          <LinkFeature
+            href={inspectionUpdateUrl}
+            legacyHref={legacyInspectionUpdateUrl}
+            className={styles.propertyProfile__gridRow__column}
+            data-testid="inspection-grid-list-item-unit-number"
+            featureEnabled={features.supportPropertyInspectionUpdate}
+          >
+            {unitNumber}
           </LinkFeature>
           <LinkFeature
             href={inspectionUpdateUrl}
@@ -204,6 +216,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                   user={user}
                   onDeleteClick={() => openInspectionDeletePrompt(inspection)}
                   onMove={() => onMoveInspection(inspection)}
+                  onEditUnitNumber={() => onEditUnitNumber(inspection)}
                 />
               </span>
             </div>

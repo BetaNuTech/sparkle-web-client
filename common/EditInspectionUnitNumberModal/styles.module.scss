@@ -1,0 +1,36 @@
+@import '../../styles/index.scss';
+
+.modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  padding: $global-padding;
+}
+
+.input {
+  width: 100%;
+  padding: rem-calc(8) rem-calc(12);
+  border: rem-calc(1) solid $gray-light;
+  border-radius: $global-radius;
+  font-size: $medium-font-size;
+  color: $gray-darker;
+
+  &:focus {
+    border-color: $primary-color;
+    outline: none;
+  }
+}
+
+.action {
+  @extend %actionButton;
+  padding: rem-calc(6) $global-padding;
+  background-color: $primary-color;
+  font-size: rem-calc(14);
+  color: $white;
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}

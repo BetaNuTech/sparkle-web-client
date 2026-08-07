@@ -303,6 +303,61 @@ const patchInspectionRequest = (
     })
   });
 
+const patchUnitNumberApiError = createApiError(`${PREFIX} updateUnitNumber:`);
+
+const patchUnitNumberRequest = (
+  authToken: string,
+  inspectionId: string,
+  unitNumber: string
+): Promise<Response> =>
+  fetch(`${API_DOMAIN}/api/v0/inspections/${inspectionId}/unit-number`, {
+    method: 'PATCH',
+    headers: {
+      Authorization: `FB-JWT ${authToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ unitNumber })
+  });
+
+const updateUnitNumber = async (
+  inspectionId: string,
+  unitNumber: string
+): Promise<boolean> => {
+  let authToken = '';
+  try {
+    authToken = await currentUser.getIdToken();
+  } catch (tokenErr) {
+    throw Error(
+      `${PREFIX} updateUnitNumber: auth token could not be recovered: ${tokenErr}`
+    );
+  }
+
+  let response = null;
+  try {
+    response = await patchUnitNumberRequest(authToken, inspectionId, unitNumber);
+  } catch (err) {
+    throw Error(`${PREFIX} updateUnitNumber: PATCH request failed: ${err}`);
+  }
+
+  let responseJson: any = {};
+  try {
+    responseJson = await response.json();
+  } catch (err) {
+    throw Error(`${PREFIX} updateUnitNumber: failed to parse JSON: ${err}`);
+  }
+
+  // Throw unsuccessful request API error
+  const apiError: any = patchUnitNumberApiError(
+    response.status,
+    responseJson.errors
+  );
+  if (apiError) {
+    throw apiError;
+  }
+
+  return true;
+};
+
 const updateInspection = async (
   inspectionId: string,
   data: Record<string, string>
@@ -347,5 +402,6 @@ export default {
   updateInspectionTemplate,
   uploadPhotoData,
   generatePdfReport,
-  updateInspection
+  updateInspection,
+  updateUnitNumber
 };

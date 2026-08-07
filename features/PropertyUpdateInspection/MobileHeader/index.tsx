@@ -22,6 +22,8 @@ interface Props {
   canUpdateCompleteInspection: boolean;
   isPdfReportGenerating: boolean;
   isPdfReportQueued: boolean;
+  onEditUnitNumber(): void;
+  canEditUnitNumber: boolean;
 }
 
 const InspectionMobileHeader: FunctionComponent<Props> = ({
@@ -36,7 +38,9 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
   isStaging,
   canUpdateCompleteInspection,
   isPdfReportGenerating,
-  isPdfReportQueued
+  isPdfReportQueued,
+  onEditUnitNumber,
+  canEditUnitNumber
 }) => {
   const isPubishingDisabled =
     !(hasUpdates && isOnline) || isPdfReportGenerating || isPdfReportQueued;
@@ -123,6 +127,22 @@ const InspectionMobileHeader: FunctionComponent<Props> = ({
           </span>
         </div>
         <h1 className={styles.header__title}>{inspection.templateName}</h1>
+        {canEditUnitNumber ? (
+          <button
+            type="button"
+            className={clsx('-fz-small', '-c-primary', '-cu-pointer')}
+            onClick={onEditUnitNumber}
+            data-testid="mobile-header-edit-unit-number"
+          >
+            {inspection.unitNumber
+              ? `Unit #: ${inspection.unitNumber}`
+              : '+ Add Unit # (optional)'}
+          </button>
+        ) : (
+          inspection.unitNumber && (
+            <span className="-fz-small">Unit #: {inspection.unitNumber}</span>
+          )
+        )}
       </div>
     </>
   );

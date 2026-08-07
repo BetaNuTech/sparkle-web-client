@@ -8,6 +8,7 @@ type Inspection = {
   inspectorName?: string;
   templateName?: string;
   templateCategory?: string;
+  unitNumber?: string;
 };
 
 // Compare array map by value as string
@@ -153,6 +154,30 @@ describe('Spec | Property Profile | Utils | Inspection Sorting', () => {
     ];
     const result = inspections.sort(sortInspection('templateCategory', 'desc'));
     const actual = toCompare(result, 'templateCategory');
+    expect(actual).toEqual(expected);
+  });
+
+  test('it sorts inspection unit number in ascending order, empty last', () => {
+    const expected = 'a12 | b4 | ';
+    const inspections = [
+      { unitNumber: 'B4' },
+      {}, // unset unit number
+      { unitNumber: 'A12' }
+    ];
+    const result = inspections.sort(sortInspection('unitNumber', 'asc'));
+    const actual = toCompare(result, 'unitNumber');
+    expect(actual).toEqual(expected);
+  });
+
+  test('it sorts inspection unit number in descending order, empty last', () => {
+    const expected = 'b4 | a12 | ';
+    const inspections = [
+      { unitNumber: 'B4' },
+      {}, // unset unit number
+      { unitNumber: 'A12' }
+    ];
+    const result = inspections.sort(sortInspection('unitNumber', 'desc'));
+    const actual = toCompare(result, 'unitNumber');
     expect(actual).toEqual(expected);
   });
 });

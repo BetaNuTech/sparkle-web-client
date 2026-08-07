@@ -204,4 +204,105 @@ describe('Unit | Features | Property Profile | Hooks | Use Delete Inspection', (
       expect(actual, message).toEqual(expected);
     }
   });
+
+  test('it sends queued inspection unit number update', async () => {
+    const expected = ['inspection-1', 'A12'];
+    const [target] = inspections;
+    const sendNotification = sinon.spy();
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    const updateUnitNumber = sinon
+      .stub(inspectionApi, 'updateUnitNumber')
+      .resolves(true);
+
+    const firestore = stubFirestore(); // eslint-disable-line
+
+    const { result } = renderHook(() =>
+      useInspectionActions(firestore, sendNotification, admin)
+    );
+
+    // eslint-disable-next-line
+    await act(async () => {
+      result.current.setQueueInspectionForUnitNumber(target);
+      await wait(100);
+      result.current.confirmUnitNumberUpdate('A12');
+      await wait(100);
+    });
+
+    const actual = (updateUnitNumber.firstCall || { args: [] }).args;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it sends success notification on successful unit number update', async () => {
+    const expected = USER_NOTIFICATIONS.successUnitNumber;
+    const [target] = inspections;
+    const sendNotification = sinon.spy();
+    sinon.stub(errorReports, 'send').resolves(true);
+    sinon.stub(inspectionApi, 'updateUnitNumber').resolves(true);
+
+    const firestore = stubFirestore(); // eslint-disable-line
+
+    const { result } = renderHook(() =>
+      useInspectionActions(firestore, sendNotification, admin)
+    );
+
+    // eslint-disable-next-line
+    await act(async () => {
+      result.current.setQueueInspectionForUnitNumber(target);
+      await wait(100);
+      result.current.confirmUnitNumberUpdate('A12');
+      await wait(100);
+    });
+
+    const actual = (sendNotification.firstCall || { args: [] }).args[0];
+    expect(actual).toEqual(expected);
+  });
+
+  test('should show user facing error message according to unit number update error type', async () => {
+    const sendNotification = sinon.spy();
+
+    const tests = [
+      {
+        expected: USER_NOTIFICATIONS.unpermissioned,
+        message: 'show permission error message for unauthorized request'
+      },
+      {
+        expected: USER_NOTIFICATIONS.badRequest,
+        message: 'show invalid updates error for bad request'
+      },
+      {
+        expected: USER_NOTIFICATIONS.generic,
+        message: 'show generic error message for internal server error'
+      }
+    ];
+    sinon.stub(errorReports, 'send').resolves(true);
+
+    sinon
+      .stub(inspectionApi, 'updateUnitNumber')
+      .onCall(0)
+      .rejects(new ErrorUnauthorized())
+      .onCall(1)
+      .rejects(new ErrorBadRequest())
+      .onCall(2)
+      .rejects(new ErrorServerInternal());
+
+    const firestore = stubFirestore(); // eslint-disable-line
+
+    const { result } = renderHook(() =>
+      useInspectionActions(firestore, sendNotification, admin)
+    );
+
+    for (let i = 0; i < tests.length; i += 1) {
+      const { expected, message } = tests[i];
+      // eslint-disable-next-line
+      await act(async () => {
+        result.current.setQueueInspectionForUnitNumber(inspections[0]);
+        await wait(100);
+        result.current.confirmUnitNumberUpdate('A12');
+        await wait(100);
+      });
+      const actual = sendNotification.getCall(i).args[0];
+      expect(actual, message).toEqual(expected);
+    }
+  });
 });

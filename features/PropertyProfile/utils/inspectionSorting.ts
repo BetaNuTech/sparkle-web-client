@@ -4,7 +4,8 @@ export const sorts = [
   'updatedAt',
   'score',
   'inspectorName',
-  'templateName'
+  'templateName',
+  'unitNumber'
 ];
 
 // User friendly names
@@ -12,7 +13,8 @@ const sortNames = {
   creationDate: 'Creation Date',
   updatedAt: 'Updated At',
   inspectorName: 'Inspector Name',
-  templateName: 'Template Name'
+  templateName: 'Template Name',
+  unitNumber: 'Unit #'
 };
 
 // Custom sort for filter + direction
@@ -23,9 +25,15 @@ export const sortInspection =
   (a, b): number => {
     const aValue = a[key];
     const bValue = b[key];
-    const isString = typeof aValue === 'string';
+    const isString =
+      typeof aValue === 'string' || typeof bValue === 'string';
 
-    const emptyKeys = ['inspectorName', 'templateName', 'templateCategory'];
+    const emptyKeys = [
+      'inspectorName',
+      'templateName',
+      'templateCategory',
+      'unitNumber'
+    ];
     if (sortDir === 'asc' && isString) {
       // Return 1 if aValue is empty
       if (emptyKeys.includes(key) && !aValue) {
@@ -35,7 +43,7 @@ export const sortInspection =
       if (emptyKeys.includes(key) && !bValue) {
         return -1;
       }
-      return aValue.localeCompare(bValue);
+      return `${aValue}`.localeCompare(`${bValue}`);
     }
 
     if (sortDir === 'asc') {
@@ -47,10 +55,13 @@ export const sortInspection =
     // Descending logic
 
     if (isString) {
+      if (emptyKeys.includes(key) && !aValue) {
+        return 1;
+      }
       if (emptyKeys.includes(key) && !bValue) {
         return -1;
       }
-      return bValue.localeCompare(aValue);
+      return `${bValue}`.localeCompare(`${aValue}`);
     }
 
     if (aValue > bValue) return -1;

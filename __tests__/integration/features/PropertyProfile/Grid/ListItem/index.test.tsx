@@ -22,8 +22,8 @@ function render(ui: any, options = {}) {
 describe('Integration | Features | Properties | Profile | Inspection | Grid | List Item', () => {
   beforeEach(() => stubIntersectionObserver());
 
-  it('should render 6 column for user without having inspection rights', () => {
-    const expected = 6;
+  it('should render 8 columns for team member with unit # editing rights', () => {
+    const expected = 8;
 
     const props = {
       user: teamMember,
@@ -44,8 +44,8 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
     expect(actual).toEqual(expected);
   });
 
-  it('should render 7 column for user without having inspection rights', () => {
-    const expected = 7;
+  it('should render 8 columns for admin user', () => {
+    const expected = 8;
 
     const props = {
       user: admin,
@@ -63,6 +63,54 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
       'inspection-grid-listitem'
     );
     const actual = header.children.length;
+    expect(actual).toEqual(expected);
+  });
+
+  it('should render the inspection unit number', () => {
+    const expected = 'A12';
+    const inspectionItem = deepClone(fullInspection);
+    inspectionItem.unitNumber = 'A12';
+
+    const props = {
+      user: admin,
+      inspection: inspectionItem,
+      templateCategories,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
+    };
+
+    render(<ListItem {...props} />);
+
+    const items: HTMLElement = screen.queryByTestId(
+      'inspection-grid-list-item-unit-number'
+    );
+    const actual = items.textContent;
+    expect(actual).toEqual(expected);
+  });
+
+  it('defaults to -- when inspection has no unit number', () => {
+    const expected = '--';
+    const inspectionItem = deepClone(fullInspection);
+    delete inspectionItem.unitNumber;
+
+    const props = {
+      user: admin,
+      inspection: inspectionItem,
+      templateCategories,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      openInspectionDeletePrompt: () => {},
+      propertyId: 'property-1',
+      forceVisible: true
+    };
+
+    render(<ListItem {...props} />);
+
+    const items: HTMLElement = screen.queryByTestId(
+      'inspection-grid-list-item-unit-number'
+    );
+    const actual = items.textContent;
     expect(actual).toEqual(expected);
   });
 
@@ -386,8 +434,8 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
     expect(actual).toEqual(expected);
   });
 
-  it('should not show dropdown actions if user has permission', () => {
-    const expected = 0;
+  it('should only show unit # action for user without delete/move permission', () => {
+    const expected = 1;
 
     const props = {
       user: teamMember,
@@ -401,15 +449,16 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Li
 
     render(<ListItem {...props} />);
 
-    const items: Array<HTMLElement> = screen.queryAllByTestId(
+    const items: HTMLElement = screen.queryByTestId(
       'inspection-grid-list-item-actions'
     );
-    const actual = items.length;
-    expect(actual).toEqual(expected);
+
+    const buttons = items.querySelectorAll('button');
+    expect(buttons.length).toEqual(expected);
   });
 
   it('should show dropdown with button and link if user has permission', () => {
-    const expected = 2;
+    const expected = 3;
 
     const props = {
       user: admin,

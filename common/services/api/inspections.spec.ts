@@ -170,6 +170,67 @@ describe('Unit | Services | API | Inspections', () => {
     expect(actual).toEqual(expected);
   });
 
+  test('it rejects with unauthorized error when update unit number request not allowed', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(jsonErr());
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    let result = null;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionsApi.updateUnitNumber(fullInspection.id, 'A12');
+    } catch (err) {
+      result = err;
+    }
+
+    const actual = result instanceof ErrorUnauthorized;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves successful update unit number request', async () => {
+    const expected = true;
+
+    sinon.stub(window, 'fetch').resolves(
+      jsonOK({
+        data: {
+          id: fullInspection.id,
+          type: 'inspection',
+          attributes: { unitNumber: 'A12' }
+        }
+      })
+    );
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    const actual = await inspectionsApi.updateUnitNumber(
+      fullInspection.id,
+      'A12'
+    );
+    expect(actual).toEqual(expected);
+  });
+
+  test('it sends the unit number in the update unit number request body', async () => {
+    const expected = JSON.stringify({ unitNumber: 'A12' });
+
+    const fetchStub = sinon.stub(window, 'fetch').resolves(
+      jsonOK({
+        data: {
+          id: fullInspection.id,
+          type: 'inspection',
+          attributes: { unitNumber: 'A12' }
+        }
+      })
+    );
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    // eslint-disable-next-line import/no-named-as-default-member
+    await inspectionsApi.updateUnitNumber(fullInspection.id, 'A12');
+
+    const actual = fetchStub.firstCall.args[1].body;
+    expect(actual).toEqual(expected);
+  });
+
   test('it rejects with unauthorized error when generate PDF report request not allowed', async () => {
     const expected = true;
 

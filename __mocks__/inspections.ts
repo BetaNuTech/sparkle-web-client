@@ -20,7 +20,8 @@ export const fullInspection: inspectionModel = {
   inspector: 'ZmsDbQZP6kTVDsF2xmChK3l3V273',
   templateName: 'Kitchen Sink',
   templateCategory: 'rDJx8PqjTKUMr2a4hPHd',
-  updatedAt: 1622676604
+  updatedAt: 1622676604,
+  unitNumber: 'A12'
 };
 
 export const inspectionA: inspectionModel = {
