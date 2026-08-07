@@ -33,3 +33,9 @@ yarn-error.log*
 
 #Test Snapshots
 __snapshots__
+
+# Firebase CLI debug logs
+firebase-debug.log
+
+# Local Claude Code settings
+.claude/settings.local.json
