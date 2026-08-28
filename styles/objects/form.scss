@@ -9,6 +9,11 @@
     border-radius: 0;
     border-width: 0;
 
+    // Hover as well as focus. The global input styles in base/forms.scss set
+    // these states with the `border` shorthand, which resets border-width back
+    // to 1px, and inputs here are content-box -- so without this the field
+    // grows 2px on hover and shoves the rest of the page around.
+    &:hover,
     &:focus {
       border-width: 0;
     }
