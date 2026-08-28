@@ -1,0 +1,55 @@
+@import '../../styles/index.scss';
+
+// Shell for pages that render outside the app's layouts and must be readable
+// without signing in -- the privacy policy and the app home page, both of
+// which Google's OAuth brand verification loads as an anonymous visitor.
+//
+// The explicit background matters: nothing else paints one on these routes, and
+// a transparent page inherits the browser canvas, which renders dark text on
+// black for anyone whose browser is in dark mode.
+.page {
+  min-height: 100vh;
+  background-color: $white;
+}
+
+.content {
+  max-width: rem-calc(760);
+  margin: 0 auto;
+  padding: $global-lg-padding $global-padding $global-xxlg-padding;
+  color: $body-font-color;
+  line-height: 1.6;
+
+  h2 {
+    margin-top: $global-lg-padding;
+    font-size: $medium-large-font-size;
+  }
+
+  h3 {
+    margin-top: $global-md-padding;
+    font-size: $medium-font-size;
+  }
+}
+
+.masthead {
+  margin-bottom: $global-lg-padding;
+  padding-bottom: $global-padding;
+  border-bottom: 1px solid $gray-lighter;
+
+  h1 {
+    margin: 0 0 rem-calc(4);
+  }
+}
+
+.subtitle {
+  margin: 0;
+  color: $gray-light;
+  font-size: $small-font-size;
+}
+
+.footer {
+  margin-top: $global-lg-padding;
+  padding-top: $global-padding;
+  border-top: 1px solid $gray-lighter;
+  color: $gray-light;
+  font-size: $small-font-size;
+}
