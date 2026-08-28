@@ -19,9 +19,9 @@ const NewUserPrompt: FunctionComponent<ModalProps> = ({ onClose }) => (
     >
       <div className={parentStyles.modalPrompt__main__content}>
         <p className={parentStyles.modal__description}>
-          Enter your email address above, and then tap on Reset Password. This
-          will send you an email, with a reset password link, to set your new
-          password. Re-open this app, and enter your password to Log In!
+          Sparkle is invite only. Once an administrator has added you, choose
+          Sign in with Google and use the Google account for your work email
+          address. There is no password to set up.
         </p>
       </div>
       <footer className={parentStyles.modalPrompt__main__footer}>

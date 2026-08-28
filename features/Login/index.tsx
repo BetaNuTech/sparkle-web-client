@@ -22,8 +22,11 @@ const Login: FunctionComponent<Props> = ({ isStaging }) => {
 
   const {
     signIn,
+    signInWithGoogle,
     forgotPassword,
     isLoading,
+    isGoogleLoading,
+    hasLoginError,
     isForgotPasswordLoading,
     passwordResetSent
   } = useLogin(sendNotification);
@@ -75,11 +78,14 @@ const Login: FunctionComponent<Props> = ({ isStaging }) => {
           passwordResetSent={passwordResetSent}
           isRedirecting={isRedirecting}
           isLoading={isLoading}
+          isGoogleLoading={isGoogleLoading}
+          hasLoginError={hasLoginError}
           isValid={isValid}
           register={register}
           formState={formState}
           setIsVisibleNewUserPrompt={setIsVisibleNewUserPrompt}
           onSubmit={handleSubmit(onSubmit)}
+          onGoogleSignIn={signInWithGoogle}
         />
         <Footer />
       </Container>

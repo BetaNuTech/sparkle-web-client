@@ -32,6 +32,22 @@ const isIOSPage = (router: any): boolean => {
   }
 };
 
+// Is current page privacy policy
+// Must stay publicly reachable: Google's OAuth consent screen links to it, and
+// a policy URL that redirects to a login page reads to Google as a missing one
+const isPrivacyPage = (router: any): boolean => {
+  try {
+    const { pathname = '' } = router;
+    const lastPath = `${pathname
+      .replace(/\/$/, '')
+      .split('/')
+      .pop()}`.toLowerCase();
+    return lastPath === 'privacy';
+  } catch (err) {
+    return false;
+  }
+};
+
 // eslint-disable-next-line
 const PrivateRoute = ({ children, fallback }) => {
   const router = useRouter();
@@ -53,6 +69,7 @@ const PrivateRoute = ({ children, fallback }) => {
       !isAuthenticated &&
       !isLoginPage(router) &&
       !isIOSPage(router) &&
+      !isPrivacyPage(router) &&
       !isLoading
     ) {
       redirectToLogin();
@@ -65,7 +82,12 @@ const PrivateRoute = ({ children, fallback }) => {
     }
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
-  if (!isAuthenticated && !isLoginPage(router) && !isIOSPage(router)) {
+  if (
+    !isAuthenticated &&
+    !isLoginPage(router) &&
+    !isIOSPage(router) &&
+    !isPrivacyPage(router)
+  ) {
     return fallback || <p>Loading...</p>;
   }
 
