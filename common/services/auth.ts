@@ -100,7 +100,12 @@ const signInWithGoogle =
       // but the user can act on it: authDomain is the canonical host, so send
       // them there. Reading it from config keeps the message from going stale.
       if (err.code === 'auth/unauthorized-domain') {
-        const canonical = firebase.app().options.authDomain || '';
+        // Firebase 8 types app().options as a bare Object, so the field has
+        // to be narrowed before it can be read.
+        const { authDomain } = firebase.app().options as {
+          authDomain?: string;
+        };
+        const canonical = authDomain || '';
         return Promise.reject(
           new ErrorForbidden(
             canonical
