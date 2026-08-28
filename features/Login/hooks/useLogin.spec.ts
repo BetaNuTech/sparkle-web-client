@@ -115,7 +115,9 @@ describe('Unit | Features | Login | Hooks | UseLogin', () => {
       'That Google account is not set up in Sparkle. Please ask an administrator to add you.';
     const sendNotification = sinon.spy();
 
-    sinon.stub(authApi, 'signInWithGoogle').rejects(new ErrorForbidden(expected));
+    sinon
+      .stub(authApi, 'signInWithGoogle')
+      .rejects(new ErrorForbidden(expected));
 
     const { result } = renderHook(() => useLogin(sendNotification));
     await act(async () => {
@@ -152,6 +154,27 @@ describe('Unit | Features | Login | Hooks | UseLogin', () => {
       result.current.hasLoginError,
       'opens the password form as an alternative'
     ).toEqual(true);
+  });
+
+  test('should tell the user where to sign in on an unauthorized domain', async () => {
+    // Firebase rejects any origin missing from its authorized domains list.
+    // The service turns that into a message naming the canonical host.
+    const expected =
+      'Google sign in is not available at this web address. ' +
+      'Please go to https://sparkle.sapphire-standard.com and sign in there.';
+    const sendNotification = sinon.spy();
+
+    sinon
+      .stub(authApi, 'signInWithGoogle')
+      .rejects(new ErrorForbidden(expected));
+
+    const { result } = renderHook(() => useLogin(sendNotification));
+    await act(async () => {
+      result.current.signInWithGoogle();
+      await wait(100);
+    });
+
+    expect(sendNotification.getCall(0).args[0]).toEqual(expected);
   });
 
   test('should show google specific error messages by error type', async () => {

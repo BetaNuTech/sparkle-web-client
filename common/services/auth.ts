@@ -95,6 +95,22 @@ const signInWithGoogle =
         return null;
       }
 
+      // Firebase refuses any origin missing from Authentication → Settings →
+      // Authorized domains. This is a configuration problem, not a user error,
+      // but the user can act on it: authDomain is the canonical host, so send
+      // them there. Reading it from config keeps the message from going stale.
+      if (err.code === 'auth/unauthorized-domain') {
+        const canonical = firebase.app().options.authDomain || '';
+        return Promise.reject(
+          new ErrorForbidden(
+            canonical
+              ? 'Google sign in is not available at this web address. ' +
+                `Please go to https://${canonical} and sign in there.`
+              : 'Google sign in is not available at this web address. Please contact an administrator.'
+          )
+        );
+      }
+
       // Raised when "Enable create (sign-up)" is off in Firebase's user
       // action settings, which is how Sparkle stays invite-only: Firebase
       // refuses to create an account for a Google identity that does not
@@ -115,6 +131,12 @@ const signInWithGoogle =
           new ErrorBadRequest(`${PREFIX} signInWithGoogle: auth/popup-blocked`)
         );
       }
+
+      // Anything unmapped reaches the user as a generic "please try again",
+      // which tells whoever has to debug it nothing at all. Put the real code
+      // somewhere it can be read.
+      // eslint-disable-next-line no-console
+      console.error(`${PREFIX} signInWithGoogle:`, err.code, err.message);
 
       return Promise.reject(
         new Error(`${PREFIX} signInWithGoogle: ${err.code}`)
