@@ -36,18 +36,20 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
     workOrder.category || workOrder.priority
   );
 
+  const categoryLabel = [workOrder.category, workOrder.subCategory]
+    .filter(Boolean)
+    .join(' / ');
+
   const placeholderRef = useRef();
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <li
-      className={clsx(
-        styles.container,
-        hasRequestorContactInfo && '-cu-pointer'
-      )}
+      className={clsx(styles.container, '-cu-pointer')}
       ref={placeholderRef}
       onClick={() => onClickWorkOrder(workOrder)}
+      data-testid="work-order-item"
     >
       {isVisible && (
         <>
@@ -113,6 +115,22 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
               </div>
             )}
 
+            {workOrder.briefDescription && (
+              <Info
+                label="Summary"
+                value={workOrder.briefDescription}
+                data-testid="order-brief-description"
+              />
+            )}
+
+            {workOrder.dueDate && (
+              <Info
+                label="Due"
+                value={workOrder.dueDate}
+                data-testid="order-due-date"
+              />
+            )}
+
             {hasUpdateInfo && isMobile && (
               <div className="-d-flex">
                 {workOrder.updatedAt && (
@@ -152,7 +170,7 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
                   <>
                     <InfoLabel label="Category" />
                     <InfoValue
-                      value={workOrder.category}
+                      value={categoryLabel}
                       data-testid="order-category"
                     />
                   </>
@@ -256,7 +274,7 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
                       <>
                         <InfoLabel label="Category" />
                         <InfoValue
-                          value={workOrder.category}
+                          value={categoryLabel}
                           data-testid="order-category"
                         />
                       </>

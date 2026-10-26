@@ -1,12 +1,14 @@
 import { ChangeEvent, FunctionComponent, KeyboardEvent } from 'react';
 import WorkOrderModel from '../../../common/models/yardi/workOrder';
 import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
+import SkeletonLoader from '../../../common/SkeletonLoader';
 import Item from './Item';
 import styles from './styles.module.scss';
 
 interface Props {
   workOrders: WorkOrderModel[];
   onClickWorkOrder(workOrder: WorkOrderModel): void;
+  isLoading?: boolean;
   forceVisible?: boolean;
   searchQuery: string;
   onSearchKeyDown: (
@@ -19,6 +21,7 @@ interface Props {
 const WorkOrderList: FunctionComponent<Props> = ({
   workOrders,
   onClickWorkOrder,
+  isLoading,
   forceVisible,
   searchQuery,
   onSearchKeyDown,
@@ -33,19 +36,23 @@ const WorkOrderList: FunctionComponent<Props> = ({
         onClearSearch={onClearSearch}
       />
     )}
-    <ul data-testid="workorders-list">
-      {workOrders.map((workOrder) => (
-        <Item
-          key={workOrder.id}
-          workOrder={workOrder}
-          onClickWorkOrder={onClickWorkOrder}
-          forceVisible={forceVisible}
-          isMobile={isMobile}
-        />
-      ))}
-    </ul>
+    {isLoading ? (
+      <SkeletonLoader rows={4} className="-p" />
+    ) : (
+      <ul data-testid="workorders-list">
+        {workOrders.map((workOrder) => (
+          <Item
+            key={workOrder.id}
+            workOrder={workOrder}
+            onClickWorkOrder={onClickWorkOrder}
+            forceVisible={forceVisible}
+            isMobile={isMobile}
+          />
+        ))}
+      </ul>
+    )}
 
-    {workOrders.length === 0 && (
+    {!isLoading && workOrders.length === 0 && (
       <h3 className="-c-gray-light -pt-sm -pl-sm -pb-sm -ta-center">
         {searchQuery
           ? 'No work orders match your search'
@@ -58,5 +65,10 @@ const WorkOrderList: FunctionComponent<Props> = ({
     />
   </div>
 );
+
+WorkOrderList.defaultProps = {
+  isLoading: false,
+  forceVisible: false
+};
 
 export default WorkOrderList;

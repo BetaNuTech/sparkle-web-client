@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { act, waitFor } from '@testing-library/react';
 import { renderHook } from '@testing-library/react-hooks';
 import useWorkOrders from './useWorkOrders';
-import yardiApi from '../../../common/services/api/yardi';
+import yardiApi, { WorkOrderFilters } from '../../../common/services/api/yardi';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorServerInternal from '../../../common/models/errors/serverInternal';
@@ -82,9 +82,9 @@ describe('Unit | Features | Property Work Orders | hooks | Use Work Orders', () 
       .resolves([yardiWorkOrderOne]);
 
     const { result, rerender } = renderHook(
-      ({ filters }) =>
+      ({ filters }: { filters: WorkOrderFilters }) =>
         useWorkOrders(sendNotification, 'test-property', filters),
-      { initialProps: { filters: { state: 'open' } } }
+      { initialProps: { filters: { state: 'open' } as WorkOrderFilters } }
     );
 
     await act(async () => {
