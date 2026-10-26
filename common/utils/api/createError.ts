@@ -5,6 +5,7 @@ import ErrorForbidden from '../../models/errors/forbidden';
 import ErrorNotFound from '../../models/errors/notFound';
 import ErrorProxyForbidden from '../../models/errors/proxyForbidden';
 import ErrorServerInternal from '../../models/errors/serverInternal';
+import ErrorBadGateway from '../../models/errors/badGateway';
 
 export const DEFAULT_ERROR_MESSAGES = Object.freeze({
   400: 'fix request errors',
@@ -13,7 +14,8 @@ export const DEFAULT_ERROR_MESSAGES = Object.freeze({
   404: 'record not found',
   407: '3rd party service not authenticated',
   409: 'fix conflicting request errors',
-  500: 'system failure'
+  500: 'system failure',
+  502: '3rd party service could not process request'
 });
 
 const createError = (
@@ -90,6 +92,15 @@ const createError = (
       );
       serverInternalRequest.addErrors(apiErrors);
       return serverInternalRequest;
+    }
+
+    // Upstream 3rd party service failed
+    if (responseStatus === 502) {
+      const badGatewayRequest = new ErrorBadGateway(
+        `${prefix} ${errorMessages[502]}`
+      );
+      badGatewayRequest.addErrors(apiErrors);
+      return badGatewayRequest;
     }
 
     return null;

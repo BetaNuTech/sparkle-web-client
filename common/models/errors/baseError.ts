@@ -21,11 +21,11 @@ class BaseError extends Error {
         return;
       }
 
+      const source = err.source || {};
+      const name = source.pointer || source.parameter;
+
       this.errors.push({
-        name:
-          err.source && err.source.pointer
-            ? `${err.source.pointer}`
-            : 'unknown',
+        name: name ? `${name}` : 'unknown',
         title: err.title ? `${err.title}` : '',
         detail: err.detail ? `${err.detail}` : ''
       } as ErrorItem);
