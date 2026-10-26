@@ -20,6 +20,10 @@ export default {
     process.env.NEXT_PUBLIC_SUPPORT_YARDI_RESIDENT !== 'false',
   supportPropertyYardiWorkOrder:
     process.env.NEXT_PUBLIC_SUPPORT_YARDI_WORK_ORDER !== 'false',
+  // Creating, editing & cancelling work orders
+  // ships dark: opt in per environment
+  supportPropertyYardiWorkOrderEdit:
+    process.env.NEXT_PUBLIC_SUPPORT_YARDI_WORK_ORDER_EDIT === 'true',
   supportPropertyInspectionCreate: true,
   supportPropertyInspectionUpdate: true,
   supportPropertyUpdate: true,
