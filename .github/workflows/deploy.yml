@@ -39,6 +39,7 @@ jobs:
         with:
           file_name: .env.local
           envkey_NEXT_PUBLIC_STAGING: true
+          envkey_NEXT_PUBLIC_SUPPORT_YARDI_WORK_ORDER_EDIT: true
           envkey_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.STAGING_FIREBASE_API_KEY }}
           envkey_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
           envkey_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.STAGING_FIREBASE_AUTH_DOMAIN }}
@@ -56,6 +57,7 @@ jobs:
         uses: SpicyPizza/create-envfile@v2.0
         with:
           file_name: .env.local
+          envkey_NEXT_PUBLIC_SUPPORT_YARDI_WORK_ORDER_EDIT: true
           envkey_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.PRODUCTION_FIREBASE_API_KEY }}
           envkey_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.PRODUCTION_FIREBASE_APP_ID }}
           envkey_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.PRODUCTION_FIREBASE_AUTH_DOMAIN }}

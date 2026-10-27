@@ -6,6 +6,7 @@ import ErrorUnauthorized from '../../models/errors/unauthorized';
 import ErrorNotFound from '../../models/errors/notFound';
 import ErrorProxyForbidden from '../../models/errors/proxyForbidden';
 import ErrorServerInternal from '../../models/errors/serverInternal';
+import ErrorBadGateway from '../../models/errors/badGateway';
 
 const GENERIC_JSON_ERROR = Object.freeze({
   source: { pointer: 'body' },
@@ -57,6 +58,12 @@ describe('Unit | Common | Utils | API | Create Error', () => {
         errors: [GENERIC_JSON_ERROR],
         expected: ErrorServerInternal,
         msg: 'created internal system error'
+      },
+      {
+        status: 502,
+        errors: [GENERIC_JSON_ERROR],
+        expected: ErrorBadGateway,
+        msg: 'created bad gateway error'
       }
     ];
 
@@ -175,6 +182,19 @@ describe('Unit | Common | Utils | API | Create Error', () => {
   test('it should return a falsey value when status is successful', () => {
     const expected = false;
     const actual = Boolean(create('')(201, []));
+    expect(actual).toEqual(expected);
+  });
+
+  test('it should name an error after its query parameter when it has no pointer', () => {
+    const expected = 'state';
+    const result: any = create('err')(400, [
+      {
+        source: { parameter: 'state' },
+        title: 'Bad Request',
+        detail: 'must be open or closed'
+      }
+    ]);
+    const actual = result.errors[0].name;
     expect(actual).toEqual(expected);
   });
 });
