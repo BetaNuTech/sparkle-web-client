@@ -198,7 +198,7 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     expect(onUnitPick.firstCall.args).toEqual([unitOptions[1]]);
   });
 
-  it('should reveal typed unit and tenant inputs for manual entry', () => {
+  it('should swap the picker for typed unit and tenant inputs on manual entry', () => {
     const onUnitPick = sinon.spy();
     render(
       <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
@@ -208,11 +208,40 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
       'manual'
     );
     expect(onUnitPick.firstCall.args).toEqual([null]);
+    expect(screen.queryByTestId('work-order-input-unitPicker')).toBeNull();
     expect(screen.queryByTestId('work-order-input-unit')).toBeTruthy();
     expect(screen.queryByTestId('work-order-input-resident')).toBeTruthy();
+    expect(screen.queryByTestId('work-order-unit-pick')).toBeTruthy();
   });
 
-  it('should show a typed unit that is not among the options as manual', () => {
+  it('should return to the picker from manual entry', () => {
+    const onUnitPick = sinon.spy();
+    render(
+      <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
+    );
+    userEvent.selectOptions(
+      screen.getByTestId('work-order-input-unitPicker'),
+      'manual'
+    );
+    userEvent.click(screen.getByTestId('work-order-unit-pick'));
+    expect(onUnitPick.secondCall.args).toEqual([null]);
+    expect(screen.queryByTestId('work-order-input-unitPicker')).toBeTruthy();
+    expect(screen.queryByTestId('work-order-input-unit')).toBeNull();
+    expect(screen.queryByTestId('work-order-unit-pick')).toBeNull();
+  });
+
+  it('should not accept a due date before today', () => {
+    render(<Form {...baseProps} />);
+    const today = new Date();
+    const expected = `${today.getFullYear()}-${`${
+      today.getMonth() + 1
+    }`.padStart(2, '0')}-${`${today.getDate()}`.padStart(2, '0')}`;
+    expect(
+      screen.getByTestId('work-order-input-dueDate').getAttribute('min')
+    ).toEqual(expected);
+  });
+
+  it('should show a typed unit that is not among the options in the typed inputs', () => {
     render(
       <Form
         {...baseProps}
@@ -220,13 +249,11 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
         values={{ ...EMPTY_FORM_VALUES, unit: '9-999' }}
       />
     );
-    expect(
-      (screen.getByTestId('work-order-input-unitPicker') as HTMLSelectElement)
-        .value
-    ).toEqual('manual');
+    expect(screen.queryByTestId('work-order-input-unitPicker')).toBeNull();
     expect(
       (screen.getByTestId('work-order-input-unit') as HTMLInputElement).value
     ).toEqual('9-999');
+    expect(screen.queryByTestId('work-order-unit-pick')).toBeTruthy();
   });
 
   it('should select the option matching the current unit and resident', () => {

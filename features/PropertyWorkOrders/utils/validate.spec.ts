@@ -1,5 +1,5 @@
 import customValues from '../../../__mocks__/yardi/customValues';
-import validateWorkOrder, { errorMessages } from './validate';
+import validateWorkOrder, { errorMessages, todayIsoDate } from './validate';
 
 describe('Unit | Features | Property Work Orders | Utils | Validate', () => {
   test('it requires a unit only when creating', () => {
@@ -51,8 +51,40 @@ describe('Unit | Features | Property Work Orders | Utils | Validate', () => {
 
     const valid = validateWorkOrder(
       { dueDate: '2026-10-26', requestorEmail: 'a@b.co' },
-      customValues
+      customValues,
+      false,
+      '2026-10-26'
     );
     expect(valid).toEqual({});
+  });
+
+  it('should reject a due date before today and accept today or later', () => {
+    const past = validateWorkOrder(
+      { dueDate: '2026-10-26' } as any,
+      customValues,
+      true,
+      '2026-10-27'
+    );
+    expect(past.dueDate).toEqual(errorMessages.dueDatePast);
+
+    const today = validateWorkOrder(
+      { dueDate: '2026-10-27' } as any,
+      customValues,
+      true,
+      '2026-10-27'
+    );
+    expect(today.dueDate).toBeUndefined();
+
+    const later = validateWorkOrder(
+      { dueDate: '2027-01-01' } as any,
+      customValues,
+      true,
+      '2026-10-27'
+    );
+    expect(later.dueDate).toBeUndefined();
+  });
+
+  it('should format today as a local YYYY-MM-DD date', () => {
+    expect(todayIsoDate(new Date(2026, 0, 5, 23, 59))).toEqual('2026-01-05');
   });
 });

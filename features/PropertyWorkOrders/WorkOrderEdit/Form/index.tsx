@@ -10,7 +10,7 @@ import {
   getSubCategories,
   isReasonRequired
 } from '../../utils/customValues';
-import { WorkOrderFieldErrors } from '../../utils/validate';
+import { WorkOrderFieldErrors, todayIsoDate } from '../../utils/validate';
 import { findOption, toOptionValue, UnitOption } from '../../utils/unitOptions';
 import { WorkOrderFormValues } from '../formValues';
 import styles from '../styles.module.scss';
@@ -116,9 +116,16 @@ const WorkOrderForm: FunctionComponent<Props> = ({
     !hasUnitPicker ||
     (isManualUnit && !pickedUnit) ||
     Boolean(values.unit && !pickedUnit);
-  let unitPickerValue = '';
-  if (pickedUnit) unitPickerValue = toOptionValue(pickedUnit);
-  else if (isTypingUnit && hasUnitPicker) unitPickerValue = MANUAL_UNIT;
+  // The picker and the typed inputs never
+  // show together: manual entry swaps the
+  // picker for a way back to it
+  const showUnitPicker = hasUnitPicker && !isTypingUnit;
+  const unitPickerValue = pickedUnit ? toOptionValue(pickedUnit) : '';
+
+  const onPickFromResidents = () => {
+    setIsManualUnit(false);
+    if (onUnitPick) onUnitPick(null);
+  };
 
   const onUnitPickerChange = (evt: ChangeEvent<HTMLSelectElement>) => {
     const { value } = evt.target;
@@ -158,7 +165,12 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   const textInput = (
     name: string,
     label: string,
-    options: { type?: string; isRequired?: boolean; placeholder?: string } = {}
+    options: {
+      type?: string;
+      isRequired?: boolean;
+      placeholder?: string;
+      min?: string;
+    } = {}
   ) => (
     <Field
       name={name}
@@ -175,6 +187,7 @@ const WorkOrderForm: FunctionComponent<Props> = ({
         value={values[name]}
         maxLength={WORK_ORDER_MAX_LENGTHS[name]}
         placeholder={options.placeholder}
+        min={options.min}
         disabled={isDisabled}
         onChange={onChange}
         data-testid={`work-order-input-${name}`}
@@ -257,13 +270,8 @@ const WorkOrderForm: FunctionComponent<Props> = ({
     >
       <section className={styles.form__section}>
         <h3 className={styles.form__heading}>Request</h3>
-        {hasUnitPicker && (
-          <Field
-            name="unitPicker"
-            label="Unit"
-            error={isTypingUnit ? '' : errors.unit}
-            isRequired
-          >
+        {showUnitPicker && (
+          <Field name="unitPicker" label="Unit" error={errors.unit} isRequired>
             <select
               id="work-order-unitPicker"
               name="unitPicker"
@@ -294,6 +302,17 @@ const WorkOrderForm: FunctionComponent<Props> = ({
             {textInput('resident', 'Tenant Code')}
           </div>
         )}
+        {hasUnitPicker && isTypingUnit && (
+          <button
+            type="button"
+            className={styles.field__link}
+            disabled={isDisabled}
+            onClick={onPickFromResidents}
+            data-testid="work-order-unit-pick"
+          >
+            Pick a unit from current residents instead
+          </button>
+        )}
         {textInput('briefDescription', 'Summary')}
         {textArea('description', 'Description')}
         <div className={styles.form__row}>
@@ -311,7 +330,10 @@ const WorkOrderForm: FunctionComponent<Props> = ({
         </div>
         <div className={styles.form__row}>
           {textInput('vendor', 'Vendor')}
-          {textInput('dueDate', 'Due Date', { type: 'date' })}
+          {textInput('dueDate', 'Due Date', {
+            type: 'date',
+            min: todayIsoDate()
+          })}
         </div>
       </section>
 
