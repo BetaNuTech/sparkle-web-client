@@ -9,6 +9,7 @@ import useNotifications from '../../../../common/hooks/useNotifications'; // esl
 import notifications from '../../../../common/services/notifications'; // eslint-disable-line
 import useFirestoreUser from '../../../../common/hooks/useFirestoreUser';
 import useCustomValues from '../../../../features/PropertyWorkOrders/hooks/useCustomValues';
+import useUnitOptions from '../../../../features/PropertyWorkOrders/hooks/useUnitOptions';
 import WorkOrderEdit from '../../../../features/PropertyWorkOrders/WorkOrderEdit';
 import features from '../../../../config/features';
 
@@ -37,6 +38,11 @@ const Page: React.FC = (): ReactElement => {
     propertyId
   );
 
+  // Units of current residents for the
+  // unit picker; the form never waits on it
+  const { data: unitOptions, status: unitOptionsStatus } =
+    useUnitOptions(propertyId);
+
   // Creating ships dark
   useEffect(() => {
     if (!features.supportPropertyYardiWorkOrderEdit) {
@@ -57,6 +63,8 @@ const Page: React.FC = (): ReactElement => {
           customValues={customValues}
           customValuesStatus={customValuesStatus}
           sendNotification={sendNotification}
+          unitOptions={unitOptions}
+          unitOptionsStatus={unitOptionsStatus}
         />
       ) : (
         <LoadingHud />

@@ -152,3 +152,120 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form', () =
     expect(onChange.called).toEqual(true);
   });
 });
+
+const unitOptions = [
+  { unit: '1-103', resident: 't0225029', label: '1-103 · Jane Doe' },
+  { unit: '2-201', resident: 't0225030', label: '2-201 · Sam Roe' }
+];
+
+describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit Picker', () => {
+  it('should offer the current residents units plus a manual entry when creating', () => {
+    render(<Form {...baseProps} unitOptions={unitOptions} />);
+    const picker = screen.getByTestId('work-order-input-unitPicker');
+    const labels = Array.from(picker.querySelectorAll('option')).map(
+      (o) => o.textContent
+    );
+    expect(labels).toEqual([
+      'Select a unit…',
+      '1-103 · Jane Doe',
+      '2-201 · Sam Roe',
+      'Enter a unit manually…'
+    ]);
+    expect(screen.queryByTestId('work-order-input-unit')).toBeNull();
+    expect(screen.queryByTestId('work-order-input-resident')).toBeNull();
+  });
+
+  it('should not offer the picker when editing or when there are no units', () => {
+    const { rerender } = render(
+      <Form {...baseProps} isCreating={false} unitOptions={unitOptions} />
+    );
+    expect(screen.queryByTestId('work-order-input-unitPicker')).toBeNull();
+    expect(screen.queryByTestId('work-order-input-unit')).toBeTruthy();
+
+    rerender(<Form {...baseProps} unitOptions={[]} />);
+    expect(screen.queryByTestId('work-order-input-unitPicker')).toBeNull();
+    expect(screen.queryByTestId('work-order-input-unit')).toBeTruthy();
+  });
+
+  it('should hand the picked unit and its resident back', () => {
+    const onUnitPick = sinon.spy();
+    render(
+      <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
+    );
+    const picker = screen.getByTestId('work-order-input-unitPicker');
+    const [, second] = Array.from(picker.querySelectorAll('option')).slice(1);
+    userEvent.selectOptions(picker, second.getAttribute('value'));
+    expect(onUnitPick.firstCall.args).toEqual([unitOptions[1]]);
+  });
+
+  it('should reveal typed unit and tenant inputs for manual entry', () => {
+    const onUnitPick = sinon.spy();
+    render(
+      <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
+    );
+    userEvent.selectOptions(
+      screen.getByTestId('work-order-input-unitPicker'),
+      'manual'
+    );
+    expect(onUnitPick.firstCall.args).toEqual([null]);
+    expect(screen.queryByTestId('work-order-input-unit')).toBeTruthy();
+    expect(screen.queryByTestId('work-order-input-resident')).toBeTruthy();
+  });
+
+  it('should show a typed unit that is not among the options as manual', () => {
+    render(
+      <Form
+        {...baseProps}
+        unitOptions={unitOptions}
+        values={{ ...EMPTY_FORM_VALUES, unit: '9-999' }}
+      />
+    );
+    expect(
+      (screen.getByTestId('work-order-input-unitPicker') as HTMLSelectElement)
+        .value
+    ).toEqual('manual');
+    expect(
+      (screen.getByTestId('work-order-input-unit') as HTMLInputElement).value
+    ).toEqual('9-999');
+  });
+
+  it('should select the option matching the current unit and resident', () => {
+    render(
+      <Form
+        {...baseProps}
+        unitOptions={unitOptions}
+        values={{ ...EMPTY_FORM_VALUES, unit: '2-201', resident: 't0225030' }}
+      />
+    );
+    const picker = screen.getByTestId(
+      'work-order-input-unitPicker'
+    ) as HTMLSelectElement;
+    expect(picker.selectedOptions[0].textContent).toEqual('2-201 · Sam Roe');
+    expect(screen.queryByTestId('work-order-input-unit')).toBeNull();
+  });
+
+  it('should hold the picker disabled while units load', () => {
+    render(
+      <Form {...baseProps} unitOptions={[]} unitOptionsStatus="loading" />
+    );
+    const picker = screen.getByTestId(
+      'work-order-input-unitPicker'
+    ) as HTMLSelectElement;
+    expect(picker.disabled).toEqual(true);
+    expect(picker.options[0].textContent).toEqual('Loading units…');
+    expect(screen.queryByTestId('work-order-input-unit')).toBeNull();
+  });
+
+  it('should show the unit error on the picker rather than the hidden input', () => {
+    render(
+      <Form
+        {...baseProps}
+        unitOptions={unitOptions}
+        errors={{ unit: 'Unit is required' }}
+      />
+    );
+    expect(
+      screen.getByTestId('work-order-error-unitPicker').textContent
+    ).toEqual('Unit is required');
+  });
+});

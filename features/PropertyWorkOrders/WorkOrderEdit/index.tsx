@@ -12,6 +12,7 @@ import features from '../../../config/features';
 import useWorkOrderForm from '../hooks/useWorkOrderForm';
 import validateWorkOrder, { WorkOrderFieldErrors } from '../utils/validate';
 import { getReasons, getSubCategories } from '../utils/customValues';
+import { UnitOption } from '../utils/unitOptions';
 import Header from './Header';
 import Form from './Form';
 import Details from './Details';
@@ -37,6 +38,8 @@ interface Props {
   customValuesStatus: string;
   sendNotification: userNotifications;
   onWorkOrderUpdated?(workOrder: workOrderModel): void;
+  unitOptions?: UnitOption[]; // creating only
+  unitOptionsStatus?: string;
 }
 
 // Work order detail, edit & create
@@ -48,7 +51,9 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
   customValues,
   customValuesStatus,
   sendNotification,
-  onWorkOrderUpdated
+  onWorkOrderUpdated,
+  unitOptions,
+  unitOptionsStatus
 }) => {
   const isCreating = !workOrder;
   const isMobile = useMediaQuery({ maxWidth: breakpoints.tablet.maxWidth });
@@ -121,6 +126,23 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
       });
       if (serverErrors[name]) clearErrors();
     }
+  };
+
+  // Picking a unit fills its resident's
+  // tenant code too; clearing empties both
+  const onUnitPick = (option: UnitOption | null) => {
+    setValues((prev) => ({
+      ...prev,
+      unit: option ? option.unit : '',
+      resident: option ? option.resident : ''
+    }));
+    setClientErrors((prev) => {
+      const rest = { ...prev };
+      delete rest.unit;
+      delete rest.resident;
+      return rest;
+    });
+    if (serverErrors.unit || serverErrors.resident) clearErrors();
   };
 
   const onEdit = () => {
@@ -229,6 +251,9 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
             isCreating={isCreating}
             isDisabled={isLoading}
             onChange={onChange}
+            unitOptions={unitOptions}
+            unitOptionsStatus={unitOptionsStatus}
+            onUnitPick={onUnitPick}
           />
         ) : (
           <Details workOrder={workOrder} customValues={customValues} />
@@ -280,7 +305,9 @@ WorkOrderEdit.defaultProps = {
   isStaging: false,
   isNavOpen: false,
   workOrder: null,
-  onWorkOrderUpdated: () => null
+  onWorkOrderUpdated: () => null,
+  unitOptions: [],
+  unitOptionsStatus: 'success'
 };
 
 export default WorkOrderEdit;

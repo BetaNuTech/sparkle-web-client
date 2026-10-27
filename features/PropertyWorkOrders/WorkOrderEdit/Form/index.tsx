@@ -1,4 +1,4 @@
-import { ChangeEvent, FunctionComponent, ReactNode } from 'react';
+import { ChangeEvent, FunctionComponent, ReactNode, useState } from 'react';
 import clsx from 'clsx';
 import customValuesModel from '../../../../common/models/yardi/customValues';
 import { WORK_ORDER_MAX_LENGTHS } from '../../../../common/models/yardi/workOrder';
@@ -11,6 +11,7 @@ import {
   isReasonRequired
 } from '../../utils/customValues';
 import { WorkOrderFieldErrors } from '../../utils/validate';
+import { findOption, toOptionValue, UnitOption } from '../../utils/unitOptions';
 import { WorkOrderFormValues } from '../formValues';
 import styles from '../styles.module.scss';
 
@@ -25,7 +26,14 @@ interface Props {
   isCreating: boolean;
   isDisabled: boolean;
   onChange: FieldChange;
+  unitOptions?: UnitOption[];
+  unitOptionsStatus?: string;
+  onUnitPick?(option: UnitOption | null): void;
 }
+
+// Select value that reveals the typed
+// unit & tenant code inputs
+export const MANUAL_UNIT = 'manual';
 
 interface FieldProps {
   name: string;
@@ -88,8 +96,44 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   errors,
   isCreating,
   isDisabled,
-  onChange
+  onChange,
+  unitOptions,
+  unitOptionsStatus,
+  onUnitPick
 }) => {
+  // Creating offers the current residents'
+  // units; the user may still type one
+  const [isManualUnit, setIsManualUnit] = useState(false);
+  const isLoadingUnits = isCreating && unitOptionsStatus === 'loading';
+  const hasUnitPicker =
+    isCreating && (isLoadingUnits || (unitOptions || []).length > 0);
+  const pickedUnit = findOption(
+    unitOptions || [],
+    values.unit,
+    values.resident
+  );
+  const isTypingUnit =
+    !hasUnitPicker ||
+    (isManualUnit && !pickedUnit) ||
+    Boolean(values.unit && !pickedUnit);
+  let unitPickerValue = '';
+  if (pickedUnit) unitPickerValue = toOptionValue(pickedUnit);
+  else if (isTypingUnit && hasUnitPicker) unitPickerValue = MANUAL_UNIT;
+
+  const onUnitPickerChange = (evt: ChangeEvent<HTMLSelectElement>) => {
+    const { value } = evt.target;
+    if (value === MANUAL_UNIT) {
+      setIsManualUnit(true);
+      if (onUnitPick) onUnitPick(null);
+      return;
+    }
+    setIsManualUnit(false);
+    const option = (unitOptions || []).find(
+      (opt) => toOptionValue(opt) === value
+    );
+    if (onUnitPick) onUnitPick(option || null);
+  };
+
   const priorities = withCurrent(
     customValues.priorities || [],
     values.priority
@@ -213,10 +257,43 @@ const WorkOrderForm: FunctionComponent<Props> = ({
     >
       <section className={styles.form__section}>
         <h3 className={styles.form__heading}>Request</h3>
-        <div className={styles.form__row}>
-          {textInput('unit', 'Unit', { isRequired: isCreating })}
-          {textInput('resident', 'Tenant Code')}
-        </div>
+        {hasUnitPicker && (
+          <Field
+            name="unitPicker"
+            label="Unit"
+            error={isTypingUnit ? '' : errors.unit}
+            isRequired
+          >
+            <select
+              id="work-order-unitPicker"
+              name="unitPicker"
+              className={styles.field__select}
+              value={unitPickerValue}
+              disabled={isDisabled || isLoadingUnits}
+              onChange={onUnitPickerChange}
+              data-testid="work-order-input-unitPicker"
+            >
+              <option value="">
+                {isLoadingUnits ? 'Loading units…' : 'Select a unit…'}
+              </option>
+              {(unitOptions || []).map((option) => (
+                <option
+                  key={toOptionValue(option)}
+                  value={toOptionValue(option)}
+                >
+                  {option.label}
+                </option>
+              ))}
+              <option value={MANUAL_UNIT}>Enter a unit manually…</option>
+            </select>
+          </Field>
+        )}
+        {(isTypingUnit || !isCreating) && (
+          <div className={styles.form__row}>
+            {textInput('unit', 'Unit', { isRequired: isCreating })}
+            {textInput('resident', 'Tenant Code')}
+          </div>
+        )}
         {textInput('briefDescription', 'Summary')}
         {textArea('description', 'Description')}
         <div className={styles.form__row}>
@@ -259,6 +336,12 @@ const WorkOrderForm: FunctionComponent<Props> = ({
       </section>
     </form>
   );
+};
+
+WorkOrderForm.defaultProps = {
+  unitOptions: [],
+  unitOptionsStatus: 'success',
+  onUnitPick: () => null
 };
 
 export default WorkOrderForm;

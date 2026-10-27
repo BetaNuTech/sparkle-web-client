@@ -113,6 +113,31 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     expect(create.firstCall.args).toEqual(['property-1', expected]);
   });
 
+  it('should fill the unit and tenant code from a picked resident unit', async () => {
+    const unitOptions = [
+      { unit: '1-103', resident: 't0225029', label: '1-103 · Jane Doe' }
+    ];
+    sinon.stub(Router, 'push');
+    const create = sinon
+      .stub(yardiApi, 'createWorkOrderRequest')
+      .resolves(yardiWorkOrderOne);
+    render(<WorkOrderEdit {...baseProps} unitOptions={unitOptions} />);
+
+    const picker = screen.getByTestId('work-order-input-unitPicker');
+    const [option] = Array.from(picker.querySelectorAll('option')).slice(1);
+    userEvent.selectOptions(picker, option.getAttribute('value'));
+
+    await act(async () => {
+      userEvent.click(screen.getByTestId('work-order-save'));
+    });
+
+    await waitFor(() => expect(create.called).toEqual(true));
+    expect(create.firstCall.args).toEqual([
+      'property-1',
+      { unit: '1-103', resident: 't0225029' }
+    ]);
+  });
+
   it('should patch only the changed attributes when editing', async () => {
     const expected = { priority: 'Low', permissionToEnter: true };
     const onWorkOrderUpdated = sinon.spy();
