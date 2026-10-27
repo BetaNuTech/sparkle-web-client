@@ -99,6 +99,11 @@ jobs:
           projectId: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
           firebaseServiceAccount: "${{ secrets.STAGING_SERVICE_ACCOUNT_KEY_JSON }}"
           channelId: live
+          # firebase-tools 15.34 asks for serviceusage.services.get, which the
+          # deploy service accounts lack; 15.28.2 is the last version that
+          # deployed (2026-08-28). Drop the pin once the accounts hold
+          # roles/serviceusage.serviceUsageConsumer.
+          firebaseToolsVersion: 15.28.2
 
       - name: Deploy to Firebase Hosting (Production)
         if: github.ref == 'refs/heads/production'
@@ -107,3 +112,8 @@ jobs:
           projectId: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
           firebaseServiceAccount: "${{ secrets.PRODUCTION_SERVICE_ACCOUNT_KEY_JSON }}"
           channelId: live
+          # firebase-tools 15.34 asks for serviceusage.services.get, which the
+          # deploy service accounts lack; 15.28.2 is the last version that
+          # deployed (2026-08-28). Drop the pin once the accounts hold
+          # roles/serviceusage.serviceUsageConsumer.
+          firebaseToolsVersion: 15.28.2
