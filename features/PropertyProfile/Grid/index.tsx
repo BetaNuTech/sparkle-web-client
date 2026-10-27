@@ -13,6 +13,7 @@ interface Props {
   templateCategories: templateCategoryModel[];
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
   onMoveInspection: (inspection: inspectionModel) => void;
+  onEditUnitNumber: (inspection: inspectionModel) => void;
   onSortChange?(sortKey: string): void;
   sortBy?: string;
   sortDir?: string;
@@ -26,6 +27,7 @@ const Grid: FunctionComponent<Props> = ({
   templateCategories,
   openInspectionDeletePrompt,
   onMoveInspection,
+  onEditUnitNumber,
   onSortChange,
   sortBy,
   sortDir,
@@ -50,6 +52,7 @@ const Grid: FunctionComponent<Props> = ({
         templateCategories={templateCategories}
         openInspectionDeletePrompt={openInspectionDeletePrompt}
         onMoveInspection={onMoveInspection}
+        onEditUnitNumber={onEditUnitNumber}
         forceVisible={forceVisible}
       />
     </>

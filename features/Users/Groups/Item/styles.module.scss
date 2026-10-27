@@ -47,6 +47,10 @@
     background-color: $info-color;
   }
 
+  &--courtesy {
+    background-color: $sea-green-color;
+  }
+
   @include media-query(desktop) {
     margin-left: $global-padding;
     margin-bottom: 0;

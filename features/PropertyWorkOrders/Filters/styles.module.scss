@@ -1,0 +1,66 @@
+@import '../../../styles/index.scss';
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $global-sm-padding $global-padding;
+
+  &--mobile {
+    padding: $global-sm-padding $global-padding;
+    border-bottom: 1px solid $gray-lighter;
+    background-color: $white-dark;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  &__label,
+  &__menu,
+  &__input {
+    width: auto;
+    margin-bottom: 0;
+    font-size: $medium-font-size;
+  }
+
+  &__label {
+    margin-right: rem-calc(5);
+    color: $gray-light-2;
+    white-space: nowrap;
+  }
+
+  &__input {
+    height: auto;
+    padding: rem-calc(4) rem-calc(8);
+
+    &--unit {
+      width: rem-calc(90);
+    }
+  }
+
+  &__separator {
+    margin: 0 rem-calc(6);
+    color: $gray-light-2;
+    font-size: $medium-font-size;
+  }
+
+  &__clear {
+    padding: rem-calc(4) rem-calc(10);
+    border: 1px solid $gray-lighter;
+    border-radius: $global-radius;
+    background: $white;
+    color: $gray-med-dark;
+    font-size: $medium-small-font-size;
+    cursor: pointer;
+  }
+
+  &__hint {
+    flex-basis: 100%;
+    color: $gray-light-2;
+    font-size: $medium-small-font-size;
+    font-style: italic;
+  }
+}

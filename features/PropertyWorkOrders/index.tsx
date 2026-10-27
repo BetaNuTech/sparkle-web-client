@@ -1,14 +1,19 @@
-import { FunctionComponent, useState } from 'react';
+import { FunctionComponent } from 'react';
 import { useMediaQuery } from 'react-responsive';
+import Router from 'next/router';
 import propertyModel from '../../common/models/property';
 import WorkOrderModel from '../../common/models/yardi/workOrder';
 import breakpoints from '../../config/breakpoints';
+import features from '../../config/features';
 import WorkOrderList from './List';
 import useSorting from './hooks/useSorting';
+import useWorkOrders from './hooks/useWorkOrders';
+import useWorkOrderFilters from './hooks/useWorkOrderFilters';
 import Header from './Header';
-import ContactModal from '../../common/Yardi/ContactModal';
 import useSearching from '../../common/hooks/useSearching';
 import settings from './settings';
+
+type userNotifications = (message: string, options?: any) => any;
 
 interface Props {
   isOnline?: boolean;
@@ -16,16 +21,24 @@ interface Props {
   isNavOpen?: boolean;
   forceVisible?: boolean;
   property: propertyModel;
-  workOrders: WorkOrderModel[];
+  sendNotification: userNotifications;
 }
 
 const PropertyWorkOrders: FunctionComponent<Props> = ({
-  workOrders,
   property,
+  sendNotification,
   isOnline,
   isStaging,
   forceVisible
 }) => {
+  // Server side filters
+  const filterState = useWorkOrderFilters();
+  const { data: workOrders, status: workOrdersStatus } = useWorkOrders(
+    sendNotification,
+    property.id,
+    filterState.filters
+  );
+
   // Work order search setup
   const { onSearchKeyDown, filteredItems, searchValue, onClearSearch } =
     useSearching(workOrders, settings.workOrderAttributes);
@@ -46,10 +59,13 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
     maxWidth: breakpoints.tablet.maxWidth
   });
 
-  const [selectedWorkOrder, setSelectedWorkOrder] = useState(null);
   const onClickWorkOrder = (workOrder: WorkOrderModel) => {
-    setSelectedWorkOrder(workOrder);
+    Router.push(`/properties/${property.id}/yardi-work-orders/${workOrder.id}`);
   };
+
+  const canCreate = Boolean(
+    features.supportPropertyYardiWorkOrderEdit && isOnline
+  );
 
   return (
     <>
@@ -67,21 +83,28 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
         onClearSearch={onClearSearch}
         onSortChange={onSortChange}
         onSortDirChange={onSortDirChange}
+        state={filterState.state}
+        unit={filterState.unit}
+        from={filterState.from}
+        to={filterState.to}
+        hasFilters={filterState.hasFilters}
+        onStateChange={filterState.onStateChange}
+        nextState={filterState.nextState}
+        onUnitChange={filterState.onUnitChange}
+        onFromChange={filterState.onFromChange}
+        onToChange={filterState.onToChange}
+        onClearFilters={filterState.onClearFilters}
+        canCreate={canCreate}
       />
       <WorkOrderList
         workOrders={sortedWorkOrders}
+        isLoading={workOrdersStatus === 'loading'}
         forceVisible={forceVisible}
         onClickWorkOrder={onClickWorkOrder}
         searchQuery={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
         isMobile={isMobile}
-      />
-      <ContactModal
-        isVisible={Boolean(selectedWorkOrder)}
-        onClose={() => setSelectedWorkOrder(null)}
-        data={selectedWorkOrder}
-        type="workOrder"
       />
     </>
   );

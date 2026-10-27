@@ -20,6 +20,23 @@ NEXT_PUBLIC_STAGING=true
 
 You'll need to provide your own variables by downloading the project configuration from the [Firebase Console](https://console.firebase.google.com/).
 
+## NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+
+**Must be a bare host name, with no `https://` prefix and no trailing slash.**
+
+Firebase builds the Google sign in handler URL as `https://{authDomain}/__/auth/handler`, so a scheme in this value produces a malformed URL and `signInWithPopup` fails. Email and password sign in never touches that handler, which is why an incorrect value here can go unnoticed until Google sign in is enabled.
+
+Current values:
+
+| Environment | Value |
+| --- | --- |
+| Staging | `staging.sapphire-standard.com` |
+| Production | `sparkle.sapphire-standard.com` |
+
+The host must also be listed under **Authentication → Settings → Authorized domains** in the Firebase console, and `https://<host>/__/auth/handler` must be registered as an authorized redirect URI on the project's web OAuth client in the Google Cloud console. The two must match exactly or Google returns `redirect_uri_mismatch`.
+
+Note that Firebase session state is scoped to the origin serving the app, so a user who moves between hosts (for example from `sapphire-inspections.web.app` to `sparkle.sapphire-standard.com`) signs in again once.
+
 ## References
 
 [Next.js supports environment variables out of the box](https://nextjs.org/docs/basic-features/environment-variables)

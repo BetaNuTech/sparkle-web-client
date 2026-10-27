@@ -1,6 +1,6 @@
 import getConfig from 'next/config';
 import { FunctionComponent } from 'react';
-import BusinessLogo from '../../../public/icons/sparkle/bluecrest-logo.svg';
+import BusinessLogo from '../../../public/icons/sparkle/bluecore-logo.svg';
 import styles from './styles.module.scss';
 
 const config = getConfig() || {};

@@ -11,6 +11,106 @@
     margin: 0 auto;
   }
 
+  // Google's own button treatment rather than a Sparkle-branded one. People
+  // recognize this control by sight, and recoloring it costs more in
+  // recognition than it gains in brand consistency.
+  &__google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: rem-calc(10) rem-calc(16);
+    background-color: $white;
+    border: 1px solid #dadce0;
+    border-radius: $global-radius;
+    color: #3c4043;
+    font-family: $body-font-family;
+    font-size: $medium-font-size;
+    font-weight: $font-weight-bold;
+    cursor: pointer;
+
+    svg {
+      flex-shrink: 0;
+      margin-right: rem-calc(12);
+    }
+
+    span {
+      // Without this the label breaks onto three lines on narrow viewports
+      white-space: nowrap;
+    }
+
+    &:hover:not(:disabled) {
+      background-color: #f7f8f8;
+      border-color: #d2e3fc;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    &--loading {
+      @extend %ani-blink;
+    }
+  }
+
+  &__googleHint {
+    margin: rem-calc(10) 0 0;
+    color: $gray-light;
+    font-size: $small-font-size;
+    text-align: center;
+  }
+
+  &__divider {
+    display: flex;
+    align-items: center;
+    margin: $global-padding 0;
+    color: $gray-light;
+    font-size: $small-font-size;
+
+    &::before,
+    &::after {
+      content: '';
+      flex-grow: 1;
+      height: 1px;
+      background-color: $gray-lighter;
+    }
+
+    span {
+      padding: 0 rem-calc(12);
+    }
+  }
+
+  &__disclosure {
+    &__summary {
+      position: relative;
+      padding-right: rem-calc(20);
+      color: $gray-light;
+      font-size: $small-font-size;
+      text-align: center;
+      cursor: pointer;
+      // Replace the native triangle, which renders inconsistently across
+      // browsers, with a caret we control
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+
+      // U+25BC, not U+25BE: the smaller triangle has patchy font coverage and
+      // degrades to a dot on some platforms
+      &::after {
+        content: '\25BC';
+        margin-left: rem-calc(6);
+        font-size: rem-calc(9);
+      }
+    }
+
+    &[open] &__summary::after {
+      content: '\25B2';
+    }
+  }
+
   &__promptButton {
     @extend %unstyledButton;
     display: block;

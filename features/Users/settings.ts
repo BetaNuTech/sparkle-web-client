@@ -17,3 +17,8 @@ export const sortOptions = [
   { label: 'Creation Date', value: 'createdAt', type: 'number' },
   { label: 'Last sign on', value: 'lastSignInDate', type: 'number' }
 ];
+
+export const filterOptions = [
+  { label: 'All Users', value: '' },
+  { label: 'Courtesy Officers', value: 'courtesyOfficer' }
+];

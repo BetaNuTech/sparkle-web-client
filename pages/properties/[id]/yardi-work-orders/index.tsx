@@ -5,7 +5,6 @@ import { useFirestore, useUser } from 'reactfire';
 import useProperty from '../../../../common/hooks/useProperty';
 import { MainLayout } from '../../../../common/MainLayout';
 import LoadingHud from '../../../../common/LoadingHud';
-import useWorkOrders from '../../../../features/PropertyWorkOrders/hooks/useWorkOrders';
 import PropertyWorkOrders from '../../../../features/PropertyWorkOrders';
 import useNotifications from '../../../../common/hooks/useNotifications'; // eslint-disable-line
 import notifications from '../../../../common/services/notifications'; // eslint-disable-line
@@ -26,29 +25,22 @@ const Page: React.FC = (): ReactElement => {
     authUser.uid || ''
   );
 
-  // Fetch the data of work orders
-  const { data: workOrders, status: workOrdersStatus } = useWorkOrders(
-    sendNotification,
-    propertyId
-  );
-
   const { data: property, status: propertyStatus } = useProperty(
     firestore,
     propertyId
   );
 
   let isLoaded = false;
-  if (
-    userStatus === 'success' &&
-    workOrdersStatus === 'success' &&
-    propertyStatus === 'success'
-  ) {
+  if (userStatus === 'success' && propertyStatus === 'success') {
     isLoaded = true;
   }
   return (
     <MainLayout user={user}>
       {isLoaded ? (
-        <PropertyWorkOrders property={property} workOrders={workOrders} />
+        <PropertyWorkOrders
+          property={property}
+          sendNotification={sendNotification}
+        />
       ) : (
         <LoadingHud />
       )}

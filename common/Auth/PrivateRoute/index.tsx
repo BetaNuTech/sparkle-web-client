@@ -4,6 +4,28 @@ import { useAuth } from '../Provider';
 import features from '../../../config/features';
 import winLocation from '../../utils/winLocation';
 
+// Routes that render without a session.
+//
+// "privacy" and "about" must stay here: they are the privacy policy and app
+// home page URLs on Google's OAuth consent screen, and brand verification
+// loads both as an anonymous visitor. A home page that redirects to /login is
+// refused -- which is exactly how the first verification attempt failed.
+const PUBLIC_PATHS = ['login', 'ios', 'privacy', 'about'];
+
+// Is the current route one of the public ones
+const isPublicPage = (router: any): boolean => {
+  try {
+    const { pathname = '' } = router;
+    const lastPath = `${pathname
+      .replace(/\/$/, '')
+      .split('/')
+      .pop()}`.toLowerCase();
+    return PUBLIC_PATHS.includes(lastPath);
+  } catch (err) {
+    return false;
+  }
+};
+
 // Is current page login
 const isLoginPage = (router: any): boolean => {
   try {
@@ -13,20 +35,6 @@ const isLoginPage = (router: any): boolean => {
       .split('/')
       .pop()}`.toLowerCase();
     return lastPath === 'login';
-  } catch (err) {
-    return false;
-  }
-};
-
-// Is current page ios
-const isIOSPage = (router: any): boolean => {
-  try {
-    const { pathname = '' } = router;
-    const lastPath = `${pathname
-      .replace(/\/$/, '')
-      .split('/')
-      .pop()}`.toLowerCase();
-    return lastPath === 'ios';
   } catch (err) {
     return false;
   }
@@ -49,12 +57,7 @@ const PrivateRoute = ({ children, fallback }) => {
   };
 
   useEffect(() => {
-    if (
-      !isAuthenticated &&
-      !isLoginPage(router) &&
-      !isIOSPage(router) &&
-      !isLoading
-    ) {
+    if (!isAuthenticated && !isPublicPage(router) && !isLoading) {
       redirectToLogin();
     }
     if (isAuthenticated && isLoginPage(router)) {
@@ -65,7 +68,7 @@ const PrivateRoute = ({ children, fallback }) => {
     }
   }, [isAuthenticated, router.pathname, isLoading]); // eslint-disable-line
 
-  if (!isAuthenticated && !isLoginPage(router) && !isIOSPage(router)) {
+  if (!isAuthenticated && !isPublicPage(router)) {
     return fallback || <p>Loading...</p>;
   }
 

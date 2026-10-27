@@ -20,7 +20,8 @@ export const USER_NOTIFICATIONS = {
   unpermissioned:
     'You do not have permission to make these updates, please login again or contact an admin',
   generic: 'Failed to update template, please try again',
-  success: 'Inspection moved successfully'
+  success: 'Inspection moved successfully',
+  successUnitNumber: 'Inspection unit # updated successfully'
 };
 
 interface Returned {
@@ -31,6 +32,10 @@ interface Returned {
   setQueueInspectionForMove(inspection: inspectionModel): void;
   queuedInspectionForMove: inspectionModel;
   isMoving: boolean;
+  confirmUnitNumberUpdate(unitNumber: string): void;
+  setQueueInspectionForUnitNumber(inspection: inspectionModel): void;
+  queuedInspectionForUnitNumber: inspectionModel;
+  isUpdatingUnitNumber: boolean;
 }
 type userNotifications = (message: string, options?: any) => any;
 
@@ -48,6 +53,10 @@ const useInspectionActions = (
 
   const [isMoving, setIsMoving] = useState(false);
   const [queuedInspectionForMove, setQueueInspectionForMove] = useState(null);
+
+  const [isUpdatingUnitNumber, setIsUpdatingUnitNumber] = useState(false);
+  const [queuedInspectionForUnitNumber, setQueueInspectionForUnitNumber] =
+    useState(null);
 
   // Set/unset the inspection
   // queued to be deleted
@@ -148,6 +157,27 @@ const useInspectionActions = (
     setIsMoving(false);
   };
 
+  // Request to update the queued
+  // inspection's unit number
+  const confirmUnitNumberUpdate = async (unitNumber: string) => {
+    setIsUpdatingUnitNumber(true);
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionApi.updateUnitNumber(
+        queuedInspectionForUnitNumber.id,
+        unitNumber
+      );
+      sendNotification(USER_NOTIFICATIONS.successUnitNumber, {
+        type: 'success'
+      });
+    } catch (err) {
+      handleErrorResponse(err);
+    }
+
+    setQueueInspectionForUnitNumber(null);
+    setIsUpdatingUnitNumber(false);
+  };
+
   return {
     queuedInspectionForDeletion,
     queueInspectionForDelete,
@@ -155,7 +185,11 @@ const useInspectionActions = (
     queuedInspectionForMove,
     setQueueInspectionForMove,
     confirmMoveInspection,
-    isMoving
+    isMoving,
+    queuedInspectionForUnitNumber,
+    setQueueInspectionForUnitNumber,
+    confirmUnitNumberUpdate,
+    isUpdatingUnitNumber
   };
 };
 

@@ -51,6 +51,7 @@ export type FormInputs = {
   corporate: boolean;
   isDisabled: boolean;
   pushOptOut: boolean;
+  courtesyOfficer: boolean;
 };
 
 interface useUserEditReturn {
@@ -87,7 +88,8 @@ const useUserEdit = (
     admin: user.admin || false,
     corporate: user.corporate || false,
     isDisabled: user.isDisabled || false,
-    pushOptOut: user.pushOptOut || false
+    pushOptOut: user.pushOptOut || false,
+    courtesyOfficer: user.courtesyOfficer || false
   };
 
   const {

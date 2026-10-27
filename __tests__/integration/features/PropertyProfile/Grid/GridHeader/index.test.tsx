@@ -14,8 +14,8 @@ function render(ui: any, options = {}) {
 }
 
 describe('Integration | Features | Properties | Profile | Inspection | Grid | Grid Header', () => {
-  it('should render 6 column for user without having inspetion rights', () => {
-    const expected = 6;
+  it('should render 8 columns for team member with unit # editing rights', () => {
+    const expected = 8;
 
     render(<GridHeader user={teamMember} />);
 
@@ -24,13 +24,23 @@ describe('Integration | Features | Properties | Profile | Inspection | Grid | Gr
     expect(actual).toEqual(expected);
   });
 
-  it('should render 7 column for user without having inspetion rights', () => {
-    const expected = 7;
+  it('should render 8 columns for admin user', () => {
+    const expected = 8;
 
     render(<GridHeader user={admin} />);
 
     const header: HTMLElement = screen.queryByTestId('grid-header');
     const actual = header.children.length;
     expect(actual).toEqual(expected);
+  });
+
+  it('should render a sortable unit # column', () => {
+    render(<GridHeader user={admin} />);
+
+    const unitHeader: HTMLElement = screen.queryByTestId(
+      'grid-head-unit-number'
+    );
+    expect(unitHeader).toBeTruthy();
+    expect(unitHeader.textContent).toEqual('Unit #');
   });
 });

@@ -46,6 +46,22 @@ const GridHeader: FunctionComponent<Props> = ({
         className={clsx(
           styles.propertyProfile__gridHeader__column,
           // eslint-disable-next-line no-nested-ternary
+          sortBy === 'unitNumber'
+            ? sortDir === 'asc'
+              ? styles['propertyProfile__gridHeader__column--ascending']
+              : styles['propertyProfile__gridHeader__column--descending']
+            : ''
+        )}
+        onClick={() => onSortChange('unitNumber')}
+        data-testid="grid-head-unit-number"
+      >
+        Unit #
+        <span className={styles.propertyProfile__gridHeader__direction}></span>
+      </button>
+      <button
+        className={clsx(
+          styles.propertyProfile__gridHeader__column,
+          // eslint-disable-next-line no-nested-ternary
           sortBy === 'creationDate'
             ? sortDir === 'asc'
               ? styles['propertyProfile__gridHeader__column--ascending']

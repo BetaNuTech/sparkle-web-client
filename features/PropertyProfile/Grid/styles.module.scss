@@ -243,34 +243,40 @@
     padding-right: $global-padding;
   }
 
-  // 1st column
+  // 1st column (creator)
   &:nth-child(1) {
-    width: 18%;
-    padding-right: $global-padding;
-  }
-
-  // 2nd & 3rd Column
-  &:nth-child(2),
-  &:nth-child(3) {
-    width: 13%;
-    padding-right: $global-padding;
-  }
-
-  // 4th & 5th Column
-  &:nth-child(4),
-  &:nth-child(5) {
     width: 16%;
     padding-right: $global-padding;
   }
 
-  // 6th Column
-  &:nth-child(6) {
-    width: 12%;
+  // 2nd Column (unit #)
+  &:nth-child(2) {
+    width: 8%;
+    padding-right: $global-padding;
   }
 
-  // 7th Column
-  &:nth-child(7) {
+  // 3rd & 4th Column (created/updated)
+  &:nth-child(3),
+  &:nth-child(4) {
     width: 12%;
+    padding-right: $global-padding;
+  }
+
+  // 5th & 6th Column (template/category)
+  &:nth-child(5),
+  &:nth-child(6) {
+    width: 15%;
+    padding-right: $global-padding;
+  }
+
+  // 7th Column (score)
+  &:nth-child(7) {
+    width: 11%;
+  }
+
+  // 8th Column (actions)
+  &:nth-child(8) {
+    width: 11%;
     justify-content: flex-end;
   }
 }
@@ -278,19 +284,19 @@
 // Child Horizontal Layout /wo actions column
 .propertyProfile__gridHeader__column.-six-columns,
 .propertyProfile__gridRow__column.-six-columns {
-  // 1st column
+  // 1st column (creator)
   &:nth-child(1) {
-    width: 20%;
+    width: 18%;
   }
 
-  // 4th & 5th Column
-  &:nth-child(4),
-  &:nth-child(5) {
-    width: 20%;
-  }
-
-  // 6th Column
+  // 5th & 6th Column (template/category)
+  &:nth-child(5),
   &:nth-child(6) {
+    width: 18%;
+  }
+
+  // 7th Column (score)
+  &:nth-child(7) {
     width: 14%;
   }
 }

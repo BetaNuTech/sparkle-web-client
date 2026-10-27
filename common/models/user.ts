@@ -25,6 +25,9 @@ interface user {
   lastUserAgent?: string;
 
   isDisabled?: boolean;
+
+  // Designates the user as a courtesy officer
+  courtesyOfficer?: boolean;
 }
 
 export default user;

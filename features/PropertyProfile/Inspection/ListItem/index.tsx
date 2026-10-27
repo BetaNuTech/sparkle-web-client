@@ -19,6 +19,7 @@ interface ListItemProps {
   templateCategories: Array<templateCategoryModel>;
   openInspectionDeletePrompt: (inspection: inspectionModel) => void;
   onMoveInspection: (inspection: inspectionModel) => void;
+  onEditUnitNumber: (inspection: inspectionModel) => void;
   forceVisible?: boolean;
 }
 
@@ -28,6 +29,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   templateCategories,
   openInspectionDeletePrompt,
   onMoveInspection,
+  onEditUnitNumber,
   forceVisible
 }) => {
   // State
@@ -45,6 +47,7 @@ const ListItem: FunctionComponent<ListItemProps> = ({
   const templateName = inspection.templateName
     ? inspection.templateName
     : 'Unknown';
+  const unitNumber = inspection.unitNumber ? inspection.unitNumber : '--';
   const scoreLabel = inspection.inspectionCompleted ? 'Score' : 'Progress';
   // If the inspection is completed then use direct score,
   // otherwise calculate percentage
@@ -122,6 +125,19 @@ const ListItem: FunctionComponent<ListItemProps> = ({
                     data-testid="property-profile-inspection-list-item-creator"
                   >
                     {creatorName}
+                  </span>
+                </div>
+                <div
+                  className={
+                    styles.propertyProfile__inspectionsList__overview__row
+                  }
+                >
+                  <strong className="-c-black">Unit #:</strong>{' '}
+                  <span
+                    className="-c-gray-light"
+                    data-testid="property-profile-inspection-list-item-unit-number"
+                  >
+                    {unitNumber}
                   </span>
                 </div>
                 <div
@@ -251,6 +267,16 @@ const ListItem: FunctionComponent<ListItemProps> = ({
               )}
             >
               Move
+            </button>
+            <button
+              onClick={() => onEditUnitNumber(inspection)}
+              className={clsx(
+                styles.propertyProfile__inspectionsList__revealButton,
+                '-bgc-primary'
+              )}
+              data-testid="mobile-edit-unit-number"
+            >
+              Unit #
             </button>
           </div>
         </div>

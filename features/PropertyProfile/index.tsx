@@ -35,6 +35,7 @@ import templateCategoryModel from '../../common/models/templateCategory';
 import inspectionModel from '../../common/models/inspection';
 import usePreserveScrollPosition from '../../common/hooks/usePreserveScrollPosition';
 import MoveInspectionModal from './MoveInspectionModal';
+import EditUnitNumberModal from '../../common/EditInspectionUnitNumberModal';
 
 interface Props {
   user: userModel;
@@ -110,7 +111,11 @@ const PropertyProfile: FunctionComponent<Props> = ({
     queuedInspectionForMove,
     setQueueInspectionForMove,
     confirmMoveInspection,
-    isMoving
+    isMoving,
+    queuedInspectionForUnitNumber,
+    setQueueInspectionForUnitNumber,
+    confirmUnitNumberUpdate,
+    isUpdatingUnitNumber
   } = useInspectionActions(firestore, sendNotification, user);
 
   const openInspectionDeletePrompt = (inspection: inspectionModel) => {
@@ -128,6 +133,14 @@ const PropertyProfile: FunctionComponent<Props> = ({
 
   const onCloseMoveInspection = () => {
     setQueueInspectionForMove(null);
+  };
+
+  const onEditUnitNumber = (inspection: inspectionModel) => {
+    setQueueInspectionForUnitNumber(inspection);
+  };
+
+  const onCloseEditUnitNumber = () => {
+    setQueueInspectionForUnitNumber(null);
   };
 
   // Activate next inspection fitler in series
@@ -215,6 +228,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
                   inspections={sortedInspections}
                   openInspectionDeletePrompt={openInspectionDeletePrompt}
                   onMoveInspection={onMoveInspection}
+                  onEditUnitNumber={onEditUnitNumber}
                   templateCategories={templateCategories}
                   propertyId={id}
                   forceVisible={forceVisible}
@@ -278,6 +292,7 @@ const PropertyProfile: FunctionComponent<Props> = ({
                 templateCategories={templateCategories}
                 openInspectionDeletePrompt={openInspectionDeletePrompt}
                 onMoveInspection={onMoveInspection}
+                onEditUnitNumber={onEditUnitNumber}
                 onSortChange={onSortChange}
                 sortBy={sortBy}
                 sortDir={sortDir}
@@ -309,6 +324,13 @@ const PropertyProfile: FunctionComponent<Props> = ({
         user={user}
         onConfirm={confirmMoveInspection}
         isMoving={isMoving}
+      />
+      <EditUnitNumberModal
+        isVisible={Boolean(queuedInspectionForUnitNumber)}
+        onClose={onCloseEditUnitNumber}
+        inspection={queuedInspectionForUnitNumber}
+        onConfirm={confirmUnitNumberUpdate}
+        isUpdating={isUpdatingUnitNumber}
       />
     </>
   );

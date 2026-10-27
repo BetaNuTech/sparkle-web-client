@@ -1,0 +1,47 @@
+@import '../../styles/index.scss';
+
+// Page chrome (background, width, typography, masthead, footer) comes from
+// common/PublicPage. Only the pieces specific to the policy itself live here.
+//
+// Everything must stay nested under a local class: this is a CSS Module, and a
+// bare element selector at the top level fails the build as an impure selector.
+.privacy {
+  &__tableWrap {
+    // Keeps the table from forcing the page to scroll sideways on a phone
+    overflow-x: auto;
+
+    table {
+      width: 100%;
+      margin: $global-padding 0;
+      border-collapse: collapse;
+      font-size: $small-font-size;
+    }
+
+    th,
+    td {
+      padding: rem-calc(8);
+      border: 1px solid $gray-lighter;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: $white-dark;
+    }
+  }
+
+  &__callout {
+    margin: $global-padding 0;
+    padding: $global-sm-padding $global-padding;
+    border-left: 4px solid $primary-color;
+    background-color: $white-dark;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    &--affirm {
+      border-left-color: $success-color;
+    }
+  }
+}

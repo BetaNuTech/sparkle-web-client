@@ -134,6 +134,10 @@
   border: 1px solid darken($gray, 14);
   background: $gray;
 
+  // Hover as well as focus. base/forms.scss turns inputs white on hover, which
+  // makes a hovered field vanish against the card and breaks up the fused
+  // block these inputs are meant to form.
+  &:hover,
   &:focus {
     background: $gray;
   }

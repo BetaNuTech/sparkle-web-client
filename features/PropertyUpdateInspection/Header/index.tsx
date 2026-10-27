@@ -28,6 +28,8 @@ interface Props {
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
   isRequestingReport: boolean;
+  onEditUnitNumber(): void;
+  canEditUnitNumber: boolean;
 }
 
 const Header: FunctionComponent<Props> = ({
@@ -48,7 +50,9 @@ const Header: FunctionComponent<Props> = ({
   showRestartAction,
   hasPdfReportGenerationFailed,
   onRegenerateReport,
-  isRequestingReport
+  isRequestingReport,
+  onEditUnitNumber,
+  canEditUnitNumber
 }) => {
   const propertyLink = `/properties/${property.id}/`;
   const isPubishingDisabled =
@@ -138,6 +142,24 @@ const Header: FunctionComponent<Props> = ({
           >
             {inspection.templateName}
           </div>
+          {canEditUnitNumber ? (
+            <button
+              type="button"
+              className={clsx('-fz-small', '-c-primary', '-cu-pointer')}
+              onClick={onEditUnitNumber}
+              data-testid="header-edit-unit-number"
+            >
+              {inspection.unitNumber
+                ? `Unit #: ${inspection.unitNumber}`
+                : '+ Add Unit # (optional)'}
+            </button>
+          ) : (
+            inspection.unitNumber && (
+              <span className="-fz-small">
+                Unit #: {inspection.unitNumber}
+              </span>
+            )
+          )}
         </>
       }
       isOnline={isOnline}

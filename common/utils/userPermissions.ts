@@ -114,6 +114,12 @@ export const canEditProperty = (user: userModel): boolean => user.admin;
 export const canReassignInspectionProperty = (user: userModel): boolean =>
   user.admin;
 
+// Checks that the user can update an inspection's
+// unit number, even after inspection completion
+// (API enforces user's property level access)
+export const canEditInspectionUnitNumber = (user: userModel): boolean =>
+  Boolean(user && user.id);
+
 // Checks if user has access to a property
 const hasPropertyAccess = (user: userModel, propertyId: string): boolean =>
   getPropertyLevelAccess(user.properties, user.teams).includes(propertyId);

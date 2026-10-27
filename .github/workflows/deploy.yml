@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         id: yarn-cache # use this to check for `cache-hit`
         with:
           path: '**/node_modules'
@@ -39,6 +39,7 @@ jobs:
         with:
           file_name: .env.local
           envkey_NEXT_PUBLIC_STAGING: true
+          envkey_NEXT_PUBLIC_SUPPORT_YARDI_WORK_ORDER_EDIT: true
           envkey_NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.STAGING_FIREBASE_API_KEY }}
           envkey_NEXT_PUBLIC_FIREBASE_APP_ID: ${{ secrets.STAGING_FIREBASE_APP_ID }}
           envkey_NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.STAGING_FIREBASE_AUTH_DOMAIN }}
@@ -73,7 +74,7 @@ jobs:
         run: docker-compose run build
 
       - name: Archive Build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist
@@ -83,10 +84,10 @@ jobs:
     needs: build
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Download Build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist
@@ -98,6 +99,11 @@ jobs:
           projectId: ${{ secrets.STAGING_FIREBASE_PROJECT_ID }}
           firebaseServiceAccount: "${{ secrets.STAGING_SERVICE_ACCOUNT_KEY_JSON }}"
           channelId: live
+          # firebase-tools 15.34 asks for serviceusage.services.get, which the
+          # deploy service accounts lack; 15.28.2 is the last version that
+          # deployed (2026-08-28). Drop the pin once the accounts hold
+          # roles/serviceusage.serviceUsageConsumer.
+          firebaseToolsVersion: 15.28.2
 
       - name: Deploy to Firebase Hosting (Production)
         if: github.ref == 'refs/heads/production'
@@ -106,3 +112,8 @@ jobs:
           projectId: ${{ secrets.PRODUCTION_FIREBASE_PROJECT_ID }}
           firebaseServiceAccount: "${{ secrets.PRODUCTION_SERVICE_ACCOUNT_KEY_JSON }}"
           channelId: live
+          # firebase-tools 15.34 asks for serviceusage.services.get, which the
+          # deploy service accounts lack; 15.28.2 is the last version that
+          # deployed (2026-08-28). Drop the pin once the accounts hold
+          # roles/serviceusage.serviceUsageConsumer.
+          firebaseToolsVersion: 15.28.2
