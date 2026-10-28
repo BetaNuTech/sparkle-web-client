@@ -13,6 +13,8 @@ import {
 import { WorkOrderFieldErrors, todayIsoDate } from '../../utils/validate';
 import { findOption, toOptionValue, UnitOption } from '../../utils/unitOptions';
 import { WorkOrderFormValues } from '../formValues';
+import { QueuedAttachment } from '../../utils/pendingAttachments';
+import AttachmentQueue from '../AttachmentQueue';
 import styles from '../styles.module.scss';
 
 type FieldChange = (
@@ -29,6 +31,11 @@ interface Props {
   unitOptions?: UnitOption[];
   unitOptionsStatus?: string;
   onUnitPick?(option: UnitOption | null): void;
+  attachmentQueue?: QueuedAttachment[]; // creating only
+  canQueueAttachments?: boolean;
+  onQueueAdd?(files: File[]): void;
+  onQueueRemove?(id: string): void;
+  onQueueDescriptionChange?(id: string, description: string): void;
 }
 
 // Select value that reveals the typed
@@ -109,7 +116,12 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   onChange,
   unitOptions,
   unitOptionsStatus,
-  onUnitPick
+  onUnitPick,
+  attachmentQueue,
+  canQueueAttachments,
+  onQueueAdd,
+  onQueueRemove,
+  onQueueDescriptionChange
 }) => {
   // Creating offers the current residents'
   // units; the user may still type one
@@ -384,6 +396,16 @@ const WorkOrderForm: FunctionComponent<Props> = ({
         </div>
       </section>
 
+      {isCreating && canQueueAttachments && (
+        <AttachmentQueue
+          items={attachmentQueue || []}
+          isDisabled={isDisabled}
+          onAdd={onQueueAdd}
+          onRemove={onQueueRemove}
+          onDescriptionChange={onQueueDescriptionChange}
+        />
+      )}
+
       <section className={styles.form__section}>
         <h3 className={styles.form__heading}>Requestor</h3>
         {textInput('requestorName', 'Name')}
@@ -410,7 +432,12 @@ const WorkOrderForm: FunctionComponent<Props> = ({
 WorkOrderForm.defaultProps = {
   unitOptions: [],
   unitOptionsStatus: 'success',
-  onUnitPick: () => null
+  onUnitPick: () => null,
+  attachmentQueue: [],
+  canQueueAttachments: false,
+  onQueueAdd: () => null,
+  onQueueRemove: () => null,
+  onQueueDescriptionChange: () => null
 };
 
 export default WorkOrderForm;

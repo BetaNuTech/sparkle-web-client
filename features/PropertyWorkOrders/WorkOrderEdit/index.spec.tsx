@@ -7,6 +7,12 @@ import { yardiWorkOrderOne } from '../../../__mocks__/yardi/workOrders';
 import yardiApi from '../../../common/services/api/yardi';
 import features from '../../../config/features';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
+import { yardiWorkOrderAttachmentImage } from '../../../__mocks__/yardi/workOrderAttachments';
+import {
+  createQueuedAttachment,
+  stashPendingAttachments,
+  takePendingAttachments
+} from '../utils/pendingAttachments';
 import WorkOrderEdit from './index';
 
 const property = { id: 'property-1', name: 'Test Property' } as any;
@@ -73,19 +79,76 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     unmount();
 
     sinon.restore();
-    sinon
-      .stub(yardiApi, 'getWorkOrderAttachmentsRequest')
-      .resolves([
-        {
-          id: 'a.jpg',
-          name: 'a.jpg',
-          extension: 'jpg',
-          contentType: 'image/jpeg'
-        }
-      ]);
+    sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest').resolves([
+      {
+        id: 'a.jpg',
+        name: 'a.jpg',
+        extension: 'jpg',
+        contentType: 'image/jpeg'
+      }
+    ]);
     render(<WorkOrderEdit {...baseProps} workOrder={yardiWorkOrderOne} />);
     expect(screen.queryByTestId('work-order-header-attachments')).toBeNull();
     await screen.findAllByTestId('work-order-attachment');
+    expect(screen.queryByTestId('work-order-header-attachments')).toBeTruthy();
+  });
+
+  it('should stash queued files for the new work order and open it on its attachments', async () => {
+    const push = sinon.stub(Router, 'push');
+    sinon
+      .stub(yardiApi, 'createWorkOrderRequest')
+      .resolves({ ...yardiWorkOrderOne, id: '531790' });
+    render(<WorkOrderEdit {...baseProps} />);
+
+    userEvent.type(screen.getByTestId('work-order-input-unit'), '1724');
+    userEvent.upload(
+      screen.getByTestId('work-order-queue-file'),
+      new File(['a'], 'gate.jpg', { type: 'image/jpeg' })
+    );
+    expect(screen.getAllByTestId('work-order-queue-item')).toHaveLength(1);
+
+    await act(async () => {
+      userEvent.click(screen.getByTestId('work-order-save'));
+    });
+
+    await waitFor(() => expect(push.called).toEqual(true));
+    expect(push.firstCall.args[0]).toEqual(
+      '/properties/property-1/yardi-work-orders/531790?created=1'
+    );
+    const stashed = takePendingAttachments('531790');
+    expect(stashed).toHaveLength(1);
+    expect(stashed[0].file.name).toEqual('gate.jpg');
+  });
+
+  it('should upload files stashed for a just-created work order and open the upload form', async () => {
+    sinon.restore();
+    const list = sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest');
+    list.onFirstCall().resolves([]);
+    list.onSecondCall().resolves([yardiWorkOrderAttachmentImage]);
+    const create = sinon
+      .stub(yardiApi, 'createWorkOrderAttachmentRequest')
+      .resolves(yardiWorkOrderAttachmentImage);
+    stashPendingAttachments(`${yardiWorkOrderOne.id}`, [
+      createQueuedAttachment(
+        new File(['a'], 'gate.jpg', { type: 'image/jpeg' })
+      )
+    ]);
+
+    render(
+      <WorkOrderEdit
+        {...baseProps}
+        workOrder={yardiWorkOrderOne}
+        isJustCreated
+      />
+    );
+    expect(screen.queryByTestId('work-order-attachment-form')).toBeTruthy();
+    await waitFor(() => expect(create.called).toEqual(true));
+    expect(create.firstCall.args.slice(0, 2)).toEqual([
+      'property-1',
+      `${yardiWorkOrderOne.id}`
+    ]);
+    await screen.findAllByTestId('work-order-attachment');
+    expect(screen.queryByTestId('work-order-pending-upload')).toBeNull();
     expect(screen.queryByTestId('work-order-header-attachments')).toBeTruthy();
   });
 

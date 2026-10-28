@@ -50,11 +50,8 @@ describe('Unit | Features | Property Work Orders | hooks | Use Work Order Form',
     expect(generalErrors).toEqual(['yardi rejected it']);
   });
 
-  test('should create a work order, notify, and redirect to it', async () => {
-    const expected =
-      '/properties/test-property/yardi-work-orders/yardi-work-order-1';
+  test('should create a work order and notify', async () => {
     const sendNotification = sinon.spy();
-    const redirect = sinon.stub(Router, 'push');
     const request = sinon
       .stub(yardiApi, 'createWorkOrderRequest')
       .resolves(yardiWorkOrderOne);
@@ -71,7 +68,6 @@ describe('Unit | Features | Property Work Orders | hooks | Use Work Order Form',
     expect(request.firstCall.args).toEqual(['test-property', { unit: '1724' }]);
     expect(created).toEqual(yardiWorkOrderOne);
     expect(sendNotification.firstCall.args[1].type).toEqual('success');
-    expect(redirect.firstCall.args[0]).toEqual(expected);
     expect(result.current.isLoading).toEqual(false);
   });
 

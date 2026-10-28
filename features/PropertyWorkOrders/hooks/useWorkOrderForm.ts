@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import Router from 'next/router';
 import yardiApi from '../../../common/services/api/yardi';
 import workOrderModel, {
   yardiWorkOrderWritable,
@@ -131,9 +130,6 @@ export default function useWorkOrderForm(
       sendNotification(`Work order ${workOrder.id} created`, {
         type: 'success'
       });
-      Router.push(
-        `/properties/${propertyId}/yardi-work-orders/${workOrder.id}`
-      );
       return workOrder;
     } catch (err) {
       handleErrorResponse(err, 'create');
