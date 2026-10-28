@@ -89,7 +89,6 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
         to={filterState.to}
         hasFilters={filterState.hasFilters}
         onStateChange={filterState.onStateChange}
-        nextState={filterState.nextState}
         onUnitChange={filterState.onUnitChange}
         onFromChange={filterState.onFromChange}
         onToChange={filterState.onToChange}

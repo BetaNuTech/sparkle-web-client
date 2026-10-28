@@ -25,13 +25,19 @@ interface yardiWorkOrder {
   tenantCaused?: boolean;
   unit?: string;
   updatedBy?: string;
+  hasAttachments?: boolean; // Yardi's own flag; absent on older API responses
 }
 
 // Attributes a user may write when
 // creating or updating a work order
 export type yardiWorkOrderWritable = Omit<
   yardiWorkOrder,
-  'id' | 'createdAt' | 'updatedAt' | 'updatedBy' | 'requestDate'
+  | 'id'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'updatedBy'
+  | 'requestDate'
+  | 'hasAttachments'
 >;
 
 // Yardi's maximum attribute lengths,

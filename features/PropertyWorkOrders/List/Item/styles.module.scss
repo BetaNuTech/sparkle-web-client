@@ -18,3 +18,27 @@
     min-height: rem-calc(250);
   }
 }
+
+// Paperclip beside the id when the
+// work order has files in Yardi
+.attachments {
+  display: inline-flex;
+  align-self: center;
+  width: 1em;
+  height: 1em;
+  margin-left: 0.4em;
+  vertical-align: middle;
+  color: #929292;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Keeps the id badge and its paperclip
+// on one line in the mobile card
+.idBadge {
+  display: inline-flex;
+  align-items: center;
+}

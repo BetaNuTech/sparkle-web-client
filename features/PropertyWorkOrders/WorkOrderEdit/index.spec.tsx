@@ -30,6 +30,8 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
   beforeEach(() => {
     flag = features.supportPropertyYardiWorkOrderEdit;
     features.supportPropertyYardiWorkOrderEdit = true;
+    // Details mount the attachments list
+    sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest').resolves([]);
   });
   afterEach(() => {
     features.supportPropertyYardiWorkOrderEdit = flag;
@@ -42,6 +44,54 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     expect(screen.queryByTestId('work-order-form')).toBeNull();
     expect(screen.queryByTestId('work-order-edit')).toBeTruthy();
     expect(screen.queryByTestId('work-order-cancel')).toBeTruthy();
+  });
+
+  it('should show attachments on the details and only offer uploads when the feature is on', () => {
+    const { unmount } = render(
+      <WorkOrderEdit {...baseProps} workOrder={yardiWorkOrderOne} />
+    );
+    expect(screen.queryByTestId('work-order-attachments')).toBeTruthy();
+    expect(screen.queryByTestId('work-order-attachment-add')).toBeTruthy();
+    userEvent.click(screen.getByTestId('work-order-edit'));
+    expect(screen.queryByTestId('work-order-attachments')).toBeNull();
+    unmount();
+
+    features.supportPropertyYardiWorkOrderEdit = false;
+    render(<WorkOrderEdit {...baseProps} workOrder={yardiWorkOrderOne} />);
+    expect(screen.queryByTestId('work-order-attachments')).toBeTruthy();
+    expect(screen.queryByTestId('work-order-attachment-add')).toBeNull();
+  });
+
+  it('should flag attachments in the header from yardi or once the list finds some', async () => {
+    const { unmount } = render(
+      <WorkOrderEdit
+        {...baseProps}
+        workOrder={{ ...yardiWorkOrderOne, hasAttachments: true }}
+      />
+    );
+    expect(screen.queryByTestId('work-order-header-attachments')).toBeTruthy();
+    unmount();
+
+    sinon.restore();
+    sinon
+      .stub(yardiApi, 'getWorkOrderAttachmentsRequest')
+      .resolves([
+        {
+          id: 'a.jpg',
+          name: 'a.jpg',
+          extension: 'jpg',
+          contentType: 'image/jpeg'
+        }
+      ]);
+    render(<WorkOrderEdit {...baseProps} workOrder={yardiWorkOrderOne} />);
+    expect(screen.queryByTestId('work-order-header-attachments')).toBeNull();
+    await screen.findAllByTestId('work-order-attachment');
+    expect(screen.queryByTestId('work-order-header-attachments')).toBeTruthy();
+  });
+
+  it('should not show attachments while creating', () => {
+    render(<WorkOrderEdit {...baseProps} />);
+    expect(screen.queryByTestId('work-order-attachments')).toBeNull();
   });
 
   it('should hide write actions when the feature is dark', () => {

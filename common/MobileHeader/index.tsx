@@ -1,11 +1,11 @@
 import clsx from 'clsx';
-import { FunctionComponent } from 'react';
+import { FunctionComponent, ReactNode } from 'react';
 import HamburgerIcon from '../../public/icons/ios/hamburger.svg';
 import WarningIcon from '../../public/icons/sparkle/warning.svg';
 import styles from './styles.module.scss';
 
 interface Props {
-  title?: string;
+  title?: string | ReactNode;
   testid?: string;
   toggleNavOpen?(): void;
   isStaging?: boolean;

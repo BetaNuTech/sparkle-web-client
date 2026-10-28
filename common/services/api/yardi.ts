@@ -5,6 +5,9 @@ import yardiWorkOrder, {
 import yardiCustomValues from '../../models/yardi/customValues';
 import yardiResident from '../../models/yardi/resident';
 import yardiOccupant from '../../models/yardi/occupant';
+import yardiWorkOrderAttachment, {
+  yardiWorkOrderAttachmentUpload
+} from '../../models/yardi/workOrderAttachment';
 import normalizeJsonApiDoc from '../../utils/api/normalizeJsonApiDoc';
 import createApiError from '../../utils/api/createError';
 
@@ -118,6 +121,50 @@ const getResidentsRequest = (
     headers: jsonHeaders(authToken)
   });
 
+// GET a work order's attachments (no file data)
+const getWorkOrderAttachmentsRequest = (
+  authToken: string,
+  propertyId: string,
+  workOrderId: string
+): Promise<Response> =>
+  fetch(yardiUrl(propertyId, `work-orders/${workOrderId}/attachments`), {
+    method: 'GET',
+    headers: jsonHeaders(authToken)
+  });
+
+// GET one attachment with its base64 file data
+const getWorkOrderAttachmentRequest = (
+  authToken: string,
+  propertyId: string,
+  workOrderId: string,
+  attachmentName: string
+): Promise<Response> =>
+  fetch(
+    yardiUrl(
+      propertyId,
+      `work-orders/${workOrderId}/attachments/${encodeURIComponent(
+        attachmentName
+      )}`
+    ),
+    {
+      method: 'GET',
+      headers: jsonHeaders(authToken)
+    }
+  );
+
+// POST a base64 file to a work order
+const createWorkOrderAttachmentRequest = (
+  authToken: string,
+  propertyId: string,
+  workOrderId: string,
+  upload: yardiWorkOrderAttachmentUpload
+): Promise<Response> =>
+  fetch(yardiUrl(propertyId, `work-orders/${workOrderId}/attachments`), {
+    method: 'POST',
+    headers: jsonHeaders(authToken),
+    body: JSON.stringify(upload)
+  });
+
 const createGetWorkOrdersApiError = createApiError(
   `${PREFIX} getWorkOrdersRequest:`,
   YARDI_ERROR_MESSAGES
@@ -145,6 +192,21 @@ const createGetCustomValuesApiError = createApiError(
 
 const createGetResidentsApiError = createApiError(
   `${PREFIX} getResidentsRequest:`,
+  YARDI_ERROR_MESSAGES
+);
+
+const createGetWorkOrderAttachmentsApiError = createApiError(
+  `${PREFIX} getWorkOrderAttachmentsRequest:`,
+  YARDI_ERROR_MESSAGES
+);
+
+const createGetWorkOrderAttachmentApiError = createApiError(
+  `${PREFIX} getWorkOrderAttachmentRequest:`,
+  YARDI_ERROR_MESSAGES
+);
+
+const createCreateWorkOrderAttachmentApiError = createApiError(
+  `${PREFIX} createWorkOrderAttachmentRequest:`,
   YARDI_ERROR_MESSAGES
 );
 
@@ -194,6 +256,9 @@ async function sendRequest(
 // resource into a work order model
 const toWorkOrder = (doc: any): yardiWorkOrder =>
   normalizeJsonApiDoc(doc) as yardiWorkOrder;
+
+const toAttachment = (doc: any): yardiWorkOrderAttachment =>
+  normalizeJsonApiDoc(doc) as yardiWorkOrderAttachment;
 
 export default {
   // Request a property's work orders,
@@ -310,6 +375,84 @@ export default {
       reasons: attributes.reasons || [],
       resolutions: attributes.resolutions || []
     };
+  },
+
+  // Request a work order's attachments
+  // without their file content
+  async getWorkOrderAttachmentsRequest(
+    propertyId: string,
+    workOrderId: string
+  ): Promise<yardiWorkOrderAttachment[]> {
+    const responseJson = await sendRequest(
+      'getWorkOrderAttachmentsRequest',
+      (authToken) =>
+        getWorkOrderAttachmentsRequest(authToken, propertyId, workOrderId),
+      createGetWorkOrderAttachmentsApiError
+    );
+
+    if (!Array.isArray(responseJson.data)) {
+      throw Error(
+        `${PREFIX} getWorkOrderAttachmentsRequest: unexpected success response schema`
+      );
+    }
+
+    return responseJson.data.map(toAttachment);
+  },
+
+  // Request one attachment including
+  // its base64 file content
+  async getWorkOrderAttachmentRequest(
+    propertyId: string,
+    workOrderId: string,
+    attachmentName: string
+  ): Promise<yardiWorkOrderAttachment> {
+    const responseJson = await sendRequest(
+      'getWorkOrderAttachmentRequest',
+      (authToken) =>
+        getWorkOrderAttachmentRequest(
+          authToken,
+          propertyId,
+          workOrderId,
+          attachmentName
+        ),
+      createGetWorkOrderAttachmentApiError
+    );
+
+    if (!responseJson.data || !responseJson.data.id) {
+      throw Error(
+        `${PREFIX} getWorkOrderAttachmentRequest: unexpected success response schema`
+      );
+    }
+
+    return toAttachment(responseJson.data);
+  },
+
+  // Upload a file to a work order, resolving
+  // the record Yardi stored (without its data)
+  async createWorkOrderAttachmentRequest(
+    propertyId: string,
+    workOrderId: string,
+    upload: yardiWorkOrderAttachmentUpload
+  ): Promise<yardiWorkOrderAttachment> {
+    const responseJson = await sendRequest(
+      'createWorkOrderAttachmentRequest',
+      (authToken) =>
+        createWorkOrderAttachmentRequest(
+          authToken,
+          propertyId,
+          workOrderId,
+          upload
+        ),
+      createCreateWorkOrderAttachmentApiError
+    );
+
+    if (!responseJson.data || !responseJson.data.id) {
+      throw Error(
+        `${PREFIX} createWorkOrderAttachmentRequest: unexpected success response schema`
+      );
+    }
+
+    return toAttachment(responseJson.data);
   },
 
   // Request all a property's

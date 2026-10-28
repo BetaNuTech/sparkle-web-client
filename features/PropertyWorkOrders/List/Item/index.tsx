@@ -8,6 +8,7 @@ import Badge from '../../../../common/Yardi/Badge';
 import styles from './styles.module.scss';
 import useVisibility from '../../../../common/hooks/useVisibility';
 import Pill from '../../../../common/Yardi/Pill';
+import PaperclipIcon from '../../../../public/icons/sparkle/paperclip.svg';
 
 interface Props {
   workOrder: WorkOrderModel;
@@ -39,6 +40,10 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
     .filter(Boolean)
     .join(' / ');
 
+  // Read defensively: older API
+  // responses carry no flag at all
+  const hasAttachments = Boolean(workOrder.hasAttachments);
+
   const placeholderRef = useRef();
   const { isVisible } = useVisibility(placeholderRef, {}, forceVisible);
 
@@ -55,13 +60,24 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
           <div className={styles.container__left}>
             {isMobile ? (
               <div className="-mb-sm -flex-spread-content">
-                {workOrder.id && (
-                  <Badge
-                    type="secondary"
-                    text={`${workOrder.id} ${workOrder.requestDate || ''}`}
-                    data-testid="order-id-and-requestDate"
-                  />
-                )}
+                <span className={styles.idBadge}>
+                  {workOrder.id && (
+                    <Badge
+                      type="secondary"
+                      text={`${workOrder.id} ${workOrder.requestDate || ''}`}
+                      data-testid="order-id-and-requestDate"
+                    />
+                  )}
+                  {hasAttachments && (
+                    <span
+                      className={styles.attachments}
+                      title="Has attachments"
+                      data-testid="work-order-has-attachments"
+                    >
+                      <PaperclipIcon />
+                    </span>
+                  )}
+                </span>
 
                 {workOrder.status && (
                   <Badge
@@ -74,11 +90,22 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
             ) : (
               <>
                 {workOrder.id && (
-                  <Info
-                    label="ID"
-                    value={`${workOrder.id} ${workOrder.requestDate || ''}`}
-                    data-testid="order-id-and-requestDate"
-                  />
+                  <div className="-d-flex">
+                    <Info
+                      label="ID"
+                      value={`${workOrder.id} ${workOrder.requestDate || ''}`}
+                      data-testid="order-id-and-requestDate"
+                    />
+                    {hasAttachments && (
+                      <span
+                        className={styles.attachments}
+                        title="Has attachments"
+                        data-testid="work-order-has-attachments"
+                      >
+                        <PaperclipIcon />
+                      </span>
+                    )}
+                  </div>
                 )}
 
                 {workOrder.status && (
