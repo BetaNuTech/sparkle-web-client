@@ -34,7 +34,8 @@ export default function useAttachmentQueueUpload(
   propertyId: string,
   workOrderId: string,
   initialItems: QueuedAttachment[],
-  onUploaded: (attachment: yardiWorkOrderAttachment) => void
+  onUploaded: (attachment: yardiWorkOrderAttachment, id: string) => void,
+  onRemoved: (id: string) => void = () => null
 ): useAttachmentQueueUploadResult {
   const [items, setItems] = useState<QueueUploadItem[]>(() =>
     (initialItems || []).map((item) => ({
@@ -67,7 +68,7 @@ export default function useAttachmentQueueUpload(
         prepared.payload
       );
       setItems((prev) => prev.filter((queued) => queued.id !== item.id));
-      onUploaded(attachment);
+      onUploaded(attachment, item.id);
     } catch (apiError) {
       let message = uploadFailureMessage(apiError);
       if (apiError instanceof ErrorBadRequest) {
@@ -119,8 +120,10 @@ export default function useAttachmentQueueUpload(
 
   const retry = (id: string) => setItem(id, { status: 'queued', error: '' });
 
-  const remove = (id: string) =>
+  const remove = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
+    onRemoved(id);
+  };
 
   return {
     items,

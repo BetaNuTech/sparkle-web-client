@@ -34,12 +34,14 @@ interface Props {
   sendNotification: userNotifications;
   onLoaded?(count: number): void;
   pendingUploads?: QueuedAttachment[]; // picked while creating
+  onPendingSettled?(id: string): void; // uploaded or removed
   startOpen?: boolean; // show the upload form at once
 }
 
 // File types offered by the picker; Yardi
 // has the final say and rejects inline
-export const ACCEPTED_FILE_TYPES = 'image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt';
+// (Yardi refuses plain .txt files)
+export const ACCEPTED_FILE_TYPES = 'image/*,.pdf,.doc,.docx,.xls,.xlsx';
 
 interface Preview {
   attachment: yardiWorkOrderAttachment;
@@ -149,6 +151,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
   sendNotification,
   onLoaded,
   pendingUploads,
+  onPendingSettled,
   startOpen
 }) => {
   const {
@@ -170,7 +173,13 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
     propertyId,
     workOrderId,
     pendingUploads || [],
-    () => refetch()
+    (attachment, id) => {
+      refetch();
+      if (onPendingSettled) onPendingSettled(id);
+    },
+    (id) => {
+      if (onPendingSettled) onPendingSettled(id);
+    }
   );
 
   const [isAdding, setIsAdding] = useState(Boolean(startOpen));
@@ -579,6 +588,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
 WorkOrderAttachments.defaultProps = {
   onLoaded: () => null,
   pendingUploads: [],
+  onPendingSettled: () => null,
   startOpen: false
 };
 

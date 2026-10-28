@@ -87,7 +87,9 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
   const [attachmentQueue, setAttachmentQueue] = useState<QueuedAttachment[]>(
     []
   );
-  const [pendingUploads] = useState<QueuedAttachment[]>(() =>
+  // Dropped one by one as they upload, so a
+  // remount of the section never resends them
+  const [pendingUploads, setPendingUploads] = useState<QueuedAttachment[]>(() =>
     workOrder ? takePendingAttachments(`${workOrder.id}`) : []
   );
 
@@ -315,6 +317,11 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
               canUpload={canWrite}
               sendNotification={sendNotification}
               pendingUploads={pendingUploads}
+              onPendingSettled={(id) =>
+                setPendingUploads((prev) =>
+                  prev.filter((item) => item.id !== id)
+                )
+              }
               startOpen={Boolean(isJustCreated) && canWrite}
               onLoaded={(count) => {
                 if (count > 0) setHasAttachments(true);

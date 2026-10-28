@@ -150,6 +150,15 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     await screen.findAllByTestId('work-order-attachment');
     expect(screen.queryByTestId('work-order-pending-upload')).toBeNull();
     expect(screen.queryByTestId('work-order-header-attachments')).toBeTruthy();
+
+    // Editing hides the section; coming back
+    // must not upload the same file again
+    list.onThirdCall().resolves([yardiWorkOrderAttachmentImage]);
+    userEvent.click(screen.getByTestId('work-order-edit'));
+    expect(screen.queryByTestId('work-order-attachments')).toBeNull();
+    userEvent.click(screen.getByTestId('work-order-discard'));
+    await screen.findAllByTestId('work-order-attachment');
+    expect(create.callCount).toEqual(1);
   });
 
   it('should not show attachments while creating', () => {
