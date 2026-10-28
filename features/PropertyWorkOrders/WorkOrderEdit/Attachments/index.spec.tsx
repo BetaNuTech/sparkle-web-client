@@ -273,4 +273,27 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Attachments
     await screen.findAllByTestId('work-order-attachment');
     expect(onLoaded.lastCall.args).toEqual([2]);
   });
+
+  it('should offer real buttons for the camera and the file chooser and allow removing the pick', async () => {
+    sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest').resolves([]);
+    render(<Attachments {...baseProps} />);
+    await screen.findByTestId('work-order-attachments-empty');
+    userEvent.click(screen.getByTestId('work-order-attachment-add'));
+
+    const fileInput = screen.getByTestId(
+      'work-order-attachment-file'
+    ) as HTMLInputElement;
+    const click = sinon.stub(fileInput, 'click');
+    userEvent.click(screen.getByTestId('work-order-attachment-choose'));
+    expect(click.called).toEqual(true);
+
+    userEvent.upload(fileInput, new File(['x'], 'lease.pdf'));
+    expect(screen.queryByTestId('work-order-attachment-picked')).toBeTruthy();
+    userEvent.click(screen.getByTestId('work-order-attachment-remove'));
+    expect(screen.queryByTestId('work-order-attachment-picked')).toBeNull();
+    expect(
+      (screen.getByTestId('work-order-attachment-upload') as HTMLButtonElement)
+        .disabled
+    ).toEqual(true);
+  });
 });

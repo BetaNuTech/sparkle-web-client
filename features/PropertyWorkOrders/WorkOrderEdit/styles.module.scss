@@ -239,6 +239,7 @@
 
   &__name {
     font-weight: 600;
+    color: $gray-dark;
     word-break: break-word;
   }
 
@@ -264,10 +265,71 @@
     color: $alert-color;
   }
 
+  // Touch-sized buttons: 44px on phones,
+  // the header button height on desktop
+  &__button {
+    @extend %gridHeaderCancelButton;
+    margin: 0;
+    min-height: rem-calc(44);
+    padding: 0 $global-padding;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &--primary {
+      @extend %gridHeaderCreateButton;
+      margin: 0;
+      min-height: rem-calc(44);
+      padding: 0 $global-padding;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    &:disabled,
+    &--primary:disabled {
+      opacity: $button-opacity-disabled;
+      cursor: default;
+    }
+
+    @include media-query(desktop) {
+      min-height: rem-calc(36);
+
+      &--primary {
+        min-height: rem-calc(36);
+      }
+    }
+  }
+
+  &__pickers,
   &__actions {
     display: flex;
-    justify-content: flex-end;
-    gap: $global-padding;
+    gap: $global-sm-padding;
+
+    > * {
+      flex: 1 1 0;
+    }
+
+    @include media-query(desktop) {
+      justify-content: flex-end;
+
+      > * {
+        flex: 0 0 auto;
+      }
+    }
+  }
+
+  &__pickers {
+    margin-top: rem-calc(4);
+  }
+
+  &__picked {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $global-sm-padding;
+    margin-top: $global-sm-padding;
+    color: $gray-dark;
+    font-size: $medium-small-font-size;
+    word-break: break-all;
   }
 
   &__hiddenInput {

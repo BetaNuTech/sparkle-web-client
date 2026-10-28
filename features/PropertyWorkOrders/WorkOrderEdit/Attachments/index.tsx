@@ -230,7 +230,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
         {canUpload && !isAdding && (
           <button
             type="button"
-            className={styles.field__link}
+            className={styles.attachments__button}
             onClick={() => setIsAdding(true)}
             data-testid="work-order-attachment-add"
           >
@@ -251,25 +251,23 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
               uploadErrors.file && styles['field--invalid']
             )}
           >
-            <label
-              className={styles.field__label}
-              htmlFor="work-order-attachment-file"
-            >
+            <span className={styles.field__label}>
               File <span className={styles.field__required}>*</span>
-            </label>
+            </span>
+            {/* Both inputs stay hidden; the buttons
+                below are the touch targets. Phones
+                open the camera for the capture input */}
             <input
               id="work-order-attachment-file"
               ref={fileInput}
               type="file"
               accept={ACCEPTED_FILE_TYPES}
-              className={styles.field__input}
+              className={styles.attachments__hiddenInput}
               disabled={isUploading}
               onChange={onFileChange}
+              tabIndex={-1}
               data-testid="work-order-attachment-file"
             />
-            {/* Phones open the camera straight away
-                for this input, so photos can be taken
-                on the spot without the file chooser */}
             <input
               ref={cameraInput}
               type="file"
@@ -282,22 +280,46 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
               aria-hidden="true"
               data-testid="work-order-attachment-camera"
             />
-            <button
-              type="button"
-              className={styles.field__link}
-              disabled={isUploading}
-              onClick={() => cameraInput.current && cameraInput.current.click()}
-              data-testid="work-order-attachment-take-photo"
-            >
-              Take photo
-            </button>
+            <div className={styles.attachments__pickers}>
+              <button
+                type="button"
+                className={styles['attachments__button--primary']}
+                disabled={isUploading}
+                onClick={() =>
+                  cameraInput.current && cameraInput.current.click()
+                }
+                data-testid="work-order-attachment-take-photo"
+              >
+                Take photo
+              </button>
+              <button
+                type="button"
+                className={styles.attachments__button}
+                disabled={isUploading}
+                onClick={() => fileInput.current && fileInput.current.click()}
+                data-testid="work-order-attachment-choose"
+              >
+                Choose file
+              </button>
+            </div>
             {file && !uploadErrors.file && (
-              <span
-                className={styles.field__hint}
+              <div
+                className={styles.attachments__picked}
                 data-testid="work-order-attachment-picked"
               >
-                {file.name} · {formatFileSize(file.size)}
-              </span>
+                <span>
+                  {file.name} · {formatFileSize(file.size)}
+                </span>
+                <button
+                  type="button"
+                  className={styles.field__link}
+                  disabled={isUploading}
+                  onClick={resetForm}
+                  data-testid="work-order-attachment-remove"
+                >
+                  Remove
+                </button>
+              </div>
             )}
             {!file && !uploadErrors.file && (
               <span className={styles.field__hint}>
@@ -361,7 +383,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
           <div className={styles.attachments__actions}>
             <button
               type="button"
-              className={styles['action--secondary']}
+              className={styles.attachments__button}
               disabled={isUploading}
               onClick={onCancelAdd}
               data-testid="work-order-attachment-cancel"
@@ -370,7 +392,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
             </button>
             <button
               type="submit"
-              className={styles.action}
+              className={styles['attachments__button--primary']}
               disabled={isUploading || !file}
               data-testid="work-order-attachment-upload"
             >
@@ -446,7 +468,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
                 </div>
                 <button
                   type="button"
-                  className={styles['action--secondary']}
+                  className={styles.attachments__button}
                   disabled={Boolean(openingName)}
                   onClick={() => onOpen(attachment)}
                   data-testid="work-order-attachment-open"
