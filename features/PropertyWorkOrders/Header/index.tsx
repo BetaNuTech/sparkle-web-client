@@ -41,7 +41,6 @@ interface Props {
   to: string;
   hasFilters: boolean;
   onStateChange(evt: ChangeEvent<HTMLSelectElement>): void;
-  nextState(): void;
   onUnitChange(evt: ChangeEvent<HTMLInputElement>): void;
   onFromChange(evt: ChangeEvent<HTMLInputElement>): void;
   onToChange(evt: ChangeEvent<HTMLInputElement>): void;
@@ -69,7 +68,6 @@ const Header: FunctionComponent<Props> = ({
   to,
   hasFilters,
   onStateChange,
-  nextState,
   onUnitChange,
   onFromChange,
   onToChange,
@@ -92,14 +90,10 @@ const Header: FunctionComponent<Props> = ({
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
+    // The open/closed switch lives in the
+    // filter bar below; a third header button
+    // overflows the narrow right column
     <>
-      <button
-        className={headStyle.header__button}
-        onClick={() => nextState()}
-        data-testid="work-order-state-toggle"
-      >
-        {state === 'open' ? 'Open' : 'Closed'}
-      </button>
       <button
         className={headStyle.header__button}
         onClick={() => nextResidentsSort()}
