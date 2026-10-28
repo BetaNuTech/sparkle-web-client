@@ -344,4 +344,15 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
       screen.getByTestId('work-order-field-unit').textContent
     ).not.toContain('No current resident holds this unit');
   });
+
+  it('should offer the attachment queue only when creating with uploads enabled', () => {
+    const { rerender } = render(<Form {...baseProps} canQueueAttachments />);
+    expect(screen.queryByTestId('work-order-attachment-queue')).toBeTruthy();
+
+    rerender(<Form {...baseProps} canQueueAttachments isCreating={false} />);
+    expect(screen.queryByTestId('work-order-attachment-queue')).toBeNull();
+
+    rerender(<Form {...baseProps} />);
+    expect(screen.queryByTestId('work-order-attachment-queue')).toBeNull();
+  });
 });

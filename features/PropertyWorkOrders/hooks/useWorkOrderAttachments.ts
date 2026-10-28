@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import yardiApi from '../../../common/services/api/yardi';
-import yardiWorkOrderAttachment, {
-  WORK_ORDER_ATTACHMENT_DESCRIPTION_MAX_LENGTH
-} from '../../../common/models/yardi/workOrderAttachment';
+import yardiWorkOrderAttachment from '../../../common/models/yardi/workOrderAttachment';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorNotFound from '../../../common/models/errors/notFound';
@@ -11,15 +9,8 @@ import ErrorBadGateway from '../../../common/models/errors/badGateway';
 import ErrorProxyForbidden from '../../../common/models/errors/proxyForbidden';
 import ErrorItem from '../../../common/models/errors/item';
 import { toFieldName } from './useWorkOrderForm';
-import {
-  AttachmentUploadErrors,
-  downscaleImage,
-  errorMessages,
-  fileExtension,
-  isImageFile,
-  readFileAsBase64,
-  validateAttachmentUpload
-} from '../utils/attachments';
+import { AttachmentUploadErrors } from '../utils/attachments';
+import { prepareAttachmentUpload } from '../utils/uploadAttachment';
 
 const PREFIX = 'features: PropertyWorkOrders: hooks: useWorkOrderAttachments:';
 
@@ -191,54 +182,17 @@ export default function useWorkOrderAttachments(
     file: File | null,
     description: string
   ): Promise<yardiWorkOrderAttachment | null> => {
-    const trimmedDescription = `${description || ''}`.trim();
     setApiUploadErrors([]);
     setClientUploadErrors({});
     setIsUploading(true);
 
-    // Phone photos routinely exceed the
-    // API's limit, so shrink them first
-    let prepared = file;
-    if (file && isImageFile(file)) {
-      try {
-        prepared = await downscaleImage(file);
-      } catch (resizeErr) {
-        prepared = file;
-      }
-    }
-
-    const validationErrors = validateAttachmentUpload(
-      prepared,
-      trimmedDescription
-    );
-    if (Object.keys(validationErrors).length) {
-      setClientUploadErrors(validationErrors);
+    const prepared = await prepareAttachmentUpload(file, description);
+    if (prepared.errors) {
+      setClientUploadErrors(prepared.errors);
       setIsUploading(false);
       return null;
     }
-
-    let data64 = '';
-    try {
-      data64 = await readFileAsBase64(prepared);
-    } catch (readErr) {
-      setClientUploadErrors({ file: errorMessages.fileUnreadable });
-      setIsUploading(false);
-      return null;
-    }
-
-    // Yardi names the stored file itself and
-    // fills a blank description with boilerplate,
-    // so the original file name is the caption
-    // when the user gives none
-    const caption = (trimmedDescription || file.name).slice(
-      0,
-      WORK_ORDER_ATTACHMENT_DESCRIPTION_MAX_LENGTH
-    );
-    const payload = {
-      data: data64,
-      extension: fileExtension(prepared.name),
-      description: caption
-    };
+    const { payload } = prepared;
 
     try {
       const attachment = await yardiApi.createWorkOrderAttachmentRequest(

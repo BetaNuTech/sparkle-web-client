@@ -14,6 +14,8 @@ import yardiWorkOrderAttachment, {
   WORK_ORDER_ATTACHMENT_DESCRIPTION_MAX_LENGTH
 } from '../../../../common/models/yardi/workOrderAttachment';
 import useWorkOrderAttachments from '../../hooks/useWorkOrderAttachments';
+import useAttachmentQueueUpload from '../../hooks/useAttachmentQueueUpload';
+import { QueuedAttachment } from '../../utils/pendingAttachments';
 import {
   formatAttachmentDate,
   formatFileSize,
@@ -31,11 +33,15 @@ interface Props {
   canUpload: boolean;
   sendNotification: userNotifications;
   onLoaded?(count: number): void;
+  pendingUploads?: QueuedAttachment[]; // picked while creating
+  onPendingSettled?(id: string): void; // uploaded or removed
+  startOpen?: boolean; // show the upload form at once
 }
 
 // File types offered by the picker; Yardi
 // has the final say and rejects inline
-export const ACCEPTED_FILE_TYPES = 'image/*,.pdf,.doc,.docx,.xls,.xlsx,.txt';
+// (Yardi refuses plain .txt files)
+export const ACCEPTED_FILE_TYPES = 'image/*,.pdf,.doc,.docx,.xls,.xlsx';
 
 interface Preview {
   attachment: yardiWorkOrderAttachment;
@@ -143,12 +149,16 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
   workOrderId,
   canUpload,
   sendNotification,
-  onLoaded
+  onLoaded,
+  pendingUploads,
+  onPendingSettled,
+  startOpen
 }) => {
   const {
     status,
     data,
     error,
+    refetch,
     loadAttachment,
     upload,
     isUploading,
@@ -157,7 +167,36 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
     clearUploadErrors
   } = useWorkOrderAttachments(sendNotification, propertyId, workOrderId);
 
-  const [isAdding, setIsAdding] = useState(false);
+  // Files queued while creating upload one
+  // by one; each success refreshes the list
+  const queue = useAttachmentQueueUpload(
+    propertyId,
+    workOrderId,
+    pendingUploads || [],
+    (attachment, id) => {
+      refetch();
+      if (onPendingSettled) onPendingSettled(id);
+    },
+    (id) => {
+      if (onPendingSettled) onPendingSettled(id);
+    }
+  );
+
+  const [isAdding, setIsAdding] = useState(Boolean(startOpen));
+  const section = useRef<HTMLElement>(null);
+
+  // Straight from creating: bring the
+  // section into view so the way to add
+  // photos is the first thing seen
+  useEffect(() => {
+    if (
+      startOpen &&
+      section.current &&
+      typeof section.current.scrollIntoView === 'function'
+    ) {
+      section.current.scrollIntoView({ block: 'start' });
+    }
+  }, [startOpen]);
   const [file, setFile] = useState<File | null>(null);
   const [description, setDescription] = useState('');
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -222,6 +261,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
 
   return (
     <section
+      ref={section}
       className={styles.attachments}
       data-testid="work-order-attachments"
     >
@@ -402,6 +442,60 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
         </form>
       )}
 
+      {queue.items.length > 0 && (
+        <ul
+          className={styles.attachments__queue}
+          data-testid="work-order-pending-uploads"
+        >
+          {queue.items.map((item) => (
+            <li
+              key={item.id}
+              className={clsx(
+                styles.attachments__queueItem,
+                item.status === 'failed' &&
+                  styles['attachments__queueItem--failed']
+              )}
+              data-testid="work-order-pending-upload"
+              data-status={item.status}
+            >
+              <div className={styles.attachments__queueFile}>
+                <span className={styles.attachments__name}>
+                  {item.description || item.file.name}
+                </span>
+                <span
+                  className={styles.attachments__meta}
+                  data-testid="work-order-pending-upload-status"
+                >
+                  {item.status === 'failed' && `Failed: ${item.error}`}
+                  {item.status === 'uploading' && 'Uploading…'}
+                  {item.status === 'queued' && 'Waiting to upload…'}
+                </span>
+              </div>
+              {item.status === 'failed' && (
+                <div className={styles.attachments__queueActions}>
+                  <button
+                    type="button"
+                    className={styles['attachments__button--primary']}
+                    onClick={() => queue.retry(item.id)}
+                    data-testid="work-order-pending-upload-retry"
+                  >
+                    Retry
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.attachments__button}
+                    onClick={() => queue.remove(item.id)}
+                    data-testid="work-order-pending-upload-remove"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+
       {status === 'loading' && (
         <p
           className={styles.attachments__status}
@@ -492,7 +586,10 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
 };
 
 WorkOrderAttachments.defaultProps = {
-  onLoaded: () => null
+  onLoaded: () => null,
+  pendingUploads: [],
+  onPendingSettled: () => null,
+  startOpen: false
 };
 
 export default WorkOrderAttachments;

@@ -321,6 +321,45 @@
     margin-top: rem-calc(4);
   }
 
+  // Files waiting to upload, on the create
+  // form and on the new work order's page
+  &__queue {
+    list-style: none;
+    margin: $global-padding 0 0;
+    padding: 0;
+  }
+
+  &__queueItem {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $global-sm-padding $global-padding;
+    padding: $global-sm-padding 0;
+    border-top: 1px solid $gray-lighter;
+
+    > input {
+      flex: 1 1 rem-calc(200);
+      margin: 0;
+    }
+
+    &--failed {
+      border-left: 3px solid $alert-color;
+      padding-left: $global-sm-padding;
+    }
+  }
+
+  &__queueFile {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 rem-calc(160);
+    min-width: 0;
+  }
+
+  &__queueActions {
+    display: flex;
+    gap: $global-sm-padding;
+  }
+
   &__picked {
     display: flex;
     align-items: center;

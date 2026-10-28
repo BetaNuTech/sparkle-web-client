@@ -1,4 +1,5 @@
 import { ChangeEvent, FunctionComponent, useEffect, useState } from 'react';
+import Router from 'next/router';
 import { useMediaQuery } from 'react-responsive';
 import propertyModel from '../../../common/models/property';
 import workOrderModel, {
@@ -13,6 +14,12 @@ import useWorkOrderForm from '../hooks/useWorkOrderForm';
 import validateWorkOrder, { WorkOrderFieldErrors } from '../utils/validate';
 import { getReasons, getSubCategories } from '../utils/customValues';
 import { UnitOption } from '../utils/unitOptions';
+import {
+  createQueuedAttachment,
+  QueuedAttachment,
+  stashPendingAttachments,
+  takePendingAttachments
+} from '../utils/pendingAttachments';
 import Header from './Header';
 import Form from './Form';
 import Details from './Details';
@@ -41,6 +48,7 @@ interface Props {
   onWorkOrderUpdated?(workOrder: workOrderModel): void;
   unitOptions?: UnitOption[]; // creating only
   unitOptionsStatus?: string;
+  isJustCreated?: boolean; // arrived here straight from creating
 }
 
 // Work order detail, edit & create
@@ -54,7 +62,8 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
   sendNotification,
   onWorkOrderUpdated,
   unitOptions,
-  unitOptionsStatus
+  unitOptionsStatus,
+  isJustCreated
 }) => {
   const isCreating = !workOrder;
   const isMobile = useMediaQuery({ maxWidth: breakpoints.tablet.maxWidth });
@@ -72,6 +81,16 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
   // list found once it loaded
   const [hasAttachments, setHasAttachments] = useState(
     Boolean(workOrder?.hasAttachments)
+  );
+  // Files picked while creating; they upload
+  // from the new work order's page
+  const [attachmentQueue, setAttachmentQueue] = useState<QueuedAttachment[]>(
+    []
+  );
+  // Dropped one by one as they upload, so a
+  // remount of the section never resends them
+  const [pendingUploads, setPendingUploads] = useState<QueuedAttachment[]>(() =>
+    workOrder ? takePendingAttachments(`${workOrder.id}`) : []
   );
 
   const {
@@ -152,6 +171,20 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
     if (serverErrors.unit || serverErrors.resident) clearErrors();
   };
 
+  const onQueueAdd = (files: File[]) =>
+    setAttachmentQueue((prev) => [
+      ...prev,
+      ...files.map((file) => createQueuedAttachment(file))
+    ]);
+
+  const onQueueRemove = (id: string) =>
+    setAttachmentQueue((prev) => prev.filter((item) => item.id !== id));
+
+  const onQueueDescriptionChange = (id: string, description: string) =>
+    setAttachmentQueue((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, description } : item))
+    );
+
   const onEdit = () => {
     setIsEditing(true);
   };
@@ -189,7 +222,14 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
     if (Object.keys(validationErrors).length) return;
 
     if (isCreating) {
-      await createWorkOrder(updates);
+      const created = await createWorkOrder(updates);
+      if (!created) return;
+      // The new work order's page uploads the
+      // queued files and opens on its attachments
+      stashPendingAttachments(`${created.id}`, attachmentQueue);
+      Router.push(
+        `/properties/${property.id}/yardi-work-orders/${created.id}?created=1`
+      );
       return;
     }
 
@@ -262,6 +302,11 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
             unitOptions={unitOptions}
             unitOptionsStatus={unitOptionsStatus}
             onUnitPick={onUnitPick}
+            attachmentQueue={attachmentQueue}
+            canQueueAttachments={canWrite}
+            onQueueAdd={onQueueAdd}
+            onQueueRemove={onQueueRemove}
+            onQueueDescriptionChange={onQueueDescriptionChange}
           />
         ) : (
           <>
@@ -271,6 +316,13 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
               workOrderId={`${workOrder.id}`}
               canUpload={canWrite}
               sendNotification={sendNotification}
+              pendingUploads={pendingUploads}
+              onPendingSettled={(id) =>
+                setPendingUploads((prev) =>
+                  prev.filter((item) => item.id !== id)
+                )
+              }
+              startOpen={Boolean(isJustCreated) && canWrite}
               onLoaded={(count) => {
                 if (count > 0) setHasAttachments(true);
               }}
@@ -326,7 +378,8 @@ WorkOrderEdit.defaultProps = {
   workOrder: null,
   onWorkOrderUpdated: () => null,
   unitOptions: [],
-  unitOptionsStatus: 'success'
+  unitOptionsStatus: 'success',
+  isJustCreated: false
 };
 
 export default WorkOrderEdit;

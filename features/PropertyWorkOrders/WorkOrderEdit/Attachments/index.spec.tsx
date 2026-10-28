@@ -10,6 +10,7 @@ import sinon from 'sinon';
 import yardiApi from '../../../../common/services/api/yardi';
 import ErrorBadRequest from '../../../../common/models/errors/badRequest';
 import errorReports from '../../../../common/services/api/errorReports';
+import { createQueuedAttachment } from '../../utils/pendingAttachments';
 import attachments, {
   yardiWorkOrderAttachmentImage,
   yardiWorkOrderAttachmentPdf,
@@ -295,5 +296,36 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Attachments
       (screen.getByTestId('work-order-attachment-upload') as HTMLButtonElement)
         .disabled
     ).toEqual(true);
+  });
+
+  it('should show a failed pending upload with its reason and a retry', async () => {
+    sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest').resolves([]);
+    const err = new ErrorBadRequest('fix request errors');
+    err.addErrors([
+      {
+        source: { pointer: '/attachment' },
+        title: 'Bad',
+        detail: 'Invalid File Extension: exe'
+      }
+    ]);
+    const create = sinon.stub(yardiApi, 'createWorkOrderAttachmentRequest');
+    create.onFirstCall().rejects(err);
+    create.onSecondCall().resolves(yardiWorkOrderAttachmentImage);
+    render(
+      <Attachments
+        {...baseProps}
+        pendingUploads={[createQueuedAttachment(new File(['x'], 'tool.exe'))]}
+      />
+    );
+
+    const status = await screen.findByText(/Failed: Invalid File Extension/);
+    expect(status).toBeTruthy();
+    await act(async () => {
+      userEvent.click(screen.getByTestId('work-order-pending-upload-retry'));
+    });
+    await waitFor(() => expect(create.callCount).toEqual(2));
+    await waitFor(() =>
+      expect(screen.queryByTestId('work-order-pending-upload')).toBeNull()
+    );
   });
 });
