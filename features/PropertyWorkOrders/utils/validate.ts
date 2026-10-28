@@ -11,7 +11,7 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const errorMessages = {
-  unitRequired: 'Unit is required',
+  summaryRequired: 'A summary is required when there is no unit',
   reasonRequired: 'This status requires a reason',
   dueDateFormat: 'Due date must be YYYY-MM-DD',
   dueDatePast: 'Due date cannot be in the past',
@@ -39,8 +39,16 @@ export default function validateWorkOrder(
 ): WorkOrderFieldErrors {
   const errors: WorkOrderFieldErrors = {};
 
-  if (isCreating && !`${values.unit || ''}`.trim()) {
-    errors.unit = errorMessages.unitRequired;
+  // A request without a unit (office, grounds,
+  // parking…) is filed against the property.
+  // Yardi accepts that but refuses an empty
+  // body, and a summary identifies the request
+  if (
+    isCreating &&
+    !`${values.unit || ''}`.trim() &&
+    !`${values.briefDescription || ''}`.trim()
+  ) {
+    errors.briefDescription = errorMessages.summaryRequired;
   }
 
   // Max lengths

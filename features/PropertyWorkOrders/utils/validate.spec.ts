@@ -2,14 +2,28 @@ import customValues from '../../../__mocks__/yardi/customValues';
 import validateWorkOrder, { errorMessages, todayIsoDate } from './validate';
 
 describe('Unit | Features | Property Work Orders | Utils | Validate', () => {
-  test('it requires a unit only when creating', () => {
-    expect(validateWorkOrder({}, customValues, true).unit).toEqual(
-      errorMessages.unitRequired
+  test('it never requires a unit, but a request without one needs a summary', () => {
+    expect(validateWorkOrder({}, customValues, true).unit).toBeUndefined();
+    expect(validateWorkOrder({}, customValues, true).briefDescription).toEqual(
+      errorMessages.summaryRequired
     );
-    expect(validateWorkOrder({ unit: ' ' }, customValues, true).unit).toEqual(
-      errorMessages.unitRequired
-    );
-    expect(validateWorkOrder({}, customValues, false).unit).toBeUndefined();
+    expect(
+      validateWorkOrder(
+        { unit: ' ', briefDescription: ' ' },
+        customValues,
+        true
+      ).briefDescription
+    ).toEqual(errorMessages.summaryRequired);
+    expect(
+      validateWorkOrder({ briefDescription: 'Pool gate' }, customValues, true)
+        .briefDescription
+    ).toBeUndefined();
+    expect(
+      validateWorkOrder({ unit: '1724' }, customValues, true).briefDescription
+    ).toBeUndefined();
+    expect(
+      validateWorkOrder({}, customValues, false).briefDescription
+    ).toBeUndefined();
   });
 
   test('it rejects values longer than yardi allows', () => {

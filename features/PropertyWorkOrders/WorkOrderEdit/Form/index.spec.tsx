@@ -134,15 +134,18 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form', () =
     expect(screen.queryByTestId('work-order-error-status')).toBeNull();
   });
 
-  it('should require the unit only when creating', () => {
+  it('should not mark the unit required and should explain a blank unit when creating', () => {
     const { rerender } = render(<Form {...baseProps} />);
+    expect(
+      screen.getByTestId('work-order-field-unit').textContent
+    ).not.toContain('*');
     expect(screen.getByTestId('work-order-field-unit').textContent).toContain(
-      '*'
+      'Leave the unit blank for a request that is not about a unit'
     );
     rerender(<Form {...baseProps} isCreating={false} />);
     expect(
       screen.getByTestId('work-order-field-unit').textContent
-    ).not.toContain('*');
+    ).not.toContain('Leave the unit blank');
   });
 
   it('should invoke change handler when a field is edited', () => {
@@ -167,6 +170,7 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     );
     expect(labels).toEqual([
       'Select a unit…',
+      'No unit',
       '1-103 · Jane Doe',
       '2-201 · Sam Roe',
       'Enter a unit manually…'
@@ -193,7 +197,7 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
       <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
     );
     const picker = screen.getByTestId('work-order-input-unitPicker');
-    const [, second] = Array.from(picker.querySelectorAll('option')).slice(1);
+    const [, second] = Array.from(picker.querySelectorAll('option')).slice(2);
     userEvent.selectOptions(picker, second.getAttribute('value'));
     expect(onUnitPick.firstCall.args).toEqual([unitOptions[1]]);
   });
@@ -294,5 +298,50 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     expect(
       screen.getByTestId('work-order-error-unitPicker').textContent
     ).toEqual('Unit is required');
+  });
+
+  it('should clear the unit and keep the picker on no unit when chosen', () => {
+    const onUnitPick = sinon.spy();
+    render(
+      <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
+    );
+    userEvent.selectOptions(
+      screen.getByTestId('work-order-input-unitPicker'),
+      'no-unit'
+    );
+    expect(onUnitPick.firstCall.args).toEqual([null]);
+    const picker = screen.getByTestId(
+      'work-order-input-unitPicker'
+    ) as HTMLSelectElement;
+    expect(picker.selectedOptions[0].textContent).toEqual('No unit');
+    expect(screen.queryByTestId('work-order-input-unit')).toBeNull();
+    expect(
+      screen.getByTestId('work-order-field-unitPicker').textContent
+    ).toContain('Filed against the property');
+  });
+
+  it('should warn about a typed unit no current resident holds without blocking it', () => {
+    const { rerender } = render(
+      <Form
+        {...baseProps}
+        unitOptions={unitOptions}
+        values={{ ...EMPTY_FORM_VALUES, unit: '9-999' }}
+      />
+    );
+    expect(screen.getByTestId('work-order-field-unit').textContent).toContain(
+      'No current resident holds this unit'
+    );
+    expect(screen.queryByTestId('work-order-error-unit')).toBeNull();
+
+    rerender(
+      <Form
+        {...baseProps}
+        unitOptions={unitOptions}
+        values={{ ...EMPTY_FORM_VALUES, unit: '1-103' }}
+      />
+    );
+    expect(
+      screen.getByTestId('work-order-field-unit').textContent
+    ).not.toContain('No current resident holds this unit');
   });
 });
