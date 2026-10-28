@@ -17,6 +17,7 @@ import Header from './Header';
 import Form from './Form';
 import Details from './Details';
 import CancelPrompt from './CancelPrompt';
+import Attachments from './Attachments';
 import {
   toFormValues,
   toPayload,
@@ -256,7 +257,15 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
             onUnitPick={onUnitPick}
           />
         ) : (
-          <Details workOrder={workOrder} customValues={customValues} />
+          <>
+            <Details workOrder={workOrder} customValues={customValues} />
+            <Attachments
+              propertyId={property.id}
+              workOrderId={`${workOrder.id}`}
+              canUpload={canWrite}
+              sendNotification={sendNotification}
+            />
+          </>
         )}
 
         {isMobile && (

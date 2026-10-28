@@ -3,6 +3,9 @@ import yardiApi, { toWorkOrdersQuery } from './yardi';
 import currentUser from '../../utils/currentUser';
 import { yardiWorkOrderOne } from '../../../__mocks__/yardi/workOrders';
 import customValuesJson from '../../../__mocks__/yardi/customValues';
+import attachmentsJson, {
+  yardiWorkOrderAttachmentImage
+} from '../../../__mocks__/yardi/workOrderAttachments';
 import residentsJson from '../../../__mocks__/yardi/residents';
 import occupantsJson from '../../../__mocks__/yardi/occupants';
 import ErrorForbidden from '../../models/errors/forbidden';
@@ -288,9 +291,7 @@ describe('Unit | Services | API | Yardi', () => {
     try {
       await yardiApi.createWorkOrderRequest('test-property', {});
     } catch (err) {
-      expect(err instanceof ErrorBadRequest, 'bad request error').toEqual(
-        true
-      );
+      expect(err instanceof ErrorBadRequest, 'bad request error').toEqual(true);
       actual = err.errors.map((e) => e.name);
     }
 
@@ -356,5 +357,110 @@ describe('Unit | Services | API | Yardi', () => {
     }
 
     expect(actual).toEqual(expected);
+  });
+
+  test('it resolves a work orders attachments without file data', async () => {
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+    const fetch = sinon.stub(global, 'fetch').resolves(
+      new Response(
+        JSON.stringify({
+          data: attachmentsJson.map((a) => {
+            const attributes = { ...a };
+            delete attributes.id;
+            return { id: a.id, type: 'work-order-attachment', attributes };
+          })
+        }),
+        { status: 200 }
+      )
+    );
+    const actual = await yardiApi.getWorkOrderAttachmentsRequest(
+      'property-1',
+      '531781'
+    );
+    expect(actual).toEqual(attachmentsJson);
+    const [url, options] = fetch.firstCall.args;
+    expect(`${url}`.endsWith('/work-orders/531781/attachments')).toEqual(true);
+    expect(options.method).toEqual('GET');
+  });
+
+  test('it requests a single attachment by its url-encoded name', async () => {
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+    const attributes = { ...yardiWorkOrderAttachmentImage, data: 'abc=' };
+    delete attributes.id;
+    const fetch = sinon.stub(global, 'fetch').resolves(
+      new Response(
+        JSON.stringify({
+          data: {
+            id: yardiWorkOrderAttachmentImage.id,
+            type: 'work-order-attachment',
+            attributes
+          }
+        }),
+        { status: 200 }
+      )
+    );
+    const actual = await yardiApi.getWorkOrderAttachmentRequest(
+      'property-1',
+      '531781',
+      'My File.jpg'
+    );
+    expect(actual.data).toEqual('abc=');
+    const [url] = fetch.firstCall.args;
+    expect(`${url}`.endsWith('/attachments/My%20File.jpg')).toEqual(true);
+  });
+
+  test('it posts an attachment upload as a plain JSON body and rejects with field errors', async () => {
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+    const upload = { data: 'abc=', extension: 'jpg', description: 'Gate' };
+    const fetch = sinon.stub(global, 'fetch');
+    fetch.onFirstCall().resolves(
+      new Response(
+        JSON.stringify({
+          data: {
+            id: yardiWorkOrderAttachmentImage.id,
+            type: 'work-order-attachment',
+            attributes: { name: yardiWorkOrderAttachmentImage.name }
+          }
+        }),
+        { status: 201 }
+      )
+    );
+    fetch.onSecondCall().resolves(
+      new Response(
+        JSON.stringify({
+          errors: [
+            {
+              source: { pointer: '/attachment' },
+              title: 'Bad Request',
+              detail: 'Invalid File Extension: exe'
+            }
+          ]
+        }),
+        { status: 400 }
+      )
+    );
+
+    const created = await yardiApi.createWorkOrderAttachmentRequest(
+      'property-1',
+      '531781',
+      upload
+    );
+    expect(created.id).toEqual(yardiWorkOrderAttachmentImage.id);
+    const [url, options] = fetch.firstCall.args;
+    expect(`${url}`.endsWith('/work-orders/531781/attachments')).toEqual(true);
+    expect(options.method).toEqual('POST');
+    expect(JSON.parse(options.body)).toEqual(upload);
+
+    let rejected = null;
+    try {
+      await yardiApi.createWorkOrderAttachmentRequest('property-1', '531781', {
+        ...upload,
+        extension: 'exe'
+      });
+    } catch (err) {
+      rejected = err;
+    }
+    expect(rejected).toBeInstanceOf(ErrorBadRequest);
+    expect(rejected.errors[0].detail).toEqual('Invalid File Extension: exe');
   });
 });
