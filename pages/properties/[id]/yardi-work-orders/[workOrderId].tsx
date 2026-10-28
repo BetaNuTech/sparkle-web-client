@@ -19,7 +19,7 @@ const Page: React.FC = (): ReactElement => {
   const sendNotification = notifications.createPublisher(useNotifications());
   const { data: authUser } = useUser();
   const router = useRouter();
-  const { id, workOrderId } = router.query;
+  const { id, workOrderId, created } = router.query;
   const propertyId = typeof id === 'string' ? id : id[0];
   const workOrderIdParam =
     typeof workOrderId === 'string' ? workOrderId : workOrderId[0];
@@ -61,6 +61,7 @@ const Page: React.FC = (): ReactElement => {
           customValuesStatus={customValuesStatus}
           sendNotification={sendNotification}
           onWorkOrderUpdated={setWorkOrder}
+          isJustCreated={created === '1'}
         />
       ) : (
         <LoadingHud />
