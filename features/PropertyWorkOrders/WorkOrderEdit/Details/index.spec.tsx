@@ -48,4 +48,16 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Details', (
       screen.getByTestId('work-order-detail-requestor-phone')
     ).toHaveAttribute('href', `tel:${yardiWorkOrderOne.requestorPhone}`);
   });
+
+  it('should label a work order without a unit as common area', () => {
+    render(
+      <Details
+        workOrder={{ ...yardiWorkOrderOne, unit: undefined }}
+        customValues={customValues}
+      />
+    );
+    expect(screen.getByTestId('work-order-detail-unit').textContent).toContain(
+      'Common area'
+    );
+  });
 });

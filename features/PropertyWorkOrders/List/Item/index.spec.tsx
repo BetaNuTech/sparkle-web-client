@@ -98,4 +98,15 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
     const originElement = screen.queryByTestId('order-origin');
     expect(originElement).toBeDefined();
   });
+
+  it('should label a work order without a unit as common area', () => {
+    const workOrder = {
+      ...yardiWorkOrderTwo,
+      unit: undefined
+    } as workOrderModel;
+    render(<Item forceVisible workOrder={workOrder} />);
+    expect(screen.getByTestId('work-order-unit').textContent).toEqual(
+      'Common area'
+    );
+  });
 });

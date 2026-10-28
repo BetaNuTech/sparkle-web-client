@@ -11,7 +11,7 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const errorMessages = {
-  unitRequired: 'Unit is required',
+  summaryRequired: 'A summary is required for a common area request',
   reasonRequired: 'This status requires a reason',
   dueDateFormat: 'Due date must be YYYY-MM-DD',
   dueDatePast: 'Due date cannot be in the past',
@@ -39,8 +39,16 @@ export default function validateWorkOrder(
 ): WorkOrderFieldErrors {
   const errors: WorkOrderFieldErrors = {};
 
-  if (isCreating && !`${values.unit || ''}`.trim()) {
-    errors.unit = errorMessages.unitRequired;
+  // A request without a unit is filed against
+  // the property (common area). Yardi accepts
+  // that, but refuses an empty body, and a
+  // summary is what identifies such a request
+  if (
+    isCreating &&
+    !`${values.unit || ''}`.trim() &&
+    !`${values.briefDescription || ''}`.trim()
+  ) {
+    errors.briefDescription = errorMessages.summaryRequired;
   }
 
   // Max lengths

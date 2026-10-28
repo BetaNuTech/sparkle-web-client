@@ -35,6 +35,14 @@ interface Props {
 // unit & tenant code inputs
 export const MANUAL_UNIT = 'manual';
 
+// Select value for a request filed against
+// the property itself rather than a unit
+export const COMMON_AREA_UNIT = 'common-area';
+
+const COMMON_AREA_HINT = 'Leave the unit blank for a common area request';
+const UNKNOWN_UNIT_HINT =
+  'No current resident holds this unit. Yardi only accepts unit codes that exist in the property.';
+
 interface FieldProps {
   name: string;
   label: string;
@@ -104,6 +112,7 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   // Creating offers the current residents'
   // units; the user may still type one
   const [isManualUnit, setIsManualUnit] = useState(false);
+  const [isCommonArea, setIsCommonArea] = useState(false);
   const isLoadingUnits = isCreating && unitOptionsStatus === 'loading';
   const hasUnitPicker =
     isCreating && (isLoadingUnits || (unitOptions || []).length > 0);
@@ -120,10 +129,27 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   // show together: manual entry swaps the
   // picker for a way back to it
   const showUnitPicker = hasUnitPicker && !isTypingUnit;
-  const unitPickerValue = pickedUnit ? toOptionValue(pickedUnit) : '';
+  const typedUnit = `${values.unit || ''}`.trim();
+  let unitPickerValue = '';
+  if (pickedUnit) unitPickerValue = toOptionValue(pickedUnit);
+  else if (isCommonArea && !typedUnit) unitPickerValue = COMMON_AREA_UNIT;
+
+  // A blank unit files the request against the
+  // property. A typed unit no current resident
+  // holds may still be a real (vacant) unit, so
+  // it only earns a warning, never an error
+  const isKnownUnit = (unitOptions || []).some(
+    (opt) => opt.unit.toLowerCase() === typedUnit.toLowerCase()
+  );
+  let unitHint = '';
+  if (isCreating && !typedUnit) unitHint = COMMON_AREA_HINT;
+  else if (isCreating && (unitOptions || []).length > 0 && !isKnownUnit) {
+    unitHint = UNKNOWN_UNIT_HINT;
+  }
 
   const onPickFromResidents = () => {
     setIsManualUnit(false);
+    setIsCommonArea(false);
     if (onUnitPick) onUnitPick(null);
   };
 
@@ -131,10 +157,18 @@ const WorkOrderForm: FunctionComponent<Props> = ({
     const { value } = evt.target;
     if (value === MANUAL_UNIT) {
       setIsManualUnit(true);
+      setIsCommonArea(false);
+      if (onUnitPick) onUnitPick(null);
+      return;
+    }
+    if (value === COMMON_AREA_UNIT) {
+      setIsManualUnit(false);
+      setIsCommonArea(true);
       if (onUnitPick) onUnitPick(null);
       return;
     }
     setIsManualUnit(false);
+    setIsCommonArea(false);
     const option = (unitOptions || []).find(
       (opt) => toOptionValue(opt) === value
     );
@@ -170,6 +204,7 @@ const WorkOrderForm: FunctionComponent<Props> = ({
       isRequired?: boolean;
       placeholder?: string;
       min?: string;
+      hint?: string;
     } = {}
   ) => (
     <Field
@@ -177,7 +212,7 @@ const WorkOrderForm: FunctionComponent<Props> = ({
       label={label}
       error={errors[name]}
       isRequired={options.isRequired}
-      hint={lengthHint(name, values[name])}
+      hint={options.hint || lengthHint(name, values[name])}
     >
       <input
         id={`work-order-${name}`}
@@ -271,7 +306,16 @@ const WorkOrderForm: FunctionComponent<Props> = ({
       <section className={styles.form__section}>
         <h3 className={styles.form__heading}>Request</h3>
         {showUnitPicker && (
-          <Field name="unitPicker" label="Unit" error={errors.unit} isRequired>
+          <Field
+            name="unitPicker"
+            label="Unit"
+            error={errors.unit}
+            hint={
+              unitPickerValue === COMMON_AREA_UNIT
+                ? 'This request will be filed against the property, not a unit'
+                : ''
+            }
+          >
             <select
               id="work-order-unitPicker"
               name="unitPicker"
@@ -284,6 +328,7 @@ const WorkOrderForm: FunctionComponent<Props> = ({
               <option value="">
                 {isLoadingUnits ? 'Loading units…' : 'Select a unit…'}
               </option>
+              <option value={COMMON_AREA_UNIT}>No unit (common area)</option>
               {(unitOptions || []).map((option) => (
                 <option
                   key={toOptionValue(option)}
@@ -298,7 +343,7 @@ const WorkOrderForm: FunctionComponent<Props> = ({
         )}
         {(isTypingUnit || !isCreating) && (
           <div className={styles.form__row}>
-            {textInput('unit', 'Unit', { isRequired: isCreating })}
+            {textInput('unit', 'Unit', { hint: unitHint })}
             {textInput('resident', 'Tenant Code')}
           </div>
         )}
