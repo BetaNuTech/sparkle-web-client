@@ -140,12 +140,12 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form', () =
       screen.getByTestId('work-order-field-unit').textContent
     ).not.toContain('*');
     expect(screen.getByTestId('work-order-field-unit').textContent).toContain(
-      'Leave the unit blank for a common area request'
+      'Leave the unit blank for a request that is not about a unit'
     );
     rerender(<Form {...baseProps} isCreating={false} />);
     expect(
       screen.getByTestId('work-order-field-unit').textContent
-    ).not.toContain('common area');
+    ).not.toContain('Leave the unit blank');
   });
 
   it('should invoke change handler when a field is edited', () => {
@@ -170,7 +170,7 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     );
     expect(labels).toEqual([
       'Select a unit…',
-      'No unit (common area)',
+      'No unit',
       '1-103 · Jane Doe',
       '2-201 · Sam Roe',
       'Enter a unit manually…'
@@ -300,26 +300,24 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     ).toEqual('Unit is required');
   });
 
-  it('should clear the unit and keep the picker on common area when chosen', () => {
+  it('should clear the unit and keep the picker on no unit when chosen', () => {
     const onUnitPick = sinon.spy();
     render(
       <Form {...baseProps} unitOptions={unitOptions} onUnitPick={onUnitPick} />
     );
     userEvent.selectOptions(
       screen.getByTestId('work-order-input-unitPicker'),
-      'common-area'
+      'no-unit'
     );
     expect(onUnitPick.firstCall.args).toEqual([null]);
     const picker = screen.getByTestId(
       'work-order-input-unitPicker'
     ) as HTMLSelectElement;
-    expect(picker.selectedOptions[0].textContent).toEqual(
-      'No unit (common area)'
-    );
+    expect(picker.selectedOptions[0].textContent).toEqual('No unit');
     expect(screen.queryByTestId('work-order-input-unit')).toBeNull();
     expect(
       screen.getByTestId('work-order-field-unitPicker').textContent
-    ).toContain('filed against the property');
+    ).toContain('Filed against the property');
   });
 
   it('should warn about a typed unit no current resident holds without blocking it', () => {

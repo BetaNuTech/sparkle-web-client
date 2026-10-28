@@ -94,7 +94,7 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
             <div className="-d-flex">
               <InfoLabel label="Unit" />
               <InfoValue
-                value={workOrder.unit || 'Common area'}
+                value={workOrder.unit || 'No unit'}
                 data-testid="work-order-unit"
               />
               {workOrder.resident && (

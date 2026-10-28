@@ -86,16 +86,16 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
 
     expect(
       screen.getByTestId('work-order-error-briefDescription').textContent
-    ).toEqual('A summary is required for a common area request');
+    ).toEqual('A summary is required when there is no unit');
     expect(screen.queryByTestId('work-order-error-unit')).toBeNull();
     expect(create.called).toEqual(false);
   });
 
-  it('should post a common area request without a unit attribute', async () => {
+  it('should post a request with no unit without a unit attribute', async () => {
     sinon.stub(Router, 'push');
     const create = sinon
       .stub(yardiApi, 'createWorkOrderRequest')
-      .resolves({ ...yardiWorkOrderOne, unit: undefined });
+      .resolves({ ...yardiWorkOrderOne, unit: '' });
     render(<WorkOrderEdit {...baseProps} />);
 
     userEvent.type(
