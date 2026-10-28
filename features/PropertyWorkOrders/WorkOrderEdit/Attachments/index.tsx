@@ -160,6 +160,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
   const [preview, setPreview] = useState<Preview | null>(null);
   const [openingName, setOpeningName] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
+  const cameraInput = useRef<HTMLInputElement>(null);
 
   const onFileChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const [picked] = Array.from(evt.target.files || []);
@@ -171,6 +172,7 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
     setFile(null);
     setDescription('');
     if (fileInput.current) fileInput.current.value = '';
+    if (cameraInput.current) cameraInput.current.value = '';
     clearUploadErrors();
   };
 
@@ -254,9 +256,41 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
               onChange={onFileChange}
               data-testid="work-order-attachment-file"
             />
-            {!uploadErrors.file && (
+            {/* Phones open the camera straight away
+                for this input, so photos can be taken
+                on the spot without the file chooser */}
+            <input
+              ref={cameraInput}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              className={styles.attachments__hiddenInput}
+              disabled={isUploading}
+              onChange={onFileChange}
+              tabIndex={-1}
+              aria-hidden="true"
+              data-testid="work-order-attachment-camera"
+            />
+            <button
+              type="button"
+              className={styles.field__link}
+              disabled={isUploading}
+              onClick={() => cameraInput.current && cameraInput.current.click()}
+              data-testid="work-order-attachment-take-photo"
+            >
+              Take photo
+            </button>
+            {file && !uploadErrors.file && (
+              <span
+                className={styles.field__hint}
+                data-testid="work-order-attachment-picked"
+              >
+                {file.name} · {formatFileSize(file.size)}
+              </span>
+            )}
+            {!file && !uploadErrors.file && (
               <span className={styles.field__hint}>
-                Photos and documents up to 6 MB
+                Photos are resized before upload; documents up to 6 MB
               </span>
             )}
             {uploadErrors.file && (

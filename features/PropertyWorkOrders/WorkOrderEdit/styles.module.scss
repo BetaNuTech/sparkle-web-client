@@ -270,6 +270,10 @@
     gap: $global-padding;
   }
 
+  &__hiddenInput {
+    display: none;
+  }
+
   &__preview {
     display: block;
     max-width: 100%;

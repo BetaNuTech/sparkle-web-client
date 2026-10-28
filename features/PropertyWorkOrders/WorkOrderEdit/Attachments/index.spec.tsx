@@ -235,4 +235,32 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Attachments
     ).toBeTruthy();
     expect(screen.queryByTestId('work-order-attachment-download')).toBeTruthy();
   });
+
+  it('should take a photo through a camera input and show what was picked', async () => {
+    sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest').resolves([]);
+    render(<Attachments {...baseProps} />);
+    await screen.findByTestId('work-order-attachments-empty');
+    userEvent.click(screen.getByTestId('work-order-attachment-add'));
+
+    const camera = screen.getByTestId(
+      'work-order-attachment-camera'
+    ) as HTMLInputElement;
+    expect(camera.getAttribute('capture')).toEqual('environment');
+    expect(camera.getAttribute('accept')).toEqual('image/*');
+    expect(
+      screen.queryByTestId('work-order-attachment-take-photo')
+    ).toBeTruthy();
+
+    userEvent.upload(
+      camera,
+      new File(['photo'], 'IMG_0001.jpg', { type: 'image/jpeg' })
+    );
+    expect(
+      screen.getByTestId('work-order-attachment-picked').textContent
+    ).toContain('IMG_0001.jpg');
+    expect(
+      (screen.getByTestId('work-order-attachment-upload') as HTMLButtonElement)
+        .disabled
+    ).toEqual(false);
+  });
 });

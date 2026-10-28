@@ -11,8 +11,10 @@ import ErrorItem from '../../../common/models/errors/item';
 import { toFieldName } from './useWorkOrderForm';
 import {
   AttachmentUploadErrors,
+  downscaleImage,
   errorMessages,
   fileExtension,
+  isImageFile,
   readFileAsBase64,
   validateAttachmentUpload
 } from '../utils/attachments';
@@ -188,16 +190,34 @@ export default function useWorkOrderAttachments(
     description: string
   ): Promise<yardiWorkOrderAttachment | null> => {
     const trimmedDescription = `${description || ''}`.trim();
-    const validationErrors = validateAttachmentUpload(file, trimmedDescription);
     setApiUploadErrors([]);
-    setClientUploadErrors(validationErrors);
-    if (Object.keys(validationErrors).length) return null;
-
+    setClientUploadErrors({});
     setIsUploading(true);
+
+    // Phone photos routinely exceed the
+    // API's limit, so shrink them first
+    let prepared = file;
+    if (file && isImageFile(file)) {
+      try {
+        prepared = await downscaleImage(file);
+      } catch (resizeErr) {
+        prepared = file;
+      }
+    }
+
+    const validationErrors = validateAttachmentUpload(
+      prepared,
+      trimmedDescription
+    );
+    if (Object.keys(validationErrors).length) {
+      setClientUploadErrors(validationErrors);
+      setIsUploading(false);
+      return null;
+    }
 
     let data64 = '';
     try {
-      data64 = await readFileAsBase64(file);
+      data64 = await readFileAsBase64(prepared);
     } catch (readErr) {
       setClientUploadErrors({ file: errorMessages.fileUnreadable });
       setIsUploading(false);
@@ -206,7 +226,7 @@ export default function useWorkOrderAttachments(
 
     const payload = {
       data: data64,
-      extension: fileExtension(file.name),
+      extension: fileExtension(prepared.name),
       ...(trimmedDescription ? { description: trimmedDescription } : {})
     };
 

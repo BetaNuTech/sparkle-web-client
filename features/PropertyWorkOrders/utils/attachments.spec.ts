@@ -1,8 +1,11 @@
 import {
+  downscaleImage,
   errorMessages,
   fileExtension,
   formatFileSize,
   isImageAttachment,
+  isImageFile,
+  needsDownscale,
   readFileAsBase64,
   toDataUrl,
   toFileUrl,
@@ -71,5 +74,29 @@ describe('Unit | Features | Property Work Orders | Utils | Attachments', () => {
     expect(toDataUrl(attachment)).toEqual('data:image/jpeg;base64,abc=');
     // jsdom has no object urls
     expect(toFileUrl(attachment)).toEqual('data:image/jpeg;base64,abc=');
+  });
+
+  test('it recognises image files by type or extension', () => {
+    expect(
+      isImageFile(new File([''], 'a.heic', { type: 'image/heic' }))
+    ).toEqual(true);
+    expect(isImageFile(new File([''], 'a.JPG'))).toEqual(true);
+    expect(
+      isImageFile(new File([''], 'a.pdf', { type: 'application/pdf' }))
+    ).toEqual(false);
+  });
+
+  test('it only re-encodes photos that are large on an edge or heavy', () => {
+    expect(needsDownscale(4032, 3024, 500000)).toEqual(true);
+    expect(needsDownscale(1600, 1200, 3 * 1024 * 1024)).toEqual(true);
+    expect(needsDownscale(1600, 1200, 500000)).toEqual(false);
+  });
+
+  test('it leaves files untouched where photos cannot be decoded', async () => {
+    const photo = new File(['x'], 'photo.jpg', { type: 'image/jpeg' });
+    const pdf = new File(['x'], 'doc.pdf', { type: 'application/pdf' });
+    // jsdom has no createImageBitmap
+    expect(await downscaleImage(photo)).toBe(photo);
+    expect(await downscaleImage(pdf)).toBe(pdf);
   });
 });

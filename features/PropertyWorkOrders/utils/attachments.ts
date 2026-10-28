@@ -5,6 +5,13 @@ import yardiWorkOrderAttachment, {
 
 const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
 
+// Photos are re-encoded before upload when
+// they are larger than this on either edge
+// or heavier than this many bytes
+export const IMAGE_MAX_EDGE = 2048;
+export const IMAGE_MAX_BYTES_UNTOUCHED = 1.5 * 1024 * 1024;
+export const IMAGE_JPEG_QUALITY = 0.82;
+
 export const errorMessages = {
   fileRequired: 'Choose a file to upload',
   fileExtension: 'The file name needs an extension, such as .jpg or .pdf',
@@ -33,6 +40,90 @@ export const fileExtension = (fileName = ''): string => {
 export const isImageAttachment = (attachment: AttachmentLike): boolean =>
   `${attachment.contentType || ''}`.toLowerCase().startsWith('image/') ||
   IMAGE_EXTENSIONS.includes(`${attachment.extension || ''}`.toLowerCase());
+
+export const isImageFile = (file: File): boolean =>
+  `${file.type || ''}`.toLowerCase().startsWith('image/') ||
+  IMAGE_EXTENSIONS.includes(fileExtension(file.name));
+
+// Whether a photo is worth re-encoding:
+// phone cameras produce files far over the
+// API's 6 MB limit at sizes a work order
+// never needs
+export const needsDownscale = (
+  width: number,
+  height: number,
+  bytes: number,
+  maxEdge = IMAGE_MAX_EDGE,
+  maxBytes = IMAGE_MAX_BYTES_UNTOUCHED
+): boolean => width > maxEdge || height > maxEdge || bytes > maxBytes;
+
+// Decode a photo, honouring its EXIF
+// orientation where the browser allows
+const decodeImage = async (file: Blob): Promise<ImageBitmap> => {
+  try {
+    // Newer than the bundled DOM types
+    const options = { imageOrientation: 'from-image' } as unknown;
+    return await createImageBitmap(file, options as ImageBitmapOptions);
+  } catch (err) {
+    // Older browsers reject the option
+    return createImageBitmap(file);
+  }
+};
+
+const canvasToBlob = (
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality: number
+): Promise<Blob | null> =>
+  new Promise((resolve) => canvas.toBlob(resolve, type, quality));
+
+// Shrink a photo to fit the upload limit,
+// re-encoding it as JPEG; anything that is
+// not a large image, or cannot be decoded
+// here, is returned untouched
+export const downscaleImage = async (
+  file: File,
+  maxEdge = IMAGE_MAX_EDGE,
+  quality = IMAGE_JPEG_QUALITY
+): Promise<File> => {
+  const canDecode =
+    typeof createImageBitmap === 'function' && typeof document !== 'undefined';
+  if (!file || !isImageFile(file) || !canDecode) return file;
+
+  let bitmap: ImageBitmap = null;
+  try {
+    bitmap = await decodeImage(file);
+  } catch (err) {
+    return file;
+  }
+
+  const { width, height } = bitmap;
+  if (!width || !height || !needsDownscale(width, height, file.size, maxEdge)) {
+    bitmap.close();
+    return file;
+  }
+
+  const scale = Math.min(1, maxEdge / Math.max(width, height));
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.round(width * scale);
+  canvas.height = Math.round(height * scale);
+  const context = canvas.getContext('2d');
+  if (!context || typeof canvas.toBlob !== 'function') {
+    bitmap.close();
+    return file;
+  }
+
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  const blob = await canvasToBlob(canvas, 'image/jpeg', quality);
+  if (!blob || blob.size >= file.size) return file;
+
+  const baseName = file.name.replace(/\.[^.]+$/, '') || 'photo';
+  return new File([blob], `${baseName}.jpg`, {
+    type: 'image/jpeg',
+    lastModified: file.lastModified
+  });
+};
 
 export const formatFileSize = (bytes?: number): string => {
   if (typeof bytes !== 'number' || Number.isNaN(bytes) || bytes < 0) return '';
