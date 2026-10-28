@@ -22,7 +22,6 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
   forceVisible,
   isMobile
 }) => {
-  const hasUnitOrResident = Boolean(workOrder.unit || workOrder.resident);
   const hasUpdateInfo = Boolean(workOrder.updatedAt || workOrder.updatedBy);
 
   const hasRequestorContactInfo = Boolean(
@@ -92,28 +91,22 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
               </>
             )}
 
-            {hasUnitOrResident && (
-              <div className="-d-flex">
-                {workOrder.unit && (
-                  <>
-                    <InfoLabel label="Unit" />
-                    <InfoValue
-                      value={workOrder.unit}
-                      data-testid="work-order-unit"
-                    />
-                  </>
-                )}
-                {workOrder.resident && (
-                  <>
-                    <InfoLabel label="Tenant" />
-                    <InfoValue
-                      value={workOrder.resident}
-                      data-testid="work-order-resident"
-                    />
-                  </>
-                )}
-              </div>
-            )}
+            <div className="-d-flex">
+              <InfoLabel label="Unit" />
+              <InfoValue
+                value={workOrder.unit || 'No unit'}
+                data-testid="work-order-unit"
+              />
+              {workOrder.resident && (
+                <>
+                  <InfoLabel label="Tenant" />
+                  <InfoValue
+                    value={workOrder.resident}
+                    data-testid="work-order-resident"
+                  />
+                </>
+              )}
+            </div>
 
             {workOrder.briefDescription && (
               <Info

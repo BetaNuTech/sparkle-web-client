@@ -38,7 +38,9 @@ const WorkOrderDetails: FunctionComponent<Props> = ({
     [
       { name: 'id', label: 'ID', value: `${workOrder.id || ''}` },
       { name: 'status', label: 'Status', value: status },
-      { name: 'unit', label: 'Unit', value: workOrder.unit },
+      // Yardi files a request without a unit
+      // against the property itself
+      { name: 'unit', label: 'Unit', value: workOrder.unit || 'No unit' },
       { name: 'resident', label: 'Tenant', value: workOrder.resident },
       {
         name: 'brief-description',

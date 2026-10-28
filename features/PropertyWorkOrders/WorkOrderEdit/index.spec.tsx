@@ -75,7 +75,7 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     expect(screen.queryByTestId('work-order-edit')).toBeNull();
   });
 
-  it('should start in the form when creating and require a unit before posting', async () => {
+  it('should start in the form when creating and require a summary for a request without a unit', async () => {
     const create = sinon.stub(yardiApi, 'createWorkOrderRequest');
     render(<WorkOrderEdit {...baseProps} />);
     expect(screen.queryByTestId('work-order-form')).toBeTruthy();
@@ -84,10 +84,34 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
       userEvent.click(screen.getByTestId('work-order-save'));
     });
 
-    expect(screen.getByTestId('work-order-error-unit').textContent).toEqual(
-      'Unit is required'
-    );
+    expect(
+      screen.getByTestId('work-order-error-briefDescription').textContent
+    ).toEqual('A summary is required when there is no unit');
+    expect(screen.queryByTestId('work-order-error-unit')).toBeNull();
     expect(create.called).toEqual(false);
+  });
+
+  it('should post a request with no unit without a unit attribute', async () => {
+    sinon.stub(Router, 'push');
+    const create = sinon
+      .stub(yardiApi, 'createWorkOrderRequest')
+      .resolves({ ...yardiWorkOrderOne, unit: '' });
+    render(<WorkOrderEdit {...baseProps} />);
+
+    userEvent.type(
+      screen.getByTestId('work-order-input-briefDescription'),
+      'Pool gate latch broken'
+    );
+
+    await act(async () => {
+      userEvent.click(screen.getByTestId('work-order-save'));
+    });
+
+    await waitFor(() => expect(create.called).toEqual(true));
+    expect(create.firstCall.args).toEqual([
+      'property-1',
+      { briefDescription: 'Pool gate latch broken' }
+    ]);
   });
 
   it('should post only the entered attributes when creating', async () => {
@@ -124,7 +148,7 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     render(<WorkOrderEdit {...baseProps} unitOptions={unitOptions} />);
 
     const picker = screen.getByTestId('work-order-input-unitPicker');
-    const [option] = Array.from(picker.querySelectorAll('option')).slice(1);
+    const [option] = Array.from(picker.querySelectorAll('option')).slice(2);
     userEvent.selectOptions(picker, option.getAttribute('value'));
 
     await act(async () => {
