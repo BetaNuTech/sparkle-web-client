@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import yardiApi from '../../../common/services/api/yardi';
-import yardiWorkOrderAttachment from '../../../common/models/yardi/workOrderAttachment';
+import yardiWorkOrderAttachment, {
+  WORK_ORDER_ATTACHMENT_DESCRIPTION_MAX_LENGTH
+} from '../../../common/models/yardi/workOrderAttachment';
 import errorReports from '../../../common/services/api/errorReports';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import ErrorNotFound from '../../../common/models/errors/notFound';
@@ -224,10 +226,18 @@ export default function useWorkOrderAttachments(
       return null;
     }
 
+    // Yardi names the stored file itself and
+    // fills a blank description with boilerplate,
+    // so the original file name is the caption
+    // when the user gives none
+    const caption = (trimmedDescription || file.name).slice(
+      0,
+      WORK_ORDER_ATTACHMENT_DESCRIPTION_MAX_LENGTH
+    );
     const payload = {
       data: data64,
       extension: fileExtension(prepared.name),
-      ...(trimmedDescription ? { description: trimmedDescription } : {})
+      description: caption
     };
 
     try {

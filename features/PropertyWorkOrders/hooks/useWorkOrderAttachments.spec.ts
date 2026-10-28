@@ -156,4 +156,23 @@ describe('Unit | Features | Property Work Orders | Hooks | Use Work Order Attach
     );
     expect(result.current.isUploading).toEqual(false);
   });
+
+  test('it captions an upload with the original file name when no description is given', async () => {
+    sinon.stub(yardiApi, 'getWorkOrderAttachmentsRequest').resolves([]);
+    const create = sinon
+      .stub(yardiApi, 'createWorkOrderAttachmentRequest')
+      .resolves(yardiWorkOrderAttachmentImage);
+    const { result, waitForNextUpdate } = renderHook(() =>
+      useWorkOrderAttachments(() => null, 'property-1', '531781')
+    );
+    await waitForNextUpdate();
+
+    await act(async () => {
+      await result.current.upload(
+        new File(['hello'], 'IMG_0042.jpg', { type: 'image/jpeg' }),
+        '   '
+      );
+    });
+    expect(create.firstCall.args[2].description).toEqual('IMG_0042.jpg');
+  });
 });
