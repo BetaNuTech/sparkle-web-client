@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import MobileHeader from '../../../../common/MobileHeader';
 import DesktopHeader from '../../../../common/DesktopHeader';
 import ChevronIcon from '../../../../public/icons/ios/chevron.svg';
+import PaperclipIcon from '../../../../public/icons/sparkle/paperclip.svg';
 import propertyModel from '../../../../common/models/property';
 import parentStyles from '../../Header/styles.module.scss';
 import styles from '../styles.module.scss';
@@ -19,6 +20,7 @@ interface Props {
   isLoading: boolean;
   canEdit: boolean;
   canCancel: boolean;
+  hasAttachments?: boolean;
   onEdit(): void;
   onDiscard(): void;
   onSave(): void;
@@ -36,13 +38,28 @@ const Header: FunctionComponent<Props> = ({
   isLoading,
   canEdit,
   canCancel,
+  hasAttachments,
   onEdit,
   onDiscard,
   onSave,
   onCancelWorkOrder
 }) => {
   const listLink = `/properties/${property.id}/yardi-work-orders`;
-  const title = isCreating ? 'New Work Order' : `Work Order ${workOrderId}`;
+  const titleText = isCreating ? 'New Work Order' : `Work Order ${workOrderId}`;
+  const title = (
+    <>
+      {titleText}
+      {hasAttachments && (
+        <span
+          className={styles.attachments__indicator}
+          title="Has attachments"
+          data-testid="work-order-header-attachments"
+        >
+          <PaperclipIcon />
+        </span>
+      )}
+    </>
+  );
   let saveLabel = isCreating ? 'Create' : 'Save';
   if (isLoading) saveLabel = 'Saving…';
 
@@ -172,6 +189,10 @@ const Header: FunctionComponent<Props> = ({
       right={<Actions />}
     />
   );
+};
+
+Header.defaultProps = {
+  hasAttachments: false
 };
 
 export default Header;

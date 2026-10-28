@@ -68,6 +68,11 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
   );
   const [values, setValues] = useState<WorkOrderFormValues>(original);
   const [clientErrors, setClientErrors] = useState<WorkOrderFieldErrors>({});
+  // Yardi's flag, or what the attachments
+  // list found once it loaded
+  const [hasAttachments, setHasAttachments] = useState(
+    Boolean(workOrder?.hasAttachments)
+  );
 
   const {
     isLoading,
@@ -85,6 +90,7 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
     const loaded = toFormValues(workOrder, customValues);
     setOriginal(loaded);
     setValues(loaded);
+    if (workOrder?.hasAttachments) setHasAttachments(true);
   }, [workOrder, customValues]);
 
   const errors: WorkOrderFieldErrors = { ...serverErrors, ...clientErrors };
@@ -221,6 +227,7 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
         isLoading={isLoading}
         canEdit={canEdit}
         canCancel={canCancel}
+        hasAttachments={hasAttachments}
         onEdit={onEdit}
         onDiscard={onDiscard}
         onSave={onSave}
@@ -264,6 +271,9 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
               workOrderId={`${workOrder.id}`}
               canUpload={canWrite}
               sendNotification={sendNotification}
+              onLoaded={(count) => {
+                if (count > 0) setHasAttachments(true);
+              }}
             />
           </>
         )}

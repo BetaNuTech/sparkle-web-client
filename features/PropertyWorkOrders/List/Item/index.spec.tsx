@@ -109,4 +109,17 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
       'No unit'
     );
   });
+
+  it('should show a paperclip only when the work order has attachments', () => {
+    const { rerender } = render(
+      <Item
+        forceVisible
+        workOrder={{ ...yardiWorkOrderTwo, hasAttachments: true }}
+      />
+    );
+    expect(screen.queryByTestId('work-order-has-attachments')).toBeTruthy();
+
+    rerender(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
+    expect(screen.queryByTestId('work-order-has-attachments')).toBeNull();
+  });
 });

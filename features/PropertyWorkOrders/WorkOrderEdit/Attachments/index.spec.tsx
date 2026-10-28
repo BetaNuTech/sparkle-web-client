@@ -263,4 +263,14 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Attachments
         .disabled
     ).toEqual(false);
   });
+
+  it('should report how many attachments loaded', async () => {
+    sinon
+      .stub(yardiApi, 'getWorkOrderAttachmentsRequest')
+      .resolves(attachments);
+    const onLoaded = sinon.spy();
+    render(<Attachments {...baseProps} onLoaded={onLoaded} />);
+    await screen.findAllByTestId('work-order-attachment');
+    expect(onLoaded.lastCall.args).toEqual([2]);
+  });
 });

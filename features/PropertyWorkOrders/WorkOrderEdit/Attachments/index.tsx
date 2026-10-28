@@ -2,6 +2,7 @@ import {
   ChangeEvent,
   FormEvent,
   FunctionComponent,
+  useEffect,
   useRef,
   useState
 } from 'react';
@@ -29,6 +30,7 @@ interface Props {
   workOrderId: string;
   canUpload: boolean;
   sendNotification: userNotifications;
+  onLoaded?(count: number): void;
 }
 
 // File types offered by the picker; Yardi
@@ -140,7 +142,8 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
   propertyId,
   workOrderId,
   canUpload,
-  sendNotification
+  sendNotification,
+  onLoaded
 }) => {
   const {
     status,
@@ -161,6 +164,14 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
   const [openingName, setOpeningName] = useState('');
   const fileInput = useRef<HTMLInputElement>(null);
   const cameraInput = useRef<HTMLInputElement>(null);
+
+  // Let the page know how many files there
+  // are, so its header can show the paperclip
+  // as soon as the first upload lands
+  useEffect(() => {
+    if (status === 'success' && onLoaded) onLoaded(data.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [status, data]);
 
   const onFileChange = (evt: ChangeEvent<HTMLInputElement>) => {
     const [picked] = Array.from(evt.target.files || []);
@@ -456,6 +467,10 @@ const WorkOrderAttachments: FunctionComponent<Props> = ({
       />
     </section>
   );
+};
+
+WorkOrderAttachments.defaultProps = {
+  onLoaded: () => null
 };
 
 export default WorkOrderAttachments;
