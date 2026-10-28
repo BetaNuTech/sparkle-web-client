@@ -60,7 +60,7 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
           <div className={styles.container__left}>
             {isMobile ? (
               <div className="-mb-sm -flex-spread-content">
-                <span>
+                <span className={styles.idBadge}>
                   {workOrder.id && (
                     <Badge
                       type="secondary"

@@ -35,3 +35,10 @@
     height: 100%;
   }
 }
+
+// Keeps the id badge and its paperclip
+// on one line in the mobile card
+.idBadge {
+  display: inline-flex;
+  align-items: center;
+}
