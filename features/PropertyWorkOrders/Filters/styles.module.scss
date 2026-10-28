@@ -30,12 +30,28 @@
     margin-right: rem-calc(5);
     color: $gray-light-2;
     white-space: nowrap;
+    line-height: 1;
+  }
+
+  // Element selectors beat the global form
+  // styles (16px bottom margin, larger font),
+  // which otherwise lift the inputs out of
+  // line with their labels and the select
+  &__item select#{&}__menu,
+  &__item input#{&}__input {
+    height: rem-calc(30);
+    margin: 0;
+    padding: rem-calc(4) rem-calc(8);
+    font-size: $medium-font-size;
+    line-height: normal;
+  }
+
+  // Room for the native arrow
+  &__item select#{&}__menu {
+    padding-right: rem-calc(24);
   }
 
   &__input {
-    height: auto;
-    padding: rem-calc(4) rem-calc(8);
-
     &--unit {
       width: rem-calc(90);
     }
