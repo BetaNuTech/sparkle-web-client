@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import yardiApi from '../../../common/services/api/yardi';
 import yardiWorkOrderAttachment from '../../../common/models/yardi/workOrderAttachment';
 import errorReports from '../../../common/services/api/errorReports';
@@ -43,15 +43,12 @@ export default function useAttachmentQueueUpload(
       error: ''
     }))
   );
-  const activeId = useRef('');
-
   const setItem = (id: string, changes: Partial<QueueUploadItem>) =>
     setItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, ...changes } : item))
     );
 
   const uploadItem = async (item: QueueUploadItem) => {
-    activeId.current = item.id;
     setItem(item.id, { status: 'uploading', error: '' });
 
     const prepared = await prepareAttachmentUpload(item.file, item.description);
@@ -60,7 +57,6 @@ export default function useAttachmentQueueUpload(
         status: 'failed',
         error: prepared.errors.file || prepared.errors.description
       });
-      activeId.current = '';
       return;
     }
 
@@ -90,15 +86,16 @@ export default function useAttachmentQueueUpload(
         );
       }
       setItem(item.id, { status: 'failed', error: message });
-    } finally {
-      activeId.current = '';
     }
   };
 
-  // Send the next queued file whenever
-  // nothing else is in flight
+  // Send the next queued file whenever nothing
+  // is in flight. Whether something is in flight
+  // is read from the items themselves, not a ref:
+  // React can flush this effect between a
+  // success's state updates, before any ref reset
   useEffect(() => {
-    if (activeId.current) return;
+    if (items.some((item) => item.status === 'uploading')) return;
     const next = items.find((item) => item.status === 'queued');
     if (next) uploadItem(next);
     // eslint-disable-next-line react-hooks/exhaustive-deps
