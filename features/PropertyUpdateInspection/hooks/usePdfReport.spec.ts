@@ -196,4 +196,39 @@ describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
     };
     expect(actual).toEqual(expected);
   });
+
+  test('should count the photos and signatures still uploading from the inspector device', () => {
+    const expected = 3;
+    const inspection = {
+      ...inspectionA,
+      template: {
+        items: {
+          'item-1': {
+            photosData: {
+              'photo-1': { caption: '', downloadURL: '' },
+              'photo-2': { caption: '', downloadURL: 'https://cdn.test/2.jpg' },
+              'photo-3': { caption: '', downloadURL: '' }
+            }
+          },
+          'item-2': { signatureTimestampKey: '1700000000' },
+          'item-3': null
+        }
+      }
+    } as any;
+
+    const { result } = renderHook(() =>
+      usePDFReport(inspection, sinon.spy(), true, false)
+    );
+
+    expect(result.current.pendingUploadsCount).toEqual(expected);
+  });
+
+  test('should count no pending uploads for an inspection without a template', () => {
+    const expected = 0;
+    const { result } = renderHook(() =>
+      usePDFReport(inspectionA, sinon.spy(), true, false)
+    );
+
+    expect(result.current.pendingUploadsCount).toEqual(expected);
+  });
 });

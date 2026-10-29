@@ -138,7 +138,8 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
     isPdfReportQueued,
     showRestartAction,
     hasPdfReportGenerationFailed,
-    isRequestingReport
+    isRequestingReport,
+    pendingUploadsCount
   } = usePdfReport(inspection, sendNotification, isOnline, hasUpdates);
 
   // Responsive queries
@@ -472,6 +473,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
           hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
           onRegenerateReport={generatePdfReport}
           isRequestingReport={isRequestingReport}
+          pendingUploadsCount={pendingUploadsCount}
           onEditUnitNumber={onEditUnitNumber}
           canEditUnitNumber={canEditUnitNumber}
         />
@@ -521,6 +523,7 @@ const PropertyUpdateInspection: FunctionComponent<Props> = ({
         onRegenerateReport={generatePdfReport}
         inspectionReportURL={inspection.inspectionReportURL}
         isRequestingReport={isRequestingReport}
+        pendingUploadsCount={pendingUploadsCount}
         searchParam={searchValue}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}
