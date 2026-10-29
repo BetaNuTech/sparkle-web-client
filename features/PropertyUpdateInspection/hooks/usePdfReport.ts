@@ -6,6 +6,7 @@ import BaseError from '../../../common/models/errors/baseError';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import dateUtils from '../../../common/utils/date';
+import { findPendingUploadsMessage } from '../../../common/utils/api/pendingUploads';
 
 const PREFIX = 'features: EditBid: hooks: usePDFReport:';
 
@@ -37,6 +38,16 @@ export default function usePDFReport(
       // User not allowed to request to generate PDF report
       errorMessage = 'You are not allowed to generate a PDF';
     } else if (apiError instanceof ErrorBadRequest) {
+      // API refused to build the report while photos
+      // or signatures are still uploading from the
+      // inspector's device: nothing was queued or changed,
+      // so tell the user to wait rather than report a failure
+      const pendingUploads = findPendingUploadsMessage(apiError.errors);
+      if (pendingUploads && pendingUploads.detail) {
+        sendNotification(pendingUploads.detail, { type: 'warning' });
+        return;
+      }
+
       errorMessage =
         'Bad request, there was an issue regenerating the PDF Report, please contact an admin';
     }
