@@ -33,11 +33,21 @@ const MiniPreviewGallery: FunctionComponent<Props> = ({ photos, onClick }) => {
             data-testid="miniPreviewGallery-container-item"
             onClick={onClick}
           >
-            <img
-              className={styles.miniPreviewGallery__photo}
-              src={photo.downloadURL}
-              alt={photo.caption}
-            />
+            {photo.downloadURL ? (
+              <img
+                className={styles.miniPreviewGallery__photo}
+                src={photo.downloadURL}
+                alt={photo.caption}
+              />
+            ) : (
+              <span
+                className={styles.miniPreviewGallery__pending}
+                data-testid="miniPreviewGallery-pending-item"
+                title="Still uploading from the inspector's device"
+              >
+                Uploading…
+              </span>
+            )}
           </li>
         ))}
       </ul>

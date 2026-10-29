@@ -23,6 +23,19 @@
     @extend %galleryPhoto;
   }
 
+  // Placeholder for a photo the inspector's
+  // device has registered but not yet uploaded
+  &__pending {
+    @extend %galleryPhoto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: $gray-light-3;
+    color: $gray-med-dark;
+    font-size: rem-calc(12);
+    text-align: center;
+  }
+
   &__button {
     @extend %outlineButton;
   }

@@ -18,6 +18,7 @@ import ErrorBadRequest from '../../../common/models/errors/badRequest';
 import ErrorUnauthorized from '../../../common/models/errors/unauthorized';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import BaseError from '../../../common/models/errors/baseError';
+import apiWarningModel from '../../../common/models/api/warning';
 
 const PREFIX = 'features: PropertyUpdateInspection: hooks: useUpdateTemplate:';
 
@@ -397,8 +398,13 @@ export default function useInspectionItemUpdate(
 
     // Publish inspection updates
     // NOTE: should not fail gracefully
+    let warnings: apiWarningModel[] = [];
     try {
-      await inspectionsApi.updateInspectionTemplate(inspectionId, updates);
+      const published = await inspectionsApi.updateInspectionTemplate(
+        inspectionId,
+        updates
+      );
+      warnings = (published && published.warnings) || [];
     } catch (err) {
       setIsPublishing(false);
       handleErrorResponse(err);
@@ -432,6 +438,15 @@ export default function useInspectionItemUpdate(
         type: 'success'
       });
     }
+
+    // Surface API warnings, such as the PDF report
+    // not being requested while photos are still
+    // uploading from the inspector's device
+    warnings
+      .filter((warning) => warning.detail)
+      .forEach((warning) => {
+        sendNotification(warning.detail, { type: 'warning' });
+      });
 
     setProgress(100);
     // Setting loader value after 100 ms

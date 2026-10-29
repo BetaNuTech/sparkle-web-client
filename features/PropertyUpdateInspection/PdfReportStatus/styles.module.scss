@@ -30,6 +30,10 @@
       color: $alert-color;
     }
 
+    &--pending {
+      color: $orange-color;
+    }
+
     &--small {
       font-size: rem-calc(14);
     }
