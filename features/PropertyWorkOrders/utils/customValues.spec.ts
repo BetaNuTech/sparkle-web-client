@@ -8,6 +8,7 @@ import {
   getSubCategories,
   isReasonRequired,
   toAssigneeLabels,
+  toAssigneeSummary,
   toDisplayValue
 } from './customValues';
 
@@ -91,5 +92,16 @@ describe('Unit | Features | Property Work Orders | Utils | Custom Values', () =>
     expect(
       toAssigneeLabels({ ...customValues, employees: undefined }, [])
     ).toEqual([]);
+  });
+
+  test('it summarises assignees on one line or says Unassigned', () => {
+    expect(
+      toAssigneeSummary(customValues, [
+        { code: 'y1001249', hours: 2 },
+        { code: 'y1001290' }
+      ])
+    ).toEqual('David Ramirez (2 h), Victor Olivo');
+    expect(toAssigneeSummary(customValues, [])).toEqual('Unassigned');
+    expect(toAssigneeSummary(customValues, undefined)).toEqual('Unassigned');
   });
 });

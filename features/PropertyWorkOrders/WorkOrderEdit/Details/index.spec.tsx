@@ -75,4 +75,16 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Details', (
       screen.getByTestId('work-order-detail-assignees').textContent
     ).toContain('David Ramirez (2 h), y9999');
   });
+
+  it('should say Unassigned when nobody is assigned', () => {
+    render(
+      <Details
+        workOrder={{ ...yardiWorkOrderOne, assignees: [] }}
+        customValues={customValues}
+      />
+    );
+    expect(
+      screen.getByTestId('work-order-detail-assignees').textContent
+    ).toContain('Unassigned');
+  });
 });
