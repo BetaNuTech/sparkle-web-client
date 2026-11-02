@@ -69,31 +69,73 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form Values
     expect(actual).toEqual({ technicianNotes: '' });
   });
 
-  test('it carries assignee codes through the form and sends the list as a whole', () => {
+  test('it carries assignees with hours through the form and sends the list as a whole', () => {
     const workOrder = {
       ...yardiWorkOrderOne,
-      assignees: [{ code: 'y1001249', hours: 2 }, { code: 'y1001290' }]
+      assignees: [{ code: 'y1001249', hours: 2.25 }, { code: 'y1001290' }]
     };
     const loaded = toFormValues(workOrder, customValues);
-    expect(loaded.assignees).toEqual(['y1001249', 'y1001290']);
+    expect(loaded.assignees).toEqual([
+      { code: 'y1001249', hours: '2.25' },
+      { code: 'y1001290', hours: '' }
+    ]);
 
-    // unchanged list: nothing sent
+    // unchanged: nothing sent
     expect(toPayload({ ...loaded }, loaded)).toEqual({});
-    // reordered but same people: nothing sent
+    // reordered but same people and hours: nothing sent
     expect(
-      toPayload({ ...loaded, assignees: ['y1001290', 'y1001249'] }, loaded)
-        .assignees
+      toPayload(
+        { ...loaded, assignees: [...loaded.assignees].reverse() },
+        loaded
+      ).assignees
     ).toBeUndefined();
+    // someone added without hours: whole list, untouched ones as bare codes
+    expect(
+      toPayload(
+        {
+          ...loaded,
+          assignees: [...loaded.assignees, { code: 'y1001339', hours: '' }]
+        },
+        loaded
+      )
+    ).toEqual({ assignees: ['y1001249', 'y1001290', 'y1001339'] });
+    // hours typed for one, cleared for another: both sent with hours
+    expect(
+      toPayload(
+        {
+          ...loaded,
+          assignees: [
+            { code: 'y1001249', hours: '' },
+            { code: 'y1001290', hours: '1.5' }
+          ]
+        },
+        loaded
+      )
+    ).toEqual({
+      assignees: [
+        { code: 'y1001249', hours: 0 },
+        { code: 'y1001290', hours: 1.5 }
+      ]
+    });
     // cleared: an empty list is sent
     expect(toPayload({ ...loaded, assignees: [] }, loaded)).toEqual({
       assignees: []
     });
-    // creating: only sent when someone is picked
+    // creating: only sent when someone is picked, hours only when typed
     expect(toPayload({ ...EMPTY_FORM_VALUES, unit: '1' }, null)).toEqual({
       unit: '1'
     });
     expect(
-      toPayload({ ...EMPTY_FORM_VALUES, assignees: [' y1001249 '] }, null)
-    ).toEqual({ assignees: ['y1001249'] });
+      toPayload(
+        {
+          ...EMPTY_FORM_VALUES,
+          assignees: [
+            { code: ' y1001249 ', hours: '' },
+            { code: 'y1001290', hours: '3' }
+          ]
+        },
+        null
+      )
+    ).toEqual({ assignees: ['y1001249', { code: 'y1001290', hours: 3 }] });
   });
 });

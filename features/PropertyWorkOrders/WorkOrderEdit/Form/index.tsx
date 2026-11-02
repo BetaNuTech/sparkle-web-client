@@ -13,7 +13,7 @@ import {
 } from '../../utils/customValues';
 import { WorkOrderFieldErrors, todayIsoDate } from '../../utils/validate';
 import { findOption, toOptionValue, UnitOption } from '../../utils/unitOptions';
-import { WorkOrderFormValues } from '../formValues';
+import { AssigneeFormValue, WorkOrderFormValues } from '../formValues';
 import { QueuedAttachment } from '../../utils/pendingAttachments';
 import AttachmentQueue from '../AttachmentQueue';
 import styles from '../styles.module.scss';
@@ -37,7 +37,7 @@ interface Props {
   onQueueAdd?(files: File[]): void;
   onQueueRemove?(id: string): void;
   onQueueDescriptionChange?(id: string, description: string): void;
-  onAssigneesChange?(codes: string[]): void;
+  onAssigneesChange?(assignees: AssigneeFormValue[]): void;
 }
 
 // Select value that reveals the typed
@@ -220,28 +220,35 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   // can be cleared without blocking a save
   const assignees = values.assignees || [];
   const employees = getEmployees(customValues);
+  const sameCode = (a: string, b: string) =>
+    a.toLowerCase() === b.toLowerCase();
   const assigneeOptions = [
     ...employees,
     ...assignees
       .filter(
-        (code) =>
-          !employees.some(
-            (employee) => employee.code.toLowerCase() === code.toLowerCase()
-          )
+        ({ code }) =>
+          !employees.some((employee) => sameCode(employee.code, code))
       )
-      .map((code) => ({ code, name: `${code} (no longer on staff)` }))
+      .map(({ code }) => ({ code, name: `${code} (no longer on staff)` }))
   ];
-  const isAssigned = (code: string) =>
-    assignees.some((picked) => picked.toLowerCase() === code.toLowerCase());
+  const pickedAssignee = (code: string) =>
+    assignees.find((picked) => sameCode(picked.code, code));
 
   const onAssigneeToggle = (code: string) => {
     if (!onAssigneesChange) return;
     onAssigneesChange(
-      isAssigned(code)
-        ? assignees.filter(
-            (picked) => picked.toLowerCase() !== code.toLowerCase()
-          )
-        : [...assignees, code]
+      pickedAssignee(code)
+        ? assignees.filter((picked) => !sameCode(picked.code, code))
+        : [...assignees, { code, hours: '' }]
+    );
+  };
+
+  const onAssigneeHoursChange = (code: string, hours: string) => {
+    if (!onAssigneesChange) return;
+    onAssigneesChange(
+      assignees.map((picked) =>
+        sameCode(picked.code, code) ? { ...picked, hours } : picked
+      )
     );
   };
 
@@ -437,22 +444,49 @@ const WorkOrderForm: FunctionComponent<Props> = ({
               className={styles.assignees}
               data-testid="work-order-input-assignees"
             >
-              {assigneeOptions.map((employee) => (
-                <li key={employee.code} className={styles.assignees__option}>
-                  <label className={styles.assignees__label}>
-                    <input
-                      type="checkbox"
-                      name="assignees"
-                      value={employee.code}
-                      checked={isAssigned(employee.code)}
-                      disabled={isDisabled}
-                      onChange={() => onAssigneeToggle(employee.code)}
-                      data-testid="work-order-assignee"
-                    />
-                    <span>{employee.name}</span>
-                  </label>
-                </li>
-              ))}
+              {assigneeOptions.map((employee) => {
+                const picked = pickedAssignee(employee.code);
+                return (
+                  <li key={employee.code} className={styles.assignees__option}>
+                    <label className={styles.assignees__label}>
+                      <input
+                        type="checkbox"
+                        name="assignees"
+                        value={employee.code}
+                        checked={Boolean(picked)}
+                        disabled={isDisabled}
+                        onChange={() => onAssigneeToggle(employee.code)}
+                        data-testid="work-order-assignee"
+                      />
+                      <span>{employee.name}</span>
+                    </label>
+                    {picked && (
+                      <label className={styles.assignees__hours}>
+                        <input
+                          type="number"
+                          inputMode="decimal"
+                          min="0"
+                          max="9999"
+                          step="0.25"
+                          className={styles.field__input}
+                          value={picked.hours}
+                          placeholder="Hours"
+                          aria-label={`Labor hours for ${employee.name}`}
+                          disabled={isDisabled}
+                          onChange={(evt) =>
+                            onAssigneeHoursChange(
+                              employee.code,
+                              evt.target.value
+                            )
+                          }
+                          data-testid="work-order-assignee-hours"
+                        />
+                        <span>h</span>
+                      </label>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
             {assignees.length > 0 && (
               <button
