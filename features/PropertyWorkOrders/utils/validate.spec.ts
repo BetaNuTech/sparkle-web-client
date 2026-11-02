@@ -101,4 +101,17 @@ describe('Unit | Features | Property Work Orders | Utils | Validate', () => {
   it('should format today as a local YYYY-MM-DD date', () => {
     expect(todayIsoDate(new Date(2026, 0, 5, 23, 59))).toEqual('2026-01-05');
   });
+
+  it('should check assignee codes', () => {
+    expect(
+      validateWorkOrder({ assignees: ['y1001249', 'y1001290'] }, customValues)
+        .assignees
+    ).toBeUndefined();
+    expect(
+      validateWorkOrder({ assignees: ['a'.repeat(11)] }, customValues).assignees
+    ).toEqual(errorMessages.assigneeCode);
+    expect(
+      validateWorkOrder({ assignees: ['y1', 'Y1'] }, customValues).assignees
+    ).toEqual(errorMessages.assigneeDuplicate);
+  });
 });

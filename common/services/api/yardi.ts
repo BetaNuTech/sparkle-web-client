@@ -373,7 +373,8 @@ export default {
       categories: attributes.categories || [],
       statuses: attributes.statuses || [],
       reasons: attributes.reasons || [],
-      resolutions: attributes.resolutions || []
+      resolutions: attributes.resolutions || [],
+      employees: attributes.employees || []
     };
   },
 

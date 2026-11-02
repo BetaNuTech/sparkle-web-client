@@ -1,6 +1,8 @@
 import yardiCustomValues, {
-  yardiCustomReason
+  yardiCustomReason,
+  yardiEmployee
 } from '../../../common/models/yardi/customValues';
+import { yardiWorkOrderAssignee } from '../../../common/models/yardi/workOrder';
 
 // Yardi matches picker values case-insensitively
 // and the API lowercases them on read
@@ -60,4 +62,35 @@ export function getStatusNames(customValues: yardiCustomValues): string[] {
 // All category names
 export function getCategoryNames(customValues: yardiCustomValues): string[] {
   return (customValues?.categories || []).map((category) => category.name);
+}
+
+// Employees a work order may be assigned to
+export function getEmployees(customValues: yardiCustomValues): yardiEmployee[] {
+  return customValues?.employees || [];
+}
+
+// An employee's name for a code, or the
+// code itself when the employee is no
+// longer among the property's staff
+export function getEmployeeName(
+  customValues: yardiCustomValues,
+  code = ''
+): string {
+  const match = getEmployees(customValues).find(
+    (employee) => normalize(employee.code) === normalize(code)
+  );
+  return (match && match.name) || code;
+}
+
+// Display names for a work order's
+// assignees, with hours when Yardi gives them
+export function toAssigneeLabels(
+  customValues: yardiCustomValues,
+  assignees: yardiWorkOrderAssignee[] = []
+): string[] {
+  return (assignees || []).map((assignee) => {
+    const name = getEmployeeName(customValues, assignee.code);
+    const hours = Number(assignee.hours);
+    return hours > 0 ? `${name} (${hours} h)` : name;
+  });
 }

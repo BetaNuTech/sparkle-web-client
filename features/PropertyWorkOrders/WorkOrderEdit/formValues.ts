@@ -32,6 +32,7 @@ export interface WorkOrderFormValues {
   technicianNotes: string;
   permissionToEnter: boolean;
   tenantCaused: boolean;
+  assignees: string[]; // employee codes
 }
 
 export const EMPTY_FORM_VALUES: WorkOrderFormValues = Object.freeze({
@@ -54,8 +55,18 @@ export const EMPTY_FORM_VALUES: WorkOrderFormValues = Object.freeze({
   problemNotes: '',
   technicianNotes: '',
   permissionToEnter: false,
-  tenantCaused: false
+  tenantCaused: false,
+  assignees: []
 });
+
+// Lists compare as sets of codes: order
+// and case are not a change, blanks are ignored
+const toListKey = (codes: string[] = []): string =>
+  codes
+    .map((code) => `${code}`.trim().toLowerCase())
+    .filter(Boolean)
+    .sort()
+    .join('\u0000');
 
 // Load a work order into form values,
 // restoring the custom-values casing of
@@ -69,12 +80,21 @@ export function toFormValues(
 
   Object.keys(EMPTY_FORM_VALUES).forEach((key) => {
     const value = workOrder[key];
+    if (Array.isArray(EMPTY_FORM_VALUES[key])) {
+      return; // handled below
+    }
     if (typeof EMPTY_FORM_VALUES[key] === 'boolean') {
       values[key] = Boolean(value);
     } else if (value !== undefined && value !== null) {
       values[key] = `${value}`;
     }
   });
+
+  // Yardi reports assignees as records;
+  // the form holds their employee codes
+  values.assignees = (workOrder.assignees || [])
+    .map((assignee) => `${assignee?.code || ''}`.trim())
+    .filter(Boolean);
 
   values.priority = toDisplayValue(customValues?.priorities, values.priority);
   values.category = toDisplayValue(
@@ -101,6 +121,21 @@ export function toPayload(
 
   Object.keys(EMPTY_FORM_VALUES).forEach((key) => {
     const value = values[key];
+
+    // The assignee list replaces the whole
+    // assignment, so it is sent as a unit:
+    // when it changed, or when creating with any
+    if (Array.isArray(EMPTY_FORM_VALUES[key])) {
+      const codes = (value || [])
+        .map((code) => `${code}`.trim())
+        .filter(Boolean);
+      const changed = original
+        ? toListKey(codes) !== toListKey(original[key])
+        : codes.length > 0;
+      if (changed) payload[key] = codes;
+      return;
+    }
+
     const isBoolean = typeof EMPTY_FORM_VALUES[key] === 'boolean';
     const trimmed = isBoolean ? value : `${value || ''}`.trim();
 

@@ -25,7 +25,8 @@ module.exports = {
     '/.next/',
     '/node_modules/',
     '/tests/',
-    '/coverage/'
+    '/coverage/',
+    '/.claude/' // worktrees other sessions keep inside the checkout
   ],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',

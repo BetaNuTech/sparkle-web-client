@@ -8,6 +8,7 @@ import { phoneNumber } from '../../../../common/utils/humanize';
 import {
   getCategoryNames,
   getStatusNames,
+  toAssigneeLabels,
   toDisplayValue
 } from '../../utils/customValues';
 import styles from '../styles.module.scss';
@@ -38,6 +39,11 @@ const WorkOrderDetails: FunctionComponent<Props> = ({
     [
       { name: 'id', label: 'ID', value: `${workOrder.id || ''}` },
       { name: 'status', label: 'Status', value: status },
+      {
+        name: 'assignees',
+        label: 'Assigned to',
+        value: toAssigneeLabels(customValues, workOrder.assignees).join(', ')
+      },
       // Yardi files a request without a unit
       // against the property itself
       { name: 'unit', label: 'Unit', value: workOrder.unit || 'No unit' },

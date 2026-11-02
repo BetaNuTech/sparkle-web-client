@@ -1,6 +1,8 @@
 import { FunctionComponent, useRef } from 'react';
 import clsx from 'clsx';
 import WorkOrderModel from '../../../../common/models/yardi/workOrder';
+import { yardiEmployee } from '../../../../common/models/yardi/customValues';
+import { toAssigneeLabels } from '../../utils/customValues';
 import dateUtil from '../../../../common/utils/date';
 import { phoneNumber } from '../../../../common/utils/humanize';
 import Info, { InfoLabel, InfoValue } from '../../../../common/Yardi/Info';
@@ -12,6 +14,7 @@ import PaperclipIcon from '../../../../public/icons/sparkle/paperclip.svg';
 
 interface Props {
   workOrder: WorkOrderModel;
+  employees?: yardiEmployee[];
   forceVisible?: boolean;
   onClickWorkOrder(workOrder: WorkOrderModel): void;
   isMobile: boolean;
@@ -19,10 +22,16 @@ interface Props {
 
 const WorkOrderListItem: FunctionComponent<Props> = ({
   workOrder,
+  employees,
   onClickWorkOrder,
   forceVisible,
   isMobile
 }) => {
+  const assigned = toAssigneeLabels(
+    { employees: employees || [] } as any,
+    workOrder.assignees
+  ).join(', ');
+
   const hasUpdateInfo = Boolean(workOrder.updatedAt || workOrder.updatedBy);
 
   const hasRequestorContactInfo = Boolean(
@@ -140,6 +149,14 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
                 label="Summary"
                 value={workOrder.briefDescription}
                 data-testid="order-brief-description"
+              />
+            )}
+
+            {assigned && (
+              <Info
+                label="Assigned to"
+                value={assigned}
+                data-testid="order-assignees"
               />
             )}
 
@@ -317,6 +334,11 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
       )}
     </li>
   );
+};
+
+WorkOrderListItem.defaultProps = {
+  employees: [],
+  forceVisible: false
 };
 
 export default WorkOrderListItem;

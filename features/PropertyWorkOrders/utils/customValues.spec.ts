@@ -1,11 +1,14 @@
 import customValues from '../../../__mocks__/yardi/customValues';
 import {
-  toDisplayValue,
-  getSubCategories,
+  getCategoryNames,
+  getEmployeeName,
+  getEmployees,
   getReasons,
-  isReasonRequired,
   getStatusNames,
-  getCategoryNames
+  getSubCategories,
+  isReasonRequired,
+  toAssigneeLabels,
+  toDisplayValue
 } from './customValues';
 
 describe('Unit | Features | Property Work Orders | Utils | Custom Values', () => {
@@ -72,5 +75,21 @@ describe('Unit | Features | Property Work Orders | Utils | Custom Values', () =>
     ]);
     expect(getStatusNames(null)).toEqual([]);
     expect(getCategoryNames(null)).toEqual([]);
+  });
+
+  test('it names assignees from the employees list and falls back to the code', () => {
+    expect(getEmployees(customValues)).toHaveLength(3);
+    expect(getEmployeeName(customValues, 'Y1001249')).toEqual('David Ramirez');
+    expect(getEmployeeName(customValues, 'y9999')).toEqual('y9999');
+    expect(
+      toAssigneeLabels(customValues, [
+        { code: 'y1001249', hours: 2 },
+        { code: 'y1001290' },
+        { code: 'y9999', hours: 0 }
+      ])
+    ).toEqual(['David Ramirez (2 h)', 'Victor Olivo', 'y9999']);
+    expect(
+      toAssigneeLabels({ ...customValues, employees: undefined }, [])
+    ).toEqual([]);
   });
 });

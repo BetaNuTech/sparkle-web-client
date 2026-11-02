@@ -1,5 +1,6 @@
 import { ChangeEvent, FunctionComponent, KeyboardEvent } from 'react';
 import WorkOrderModel from '../../../common/models/yardi/workOrder';
+import { yardiEmployee } from '../../../common/models/yardi/customValues';
 import SearchBar, { ClearSearchAction } from '../../../common/SearchBar';
 import SkeletonLoader from '../../../common/SkeletonLoader';
 import Item from './Item';
@@ -7,6 +8,7 @@ import styles from './styles.module.scss';
 
 interface Props {
   workOrders: WorkOrderModel[];
+  employees?: yardiEmployee[];
   onClickWorkOrder(workOrder: WorkOrderModel): void;
   isLoading?: boolean;
   forceVisible?: boolean;
@@ -20,6 +22,7 @@ interface Props {
 
 const WorkOrderList: FunctionComponent<Props> = ({
   workOrders,
+  employees,
   onClickWorkOrder,
   isLoading,
   forceVisible,
@@ -44,6 +47,7 @@ const WorkOrderList: FunctionComponent<Props> = ({
           <Item
             key={workOrder.id}
             workOrder={workOrder}
+            employees={employees}
             onClickWorkOrder={onClickWorkOrder}
             forceVisible={forceVisible}
             isMobile={isMobile}
@@ -67,6 +71,7 @@ const WorkOrderList: FunctionComponent<Props> = ({
 );
 
 WorkOrderList.defaultProps = {
+  employees: [],
   isLoading: false,
   forceVisible: false
 };

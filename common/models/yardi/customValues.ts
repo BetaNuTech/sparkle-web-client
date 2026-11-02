@@ -14,6 +14,15 @@ export interface yardiCustomReason {
   required: boolean;
 }
 
+// An employee Yardi lets work orders
+// of the property be assigned to
+export interface yardiEmployee {
+  code: string;
+  name: string;
+  email?: string;
+  phone?: string;
+}
+
 // Values Yardi accepts for a property's
 // work order pickers
 interface yardiCustomValues {
@@ -23,6 +32,7 @@ interface yardiCustomValues {
   statuses: yardiCustomStatus[];
   reasons: yardiCustomReason[];
   resolutions: string[];
+  employees?: yardiEmployee[]; // absent on older API responses
 }
 
 export default yardiCustomValues;

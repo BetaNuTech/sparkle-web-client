@@ -1,3 +1,10 @@
+// Who a work order is assigned to, as
+// Yardi reports it
+export interface yardiWorkOrderAssignee {
+  code: string;
+  hours?: number;
+}
+
 interface yardiWorkOrder {
   id?: string;
   createdAt?: string | number;
@@ -26,10 +33,14 @@ interface yardiWorkOrder {
   unit?: string;
   updatedBy?: string;
   hasAttachments?: boolean; // Yardi's own flag; absent on older API responses
+  assignees?: yardiWorkOrderAssignee[]; // absent on older API responses
 }
 
 // Attributes a user may write when
-// creating or updating a work order
+// creating or updating a work order.
+// Assignees are written as employee
+// codes; the whole list replaces the
+// current assignment and [] clears it
 export type yardiWorkOrderWritable = Omit<
   yardiWorkOrder,
   | 'id'
@@ -38,7 +49,10 @@ export type yardiWorkOrderWritable = Omit<
   | 'updatedBy'
   | 'requestDate'
   | 'hasAttachments'
->;
+  | 'assignees'
+> & { assignees?: string[] };
+
+export const WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH = 10;
 
 // Yardi's maximum attribute lengths,
 // enforced by the API with 400 responses
