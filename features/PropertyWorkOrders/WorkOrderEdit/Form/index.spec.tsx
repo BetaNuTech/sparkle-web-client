@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import customValues from '../../../../__mocks__/yardi/customValues';
@@ -372,12 +372,20 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     expect(screen.queryByTestId('work-order-assignees-clear')).toBeNull();
 
     userEvent.click(boxes[1]);
-    expect(onAssigneesChange.firstCall.args).toEqual([['y1001290']]);
+    expect(onAssigneesChange.firstCall.args).toEqual([
+      [{ code: 'y1001290', hours: '' }]
+    ]);
 
     rerender(
       <Form
         {...baseProps}
-        values={{ ...EMPTY_FORM_VALUES, assignees: ['y1001290', 'y9999'] }}
+        values={{
+          ...EMPTY_FORM_VALUES,
+          assignees: [
+            { code: 'y1001290', hours: '' },
+            { code: 'y9999', hours: '' }
+          ]
+        }}
         onAssigneesChange={onAssigneesChange}
       />
     );
@@ -393,7 +401,9 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     expect(checked).toEqual(['y1001290', 'y9999']);
 
     userEvent.click(screen.getAllByTestId('work-order-assignee')[1]);
-    expect(onAssigneesChange.secondCall.args).toEqual([['y9999']]);
+    expect(onAssigneesChange.secondCall.args).toEqual([
+      [{ code: 'y9999', hours: '' }]
+    ]);
     userEvent.click(screen.getByTestId('work-order-assignees-clear'));
     expect(onAssigneesChange.thirdCall.args).toEqual([[]]);
   });
@@ -403,5 +413,30 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
       <Form {...baseProps} customValues={{ ...customValues, employees: [] }} />
     );
     expect(screen.queryByTestId('work-order-input-assignees')).toBeNull();
+  });
+
+  it('should offer labor hours beside each ticked employee', () => {
+    const onAssigneesChange = sinon.spy();
+    render(
+      <Form
+        {...baseProps}
+        values={{
+          ...EMPTY_FORM_VALUES,
+          assignees: [{ code: 'y1001249', hours: '2.25' }]
+        }}
+        onAssigneesChange={onAssigneesChange}
+      />
+    );
+    const hours = screen.getAllByTestId(
+      'work-order-assignee-hours'
+    ) as HTMLInputElement[];
+    expect(hours).toHaveLength(1);
+    expect(hours[0].value).toEqual('2.25');
+    expect(hours[0].getAttribute('step')).toEqual('0.25');
+
+    fireEvent.change(hours[0], { target: { value: '3' } });
+    expect(onAssigneesChange.firstCall.args).toEqual([
+      [{ code: 'y1001249', hours: '3' }]
+    ]);
   });
 });

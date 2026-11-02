@@ -36,10 +36,17 @@ interface yardiWorkOrder {
   assignees?: yardiWorkOrderAssignee[]; // absent on older API responses
 }
 
+// An assignee as written: a bare employee
+// code keeps the hours Yardi already holds
+// (on update); code with hours sets them
+export interface yardiWorkOrderAssigneeWrite {
+  code: string;
+  hours: number;
+}
+
 // Attributes a user may write when
 // creating or updating a work order.
-// Assignees are written as employee
-// codes; the whole list replaces the
+// The whole assignee list replaces the
 // current assignment and [] clears it
 export type yardiWorkOrderWritable = Omit<
   yardiWorkOrder,
@@ -50,9 +57,10 @@ export type yardiWorkOrderWritable = Omit<
   | 'requestDate'
   | 'hasAttachments'
   | 'assignees'
-> & { assignees?: string[] };
+> & { assignees?: (string | yardiWorkOrderAssigneeWrite)[] };
 
 export const WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH = 10;
+export const WORK_ORDER_ASSIGNEE_HOURS_MAX = 9999;
 
 // Yardi's maximum attribute lengths,
 // enforced by the API with 400 responses

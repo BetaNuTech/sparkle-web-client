@@ -54,7 +54,27 @@
   padding: 0;
 
   &__option {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: $global-sm-padding $global-padding;
     margin: 0;
+  }
+
+  // Labor hours beside a ticked employee
+  &__hours {
+    display: flex;
+    align-items: center;
+    gap: rem-calc(4);
+    margin: 0 0 0 auto;
+    font-size: $medium-small-font-size;
+    font-weight: normal;
+    color: $gray-med-dark;
+
+    > input {
+      width: rem-calc(96);
+      margin: 0;
+    }
   }
 
   &__label {

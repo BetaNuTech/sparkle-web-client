@@ -1,4 +1,10 @@
-import { render, screen, act, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  act,
+  waitFor,
+  fireEvent
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import sinon from 'sinon';
 import Router from 'next/router';
@@ -447,6 +453,39 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     await waitFor(() => expect(update.called).toEqual(true));
     expect(update.firstCall.args[2]).toEqual({
       assignees: ['y1001249', 'y1001290']
+    });
+  });
+
+  it('should send hours only for assignees whose hours were typed', async () => {
+    const update = sinon
+      .stub(yardiApi, 'updateWorkOrderRequest')
+      .resolves(yardiWorkOrderOne);
+    render(
+      <WorkOrderEdit
+        {...baseProps}
+        workOrder={{
+          ...yardiWorkOrderOne,
+          assignees: [{ code: 'y1001249', hours: 2 }]
+        }}
+      />
+    );
+    userEvent.click(screen.getByTestId('work-order-edit'));
+    const boxes = screen.getAllByTestId(
+      'work-order-assignee'
+    ) as HTMLInputElement[];
+    userEvent.click(boxes[1]);
+    const [, hours] = screen.getAllByTestId(
+      'work-order-assignee-hours'
+    ) as HTMLInputElement[];
+    fireEvent.change(hours, { target: { value: '1.5' } });
+
+    await act(async () => {
+      userEvent.click(screen.getByTestId('work-order-save'));
+    });
+
+    await waitFor(() => expect(update.called).toEqual(true));
+    expect(update.firstCall.args[2]).toEqual({
+      assignees: ['y1001249', { code: 'y1001290', hours: 1.5 }]
     });
   });
 });

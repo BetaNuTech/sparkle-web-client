@@ -114,4 +114,31 @@ describe('Unit | Features | Property Work Orders | Utils | Validate', () => {
       validateWorkOrder({ assignees: ['y1', 'Y1'] }, customValues).assignees
     ).toEqual(errorMessages.assigneeDuplicate);
   });
+
+  it('should check assignee hours', () => {
+    expect(
+      validateWorkOrder(
+        { assignees: ['y1001249', { code: 'y1001290', hours: 2.25 }] },
+        customValues
+      ).assignees
+    ).toBeUndefined();
+    expect(
+      validateWorkOrder(
+        { assignees: [{ code: 'y1001290', hours: '' }] },
+        customValues
+      ).assignees
+    ).toBeUndefined();
+    expect(
+      validateWorkOrder(
+        { assignees: [{ code: 'y1001290', hours: 'abc' }] },
+        customValues
+      ).assignees
+    ).toEqual(errorMessages.assigneeHours);
+    expect(
+      validateWorkOrder(
+        { assignees: [{ code: 'y1001290', hours: 10000 }] },
+        customValues
+      ).assignees
+    ).toEqual(errorMessages.assigneeHours);
+  });
 });

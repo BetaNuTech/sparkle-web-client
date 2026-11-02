@@ -32,7 +32,15 @@ export interface WorkOrderFormValues {
   technicianNotes: string;
   permissionToEnter: boolean;
   tenantCaused: boolean;
-  assignees: string[]; // employee codes
+  assignees: AssigneeFormValue[];
+}
+
+// An assignee as the form holds it: the
+// employee code and the labor hours as
+// typed, blank when none are set
+export interface AssigneeFormValue {
+  code: string;
+  hours: string;
 }
 
 export const EMPTY_FORM_VALUES: WorkOrderFormValues = Object.freeze({
@@ -61,12 +69,17 @@ export const EMPTY_FORM_VALUES: WorkOrderFormValues = Object.freeze({
 
 // Lists compare as sets of codes: order
 // and case are not a change, blanks are ignored
-const toListKey = (codes: string[] = []): string =>
-  codes
-    .map((code) => `${code}`.trim().toLowerCase())
+const toListKey = (assignees: AssigneeFormValue[] = []): string =>
+  assignees
+    .map((assignee) => `${assignee?.code || ''}`.trim().toLowerCase())
     .filter(Boolean)
     .sort()
     .join('\u0000');
+
+const toHoursText = (hours: unknown): string => {
+  const value = Number(hours);
+  return Number.isFinite(value) && value > 0 ? `${value}` : '';
+};
 
 // Load a work order into form values,
 // restoring the custom-values casing of
@@ -90,11 +103,14 @@ export function toFormValues(
     }
   });
 
-  // Yardi reports assignees as records;
-  // the form holds their employee codes
+  // Yardi reports assignees as records; the
+  // form holds their codes and hours as text
   values.assignees = (workOrder.assignees || [])
-    .map((assignee) => `${assignee?.code || ''}`.trim())
-    .filter(Boolean);
+    .map((assignee) => ({
+      code: `${assignee?.code || ''}`.trim(),
+      hours: toHoursText(assignee?.hours)
+    }))
+    .filter((assignee) => assignee.code);
 
   values.priority = toDisplayValue(customValues?.priorities, values.priority);
   values.category = toDisplayValue(
@@ -123,16 +139,39 @@ export function toPayload(
     const value = values[key];
 
     // The assignee list replaces the whole
-    // assignment, so it is sent as a unit:
-    // when it changed, or when creating with any
+    // assignment, so it is sent as a unit when
+    // the people or any hours changed (or when
+    // creating with anyone picked). An assignee
+    // whose hours the user left alone goes as a
+    // bare code, which keeps Yardi's hours; one
+    // whose hours were typed or cleared goes
+    // with them, cleared meaning 0
     if (Array.isArray(EMPTY_FORM_VALUES[key])) {
-      const codes = (value || [])
-        .map((code) => `${code}`.trim())
-        .filter(Boolean);
-      const changed = original
-        ? toListKey(codes) !== toListKey(original[key])
-        : codes.length > 0;
-      if (changed) payload[key] = codes;
+      const list: AssigneeFormValue[] = (value || [])
+        .map((assignee) => ({
+          code: `${assignee?.code || ''}`.trim(),
+          hours: `${assignee?.hours ?? ''}`.trim()
+        }))
+        .filter((assignee) => assignee.code);
+      const before: AssigneeFormValue[] = original ? original[key] || [] : [];
+      const peopleChanged = original
+        ? toListKey(list) !== toListKey(before)
+        : list.length > 0;
+
+      const items = list.map((assignee) => {
+        const previous = before.find(
+          (item) => item.code.toLowerCase() === assignee.code.toLowerCase()
+        );
+        const previousHours = previous ? `${previous.hours || ''}`.trim() : '';
+        if (assignee.hours === previousHours) return assignee.code;
+        return {
+          code: assignee.code,
+          hours: assignee.hours === '' ? 0 : Number(assignee.hours)
+        };
+      });
+      const hoursChanged = items.some((item) => typeof item !== 'string');
+
+      if (peopleChanged || hoursChanged) payload[key] = items;
       return;
     }
 

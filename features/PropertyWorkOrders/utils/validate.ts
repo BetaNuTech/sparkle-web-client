@@ -2,9 +2,18 @@ import yardiCustomValues from '../../../common/models/yardi/customValues';
 import {
   yardiWorkOrderWritable,
   WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH,
+  WORK_ORDER_ASSIGNEE_HOURS_MAX,
   WORK_ORDER_MAX_LENGTHS
 } from '../../../common/models/yardi/workOrder';
+
 import { isReasonRequired } from './customValues';
+
+// Assignees arrive as the form holds them
+// (hours as text) or as the API takes them
+type AssigneeInput = string | { code: string; hours?: number | string };
+export type ValidatableWorkOrder = Omit<yardiWorkOrderWritable, 'assignees'> & {
+  assignees?: AssigneeInput[];
+};
 
 export type WorkOrderFieldErrors = Record<string, string>;
 
@@ -19,6 +28,7 @@ export const errorMessages = {
   emailFormat: 'Requestor email must be a valid email address',
   assigneeCode: `Assignee codes must be 1 to ${WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH} characters`,
   assigneeDuplicate: 'An employee is listed twice',
+  assigneeHours: `Hours must be a number from 0 to ${WORK_ORDER_ASSIGNEE_HOURS_MAX}`,
   tooLong: (max: number): string => `Must be ${max} characters or fewer`
 };
 
@@ -35,7 +45,7 @@ export const todayIsoDate = (now: Date = new Date()): string => {
 // against Yardi's rules before sending
 // it to the API, returning any field errors
 export default function validateWorkOrder(
-  values: yardiWorkOrderWritable,
+  values: ValidatableWorkOrder,
   customValues: yardiCustomValues,
   isCreating = false,
   today: string = todayIsoDate()
@@ -89,19 +99,38 @@ export default function validateWorkOrder(
     errors.requestorEmail = errorMessages.emailFormat;
   }
 
-  // Assignees are employee codes
-  const assignees = (values.assignees || []).map((code) => `${code}`.trim());
+  // Assignees are employee codes, each
+  // with optional labor hours
+  const assignees = (values.assignees || []).map((assignee) =>
+    typeof assignee === 'string'
+      ? { code: assignee.trim(), hours: '' }
+      : {
+          code: `${assignee?.code || ''}`.trim(),
+          hours: `${assignee?.hours ?? ''}`.trim()
+        }
+  );
+  const isBadHours = (hours: string) => {
+    if (hours === '') return false;
+    const value = Number(hours);
+    return (
+      !Number.isFinite(value) ||
+      value < 0 ||
+      value > WORK_ORDER_ASSIGNEE_HOURS_MAX
+    );
+  };
   if (
     assignees.some(
-      (code) => !code || code.length > WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH
+      ({ code }) => !code || code.length > WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH
     )
   ) {
     errors.assignees = errorMessages.assigneeCode;
   } else if (
-    new Set(assignees.map((code) => code.toLowerCase())).size !==
+    new Set(assignees.map(({ code }) => code.toLowerCase())).size !==
     assignees.length
   ) {
     errors.assignees = errorMessages.assigneeDuplicate;
+  } else if (assignees.some(({ hours }) => isBadHours(hours))) {
+    errors.assignees = errorMessages.assigneeHours;
   }
 
   return errors;

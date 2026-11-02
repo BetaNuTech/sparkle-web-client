@@ -26,6 +26,7 @@ import Details from './Details';
 import CancelPrompt from './CancelPrompt';
 import Attachments from './Attachments';
 import {
+  AssigneeFormValue,
   toFormValues,
   toPayload,
   trimValues,
@@ -172,8 +173,8 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
   };
 
   // The assignee list is set as a whole
-  const onAssigneesChange = (codes: string[]) => {
-    setValues((prev) => ({ ...prev, assignees: codes }));
+  const onAssigneesChange = (assignees: AssigneeFormValue[]) => {
+    setValues((prev) => ({ ...prev, assignees }));
     if (errors.assignees) {
       setClientErrors((prev) => {
         const rest = { ...prev };
