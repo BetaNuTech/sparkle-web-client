@@ -171,6 +171,19 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
     if (serverErrors.unit || serverErrors.resident) clearErrors();
   };
 
+  // The assignee list is set as a whole
+  const onAssigneesChange = (codes: string[]) => {
+    setValues((prev) => ({ ...prev, assignees: codes }));
+    if (errors.assignees) {
+      setClientErrors((prev) => {
+        const rest = { ...prev };
+        delete rest.assignees;
+        return rest;
+      });
+      if (serverErrors.assignees) clearErrors();
+    }
+  };
+
   const onQueueAdd = (files: File[]) =>
     setAttachmentQueue((prev) => [
       ...prev,
@@ -307,6 +320,7 @@ const WorkOrderEdit: FunctionComponent<Props> = ({
             onQueueAdd={onQueueAdd}
             onQueueRemove={onQueueRemove}
             onQueueDescriptionChange={onQueueDescriptionChange}
+            onAssigneesChange={onAssigneesChange}
           />
         ) : (
           <>

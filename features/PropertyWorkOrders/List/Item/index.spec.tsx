@@ -122,4 +122,23 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
     rerender(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
     expect(screen.queryByTestId('work-order-has-attachments')).toBeNull();
   });
+
+  it('should show who a work order is assigned to by name', () => {
+    const workOrder = {
+      ...yardiWorkOrderTwo,
+      assignees: [{ code: 'y1001249' }]
+    } as workOrderModel;
+    const { rerender } = render(
+      <Item
+        forceVisible
+        workOrder={workOrder}
+        employees={[{ code: 'y1001249', name: 'David Ramirez' }]}
+      />
+    );
+    expect(screen.getByTestId('order-assignees').textContent).toContain(
+      'David Ramirez'
+    );
+    rerender(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
+    expect(screen.queryByTestId('order-assignees')).toBeNull();
+  });
 });

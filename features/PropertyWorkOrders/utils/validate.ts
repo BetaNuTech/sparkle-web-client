@@ -1,6 +1,7 @@
 import yardiCustomValues from '../../../common/models/yardi/customValues';
 import {
   yardiWorkOrderWritable,
+  WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH,
   WORK_ORDER_MAX_LENGTHS
 } from '../../../common/models/yardi/workOrder';
 import { isReasonRequired } from './customValues';
@@ -16,6 +17,8 @@ export const errorMessages = {
   dueDateFormat: 'Due date must be YYYY-MM-DD',
   dueDatePast: 'Due date cannot be in the past',
   emailFormat: 'Requestor email must be a valid email address',
+  assigneeCode: `Assignee codes must be 1 to ${WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH} characters`,
+  assigneeDuplicate: 'An employee is listed twice',
   tooLong: (max: number): string => `Must be ${max} characters or fewer`
 };
 
@@ -84,6 +87,21 @@ export default function validateWorkOrder(
 
   if (values.requestorEmail && !EMAIL_PATTERN.test(values.requestorEmail)) {
     errors.requestorEmail = errorMessages.emailFormat;
+  }
+
+  // Assignees are employee codes
+  const assignees = (values.assignees || []).map((code) => `${code}`.trim());
+  if (
+    assignees.some(
+      (code) => !code || code.length > WORK_ORDER_ASSIGNEE_CODE_MAX_LENGTH
+    )
+  ) {
+    errors.assignees = errorMessages.assigneeCode;
+  } else if (
+    new Set(assignees.map((code) => code.toLowerCase())).size !==
+    assignees.length
+  ) {
+    errors.assignees = errorMessages.assigneeDuplicate;
   }
 
   return errors;

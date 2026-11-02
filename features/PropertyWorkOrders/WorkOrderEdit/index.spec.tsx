@@ -422,4 +422,31 @@ describe('Unit | Features | Property Work Orders | Work Order Edit', () => {
     await waitFor(() => expect(update.called).toEqual(true));
     expect(update.firstCall.args[2]).toEqual({ vendor: 'ACME' });
   });
+
+  it('should patch the whole assignee list when it changes', async () => {
+    const update = sinon
+      .stub(yardiApi, 'updateWorkOrderRequest')
+      .resolves(yardiWorkOrderOne);
+    render(
+      <WorkOrderEdit
+        {...baseProps}
+        workOrder={{ ...yardiWorkOrderOne, assignees: [{ code: 'y1001249' }] }}
+      />
+    );
+    userEvent.click(screen.getByTestId('work-order-edit'));
+    const boxes = screen.getAllByTestId(
+      'work-order-assignee'
+    ) as HTMLInputElement[];
+    expect(boxes[0].checked).toEqual(true);
+    userEvent.click(boxes[1]);
+
+    await act(async () => {
+      userEvent.click(screen.getByTestId('work-order-save'));
+    });
+
+    await waitFor(() => expect(update.called).toEqual(true));
+    expect(update.firstCall.args[2]).toEqual({
+      assignees: ['y1001249', 'y1001290']
+    });
+  });
 });

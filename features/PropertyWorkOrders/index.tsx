@@ -9,6 +9,7 @@ import WorkOrderList from './List';
 import useSorting from './hooks/useSorting';
 import useWorkOrders from './hooks/useWorkOrders';
 import useWorkOrderFilters from './hooks/useWorkOrderFilters';
+import useCustomValues from './hooks/useCustomValues';
 import Header from './Header';
 import useSearching from '../../common/hooks/useSearching';
 import settings from './settings';
@@ -33,6 +34,11 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
 }) => {
   // Server side filters
   const filterState = useWorkOrderFilters();
+
+  // Employee names for the rows' assignees;
+  // failures stay quiet here because the
+  // work orders request reports the same ones
+  const { data: customValues } = useCustomValues(() => null, property.id);
   const { data: workOrders, status: workOrdersStatus } = useWorkOrders(
     sendNotification,
     property.id,
@@ -97,6 +103,7 @@ const PropertyWorkOrders: FunctionComponent<Props> = ({
       />
       <WorkOrderList
         workOrders={sortedWorkOrders}
+        employees={customValues.employees || []}
         isLoading={workOrdersStatus === 'loading'}
         forceVisible={forceVisible}
         onClickWorkOrder={onClickWorkOrder}

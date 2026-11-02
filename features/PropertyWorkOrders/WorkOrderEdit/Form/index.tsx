@@ -5,6 +5,7 @@ import { WORK_ORDER_MAX_LENGTHS } from '../../../../common/models/yardi/workOrde
 import SwitchInput from '../../../../common/SwitchInput';
 import {
   getCategoryNames,
+  getEmployees,
   getReasons,
   getStatusNames,
   getSubCategories,
@@ -36,6 +37,7 @@ interface Props {
   onQueueAdd?(files: File[]): void;
   onQueueRemove?(id: string): void;
   onQueueDescriptionChange?(id: string, description: string): void;
+  onAssigneesChange?(codes: string[]): void;
 }
 
 // Select value that reveals the typed
@@ -121,7 +123,8 @@ const WorkOrderForm: FunctionComponent<Props> = ({
   canQueueAttachments,
   onQueueAdd,
   onQueueRemove,
-  onQueueDescriptionChange
+  onQueueDescriptionChange,
+  onAssigneesChange
 }) => {
   // Creating offers the current residents'
   // units; the user may still type one
@@ -209,6 +212,38 @@ const WorkOrderForm: FunctionComponent<Props> = ({
     values.resolution
   );
   const reasonRequired = isReasonRequired(customValues, values.status);
+
+  // Employees Yardi lets this property assign,
+  // plus any code already on the record that is
+  // no longer among them (staff get deactivated),
+  // so the current assignment always shows and
+  // can be cleared without blocking a save
+  const assignees = values.assignees || [];
+  const employees = getEmployees(customValues);
+  const assigneeOptions = [
+    ...employees,
+    ...assignees
+      .filter(
+        (code) =>
+          !employees.some(
+            (employee) => employee.code.toLowerCase() === code.toLowerCase()
+          )
+      )
+      .map((code) => ({ code, name: `${code} (no longer on staff)` }))
+  ];
+  const isAssigned = (code: string) =>
+    assignees.some((picked) => picked.toLowerCase() === code.toLowerCase());
+
+  const onAssigneeToggle = (code: string) => {
+    if (!onAssigneesChange) return;
+    onAssigneesChange(
+      isAssigned(code)
+        ? assignees.filter(
+            (picked) => picked.toLowerCase() !== code.toLowerCase()
+          )
+        : [...assignees, code]
+    );
+  };
 
   const textInput = (
     name: string,
@@ -387,6 +422,51 @@ const WorkOrderForm: FunctionComponent<Props> = ({
           {resolutions.length > 0 &&
             select('resolution', 'Resolution', resolutions)}
         </div>
+        {assigneeOptions.length > 0 && (
+          <Field
+            name="assignees"
+            label="Assigned to"
+            error={errors.assignees}
+            hint={
+              assignees.length
+                ? ''
+                : 'Nobody yet; tick the staff who should work this order'
+            }
+          >
+            <ul
+              className={styles.assignees}
+              data-testid="work-order-input-assignees"
+            >
+              {assigneeOptions.map((employee) => (
+                <li key={employee.code} className={styles.assignees__option}>
+                  <label className={styles.assignees__label}>
+                    <input
+                      type="checkbox"
+                      name="assignees"
+                      value={employee.code}
+                      checked={isAssigned(employee.code)}
+                      disabled={isDisabled}
+                      onChange={() => onAssigneeToggle(employee.code)}
+                      data-testid="work-order-assignee"
+                    />
+                    <span>{employee.name}</span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            {assignees.length > 0 && (
+              <button
+                type="button"
+                className={styles.field__link}
+                disabled={isDisabled}
+                onClick={() => onAssigneesChange && onAssigneesChange([])}
+                data-testid="work-order-assignees-clear"
+              >
+                Unassign everyone
+              </button>
+            )}
+          </Field>
+        )}
         <div className={styles.form__row}>
           {textInput('vendor', 'Vendor')}
           {textInput('dueDate', 'Due Date', {
@@ -437,7 +517,8 @@ WorkOrderForm.defaultProps = {
   canQueueAttachments: false,
   onQueueAdd: () => null,
   onQueueRemove: () => null,
-  onQueueDescriptionChange: () => null
+  onQueueDescriptionChange: () => null,
+  onAssigneesChange: () => null
 };
 
 export default WorkOrderForm;

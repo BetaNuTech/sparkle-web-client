@@ -355,4 +355,53 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Form | Unit
     rerender(<Form {...baseProps} />);
     expect(screen.queryByTestId('work-order-attachment-queue')).toBeNull();
   });
+
+  it('should offer the property employees as assignees and hand the list back', () => {
+    const onAssigneesChange = sinon.spy();
+    const { rerender } = render(
+      <Form {...baseProps} onAssigneesChange={onAssigneesChange} />
+    );
+    const boxes = screen.getAllByTestId(
+      'work-order-assignee'
+    ) as HTMLInputElement[];
+    expect(boxes.map((b) => b.value)).toEqual([
+      'y1001249',
+      'y1001290',
+      'y1001339'
+    ]);
+    expect(screen.queryByTestId('work-order-assignees-clear')).toBeNull();
+
+    userEvent.click(boxes[1]);
+    expect(onAssigneesChange.firstCall.args).toEqual([['y1001290']]);
+
+    rerender(
+      <Form
+        {...baseProps}
+        values={{ ...EMPTY_FORM_VALUES, assignees: ['y1001290', 'y9999'] }}
+        onAssigneesChange={onAssigneesChange}
+      />
+    );
+    const labels = Array.from(
+      screen.getByTestId('work-order-input-assignees').querySelectorAll('label')
+    ).map((l) => l.textContent);
+    expect(labels).toContain('y9999 (no longer on staff)');
+    const checked = (
+      screen.getAllByTestId('work-order-assignee') as HTMLInputElement[]
+    )
+      .filter((b) => b.checked)
+      .map((b) => b.value);
+    expect(checked).toEqual(['y1001290', 'y9999']);
+
+    userEvent.click(screen.getAllByTestId('work-order-assignee')[1]);
+    expect(onAssigneesChange.secondCall.args).toEqual([['y9999']]);
+    userEvent.click(screen.getByTestId('work-order-assignees-clear'));
+    expect(onAssigneesChange.thirdCall.args).toEqual([[]]);
+  });
+
+  it('should hide the assignee picker when the property has no employees and nothing is assigned', () => {
+    render(
+      <Form {...baseProps} customValues={{ ...customValues, employees: [] }} />
+    );
+    expect(screen.queryByTestId('work-order-input-assignees')).toBeNull();
+  });
 });

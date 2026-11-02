@@ -22,7 +22,17 @@ const customValues: yardiCustomValues = {
     { status: 'Canceled', reason: 'Duplicate', required: false },
     { status: 'Canceled', reason: 'Resident request', required: false }
   ],
-  resolutions: ['Fixed', 'Replaced']
+  resolutions: ['Fixed', 'Replaced'],
+  employees: [
+    {
+      code: 'y1001249',
+      name: 'David Ramirez',
+      email: 'dramirez@example.com',
+      phone: '9195550101'
+    },
+    { code: 'y1001290', name: 'Victor Olivo' },
+    { code: 'y1001339', name: 'Florin Ipate' }
+  ]
 };
 
 export default customValues;

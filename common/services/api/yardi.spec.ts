@@ -344,6 +344,34 @@ describe('Unit | Services | API | Yardi', () => {
     expect(url.endsWith('/yardi/custom-values')).toEqual(true);
   });
 
+  test('it includes the employees from the custom values, or none', async () => {
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+    const attributes = { ...customValuesJson };
+    delete attributes.id;
+    const fetch = sinon.stub(global, 'fetch');
+    fetch
+      .onFirstCall()
+      .resolves(
+        new Response(JSON.stringify({ data: { id: 'prop1', attributes } }), {
+          status: 200
+        })
+      );
+    const without = { ...attributes };
+    delete without.employees;
+    fetch
+      .onSecondCall()
+      .resolves(
+        new Response(
+          JSON.stringify({ data: { id: 'prop1', attributes: without } }),
+          { status: 200 }
+        )
+      );
+    expect((await yardiApi.getCustomValuesRequest('p')).employees).toEqual(
+      customValuesJson.employees
+    );
+    expect((await yardiApi.getCustomValuesRequest('p')).employees).toEqual([]);
+  });
+
   test('it rejects an unexpected custom values payload', async () => {
     const expected = true;
     sinon.stub(window, 'fetch').resolves(jsonOK({ data: { id: 'prop1' } }));

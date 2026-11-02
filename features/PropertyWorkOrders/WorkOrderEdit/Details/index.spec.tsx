@@ -60,4 +60,19 @@ describe('Unit | Features | Property Work Orders | Work Order Edit | Details', (
       'No unit'
     );
   });
+
+  it('should name the assignees, falling back to a code that is no longer on staff', () => {
+    render(
+      <Details
+        workOrder={{
+          ...yardiWorkOrderOne,
+          assignees: [{ code: 'y1001249', hours: 2 }, { code: 'y9999' }]
+        }}
+        customValues={customValues}
+      />
+    );
+    expect(
+      screen.getByTestId('work-order-detail-assignees').textContent
+    ).toContain('David Ramirez (2 h), y9999');
+  });
 });
