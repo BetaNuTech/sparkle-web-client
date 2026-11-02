@@ -82,6 +82,23 @@ export function getEmployeeName(
   return (match && match.name) || code;
 }
 
+// What to show when nobody is assigned;
+// work orders are expected to be assigned,
+// so the gap is worth stating (matches iOS)
+export const UNASSIGNED_LABEL = 'Unassigned';
+
+// One line naming a work order's assignees,
+// or the unassigned label
+export function toAssigneeSummary(
+  customValues: yardiCustomValues,
+  assignees: yardiWorkOrderAssignee[] = []
+): string {
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  return (
+    toAssigneeLabels(customValues, assignees).join(', ') || UNASSIGNED_LABEL
+  );
+}
+
 // Display names for a work order's
 // assignees, with hours when Yardi gives them
 export function toAssigneeLabels(

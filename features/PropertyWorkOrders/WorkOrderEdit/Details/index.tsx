@@ -8,7 +8,7 @@ import { phoneNumber } from '../../../../common/utils/humanize';
 import {
   getCategoryNames,
   getStatusNames,
-  toAssigneeLabels,
+  toAssigneeSummary,
   toDisplayValue
 } from '../../utils/customValues';
 import styles from '../styles.module.scss';
@@ -42,7 +42,7 @@ const WorkOrderDetails: FunctionComponent<Props> = ({
       {
         name: 'assignees',
         label: 'Assigned to',
-        value: toAssigneeLabels(customValues, workOrder.assignees).join(', ')
+        value: toAssigneeSummary(customValues, workOrder.assignees)
       },
       // Yardi files a request without a unit
       // against the property itself

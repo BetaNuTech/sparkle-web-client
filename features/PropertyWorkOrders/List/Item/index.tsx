@@ -2,7 +2,7 @@ import { FunctionComponent, useRef } from 'react';
 import clsx from 'clsx';
 import WorkOrderModel from '../../../../common/models/yardi/workOrder';
 import { yardiEmployee } from '../../../../common/models/yardi/customValues';
-import { toAssigneeLabels } from '../../utils/customValues';
+import { toAssigneeSummary } from '../../utils/customValues';
 import dateUtil from '../../../../common/utils/date';
 import { phoneNumber } from '../../../../common/utils/humanize';
 import Info, { InfoLabel, InfoValue } from '../../../../common/Yardi/Info';
@@ -27,10 +27,10 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
   forceVisible,
   isMobile
 }) => {
-  const assigned = toAssigneeLabels(
+  const assigned = toAssigneeSummary(
     { employees: employees || [] } as any,
     workOrder.assignees
-  ).join(', ');
+  );
 
   const hasUpdateInfo = Boolean(workOrder.updatedAt || workOrder.updatedBy);
 
@@ -152,13 +152,11 @@ const WorkOrderListItem: FunctionComponent<Props> = ({
               />
             )}
 
-            {assigned && (
-              <Info
-                label="Assigned to"
-                value={assigned}
-                data-testid="order-assignees"
-              />
-            )}
+            <Info
+              label="Assigned to"
+              value={assigned}
+              data-testid="order-assignees"
+            />
 
             {workOrder.dueDate && (
               <Info

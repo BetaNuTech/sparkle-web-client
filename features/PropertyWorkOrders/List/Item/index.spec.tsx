@@ -139,6 +139,8 @@ describe('Unit | Features | Property Work Orders | List | Item', () => {
       'David Ramirez'
     );
     rerender(<Item forceVisible workOrder={yardiWorkOrderTwo} />);
-    expect(screen.queryByTestId('order-assignees')).toBeNull();
+    expect(screen.getByTestId('order-assignees').textContent).toContain(
+      'Unassigned'
+    );
   });
 });
