@@ -131,6 +131,10 @@ Uses Next.js environment variable system. Key variables include:
 - API base URLs
 - Feature flags
 
+### Jobs is hidden until it's reworked (Nov 2026)
+
+Jobs and bids aren't in use. The job logic will be redone to be more custom and to drop the Trello integration. Until then, `supportJobs` in `config/features.ts` is `false`. That flag hides the property profile's **Jobs** / **View Jobs** links (`canUserAccessJob` in `features/PropertyProfile/index.tsx`), and the public About page no longer lists jobs. The pages under `pages/properties/[id]/jobs` and the `features/Job*` code are still in place and load if someone opens the URL directly: don't delete them, and don't spend effort on them unless asked. The iOS app (sapphire-inspections-ios) hides its Job Tracking row the same way. The sparkle-functions job and bid endpoints are still deployed.
+
 ### Deployment
 
 - Docker support with Alpine Node image
