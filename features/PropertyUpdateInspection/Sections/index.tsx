@@ -71,6 +71,7 @@ interface Props {
   onRegenerateReport(): void;
   inspectionReportURL: string;
   isRequestingReport: boolean;
+  pendingUploadsCount?: number;
   showAction: boolean;
   searchParam: string;
   onSearchKeyDown: (
@@ -120,6 +121,7 @@ const Sections: FunctionComponent<Props> = ({
   onRegenerateReport,
   inspectionReportURL,
   isRequestingReport,
+  pendingUploadsCount,
   showAction,
   searchParam,
   onSearchKeyDown,
@@ -174,6 +176,7 @@ const Sections: FunctionComponent<Props> = ({
         onRegenerateReport={onRegenerateReport}
         inspectionReportURL={inspectionReportURL}
         isRequestingReport={isRequestingReport}
+        pendingUploadsCount={pendingUploadsCount}
         searchQuery={searchParam}
         onSearchKeyDown={onSearchKeyDown}
         onClearSearch={onClearSearch}

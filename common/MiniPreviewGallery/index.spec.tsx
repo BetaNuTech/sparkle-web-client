@@ -45,4 +45,19 @@ describe('Unit | Common | Mini Preview Gallery', () => {
     );
     expect(galleryItems.length).toEqual(4);
   });
+
+  it('should render a placeholder instead of an image for a photo still uploading', () => {
+    const props = {
+      photos: [
+        { id: 'photo-1', caption: 'caption-1', downloadURL: 'downloadURL-1' },
+        { id: 'photo-2', caption: 'caption-2', downloadURL: '' }
+      ]
+    };
+    render(<MiniPreviewGallery {...props} />);
+
+    const pending = screen.queryAllByTestId('miniPreviewGallery-pending-item');
+    const images = screen.queryAllByRole('img');
+    expect(pending.length).toEqual(1);
+    expect(images.length).toEqual(1);
+  });
 });

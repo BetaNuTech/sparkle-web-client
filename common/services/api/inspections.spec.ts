@@ -4,6 +4,7 @@ import currentUser from '../../utils/currentUser';
 import deepClone from '../../../__tests__/helpers/deepClone';
 import { fullInspection } from '../../../__mocks__/inspections';
 import ErrorUnauthorized from '../../models/errors/unauthorized';
+import ErrorBadRequest from '../../models/errors/badRequest';
 import inspectionModel from '../../models/inspection';
 import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 
@@ -40,6 +41,33 @@ const API_INSP_PDF_REPORT_RESULT = {
   }
 };
 
+const PENDING_PREFIX = `inspection "${fullInspection.id}" has 2 photo(s) uploading from the inspector's device;`;
+
+const PENDING_UPLOADS_WARNING = {
+  id: fullInspection.id,
+  type: 'inspection',
+  title: 'Photos still uploading',
+  detail: [
+    PENDING_PREFIX,
+    'PDF report not requested, please wait for them to finish',
+    'and request the report again'
+  ].join(' ')
+};
+
+const API_INSP_TEMPLATE_UPDATE_PENDING_UPLOADS_RESULT = {
+  ...API_INSP_TEMPLATE_UPDATE_RESULT,
+  meta: { warnings: [PENDING_UPLOADS_WARNING] }
+};
+
+const API_INSP_PDF_REPORT_PENDING_UPLOADS_ERRORS = {
+  errors: [
+    {
+      title: 'Photos still uploading',
+      detail: `${PENDING_PREFIX} please wait for them to finish and try again`
+    }
+  ]
+};
+
 const FILE = new File(['(⌐□_□)'], 'test.png', { type: 'image/png' });
 
 const jsonOK = (body) => {
@@ -51,8 +79,8 @@ const jsonOK = (body) => {
   return Promise.resolve(mockResponse);
 };
 
-const jsonErr = (status = 401) => {
-  const mockResponse = new Response(JSON.stringify([]), {
+const jsonErr = (status = 401, body: any = []) => {
+  const mockResponse = new Response(JSON.stringify(body), {
     status,
     headers: { 'Content-type': 'application/json' }
   });
@@ -131,6 +159,45 @@ describe('Unit | Services | API | Inspections', () => {
       } as inspectionTemplateUpdateModel
     );
 
+    expect(actual).toEqual(expected);
+  });
+
+  test('it does not attach warnings to an update inspection result without any', async () => {
+    const expected = false;
+
+    sinon
+      .stub(window, 'fetch')
+      .resolves(jsonOK(API_INSP_TEMPLATE_UPDATE_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    const result = await inspectionsApi.updateInspectionTemplate(
+      fullInspection.id,
+      {
+        items: { one: { isItemNA: true } }
+      } as inspectionTemplateUpdateModel
+    );
+
+    const actual = 'warnings' in result;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it resolves the pending uploads warning from a successful update inspection request', async () => {
+    const expected = {
+      inspection: deepClone(fullInspection) as inspectionModel,
+      warnings: [PENDING_UPLOADS_WARNING]
+    };
+
+    sinon
+      .stub(window, 'fetch')
+      .resolves(jsonOK(API_INSP_TEMPLATE_UPDATE_PENDING_UPLOADS_RESULT));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    const { warnings, ...inspection } =
+      await inspectionsApi.updateInspectionTemplate(fullInspection.id, {
+        items: { one: { isItemNA: true } }
+      } as inspectionTemplateUpdateModel);
+
+    const actual = { inspection, warnings };
     expect(actual).toEqual(expected);
   });
 
@@ -246,6 +313,38 @@ describe('Unit | Services | API | Inspections', () => {
     }
 
     const actual = result instanceof ErrorUnauthorized;
+    expect(actual).toEqual(expected);
+  });
+
+  test('it rejects with a bad request error carrying the pending uploads detail of a refused PDF report', async () => {
+    const expected = {
+      isBadRequest: true,
+      errors: [
+        {
+          name: 'unknown',
+          title: 'Photos still uploading',
+          detail: API_INSP_PDF_REPORT_PENDING_UPLOADS_ERRORS.errors[0].detail
+        }
+      ]
+    };
+
+    sinon
+      .stub(window, 'fetch')
+      .resolves(jsonErr(400, API_INSP_PDF_REPORT_PENDING_UPLOADS_ERRORS));
+    sinon.stub(currentUser, 'getIdToken').resolves('token');
+
+    let result = null;
+    try {
+      // eslint-disable-next-line import/no-named-as-default-member
+      await inspectionsApi.generatePdfReport(fullInspection.id);
+    } catch (err) {
+      result = err;
+    }
+
+    const actual = {
+      isBadRequest: result instanceof ErrorBadRequest,
+      errors: result.errors
+    };
     expect(actual).toEqual(expected);
   });
 

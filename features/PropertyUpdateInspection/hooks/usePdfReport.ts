@@ -6,6 +6,8 @@ import BaseError from '../../../common/models/errors/baseError';
 import ErrorBadRequest from '../../../common/models/errors/badRequest';
 import ErrorForbidden from '../../../common/models/errors/forbidden';
 import dateUtils from '../../../common/utils/date';
+import { findPendingUploadsMessage } from '../../../common/utils/api/pendingUploads';
+import countPendingUploads from '../../../common/utils/inspection/countPendingUploads';
 
 const PREFIX = 'features: EditBid: hooks: usePDFReport:';
 
@@ -18,6 +20,7 @@ interface usePdfReportResult {
   showRestartAction: boolean;
   hasPdfReportGenerationFailed: boolean;
   isRequestingReport: boolean;
+  pendingUploadsCount: number;
 }
 
 type userNotifications = (message: string, options?: any) => any;
@@ -37,6 +40,16 @@ export default function usePDFReport(
       // User not allowed to request to generate PDF report
       errorMessage = 'You are not allowed to generate a PDF';
     } else if (apiError instanceof ErrorBadRequest) {
+      // API refused to build the report while photos
+      // or signatures are still uploading from the
+      // inspector's device: nothing was queued or changed,
+      // so tell the user to wait rather than report a failure
+      const pendingUploads = findPendingUploadsMessage(apiError.errors);
+      if (pendingUploads && pendingUploads.detail) {
+        sendNotification(pendingUploads.detail, { type: 'warning' });
+        return;
+      }
+
       errorMessage =
         'Bad request, there was an issue regenerating the PDF Report, please contact an admin';
     }
@@ -90,6 +103,12 @@ export default function usePDFReport(
   const hasPdfReportGenerationFailed =
     inspection.inspectionReportStatus === 'completed_failure';
 
+  // Photos and signatures still uploading from the
+  // inspector's device: the API refuses to build a
+  // report until this reaches zero, and the count
+  // updates live as the device syncs each file
+  const pendingUploadsCount = countPendingUploads(inspection.template);
+
   // Determine if user can request for PDF report
   // if PDF report is generation failed
   // or if report is queued or generating and has been for over 3 minutes
@@ -108,6 +127,7 @@ export default function usePDFReport(
     isPdfReportQueued,
     showRestartAction,
     hasPdfReportGenerationFailed,
-    isRequestingReport
+    isRequestingReport,
+    pendingUploadsCount
   };
 }

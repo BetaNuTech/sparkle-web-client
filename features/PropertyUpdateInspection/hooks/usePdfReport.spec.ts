@@ -1,9 +1,18 @@
 import sinon from 'sinon';
 
 import { renderHook } from '@testing-library/react-hooks';
+import { act } from '@testing-library/react';
 
 import { inspectionA } from '../../../__mocks__/inspections';
+import inspectionsApi from '../../../common/services/api/inspections';
+import errorReports from '../../../common/services/api/errorReports';
+import ErrorBadRequest from '../../../common/models/errors/badRequest';
 import usePDFReport from './usePdfReport';
+
+const PENDING_UPLOADS_DETAIL = [
+  `inspection "${inspectionA.id}" has 2 photo(s) still uploading from the inspector's device;`,
+  'please wait for them to finish and try again'
+].join(' ');
 
 describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
   afterEach(() => sinon.restore());
@@ -120,5 +129,106 @@ describe('Unit | Features | Inspection Edit | Hooks | Use PDF Report', () => {
     );
     expect(result.current.isPdfReportStatusShowing).toBeTruthy();
     expect(result.current.hasPdfReportGenerationFailed).toBeTruthy();
+  });
+
+  test('should warn with the API detail when a report is refused because photos are still uploading', async () => {
+    const expected = {
+      notification: [PENDING_UPLOADS_DETAIL, { type: 'warning' }],
+      isRequestingReport: false,
+      errorReported: false
+    };
+    const sendNotification = sinon.spy();
+    const sendErrorReport = sinon.stub(errorReports, 'send').resolves(true);
+    const apiError = new ErrorBadRequest('fix request errors');
+    apiError.addErrors([
+      { title: 'Photos still uploading', detail: PENDING_UPLOADS_DETAIL }
+    ]);
+    sinon.stub(inspectionsApi, 'generatePdfReport').rejects(apiError);
+
+    const completedInspection = {
+      ...inspectionA,
+      inspectionReportStatus: 'completed_success'
+    };
+    const { result } = renderHook(() =>
+      usePDFReport(completedInspection, sendNotification, true, false)
+    );
+
+    await act(async () => {
+      await result.current.generatePdfReport();
+    });
+
+    const actual = {
+      notification: sendNotification.firstCall.args,
+      isRequestingReport: result.current.isRequestingReport,
+      errorReported: sendErrorReport.called
+    };
+    expect(sendNotification.calledOnce).toBeTruthy();
+    expect(actual).toEqual(expected);
+  });
+
+  test('should keep the generic bad request error for other refused report requests', async () => {
+    const expected = {
+      notification: [
+        'Bad request, there was an issue regenerating the PDF Report, please contact an admin',
+        { type: 'error' }
+      ],
+      errorReported: true
+    };
+    const sendNotification = sinon.spy();
+    const sendErrorReport = sinon.stub(errorReports, 'send').resolves(true);
+    const apiError = new ErrorBadRequest('fix request errors');
+    apiError.addErrors([
+      { detail: `inspection "${inspectionA.id}" not completed` }
+    ]);
+    sinon.stub(inspectionsApi, 'generatePdfReport').rejects(apiError);
+
+    const { result } = renderHook(() =>
+      usePDFReport(inspectionA, sendNotification, true, false)
+    );
+
+    await act(async () => {
+      await result.current.generatePdfReport();
+    });
+
+    const actual = {
+      notification: sendNotification.firstCall.args,
+      errorReported: sendErrorReport.called
+    };
+    expect(actual).toEqual(expected);
+  });
+
+  test('should count the photos and signatures still uploading from the inspector device', () => {
+    const expected = 3;
+    const inspection = {
+      ...inspectionA,
+      template: {
+        items: {
+          'item-1': {
+            photosData: {
+              'photo-1': { caption: '', downloadURL: '' },
+              'photo-2': { caption: '', downloadURL: 'https://cdn.test/2.jpg' },
+              'photo-3': { caption: '', downloadURL: '' }
+            }
+          },
+          'item-2': { signatureTimestampKey: '1700000000' },
+          'item-3': null
+        }
+      }
+    } as any;
+
+    const { result } = renderHook(() =>
+      usePDFReport(inspection, sinon.spy(), true, false)
+    );
+
+    expect(result.current.pendingUploadsCount).toEqual(expected);
+  });
+
+  test('should count no pending uploads for an inspection without a template', () => {
+    const expected = 0;
+    const { result } = renderHook(() =>
+      usePDFReport(inspectionA, sinon.spy(), true, false)
+    );
+
+    expect(result.current.pendingUploadsCount).toEqual(expected);
   });
 });

@@ -2,7 +2,9 @@ import currentUser from '../../utils/currentUser';
 import inspectionModel from '../../models/inspection';
 import inspectionTemplateUpdateModel from '../../models/inspections/templateUpdate';
 import inspectionPhotoDataModel from '../../models/inspectionTemplateItemPhotoData';
+import inspectionTemplateUpdateResultModel from '../../models/inspections/templateUpdateResult';
 import createApiError from '../../utils/api/createError';
+import parseWarnings from '../../utils/api/parseWarnings';
 
 const PREFIX = 'services: api: inspections:';
 const API_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_FUNCTIONS_DOMAIN;
@@ -105,9 +107,9 @@ const patchInspectionTemplateRequest = (
 const updateInspectionTemplate = async (
   inspectionId: string,
   inspectionTemplate: inspectionTemplateUpdateModel
-): Promise<inspectionModel> => {
+): Promise<inspectionTemplateUpdateResultModel> => {
   let authToken = '';
-  let inspection: inspectionModel = null;
+  let inspection: inspectionTemplateUpdateResultModel = null;
 
   try {
     authToken = await currentUser.getIdToken();
@@ -153,14 +155,22 @@ const updateInspectionTemplate = async (
     inspection = {
       id: responseJson.data.id,
       ...responseJson.data.attributes
-    } as inspectionModel;
+    } as inspectionTemplateUpdateResultModel;
   } else {
     // 204 status changes had no
     // impact on inspection
     inspection = {
       id: inspectionId,
       template: inspectionTemplate
-    } as inspectionModel;
+    } as inspectionTemplateUpdateResultModel;
+  }
+
+  // Attach any non-fatal warnings, such as
+  // a PDF report not being requested because
+  // photos are still uploading from the inspector's device
+  const warnings = parseWarnings(responseJson);
+  if (warnings.length) {
+    inspection.warnings = warnings;
   }
 
   return inspection;
@@ -334,7 +344,11 @@ const updateUnitNumber = async (
 
   let response = null;
   try {
-    response = await patchUnitNumberRequest(authToken, inspectionId, unitNumber);
+    response = await patchUnitNumberRequest(
+      authToken,
+      inspectionId,
+      unitNumber
+    );
   } catch (err) {
     throw Error(`${PREFIX} updateUnitNumber: PATCH request failed: ${err}`);
   }

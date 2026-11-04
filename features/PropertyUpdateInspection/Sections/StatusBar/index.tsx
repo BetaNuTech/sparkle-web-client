@@ -23,6 +23,7 @@ interface Props {
   onRegenerateReport(): void;
   inspectionReportURL: string;
   isRequestingReport: boolean;
+  pendingUploadsCount?: number;
   searchQuery: string;
   onSearchKeyDown: (
     ev: React.KeyboardEvent<HTMLInputElement> | ChangeEvent<HTMLInputElement>
@@ -49,6 +50,7 @@ const StatusBar: FunctionComponent<Props> = ({
   onRegenerateReport,
   inspectionReportURL,
   isRequestingReport,
+  pendingUploadsCount,
   searchQuery,
   onSearchKeyDown,
   onClearSearch
@@ -101,6 +103,7 @@ const StatusBar: FunctionComponent<Props> = ({
                   hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
                   onRegenerateReport={onRegenerateReport}
                   isRequestingReport={isRequestingReport}
+                  pendingUploadsCount={pendingUploadsCount}
                   isSmallGray={true} // eslint-disable-line react/jsx-boolean-value
                 />
               ) : (

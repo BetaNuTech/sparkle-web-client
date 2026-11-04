@@ -28,6 +28,7 @@ interface Props {
   hasPdfReportGenerationFailed: boolean;
   onRegenerateReport(): void;
   isRequestingReport: boolean;
+  pendingUploadsCount?: number;
   onEditUnitNumber(): void;
   canEditUnitNumber: boolean;
 }
@@ -51,6 +52,7 @@ const Header: FunctionComponent<Props> = ({
   hasPdfReportGenerationFailed,
   onRegenerateReport,
   isRequestingReport,
+  pendingUploadsCount,
   onEditUnitNumber,
   canEditUnitNumber
 }) => {
@@ -117,6 +119,7 @@ const Header: FunctionComponent<Props> = ({
         hasPdfReportGenerationFailed={hasPdfReportGenerationFailed}
         onRegenerateReport={onRegenerateReport}
         isRequestingReport={isRequestingReport}
+        pendingUploadsCount={pendingUploadsCount}
       />
     </div>
   );
@@ -155,9 +158,7 @@ const Header: FunctionComponent<Props> = ({
             </button>
           ) : (
             inspection.unitNumber && (
-              <span className="-fz-small">
-                Unit #: {inspection.unitNumber}
-              </span>
+              <span className="-fz-small">Unit #: {inspection.unitNumber}</span>
             )
           )}
         </>

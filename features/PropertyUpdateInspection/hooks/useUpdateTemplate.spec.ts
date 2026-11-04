@@ -534,4 +534,74 @@ describe('Unit | Features | Property Update Inspection | Hooks | Use Update Temp
     expect(actual).toEqual(expected);
     expect(updatedInspectionFn.called).toBeTruthy();
   });
+
+  test('should notify success and warn when a PDF report was not requested while photos are uploading', async () => {
+    const detail = [
+      `inspection "${INSPECTION_ID}" has 2 photo(s) still uploading from the inspector's device;`,
+      'PDF report not requested, please wait for them to finish',
+      'and request the report again'
+    ].join(' ');
+    const expected = [
+      ['Inspection published successfully', { type: 'success' }],
+      [detail, { type: 'warning' }]
+    ];
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    sinon.stub(errorReports, 'send').resolves(true);
+    sinon.stub(inspectionsApi, 'updateInspectionTemplate').resolves({
+      id: INSPECTION_ID,
+      warnings: [
+        {
+          id: INSPECTION_ID,
+          type: 'inspection',
+          title: 'Photos still uploading',
+          detail
+        }
+      ]
+    });
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateTemplate(
+          PROPERTY_ID,
+          INSPECTION_ID,
+          EMPTY_PREVIOUS_UPDATES,
+          CURRENT_TEMPLATE,
+          sendNotification
+        )
+      );
+      await result.current.publish(new Map(), new Map());
+    });
+
+    const actual = sendNotification.getCalls().map((call) => call.args);
+    expect(actual).toEqual(expected);
+  });
+
+  test('should only notify success when the API published without warnings', async () => {
+    const expected = [
+      ['Inspection published successfully', { type: 'success' }]
+    ];
+    const sendNotification = sinon.spy();
+    sinon.stub(currentUser, 'getIdToken').callsFake(() => true);
+    sinon.stub(errorReports, 'send').resolves(true);
+    sinon
+      .stub(inspectionsApi, 'updateInspectionTemplate')
+      .resolves({ id: INSPECTION_ID });
+
+    await act(async () => {
+      const { result } = renderHook(() =>
+        useUpdateTemplate(
+          PROPERTY_ID,
+          INSPECTION_ID,
+          EMPTY_PREVIOUS_UPDATES,
+          CURRENT_TEMPLATE,
+          sendNotification
+        )
+      );
+      await result.current.publish(new Map(), new Map());
+    });
+
+    const actual = sendNotification.getCalls().map((call) => call.args);
+    expect(actual).toEqual(expected);
+  });
 });

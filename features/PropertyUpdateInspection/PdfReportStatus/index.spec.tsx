@@ -141,4 +141,62 @@ describe('Unit | Features | Property Update Inspection | PDF Report Status', () 
     const actual = onCopyReportURL.called;
     expect(actual).toEqual(expected);
   });
+
+  it('should show how many photos are still uploading from the inspector device', () => {
+    const pendingUploadsCount = 3;
+    const expected = `${pendingUploadsCount} photos still uploading from the inspector's device`;
+    const props = {
+      isPdfReportStatusShowing: true,
+      isPdfReportOutOfDate: true,
+      pendingUploadsCount
+    };
+
+    render(<PDFStatusReport {...props} />);
+
+    const pdfReportText = screen.queryByTestId('header-pdf-report-text');
+    expect(pdfReportText).toHaveTextContent(expected);
+  });
+
+  it('should use the singular for one photo still uploading', () => {
+    const pendingUploadsCount = 1;
+    const expected = `${pendingUploadsCount} photo still uploading from the inspector's device`;
+    const props = {
+      isPdfReportStatusShowing: true,
+      pendingUploadsCount
+    };
+
+    render(<PDFStatusReport {...props} />);
+
+    const pdfReportText = screen.queryByTestId('header-pdf-report-text');
+    expect(pdfReportText).toHaveTextContent(expected);
+  });
+
+  it('should hide the restart and report link actions while photos are still uploading', () => {
+    const props = {
+      inspectionReportURL: 'https://google.com',
+      isPdfReportStatusShowing: true,
+      hasPdfReportGenerationFailed: true,
+      showRestartAction: true,
+      pendingUploadsCount: 2
+    };
+
+    render(<PDFStatusReport {...props} />);
+
+    expect(screen.queryByTestId('pdf-report-restart-action')).toBeNull();
+    expect(screen.queryByTestId('pdf-report-copy-url-action')).toBeNull();
+  });
+
+  it('should still show a report that is generating over pending uploads', () => {
+    const expected = 'Generating PDF';
+    const props = {
+      isPdfReportStatusShowing: true,
+      isPdfReportGenerating: true,
+      pendingUploadsCount: 2
+    };
+
+    render(<PDFStatusReport {...props} />);
+
+    const pdfReportText = screen.queryByTestId('header-pdf-report-text');
+    expect(pdfReportText).toHaveTextContent(expected);
+  });
 });

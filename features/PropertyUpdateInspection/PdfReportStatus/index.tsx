@@ -14,6 +14,7 @@ interface Props {
   onRegenerateReport(): void;
   isSmallGray?: boolean;
   isRequestingReport: boolean;
+  pendingUploadsCount?: number;
 }
 
 const PdfReportStatus: FunctionComponent<Props> = ({
@@ -27,8 +28,10 @@ const PdfReportStatus: FunctionComponent<Props> = ({
   hasPdfReportGenerationFailed,
   onRegenerateReport,
   isSmallGray,
-  isRequestingReport
+  isRequestingReport,
+  pendingUploadsCount
 }) => {
+  const hasPendingUploads = pendingUploadsCount > 0;
   let PDFStatusText = '';
 
   if (isPdfReportOutOfDate) {
@@ -39,6 +42,14 @@ const PdfReportStatus: FunctionComponent<Props> = ({
     PDFStatusText = 'PDF Report failed';
   }
 
+  // The API will not build a report until the
+  // inspector's device finishes uploading, so
+  // explain the wait instead of offering a restart
+  if (hasPendingUploads) {
+    const noun = pendingUploadsCount === 1 ? 'photo' : 'photos';
+    PDFStatusText = `${pendingUploadsCount} ${noun} still uploading from the inspector's device`;
+  }
+
   if (isPdfReportQueued) {
     PDFStatusText = 'PDF report in queue';
   }
@@ -47,13 +58,16 @@ const PdfReportStatus: FunctionComponent<Props> = ({
     PDFStatusText = 'Generating PDF';
   }
 
+  const showRestart = showRestartAction && !hasPendingUploads;
+
   const showActions =
     inspectionReportURL &&
     !isPdfReportQueued &&
     !showRestartAction &&
     !isPdfReportGenerating &&
     !isRequestingReport &&
-    !isPdfReportOutOfDate;
+    !isPdfReportOutOfDate &&
+    !hasPendingUploads;
 
   return (
     <>
@@ -67,14 +81,16 @@ const PdfReportStatus: FunctionComponent<Props> = ({
               styles.pdfReport__status,
               isPdfReportGenerating && styles.pdfReport__generating,
               hasPdfReportGenerationFailed &&
+                !hasPendingUploads &&
                 styles['pdfReport__status--failed'],
+              hasPendingUploads && styles['pdfReport__status--pending'],
               isSmallGray ? styles['pdfReport__status--small'] : '',
               isSmallGray ? styles['pdfReport__status--gray'] : ''
             )}
             data-testid="header-pdf-report-text"
           >
             {PDFStatusText}&nbsp;&nbsp;
-            {showRestartAction && (
+            {showRestart && (
               <span
                 className={clsx(
                   styles.pdfReport__status__action,
@@ -126,7 +142,8 @@ PdfReportStatus.defaultProps = {
   isPdfReportOutOfDate: false,
   isPdfReportGenerating: false,
   hasPdfReportGenerationFailed: false,
-  isSmallGray: false
+  isSmallGray: false,
+  pendingUploadsCount: 0
 };
 
 export default PdfReportStatus;
