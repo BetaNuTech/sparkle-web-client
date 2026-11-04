@@ -57,11 +57,6 @@ const About: FunctionComponent = () => (
         to fix it and a due date, until it is completed and verified.
       </li>
       <li>
-        <strong>Jobs and bids.</strong> Larger work is recorded as a job, with
-        bids from vendors attached, so the cost and progress of repairs stay
-        alongside the inspection that prompted them.
-      </li>
-      <li>
         <strong>Properties and teams.</strong> Administrators decide which
         properties and teams each member of staff can see, so people work with
         the communities they are responsible for.

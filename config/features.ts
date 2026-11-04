@@ -29,5 +29,8 @@ export default {
   supportPropertyUpdate: true,
   supportInspectionUploadPhotos: false,
   supportDeficientItemEdit:
-    process.env.NEXT_PUBLIC_SUPPORT_PROPERTY_DEFICIENT_ITEM_EDIT !== 'false'
+    process.env.NEXT_PUBLIC_SUPPORT_PROPERTY_DEFICIENT_ITEM_EDIT !== 'false',
+  // Jobs & bids are hidden until they're reworked
+  // with custom logic and without Trello
+  supportJobs: false
 };

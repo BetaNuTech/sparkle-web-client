@@ -166,7 +166,8 @@ const PropertyProfile: FunctionComponent<Props> = ({
       : '';
 
   // Check if user can access jobs
-  const canUserAccessJob = canAccessJobs(user, property.id);
+  const canUserAccessJob =
+    features.supportJobs && canAccessJobs(user, property.id);
 
   // Mobile Header actions buttons
   const mobileHeaderActions = (headStyle) => (
